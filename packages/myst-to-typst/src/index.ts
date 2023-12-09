@@ -249,16 +249,10 @@ const handlers: Record<string, Handler> = {
     state.write(`@${id}`);
   },
   citeGroup(node, state) {
-    state.write('#cite(');
-    state.renderChildren(node, true, ', ');
-    state.write(')');
+    state.renderChildren(node, true, ' ');
   },
-  cite(node, state, parent) {
-    if (parent.type === 'citeGroup') {
-      state.write(`"${node.label}"`);
-    } else {
-      state.write(`@${node.label}`);
-    }
+  cite(node, state) {
+    state.write(`@${node.label}`);
   },
   embed(node, state) {
     state.renderChildren(node, true);

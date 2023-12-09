@@ -1,4 +1,4 @@
-export * from './export.js';
-export * from './imports.js';
+export * from './tex/index.js';
+export * from './typst/index.js';
 export * from './jtex.js';
 export * from './types.js';

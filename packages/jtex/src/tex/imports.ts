@@ -1,16 +1,19 @@
-import type { TemplateImports } from './types.js';
 import { writeTexLabelledComment } from 'myst-common';
+import type { TexTemplateImports } from '../types.js';
 
 const commentLength = 50;
 
-export function createImportCommands(commands: Set<string>, existingPackages?: string[]): string[] {
+export function createTexImportCommands(
+  commands: Set<string>,
+  existingPackages?: string[],
+): string[] {
   const sorted = [...commands].sort();
   const existingSet = new Set(existingPackages);
   const filtered = existingPackages ? sorted.filter((p) => !existingSet.has(p)) : sorted;
   return filtered.map((c) => `\\usepackage{${c}}`);
 }
 
-export function createMathCommands(plugins: Record<string, string>): string[] {
+export function createTexMathCommands(plugins: Record<string, string>): string[] {
   if (!plugins || Object.keys(plugins).length === 0) return [];
   return Object.entries(plugins).map(([k, v]) => {
     const numArgs = v.match(/#([1-9])/g)?.length ?? 0;
@@ -19,32 +22,34 @@ export function createMathCommands(plugins: Record<string, string>): string[] {
   });
 }
 
-export function renderImports(
-  templateImports?: string | TemplateImports,
+export function renderTexImports(
+  templateImports?: TexTemplateImports,
   existingPackages?: string[],
+  preamble?: string,
 ): string {
   if (!templateImports || typeof templateImports === 'string') return templateImports || '';
   const packages = new Set(templateImports.imports);
   const imports = writeTexLabelledComment(
     'imports',
-    createImportCommands(packages, existingPackages),
+    createTexImportCommands(packages, existingPackages),
     commentLength,
   );
   const commands = writeTexLabelledComment(
     'math commands',
-    createMathCommands(templateImports.commands),
+    createTexMathCommands(templateImports.commands),
     commentLength,
   );
   const block = `${imports}${commands}`;
   if (!block) return '';
   const percents = ''.padEnd(commentLength, '%');
-  return `${percents}\n${block}${percents}\n`;
+  const preambleContent = preamble ? `${preamble}\n` : '';
+  return `${percents}\n${block}${percents}\n${preambleContent}`;
 }
 
-export function mergeTemplateImports(
-  current?: Partial<TemplateImports>,
-  next?: Partial<TemplateImports>,
-): TemplateImports {
+export function mergeTexTemplateImports(
+  current?: Partial<TexTemplateImports>,
+  next?: Partial<TexTemplateImports>,
+): TexTemplateImports {
   return {
     commands: { ...current?.commands, ...next?.commands },
     imports: [...new Set([...(current?.imports ?? []), ...(next?.imports ?? [])])],

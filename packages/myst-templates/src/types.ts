@@ -39,6 +39,7 @@ export type RendererDoc = Omit<
   authors: RendererAuthor[];
   affiliations: ValueAndIndex[];
   collaborations: ValueAndIndex[];
+  bibtex?: string;
 };
 
 export const RENDERER_DOC_KEYS = ['affiliations', 'collaborations'].concat(PAGE_FRONTMATTER_KEYS);
@@ -107,6 +108,7 @@ type TemplateYmlPartial = {
   options?: TemplateOptionDefinition[];
   packages?: string[];
   files?: string[];
+  template?: string;
 };
 
 type TemplateYmlIdLinks = {

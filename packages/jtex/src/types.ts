@@ -1,7 +1,12 @@
 import type { RendererDoc } from 'myst-templates';
 
-export type TemplateImports = {
+export type TexTemplateImports = {
   imports: string[];
+  commands: Record<string, string>;
+};
+
+export type TypstTemplateImports = {
+  macros: string[];
   commands: Record<string, string>;
 };
 

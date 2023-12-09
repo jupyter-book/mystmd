@@ -15,6 +15,7 @@ import {
   makeHtmlOption,
   makeMecaOptions,
   makeMdOption,
+  makeTypstOption,
 } from './options.js';
 
 export function makeBuildCLI(program: Command) {
@@ -23,6 +24,7 @@ export function makeBuildCLI(program: Command) {
     .argument('[files...]', 'list of files to export')
     .addOption(makePdfOption('Build PDF output'))
     .addOption(makeTexOption('Build LaTeX outputs'))
+    .addOption(makeTypstOption('Build Typst outputs'))
     .addOption(makeDocxOption('Build Docx output'))
     .addOption(makeMdOption('Build MD output'))
     .addOption(makeJatsOption('Build JATS xml output'))

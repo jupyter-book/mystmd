@@ -1,6 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ExportFormats } from 'myst-frontmatter';
-import { getExportFormats } from './build';
+import { exportSite, getExportFormats } from './build';
+import { Session } from '../session';
+import { config } from '../store/reducers';
 
 describe('getExportFormats', () => {
   it('no build target in options and force returns no formats', async () => {
@@ -35,6 +37,7 @@ describe('getExportFormats', () => {
         ExportFormats.docx,
         ExportFormats.pdf,
         ExportFormats.tex,
+        ExportFormats.typst,
         ExportFormats.xml,
         ExportFormats.md,
         ExportFormats.meca,
@@ -57,4 +60,43 @@ describe('getExportFormats', () => {
       ExportFormats.xml,
     ]);
   });
+});
+
+describe('exportSite', () => {
+  let session: Session;
+  let sessionWithConfig: Session;
+
+  beforeEach(() => {
+    session = new Session();
+    sessionWithConfig = new Session();
+    const path = 'CURRENT_PATH';
+    sessionWithConfig.store.dispatch(config.actions.receiveCurrentSitePath({ path }));
+    sessionWithConfig.store.dispatch(config.actions.receiveSiteConfig({ path }));
+  });
+  it('no opts or config does not export site', async () => {
+    expect(exportSite(session, {})).toBeFalsy();
+  });
+  it('opts.all exports site', async () => {
+    expect(exportSite(session, { all: true })).toEqual(true);
+  });
+  it('opts.site exports site', async () => {
+    expect(exportSite(session, { site: true, pdf: true })).toEqual(true);
+  });
+  it('opts.html exports site', async () => {
+    expect(exportSite(session, { html: true, meca: false })).toEqual(true);
+  });
+  it('existing config exports site', async () => {
+    expect(exportSite(sessionWithConfig, {})).toEqual(true);
+  });
+  it('force with existing config does not export site', async () => {
+    expect(exportSite(sessionWithConfig, { force: true })).toBeFalsy();
+  });
+  it.each(['docx', 'pdf', 'tex', 'xml', 'md', 'meca'])(
+    '%s with existing config does not export site',
+    (opt) => {
+      const opts: Record<string, boolean> = {};
+      opts[opt] = true;
+      expect(exportSite(sessionWithConfig, opts)).toBe(false);
+    },
+  );
 });

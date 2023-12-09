@@ -1,7 +1,8 @@
 import path from 'node:path';
 import type MystTemplate from 'myst-templates';
+import { createCommand } from '../utils.js';
 
-export function pdfExportCommand(
+export function pdfTexExportCommand(
   texFile: string,
   logFile: string,
   template?: MystTemplate,
@@ -18,10 +19,4 @@ export function texMakeGlossariesCommand(texFile: string, logFile: string): stri
   const baseCommand = `makeglossaries ${fileNameNoExt}`;
 
   return createCommand(baseCommand, logFile);
-}
-
-function createCommand(baseCommand: string, logFile: string): string {
-  return process.platform === 'win32'
-    ? `${baseCommand} 1> ${logFile} 2>&1`
-    : `${baseCommand} &> ${logFile}`;
 }

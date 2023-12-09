@@ -11,6 +11,7 @@ import {
   makePdfOption,
   makeSiteOption,
   makeTexOption,
+  makeTypstOption,
   makeYesOption,
 } from './options.js';
 
@@ -41,6 +42,7 @@ export function makeCleanCLI(program: Command) {
     .argument('[files...]', 'list of files to clean corresponding outputs')
     .addOption(makePdfOption('Clean PDF output'))
     .addOption(makeTexOption('Clean LaTeX outputs'))
+    .addOption(makeTypstOption('Clean typst output'))
     .addOption(makeDocxOption('Clean Docx output'))
     .addOption(makeMdOption('Clean MD output'))
     .addOption(makeJatsOption('Clean JATS xml output'))

@@ -1,5 +1,5 @@
 import fs, { createWriteStream, mkdirSync } from 'node:fs';
-import { join, parse, sep } from 'node:path';
+import { extname, join, parse, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import AdmZip from 'adm-zip';
 import { glob } from 'glob';
@@ -10,11 +10,18 @@ import fetch from 'node-fetch';
 import { validateUrl } from 'simple-validators';
 import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types.js';
 
-export const TEMPLATE_FILENAME = 'template.tex';
 export const TEMPLATE_YML = 'template.yml';
+
+export const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
+  tex: '.tex',
+  typst: '.typ',
+  docx: undefined,
+  site: undefined,
+};
 
 const DEFAULT_TEMPLATES = {
   tex: 'tex/myst/curvenote',
+  typst: 'typst/myst/default',
   docx: 'docx/myst/default',
   site: 'site/myst/book-theme',
 };
@@ -84,7 +91,10 @@ export function resolveInputs(
   // Handle case where template already exists locally
   if (opts.template && fs.existsSync(opts.template)) {
     const { base, dir } = parse(opts.template);
-    if (base === TEMPLATE_YML || base === TEMPLATE_FILENAME) {
+    if (
+      base === TEMPLATE_YML ||
+      Object.values(KIND_TO_EXT).filter(Boolean).includes(extname(base))
+    ) {
       templatePath = dir;
     } else if (fs.lstatSync(opts.template).isDirectory()) {
       if (fs.existsSync(join(opts.template, TEMPLATE_YML))) {

@@ -1,44 +1,62 @@
 import AdmZip from 'adm-zip';
 import path from 'node:path';
-import type { TexTemplateImports } from 'jtex';
-import { mergeTexTemplateImports, renderTemplate } from 'jtex';
-import { tic, writeFileToFolder } from 'myst-cli-utils';
+import which from 'which';
+import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { ExportFormats } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
-import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
-import type { LatexResult, PreambleData } from 'myst-to-tex';
+import mystToTypst from 'myst-to-typst';
+import type { TypstResult } from 'myst-to-typst';
 import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
-import { select, selectAll } from 'unist-util-select';
-import { findCurrentProjectAndLoad } from '../../config.js';
-import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
-import type { ISession } from '../../session/types.js';
-import { selectors } from '../../store/index.js';
-import { ImageExtensions } from '../../utils/resolveExtension.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
-import { getFileContent } from '../utils/getFileContent.js';
-import { addWarningForFile } from '../../utils/addWarningForFile.js';
-import { cleanOutput } from '../utils/cleanOutput.js';
-import { createTempFolder } from '../../utils/createTempFolder.js';
-import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
-import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
-import { collectTexExportOptions } from '../utils/collectExportOptions.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
+import { selectAll } from 'unist-util-select';
+import type { TypstTemplateImports } from 'jtex';
+import { mergeTypstTemplateImports, renderTemplate } from 'jtex';
+import { findCurrentProjectAndLoad } from '../config.js';
+import { finalizeMdast } from '../process/mdast.js';
+import { loadProjectFromDisk } from '../project/load.js';
+import type { ISession } from '../session/types.js';
+import { selectors } from '../store/index.js';
+import { ImageExtensions } from '../utils/resolveExtension.js';
+import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { getFileContent } from './utils/getFileContent.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { createTempFolder } from '../utils/createTempFolder.js';
+import version from '../version.js';
+import { cleanOutput } from './utils/cleanOutput.js';
+import type { ExportWithOutput, ExportOptions, ExportResults } from './types.js';
+import { writeBibtexFromCitationRenderers } from './utils/bibtex.js';
+import { collectTexExportOptions } from './utils/collectExportOptions.js';
+import { resolveAndLogErrors } from './utils/resolveAndLogErrors.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
-const TEX_IMAGE_EXTENSIONS = [
+const TYPST_IMAGE_EXTENSIONS = [
   ImageExtensions.pdf,
   ImageExtensions.png,
   ImageExtensions.jpg,
   ImageExtensions.jpeg,
 ];
 
-export function mdastToTex(
+export function isTypstAvailable() {
+  return which.sync('typst', { nothrow: true });
+}
+
+export async function runTypstExecutable(session: ISession, typstFile: string) {
+  if (!isTypstAvailable()) {
+    session.log.debug('typst CLI must be installed to build PDFs from typst');
+    return;
+  }
+  if (path.extname(typstFile) !== '.typ') {
+    throw new Error(`invalid input file for typst executable: ${typstFile}`);
+  }
+  session.log.debug('Running typst compile');
+  await makeExecutable(`typst compile ${typstFile}`, session.log)();
+}
+
+export function mdastToTypst(
   session: ISession,
   mdast: GenericParent,
   references: References,
@@ -46,33 +64,33 @@ export function mdastToTex(
   templateYml: TemplateYml | null,
   printGlossaries: boolean,
 ) {
-  const pipe = unified().use(mystToTex, {
+  const pipe = unified().use(mystToTypst, {
     math: frontmatter?.math,
-    citestyle: templateYml?.style?.citation,
-    bibliography: templateYml?.style?.bibliography,
-    printGlossaries,
-    references,
-    ...frontmatter.settings?.myst_to_tex,
+    // citestyle: templateYml?.style?.citation,
+    // bibliography: templateYml?.style?.bibliography,
+    // printGlossaries,
+    // references,
+    // ...frontmatter.settings?.myst_to_tex,
   });
   const result = pipe.runSync(mdast as any);
-  const tex = pipe.stringify(result);
-  logMessagesFromVFile(session, tex);
-  return tex.result as LatexResult;
+  const typ = pipe.stringify(result);
+  logMessagesFromVFile(session, typ);
+  return typ.result as TypstResult;
 }
 
-export function extractTexPart(
+export function extractTypstPart(
   session: ISession,
   mdast: GenericParent,
   references: References,
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
-): LatexResult | LatexResult[] | undefined {
+): TypstResult | TypstResult[] | undefined {
   const part = extractPart(mdast, partDefinition.id);
   if (!part) return undefined;
   if (!partDefinition.as_list) {
     // Do not build glossaries when extracting parts: references cannot be mapped to definitions
-    return mdastToTex(session, part, references, frontmatter, templateYml, false);
+    return mdastToTypst(session, part, references, frontmatter, templateYml, false);
   }
   if (
     part.children.length === 1 &&
@@ -81,7 +99,7 @@ export function extractTexPart(
   ) {
     const items = selectAll('listItem', part) as GenericParent[];
     return items.map((item: GenericParent) => {
-      return mdastToTex(
+      return mdastToTypst(
         session,
         { type: 'root', children: item.children },
         references,
@@ -92,7 +110,7 @@ export function extractTexPart(
     });
   }
   return part.children.map((block) => {
-    return mdastToTex(
+    return mdastToTypst(
       session,
       { type: 'root', children: [block] },
       references,
@@ -103,7 +121,7 @@ export function extractTexPart(
   });
 }
 
-export async function localArticleToTexRaw(
+export async function localArticleToTypstRaw(
   session: ISession,
   templateOptions: ExportWithOutput,
   projectPath?: string,
@@ -112,7 +130,7 @@ export async function localArticleToTexRaw(
   const { articles, output } = templateOptions;
   const content = await getFileContent(session, articles, {
     projectPath,
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
+    imageExtensions: TYPST_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
 
@@ -123,13 +141,13 @@ export async function localArticleToTexRaw(
       await finalizeMdast(session, mdast, frontmatter, article, {
         imageWriteFolder: path.join(path.dirname(output), 'files'),
         imageAltOutputFolder: 'files/',
-        imageExtensions: TEX_IMAGE_EXTENSIONS,
+        imageExtensions: TYPST_IMAGE_EXTENSIONS,
         simplifyFigures: true,
       });
-      return mdastToTex(session, mdast, references, frontmatter, null, false);
+      return mdastToTypst(session, mdast, references, frontmatter, null, false);
     }),
   );
-  session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
+  session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
   if (results.length === 1) {
     writeFileToFolder(output, results[0].value);
   } else {
@@ -147,7 +165,7 @@ export async function localArticleToTexRaw(
   return { tempFolders: [] };
 }
 
-export async function localArticleToTexTemplated(
+export async function localArticleToTypstTemplated(
   session: ISession,
   file: string,
   templateOptions: ExportWithOutput,
@@ -159,7 +177,7 @@ export async function localArticleToTexTemplated(
   const filesPath = path.join(path.dirname(output), 'files');
   const content = await getFileContent(session, articles, {
     projectPath,
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
+    imageExtensions: TYPST_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
   const bibtexWritten = writeBibtexFromCitationRenderers(
@@ -174,7 +192,7 @@ export async function localArticleToTexTemplated(
     });
   };
   const mystTemplate = new MystTemplate(session, {
-    kind: TemplateKind.tex,
+    kind: TemplateKind.typst,
     template: template || undefined,
     buildDir: session.buildPath(),
     errorLogFn: (message: string) => {
@@ -189,26 +207,23 @@ export async function localArticleToTexTemplated(
   const templateYml = mystTemplate.getValidatedTemplateYml();
   const partDefinitions = templateYml?.parts || [];
   const parts: Record<string, string | string[]> = {};
-  let collectedImports: TexTemplateImports = { imports: [], commands: {} };
-  let preambleData: PreambleData = {
-    hasProofs: false,
-    printGlossaries: false,
-    glossary: {},
-    abbreviations: {},
+  let collected: TypstTemplateImports = {
+    macros: [],
+    commands: {},
   };
-  let hasGlossaries = false;
+  const hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
       const article = articles[ind];
       await finalizeMdast(session, mdast, frontmatter, article, {
         imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
-        imageExtensions: TEX_IMAGE_EXTENSIONS,
+        imageExtensions: TYPST_IMAGE_EXTENSIONS,
         simplifyFigures: true,
       });
 
       partDefinitions.forEach((def) => {
-        const part = extractTexPart(session, mdast, references, def, frontmatter, templateYml);
+        const part = extractTypstPart(session, mdast, references, def, frontmatter, templateYml);
         if (part && parts[def.id]) {
           addWarningForFile(
             session,
@@ -220,27 +235,25 @@ export async function localArticleToTexTemplated(
         } else if (Array.isArray(part)) {
           // This is the case if def.as_list is true
           part.forEach((item) => {
-            collectedImports = mergeTexTemplateImports(collectedImports, item);
+            collected = mergeTypstTemplateImports(collected, item);
           });
           parts[def.id] = part.map(({ value }) => value);
         } else if (part != null) {
-          collectedImports = mergeTexTemplateImports(collectedImports, part);
+          collected = mergeTypstTemplateImports(collected, part);
           parts[def.id] = part?.value ?? '';
         }
       });
-      const result = mdastToTex(session, mdast, references, frontmatter, templateYml, true);
-      collectedImports = mergeTexTemplateImports(collectedImports, result);
-      preambleData = mergePreambles(preambleData, result.preamble, warningLogFn);
-      hasGlossaries = hasGlossaries || hasGlossary(mdast);
+      const result = mdastToTypst(session, mdast, references, frontmatter, templateYml, true);
+      collected = mergeTypstTemplateImports(collected, result);
       return result;
     }),
   );
 
   let frontmatter: Record<string, any>;
-  let texContent: string;
+  let typstContent: string;
   if (results.length === 1) {
     frontmatter = content[0].frontmatter;
-    texContent = results[0].value;
+    typstContent = results[0].value;
   } else {
     const state = session.store.getState();
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
@@ -251,29 +264,28 @@ export async function localArticleToTexTemplated(
       writeFileToFolder(includeFile, result.value);
       return base;
     });
-    texContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
+    typstContent = includeFileBases.map((base) => `#include "${base}"`).join('\n');
   }
-  // Fill in template
-  session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
-  const { preamble, suffix } = generatePreamble(preambleData);
+  typstContent = `/* Written by MyST v${version} */\n\n${typstContent}`;
+  session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
   renderTemplate(mystTemplate, {
-    contentOrPath: texContent + suffix,
+    contentOrPath: typstContent,
     outputPath: output,
     frontmatter,
     parts,
     options: { ...frontmatter.options, ...templateOptions },
     bibliography: bibtexWritten ? DEFAULT_BIB_FILENAME : undefined,
     sourceFile: file,
-    imports: collectedImports,
-    preamble,
+    imports: collected,
     force,
     packages: templateYml.packages,
     filesPath,
   });
+  await runTypstExecutable(session, output);
   return { tempFolders: [], hasGlossaries };
 }
 
-export async function runTexExport( // DBG: Must return an info on whether glossaries are present
+export async function runTypstExport( // DBG: Must return an info on whether glossaries are present
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
@@ -284,9 +296,14 @@ export async function runTexExport( // DBG: Must return an info on whether gloss
   if (clean) cleanOutput(session, exportOptions.output);
   let result: ExportResults;
   if (exportOptions.template === null) {
-    result = await localArticleToTexRaw(session, exportOptions, projectPath, extraLinkTransformers);
+    result = await localArticleToTypstRaw(
+      session,
+      exportOptions,
+      projectPath,
+      extraLinkTransformers,
+    );
   } else {
-    result = await localArticleToTexTemplated(
+    result = await localArticleToTypstTemplated(
       session,
       file,
       exportOptions,
@@ -298,7 +315,7 @@ export async function runTexExport( // DBG: Must return an info on whether gloss
   return result;
 }
 
-export async function runTexZipExport(
+export async function runTypstZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
@@ -313,15 +330,15 @@ export async function runTexZipExport(
     texFolder,
     `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
   );
-  await runTexExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
-  session.log.info(`🤐 Zipping tex outputs to ${zipOutput}`);
+  await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  session.log.info(`🤐 Zipping typst outputs to ${zipOutput}`);
   const zip = new AdmZip();
   zip.addLocalFolder(texFolder);
   zip.writeZip(zipOutput);
   return { tempFolders: [texFolder] };
 }
 
-export async function localArticleToTex(
+export async function localArticleToTypst(
   session: ISession,
   file: string,
   opts: ExportOptions,
@@ -332,7 +349,7 @@ export async function localArticleToTex(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
+    await collectTexExportOptions(session, file, 'typ', [ExportFormats.tex], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -342,7 +359,7 @@ export async function localArticleToTex(
     exportOptionsList.map(async (exportOptions) => {
       let exportResults: ExportResults;
       if (path.extname(exportOptions.output) === '.zip') {
-        exportResults = await runTexZipExport(
+        exportResults = await runTypstZipExport(
           session,
           file,
           exportOptions,
@@ -351,7 +368,7 @@ export async function localArticleToTex(
           extraLinkTransformers,
         );
       } else {
-        exportResults = await runTexExport(
+        exportResults = await runTypstExport(
           session,
           file,
           exportOptions,
@@ -365,9 +382,4 @@ export async function localArticleToTex(
     opts.throwOnFailure,
   );
   return results;
-}
-
-function hasGlossary(mdast: GenericParent): boolean {
-  const glossary = select('glossary', mdast);
-  return glossary !== null;
 }
