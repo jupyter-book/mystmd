@@ -32,7 +32,7 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.1.18",
-    "myst-spec-ext": "^1.1.18"
+    "myst-common": "^1.1.20",
+    "myst-spec-ext": "^1.1.20"
   }
 }

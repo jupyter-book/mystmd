@@ -37,15 +37,15 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.1.19",
-    "myst-frontmatter": "^1.1.19",
-    "myst-spec-ext": "^1.1.19",
+    "myst-common": "^1.1.20",
+    "myst-frontmatter": "^1.1.20",
+    "myst-spec-ext": "^1.1.20",
     "myst-ext-proof": "^1.0.6",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
-    "myst-parser": "^1.0.16"
+    "myst-parser": "^1.0.19"
   }
 }

@@ -37,9 +37,9 @@
   },
   "dependencies": {
     "@unified-latex/unified-latex": "^1.2.2",
-    "myst-common": "^1.1.19",
-    "myst-frontmatter": "^1.1.19",
-    "myst-spec-ext": "^1.1.19",
+    "myst-common": "^1.1.20",
+    "myst-frontmatter": "^1.1.20",
+    "myst-spec-ext": "^1.1.20",
     "unist-builder": "^3.0.0",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",

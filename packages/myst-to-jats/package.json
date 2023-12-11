@@ -41,11 +41,11 @@
     "jats-tags": "^1.0.8",
     "jats-utils": "^1.0.8",
     "katex": "^0.15.2",
-    "myst-common": "^1.1.17",
-    "myst-frontmatter": "^1.1.17",
+    "myst-common": "^1.1.20",
+    "myst-frontmatter": "^1.1.20",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^1.1.17",
-    "myst-transforms": "^1.1.15",
+    "myst-spec-ext": "^1.1.20",
+    "myst-transforms": "^1.1.17",
     "nbtx": "^0.2.3",
     "unified": "^10.1.2",
     "unist-util-remove": "^3.1.0",
@@ -60,6 +60,6 @@
     "@types/mdast": "^3.0.10",
     "jats-xml": "^1.0.7",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^2.0.6"
+    "myst-cli-utils": "^2.0.7"
   }
 }
