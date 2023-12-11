@@ -15,14 +15,8 @@ export const refRole: RoleSpec = {
     const match = REF_PATTERN.exec(body);
     const [, modified, rawLabel] = match ?? [];
     const { label, identifier } = normalizeLabel(rawLabel ?? body) || {};
-    return [
-      {
-        type: 'crossReference',
-        kind: data.name,
-        identifier,
-        label,
-        children: modified ? [{ type: 'text', value: modified.trim() }] : undefined,
-      },
-    ];
+    const crossRef: GenericNode = { type: 'crossReference', kind: data.name, identifier, label };
+    if (modified) crossRef.children = [{ type: 'text', value: modified.trim() }];
+    return [crossRef];
   },
 };

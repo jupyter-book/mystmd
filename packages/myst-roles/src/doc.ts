@@ -1,4 +1,4 @@
-import type { RoleSpec } from 'myst-common';
+import type { GenericNode, RoleSpec } from 'myst-common';
 import { fileWarn, RuleId } from 'myst-common';
 
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Document <doc>'
@@ -23,12 +23,8 @@ export const docRole: RoleSpec = {
         ruleId: RuleId.roleBodyCorrect,
       },
     );
-    return [
-      {
-        type: 'link',
-        url,
-        children: modified ? [{ type: 'text', value: modified.trim() }] : undefined,
-      },
-    ];
+    const link: GenericNode = { type: 'link', url };
+    if (modified) link.children = [{ type: 'text', value: modified.trim() }];
+    return [link];
   },
 };
