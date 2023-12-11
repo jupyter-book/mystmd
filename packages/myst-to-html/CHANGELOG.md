@@ -1,5 +1,7 @@
 # myst-to-html
 
+## 1.0.19
+
 ## 1.0.18
 
 ### Patch Changes
