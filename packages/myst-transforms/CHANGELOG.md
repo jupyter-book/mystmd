@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 1.1.18
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+- Updated dependencies [6354420]
+  - myst-to-html@1.0.20
+
 ## 1.1.17
 
 ### Patch Changes

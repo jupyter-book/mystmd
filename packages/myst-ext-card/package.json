@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-card",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for card directive",
@@ -35,6 +35,6 @@
     "myst-common": "^1.1.20"
   },
   "devDependencies": {
-    "myst-parser": "^1.0.19"
+    "myst-parser": "^1.0.20"
   }
 }

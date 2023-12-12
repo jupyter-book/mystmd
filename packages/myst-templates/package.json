@@ -1,6 +1,6 @@
 {
   "name": "myst-templates",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "API types and scripts for downloading MyST Templates",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-templates",

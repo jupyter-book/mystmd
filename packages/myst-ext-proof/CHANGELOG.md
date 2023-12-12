@@ -1,5 +1,11 @@
 # myst-ext-proof
 
+## 1.0.7
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+
 ## 1.0.6
 
 ### Patch Changes

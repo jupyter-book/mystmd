@@ -1,5 +1,28 @@
 # myst-cli
 
+## 1.1.36
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+- Updated dependencies [6354420]
+- Updated dependencies [6354420]
+  - myst-templates@1.0.15
+  - myst-ext-exercise@1.0.5
+  - myst-ext-reactive@1.0.5
+  - myst-transforms@1.1.18
+  - myst-ext-proof@1.0.7
+  - myst-ext-card@1.0.5
+  - myst-ext-grid@1.0.5
+  - myst-ext-tabs@1.0.5
+  - myst-to-docx@1.0.8
+  - myst-to-jats@1.0.20
+  - myst-parser@1.0.20
+  - myst-to-tex@1.0.16
+  - tex-to-myst@1.0.16
+  - myst-to-md@1.0.10
+  - jtex@1.0.12
+
 ## 1.1.35
 
 ### Patch Changes

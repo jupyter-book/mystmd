@@ -1,5 +1,11 @@
 # tex-to-myst
 
+## 1.0.16
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+
 ## 1.0.15
 
 ### Patch Changes
