@@ -38,11 +38,11 @@
     "doi-utils": "^2.0.0",
     "jats-tags": "^1.0.8",
     "jats-xml": "^1.0.8",
-    "myst-common": "^1.1.17",
-    "myst-frontmatter": "^1.1.17",
+    "myst-common": "^1.1.20",
+    "myst-frontmatter": "^1.1.20",
     "myst-spec": "^0.0.4",
-    "myst-spec-ext": "^1.1.17",
-    "myst-transforms": "^1.1.15",
+    "myst-spec-ext": "^1.1.20",
+    "myst-transforms": "^1.1.17",
     "unified": "^10.0.0",
     "unist-builder": "^3.0.0",
     "unist-util-select": "^4.0.3",
@@ -51,6 +51,6 @@
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
-    "myst-to-tex": "^1.0.14"
+    "myst-to-tex": "^1.0.15"
   }
 }
