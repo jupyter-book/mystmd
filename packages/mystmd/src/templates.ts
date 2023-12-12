@@ -21,22 +21,30 @@ import {
   makePdfOption,
   makeSiteOption,
   makeTexOption,
+  makeTypstOption,
 } from './options.js';
 import { TemplateKind } from 'myst-common';
 
-type TemplateKinds = { pdf?: boolean; tex?: boolean; docx?: boolean; site?: boolean };
+type TemplateKinds = {
+  pdf?: boolean;
+  tex?: boolean;
+  typst?: boolean;
+  docx?: boolean;
+  site?: boolean;
+};
 
-const allTemplates = [TemplateKind.tex, TemplateKind.docx, TemplateKind.site];
+const allTemplates = [TemplateKind.tex, TemplateKind.typst, TemplateKind.docx, TemplateKind.site];
 
 function getKindFromName(name: string) {
-  return name.match(/^(tex|docx|site)\//)?.[1] ?? undefined;
+  return name.match(/^(tex|typst|docx|site)\//)?.[1] ?? undefined;
 }
 function getKind(session: ISession, kinds?: TemplateKinds): TemplateKind[] | undefined {
   if (!kinds) return undefined;
-  const { pdf, tex, docx, site } = kinds;
-  if (pdf) session.log.warn('PDF templates are currently using "tex"');
+  const { pdf, tex, typst, docx, site } = kinds;
+  if (pdf) session.log.warn('PDF templates may use either "tex" or "typst"');
   const flags = {
     [TemplateKind.tex]: (tex || pdf) ?? false,
+    [TemplateKind.typst]: (typst || pdf) ?? false,
     [TemplateKind.docx]: docx ?? false,
     [TemplateKind.site]: site ?? false,
   };
@@ -102,8 +110,8 @@ export async function listTemplatesCLI(
     if (!template.id) template.id = name;
     session.log.debug(toc(`Found ${template.id} template in %s`));
     session.log.info(
-      `${chalk.bold.green((template.title ?? '').padEnd(25))}${chalk.bold.blueBright(
-        template.id.replace(/^(tex|site|docx)\//, '').replace(/^myst\//, ''),
+      `${chalk.bold.green((template.title ?? '').padEnd(30))}${chalk.bold.blueBright(
+        template.id.replace(/^(tex|typst|site|docx)\//, '').replace(/^myst\//, ''),
       )}`,
     );
     session.log.info(
@@ -159,8 +167,8 @@ export async function listTemplatesCLI(
   }
   filtered.forEach((template) => {
     session.log.info(
-      `\n${chalk.bold.green((template.title ?? '').padEnd(25))}${chalk.bold.blueBright(
-        template.id.replace(/^tex\//, '').replace(/^myst\//, ''),
+      `\n${chalk.bold.green((template.title ?? '').padEnd(30))}${chalk.bold.blueBright(
+        template.id.replace(/^(tex|typst|site|docx)\//, '').replace(/^myst\//, ''),
       )}\nDescription: ${chalk.dim(template.description ?? '')}\nTags: ${chalk.dim(
         template.tags?.join(', ') ?? '',
       )}`,
@@ -175,6 +183,7 @@ function makeDownloadCLI(program: Command) {
     .argument('[path]', 'A folder to download and unzip the template to')
     .addOption(makePdfOption('Download PDF template'))
     .addOption(makeTexOption('Download LaTeX template'))
+    .addOption(makeTypstOption('Download Typst template'))
     .addOption(makeDocxOption('Download Docx template'))
     .addOption(makeSiteOption('Download Site template'))
     .addOption(makeForceOption())
@@ -188,6 +197,7 @@ function makeListCLI(program: Command) {
     .argument('[name]', 'The optional name to list about a specific template')
     .addOption(makePdfOption('List PDF templates'))
     .addOption(makeTexOption('List LaTeX templates'))
+    .addOption(makeTypstOption('List Typst templates'))
     .addOption(makeDocxOption('List Docx templates'))
     .addOption(makeSiteOption('List Site templates'))
     .option(

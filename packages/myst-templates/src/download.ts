@@ -21,14 +21,14 @@ export const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
 
 const DEFAULT_TEMPLATES = {
   tex: 'tex/myst/curvenote',
-  typst: 'typst/myst/default',
+  typst: 'typst/myst/lapreprint-typst',
   docx: 'docx/myst/default',
   site: 'site/myst/book-theme',
 };
 
 const PARTIAL_TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+$/;
 const TEMPLATE_REGEX = /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/;
-const FULL_TEMPLATE_REGEX = /^(site|tex|docx)\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/;
+const FULL_TEMPLATE_REGEX = /^(site|tex|typst|docx)\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/;
 
 function normalizeTemplateName(opts: { kind?: TemplateKind; template?: string }) {
   const { template } = opts;
