@@ -1,5 +1,11 @@
 # myst-ext-exercise
 
+## 1.0.5
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+
 ## 1.0.4
 
 ### Patch Changes

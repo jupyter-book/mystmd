@@ -1,5 +1,11 @@
 # myst-to-docx
 
+## 1.0.8
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+
 ## 1.0.7
 
 ### Patch Changes

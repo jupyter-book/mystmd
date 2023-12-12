@@ -1,5 +1,12 @@
 # myst-templates
 
+## 1.0.15
+
+### Patch Changes
+
+- 6354420: Update myst templates api for typst
+- 6354420: Update versions of myst packages
+
 ## 1.0.14
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.36
+
+### Patch Changes
+
+- 6354420: Update myst templates api for typst
+
 ## 1.1.35
 
 ### Patch Changes

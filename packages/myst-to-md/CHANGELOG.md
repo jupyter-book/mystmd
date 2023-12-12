@@ -1,5 +1,11 @@
 # myst-to-md
 
+## 1.0.10
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+
 ## 1.0.9
 
 ### Patch Changes

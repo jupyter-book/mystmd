@@ -1,5 +1,11 @@
 # myst-to-html
 
+## 1.0.20
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+
 ## 1.0.19
 
 ## 1.0.18

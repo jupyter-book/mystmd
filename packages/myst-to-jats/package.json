@@ -1,6 +1,6 @@
 {
   "name": "myst-to-jats",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Export from MyST Markdown to JATS",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-to-jats",
@@ -45,7 +45,7 @@
     "myst-frontmatter": "^1.1.20",
     "myst-spec": "^0.0.4",
     "myst-spec-ext": "^1.1.20",
-    "myst-transforms": "^1.1.17",
+    "myst-transforms": "^1.1.18",
     "nbtx": "^0.2.3",
     "unified": "^10.1.2",
     "unist-util-remove": "^3.1.0",

@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 1.0.20
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+- Updated dependencies [6354420]
+  - myst-transforms@1.1.18
+
 ## 1.0.19
 
 ### Patch Changes

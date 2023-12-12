@@ -1,5 +1,13 @@
 # myst-to-tex
 
+## 1.0.16
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+- Updated dependencies [6354420]
+  - myst-ext-proof@1.0.7
+
 ## 1.0.15
 
 ### Patch Changes

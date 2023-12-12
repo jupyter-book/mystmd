@@ -1,5 +1,14 @@
 # myst-parser
 
+## 1.0.20
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+- Updated dependencies [6354420]
+  - myst-directives@1.0.20
+  - myst-roles@1.0.20
+
 ## 1.0.19
 
 ### Patch Changes

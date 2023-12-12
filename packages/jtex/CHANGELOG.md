@@ -1,5 +1,14 @@
 # jtex
 
+## 1.0.12
+
+### Patch Changes
+
+- 6354420: Update versions of myst packages
+- Updated dependencies [6354420]
+- Updated dependencies [6354420]
+  - myst-templates@1.0.15
+
 ## 1.0.11
 
 ### Patch Changes
