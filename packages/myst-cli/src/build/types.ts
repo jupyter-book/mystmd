@@ -26,6 +26,7 @@ export type ExportOptions = {
   zip?: boolean;
   force?: boolean;
   projectPath?: string;
+  watch?: boolean;
   throwOnFailure?: boolean;
   renderer?: (
     session: ISession,

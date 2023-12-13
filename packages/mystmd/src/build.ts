@@ -16,6 +16,7 @@ import {
   makeMecaOptions,
   makeMdOption,
   makeTypstOption,
+  makeWatchOption,
 } from './options.js';
 
 export function makeBuildCLI(program: Command) {
@@ -32,6 +33,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeSiteOption('Build MyST site content'))
     .addOption(makeHtmlOption('Build static HTML site content'))
     .addOption(makeAllOption('Build all exports'))
+    .addOption(makeWatchOption())
     .addOption(makeNamedExportOption('Output file for the export'))
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())

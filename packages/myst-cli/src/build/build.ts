@@ -23,6 +23,7 @@ export type BuildOpts = {
   html?: boolean;
   all?: boolean;
   force?: boolean;
+  watch?: boolean;
   output?: string;
   checkLinks?: boolean;
 };
@@ -127,7 +128,7 @@ function extToKind(ext: string): string {
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { site, all } = opts;
+  const { site, all, watch } = opts;
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   const exportLogList = exportOptionsList.map((exportOptions) => {
@@ -164,7 +165,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     }
   } else {
     session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);
-    await localArticleExport(session, exportOptionsList, {});
+    await localArticleExport(session, exportOptionsList, { watch });
   }
   if (!performSiteBuild) return;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
@@ -173,6 +174,9 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     session.log.debug(`To build a site, first run 'myst init --site'`);
   } else {
     session.log.info(`🌎 Building MyST site`);
+    if (watch) {
+      session.log.warn(`Site content will not be watched and updated; use 'myst start' instead`);
+    }
     if (opts.html) {
       await buildHtml(session, opts);
     } else {

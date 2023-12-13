@@ -20,6 +20,7 @@ import { texExportOptionsFromPdf } from '../pdf/single.js';
 import { createPdfGivenTexExport } from '../pdf/create.js';
 import { runMecaExport } from '../meca/index.js';
 import { runMdExport } from '../md/index.js';
+import { selectors, watch as watchReducer } from '../../store/index.js';
 
 async function runExportAndWatch(
   watch: boolean,
@@ -30,19 +31,39 @@ async function runExportAndWatch(
   projectPath?: string,
   clean?: boolean,
 ): Promise<ExportResults> {
-  const results = await exportFn(session, $file, exportOptions, projectPath, clean);
+  let results = await exportFn(session, $file, exportOptions, projectPath, clean);
   if (watch) {
-    chokidar.watch($file).on('change', () => console.log($file));
+    chokidar.watch($file).on('change', async (eventType, modifiedFile) => {
+      const { reloading } = selectors.selectReloadingState(session.store.getState());
+      if (reloading) {
+        session.store.dispatch(watchReducer.actions.markReloadRequested(true));
+        return;
+      }
+      session.store.dispatch(watchReducer.actions.markReloading(true));
+      session.log.debug(`File modified: "${modifiedFile}" (${eventType})`);
+      while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
+        // If reload(s) were requested during previous build, just reload everything once.
+        session.store.dispatch(watchReducer.actions.markReloadRequested(false));
+        results = await exportFn(session, $file, exportOptions, projectPath, clean);
+      }
+      session.store.dispatch(watchReducer.actions.markReloading(false));
+      results = await exportFn(session, $file, exportOptions, projectPath, clean);
+    });
   }
   return results;
 }
 
+type Options = Pick<
+  ExportOptions,
+  'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries' | 'watch'
+>;
+
 async function _localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries'>,
+  opts: Options,
 ) {
-  const { clean, projectPath } = opts;
+  const { clean, projectPath, watch } = opts;
   const errors = await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptionsWithFile) => {
@@ -64,21 +85,9 @@ async function _localArticleExport(
         }
       } else if (format === ExportFormats.typst) {
         if (path.extname(output) === '.zip') {
-          exportResults = await runTypstZipExport(
-            sessionClone,
-            $file,
-            exportOptions,
-            fileProjectPath,
-            clean,
-          );
+          exportFn = runTypstZipExport;
         } else {
-          exportResults = await runTypstExport(
-            sessionClone,
-            $file,
-            exportOptions,
-            fileProjectPath,
-            clean,
-          );
+          exportFn = runTypstExport;
         }
       } else if (format === ExportFormats.docx) {
         exportFn = runWordExport;
@@ -110,7 +119,7 @@ async function _localArticleExport(
         };
       }
       await runExportAndWatch(
-        false,
+        !!watch,
         exportFn,
         sessionClone,
         $file,
@@ -127,7 +136,7 @@ async function _localArticleExport(
 export async function localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure'>,
+  opts: Options,
 ) {
   // We must perform other exports before MECA, since MECA includes the others
   const errors = await _localArticleExport(

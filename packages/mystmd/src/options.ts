@@ -50,6 +50,10 @@ export function makeAllOption(description: string) {
   return new Option('-a, --all', description).default(false);
 }
 
+export function makeWatchOption() {
+  return new Option('--watch', 'Watch modified files and re-build on change').default(false);
+}
+
 export function makeNamedExportOption(description: string) {
   return new Option('-o, --output <output>', description);
 }
