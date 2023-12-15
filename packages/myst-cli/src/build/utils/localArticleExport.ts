@@ -33,22 +33,35 @@ async function runExportAndWatch(
 ): Promise<ExportResults> {
   let results = await exportFn(session, $file, exportOptions, projectPath, clean);
   if (watch) {
-    chokidar.watch($file).on('change', async (eventType, modifiedFile) => {
-      const { reloading } = selectors.selectReloadingState(session.store.getState());
-      if (reloading) {
-        session.store.dispatch(watchReducer.actions.markReloadRequested(true));
-        return;
-      }
-      session.store.dispatch(watchReducer.actions.markReloading(true));
-      session.log.debug(`File modified: "${modifiedFile}" (${eventType})`);
-      while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
-        // If reload(s) were requested during previous build, just reload everything once.
-        session.store.dispatch(watchReducer.actions.markReloadRequested(false));
+    const watchedFiles = new Set([
+      $file,
+      ...exportOptions.articles,
+      ...exportOptions.articles
+        .map((article) => {
+          return selectors.selectFileDependencies(session.store.getState(), article);
+        })
+        .flat(),
+    ]);
+    chokidar
+      .watch([...watchedFiles], {
+        awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
+      })
+      .on('change', async (eventType, modifiedFile) => {
+        const { reloading } = selectors.selectReloadingState(session.store.getState());
+        if (reloading) {
+          session.store.dispatch(watchReducer.actions.markReloadRequested(true));
+          return;
+        }
+        session.store.dispatch(watchReducer.actions.markReloading(true));
+        session.log.debug(`File modified: "${modifiedFile}" (${eventType})`);
+        while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
+          // If reload(s) were requested during previous build, just reload everything once.
+          session.store.dispatch(watchReducer.actions.markReloadRequested(false));
+          results = await exportFn(session, $file, exportOptions, projectPath, clean);
+        }
+        session.store.dispatch(watchReducer.actions.markReloading(false));
         results = await exportFn(session, $file, exportOptions, projectPath, clean);
-      }
-      session.store.dispatch(watchReducer.actions.markReloading(false));
-      results = await exportFn(session, $file, exportOptions, projectPath, clean);
-    });
+      });
   }
   return results;
 }

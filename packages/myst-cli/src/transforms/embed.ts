@@ -7,6 +7,7 @@ import { copyNode, liftChildren, normalizeLabel } from 'myst-common';
 import type { Dependency, Embed, Container } from 'myst-spec-ext';
 import { selectFile } from '../process/file.js';
 import type { ISession } from '../session/types.js';
+import { watch } from '../store/reducers.js';
 
 /**
  * This is the {embed} directive, that embeds nodes from elsewhere in a page.
@@ -14,6 +15,7 @@ import type { ISession } from '../session/types.js';
 export function embedTransform(
   session: ISession,
   mdast: GenericParent,
+  file: string,
   dependencies: Dependency[],
   state: IReferenceState,
 ) {
@@ -49,11 +51,17 @@ export function embedTransform(
     }
     const multiState = state as MultiPageReferenceState;
     if (!multiState.states) return;
-    const { url, file } = multiState.resolveStateProvider(normalized.identifier) ?? {};
+    const { url, file: depFile } = multiState.resolveStateProvider(normalized.identifier) ?? {};
     if (!url) return;
     const source: Dependency = { url, label: node.source?.label };
-    if (file) {
-      const { kind, slug, frontmatter, location } = selectFile(session, file) ?? {};
+    if (depFile) {
+      session.store.dispatch(
+        watch.actions.addLocalDependency({
+          path: file,
+          dependency: depFile,
+        }),
+      );
+      const { kind, slug, frontmatter, location } = selectFile(session, depFile) ?? {};
       if (kind) source.kind = kind;
       if (slug) source.slug = slug;
       if (location) source.location = location;

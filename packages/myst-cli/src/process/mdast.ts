@@ -297,7 +297,7 @@ export async function postProcessMdast(
     selector: LINKS_SELECTOR,
   });
   resolveReferencesTransform(mdast, state.file as VFile, { state });
-  embedTransform(session, mdast, dependencies, state);
+  embedTransform(session, mdast, file, dependencies, state);
   const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'project') return;

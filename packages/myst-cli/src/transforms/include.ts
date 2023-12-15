@@ -6,6 +6,7 @@ import { includeDirectiveTransform } from 'myst-transforms';
 import type { VFile } from 'vfile';
 import { parseMyst } from '../process/myst.js';
 import type { ISession } from '../session/types.js';
+import { watch } from '../store/reducers.js';
 
 export async function includeFilesTransform(
   session: ISession,
@@ -22,6 +23,12 @@ export async function includeFilesTransform(
       });
       return;
     }
+    session.store.dispatch(
+      watch.actions.addLocalDependency({
+        path: baseFile,
+        dependency: fullFile,
+      }),
+    );
     return fs.readFileSync(fullFile).toString();
   };
   const parseContent = (filename: string, content: string) => {

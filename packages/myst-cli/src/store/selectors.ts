@@ -105,6 +105,27 @@ export function selectFileInfo(state: RootState, path: string) {
   };
 }
 
+export function selectFileDependencies(state: RootState, path: string): string[] {
+  return state.local.watch.files[resolve(path)]?.localDependencies ?? [];
+}
+
+export function selectAllDependencies(state: RootState, projectPath?: string): string[] {
+  return Object.entries(state.local.watch.files)
+    .filter(([file]) => !projectPath || file.startsWith(resolve(projectPath)))
+    .map(([, value]) => value.localDependencies ?? [])
+    .flat();
+}
+
+export function selectDependentFiles(state: RootState, path: string): string[] {
+  const dependentFiles: string[] = [];
+  Object.entries(state.local.watch.files).forEach(([key, value]) => {
+    if (value.localDependencies?.includes(resolve(path))) {
+      dependentFiles.push(key);
+    }
+  });
+  return dependentFiles;
+}
+
 export function selectPageSlug(
   state: RootState,
   projectPath: string,
