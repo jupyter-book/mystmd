@@ -114,8 +114,9 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     if (!format) {
       return validationError(`unable to infer export format from export: ${output}`, opts);
     }
-  } else if (!template) {
-    // If template is defined, that will tell us the format later!
+  } else {
+    // if (!template) {
+    // TODO: If template is defined, that will tell us the format later!
     return validationError('unable to determine export format', opts);
   }
   if (format === undefined && template === undefined) return undefined;
