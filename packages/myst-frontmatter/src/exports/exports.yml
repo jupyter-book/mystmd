@@ -256,3 +256,39 @@ cases:
           articles:
             - a.md
     errors: 3
+  - title: pdf filename coerces to format and output
+    raw:
+      exports:
+        - out.pdf
+    normalized:
+      exports:
+        - format: pdf
+          output: out.pdf
+  - title: pdf extension coerces to format
+    raw:
+      exports:
+        - .pdf
+    normalized:
+      exports:
+        - format: pdf
+  - title: pdf output adds format
+    raw:
+      exports:
+        - output: out.pdf
+    normalized:
+      exports:
+        - format: pdf
+          output: out.pdf
+  - title: export with only template validates
+    raw:
+      exports:
+        - template: template
+    normalized:
+      exports:
+        - template: template
+  - title: unknown output errors
+    raw:
+      exports:
+        - output: out.bad
+    normalized: {}
+    errors: 1

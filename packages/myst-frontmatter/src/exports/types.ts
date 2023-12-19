@@ -10,7 +10,7 @@ export enum ExportFormats {
 }
 
 export type Export = {
-  format: ExportFormats;
+  format?: ExportFormats;
   template?: string | null;
   output?: string;
   articles?: string[];
