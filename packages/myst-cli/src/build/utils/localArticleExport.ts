@@ -1,9 +1,16 @@
 import path from 'node:path';
+import chokidar from 'chokidar';
 import { ExportFormats } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/index.js';
-import type { ExportOptions, ExportResults, ExportWithInputOutput } from '../types.js';
+import type {
+  ExportFn,
+  ExportOptions,
+  ExportResults,
+  ExportWithInputOutput,
+  ExportWithOutput,
+} from '../types.js';
 import { resolveAndLogErrors } from './resolveAndLogErrors.js';
 import { runTexZipExport, runTexExport } from '../tex/single.js';
 import { runTypstExport, runTypstZipExport } from '../typst.js';
@@ -13,13 +20,63 @@ import { texExportOptionsFromPdf } from '../pdf/single.js';
 import { createPdfGivenTexExport } from '../pdf/create.js';
 import { runMecaExport } from '../meca/index.js';
 import { runMdExport } from '../md/index.js';
+import { selectors, watch as watchReducer } from '../../store/index.js';
+
+async function runExportAndWatch(
+  watch: boolean,
+  exportFn: ExportFn,
+  session: ISession,
+  $file: string,
+  exportOptions: ExportWithOutput,
+  projectPath?: string,
+  clean?: boolean,
+): Promise<ExportResults> {
+  let results = await exportFn(session, $file, exportOptions, projectPath, clean);
+  if (watch) {
+    const watchedFiles = new Set([
+      $file,
+      ...exportOptions.articles,
+      ...exportOptions.articles
+        .map((article) => {
+          return selectors.selectFileDependencies(session.store.getState(), article);
+        })
+        .flat(),
+    ]);
+    chokidar
+      .watch([...watchedFiles], {
+        awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
+      })
+      .on('change', async (eventType, modifiedFile) => {
+        const { reloading } = selectors.selectReloadingState(session.store.getState());
+        if (reloading) {
+          session.store.dispatch(watchReducer.actions.markReloadRequested(true));
+          return;
+        }
+        session.store.dispatch(watchReducer.actions.markReloading(true));
+        session.log.debug(`File modified: "${modifiedFile}" (${eventType})`);
+        while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
+          // If reload(s) were requested during previous build, just reload everything once.
+          session.store.dispatch(watchReducer.actions.markReloadRequested(false));
+          results = await exportFn(session, $file, exportOptions, projectPath, clean);
+        }
+        session.store.dispatch(watchReducer.actions.markReloading(false));
+        results = await exportFn(session, $file, exportOptions, projectPath, clean);
+      });
+  }
+  return results;
+}
+
+type Options = Pick<
+  ExportOptions,
+  'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries' | 'watch'
+>;
 
 async function _localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries'>,
+  opts: Options,
 ) {
-  const { clean, projectPath } = opts;
+  const { clean, projectPath, watch } = opts;
   const errors = await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptionsWithFile) => {
@@ -29,84 +86,60 @@ async function _localArticleExport(
       const fileProjectPath =
         projectPath ?? $project ?? findCurrentProjectAndLoad(sessionClone, path.dirname($file));
 
-      let exportResults: ExportResults | undefined;
       if (fileProjectPath) {
         await loadProjectFromDisk(sessionClone, fileProjectPath);
       }
+      let exportFn: ExportFn;
       if (format === ExportFormats.tex) {
         if (path.extname(output) === '.zip') {
-          exportResults = await runTexZipExport(
-            sessionClone,
-            $file,
-            exportOptions,
-            fileProjectPath,
-            clean,
-          );
+          exportFn = runTexZipExport;
         } else {
-          exportResults = await runTexExport(
-            sessionClone,
-            $file,
-            exportOptions,
-            fileProjectPath,
-            clean,
-          );
+          exportFn = runTexExport;
         }
       } else if (format === ExportFormats.typst) {
         if (path.extname(output) === '.zip') {
-          exportResults = await runTypstZipExport(
-            sessionClone,
-            $file,
-            exportOptions,
-            fileProjectPath,
-            clean,
-          );
+          exportFn = runTypstZipExport;
         } else {
-          exportResults = await runTypstExport(
-            sessionClone,
-            $file,
-            exportOptions,
-            fileProjectPath,
-            clean,
-          );
+          exportFn = runTypstExport;
         }
       } else if (format === ExportFormats.docx) {
-        exportResults = await runWordExport(
-          sessionClone,
-          $file,
-          exportOptions,
-          fileProjectPath,
-          clean,
-        );
+        exportFn = runWordExport;
       } else if (format === ExportFormats.xml) {
-        await runJatsExport(sessionClone, exportOptions, fileProjectPath, clean);
+        exportFn = runJatsExport;
       } else if (format === ExportFormats.md) {
-        await runMdExport(sessionClone, exportOptions, fileProjectPath, clean);
+        exportFn = runMdExport;
       } else if (format === ExportFormats.meca) {
-        await runMecaExport(sessionClone, exportOptions, fileProjectPath, clean);
+        exportFn = runMecaExport;
       } else {
         const keepTexAndLogs = format === ExportFormats.pdftex;
-        const texExportOptions = texExportOptionsFromPdf(
-          sessionClone,
-          exportOptions,
-          keepTexAndLogs,
-          clean,
-        );
-        exportResults = await runTexExport(
-          sessionClone,
-          $file,
-          texExportOptions,
-          fileProjectPath,
-          clean,
-        );
-        await createPdfGivenTexExport(
-          sessionClone,
-          texExportOptions,
-          output,
-          keepTexAndLogs,
-          clean,
-          exportResults.hasGlossaries,
-        );
+        exportFn = async (fnSession, fnFile, fnOpts, fnPath, fnClean) => {
+          const texExportOptions = texExportOptionsFromPdf(
+            fnSession,
+            fnOpts,
+            keepTexAndLogs,
+            fnClean,
+          );
+          const results = await runTexExport(fnSession, fnFile, texExportOptions, fnPath, fnClean);
+          await createPdfGivenTexExport(
+            fnSession,
+            texExportOptions,
+            output,
+            keepTexAndLogs,
+            fnClean,
+            results.hasGlossaries,
+          );
+          return results;
+        };
       }
+      await runExportAndWatch(
+        !!watch,
+        exportFn,
+        sessionClone,
+        $file,
+        exportOptions,
+        fileProjectPath,
+        clean,
+      );
     }),
     opts.throwOnFailure,
   );
@@ -116,7 +149,7 @@ async function _localArticleExport(
 export async function localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Pick<ExportOptions, 'clean' | 'projectPath' | 'throwOnFailure'>,
+  opts: Options,
 ) {
   // We must perform other exports before MECA, since MECA includes the others
   const errors = await _localArticleExport(

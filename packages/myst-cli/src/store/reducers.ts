@@ -87,6 +87,7 @@ type WatchedFile = {
   sha256?: string | null;
   url?: string | null;
   dataUrl?: string | null;
+  localDependencies?: string[] | null;
 };
 
 export const watch = createSlice({
@@ -106,6 +107,13 @@ export const watch = createSlice({
     markFileChanged(state, action: PayloadAction<{ path: string; sha256?: string }>) {
       const { path, sha256 = null } = action.payload;
       state.files[resolve(path)] = { ...state.files[resolve(path)], sha256 };
+    },
+    addLocalDependency(state, action: PayloadAction<{ path: string; dependency: string }>) {
+      const { path, dependency } = action.payload;
+      const existingDeps = [...(state.files[resolve(path)].localDependencies ?? [])];
+      if (!existingDeps.includes(dependency)) {
+        state.files[resolve(path)].localDependencies = [...existingDeps, dependency];
+      }
     },
     updateFileInfo(
       state,

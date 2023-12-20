@@ -72,18 +72,38 @@ async function fileProcessor(
     session.log.warn(`⚠️ No local project path for file: ${file}`);
     return;
   }
+  const projectPath = siteProject.path;
   const pageSlug = selectors.selectPageSlug(session.store.getState(), siteProject.path, file);
-  if (!pageSlug) {
+  const dependencies = selectors.selectDependentFiles(session.store.getState(), file);
+  if (!pageSlug && dependencies.length === 0) {
     session.log.warn(`⚠️ File is not in project: ${file}`);
     return;
   }
-  await fastProcessFile(session, {
-    file,
-    projectPath: siteProject.path,
-    projectSlug: siteProject.slug,
-    pageSlug,
-    ...opts,
-  });
+  if (pageSlug) {
+    await fastProcessFile(session, {
+      file,
+      projectPath,
+      projectSlug: siteProject.slug,
+      pageSlug,
+      ...opts,
+    });
+  }
+  if (dependencies.length) {
+    session.log.info(`🔄 Updating dependent pages`);
+    await Promise.all([
+      dependencies.map((dep) => {
+        const depSlug = selectors.selectPageSlug(session.store.getState(), projectPath, dep);
+        if (!depSlug) return undefined;
+        return fastProcessFile(session, {
+          file: dep,
+          projectPath,
+          projectSlug: siteProject.slug,
+          pageSlug: depSlug,
+          ...opts,
+        });
+      }),
+    ]);
+  }
   serverReload();
   // TODO: process full site silently and update if there are any
   // await processSite(session, true);
@@ -123,10 +143,11 @@ function watchProcessor(
 }
 
 export function watchContent(session: ISession, serverReload: () => void, opts: TransformOptions) {
-  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  const state = session.store.getState();
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig?.projects) return;
 
-  const siteConfigFile = selectors.selectCurrentSiteFile(session.store.getState());
+  const siteConfigFile = selectors.selectCurrentSiteFile(state);
   const localProjects = siteConfig.projects.filter(
     (proj): proj is { slug: string; path: string } => {
       return Boolean(proj.path);
@@ -139,8 +160,9 @@ export function watchContent(session: ISession, serverReload: () => void, opts: 
         ? localProjects.filter(({ path }) => path !== '.').map(({ path }) => join(path, '*'))
         : [];
     if (siteConfigFile) ignored.push(siteConfigFile);
+    const dependencies = new Set(selectors.selectAllDependencies(state, proj.path));
     chokidar
-      .watch(proj.path, {
+      .watch([proj.path, ...dependencies], {
         ignoreInitial: true,
         ignored: ['public', '**/_build/**', '**/.git/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },

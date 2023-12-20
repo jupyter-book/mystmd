@@ -12,12 +12,26 @@ import type { Export } from './types.js';
 import { ExportFormats } from './types.js';
 
 const EXPORT_KEY_OBJECT = {
-  required: ['format'],
-  optional: ['template', 'output', 'id', 'name', 'renderer', 'articles', 'sub_articles'],
+  required: [],
+  optional: ['format', 'template', 'output', 'id', 'name', 'renderer', 'articles', 'sub_articles'],
   alias: {
     article: 'articles',
     sub_article: 'sub_articles',
   },
+};
+
+const EXT_TO_FORMAT = {
+  '.pdf': ExportFormats.pdf,
+  '.tex': ExportFormats.tex,
+  '.doc': ExportFormats.docx,
+  '.docx': ExportFormats.docx,
+  '.md': ExportFormats.md,
+  '.zip': ExportFormats.meca,
+  '.meca': ExportFormats.meca,
+  '.xml': ExportFormats.xml,
+  '.jats': ExportFormats.xml,
+  '.typ': ExportFormats.typst,
+  '.typst': ExportFormats.typst,
 };
 
 export const RESERVED_EXPORT_KEYS = [
@@ -49,9 +63,25 @@ function validateExportFormat(input: any, opts: ValidationOptions): ExportFormat
 
 export function validateExport(input: any, opts: ValidationOptions): Export | undefined {
   if (typeof input === 'string') {
-    const format = validateExportFormat(input, opts);
-    if (!format) return undefined;
-    input = { format };
+    let format: string | undefined;
+    let output: string | undefined;
+    if (input.includes('.')) {
+      Object.entries(EXT_TO_FORMAT).forEach(([ext, fmt]) => {
+        if (input === ext) {
+          format = fmt;
+        } else if (input.endsWith(ext)) {
+          output = input;
+        }
+      });
+      if (!format && !output) {
+        output = input;
+      }
+    }
+    if (!format && !output) {
+      format = validateExportFormat(input, opts);
+      if (!format) return undefined;
+    }
+    input = { format, output };
   }
   const value = validateObjectKeys(input, EXPORT_KEY_OBJECT, {
     ...opts,
@@ -59,19 +89,38 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     keepExtraKeys: true,
   });
   if (value === undefined) return undefined;
-  const format = validateExportFormat(value.format, incrementOptions('format', opts));
-  if (format === undefined) return undefined;
-  const output: Export = { ...value, format };
+  let format: ExportFormats | undefined;
+  let output: string | undefined;
+  let template: string | null | undefined;
   if (value.template === null) {
     // It is possible for the template to explicitly be null.
     // This use no template (rather than default template).
-    output.template = null;
+    template = null;
   } else if (defined(value.template)) {
-    output.template = validateString(value.template, incrementOptions('template', opts));
+    template = validateString(value.template, incrementOptions('template', opts));
   }
   if (defined(value.output)) {
-    output.output = validateString(value.output, incrementOptions('output', opts));
+    output = validateString(value.output, incrementOptions('output', opts));
   }
+  if (defined(value.format)) {
+    format = validateExportFormat(value.format, incrementOptions('format', opts));
+    // If format is defined but invalid, validation fails
+    if (!format) return undefined;
+  } else if (output) {
+    // If output is defined, format is inferred from output
+    Object.entries(EXT_TO_FORMAT).forEach(([ext, fmt]) => {
+      if (output?.endsWith(ext)) format = fmt;
+    });
+    if (!format) {
+      return validationError(`unable to infer export format from export: ${output}`, opts);
+    }
+  } else {
+    // if (!template) {
+    // TODO: If template is defined, that will tell us the format later!
+    return validationError('unable to determine export format', opts);
+  }
+  if (format === undefined && template === undefined) return undefined;
+  const validExport: Export = { ...value, format, output, template };
   if (defined(value.articles)) {
     const articles = validateList(
       value.articles,
@@ -81,9 +130,10 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     if (
       articles?.length &&
       articles.length > 1 &&
-      ![ExportFormats.pdf, ExportFormats.tex, ExportFormats.pdftex].includes(output.format)
+      validExport.format &&
+      ![ExportFormats.pdf, ExportFormats.tex, ExportFormats.pdftex].includes(validExport.format)
     ) {
-      if (output.format === ExportFormats.xml && !defined(value.sub_articles)) {
+      if (validExport.format === ExportFormats.xml && !defined(value.sub_articles)) {
         validationError(
           "multiple articles are not supported for 'jats' export - instead specify one article with additional sub_articles",
           opts,
@@ -91,17 +141,17 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       } else {
         validationError("multiple articles are only supported for 'tex' and 'pdf' exports", opts);
       }
-      output.articles = [articles[0]];
+      validExport.articles = [articles[0]];
     } else {
-      output.articles = articles;
+      validExport.articles = articles;
     }
   }
   if (defined(value.sub_articles)) {
-    if (output.format !== ExportFormats.xml) {
+    if (validExport.format !== ExportFormats.xml) {
       validationError("sub_articles are only supported for 'jats' export", opts);
-      output.sub_articles = undefined;
+      validExport.sub_articles = undefined;
     } else {
-      output.sub_articles = validateList(
+      validExport.sub_articles = validateList(
         value.sub_articles,
         { coerce: true, ...incrementOptions('sub_articles', opts) },
         (file, ind) => {
@@ -110,5 +160,5 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       );
     }
   }
-  return output;
+  return validExport;
 }

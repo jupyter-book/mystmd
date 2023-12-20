@@ -20,6 +20,7 @@ import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 export async function runJatsExport(
   session: ISession,
+  sourceFile: string,
   exportOptions: ExportWithOutput,
   projectPath?: string,
   clean?: boolean,
@@ -81,6 +82,7 @@ export async function runJatsExport(
   logMessagesFromVFile(session, jats);
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));
   writeFileToFolder(output, jats.result as string);
+  return { tempFolders: [] };
 }
 
 export async function localArticleToJats(
@@ -101,7 +103,14 @@ export async function localArticleToJats(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runJatsExport(session, exportOptions, projectPath, opts.clean, extraLinkTransformers);
+      await runJatsExport(
+        session,
+        file,
+        exportOptions,
+        projectPath,
+        opts.clean,
+        extraLinkTransformers,
+      );
     }),
     opts.throwOnFailure,
   );

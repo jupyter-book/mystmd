@@ -1,6 +1,7 @@
 import type { File } from 'docx';
 import type { Export } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
+import type { LinkTransformer } from 'myst-transforms';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import type { RendererData } from '../transforms/types.js';
@@ -25,6 +26,7 @@ export type ExportOptions = {
   zip?: boolean;
   force?: boolean;
   projectPath?: string;
+  watch?: boolean;
   throwOnFailure?: boolean;
   renderer?: (
     session: ISession,
@@ -41,3 +43,12 @@ export type ExportResults = {
   tempFolders: string[];
   hasGlossaries?: boolean;
 };
+
+export type ExportFn = (
+  session: ISession,
+  file: string,
+  exportOptions: ExportWithOutput,
+  projectPath?: string,
+  clean?: boolean,
+  extraLinkTransformers?: LinkTransformer[],
+) => Promise<ExportResults>;
