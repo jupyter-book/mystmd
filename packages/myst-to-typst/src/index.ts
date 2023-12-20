@@ -227,7 +227,11 @@ const handlers: Record<string, Handler> = {
   admonitionTitle() {
     return;
   },
-  // table: renderNodeToLatex,
+  table(node, state) {
+    const command = state.data.isInFigure ? 'table' : '#table';
+    node;
+    state.write(`${command}("${src}", width: ${width})`);
+  },
   image(node, state) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;

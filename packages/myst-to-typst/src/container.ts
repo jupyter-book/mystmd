@@ -42,15 +42,23 @@ export const containerHandler: Handler = (node, state) => {
   const { label } = node;
   const caption = select('caption', node);
   const image = select('image', node);
-  if (!image) {
-    fileError(state.file, `Figure only supports image children at the moment!`, {
+  const table = select('table', node);
+  if (!image && !table) {
+    fileError(state.file, `Figure only supports image or table children at the moment!`, {
+      node,
+      source: 'myst-to-typst',
+    });
+    return;
+  }
+  if (image && table) {
+    fileError(state.file, `Figure only supports single image or table child at the moment!`, {
       node,
       source: 'myst-to-typst',
     });
     return;
   }
   state.write('#figure(\n  ');
-  state.renderChildren({ children: [image] }, true);
+  state.renderChildren({ children: [image ?? table] }, true);
   state.trimEnd();
   state.write(',');
   if (caption) {
