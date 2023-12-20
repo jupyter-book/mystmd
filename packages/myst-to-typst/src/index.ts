@@ -121,10 +121,10 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true);
     state.write('\n');
   },
-  // thematicBreak(node, state) {
-  //   state.write('\n\\bigskip\n\\centerline{\\rule{13cm}{0.4pt}}\n\\bigskip');
-  //   state.closeBlock(node);
-  // },
+  thematicBreak(node, state) {
+    state.write('#line(length: 100%, stroke: gray)');
+    state.closeBlock(node);
+  },
   ...MATH_HANDLERS,
   mystRole(node, state) {
     state.renderChildren(node, true);
