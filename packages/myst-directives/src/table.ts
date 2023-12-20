@@ -1,6 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { fileError, normalizeLabel, RuleId } from 'myst-common';
-import { select } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
 export const tableDirective: DirectiveSpec = {
@@ -29,19 +28,12 @@ export const tableDirective: DirectiveSpec = {
     type: 'myst',
     required: true,
   },
-  run(data, vfile): GenericNode[] {
+  run(data): GenericNode[] {
     const children = [];
     if (data.arg) {
       children.push({
         type: 'caption',
         children: [{ type: 'paragraph', children: data.arg as GenericNode[] }],
-      });
-    }
-    const body = data.body as GenericNode[];
-    if (!select('table', { type: 'root', children: body })) {
-      fileError(vfile, 'table directive does not include a markdown table in the body', {
-        node: data.node,
-        ruleId: RuleId.directiveBodyCorrect,
       });
     }
     children.push(...(data.body as GenericNode[]));
