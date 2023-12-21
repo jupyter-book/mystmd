@@ -169,7 +169,7 @@ export const codeCellDirective: DirectiveSpec = {
       type: 'code',
       lang: data.arg as string,
       executable: true,
-      value: data.body as string,
+      value: (data.body ?? '') as string,
     };
     let tags: string[] | undefined;
     // TODO: this validation should be done in a different place
