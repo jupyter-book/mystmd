@@ -408,7 +408,13 @@ const handlers: Record<string, Handler> = {
     }
   },
   inlineExpression(node, state) {
-    state.renderChildren(node, true);
+    if (node.children?.length) {
+      state.renderChildren(node, true);
+    } else {
+      state.write('\\texttt{');
+      state.text(node.value, false);
+      state.write('}');
+    }
   },
 };
 

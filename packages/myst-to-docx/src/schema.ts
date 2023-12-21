@@ -61,6 +61,7 @@ import type {
   FootnoteDefinition,
   CiteKind,
   Block,
+  InlineExpression,
 } from 'myst-spec-ext';
 import type { Handler, Mutable } from './types.js';
 import {
@@ -528,8 +529,12 @@ const mystRole: Handler<{ type: 'mystRole' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
-const inlineExpression: Handler<{ type: 'inlineExpression' } & Parent> = (state, node) => {
-  state.renderChildren(node);
+const inlineExpression: Handler<InlineExpression> = (state, node, parent) => {
+  if (node.children?.length) {
+    state.renderChildren(node as Parent);
+  } else {
+    inlineCode(state, { ...node, type: 'inlineCode' }, parent);
+  }
 };
 
 export const defaultHandlers = {
