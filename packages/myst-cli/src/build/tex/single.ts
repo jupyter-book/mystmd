@@ -245,13 +245,13 @@ export async function localArticleToTexTemplated(
     const state = session.store.getState();
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
     const { dir, name, ext } = path.parse(output);
-    const includeFileBases = results.map((result, ind) => {
-      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
-      const includeFile = path.format({ dir, ext, base });
+    const includeFilenames = results.map((result, ind) => {
+      const includeFilename = `${name}-${content[ind]?.slug ?? ind}`;
+      const includeFile = path.format({ dir, ext, base: `${includeFilename}${ext}` });
       writeFileToFolder(includeFile, result.value);
-      return base;
+      return includeFilename;
     });
-    texContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
+    texContent = includeFilenames.map((base) => `\\include{${base}}`).join('\n');
   }
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
