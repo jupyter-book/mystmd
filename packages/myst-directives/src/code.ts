@@ -155,7 +155,6 @@ export const codeCellDirective: DirectiveSpec = {
   name: 'code-cell',
   arg: {
     type: String,
-    required: true,
   },
   options: {
     tags: {
