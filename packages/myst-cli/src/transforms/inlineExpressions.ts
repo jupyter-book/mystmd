@@ -3,8 +3,10 @@ import { fileWarn, NotebookCell, RuleId } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { InlineExpression } from 'myst-spec-ext';
 import type { StaticPhrasingContent } from 'myst-spec';
+import { blockMetadataTransform } from 'myst-transforms';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
+import { BASE64_HEADER_SPLIT } from './images.js';
 
 export const metadataSection = 'user_expressions';
 
@@ -54,14 +56,27 @@ function processLatex(value: string) {
 function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingContent[] {
   const result = node.result as IExpressionResult;
   if (!result) return [];
+  let content: StaticPhrasingContent[] | undefined;
   if (result.status === 'ok') {
-    if (result.data['text/latex']) {
-      return [{ type: 'inlineMath', value: processLatex(result.data['text/latex']) }];
-    } else if (result.data['text/html']) {
-      return [{ type: 'html', value: result.data['text/html'] }];
-    } else if (result.data['text/plain']) {
-      return [{ type: 'text', value: result.data['text/plain'] }];
-    }
+    Object.entries(result.data).forEach(([mimeType, value]) => {
+      if (content) {
+        return;
+      } else if (mimeType.startsWith('image/')) {
+        content = [
+          {
+            type: 'image',
+            url: `data:${mimeType}${BASE64_HEADER_SPLIT}${value}`,
+          },
+        ];
+      } else if (mimeType === 'text/latex') {
+        content = [{ type: 'inlineMath', value: processLatex(value) }];
+      } else if (mimeType === 'text/html') {
+        content = [{ type: 'html', value }];
+      } else if (mimeType === 'text/plain') {
+        content = [{ type: 'text', value }];
+      }
+    });
+    if (content) return content;
     fileWarn(file, 'Unrecognized mime bundle for inline content', {
       node,
       ruleId: RuleId.inlineExpressionRenders,
@@ -71,6 +86,8 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
 }
 
 export function transformInlineExpressions(mdast: GenericParent, file: VFile) {
+  // Ensure block metadata is correctly structured
+  blockMetadataTransform(mdast, file);
   const blocks = selectAll('block', mdast).filter(
     (node) => node.data?.type === NotebookCell.content && node.data?.[metadataSection],
   ) as GenericNode[];

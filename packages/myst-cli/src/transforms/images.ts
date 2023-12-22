@@ -52,6 +52,7 @@ async function writeBase64(
   const file = `${hash}${ext}`;
   const filePath = path.join(writeFolder, file);
   session.log.debug(`Writing binary output file ${justData.length} bytes to ${filePath}`);
+  if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
   fs.writeFileSync(filePath, justData, {
     encoding: 'base64',
   });
