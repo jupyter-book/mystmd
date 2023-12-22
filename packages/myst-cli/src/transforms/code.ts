@@ -194,3 +194,45 @@ export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast:
     if (outputNode && !outputNode.visibility) outputNode.visibility = 'show';
   });
 }
+
+/**
+ * Because jupytext style notebooks can introduce code-cells in blocks
+ * after explicit thematic breaks, we need to lift them up to the parent
+ * to ensure that all executable code blocks are at the top level of
+ * the document.
+ *
+ * @param mdast
+ */
+export function transformLiftCodeBlocksInJupytext(mdast: GenericParent) {
+  const flattened = (mdast.children as GenericParent[]).reduce((acc, node) => {
+    if (node.type !== 'block' || !node.children) return [...acc, node];
+
+    const buriedCodeCells = selectAll('block:has(block)', node);
+    if (buriedCodeCells.length === 0) return [...acc, node];
+
+    const newBlocks: GenericParent[] = [{ type: 'block', children: [] }];
+    node.children?.forEach((child) => {
+      // if this is a code-cell block with code+output
+      // add any nodes accumulated so far and add the code-cell block
+      if (
+        child.type === 'block' &&
+        child.children?.length === 2 &&
+        child.children?.[0].type === 'code' &&
+        child.children?.[1].type === 'output'
+      ) {
+        newBlocks.push(child as GenericParent);
+        newBlocks.push({ type: 'block', children: [] });
+        return;
+      }
+
+      // add the node to the new block
+      newBlocks[newBlocks.length - 1].children?.push(child);
+    });
+
+    if (newBlocks[newBlocks.length - 1].children?.length === 0) newBlocks.pop();
+
+    return [...acc, ...newBlocks];
+  }, [] as GenericParent[]);
+
+  mdast.children = flattened;
+}

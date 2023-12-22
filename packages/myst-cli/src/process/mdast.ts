@@ -65,6 +65,7 @@ import {
   transformImagesWithoutExt,
   transformImagesToDisk,
   transformFilterOutputStreams,
+  transformLiftCodeBlocksInJupytext,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
@@ -221,6 +222,7 @@ export async function transformMdast(
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
+
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformCitations(mdast, fileCitationRenderer, references);
@@ -230,6 +232,8 @@ export async function transformMdast(
     .run(mdast, vfile);
   transformImagesToEmbed(mdast);
   transformImagesWithoutExt(session, mdast, file, { imageExtensions });
+  const isJupytext = frontmatter.kernelspec || frontmatter.jupytext;
+  if (isJupytext) transformLiftCodeBlocksInJupytext(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
   const url = projectSlug
@@ -238,7 +242,7 @@ export async function transformMdast(
   const dataUrl = projectSlug ? `/${projectSlug}/${pageSlug}.json` : `/${pageSlug}.json`;
   updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
   const data: RendererData = {
-    kind: frontmatter.kernelspec || frontmatter.jupytext ? SourceFileKind.Notebook : kind,
+    kind: isJupytext ? SourceFileKind.Notebook : kind,
     file,
     location,
     sha256,
