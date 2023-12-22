@@ -19,7 +19,7 @@ import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-import { Code } from 'myst-spec-ext';
+import type { Code } from 'myst-spec-ext';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
