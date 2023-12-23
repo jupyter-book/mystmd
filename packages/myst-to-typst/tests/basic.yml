@@ -227,7 +227,7 @@ cases:
           children:
             - type: text
               value: 'This is a tilde: ~ and backslash \\ cool!'
-    typst: 'This is a tilde: #sym.tilde and backslash \\\\ cool!'
+    typst: 'This is a tilde: $tilde$ and backslash \\\\ cool!'
   - title: escaped *
     mdast:
       type: root

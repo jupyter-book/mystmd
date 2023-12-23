@@ -51,7 +51,7 @@ export const containerHandler: Handler = (node, state) => {
       note: `Figure "${label ?? 'unlabeled'}" may not render correctly`,
     });
   }
-  if (imagesAndTables.length > 0) {
+  if (imagesAndTables.length > 1) {
     state.write('#figure((\n  ');
     imagesAndTables.forEach((item) => {
       state.renderChildren({ children: [item] });
@@ -59,6 +59,11 @@ export const containerHandler: Handler = (node, state) => {
     });
     state.trimEnd();
     state.write(').join(),');
+  } else if (imagesAndTables.length === 1) {
+    state.write('#figure(\n  ');
+    state.renderChildren({ children: [imagesAndTables[0]] });
+    state.trimEnd();
+    state.write(',');
   } else {
     state.write('#figure([\n  ');
     state.renderChildren(node, true);
