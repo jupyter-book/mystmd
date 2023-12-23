@@ -13,6 +13,7 @@ type Options = {
 export function codeTransform(mdast: GenericParent, file: VFile, opts?: Options) {
   const code = selectAll('code', mdast) as Code[];
   code.forEach((node) => {
+    if (node.lang === '') return; // raw code cell passes through with no warning
     if (!node.lang) {
       if (!opts?.lang) {
         fileWarn(file, 'Language is not defined for code block', {

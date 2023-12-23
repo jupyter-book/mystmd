@@ -1,5 +1,6 @@
 import type { Caption, Container } from 'myst-spec';
 import type { Code } from 'myst-spec-ext';
+import { nanoid } from 'nanoid';
 import yaml from 'js-yaml';
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
 import { fileError, fileWarn, normalizeLabel, RuleId } from 'myst-common';
@@ -154,7 +155,6 @@ export const codeCellDirective: DirectiveSpec = {
   name: 'code-cell',
   arg: {
     type: String,
-    required: true,
   },
   options: {
     tags: {
@@ -200,6 +200,22 @@ export const codeCellDirective: DirectiveSpec = {
         ruleId: RuleId.directiveOptionsCorrect,
       });
     }
-    return [code];
+
+    const output = {
+      type: 'output',
+      id: nanoid(),
+      data: [],
+    };
+
+    const block = {
+      type: 'block',
+      meta: undefined, // do we need to attach metadata?
+      children: [code, output],
+      data: {
+        type: 'notebook-code',
+      },
+    };
+
+    return [block];
   },
 };

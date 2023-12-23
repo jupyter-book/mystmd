@@ -19,11 +19,7 @@ import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-
-function createOutputDirective(): { myst: string; id: string } {
-  const id = nanoid();
-  return { myst: `\`\`\`{output}\n:id: ${id}\n\`\`\``, id };
-}
+import type { Code } from 'myst-spec-ext';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
@@ -85,8 +81,6 @@ export async function processNotebook(
 
   const cache = castSession(session);
 
-  const outputMap: Record<string, MinifiedOutput[]> = {};
-
   let end = cells.length;
   if (cells && cells.length > 1 && cells?.[cells.length - 1].source.length === 0) {
     end = -1;
@@ -109,41 +103,41 @@ export async function processNotebook(
         return acc.concat(blockParent(cell, cellMdast.children));
       }
       if (cell.cell_type === CELL_TYPES.raw) {
-        const cellContent = `\`\`\`\n${ensureString(cell.source)}\n\`\`\``;
-        const cellMdast = parseMyst(session, cellContent, file);
-        return acc.concat(blockParent(cell, cellMdast.children));
+        const raw: Code = {
+          type: 'code',
+          lang: '',
+          value: ensureString(cell.source),
+        };
+        return acc.concat(blockParent(cell, [raw]));
       }
       if (cell.cell_type === CELL_TYPES.code) {
-        const cellCodeContent = `\`\`\`{code-cell} ${language}\n${ensureString(
-          cell.source,
-        )}\n\`\`\``;
-        const cellCodeMdast = parseMyst(session, cellCodeContent, file);
-        const { myst, id } = createOutputDirective();
+        const code: Code = {
+          type: 'code',
+          lang: language as string | undefined,
+          executable: true,
+          value: ensureString(cell.source),
+        };
+
+        const output: { type: 'output'; id: string; data: MinifiedOutput[] } = {
+          type: 'output',
+          id: nanoid(),
+          data: [],
+        };
+
         if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
           const minified: MinifiedOutput[] = await minifyCellOutput(
             cell.outputs as IOutput[],
             cache.$outputs,
             { computeHash, maxCharacters: opts?.minifyMaxCharacters },
           );
-          outputMap[id] = minified;
-        } else {
-          outputMap[id] = [];
+          output.data = minified;
         }
-        const cellOutputMdast = parseMyst(session, myst, file);
-        return acc.concat(
-          blockParent(cell, [...cellCodeMdast.children, ...cellOutputMdast.children]),
-        );
+        return acc.concat(blockParent(cell, [code, output]));
       }
       return acc;
     },
     Promise.resolve([] as GenericNode[]),
   );
 
-  const mdast = { type: 'root', children: items };
-
-  selectAll('output', mdast).forEach((output: GenericNode) => {
-    output.data = outputMap[output.id];
-  });
-
-  return mdast;
+  return { type: 'root', children: items };
 }
