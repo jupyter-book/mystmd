@@ -15,6 +15,7 @@ import {
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
 import type { Admonition, FootnoteDefinition } from 'myst-spec-ext';
+import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
 
 export type { TypstResult } from './types.js';
 
@@ -56,6 +57,18 @@ const blockquote = `#let blockquote(node, color: gray) = {
 }`;
 
 const INDENT = '  ';
+
+const linkHandler = (node: any, state: ITypstSerializer) => {
+  const href = node.url;
+  state.write('#link("');
+  state.write(hrefToLatexText(href));
+  state.write('")');
+  if (node.children.length && node.children[0].value !== href) {
+    state.write('[');
+    state.renderChildren(node, true);
+    state.write(']');
+  }
+};
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
@@ -121,10 +134,10 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true);
     state.write('\n');
   },
-  // thematicBreak(node, state) {
-  //   state.write('\n\\bigskip\n\\centerline{\\rule{13cm}{0.4pt}}\n\\bigskip');
-  //   state.closeBlock(node);
-  // },
+  thematicBreak(node, state) {
+    state.write('#line(length: 100%, stroke: gray)');
+    state.closeBlock(node);
+  },
   ...MATH_HANDLERS,
   mystRole(node, state) {
     state.renderChildren(node, true);
@@ -188,17 +201,7 @@ const handlers: Record<string, Handler> = {
     // https://www.overleaf.com/learn/latex/glossaries
     state.renderChildren(node, true);
   },
-  link(node, state) {
-    const href = node.url;
-    state.write('#link("');
-    state.write(hrefToLatexText(href));
-    state.write('")');
-    if (node.children[0]?.value !== href) {
-      state.write('[');
-      state.renderChildren(node, true);
-      state.write(']');
-    }
-  },
+  link: linkHandler,
   admonition(node: Admonition, state) {
     state.useMacro(admonition);
     state.ensureNewLine();
@@ -227,7 +230,9 @@ const handlers: Record<string, Handler> = {
   admonitionTitle() {
     return;
   },
-  // table: renderNodeToLatex,
+  table: tableHandler,
+  tableRow: tableRowHandler,
+  tableCell: tableCellHandler,
   image(node, state) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;
@@ -239,6 +244,7 @@ const handlers: Record<string, Handler> = {
   },
   container: containerHandler,
   caption: captionHandler,
+  legend: captionHandler,
   captionNumber: () => undefined,
   crossReference(node, state) {
     // Look up reference and add the text
@@ -252,7 +258,11 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true, ' ');
   },
   cite(node, state) {
-    state.write(`@${node.label}`);
+    if (node.protocol === 'doi' || node.label?.startsWith('https://doi.org')) {
+      linkHandler(node, state);
+    } else {
+      state.write(`@${node.label}`);
+    }
   },
   embed(node, state) {
     state.renderChildren(node, true);
@@ -357,9 +367,7 @@ class TypstSerializer implements ITypstSerializer {
     if (!inline) this.closeBlock(node);
   }
 
-  renderEnvironment(node: any, env: string, opts?: { parameters?: string; arguments?: string[] }) {
-    // const optsInBrackets = opts?.parameters ? `[${opts.parameters}]` : '';
-    // const optsInBraces = opts?.arguments ? `{${opts.arguments.join('}{')}}` : '';
+  renderEnvironment(node: any, env: string) {
     this.file.result += `#${env}[\n`;
     this.renderChildren(node, true);
     this.trimEnd();

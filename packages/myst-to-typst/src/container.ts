@@ -1,7 +1,6 @@
-import { fileError, type GenericNode } from 'myst-common';
+import { fileWarn, type GenericNode } from 'myst-common';
 import type { Image, Table, Code, Math } from 'myst-spec';
-import { select } from 'unist-util-select';
-// import { getColumnWidths } from './tables.js';
+import { selectAll } from 'unist-util-select';
 import type { Handler } from './types.js';
 
 export enum CaptionKind {
@@ -39,25 +38,55 @@ export const containerHandler: Handler = (node, state) => {
   state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
-  const { label } = node;
-  const caption = select('caption', node);
-  const image = select('image', node);
-  if (!image) {
-    fileError(state.file, `Figure only supports image children at the moment!`, {
+  const { label, kind } = node;
+  const captions = selectAll('caption,legend', node);
+  const imagesAndTables = selectAll('image,table', node);
+  if (label === 'table10') {
+    console.log(imagesAndTables);
+  }
+  if (imagesAndTables.length !== 1) {
+    fileWarn(state.file, `Typst best supports figures with single image or table`, {
       node,
       source: 'myst-to-typst',
+      note: `Figure "${label ?? 'unlabeled'}" may not render correctly`,
     });
-    return;
   }
-  state.write('#figure(\n  ');
-  state.renderChildren({ children: [image] }, true);
-  state.trimEnd();
-  state.write(',');
-  if (caption) {
-    state.write('\n  caption: [');
-    state.renderChildren(caption, true);
+  if (imagesAndTables.length > 1) {
+    state.write('#figure((\n  ');
+    imagesAndTables.forEach((item) => {
+      state.renderChildren({ children: [item] });
+      state.write(',');
+    });
+    state.trimEnd();
+    state.write(').join(),');
+  } else if (imagesAndTables.length === 1) {
+    state.write('#figure(\n  ');
+    state.renderChildren({ children: [imagesAndTables[0]] });
+    state.trimEnd();
+    state.write(',');
+  } else {
+    state.write('#figure([\n  ');
+    state.renderChildren(node, true);
     state.trimEnd();
     state.write('],');
+  }
+  if (captions.length) {
+    state.write('\n  caption: [');
+    state.renderChildren(
+      {
+        children: captions
+          .map((cap: GenericNode) => cap.children)
+          .filter(Boolean)
+          .flat(),
+      },
+      true,
+    );
+    state.trimEnd();
+    state.write('],');
+  }
+  if (kind) {
+    state.write(`\n  kind: "${kind}",`);
+    state.write(`\n  supplement: [${kind[0].toUpperCase() + kind.substring(1)}],`);
   }
   state.write('\n)');
   if (label) state.write(` <${label}>`);

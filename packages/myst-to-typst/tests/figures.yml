@@ -23,6 +23,8 @@ cases:
     typst: |-
       #figure(
         image("glacier.jpg", width: 62.5%),
+        kind: "figure",
+        supplement: [Figure],
       ) <glacier>
   - title: figure directive - with caption
     mdast:
@@ -45,4 +47,6 @@ cases:
       #figure(
         image("glacier.jpg", width: 62.5%),
         caption: [A curious figure.],
+        kind: "figure",
+        supplement: [Figure],
       ) <glacier>
