@@ -210,7 +210,7 @@ export function transformLiftCodeBlocksInJupytext(mdast: GenericParent) {
     const buriedCodeCells = selectAll('block:has(block)', node);
     if (buriedCodeCells.length === 0) return [...acc, node];
 
-    const newBlocks: GenericParent[] = [{ type: 'block', children: [] }];
+    const newBlocks: GenericParent[] = [{ ...node, children: [] }];
     node.children?.forEach((child) => {
       // if this is a code-cell block with code+output
       // add any nodes accumulated so far and add the code-cell block
