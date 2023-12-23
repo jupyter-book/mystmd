@@ -218,7 +218,7 @@ export function stringToLatexText(text: string) {
     .replace(new RegExp(BACKSLASH_SPACE, 'g'), '\\\\ ')
     .replace(new RegExp(BACKSLASH, 'g'), '\\\\')
     .replace(new RegExp(COMMENT, 'g'), '\\/\\/')
-    .replace(new RegExp(TILDE, 'g'), '#sym.tilde');
+    .replace(new RegExp(TILDE, 'g'), '$tilde$');
   return cleanWhitespaceChars(final, '~');
 }
 
