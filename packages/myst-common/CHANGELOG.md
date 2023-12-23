@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.1.21
+
+### Patch Changes
+
+- Updated dependencies [134c26ab]
+  - myst-frontmatter@1.1.21
+
 ## 1.1.20
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # myst-to-typst
 
+## 0.0.8
+
+### Patch Changes
+
+- bfed37b: Support tables in typst export
+- bfed37b: Support thematic break in typst
+- Updated dependencies [134c26ab]
+  - myst-frontmatter@1.1.21
+  - myst-common@1.1.21
+  - myst-spec-ext@1.1.21
+
 ## 0.0.7
 
 ### Patch Changes

@@ -1,5 +1,35 @@
 # myst-cli
 
+## 1.1.37
+
+### Patch Changes
+
+- b44980c2: Fix inline expression block metadata
+- 134c26ab: Add watch to build command
+- 9573382a: Changes processing of jupytext/myst style notebooks to ensure that `code-cell`s have a default output node associated with them and that any nested blocks containing a `code-cell` are lifted to the top level children of the root node.
+
+  This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
+
+  Addresses:
+
+  - https://github.com/executablebooks/mystmd/pull/748
+  - https://github.com/executablebooks/mystmd/issues/816
+
+- 134c26ab: Watch dependency files during myst start and build
+- a9073876: Remove file extensions from latex include
+- b44980c2: Support image inline expressions
+- Updated dependencies [bfed37b]
+- Updated dependencies [9573382a]
+- Updated dependencies [134c26ab]
+- Updated dependencies [bfed37b]
+  - myst-to-typst@0.0.8
+  - myst-transforms@1.1.19
+  - myst-frontmatter@1.1.21
+  - myst-common@1.1.21
+  - myst-config@1.1.21
+  - myst-spec-ext@1.1.21
+  - myst-parser@1.0.21
+
 ## 1.1.36
 
 ### Patch Changes
