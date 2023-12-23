@@ -1,5 +1,12 @@
 # myst-roles
 
+## 1.0.21
+
+### Patch Changes
+
+- myst-common@1.1.21
+- myst-spec-ext@1.1.21
+
 ## 1.0.20
 
 ### Patch Changes

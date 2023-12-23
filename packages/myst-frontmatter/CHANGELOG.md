@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.21
+
+### Patch Changes
+
+- 134c26ab: Infer export format from output file
+
 ## 1.1.20
 
 ### Patch Changes

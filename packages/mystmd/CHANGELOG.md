@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.37
+
+### Patch Changes
+
+- 134c26ab: Add watch to build command
+
 ## 1.1.36
 
 ### Patch Changes
