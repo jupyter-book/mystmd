@@ -287,10 +287,10 @@ Add the specific list options for custom wheel paths, etc.
 In addition to how you might normally start a JupyterLab session, it's necessary to provide two additional command line options, as follows.
 
 ```{code} bash
-jupyter lab --NotebookApp.token=<your-secret-token> --NotebookApp.allow_origin='https://localhost:3000'
+jupyter lab --NotebookApp.token=<your-secret-token> --NotebookApp.allow_origin='http://localhost:3000'
 ```
 
-The command above is fine for local development. The `token` used should align with that provided in the `project.thebe.token` key and `allow_origin` should allow connections from your myst site preview, usually running on `https://localhost:3000`.
+The command above is fine for local development. The `token` used should align with that provided in the `project.thebe.token` key and `allow_origin` should allow connections from your myst site preview, usually running on `http://localhost:3000`.
 
 When starting a local Jupyter server for use with MyST it's also important to understand your computational environment and ensure that the Jupyter instance has access to that with the dependencies it needs to run. This is achieved by following normal best practices for reproducible environment configuration, if you're not familiar with these see [REES](https://repo2docker.readthedocs.io/en/latest/specification.html).
 
