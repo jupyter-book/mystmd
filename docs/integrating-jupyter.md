@@ -23,7 +23,7 @@ Being able to connect a jupyter-based figure or output in any website page to a 
 
 ## Quick setup options
 
-MyST uses `thebe` for Jupyter connectivity which can be enabled using default settings by adding a single key `jupyter: true` (or `thebe: true`) to the project frontmatter in your `myst.yml` file.
+MyST uses a library called `thebe` for Jupyter connectivity which can be enabled using default settings by adding a single key `jupyter: true` (or `thebe: true`, `jupyter` and `thebe` are aliases) to the project frontmatter in your `myst.yml` file.
 
 ```{code} yaml
 version: 1
@@ -118,7 +118,7 @@ project:
 
 ### 🚧 Case - Using Pyodide & JupyterLite
 
-`thebe` can provide access to the pyodide WASM kernel to enable in-browser computation. This uses in browser Jupyter server components developed as part of the [JupyterLite project](https://jupyterlite.readthedocs.io/en/latest/) and will be extended in future to provide for different kernels.
+`myst` can provide access to the pyodide WASM kernel to enable in-browser computation. This uses in browser Jupyter server components developed as part of the [JupyterLite project](https://jupyterlite.readthedocs.io/en/latest/) and will be extended in future to provide for different kernels.
 
 The JupyterLite server and `pyodide` kernels can be activated using:
 
@@ -152,11 +152,11 @@ Disable integrated compute on a specific page in your website by adding `jupyter
 
 ## Connecting to a Binder
 
-When a the `thebe.binder` key contains a set of options, binder connections are enabled using the provided and default settings described below (`github` and `binder` keys at the `project` level are ignored). The most minimal form of configuration is where repository information is provided.
+When a the `jupyter.binder` key contains a set of options, binder connections are enabled using the provided and default settings described below (`github` and `binder` keys at the `project` level are ignored). The most minimal form of configuration is where repository information is provided.
 
 ```{code-block} yaml
 ---
-caption: A minimal `thebe.binder` configuration with the required `repo` field
+caption: A minimal `jupyter.binder` configuration with the required `repo` field
 ---
 project:
   jupyter:
@@ -168,7 +168,7 @@ This allows the repository information for integrated compute to be different to
 
 ```{code-block} yaml
 ---
-caption: A complete `thebe.binder` configuration
+caption: A complete `jupyter.binder` configuration
 ---
 project:
   jupyter:
@@ -200,7 +200,7 @@ project:
   - `HEAD`
 * - `provider`
   - optional
-  - Tells `thebe` how to form urls for requesting binder services. Can be one of `github`, `gitlab` or `git`.
+  - Tells `myst` how to form urls for requesting binder services. Can be one of `github`, `gitlab` or `git`.
   - `github`
 ```
 
@@ -211,9 +211,9 @@ To properly setup you repository for use with `binder` refer to [The Reproducibl
 
 ```{attention} Be aware of multiple keys
 :class: dropdown
-There are two possible locations for `binder` keys the project frontmatter: `project.binder` and `project.thebe.binder`.
+There are two possible locations for `binder` keys the project frontmatter: `project.binder` and `project.jupyter.binder`.
 
-The first is used to display a "launch binder" badge on your website, while the second is used to provide `thebe` specific settings for integrated computation.
+The first is used to display a "launch binder" badge on your website, while the second is used to provide Jupyter specific settings for integrated computation.
 
 When a user presses the "launch binder" badge they will connect to a new independent session, which is not the same session as established by the integrated compute feature.
 ```
@@ -222,7 +222,7 @@ When a user presses the "launch binder" badge they will connect to a new indepen
 
 ## Directly connecting to a (local) Jupyter server
 
-The `thebe.server` key is used to provide options for direct connections to Jupyter, use the provided (and default) settings, the most minimal form of configuration is:
+The `jupyter.server` key is used to provide options for direct connections to Jupyter, use the provided (and default) settings, the most minimal form of configuration is:
 
 ```{code-block} yaml
 ---
@@ -247,19 +247,35 @@ Both `url` and `token` must be provided to enable a server connection.
   - The base url of the Jupyter server you want to connect to
   - `http://localhost:8888`
 * - `token`
-  - The secret token string required by your jupyter server
+  - The secret token string required by your Jupyter server
 ```
 
 This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned).
 
-For more on working locally see [](#start-a-local-jupyter-server).
-
 ```{danger} On securing a Jupyter server
 :class: dropdown
-If you intend to run a dedicate single user Jupyter server accessible over a network please carefully read and follow [the advice provided by the Jupyter server team here](https://jupyter-notebook.readthedocs.io/en/stable/public_server.html).
+If you intend to run a dedicated single user Jupyter server that is accessible over a network please carefully read and follow [the advice provided by the Jupyter server team here](https://jupyter-notebook.readthedocs.io/en/stable/public_server.html).
 
 MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as BinderHub or JupyterHub.
 ```
+
+If you want to connect to a local Jupyter instance for development purposes, JupyterLab must be started with the appropriate command line flags, otherwise the connection will fail. See [](#start-a-local-jupyter-server) below.
+
+(start-a-local-jupyter-server)=
+
+### Start a local Jupyter server for development purposes
+
+In addition to how you might normally start a JupyterLab session, it's necessary to provide two additional command line options, as follows.
+
+```{code} bash
+jupyter lab --NotebookApp.token=<your-secret-token> --NotebookApp.allow_origin='http://localhost:3000'
+```
+
+The `token` used should align with that provided in the `project.jupyter.token` frontmatter field and `allow_origin` should allow connections from your myst site preview, that is _usually_ running on `http://localhost:3000`.
+
+When starting a local Jupyter server for use with MyST it's also important to understand your computational environment, ensuring that the Jupyter instance is started within that with the dependencies it needs to run. In addition, if your code makes use of the local filesystem Jupyter must be started in the correct folder relative to your notebooks and other files that are accessed.
+
+This is achieved by following normal best practices for reproducible environment configuration, if you're not familiar with these see [REES](https://repo2docker.readthedocs.io/en/latest/specification.html).
 
 (jupyterlite)=
 
@@ -279,20 +295,6 @@ project:
 ```{important} TODO
 Add the specific list options for custom wheel paths, etc.
 ```
-
-(start-a-local-jupyter-server)=
-
-### Start a local Jupyter server for development purposes
-
-In addition to how you might normally start a JupyterLab session, it's necessary to provide two additional command line options, as follows.
-
-```{code} bash
-jupyter lab --NotebookApp.token=<your-secret-token> --NotebookApp.allow_origin='https://localhost:3000'
-```
-
-The command above is fine for local development. The `token` used should align with that provided in the `project.thebe.token` key and `allow_origin` should allow connections from your myst site preview, usually running on `https://localhost:3000`.
-
-When starting a local Jupyter server for use with MyST it's also important to understand your computational environment and ensure that the Jupyter instance has access to that with the dependencies it needs to run. This is achieved by following normal best practices for reproducible environment configuration, if you're not familiar with these see [REES](https://repo2docker.readthedocs.io/en/latest/specification.html).
 
 ## Reference
 
