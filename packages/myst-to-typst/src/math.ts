@@ -47,7 +47,7 @@ const math: Handler = (node, state) => {
   state.ensureNewLine();
   // Note: must have spaces $ math $ for the block!
   state.write(`$ ${value} $${node.label ? ` <${node.label}>` : ''}\n\n`);
-  state.closeBlock(node);
+  state.ensureNewLine(true);
 };
 
 const inlineMath: Handler = (node, state) => {

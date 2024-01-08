@@ -23,6 +23,7 @@ export type Options = {
 export type StateData = {
   tableColumns?: number;
   isInFigure?: boolean;
+  isInTable?: boolean;
   longFigure?: boolean;
   nextCaptionNumbered?: boolean;
   nextHeadingIsFrameTitle?: boolean;
@@ -51,5 +52,4 @@ export interface ITypstSerializer<D extends Record<string, any> = StateData> {
     env: string,
     opts?: { parameters?: string; arguments?: string[] },
   ) => void;
-  closeBlock: (node: any) => void;
 }

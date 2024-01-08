@@ -46,7 +46,9 @@ cases:
     typst: |-
       #figure(
         image("glacier.jpg", width: 62.5%),
-        caption: [A curious figure.],
+        caption: [
+      A curious figure.
+      ],
         kind: "figure",
         supplement: [Figure],
       ) <glacier>

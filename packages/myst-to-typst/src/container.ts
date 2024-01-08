@@ -1,6 +1,5 @@
-import { fileWarn, type GenericNode } from 'myst-common';
+import { fileError, fileWarn, type GenericNode } from 'myst-common';
 import type { Image, Table, Code, Math } from 'myst-spec';
-import { selectAll } from 'unist-util-select';
 import type { Handler } from './types.js';
 
 export enum CaptionKind {
@@ -35,31 +34,41 @@ export function determineCaptionKind(node: GenericNode): CaptionKind | null {
 }
 
 export const containerHandler: Handler = (node, state) => {
+  if (state.data.isInTable) {
+    fileError(state.file, 'Unable to render typst figure inside table', {
+      node,
+      source: 'myst-to-typst',
+    });
+    return;
+  }
   state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
   const { label, kind } = node;
-  const captions = selectAll('caption,legend', node);
-  const imagesAndTables = selectAll('image,table', node);
-  if (label === 'table10') {
-    console.log(imagesAndTables);
-  }
-  if (imagesAndTables.length !== 1) {
+  const captions = node.children?.filter(
+    (child: GenericNode) => child.type === 'caption' || child.type === 'legend',
+  );
+  const imagesAndTables = node.children?.filter(
+    (child: GenericNode) => child.type === 'image' || child.type === 'table',
+  );
+  if (!imagesAndTables || imagesAndTables.length !== 1) {
+    console.log(node.children.map((child: GenericNode) => child.type));
+    if (label === 'table3') console.log(JSON.stringify(node, null, 2));
     fileWarn(state.file, `Typst best supports figures with single image or table`, {
       node,
       source: 'myst-to-typst',
       note: `Figure "${label ?? 'unlabeled'}" may not render correctly`,
     });
   }
-  if (imagesAndTables.length > 1) {
+  if (imagesAndTables && imagesAndTables.length > 1) {
     state.write('#figure((\n  ');
-    imagesAndTables.forEach((item) => {
+    imagesAndTables.forEach((item: GenericNode) => {
       state.renderChildren({ children: [item] });
-      state.write(',');
+      state.trimEnd();
+      state.write('\n,');
     });
-    state.trimEnd();
     state.write(').join(),');
-  } else if (imagesAndTables.length === 1) {
+  } else if (imagesAndTables && imagesAndTables.length === 1) {
     state.write('#figure(\n  ');
     state.renderChildren({ children: [imagesAndTables[0]] });
     state.trimEnd();
@@ -68,10 +77,10 @@ export const containerHandler: Handler = (node, state) => {
     state.write('#figure([\n  ');
     state.renderChildren(node, true);
     state.trimEnd();
-    state.write('],');
+    state.write('\n],');
   }
-  if (captions.length) {
-    state.write('\n  caption: [');
+  if (captions?.length) {
+    state.write('\n  caption: [\n');
     state.renderChildren(
       {
         children: captions
@@ -82,7 +91,7 @@ export const containerHandler: Handler = (node, state) => {
       true,
     );
     state.trimEnd();
-    state.write('],');
+    state.write('\n],');
   }
   if (kind) {
     state.write(`\n  kind: "${kind}",`);
@@ -90,7 +99,7 @@ export const containerHandler: Handler = (node, state) => {
   }
   state.write('\n)');
   if (label) state.write(` <${label}>`);
-  state.closeBlock(node);
+  state.ensureNewLine(true);
   state.data.isInFigure = prevState;
 };
 

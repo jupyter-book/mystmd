@@ -22,6 +22,8 @@ function countHeaderRows(table: GenericNode) {
 }
 
 export const tableHandler: Handler = (node, state) => {
+  const prevState = state.data.isInTable;
+  state.data.isInTable = true;
   const command = state.data.isInFigure ? 'tablex' : '#tablex';
   const columns = countColumns(node);
   if (!columns) {
@@ -34,7 +36,9 @@ export const tableHandler: Handler = (node, state) => {
   state.useMacro('#import "@preview/tablex:0.0.7": tablex, cellx');
   state.write(`${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)},\n`);
   state.renderChildren(node);
-  state.write(')\n');
+  state.write(')');
+  state.ensureNewLine();
+  state.data.isInTable = prevState;
 };
 
 export const tableRowHandler: Handler = (node, state) => {
@@ -52,7 +56,7 @@ export const tableCellHandler: Handler = (node, state) => {
     }
     state.write(')');
   }
-  state.write('[');
+  state.write('[\n');
   state.renderChildren(node);
-  state.write('],');
+  state.write('],\n');
 };

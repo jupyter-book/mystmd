@@ -23,3 +23,70 @@ cases:
       # here is math
       1+2
       ```
+  - title: code block default with ticks
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: my-class
+          value: |-
+            # ```
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: my-class
+              value: |-
+                # ```
+                1+2
+    typst: |-
+      ````python
+      # ```
+      1+2
+      ````
+  - title: inline code
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'eqn: '
+            - type: inlineCode
+              value: a + b
+    typst: 'eqn: `a + b`'
+  - title: inline code with backtick
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'eqn: '
+            - type: inlineCode
+              value: a ` b
+    typst: 'eqn: ```a ` b```'
+  - title: inline code starting and ending with backtick
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'eqn: '
+            - type: inlineCode
+              value: '`a ` b``'
+    typst: 'eqn: ``` `a ` b`` ```'
+  - title: inline code does not escape symbols
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'eqn: '
+            - type: inlineCode
+              value: '# _'
+    typst: 'eqn: `# _`'
