@@ -188,7 +188,7 @@ export function hrefToLatexText(text: string) {
   return replaced;
 }
 
-export function stringToLatexText(text: string) {
+export function stringToTypstText(text: string) {
   const escaped = (text ?? '')
     .replace(/\\ /g, BACKSLASH_SPACE)
     .replace(/\\/g, BACKSLASH)
@@ -222,7 +222,7 @@ export function stringToLatexText(text: string) {
   return cleanWhitespaceChars(final, '~');
 }
 
-export function stringToLatexMath(text: string) {
+export function stringToTypstMath(text: string) {
   const replaced = Array.from(text ?? '').reduce((s, char) => {
     if (mathReplacements[char]) {
       const space = s.slice(-1) === ' ' ? '' : ' ';

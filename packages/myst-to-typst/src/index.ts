@@ -9,8 +9,8 @@ import {
   getLatexImageWidth,
   hrefToLatexText,
   nodeOnlyHasTextChildren,
-  stringToLatexMath,
-  stringToLatexText,
+  stringToTypstMath,
+  stringToTypstText,
 } from './utils.js';
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
@@ -84,7 +84,7 @@ const handlers: Record<string, Handler> = {
     if (enumerated !== false && identifier) {
       state.write(` <${identifier}>`);
     }
-    state.closeBlock(node);
+    state.write('\n\n');
   },
   block(node, state) {
     if (node.visibility === 'remove') return;
@@ -96,7 +96,6 @@ const handlers: Record<string, Handler> = {
   },
   definitionList(node, state) {
     state.renderChildren(node, true);
-    state.closeBlock(node);
   },
   definitionTerm(node, state) {
     state.ensureNewLine();
@@ -135,12 +134,11 @@ const handlers: Record<string, Handler> = {
     const env = listEnv.slice(-1)[0] ?? '-';
     state.ensureNewLine();
     state.write(`${tabs}${env} `);
-    state.renderChildren(node, true);
-    state.write('\n');
+    state.renderChildren(node);
   },
   thematicBreak(node, state) {
     state.write('#line(length: 100%, stroke: gray)');
-    state.closeBlock(node);
+    state.ensureNewLine(true);
   },
   ...MATH_HANDLERS,
   mystRole(node, state) {
@@ -156,7 +154,7 @@ const handlers: Record<string, Handler> = {
     } else {
       state.write(`// ${node.value ?? ''}`);
     }
-    state.closeBlock(node);
+    state.ensureNewLine(true);
   },
   strong(node, state) {
     if (nodeOnlyHasTextChildren(node)) {
@@ -236,7 +234,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
     state.trimEnd();
     state.write('\n]');
-    state.closeBlock(node);
+    state.ensureNewLine(true);
   },
   admonitionTitle() {
     return;
@@ -350,7 +348,7 @@ class TypstSerializer implements ITypstSerializer {
   }
 
   text(value: string, mathMode = false) {
-    const escaped = mathMode ? stringToLatexMath(value) : stringToLatexText(value);
+    const escaped = mathMode ? stringToTypstMath(value) : stringToTypstText(value);
     this.write(escaped);
   }
 
@@ -379,7 +377,7 @@ class TypstSerializer implements ITypstSerializer {
       }
       if (delim && index + 1 < numChildren) this.write(delim);
     });
-    if (!inline) this.closeBlock(node);
+    if (!inline) this.ensureNewLine(true);
   }
 
   renderEnvironment(node: any, env: string) {
@@ -387,7 +385,7 @@ class TypstSerializer implements ITypstSerializer {
     this.renderChildren(node, true);
     this.trimEnd();
     this.file.result += `\n]`;
-    this.closeBlock(node);
+    this.ensureNewLine(true);
   }
 
   renderInlineEnvironment(node: any, env: string) {
@@ -395,12 +393,6 @@ class TypstSerializer implements ITypstSerializer {
     this.renderChildren(node, true);
     this.trimEnd();
     this.file.result += ']';
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  closeBlock(node: any) {
-    this.ensureNewLine(true);
-    this.file.result += '\n';
   }
 }
 
