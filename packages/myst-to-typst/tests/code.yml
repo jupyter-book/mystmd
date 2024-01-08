@@ -79,3 +79,14 @@ cases:
             - type: inlineCode
               value: '`a ` b``'
     typst: 'eqn: ``` `a ` b`` ```'
+  - title: inline code does not escape symbols
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'eqn: '
+            - type: inlineCode
+              value: '# _'
+    typst: 'eqn: `# _`'
