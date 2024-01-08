@@ -238,9 +238,13 @@ const handlers: Record<string, Handler> = {
     const { width: nodeWidth, url: nodeSrc, align } = node;
     const src = nodeSrc;
     const width = getLatexImageWidth(nodeWidth);
-    const command = state.data.isInFigure ? 'image' : '#image';
-    state.write(`${command}("${src}", width: ${width})`);
-    state.closeBlock(node);
+    const command = state.data.isInTable || !state.data.isInFigure ? '#image' : 'image';
+    state.write(`${command}("${src}"`);
+    if (!state.data.isInTable) {
+      state.write(`, width: ${width}`);
+    }
+    state.write(')');
+    state.ensureNewLine(true);
   },
   container: containerHandler,
   caption: captionHandler,

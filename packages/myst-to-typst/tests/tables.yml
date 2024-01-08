@@ -1,0 +1,169 @@
+title: myst-to-typst tables
+cases:
+  - title: basic table
+    mdast:
+      type: root
+      children:
+        - type: table
+          align: center
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: Head 1, Column 1
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: Head 1, Column 2
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Row 1, Column 1
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Row 1, Column 2
+
+    typst: |-
+      #tablex(columns: 2, header-rows: 1,
+      [
+      Head 1, Column 1
+      ],
+      [
+      Head 1, Column 2
+      ],
+      [
+      Row 1, Column 1
+      ],
+      [
+      Row 1, Column 2
+      ],
+      )
+  - title: comment inside table
+    mdast:
+      type: root
+      children:
+        - type: table
+          align: center
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: Head 1, Column 1
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: Head 1, Column 2
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Row 1, Column 1
+                    - type: comment
+                      value: my comment
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Row 1, Column 2
+
+    typst: |-
+      #tablex(columns: 2, header-rows: 1,
+      [
+      Head 1, Column 1
+      ],
+      [
+      Head 1, Column 2
+      ],
+      [
+      Row 1, Column 1
+      // my comment
+      ],
+      [
+      Row 1, Column 2
+      ],
+      )
+  - title: rowspan table
+    mdast:
+      type: root
+      children:
+        - type: table
+          align: center
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  rowspan: 2
+                  children:
+                    - type: text
+                      value: Head 1, Column 1
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Head 1, Column 2
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Row 1, Column 2
+
+    typst: |-
+      #tablex(columns: 2, header-rows: 0,
+      cellx(rowspan: 2, )[
+      Head 1, Column 1
+      ],
+      [
+      Head 1, Column 2
+      ],
+      [
+      Row 1, Column 2
+      ],
+      )
+  - title: colspan table
+    mdast:
+      type: root
+      children:
+        - type: table
+          align: center
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  colspan: 2
+                  children:
+                    - type: text
+                      value: Head 1, Column 1
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Row 1, Column 1
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Row 1, Column 2
+
+    typst: |-
+      #tablex(columns: 2, header-rows: 0,
+      cellx(colspan: 2, )[
+      Head 1, Column 1
+      ],
+      [
+      Row 1, Column 1
+      ],
+      [
+      Row 1, Column 2
+      ],
+      )

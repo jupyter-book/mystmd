@@ -23,6 +23,7 @@ export type Options = {
 export type StateData = {
   tableColumns?: number;
   isInFigure?: boolean;
+  isInTable?: boolean;
   longFigure?: boolean;
   nextCaptionNumbered?: boolean;
   nextHeadingIsFrameTitle?: boolean;
