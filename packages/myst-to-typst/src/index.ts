@@ -110,12 +110,16 @@ const handlers: Record<string, Handler> = {
     state.trimEnd();
   },
   code(node: Code, state) {
-    const start = `\`\`\`${node.lang ?? ''}\n`;
-    const end = '\n```';
+    let ticks = '```';
+    while (node.value.includes(ticks)) {
+      ticks += '`';
+    }
+    const start = `${ticks}${node.lang ?? ''}\n`;
+    const end = `\n${ticks}`;
     state.write(start);
-    state.text(node.value, true);
+    state.write(node.value);
     state.write(end);
-    state.closeBlock(node);
+    state.ensureNewLine(true);
   },
   list(node, state) {
     state.data.list ??= { env: [] };
@@ -179,9 +183,16 @@ const handlers: Record<string, Handler> = {
     state.renderInlineEnvironment(node, 'smallcaps');
   },
   inlineCode(node, state) {
-    state.write('`');
-    state.text(node.value, false);
-    state.write('`');
+    let ticks = '`';
+    // Double ticks create empty inline code; we never want that for start/end
+    while (ticks === '``' || node.value.includes(ticks)) {
+      ticks += '`';
+    }
+    state.write(ticks);
+    if (node.value.startsWith('`')) state.write(' ');
+    state.write(node.value);
+    if (node.value.endsWith('`')) state.write(' ');
+    state.write(ticks);
   },
   subscript(node, state) {
     state.renderInlineEnvironment(node, 'sub');
