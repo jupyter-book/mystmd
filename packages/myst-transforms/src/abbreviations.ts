@@ -22,11 +22,11 @@ type Options = {
 const doNotModifyParents = new Set(['link', 'crossReference', 'cite', 'code', 'abbreviation']);
 
 function replaceText(mdast: GenericParent, opts: Options) {
-  if (!opts?.abbreviations || Object.keys(opts.abbreviations).length === 0) return; 
+  if (!opts?.abbreviations || Object.keys(opts.abbreviations).length === 0) return;
   const replacements: FindAndReplaceSchema = Object.fromEntries(
     Object.entries(opts.abbreviations)
       .filter(([abbr]) => abbr.length > 1) // We can't match on single characters!
-      .sort((a, b) => b[0].length - a[0].length || a[0].localeCompare(b[0]))  // Sort by length (longest-first) then locale-ordering
+      .sort((a, b) => b[0].length - a[0].length || a[0].localeCompare(b[0])) // Sort by length (longest-first) then locale-ordering
       .map(([abbr, title]) => [
         abbr,
         (value: any, { stack }: RegExpMatchObject) => {
