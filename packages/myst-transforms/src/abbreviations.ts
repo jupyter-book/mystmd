@@ -26,6 +26,7 @@ function replaceText(mdast: GenericParent, opts: Options) {
   const replacements: FindAndReplaceSchema = Object.fromEntries(
     Object.entries(opts.abbreviations)
       .filter(([abbr]) => abbr.length > 1) // We can't match on single characters!
+      .sort((a, b) => b[0].length - a[0].length || a[0].localeCompare(b[0])) // Sort by length (longest-first) then locale-ordering
       .map(([abbr, title]) => [
         abbr,
         (value: any, { stack }: RegExpMatchObject) => {
@@ -41,6 +42,9 @@ function replaceText(mdast: GenericParent, opts: Options) {
 
 export function abbreviationTransform(mdast: GenericParent, opts?: Options) {
   if (!opts?.abbreviations || Object.keys(opts.abbreviations).length === 0) return;
+
+  // Inline abbreviations have lower priority to passed-in abbreviations
+  // So, we replace conflicting titles with those that have been passed-in
   const abbreviations = selectAll('abbreviation', mdast) as Abbreviation[];
   abbreviations.forEach((node) => {
     if (node.title) return;
@@ -48,6 +52,8 @@ export function abbreviationTransform(mdast: GenericParent, opts?: Options) {
     const title = opts.abbreviations?.[abbr];
     if (title) node.title = title;
   });
+
+  // Replace instances of abbreviated constructs with their titles
   replaceText(mdast, opts);
 
   if (opts.firstTimeLong) {
