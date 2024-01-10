@@ -14,7 +14,7 @@ export const siRole: RoleSpec = {
       return [{ type: 'si', error: true, value }];
     }
     const number = match[1];
-    const commands = match[match.length-1];
+    const commands = match[match.length - 1];
     const parsed = [...commands.matchAll(/\\([a-zA-Z]+)/g)];
     const units = parsed.filter((c) => !!c).map(([, c]) => c);
     const translated = units.map((c) => UNITS[c] ?? c);
