@@ -74,7 +74,23 @@ cases:
             - type: text
               value: 'with trailing text!'
     typst: |-
-      This is #strong[strong]with trailing text!.
+      This is #strong[strong]with trailing text!
+  - title: emph with trailing text
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: emphasis
+              children:
+                - type: text
+                  value: 'emph'
+            - type: text
+              value: 'with trailing text!'
+    typst: |-
+      This is #emph[emph]with trailing text!
   - title: strong with children
     mdast:
       type: root

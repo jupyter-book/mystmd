@@ -2,4 +2,4 @@
 'myst-to-typst': patch
 ---
 
-Cross references with trailing text
+Cross references, emph and strong with trailing text

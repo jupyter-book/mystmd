@@ -71,6 +71,14 @@ const linkHandler = (node: any, state: ITypstSerializer) => {
   }
 };
 
+function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
+  const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
+  if (!ind) return false;
+  const next = parent?.children?.[ind + 1];
+  if (!next?.value) return false;
+  return (next?.type === 'text' && next.value.match(/^[a-zA-Z0-9\-_]/)) || false;
+}
+
 const handlers: Record<string, Handler> = {
   text(node, state) {
     state.text(node.value);
@@ -154,8 +162,9 @@ const handlers: Record<string, Handler> = {
       state.write(`// ${node.value ?? ''}\n\n`);
     }
   },
-  strong(node, state) {
-    if (nodeOnlyHasTextChildren(node)) {
+  strong(node, state, parent) {
+    const next = nextCharacterIsText(parent, node);
+    if (nodeOnlyHasTextChildren(node) && !next) {
       state.write('*');
       state.renderChildren(node);
       state.write('*');
@@ -163,8 +172,9 @@ const handlers: Record<string, Handler> = {
       state.renderInlineEnvironment(node, 'strong');
     }
   },
-  emphasis(node, state) {
-    if (nodeOnlyHasTextChildren(node)) {
+  emphasis(node, state, parent) {
+    const next = nextCharacterIsText(parent, node);
+    if (nodeOnlyHasTextChildren(node) && !next) {
       state.write('_');
       state.renderChildren(node);
       state.write('_');
@@ -259,9 +269,8 @@ const handlers: Record<string, Handler> = {
     // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
     const id = node.identifier;
     // state.write(text.replace(/%s/g, `@${id}`));
-    const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
-    const next = parent?.children?.[ind + 1];
-    if (next?.type === 'text' && next.value.match(/^[a-zA-Z0-9\-_]/)) {
+    const next = nextCharacterIsText(parent, node);
+    if (next) {
       state.write(`#[@${id}]`);
     } else {
       state.write(`@${id}`);
