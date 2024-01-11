@@ -6,6 +6,7 @@ import { SourceFileKind } from 'myst-spec-ext';
 import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
+import { htmlTransform } from 'myst-transforms';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -16,7 +17,6 @@ import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nb
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
-import { htmlTransform } from 'myst-transforms';
 
 function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
@@ -205,6 +205,22 @@ export function transformOutputsToFile(
 }
 
 /**
+ * Return if new type is preferred output content_type over existing type
+ *
+ * Since this is for static output, images are top preference, then
+ * html, then text.
+ *
+ * If the new and existing types are the same, always just keep existing.
+ */
+function isPreferredOutputType(newType: string, existingType: string) {
+  if (existingType.startsWith('image/')) return false;
+  if (newType.startsWith('image')) return true;
+  if (existingType === 'text/html') return false;
+  if (newType === 'text/html') return true;
+  return false;
+}
+
+/**
  * Convert output nodes with minified content to image or code
  *
  * This writes outputs of type image to file, modifies outputs of type
@@ -230,7 +246,7 @@ export function reduceOutputs(
       walkOutputs([output], (obj: any) => {
         const { output_type, content_type, hash } = obj;
         if (!hash) return undefined;
-        if (!selectedOutput) {
+        if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
           if (['error', 'stream'].includes(output_type)) {
             selectedOutput = { content_type: 'text/plain', hash };
           } else if (typeof content_type === 'string') {
