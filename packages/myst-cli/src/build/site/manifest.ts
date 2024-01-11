@@ -29,6 +29,7 @@ export async function resolvePageExports(session: ISession, file: string) {
         ExportFormats.docx,
         ExportFormats.pdf,
         ExportFormats.tex,
+        ExportFormats.typst,
         ExportFormats.xml,
         ExportFormats.meca,
       ],
