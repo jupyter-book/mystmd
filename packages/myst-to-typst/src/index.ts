@@ -1,6 +1,7 @@
 import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
+import type { GenericNode } from 'myst-common';
 import { fileError, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 // import { renderNodeToLatex } from './tables.js';
@@ -252,13 +253,19 @@ const handlers: Record<string, Handler> = {
   caption: captionHandler,
   legend: captionHandler,
   captionNumber: () => undefined,
-  crossReference(node, state) {
+  crossReference(node, state, parent) {
     // Look up reference and add the text
     // const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
     // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
     const id = node.identifier;
     // state.write(text.replace(/%s/g, `@${id}`));
-    state.write(`@${id}`);
+    const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
+    const next = parent?.children?.[ind + 1];
+    if (next?.type === 'text' && next.value.match(/^[a-zA-Z0-9\-_]/)) {
+      state.write(`#[@${id}]`);
+    } else {
+      state.write(`@${id}`);
+    }
   },
   citeGroup(node, state) {
     state.renderChildren(node, 0, ' ');

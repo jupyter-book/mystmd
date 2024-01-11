@@ -59,6 +59,22 @@ cases:
               value: '.'
     typst: |-
       This is *strong*.
+  - title: strong with trailing text
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: strong
+              children:
+                - type: text
+                  value: 'strong'
+            - type: text
+              value: 'with trailing text!'
+    typst: |-
+      This is #strong[strong]with trailing text!.
   - title: strong with children
     mdast:
       type: root

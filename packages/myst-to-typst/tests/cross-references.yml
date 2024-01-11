@@ -22,3 +22,17 @@ cases:
       = My Heading <section-one>
 
       Please see @section-one for more information!
+  - title: references followed by text
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See '
+            - type: crossReference
+              identifier: fig1
+            - type: text
+              value: 'a for the first part of the figure!'
+    typst: |-
+      See #[@fig1]a for the first part of the figure!
