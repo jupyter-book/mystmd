@@ -34,7 +34,7 @@ import { resolveAndLogErrors } from './utils/resolveAndLogErrors.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TYPST_IMAGE_EXTENSIONS = [
-  ImageExtensions.pdf,
+  ImageExtensions.svg,
   ImageExtensions.png,
   ImageExtensions.jpg,
   ImageExtensions.jpeg,
