@@ -10,10 +10,10 @@ import type { References } from 'myst-common';
  *
  * Look for the pattern '@article{key' then finds the closing bracket
  * and returns that substring. The "article" prefix may be any
- * lowercase alpha word.
+ * alpha word.
  */
 export function extractBibtex(key: string, bibtex: string) {
-  const match = bibtex.match(new RegExp(`@[a-z]*{${key}`, 'g'));
+  const match = bibtex.match(new RegExp(`@[a-zA-Z]*{${key}`, 'g'));
   if (!match) return;
   const start = bibtex.indexOf(match[0]);
   let bracketCount = 0;
