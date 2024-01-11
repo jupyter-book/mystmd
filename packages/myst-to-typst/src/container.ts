@@ -45,7 +45,7 @@ export const containerHandler: Handler = (node, state) => {
   state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
-  const { label, kind } = node;
+  const { identifier: label, kind } = node;
   const captions = node.children?.filter(
     (child: GenericNode) => child.type === 'caption' || child.type === 'legend',
   );
