@@ -76,7 +76,7 @@ function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
   if (!ind) return false;
   const next = parent?.children?.[ind + 1];
   if (!next?.value) return false;
-  return (next?.type === 'text' && next.value.match(/^[a-zA-Z0-9\-_]/)) || false;
+  return (next?.type === 'text' && !!next.value.match(/^[a-zA-Z0-9\-_]/)) || false;
 }
 
 const handlers: Record<string, Handler> = {
