@@ -205,7 +205,7 @@ const handlers: Record<string, Handler> = {
     state.ensureNewLine();
   },
   abbreviation(node, state) {
-    state.renderChildren(node, true);
+    state.renderChildren(node);
   },
   link: linkHandler,
   admonition(node: Admonition, state) {
