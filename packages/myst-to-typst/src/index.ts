@@ -65,7 +65,7 @@ const linkHandler = (node: any, state: ITypstSerializer) => {
   state.write('")');
   if (node.children.length && node.children[0].value !== href) {
     state.write('[');
-    state.renderChildren(node, true);
+    state.renderChildren(node);
     state.write(']');
   }
 };
@@ -75,12 +75,12 @@ const handlers: Record<string, Handler> = {
     state.text(node.value);
   },
   paragraph(node, state) {
-    state.renderChildren(node);
+    state.renderChildren(node, 2);
   },
   heading(node, state) {
     const { depth, identifier, enumerated } = node;
     state.write(`${Array(depth).fill('=').join('')} `);
-    state.renderChildren(node, true);
+    state.renderChildren(node);
     if (enumerated !== false && identifier) {
       state.write(` <${identifier}>`);
     }
@@ -88,25 +88,23 @@ const handlers: Record<string, Handler> = {
   },
   block(node, state) {
     if (node.visibility === 'remove') return;
-    state.renderChildren(node, false);
+    state.renderChildren(node, 2);
   },
   blockquote(node, state) {
     state.useMacro(blockquote);
     state.renderEnvironment(node, 'blockquote');
   },
   definitionList(node, state) {
-    state.renderChildren(node, true);
+    state.renderChildren(node);
   },
   definitionTerm(node, state) {
     state.ensureNewLine();
     state.write('/ ');
-    state.renderChildren(node, true);
-    state.trimEnd();
+    state.renderChildren(node);
     state.write(': ');
   },
   definitionDescription(node, state) {
-    state.renderChildren(node, true);
-    state.trimEnd();
+    state.renderChildren(node);
   },
   code(node: Code, state) {
     let ticks = '```';
@@ -119,11 +117,12 @@ const handlers: Record<string, Handler> = {
     state.write(node.value);
     state.write(end);
     state.ensureNewLine(true);
+    state.addNewLine();
   },
   list(node, state) {
     state.data.list ??= { env: [] };
     state.data.list.env.push(node.ordered ? '+' : '-');
-    state.renderChildren(node);
+    state.renderChildren(node, 2);
     state.data.list.env.pop();
   },
   listItem(node, state) {
@@ -134,32 +133,30 @@ const handlers: Record<string, Handler> = {
     const env = listEnv.slice(-1)[0] ?? '-';
     state.ensureNewLine();
     state.write(`${tabs}${env} `);
-    state.renderChildren(node);
+    state.renderChildren(node, 1);
   },
   thematicBreak(node, state) {
-    state.write('#line(length: 100%, stroke: gray)');
-    state.ensureNewLine(true);
+    state.write('#line(length: 100%, stroke: gray)\n\n');
   },
   ...MATH_HANDLERS,
   mystRole(node, state) {
-    state.renderChildren(node, true);
+    state.renderChildren(node);
   },
   mystDirective(node, state) {
-    state.renderChildren(node, false);
+    state.renderChildren(node, 2);
   },
   comment(node, state) {
     state.ensureNewLine();
     if (node.value?.includes('\n')) {
-      state.write(`/*\n${node.value}\n*/`);
+      state.write(`/*\n${node.value}\n*/\n\n`);
     } else {
-      state.write(`// ${node.value ?? ''}`);
+      state.write(`// ${node.value ?? ''}\n\n`);
     }
-    state.ensureNewLine(true);
   },
   strong(node, state) {
     if (nodeOnlyHasTextChildren(node)) {
       state.write('*');
-      state.renderChildren(node, true);
+      state.renderChildren(node);
       state.write('*');
     } else {
       state.renderInlineEnvironment(node, 'strong');
@@ -168,7 +165,7 @@ const handlers: Record<string, Handler> = {
   emphasis(node, state) {
     if (nodeOnlyHasTextChildren(node)) {
       state.write('_');
-      state.renderChildren(node, true);
+      state.renderChildren(node);
       state.write('_');
     } else {
       state.renderInlineEnvironment(node, 'emph');
@@ -208,7 +205,7 @@ const handlers: Record<string, Handler> = {
   abbreviation(node, state) {
     // TODO: \newacronym{gcd}{GCD}{Greatest Common Divisor}
     // https://www.overleaf.com/learn/latex/glossaries
-    state.renderChildren(node, true);
+    state.renderChildren(node);
   },
   link: linkHandler,
   admonition(node: Admonition, state) {
@@ -227,14 +224,11 @@ const handlers: Record<string, Handler> = {
     if (title && toText(title).toLowerCase().replace(' ', '') !== node.kind) {
       state.write('(heading: [');
       state.renderChildren(title);
-      state.trimEnd();
       state.write('])');
     }
     state.write('[\n');
     state.renderChildren(node);
-    state.trimEnd();
-    state.write('\n]');
-    state.ensureNewLine(true);
+    state.write('\n]\n\n');
   },
   admonitionTitle() {
     return;
@@ -252,8 +246,7 @@ const handlers: Record<string, Handler> = {
     if (!state.data.isInTable) {
       state.write(`, width: ${width}`);
     }
-    state.write(')');
-    state.ensureNewLine(true);
+    state.write(')\n\n');
   },
   container: containerHandler,
   caption: captionHandler,
@@ -268,7 +261,7 @@ const handlers: Record<string, Handler> = {
     state.write(`@${id}`);
   },
   citeGroup(node, state) {
-    state.renderChildren(node, true, ' ');
+    state.renderChildren(node, 0, ' ');
   },
   cite(node, state) {
     if (node.protocol === 'doi' || node.label?.startsWith('https://doi.org')) {
@@ -278,10 +271,10 @@ const handlers: Record<string, Handler> = {
     }
   },
   embed(node, state) {
-    state.renderChildren(node, true);
+    state.renderChildren(node);
   },
   include(node, state) {
-    state.renderChildren(node, true);
+    state.renderChildren(node);
   },
   footnoteReference(node, state) {
     if (!node.identifier) return;
@@ -294,8 +287,7 @@ const handlers: Record<string, Handler> = {
       return;
     }
     state.write('#footnote[');
-    state.renderChildren(footnote, true);
-    state.trimEnd();
+    state.renderChildren(footnote);
     state.write(']');
   },
   footnoteDefinition() {
@@ -356,13 +348,17 @@ class TypstSerializer implements ITypstSerializer {
     this.file.result = this.out.trimEnd();
   }
 
-  ensureNewLine(trim = false) {
-    if (trim) this.trimEnd();
-    if (this.out.endsWith('\n')) return;
+  addNewLine() {
     this.write('\n');
   }
 
-  renderChildren(node: Partial<Parent>, inline = false, delim = '') {
+  ensureNewLine(trim = false) {
+    if (trim) this.trimEnd();
+    if (this.out.endsWith('\n')) return;
+    this.addNewLine();
+  }
+
+  renderChildren(node: Partial<Parent>, trailingNewLines = 0, delim = '') {
     const numChildren = node.children?.length ?? 0;
     node.children?.forEach((child, index) => {
       if (!child) return;
@@ -377,21 +373,19 @@ class TypstSerializer implements ITypstSerializer {
       }
       if (delim && index + 1 < numChildren) this.write(delim);
     });
-    if (!inline) this.ensureNewLine(true);
+    this.trimEnd();
+    for (let i = trailingNewLines; i--; ) this.addNewLine();
   }
 
   renderEnvironment(node: any, env: string) {
     this.file.result += `#${env}[\n`;
-    this.renderChildren(node, true);
-    this.trimEnd();
-    this.file.result += `\n]`;
-    this.ensureNewLine(true);
+    this.renderChildren(node, 1);
+    this.file.result += `]\n\n`;
   }
 
   renderInlineEnvironment(node: any, env: string) {
     this.file.result += `#${env}[`;
-    this.renderChildren(node, true);
-    this.trimEnd();
+    this.renderChildren(node);
     this.file.result += ']';
   }
 }
