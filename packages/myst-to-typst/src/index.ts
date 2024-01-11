@@ -179,14 +179,16 @@ const handlers: Record<string, Handler> = {
   },
   inlineCode(node, state) {
     let ticks = '`';
+    // inlineCode can sometimes have children (e.g. from latex)
+    const value = toText(node);
     // Double ticks create empty inline code; we never want that for start/end
-    while (ticks === '``' || node.value.includes(ticks)) {
+    while (ticks === '``' || value.includes(ticks)) {
       ticks += '`';
     }
     state.write(ticks);
-    if (node.value.startsWith('`')) state.write(' ');
-    state.write(node.value);
-    if (node.value.endsWith('`')) state.write(' ');
+    if (value.startsWith('`')) state.write(' ');
+    state.write(value);
+    if (value.endsWith('`')) state.write(' ');
     state.write(ticks);
   },
   subscript(node, state) {
@@ -203,9 +205,7 @@ const handlers: Record<string, Handler> = {
     state.ensureNewLine();
   },
   abbreviation(node, state) {
-    // TODO: \newacronym{gcd}{GCD}{Greatest Common Divisor}
-    // https://www.overleaf.com/learn/latex/glossaries
-    state.renderChildren(node);
+    state.renderChildren(node, true);
   },
   link: linkHandler,
   admonition(node: Admonition, state) {

@@ -11,13 +11,14 @@ export function cleanWhitespaceChars(text: string, nbsp = ' '): string {
 const BACKSLASH_SPACE = 'xxxxBACKSLASHSPACExxxx';
 const BACKSLASH = 'xxxxBACKSLASHxxxx';
 const COMMENT = 'xxxxCOMMENTxxxx';
+const COMMENT_SPACE = 'xxxxCOMMENTSPACExxxx';
 const TILDE = 'xxxxTILDExxxx';
 
 const hrefOnlyReplacements: Record<string, string> = {
   // Not allowed characters
-  // Latex escaped characters are: \ & % $ # _ { } ~ ^
+  // Typst escaped characters are: \ & ` $ # _ * { } [ ] ^
   '&': '\\&',
-  '%': '\\%',
+  '`': '\\`',
   $: '\\$',
   '#': '\\#',
   _: '\\_',
@@ -145,8 +146,8 @@ const mathReplacements: Record<string, string> = {
   Υ: 'Upsilon',
   υ: 'upsilon',
   Φ: 'Phi',
-  ϕ: 'phi',
-  φ: 'phi.alt',
+  ϕ: 'phi.alt',
+  φ: 'phi',
   Χ: 'X',
   χ: 'chi',
   Ψ: 'Psi',
@@ -192,7 +193,8 @@ export function stringToTypstText(text: string) {
   const escaped = (text ?? '')
     .replace(/\\ /g, BACKSLASH_SPACE)
     .replace(/\\/g, BACKSLASH)
-    .replace(/\/\//g, COMMENT)
+    .replace(/^\/\//g, COMMENT)
+    .replace(/\s\/\//g, COMMENT_SPACE)
     .replace(/~/g, TILDE);
 
   const replacedArray: SimpleTokens[] = Array.from(escaped).map((char) => {
@@ -217,6 +219,7 @@ export function stringToTypstText(text: string) {
   const final = replaced
     .replace(new RegExp(BACKSLASH_SPACE, 'g'), '\\\\ ')
     .replace(new RegExp(BACKSLASH, 'g'), '\\\\')
+    .replace(new RegExp(COMMENT_SPACE, 'g'), ' \\/\\/')
     .replace(new RegExp(COMMENT, 'g'), '\\/\\/')
     .replace(new RegExp(TILDE, 'g'), '$tilde$');
   return cleanWhitespaceChars(final, '~');

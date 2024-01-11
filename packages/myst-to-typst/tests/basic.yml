@@ -1,5 +1,15 @@
 title: myst-to-typst basic features
 cases:
+  - title: escapes
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is * ` # %'
+    typst: |-
+      This is \* \` \# %
   - title: text in paragraph
     mdast:
       type: root

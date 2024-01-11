@@ -2,7 +2,12 @@ import type { Handler, ITexParser } from './types.js';
 import { LatexAccents, LatexSpecialSymbols, getArguments, texToText } from './utils.js';
 import type { GenericNode } from 'myst-common';
 
-function createText(state: ITexParser, node: GenericNode, translate: Record<string, string>) {
+function createText(
+  state: ITexParser,
+  node: GenericNode,
+  translate: Record<string, string>,
+  macro: string,
+) {
   state.openParagraph();
   const values = texToText(getArguments(node, 'group'));
   // If the exact value is included
@@ -17,7 +22,11 @@ function createText(state: ITexParser, node: GenericNode, translate: Record<stri
       state.text(converted, false);
       return;
     }
-    state.warn(`Unknown character "${value}"`, node, 'tex-to-myst:characters');
+    state.warn(
+      `Unknown character for accent "\\${macro}{${value}}"`,
+      node,
+      'tex-to-myst:characters',
+    );
     state.text(converted, false);
   });
 }
@@ -34,7 +43,7 @@ const CHARACTER_HANDLERS: Record<string, Handler> = {
       return [
         `macro_${macro}`,
         (node, state) => {
-          createText(state, node, translate);
+          createText(state, node, translate, macro);
         },
       ];
     }),
