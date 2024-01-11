@@ -45,7 +45,8 @@ export interface ITypstSerializer<D extends Record<string, any> = StateData> {
   text: (value: string, mathMode?: boolean) => void;
   trimEnd: () => void;
   ensureNewLine: (trim?: boolean) => void;
-  renderChildren: (node: any, inline?: boolean, delim?: string) => void;
+  addNewLine: () => void;
+  renderChildren: (node: any, trailingNewLines?: number, delim?: string) => void;
   renderInlineEnvironment: (node: any, env: string, opts?: { after?: string }) => void;
   renderEnvironment: (
     node: any,

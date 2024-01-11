@@ -6,6 +6,7 @@ import { SourceFileKind } from 'myst-spec-ext';
 import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
+import { htmlTransform } from 'myst-transforms';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -204,6 +205,22 @@ export function transformOutputsToFile(
 }
 
 /**
+ * Return if new type is preferred output content_type over existing type
+ *
+ * Since this is for static output, images are top preference, then
+ * html, then text.
+ *
+ * If the new and existing types are the same, always just keep existing.
+ */
+function isPreferredOutputType(newType: string, existingType: string) {
+  if (existingType.startsWith('image/')) return false;
+  if (newType.startsWith('image')) return true;
+  if (existingType === 'text/html') return false;
+  if (newType === 'text/html') return true;
+  return false;
+}
+
+/**
  * Convert output nodes with minified content to image or code
  *
  * This writes outputs of type image to file, modifies outputs of type
@@ -229,11 +246,15 @@ export function reduceOutputs(
       walkOutputs([output], (obj: any) => {
         const { output_type, content_type, hash } = obj;
         if (!hash) return undefined;
-        if (!selectedOutput) {
+        if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
           if (['error', 'stream'].includes(output_type)) {
             selectedOutput = { content_type: 'text/plain', hash };
           } else if (typeof content_type === 'string') {
-            if (content_type.startsWith('image/') || content_type === 'text/plain') {
+            if (
+              content_type.startsWith('image/') ||
+              content_type === 'text/plain' ||
+              content_type === 'text/html'
+            ) {
               selectedOutput = { content_type, hash };
             }
           }
@@ -242,10 +263,22 @@ export function reduceOutputs(
       if (selectedOutput) selectedOutputs.push(selectedOutput);
     });
     const children: (Image | GenericNode)[] = selectedOutputs
-      .map((output): Image | GenericNode | undefined => {
+      .map((output): Image | GenericNode | GenericNode[] | undefined => {
         const { content_type, hash } = output ?? {};
         if (!hash || !cache.$outputs[hash]) return undefined;
-        if (content_type.startsWith('image/')) {
+        if (content_type === 'text/html') {
+          const htmlTree = {
+            type: 'root',
+            children: [
+              {
+                type: 'html',
+                value: cache.$outputs[hash][0],
+              },
+            ],
+          };
+          htmlTransform(htmlTree);
+          return htmlTree.children;
+        } else if (content_type.startsWith('image/')) {
           const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
             ...opts,
             node,
@@ -268,6 +301,7 @@ export function reduceOutputs(
         }
         return undefined;
       })
+      .flat()
       .filter((output): output is Image | GenericNode => !!output);
     node.type = '__lift__';
     node.children = children;

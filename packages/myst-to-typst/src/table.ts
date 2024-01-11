@@ -35,14 +35,13 @@ export const tableHandler: Handler = (node, state) => {
   }
   state.useMacro('#import "@preview/tablex:0.0.7": tablex, cellx');
   state.write(`${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)},\n`);
-  state.renderChildren(node);
-  state.write(')');
-  state.ensureNewLine();
+  state.renderChildren(node, 1);
+  state.write(')\n');
   state.data.isInTable = prevState;
 };
 
 export const tableRowHandler: Handler = (node, state) => {
-  state.renderChildren(node);
+  state.renderChildren(node, 1);
 };
 
 export const tableCellHandler: Handler = (node, state) => {
@@ -57,6 +56,6 @@ export const tableCellHandler: Handler = (node, state) => {
     state.write(')');
   }
   state.write('[\n');
-  state.renderChildren(node);
+  state.renderChildren(node, 1);
   state.write('],\n');
 };

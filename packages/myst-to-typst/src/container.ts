@@ -41,6 +41,7 @@ export const containerHandler: Handler = (node, state) => {
     });
     return;
   }
+  state.useMacro('#show figure: set block(breakable: true)');
   state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
@@ -52,8 +53,6 @@ export const containerHandler: Handler = (node, state) => {
     (child: GenericNode) => child.type === 'image' || child.type === 'table',
   );
   if (!imagesAndTables || imagesAndTables.length !== 1) {
-    console.log(node.children.map((child: GenericNode) => child.type));
-    if (label === 'table3') console.log(JSON.stringify(node, null, 2));
     fileWarn(state.file, `Typst best supports figures with single image or table`, {
       node,
       source: 'myst-to-typst',
@@ -63,34 +62,27 @@ export const containerHandler: Handler = (node, state) => {
   if (imagesAndTables && imagesAndTables.length > 1) {
     state.write('#figure((\n  ');
     imagesAndTables.forEach((item: GenericNode) => {
-      state.renderChildren({ children: [item] });
-      state.trimEnd();
-      state.write('\n,');
+      state.renderChildren({ children: [item] }, 1);
+      state.write(',');
     });
     state.write(').join(),');
   } else if (imagesAndTables && imagesAndTables.length === 1) {
     state.write('#figure(\n  ');
     state.renderChildren({ children: [imagesAndTables[0]] });
-    state.trimEnd();
     state.write(',');
   } else {
     state.write('#figure([\n  ');
-    state.renderChildren(node, true);
-    state.trimEnd();
-    state.write('\n],');
+    state.renderChildren(node, 1);
+    state.write('],');
   }
   if (captions?.length) {
     state.write('\n  caption: [\n');
-    state.renderChildren(
-      {
-        children: captions
-          .map((cap: GenericNode) => cap.children)
-          .filter(Boolean)
-          .flat(),
-      },
-      true,
-    );
-    state.trimEnd();
+    state.renderChildren({
+      children: captions
+        .map((cap: GenericNode) => cap.children)
+        .filter(Boolean)
+        .flat(),
+    });
     state.write('\n],');
   }
   if (kind) {
@@ -100,6 +92,7 @@ export const containerHandler: Handler = (node, state) => {
   state.write('\n)');
   if (label) state.write(` <${label}>`);
   state.ensureNewLine(true);
+  state.addNewLine();
   state.data.isInFigure = prevState;
 };
 
