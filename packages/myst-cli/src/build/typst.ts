@@ -14,7 +14,7 @@ import type { LinkTransformer } from 'myst-transforms';
 import { unified } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { TypstTemplateImports } from 'jtex';
-import { mergeTypstTemplateImports, renderTemplate } from 'jtex';
+import { mergeTypstTemplateImports, renderTemplate, renderTypstImports } from 'jtex';
 import { findCurrentProjectAndLoad } from '../config.js';
 import { finalizeMdast } from '../process/mdast.js';
 import { loadProjectFromDisk } from '../project/load.js';
@@ -251,6 +251,7 @@ export async function localArticleToTypstTemplated(
 
   let frontmatter: Record<string, any>;
   let typstContent: string;
+  const versionString = `/* Written by MyST v${version} */`;
   if (results.length === 1) {
     frontmatter = content[0].frontmatter;
     typstContent = results[0].value;
@@ -261,12 +262,13 @@ export async function localArticleToTypstTemplated(
     const includeFileBases = results.map((result, ind) => {
       const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
       const includeFile = path.format({ dir, ext, base });
-      writeFileToFolder(includeFile, result.value);
+      const exports = renderTypstImports(false, collected);
+      writeFileToFolder(includeFile, `${versionString}\n\n${exports}\n\n${result.value}`);
       return base;
     });
     typstContent = includeFileBases.map((base) => `#include "${base}"`).join('\n');
   }
-  typstContent = `/* Written by MyST v${version} */\n\n${typstContent}`;
+  typstContent = `${versionString}\n\n${typstContent}`;
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
   renderTemplate(mystTemplate, {
     contentOrPath: typstContent,

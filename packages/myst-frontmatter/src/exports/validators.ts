@@ -131,7 +131,9 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       articles?.length &&
       articles.length > 1 &&
       validExport.format &&
-      ![ExportFormats.pdf, ExportFormats.tex, ExportFormats.pdftex].includes(validExport.format)
+      ![ExportFormats.pdf, ExportFormats.tex, ExportFormats.typst, ExportFormats.pdftex].includes(
+        validExport.format,
+      )
     ) {
       if (validExport.format === ExportFormats.xml && !defined(value.sub_articles)) {
         validationError(
@@ -139,7 +141,10 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
           opts,
         );
       } else {
-        validationError("multiple articles are only supported for 'tex' and 'pdf' exports", opts);
+        validationError(
+          "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports",
+          opts,
+        );
       }
       validExport.articles = [articles[0]];
     } else {
