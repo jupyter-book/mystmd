@@ -17,7 +17,6 @@ import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nb
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
-import { htmlTransform } from 'myst-transforms';
 
 function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
