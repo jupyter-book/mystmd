@@ -270,11 +270,7 @@ const handlers: Record<string, Handler> = {
     const id = node.identifier;
     // state.write(text.replace(/%s/g, `@${id}`));
     const next = nextCharacterIsText(parent, node);
-    if (next) {
-      state.write(`#[@${id}]`);
-    } else {
-      state.write(`@${id}`);
-    }
+    state.write(next ? `#[@${id}]` : `@${id}`);
   },
   citeGroup(node, state) {
     state.renderChildren(node, 0, ' ');
