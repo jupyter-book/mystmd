@@ -41,6 +41,7 @@ export const containerHandler: Handler = (node, state) => {
     });
     return;
   }
+  state.useMacro('#show figure: set block(breakable: true)');
   state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
