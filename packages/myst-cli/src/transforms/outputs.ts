@@ -16,6 +16,7 @@ import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nb
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
+import { htmlTransform } from 'myst-transforms';
 
 function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
@@ -233,7 +234,11 @@ export function reduceOutputs(
           if (['error', 'stream'].includes(output_type)) {
             selectedOutput = { content_type: 'text/plain', hash };
           } else if (typeof content_type === 'string') {
-            if (content_type.startsWith('image/') || content_type === 'text/plain') {
+            if (
+              content_type.startsWith('image/') ||
+              content_type === 'text/plain' ||
+              content_type === 'text/html'
+            ) {
               selectedOutput = { content_type, hash };
             }
           }
@@ -242,10 +247,22 @@ export function reduceOutputs(
       if (selectedOutput) selectedOutputs.push(selectedOutput);
     });
     const children: (Image | GenericNode)[] = selectedOutputs
-      .map((output): Image | GenericNode | undefined => {
+      .map((output): Image | GenericNode | GenericNode[] | undefined => {
         const { content_type, hash } = output ?? {};
         if (!hash || !cache.$outputs[hash]) return undefined;
-        if (content_type.startsWith('image/')) {
+        if (content_type === 'text/html') {
+          const htmlTree = {
+            type: 'root',
+            children: [
+              {
+                type: 'html',
+                value: cache.$outputs[hash][0],
+              },
+            ],
+          };
+          htmlTransform(htmlTree);
+          return htmlTree.children;
+        } else if (content_type.startsWith('image/')) {
           const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
             ...opts,
             node,
@@ -268,6 +285,7 @@ export function reduceOutputs(
         }
         return undefined;
       })
+      .flat()
       .filter((output): output is Image | GenericNode => !!output);
     node.type = '__lift__';
     node.children = children;
