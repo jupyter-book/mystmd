@@ -104,7 +104,17 @@ const handlers: Record<string, Handler> = {
     state.renderEnvironment(node, 'blockquote');
   },
   definitionList(node, state) {
-    state.renderChildren(node);
+    let dedent = false;
+    if (!state.data.definitionIndent) {
+      state.data.definitionIndent = 2;
+    } else {
+      state.write(`#set terms(indent: ${state.data.definitionIndent}em)`);
+      state.data.definitionIndent += 2;
+      dedent = true;
+    }
+    state.renderChildren(node, 1);
+    state.data.definitionIndent -= 2;
+    if (dedent) state.write(`#set terms(indent: ${state.data.definitionIndent - 2}em)\n`);
   },
   definitionTerm(node, state) {
     state.ensureNewLine();
