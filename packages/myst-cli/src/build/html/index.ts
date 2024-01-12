@@ -82,7 +82,7 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
 }
 
 /**
- * Build a MyST site as a static HTML deployment
+ * Build a MyST project as a static HTML deployment
  *
  * @param session session with logging
  * @param opts configuration options
