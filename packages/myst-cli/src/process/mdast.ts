@@ -182,6 +182,7 @@ export async function transformMdast(
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
     .use(joinGatesPlugin);
+  // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
     pipe.use(t.plugin, undefined, pluginUtils);

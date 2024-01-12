@@ -17,11 +17,11 @@ import { writeTocFromProject } from './toToc.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
 
 /**
- * Load project structure from disk from
+ * Load project structure from disk
  *
- * @param session
- * @param path - root directory of project, relative to current directory
- * @param opts - `index`, including path relative to current directory; default is 'index.md'
+ * @param session session with logging
+ * @param path root directory of project, relative to current directory
+ * @param opts `index`, including path relative to current directory; default is 'index.md'
  *     or 'readme.md' in 'path' directory
  *
  * If JupyterBook '_toc.yml' exists in path, project structure will be derived from that.
