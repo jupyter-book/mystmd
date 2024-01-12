@@ -25,6 +25,7 @@ export type StateData = {
   isInFigure?: boolean;
   isInTable?: boolean;
   longFigure?: boolean;
+  definitionIndent?: number;
   nextCaptionNumbered?: boolean;
   nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;

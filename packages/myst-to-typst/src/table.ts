@@ -34,7 +34,9 @@ export const tableHandler: Handler = (node, state) => {
     return;
   }
   state.useMacro('#import "@preview/tablex:0.0.7": tablex, cellx');
-  state.write(`${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)},\n`);
+  state.write(
+    `${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)}, repeat-header: true,\n`,
+  );
   state.renderChildren(node, 1);
   state.write(')\n');
   state.data.isInTable = prevState;

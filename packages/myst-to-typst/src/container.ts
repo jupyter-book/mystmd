@@ -1,6 +1,6 @@
-import { fileError, fileWarn, type GenericNode } from 'myst-common';
+import { fileError, type GenericNode } from 'myst-common';
 import type { Image, Table, Code, Math } from 'myst-spec';
-import type { Handler } from './types.js';
+import type { Handler, ITypstSerializer } from './types.js';
 
 export enum CaptionKind {
   fig = 'fig',
@@ -33,6 +33,14 @@ export function determineCaptionKind(node: GenericNode): CaptionKind | null {
   return kind;
 }
 
+function renderFigureChild(node: GenericNode, state: ITypstSerializer) {
+  const useBrackets = node.type !== 'image' && node.type !== 'table';
+  if (useBrackets) state.write('[\n');
+  else state.write('\n  ');
+  state.renderChildren({ children: [node] });
+  if (useBrackets) state.write('\n]');
+}
+
 export const containerHandler: Handler = (node, state) => {
   if (state.data.isInTable) {
     fileError(state.file, 'Unable to render typst figure inside table', {
@@ -41,7 +49,9 @@ export const containerHandler: Handler = (node, state) => {
     });
     return;
   }
-  state.useMacro('#show figure: set block(breakable: true)');
+
+  state.ensureNewLine();
+  state.write('#show figure: set block(breakable: true)');
   state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
@@ -49,32 +59,31 @@ export const containerHandler: Handler = (node, state) => {
   const captions = node.children?.filter(
     (child: GenericNode) => child.type === 'caption' || child.type === 'legend',
   );
-  const imagesAndTables = node.children?.filter(
-    (child: GenericNode) => child.type === 'image' || child.type === 'table',
+  const nonCaptions = node.children?.filter(
+    (child: GenericNode) => child.type !== 'caption' && child.type !== 'legend',
   );
-  if (!imagesAndTables || imagesAndTables.length !== 1) {
-    fileWarn(state.file, `Typst best supports figures with single image or table`, {
+  if (!nonCaptions || nonCaptions.length === 0) {
+    fileError(state.file, `Figure with no non-caption content: ${label}`, {
       node,
       source: 'myst-to-typst',
-      note: `Figure "${label ?? 'unlabeled'}" may not render correctly`,
     });
   }
-  if (imagesAndTables && imagesAndTables.length > 1) {
-    state.write('#figure((\n  ');
-    imagesAndTables.forEach((item: GenericNode) => {
-      state.renderChildren({ children: [item] }, 1);
-      state.write(',');
+  if (nonCaptions && nonCaptions.length > 1) {
+    state.write('#figure((');
+    nonCaptions.forEach((item: GenericNode) => {
+      renderFigureChild(item, state);
+      state.write('\n, ');
     });
-    state.write(').join(),');
-  } else if (imagesAndTables && imagesAndTables.length === 1) {
-    state.write('#figure(\n  ');
-    state.renderChildren({ children: [imagesAndTables[0]] });
-    state.write(',');
+    state.write(').join()');
+  } else if (nonCaptions && nonCaptions.length === 1) {
+    state.write('#figure(');
+    renderFigureChild(nonCaptions[0], state);
   } else {
     state.write('#figure([\n  ');
     state.renderChildren(node, 1);
-    state.write('],');
+    state.write(']');
   }
+  state.write(',');
   if (captions?.length) {
     state.write('\n  caption: [\n');
     state.renderChildren({
