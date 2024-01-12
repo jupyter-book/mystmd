@@ -4,6 +4,11 @@ import { selectCurrentProjectConfig } from './store/selectors.js';
 import { RuleId, plural, type MystPlugin } from 'myst-common';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 
+/**
+ * Load user-defined plugin modules declared in the project frontmatter
+ *
+ * @param session session with logging
+ */
 export async function loadPlugins(session: ISession): Promise<MystPlugin> {
   const config = selectCurrentProjectConfig(session.store.getState());
 
