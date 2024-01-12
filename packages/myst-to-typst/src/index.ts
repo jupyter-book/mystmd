@@ -279,7 +279,11 @@ const handlers: Record<string, Handler> = {
     if (node.protocol === 'doi' || node.label?.startsWith('https://doi.org')) {
       linkHandler(node, state);
     } else {
-      state.write(`@${node.label}`);
+      state.write(`#cite(<${node.label}>`);
+      if (node.kind === 'narrative') state.write(`, form: "prose"`);
+      // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
+      if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
+      state.write(`)`);
     }
   },
   embed(node, state) {

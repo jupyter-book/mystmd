@@ -9,7 +9,7 @@ cases:
             - type: cite
               label: cockett2015
     typst: |-
-      @cockett2015
+      #cite(<cockett2015>)
   - title: cite multiple
     mdast:
       type: root
@@ -23,4 +23,26 @@ cases:
                 - type: cite
                   label: jon85
     typst: |-
-      @cockett2015 @jon85
+      #cite(<cockett2015>) #cite(<jon85>)
+  - title: cite narrative
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: cockett2015
+              kind: narrative
+    typst: |-
+      #cite(<cockett2015>, form: "prose")
+  - title: cite suffix
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: cockett2015
+              suffix: page 1
+    typst: |-
+      #cite(<cockett2015>, supplement: [page 1])
