@@ -35,8 +35,8 @@ export function determineCaptionKind(node: GenericNode): CaptionKind | null {
 
 function renderFigureChild(node: GenericNode, state: ITypstSerializer) {
   const useBrackets = node.type !== 'image' && node.type !== 'table';
-  if (useBrackets) state.write('[');
-  state.write('\n');
+  if (useBrackets) state.write('[\n');
+  else state.write('\n  ');
   state.renderChildren({ children: [node] });
   if (useBrackets) state.write('\n]');
 }

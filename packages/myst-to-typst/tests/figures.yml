@@ -21,6 +21,7 @@ cases:
               url: glacier.jpg
               width: 500px
     typst: |-
+      #show figure: set block(breakable: true)
       #figure(
         image("glacier.jpg", width: 62.5%),
         kind: "figure",
@@ -44,6 +45,7 @@ cases:
                     - type: text
                       value: A curious figure.
     typst: |-
+      #show figure: set block(breakable: true)
       #figure(
         image("glacier.jpg", width: 62.5%),
         caption: [
