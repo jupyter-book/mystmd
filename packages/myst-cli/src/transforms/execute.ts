@@ -1,12 +1,12 @@
 import { selectAll } from 'unist-util-select';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
-import type { IExpressionResult } from 'myst-cli';
+import type { IExpressionResult } from './inlineExpressions.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
-import assert from 'node:assert';
 import type { IOutput } from '@jupyterlab/nbformat';
-import path from 'node:path';
 import type { GenericParent } from 'myst-common';
+import path from 'node:path';
+import assert from 'node:assert';
 
 /**
  * Interpret an IOPub message as an IOutput object
