@@ -16,8 +16,8 @@ export interface IBaseExpressionResult {
 
 export interface IExpressionOutput extends IBaseExpressionResult {
   status: 'ok';
-  data: Record<string, string>;
-  metadata: Record<string, string>;
+  data: Record<string, any>;
+  metadata: Record<string, any>;
 }
 
 export interface IExpressionError extends IBaseExpressionResult {

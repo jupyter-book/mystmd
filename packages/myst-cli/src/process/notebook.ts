@@ -118,19 +118,14 @@ export async function processNotebook(
           value: ensureString(cell.source),
         };
 
-        const output: { type: 'output'; id: string; data: MinifiedOutput[] } = {
+        const output: { type: 'output'; id: string; data: IOutput[] } = {
           type: 'output',
           id: nanoid(),
           data: [],
         };
 
         if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
-          const minified: MinifiedOutput[] = await minifyCellOutput(
-            cell.outputs as IOutput[],
-            cache.$outputs,
-            { computeHash, maxCharacters: opts?.minifyMaxCharacters },
-          );
-          output.data = minified;
+          output.data = cell.outputs as IOutput[];
         }
         return acc.concat(blockParent(cell, [code, output]));
       }
