@@ -9,6 +9,7 @@ import {
   basicTransformationsPlugin,
   htmlPlugin,
   footnotesPlugin,
+  blockMetadataPlugin,
   ReferenceState,
   MultiPageReferenceState,
   resolveReferencesTransform,
@@ -53,7 +54,6 @@ import {
   transformImageFormats,
   transformThumbnail,
   StaticFileTransformer,
-  inlineExpressionsPlugin,
   propagateBlockDataToCode,
   transformBanner,
   reduceOutputs,
@@ -176,7 +176,7 @@ export async function transformMdast(
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(inlineExpressionsPlugin) // Happens before math and images!
+    .use(blockMetadataPlugin) // Happens before math and images!
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
