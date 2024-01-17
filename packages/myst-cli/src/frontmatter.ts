@@ -29,21 +29,15 @@ import { loadFile } from './process/file.js';
 export function getPageFrontmatter(
   session: ISession,
   tree: GenericParent,
-  file: string,
-  path?: string,
-  removeNode = true,
+  vfile: VFile,
 ): PageFrontmatter {
-  const vfile = new VFile();
-  vfile.path = file;
   const { frontmatter: rawPageFrontmatter } = getFrontmatter(vfile, tree, {
-    removeYaml: removeNode,
-    removeHeading: removeNode,
     propagateTargets: true,
   });
   unnestKernelSpec(rawPageFrontmatter);
   const validationOpts = {
     property: 'frontmatter',
-    file,
+    vfile,
     messages: {},
     errorLogFn: (message: string) => {
       fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
@@ -53,9 +47,8 @@ export function getPageFrontmatter(
     },
   };
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, validationOpts);
-  const frontmatter = processPageFrontmatter(session, pageFrontmatter, validationOpts, path);
   logMessagesFromVFile(session, vfile);
-  return frontmatter;
+  return pageFrontmatter;
 }
 
 export function processPageFrontmatter(

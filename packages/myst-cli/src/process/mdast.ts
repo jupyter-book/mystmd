@@ -31,11 +31,7 @@ import {
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
-import {
-  getPageFrontmatter,
-  processPageFrontmatter,
-  updateFileInfoFromFrontmatter,
-} from '../frontmatter.js';
+import { processPageFrontmatter, updateFileInfoFromFrontmatter } from '../frontmatter.js';
 import { selectors } from '../store/index.js';
 import type { ISession } from '../session/types.js';
 import { castSession } from '../session/cache.js';
@@ -142,10 +138,9 @@ export async function transformMdast(
   vfile.path = file;
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as GenericParent;
-  const frontmatter = preFrontmatter
-    ? processPageFrontmatter(
+  const frontmatter = processPageFrontmatter(
         session,
-        preFrontmatter,
+    preFrontmatter ?? {},
         {
           property: 'frontmatter',
           file,
@@ -158,8 +153,7 @@ export async function transformMdast(
           },
         },
         projectPath,
-      )
-    : getPageFrontmatter(session, mdast, file, projectPath);
+  );
   const references: References = {
     cite: { order: [], data: {} },
   };

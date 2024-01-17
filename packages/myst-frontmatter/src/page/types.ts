@@ -7,4 +7,9 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   jupytext?: Jupytext;
   tags?: string[];
   parts?: Record<string, string[]>;
+  /** Flag if frontmatter title is duplicated in content
+   *
+   * Usually just set during mdast transform
+   */
+  content_includes_title?: boolean;
 };

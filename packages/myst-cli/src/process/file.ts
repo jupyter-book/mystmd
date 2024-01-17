@@ -7,6 +7,7 @@ import { VFile } from 'vfile';
 import { RuleId, toText } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
+import { getPageFrontmatter } from '../frontmatter.js';
 import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/cache.js';
 import { warnings, watch } from '../store/reducers.js';
@@ -44,6 +45,8 @@ export async function loadFile(
   }
   // ensure forward slashes and not windows backslashes
   location = location.replaceAll('\\', '/');
+  const vfile = new VFile();
+  vfile.path = file;
 
   try {
     const ext = extension || path.extname(file).toLowerCase();
@@ -53,9 +56,10 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const mdast = parseMyst(session, content, file);
+        const frontmatter = getPageFrontmatter(session, mdast, vfile);
         cache.$setMdast(file, {
           sha256,
-          pre: { kind: SourceFileKind.Article, file, location, mdast },
+          pre: { kind: SourceFileKind.Article, file, location, mdast, frontmatter },
         });
         break;
       }
@@ -64,9 +68,10 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const mdast = await processNotebook(cache, file, content, opts);
+        const frontmatter = getPageFrontmatter(session, mdast, vfile);
         cache.$setMdast(file, {
           sha256,
-          pre: { kind: SourceFileKind.Notebook, file, location, mdast },
+          pre: { kind: SourceFileKind.Notebook, file, location, mdast, frontmatter },
         });
         break;
       }
@@ -79,8 +84,6 @@ export async function loadFile(
         const content = fs.readFileSync(file).toString();
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
-        const vfile = new VFile();
-        vfile.path = file;
         const tex = new TexParser(content, vfile);
         logMessagesFromVFile(session, vfile);
         const frontmatter: PageFrontmatter = {
