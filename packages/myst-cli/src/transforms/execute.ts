@@ -1,6 +1,6 @@
 import { selectAll } from 'unist-util-select';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
+import type { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
 import type { IExpressionResult } from './inlineExpressions.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
@@ -32,11 +32,11 @@ async function executeCode(kernel: Kernel.IKernelConnection, code: string) {
   });
 
   const outputs: IOutput[] = [];
-  future.onIOPub = (msg: KernelMessage.IIOPubMessage) => {
+  future.onIOPub = (msg) => {
     // Only listen for replies to this execution
     if (
-      msg.parent_header.msg_id !== future.msg.header.msg_id ||
-      msg.parent_header.msg_type !== 'execute_request'
+      (msg.parent_header as any).msg_id !== future.msg.header.msg_id ||
+      (msg.parent_header as any).msg_type !== 'execute_request'
     ) {
       console.debug('Ignoring IOPub reply');
       return;
@@ -120,7 +120,7 @@ function setCache(key: CacheKey, value: CacheItem) {}
  * @param frontmatter
  * @param filePath
  */
-async function transformKernelExecution(
+export async function transformKernelExecution(
   sessionManager: SessionManager,
   mdast: GenericParent,
   frontmatter: PageFrontmatter,

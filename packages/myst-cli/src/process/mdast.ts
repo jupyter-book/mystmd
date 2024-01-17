@@ -74,6 +74,8 @@ import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
+import { transformKernelExecution } from '../transforms/execute.js';
+import { ServerConnection, KernelManager, SessionManager } from '@jupyterlab/services';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -222,6 +224,11 @@ export async function transformMdast(
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
+
+  const serverSettings = ServerConnection.makeSettings();
+  const kernelManager = new KernelManager({ serverSettings });
+  const sessionManager = new SessionManager({ kernelManager, serverSettings });
+  await transformKernelExecution(sessionManager, mdast, frontmatter, file, true);
 
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
