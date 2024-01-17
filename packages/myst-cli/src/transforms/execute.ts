@@ -9,6 +9,7 @@ import type { VFile } from 'vfile';
 import { renderExpression } from './inlineExpressions.js';
 import path from 'node:path';
 import assert from 'node:assert';
+import { createHash } from 'node:crypto';
 
 /**
  * Interpret an IOPub message as an IOutput object
@@ -100,18 +101,40 @@ async function evaluateExpression(kernel: Kernel.IKernelConnection, expr: string
   return { status: result.status, result };
 }
 
-type CacheKey = any;
 type CacheItem = (Code | InlineExpression)[];
 
-function buildCacheKey(mdast: (ICellBlock | InlineExpression)[]): any {
+type HashableCacheKeyItem = {
+  kind: string;
+  content: string;
+};
+
+function buildCacheKey(mdast: (ICellBlock | InlineExpression)[]): string {
+  // Build an array of hashable items from an array of nodes
+  const hashableItems: HashableCacheKeyItem[] = [];
+  for (const node of mdast) {
+    if (isCellBlock(node)) {
+      hashableItems.push({
+        kind: node.type,
+        content: (select('code', node) as Code).value,
+      });
+    } else {
+      assert(isInlineExpression(node));
+      hashableItems.push({
+        kind: node.type,
+        content: node.value,
+      });
+    }
+  }
+  // Serialise the array into JSON, and compute the hash
+  const hashableString = JSON.stringify(hashableItems);
+  return createHash('md5').update(hashableString).digest('hex');
+}
+
+function getCache(key: string): CacheItem | undefined {
   return undefined;
 }
 
-function getCache(key: CacheKey): CacheItem | undefined {
-  return undefined;
-}
-
-function setCache(key: CacheKey, value: CacheItem) {}
+function setCache(key: string, value: CacheItem) {}
 
 type ICellBlockOutput = GenericNode & {
   data: IOutput[];
