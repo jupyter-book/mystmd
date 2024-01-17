@@ -38,7 +38,7 @@ export interface IUserExpressionsMetadata {
   [metadataSection]: IUserExpressionMetadata[];
 }
 
-function findExpression(
+export function findExpression(
   expressions: IUserExpressionMetadata[],
   value: string,
 ): IUserExpressionMetadata | undefined {
@@ -54,7 +54,7 @@ function processLatex(value: string) {
 }
 
 export function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingContent[] {
-  const result = node.result as IExpressionResult;
+  const result = node.data as IExpressionResult | undefined;
   if (!result) return [];
   let content: StaticPhrasingContent[] | undefined;
   if (result.status === 'ok') {
@@ -102,7 +102,7 @@ export function transformInlineExpressions(mdast: GenericParent, file: VFile) {
       if (!data) return;
       count += 1;
       inlineExpression.identifier = `eval-${count}`;
-      inlineExpression.result = data.result;
+      inlineExpression.data = data.result as unknown as Record<string, unknown>;
       inlineExpression.children = renderExpression(inlineExpression, file);
     });
   });

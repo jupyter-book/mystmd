@@ -19,7 +19,13 @@ import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-import type { Code } from 'myst-spec-ext';
+import type { Code, InlineExpression } from 'myst-spec-ext';
+import {
+  findExpression,
+  IUserExpressionMetadata,
+  metadataSection,
+  renderExpression,
+} from '../transforms/index.js';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
@@ -86,6 +92,9 @@ export async function processNotebook(
     end = -1;
   }
 
+  const vfile = new VFile();
+  vfile.path = file;
+
   const items = await cells?.slice(0, end).reduce(
     async (P, cell: ICell, index) => {
       const acc = await P;
@@ -100,7 +109,20 @@ export async function processNotebook(
         if (omitBlockDivider) {
           return acc.concat(...cellMdast.children);
         }
-        return acc.concat(blockParent(cell, cellMdast.children));
+        const block = blockParent(cell, cellMdast.children) as GenericNode;
+
+        // Embed expression results into expression
+        const userExpressions = block.data?.[metadataSection] as IUserExpressionMetadata[];
+        const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
+        let count = 0;
+        inlineNodes.forEach((inlineExpression) => {
+          const data = findExpression(userExpressions, inlineExpression.value);
+          if (!data) return;
+          count += 1;
+          inlineExpression.identifier = `eval-${index}-${count}`;
+          inlineExpression.data = data.result as unknown as Record<string, unknown>;
+        });
+        return acc.concat(block);
       }
       if (cell.cell_type === CELL_TYPES.raw) {
         const raw: Code = {
@@ -118,12 +140,12 @@ export async function processNotebook(
           value: ensureString(cell.source),
         };
 
+        // Embed outputs into output block
         const output: { type: 'output'; id: string; data: IOutput[] } = {
           type: 'output',
           id: nanoid(),
           data: [],
         };
-
         if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
           output.data = cell.outputs as IOutput[];
         }

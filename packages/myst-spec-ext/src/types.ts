@@ -161,7 +161,7 @@ export type InlineExpression = {
   type: 'inlineExpression';
   value: string;
   identifier?: string;
-  result?: Record<string, any>;
+  data?: Record<string, unknown>;
   children?: StaticPhrasingContent[];
 };
 

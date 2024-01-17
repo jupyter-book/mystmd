@@ -191,8 +191,10 @@ export async function transformKernelExecution(
       mdast,
     ) as (ICellBlock | InlineExpression)[];
 
+    // See if we already cached this execution
     const cacheKey = buildCacheKey(codeOrEvalNodes);
     let cachedResults: (IExpressionResult | IOutput[])[] | undefined = getCache(cacheKey);
+
     // Execute notebook?
     if (ignoreCache || cachedResults === undefined) {
       try {
@@ -235,7 +237,10 @@ export async function transformKernelExecution(
       } else if (isInlineExpression(matchedNode)) {
         assert(cachedResults.length > 0);
         // Set data of expression
-        matchedNode.result = cachedResults.shift()! as IExpressionResult;
+        matchedNode.data = cachedResults.shift()! as unknown as Record<string, unknown>;
+      } else {
+        // This should never happen
+        assert(false);
       }
     }
 
