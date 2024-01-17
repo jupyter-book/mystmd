@@ -225,7 +225,10 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  const serverSettings = ServerConnection.makeSettings();
+  const serverSettings = ServerConnection.makeSettings({
+    baseUrl: process.env.JUPYTER_BASE_URL,
+    token: process.env.JUPYTER_TOKEN,
+  });
   const kernelManager = new KernelManager({ serverSettings });
   const sessionManager = new SessionManager({ kernelManager, serverSettings });
   await transformKernelExecution(sessionManager, mdast, frontmatter, file, true);
