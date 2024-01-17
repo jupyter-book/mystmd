@@ -101,7 +101,7 @@ async function evaluateExpression(kernel: Kernel.IKernelConnection, expr: string
   return { status: result.status, result };
 }
 
-type CacheItem = (Code | InlineExpression)[];
+type CacheItem = (IExpressionResult | IOutput[])[];
 
 type HashableCacheKeyItem = {
   kind: string;
@@ -191,32 +191,30 @@ export async function transformKernelExecution(
       mdast,
     ) as (ICellBlock | InlineExpression)[];
 
-    // Execute notebook!
     const cacheKey = buildCacheKey(codeOrEvalNodes);
-    let rehydratedNodes: (Code | InlineExpression)[] | undefined = getCache(cacheKey);
-    if (ignoreCache || rehydratedNodes === undefined) {
+    let cachedResults: (IExpressionResult | IOutput[])[] | undefined = getCache(cacheKey);
+    // Execute notebook?
+    if (ignoreCache || cachedResults === undefined) {
       try {
         // TODO: in future populate this array, which will be cached,
         //       then use positional correspondence with true AST
-        rehydratedNodes = [];
+        cachedResults = [];
         for (const matchedNode of codeOrEvalNodes) {
           if (isCellBlock(matchedNode)) {
             // Pull out code to execute
             const code = select('code', matchedNode) as Code;
             const { status, outputs } = await executeCode(kernel, code.value);
-            // Set result on output
-            const output = select('output', matchedNode) as unknown as { data: IOutput[] };
-            output.data = outputs;
+            // Cache result
+            cachedResults.push(outputs);
           } else if (isInlineExpression(matchedNode)) {
             // Directly evaluate the expression
             const { status, result } = await evaluateExpression(kernel, matchedNode.value);
-            // Set the result on the expression
-            matchedNode.result = result;
-            matchedNode.children = renderExpression(matchedNode, file);
+            // Cache result
+            cachedResults.push(result);
           }
         }
         // Populate cache
-        setCache(cacheKey, rehydratedNodes);
+        setCache(cacheKey, cachedResults);
       } catch (e: any) {
         console.error('Execution failed', e);
         throw new Error();
@@ -225,11 +223,22 @@ export async function transformKernelExecution(
         await kernel.shutdown();
       }
     }
+    assert(cachedResults !== undefined);
 
-    // let rehydratedNodes: (Code | InlineExpression)[] | undefined;
-    // if (!ignoreCache) {
-    //   rehydratedNodes = getCachedExecution(codeOrEvalNodes);
-    // }
+    // Apply results to tree
+    for (const matchedNode of codeOrEvalNodes) {
+      if (isCellBlock(matchedNode)) {
+        assert(cachedResults.length > 0);
+        // Pull out output to set data
+        const output = select('output', matchedNode) as unknown as { data: IOutput[] };
+        output.data = cachedResults.shift()! as IOutput[];
+      } else if (isInlineExpression(matchedNode)) {
+        assert(cachedResults.length > 0);
+        // Set data of expression
+        matchedNode.result = cachedResults.shift()! as IExpressionResult;
+      }
+    }
+
     console.log('Done execution', JSON.stringify(mdast));
   });
 }
