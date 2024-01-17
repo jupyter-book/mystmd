@@ -53,7 +53,7 @@ function processLatex(value: string) {
     .trim();
 }
 
-function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingContent[] {
+export function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingContent[] {
   const result = node.result as IExpressionResult;
   if (!result) return [];
   let content: StaticPhrasingContent[] | undefined;

@@ -1,10 +1,12 @@
-import { selectAll } from 'unist-util-select';
+import { select, selectAll } from 'unist-util-select';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
 import type { IExpressionResult } from './inlineExpressions.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
+import type { VFile } from 'vfile';
+import { renderExpression } from './inlineExpressions.js';
 import path from 'node:path';
 import assert from 'node:assert';
 
@@ -57,9 +59,8 @@ async function executeCode(kernel: Kernel.IKernelConnection, code: string) {
   future.onReply = (msg: KernelMessage.IExecuteReplyMsg) => {
     status = msg.content.status;
   };
-  assert(status !== undefined);
-
   await future.done;
+  assert(status !== undefined);
   return { status, outputs };
 }
 
@@ -69,7 +70,7 @@ async function executeCode(kernel: Kernel.IKernelConnection, code: string) {
  * @param kernel connection to an active kernel
  * @param code code to execute
  */
-async function executeExpression(kernel: Kernel.IKernelConnection, expr: string) {
+async function evaluateExpression(kernel: Kernel.IKernelConnection, expr: string) {
   // TODO: batch user expressions by cell?
   const future = kernel.requestExecute({
     code: '',
@@ -102,7 +103,7 @@ async function executeExpression(kernel: Kernel.IKernelConnection, expr: string)
 type CacheKey = any;
 type CacheItem = (Code | InlineExpression)[];
 
-function buildCacheKey(mdast: (Code | InlineExpression)[]): any {
+function buildCacheKey(mdast: (ICellBlock | InlineExpression)[]): any {
   return undefined;
 }
 
@@ -112,6 +113,22 @@ function getCache(key: CacheKey): CacheItem | undefined {
 
 function setCache(key: CacheKey, value: CacheItem) {}
 
+type ICellBlockOutput = GenericNode & {
+  data: IOutput[];
+};
+
+type ICellBlock = GenericNode & {
+  children: (Code | ICellBlockOutput)[];
+};
+
+function isCellBlock(node: GenericNode): node is ICellBlock {
+  return node.type === 'block' && select('code', node) !== null && select('output', node) !== null;
+}
+
+function isInlineExpression(node: GenericNode): node is InlineExpression {
+  return node.type === 'inlineExpression';
+}
+
 /**
  * Transform an AST to include the outputs of executing the given notebook
  *
@@ -119,6 +136,8 @@ function setCache(key: CacheKey, value: CacheItem) {}
  * @param mdast
  * @param frontmatter
  * @param filePath
+ * @param ignoreCache
+ * @param file
  */
 export async function transformKernelExecution(
   sessionManager: SessionManager,
@@ -126,6 +145,7 @@ export async function transformKernelExecution(
   frontmatter: PageFrontmatter,
   filePath: string,
   ignoreCache: boolean,
+  file: VFile,
 ) {
   const options = {
     path: filePath,
@@ -140,35 +160,42 @@ export async function transformKernelExecution(
   return await sessionManager.startNew(options).then(async (conn) => {
     const kernel = conn.kernel;
     assert(kernel);
-
     console.log(`Connected to kernel ${kernel.name}`);
+
     // Pull out code-like nodes
-    const codeOrEvalNodes = selectAll('code[executable=true],inlineExpression', mdast) as (
-      | Code
-      | InlineExpression
-    )[];
+    const codeOrEvalNodes = selectAll(
+      'block:has(code[executable=true]):has(output),inlineExpression',
+      mdast,
+    ) as (ICellBlock | InlineExpression)[];
 
     // Execute notebook!
     const cacheKey = buildCacheKey(codeOrEvalNodes);
     let rehydratedNodes: (Code | InlineExpression)[] | undefined = getCache(cacheKey);
     if (ignoreCache || rehydratedNodes === undefined) {
       try {
-        rehydratedNodes = []; // TODO
+        // TODO: in future populate this array, which will be cached,
+        //       then use positional correspondence with true AST
+        rehydratedNodes = [];
         for (const matchedNode of codeOrEvalNodes) {
-          if (matchedNode.type === 'code') {
-            const { status, outputs } = await executeCode(kernel, matchedNode.value);
-            // TODO: minify output
-            // (matchedNode as Code).data = ...
-          } else {
-            const { status, result } = await executeExpression(kernel, matchedNode.value);
-            (matchedNode as InlineExpression).result = result;
-            // TODO: (matchedNode as InlineExpression).children = ...
+          if (isCellBlock(matchedNode)) {
+            // Pull out code to execute
+            const code = select('code', matchedNode) as Code;
+            const { status, outputs } = await executeCode(kernel, code.value);
+            // Set result on output
+            const output = select('output', matchedNode) as unknown as { data: IOutput[] };
+            output.data = outputs;
+          } else if (isInlineExpression(matchedNode)) {
+            // Directly evaluate the expression
+            const { status, result } = await evaluateExpression(kernel, matchedNode.value);
+            // Set the result on the expression
+            matchedNode.result = result;
+            matchedNode.children = renderExpression(matchedNode, file);
           }
         }
         // Populate cache
         setCache(cacheKey, rehydratedNodes);
-      } catch {
-        console.error('Execution failed');
+      } catch (e: any) {
+        console.error('Execution failed', e);
         throw new Error();
       } finally {
         // Shutdown kernel
@@ -180,5 +207,6 @@ export async function transformKernelExecution(
     // if (!ignoreCache) {
     //   rehydratedNodes = getCachedExecution(codeOrEvalNodes);
     // }
+    console.log('Done execution', JSON.stringify(mdast));
   });
 }
