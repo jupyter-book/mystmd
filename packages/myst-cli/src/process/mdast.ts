@@ -231,7 +231,7 @@ export async function transformMdast(
   });
   const kernelManager = new KernelManager({ serverSettings });
   const sessionManager = new SessionManager({ kernelManager, serverSettings });
-  await transformKernelExecution(session, sessionManager, mdast, frontmatter, file, false, vfile);
+  await transformKernelExecution(session, sessionManager, mdast, frontmatter, false, vfile, false);
 
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });

@@ -1,10 +1,10 @@
 import { select, selectAll } from 'unist-util-select';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import type { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
+import { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
 import type { IExpressionResult } from './inlineExpressions.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { GenericNode, GenericParent } from 'myst-common';
+import { fileError, fileInfo, fileWarn, GenericNode, GenericParent } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
@@ -53,7 +53,7 @@ async function executeCode(kernel: Kernel.IKernelConnection, code: string) {
         outputs.push(IOPubAsOutput(msg));
         break;
       default:
-        console.debug('Ignoring IOPub reply (unexpected message type)');
+        console.debug(`Ignoring IOPub reply (unexpected message type ${msg.header.msg_type})`);
         return;
     }
   };
@@ -109,10 +109,15 @@ type HashableCacheKeyItem = {
   content: string;
 };
 
-function buildCacheKey(mdast: (ICellBlock | InlineExpression)[]): string {
+/**
+ * Build a cache key from an array of executable nodes
+ *
+ * @param nodes array of executable ndoes
+ */
+function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
   // Build an array of hashable items from an array of nodes
   const hashableItems: HashableCacheKeyItem[] = [];
-  for (const node of mdast) {
+  for (const node of nodes) {
     if (isCellBlock(node)) {
       hashableItems.push({
         kind: node.type,
@@ -131,7 +136,16 @@ function buildCacheKey(mdast: (ICellBlock | InlineExpression)[]): string {
   return createHash('md5').update(hashableString).digest('hex');
 }
 
-class LocalDiskCache<T> {
+interface ICache<T> {
+  test(key: string): boolean;
+  get(key: string): T | undefined;
+  set(key: string, value: T): void;
+}
+
+/**
+ * An implementation of a basic cache
+ */
+class LocalDiskCache<T> implements ICache<T> {
   constructor(cachePath: string) {
     this._cachePath = cachePath;
 
@@ -140,7 +154,7 @@ class LocalDiskCache<T> {
     }
   }
 
-  private _cachePath: string;
+  private readonly _cachePath: string;
 
   private _makeKeyPath(key: string): string {
     return path.join(this._cachePath, `${key}.json`);
@@ -172,37 +186,140 @@ type ICellBlock = GenericNode & {
   children: (Code | ICellBlockOutput)[];
 };
 
+/**
+ * Return true if the given node is a block over a code node and output node
+ *
+ * @param node node to test
+ */
 function isCellBlock(node: GenericNode): node is ICellBlock {
   return node.type === 'block' && select('code', node) !== null && select('output', node) !== null;
 }
 
+/**
+ * Return true if the given node is an inlineExpression node
+ *
+ * @param node node to test
+ */
 function isInlineExpression(node: GenericNode): node is InlineExpression {
   return node.type === 'inlineExpression';
 }
 
 /**
+ * For each executable node, perform a kernel execution request and return the results.
+ * Return an additional boolean indicating whether an error occured.
+ *
+ * @param kernel
+ * @param nodes
+ * @param vfile
+ */
+async function computeExecutableNodes(
+  kernel: Kernel.IKernelConnection,
+  nodes: (ICellBlock | InlineExpression)[],
+  vfile: VFile,
+): Promise<{
+  results: (IOutput[] | IExpressionResult)[];
+  errorOccurred: boolean;
+}> {
+  let errorOccurred = false;
+
+  const results: (IOutput[] | IExpressionResult)[] = [];
+  for (const matchedNode of nodes) {
+    let status: 'error' | 'ok' | 'abort';
+    if (isCellBlock(matchedNode)) {
+      // Pull out code to execute
+      const code = select('code', matchedNode) as Code;
+      const { status, outputs } = await executeCode(kernel, code.value);
+      // Cache result
+      results.push(outputs);
+
+      // Check for errors
+      const metadata = matchedNode.data || {};
+      const allowErrors = !!metadata?.tags?.['raises-exception'];
+      if (status === 'error' && !allowErrors) {
+        fileWarn(vfile, 'An exception occurred during code execution, halting further execution');
+        // Make a note of the failure
+        errorOccurred = true;
+        break;
+      }
+    } else if (isInlineExpression(matchedNode)) {
+      // Directly evaluate the expression
+      const { status, result } = await evaluateExpression(kernel, matchedNode.value);
+
+      // Check for errors
+      if (status === 'error') {
+        fileWarn(
+          vfile,
+          'An exception occurred during expression evaluation, halting further execution',
+        );
+        // Make a note of the failure
+        errorOccurred = true;
+        break;
+      }
+      // Cache result
+      results.push(result);
+    } else {
+      assert(false);
+    }
+  }
+  return { results, errorOccurred };
+}
+
+/**
+ * Apply computed outputs (MIME bundles, stdout, etc.) to MDAST.
+ * If an unanticipated error occurred during execution, the length of
+ * `computedResult` may not correspond to that of `nodes` (it may be shorter)
+ *
+ * @param nodes executable MDAST nodes
+ * @param computedResult computed results for each node
+ */
+function applyComputedOutputsToNodes(
+  nodes: (ICellBlock | InlineExpression)[],
+  computedResult: (IOutput[] | IExpressionResult)[],
+) {
+  for (const matchedNode of nodes) {
+    // Pull out the result for this node
+    const thisResult = computedResult.shift();
+
+    if (isCellBlock(matchedNode)) {
+      // Pull out output to set data
+      const output = select('output', matchedNode) as unknown as { data: IOutput[] };
+      // Set the output array to empty if we don't have a result (e.g. due to a kernel error)
+      output.data = thisResult === undefined ? [] : (thisResult as IOutput[]);
+    } else if (isInlineExpression(matchedNode)) {
+      // Set data of expression to the result, or empty if we don't have one
+      matchedNode.data =
+        thisResult === undefined ? undefined : (thisResult as unknown as Record<string, unknown>);
+    } else {
+      // This should never happen
+      assert(false);
+    }
+  }
+}
+
+/**
  * Transform an AST to include the outputs of executing the given notebook
  *
+ * @param session
  * @param sessionManager
  * @param mdast
  * @param frontmatter
- * @param filePath
  * @param ignoreCache
- * @param file
+ * @param vfile
+ * @param errorIsFatal
  */
 export async function transformKernelExecution(
   session: ISession,
   sessionManager: SessionManager,
   mdast: GenericParent,
   frontmatter: PageFrontmatter,
-  filePath: string,
   ignoreCache: boolean,
-  file: VFile,
+  vfile: VFile,
+  errorIsFatal: boolean,
 ) {
   const options = {
-    path: filePath,
+    path: vfile.path,
     type: 'notebook',
-    name: path.basename(filePath),
+    name: path.basename(vfile.path),
     kernel: {
       name: frontmatter?.kernelspec?.name ?? 'python3',
     },
@@ -211,72 +328,53 @@ export async function transformKernelExecution(
   const cachePath = path.join(session.buildPath(), 'execute');
   const cache = new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath);
 
-  // Boot up a kernel, and execute each cell
-  return await sessionManager.startNew(options).then(async (conn) => {
-    const kernel = conn.kernel;
-    assert(kernel);
-    console.log(`Connected to kernel ${kernel.name}`);
+  // Pull out code-like nodes
+  const executableNodes = selectAll(
+    'block:has(code[executable=true]):has(output),inlineExpression',
+    mdast,
+  ) as (ICellBlock | InlineExpression)[];
 
-    // Pull out code-like nodes
-    const codeOrEvalNodes = selectAll(
-      'block:has(code[executable=true]):has(output),inlineExpression',
-      mdast,
-    ) as (ICellBlock | InlineExpression)[];
+  // See if we already cached this execution
+  const cacheKey = buildCacheKey(executableNodes);
+  let cachedResults: (IExpressionResult | IOutput[])[] | undefined = cache.get(cacheKey);
 
-    // See if we already cached this execution
-    const cacheKey = buildCacheKey(codeOrEvalNodes);
-    let cachedResults: (IExpressionResult | IOutput[])[] | undefined = cache.get(cacheKey);
-
-    // Execute notebook?
-    if (ignoreCache || cachedResults === undefined) {
-      console.log('Re-executing', { ignoreCache, cachedResults });
-      try {
-        // TODO: in future populate this array, which will be cached,
-        //       then use positional correspondence with true AST
-        cachedResults = [];
-        for (const matchedNode of codeOrEvalNodes) {
-          if (isCellBlock(matchedNode)) {
-            // Pull out code to execute
-            const code = select('code', matchedNode) as Code;
-            const { status, outputs } = await executeCode(kernel, code.value);
-            // Cache result
-            cachedResults.push(outputs);
-          } else if (isInlineExpression(matchedNode)) {
-            // Directly evaluate the expression
-            const { status, result } = await evaluateExpression(kernel, matchedNode.value);
-            // Cache result
-            cachedResults.push(result);
-          }
+  // Do we need to re-execute notebook?
+  if (ignoreCache || cachedResults === undefined) {
+    fileInfo(
+      vfile,
+      ignoreCache
+        ? 'Code cells and expressions will be re-evaluated, as the cache is being ignored'
+        : 'Code cells and expressions will be re-evaluated, as there is no entry in the execution cache',
+    );
+    // Boot up a kernel, and execute each cell
+    let sessionConnection: Session.ISessionConnection | undefined;
+    return await sessionManager
+      .startNew(options)
+      .then(async (conn) => {
+        sessionConnection = conn;
+        assert(conn.kernel);
+        fileInfo(vfile, `Connected to kernel ${conn.kernel.name}`);
+        // Execute notebook
+        const { results, errorOccurred } = await computeExecutableNodes(
+          conn.kernel,
+          executableNodes,
+          vfile,
+        );
+        // Populate cache if things were successful
+        if (!errorOccurred) {
+          cache.set(cacheKey, results);
+        } else {
+          // Otherwise, keep tabs on the error
+          fileError(vfile, 'An error occurred during kernel execution', { fatal: errorIsFatal });
         }
-        // Populate cache
-        cache.set(cacheKey, cachedResults);
-      } catch (e: any) {
-        console.error('Execution failed', e);
-        throw new Error();
-      } finally {
-        // Shutdown kernel
-        await kernel.shutdown();
-      }
-    }
-    assert(cachedResults !== undefined);
+        // Refer to these computed results
+        cachedResults = results;
+      })
+      // Ensure that we shut-down the kernel
+      .finally(async () => sessionConnection !== undefined && sessionConnection.shutdown());
+  }
+  assert(cachedResults !== undefined);
 
-    // Apply results to tree
-    for (const matchedNode of codeOrEvalNodes) {
-      if (isCellBlock(matchedNode)) {
-        assert(cachedResults.length > 0);
-        // Pull out output to set data
-        const output = select('output', matchedNode) as unknown as { data: IOutput[] };
-        output.data = cachedResults.shift()! as IOutput[];
-      } else if (isInlineExpression(matchedNode)) {
-        assert(cachedResults.length > 0);
-        // Set data of expression
-        matchedNode.data = cachedResults.shift()! as unknown as Record<string, unknown>;
-      } else {
-        // This should never happen
-        assert(false);
-      }
-    }
-
-    console.log('Done execution', JSON.stringify(mdast));
-  });
+  // Apply results to tree
+  applyComputedOutputsToNodes(executableNodes, cachedResults);
 }
