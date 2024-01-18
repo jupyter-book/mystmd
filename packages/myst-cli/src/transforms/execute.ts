@@ -6,10 +6,11 @@ import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { VFile } from 'vfile';
-import { renderExpression } from './inlineExpressions.js';
 import path from 'node:path';
 import assert from 'node:assert';
 import { createHash } from 'node:crypto';
+import type { ISession } from '../session/index.js';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 /**
  * Interpret an IOPub message as an IOutput object
@@ -130,11 +131,38 @@ function buildCacheKey(mdast: (ICellBlock | InlineExpression)[]): string {
   return createHash('md5').update(hashableString).digest('hex');
 }
 
-function getCache(key: string): CacheItem | undefined {
-  return undefined;
-}
+class LocalDiskCache<T> {
+  constructor(cachePath: string) {
+    this._cachePath = cachePath;
 
-function setCache(key: string, value: CacheItem) {}
+    if (!existsSync(cachePath)) {
+      mkdirSync(cachePath, { recursive: true });
+    }
+  }
+
+  private _cachePath: string;
+
+  private _makeKeyPath(key: string): string {
+    return path.join(this._cachePath, `${key}.json`);
+  }
+
+  test(key: string): boolean {
+    return existsSync(this._makeKeyPath(key));
+  }
+
+  get(key: string): T | undefined {
+    const keyPath = this._makeKeyPath(key);
+    if (!existsSync(keyPath)) {
+      return undefined;
+    }
+    return JSON.parse(readFileSync(keyPath, { encoding: 'utf8' }));
+  }
+
+  set(key: string, item: T) {
+    const keyPath = this._makeKeyPath(key);
+    return writeFileSync(keyPath, JSON.stringify(item), { encoding: 'utf8' });
+  }
+}
 
 type ICellBlockOutput = GenericNode & {
   data: IOutput[];
@@ -163,6 +191,7 @@ function isInlineExpression(node: GenericNode): node is InlineExpression {
  * @param file
  */
 export async function transformKernelExecution(
+  session: ISession,
   sessionManager: SessionManager,
   mdast: GenericParent,
   frontmatter: PageFrontmatter,
@@ -179,6 +208,9 @@ export async function transformKernelExecution(
     },
   };
 
+  const cachePath = path.join(session.buildPath(), 'execute');
+  const cache = new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath);
+
   // Boot up a kernel, and execute each cell
   return await sessionManager.startNew(options).then(async (conn) => {
     const kernel = conn.kernel;
@@ -193,10 +225,11 @@ export async function transformKernelExecution(
 
     // See if we already cached this execution
     const cacheKey = buildCacheKey(codeOrEvalNodes);
-    let cachedResults: (IExpressionResult | IOutput[])[] | undefined = getCache(cacheKey);
+    let cachedResults: (IExpressionResult | IOutput[])[] | undefined = cache.get(cacheKey);
 
     // Execute notebook?
     if (ignoreCache || cachedResults === undefined) {
+      console.log('Re-executing', { ignoreCache, cachedResults });
       try {
         // TODO: in future populate this array, which will be cached,
         //       then use positional correspondence with true AST
@@ -216,7 +249,7 @@ export async function transformKernelExecution(
           }
         }
         // Populate cache
-        setCache(cacheKey, cachedResults);
+        cache.set(cacheKey, cachedResults);
       } catch (e: any) {
         console.error('Execution failed', e);
         throw new Error();
