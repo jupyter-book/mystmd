@@ -28,12 +28,12 @@ export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
 interface JupyterServerListItem {
   base_url: string;
   hostname: string;
-  password: boolean,
-  pid: number,
-  port: number,
+  password: boolean;
+  pid: number;
+  port: number;
   root_dir: string;
-  secure: boolean,
-  sock: string,
+  secure: boolean;
+  sock: string;
   token: string;
   url: string;
   version: string;
@@ -52,7 +52,7 @@ export function findExistingJupyterServer(): JupyterServerSettings | undefined {
   if (servers.length === 0) {
     return undefined;
   }
-  servers.sort((a, b) => a.pid - b.pid)
+  servers.sort((a, b) => a.pid - b.pid);
   const server = servers.pop()!;
   return {
     baseUrl: server.url,

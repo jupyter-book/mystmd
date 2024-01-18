@@ -173,7 +173,10 @@ export class Session implements ISession {
       const partialServerSettings = await new Promise<JupyterServerSettings>(
         async (resolve, reject) => {
           if (process.env.JUPYTER_BASE_URL === undefined) {
-            resolve(findExistingJupyterServer() || (await launchJupyterServer(this.contentPath(), this.log)));
+            resolve(
+              findExistingJupyterServer() ||
+                (await launchJupyterServer(this.contentPath(), this.log)),
+            );
           } else {
             resolve({
               baseUrl: process.env.JUPYTER_BASE_URL,
