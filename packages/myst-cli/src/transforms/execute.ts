@@ -25,16 +25,34 @@ export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
 };
 
+interface JupyterServerListItem {
+  base_url: string;
+  hostname: string;
+  password: boolean,
+  pid: number,
+  port: number,
+  root_dir: string;
+  secure: boolean,
+  sock: string,
+  token: string;
+  url: string;
+  version: string;
+}
+
+/**
+ * Find the newest (by PID) active Jupyter Server, or return undefined.
+ */
 export function findExistingJupyterServer(): JupyterServerSettings | undefined {
   const pythonPath = which.sync('python');
   const listProc = spawnSync(pythonPath, ['-m', 'jupyter_server', 'list', '--jsonlist']);
   if (listProc.status !== 0) {
     return undefined;
   }
-  const servers = JSON.parse(listProc.stdout.toString());
+  const servers = JSON.parse(listProc.stdout.toString()) as JupyterServerListItem[];
   if (servers.length === 0) {
     return undefined;
   }
+  servers.sort((a, b) => a.pid - b.pid)
   const server = servers.pop()!;
   return {
     baseUrl: server.url,
@@ -42,6 +60,12 @@ export function findExistingJupyterServer(): JupyterServerSettings | undefined {
   };
 }
 
+/**
+ * Launch a new Jupyter Server whose root directory coincides with the content path
+ *
+ * @param contentPath path to server contents
+ * @param log logger
+ */
 export function launchJupyterServer(
   contentPath: string,
   log: Logger,
