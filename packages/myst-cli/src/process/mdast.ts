@@ -320,7 +320,7 @@ export async function postProcessMdast(
   });
   await pipe.run(mdast, vfile);
 
-  // Ensure there are keys on every node after post-processing
+  // Ensure there are keys on every node after post processing
   keysTransform(mdast);
   logMessagesFromVFile(session, fileState.file);
   logMessagesFromVFile(session, vfile);
