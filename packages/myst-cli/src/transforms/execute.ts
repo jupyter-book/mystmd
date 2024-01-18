@@ -1,6 +1,12 @@
 import { select, selectAll } from 'unist-util-select';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
+import {
+  Kernel,
+  KernelMessage,
+  ServerConnection,
+  Session,
+  SessionManager,
+} from '@jupyterlab/services';
 import type { IExpressionResult } from './inlineExpressions.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
@@ -11,6 +17,67 @@ import assert from 'node:assert';
 import { createHash } from 'node:crypto';
 import type { ISession } from '../session/index.js';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import which from 'which';
+import { spawn, spawnSync } from 'node:child_process';
+import { Logger } from 'myst-cli-utils';
+
+export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
+  dispose?: () => void;
+};
+
+export function findExistingJupyterServer(): JupyterServerSettings | undefined {
+  const pythonPath = which.sync('python');
+  const listProc = spawnSync(pythonPath, ['-m', 'jupyter_server', 'list', '--jsonlist']);
+  if (listProc.status !== 0) {
+    return undefined;
+  }
+  const servers = JSON.parse(listProc.stdout.toString());
+  if (servers.length === 0) {
+    return undefined;
+  }
+  const server = servers.pop()!;
+  return {
+    baseUrl: server.url,
+    token: server.token,
+  };
+}
+
+export function launchJupyterServer(
+  contentPath: string,
+  log: Logger,
+): Promise<JupyterServerSettings> {
+  const pythonPath = which.sync('python');
+  const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
+  const promise = new Promise<JupyterServerSettings>((resolve, reject) => {
+    // proc.stderr.on('data', (data) => console.log({err: data.toString()}))
+    proc.stderr.on('data', (buf) => {
+      const data = buf.toString();
+      // Wait for server to declare itself up
+      const match = data.match(/([^\s]*?)\?token=([^\s]*)/);
+      if (match === null) {
+        return;
+      }
+
+      // Pull out the match information
+      const [_, addr, token] = match;
+
+      // Resolve the promise
+      resolve({
+        baseUrl: addr,
+        token: token,
+        dispose: () => proc.kill('SIGINT'),
+      });
+      // Unsubscribe from here-on-in
+      proc.stdout.removeAllListeners('data');
+    });
+    setTimeout(reject, 20_000); // Fail after 20 seconds of nothing happening
+  });
+  // Inform log
+  promise.then((settings) =>
+    log.info(`Started up Jupyter Server on ${settings.baseUrl}?token=${settings.token}`),
+  );
+  return promise;
+}
 
 /**
  * Interpret an IOPub message as an IOutput object
@@ -102,13 +169,6 @@ async function evaluateExpression(kernel: Kernel.IKernelConnection, expr: string
   return { status: result.status, result };
 }
 
-type CacheItem = (IExpressionResult | IOutput[])[];
-
-type HashableCacheKeyItem = {
-  kind: string;
-  content: string;
-};
-
 /**
  * Build a cache key from an array of executable nodes
  *
@@ -116,7 +176,10 @@ type HashableCacheKeyItem = {
  */
 function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
   // Build an array of hashable items from an array of nodes
-  const hashableItems: HashableCacheKeyItem[] = [];
+  const hashableItems: {
+    kind: string;
+    content: string;
+  }[] = [];
   for (const node of nodes) {
     if (isCellBlock(node)) {
       hashableItems.push({
@@ -300,7 +363,6 @@ function applyComputedOutputsToNodes(
  * Transform an AST to include the outputs of executing the given notebook
  *
  * @param session
- * @param sessionManager
  * @param mdast
  * @param frontmatter
  * @param ignoreCache
@@ -309,7 +371,6 @@ function applyComputedOutputsToNodes(
  */
 export async function transformKernelExecution(
   session: ISession,
-  sessionManager: SessionManager,
   mdast: GenericParent,
   frontmatter: PageFrontmatter,
   ignoreCache: boolean,
@@ -346,32 +407,39 @@ export async function transformKernelExecution(
         ? 'Code cells and expressions will be re-evaluated, as the cache is being ignored'
         : 'Code cells and expressions will be re-evaluated, as there is no entry in the execution cache',
     );
-    // Boot up a kernel, and execute each cell
-    let sessionConnection: Session.ISessionConnection | undefined;
-    return await sessionManager
-      .startNew(options)
-      .then(async (conn) => {
-        sessionConnection = conn;
-        assert(conn.kernel);
-        fileInfo(vfile, `Connected to kernel ${conn.kernel.name}`);
-        // Execute notebook
-        const { results, errorOccurred } = await computeExecutableNodes(
-          conn.kernel,
-          executableNodes,
-          vfile,
-        );
-        // Populate cache if things were successful
-        if (!errorOccurred) {
-          cache.set(cacheKey, results);
-        } else {
-          // Otherwise, keep tabs on the error
-          fileError(vfile, 'An error occurred during kernel execution', { fatal: errorIsFatal });
-        }
-        // Refer to these computed results
-        cachedResults = results;
-      })
-      // Ensure that we shut-down the kernel
-      .finally(async () => sessionConnection !== undefined && sessionConnection.shutdown());
+    const sessionManager = await session.jupyterSessionManager();
+    // Do we not have a working session?
+    if (sessionManager === undefined) {
+      cachedResults = [];
+    }
+    // Otherwise, boot up a kernel, and execute each cell
+    else {
+      let sessionConnection: Session.ISessionConnection | undefined;
+      await sessionManager
+        .startNew(options)
+        .then(async (conn) => {
+          sessionConnection = conn;
+          assert(conn.kernel);
+          fileInfo(vfile, `Connected to kernel ${conn.kernel.name}`);
+          // Execute notebook
+          const { results, errorOccurred } = await computeExecutableNodes(
+            conn.kernel,
+            executableNodes,
+            vfile,
+          );
+          // Populate cache if things were successful
+          if (!errorOccurred) {
+            cache.set(cacheKey, results);
+          } else {
+            // Otherwise, keep tabs on the error
+            fileError(vfile, 'An error occurred during kernel execution', { fatal: errorIsFatal });
+          }
+          // Refer to these computed results
+          cachedResults = results;
+        })
+        // Ensure that we shut-down the kernel
+        .finally(async () => sessionConnection !== undefined && sessionConnection.shutdown());
+    }
   }
   assert(cachedResults !== undefined);
 

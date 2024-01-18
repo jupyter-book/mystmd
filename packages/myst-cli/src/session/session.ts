@@ -19,6 +19,12 @@ import type { RootState } from '../store/reducers.js';
 import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
+import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
+import {
+  findExistingJupyterServer,
+  JupyterServerSettings,
+  launchJupyterServer,
+} from '../transforms/execute.js';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -62,6 +68,7 @@ export class Session implements ISession {
 
   _shownUpgrade = false;
   _latestVersion?: string;
+  _jupyterSessionManager: SessionManager | undefined | null = null;
 
   get log(): Logger {
     return this.$logger;
@@ -156,5 +163,34 @@ export class Session implements ISession {
       });
     });
     return warnings;
+  }
+
+  async jupyterSessionManager(): Promise<SessionManager | undefined> {
+    if (this._jupyterSessionManager !== null) {
+      return Promise.resolve(this._jupyterSessionManager);
+    }
+    try {
+      const partialServerSettings = await new Promise<JupyterServerSettings>(
+        async (resolve, reject) => {
+          if (process.env.JUPYTER_BASE_URL === undefined) {
+            resolve(findExistingJupyterServer() || (await launchJupyterServer(this.contentPath(), this.log)));
+          } else {
+            resolve({
+              baseUrl: process.env.JUPYTER_BASE_URL,
+              token: process.env.JUPYTER_TOKEN,
+            });
+          }
+        },
+      );
+      const serverSettings = ServerConnection.makeSettings(partialServerSettings);
+      const kernelManager = new KernelManager({ serverSettings });
+      const manager = new SessionManager({ kernelManager, serverSettings });
+      // TODO: this is a race condition, even though we shouldn't hit if if this promise is actually awaited
+      this._jupyterSessionManager = manager;
+      return manager;
+    } catch {
+      this._jupyterSessionManager = undefined;
+      return undefined;
+    }
   }
 }

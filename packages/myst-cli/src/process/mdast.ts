@@ -65,7 +65,8 @@ import {
   transformImagesWithoutExt,
   transformImagesToDisk,
   transformFilterOutputStreams,
-  transformLiftCodeBlocksInJupytext, renderInlineExpressionsTransform
+  transformLiftCodeBlocksInJupytext,
+  renderInlineExpressionsTransform,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
@@ -74,7 +75,12 @@ import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
-import { transformKernelExecution } from '../transforms/execute.js';
+import {
+  findExistingJupyterServer,
+  JupyterServerSettings,
+  launchJupyterServer,
+  transformKernelExecution,
+} from '../transforms/execute.js';
 import { ServerConnection, KernelManager, SessionManager } from '@jupyterlab/services';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
@@ -225,13 +231,7 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  const serverSettings = ServerConnection.makeSettings({
-    baseUrl: process.env.JUPYTER_BASE_URL,
-    token: process.env.JUPYTER_TOKEN,
-  });
-  const kernelManager = new KernelManager({ serverSettings });
-  const sessionManager = new SessionManager({ kernelManager, serverSettings });
-  await transformKernelExecution(session, sessionManager, mdast, frontmatter, false, vfile, false);
+  await transformKernelExecution(session, mdast, frontmatter, false, vfile, false);
 
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
