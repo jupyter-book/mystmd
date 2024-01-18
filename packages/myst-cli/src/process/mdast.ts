@@ -65,7 +65,7 @@ import {
   transformImagesWithoutExt,
   transformImagesToDisk,
   transformFilterOutputStreams,
-  transformLiftCodeBlocksInJupytext,
+  transformLiftCodeBlocksInJupytext, renderInlineExpressionsTransform
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
@@ -235,6 +235,7 @@ export async function transformMdast(
 
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
+
   transformCitations(mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
@@ -358,6 +359,7 @@ export async function finalizeMdast(
       altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     });
   }
+  renderInlineExpressionsTransform(mdast, vfile);
   transformOutputsToFile(session, mdast, imageWriteFolder, {
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     vfile,

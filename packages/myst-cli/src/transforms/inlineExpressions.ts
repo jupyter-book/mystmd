@@ -1,8 +1,15 @@
-import { fileWarn, RuleId } from 'myst-common';
-import type { InlineExpression } from 'myst-spec-ext';
+import { fileWarn, type GenericNode, type GenericParent, liftChildren, RuleId } from 'myst-common';
+import type { Image, InlineExpression } from 'myst-spec-ext';
 import type { StaticPhrasingContent } from 'myst-spec';
-import type { VFile } from 'vfile';
+import { VFile } from 'vfile';
 import { BASE64_HEADER_SPLIT } from './images.js';
+import { castSession, ISession } from '../session/index.js';
+import { selectAll } from 'unist-util-select';
+import { MinifiedOutput, walkOutputs } from 'nbtx';
+import { htmlTransform } from 'myst-transforms';
+import { dirname, relative } from 'node:path';
+import stripAnsi from 'strip-ansi';
+import { remove } from 'unist-util-remove';
 
 export const metadataSection = 'user_expressions';
 
@@ -79,4 +86,11 @@ export function renderExpression(node: InlineExpression, file: VFile): StaticPhr
     });
   }
   return [];
+}
+
+export function renderInlineExpressionsTransform(mdast: GenericParent, vfile: VFile) {
+  const expressions = selectAll('inlineExpression', mdast) as InlineExpression[];
+  expressions.forEach((node) => {
+    node.children = renderExpression(node, vfile);
+  });
 }
