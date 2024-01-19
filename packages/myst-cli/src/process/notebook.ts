@@ -20,6 +20,7 @@ import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
 import type { Code } from 'myst-spec-ext';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
@@ -71,7 +72,7 @@ export async function processNotebook(
   file: string,
   content: string,
   opts?: { minifyMaxCharacters?: number },
-): Promise<GenericParent> {
+): Promise<{ ast: GenericParent; frontmatter: PageFrontmatter }> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
@@ -79,6 +80,7 @@ export async function processNotebook(
   const language = metadata?.kernelspec?.language ?? 'python';
   log.debug(`Processing Notebook: "${file}"`);
 
+  const frontmatter = metadata.myst as PageFrontmatter;
   const cache = castSession(session);
 
   let end = cells.length;
@@ -139,5 +141,5 @@ export async function processNotebook(
     Promise.resolve([] as GenericNode[]),
   );
 
-  return { type: 'root', children: items };
+  return { ast: { type: 'root', children: items }, frontmatter };
 }

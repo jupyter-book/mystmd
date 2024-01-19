@@ -63,10 +63,16 @@ export async function loadFile(
         const content = fs.readFileSync(file).toString();
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
-        const mdast = await processNotebook(cache, file, content, opts);
+        const notebook = await processNotebook(cache, file, content, opts);
         cache.$setMdast(file, {
           sha256,
-          pre: { kind: SourceFileKind.Notebook, file, location, mdast },
+          pre: {
+            kind: SourceFileKind.Notebook,
+            file,
+            location,
+            mdast: notebook.ast,
+            frontmatter: notebook.frontmatter,
+          },
         });
         break;
       }
