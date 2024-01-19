@@ -13,6 +13,7 @@ import { blockquoteTransform } from './blockquote.js';
 import { codeBlockToDirectiveTransform } from './code.js';
 import { removeUnicodeTransform } from './removeUnicode.js';
 import { containerChildrenTransform } from './containers.js';
+import { headingDepthTransform } from './headings.js';
 
 export function basicTransformations(tree: GenericParent, file: VFile, opts: Record<string, any>) {
   // lifting roles and directives must happen before the mystTarget transformation
@@ -39,6 +40,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts: Rec
   imageAltTextTransform(tree);
   blockquoteTransform(tree);
   removeUnicodeTransform(tree);
+  headingDepthTransform(tree, file, opts);
 }
 
 export const basicTransformationsPlugin: Plugin<

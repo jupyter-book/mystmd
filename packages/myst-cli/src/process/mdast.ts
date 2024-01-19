@@ -31,11 +31,7 @@ import {
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
-import {
-  getPageFrontmatter,
-  processPageFrontmatter,
-  updateFileInfoFromFrontmatter,
-} from '../frontmatter.js';
+import { processPageFrontmatter, updateFileInfoFromFrontmatter } from '../frontmatter.js';
 import { selectors } from '../store/index.js';
 import type { ISession } from '../session/types.js';
 import { castSession } from '../session/cache.js';
@@ -113,6 +109,7 @@ export async function transformMdast(
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
     index?: string;
+    titleDepth?: number;
   },
 ) {
   const {
@@ -125,6 +122,7 @@ export async function transformMdast(
     watchMode = false,
     minifyMaxCharacters,
     index,
+    titleDepth,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -142,24 +140,22 @@ export async function transformMdast(
   vfile.path = file;
   // Use structuredClone in future (available in node 17)
   const mdast = JSON.parse(JSON.stringify(mdastPre)) as GenericParent;
-  const frontmatter = preFrontmatter
-    ? processPageFrontmatter(
-        session,
-        preFrontmatter,
-        {
-          property: 'frontmatter',
-          file,
-          messages: {},
-          errorLogFn: (message: string) => {
-            fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
-          },
-          warningLogFn: (message: string) => {
-            fileWarn(vfile, message, { ruleId: RuleId.validPageFrontmatter });
-          },
-        },
-        projectPath,
-      )
-    : getPageFrontmatter(session, mdast, file, projectPath);
+  const frontmatter = processPageFrontmatter(
+    session,
+    preFrontmatter ?? {},
+    {
+      property: 'frontmatter',
+      file,
+      messages: {},
+      errorLogFn: (message: string) => {
+        fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
+      },
+      warningLogFn: (message: string) => {
+        fileWarn(vfile, message, { ruleId: RuleId.validPageFrontmatter });
+      },
+    },
+    projectPath,
+  );
   const references: References = {
     cite: { order: [], data: {} },
   };
@@ -178,6 +174,7 @@ export async function transformMdast(
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
+      titleDepth: titleDepth ?? (frontmatter.title && !frontmatter.content_includes_title ? 1 : 0),
     })
     .use(inlineMathSimplificationPlugin)
     .use(mathPlugin, { macros: frontmatter.math })

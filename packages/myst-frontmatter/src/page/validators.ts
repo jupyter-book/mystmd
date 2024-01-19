@@ -7,6 +7,7 @@ import {
   validateString,
   validateObject,
   validationError,
+  validateBoolean,
 } from 'simple-validators';
 import {
   PROJECT_AND_PAGE_FRONTMATTER_KEYS,
@@ -34,6 +35,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'jupytext',
   'tags',
   'parts',
+  'content_includes_title',
   ...KNOWN_PARTS,
 ];
 
@@ -102,6 +104,12 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     if (partsEntries.length > 0) {
       output.parts = Object.fromEntries(partsEntries);
     }
+  }
+  if (defined(value.content_includes_title)) {
+    output.content_includes_title = validateBoolean(
+      value.content_includes_title,
+      incrementOptions('content_includes_title', opts),
+    );
   }
   return output;
 }

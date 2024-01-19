@@ -155,7 +155,12 @@ export async function localArticleToTypstRaw(
     const includeFileBases = results.map((result, ind) => {
       const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
       const includeFile = path.format({ dir, ext, base });
-      writeFileToFolder(includeFile, result.value);
+      let part = '';
+      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
+      if (title && !content_includes_title) {
+        part = `= ${title}\n\n`;
+      }
+      writeFileToFolder(includeFile, `${part}${result.value}`);
       return base;
     });
     const includeContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
@@ -263,7 +268,12 @@ export async function localArticleToTypstTemplated(
       const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
       const includeFile = path.format({ dir, ext, base });
       const exports = renderTypstImports(false, collected);
-      writeFileToFolder(includeFile, `${versionString}\n\n${exports}\n\n${result.value}`);
+      let part = '';
+      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
+      if (title && !content_includes_title) {
+        part = `= ${title}\n\n`;
+      }
+      writeFileToFolder(includeFile, `${versionString}\n\n${exports}\n\n${part}${result.value}`);
       return base;
     });
     typstContent = includeFileBases.map((base) => `#include "${base}"`).join('\n');

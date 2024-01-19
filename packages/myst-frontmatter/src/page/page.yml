@@ -175,3 +175,18 @@ cases:
         abstract: true
     normalized: {}
     errors: 1
+  - title: content_includes_title true
+    raw:
+      content_includes_title: true
+    normalized:
+      content_includes_title: true
+  - title: content_includes_title false
+    raw:
+      content_includes_title: false
+    normalized:
+      content_includes_title: false
+  - title: content_includes_title invalid
+    raw:
+      content_includes_title: invalid
+    normalized: {}
+    errors: 1
