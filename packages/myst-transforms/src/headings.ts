@@ -1,20 +1,10 @@
 import type { Plugin } from 'unified';
-import type { GenericParent } from 'myst-common';
+import { fileWarn, type GenericParent } from 'myst-common';
 import type { Heading } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
+import type { VFile } from 'vfile';
 
-const VALID_HEADING_DEPTHS = [1, 2, 3, 4, 5, 6];
-
-/**
- * Sorted list of heading depth values
- */
-export function mapFromHeadingDepths(depths: number[]) {
-  return VALID_HEADING_DEPTHS.map((d) => {
-    return depths.indexOf(d) + 1;
-  });
-}
-
-type HeadingDepthOptions = { headingDepthMap?: number[] };
+type HeadingDepthOptions = { titleDepth?: number };
 
 /**
  * Modify heading depths based on heading depth map
@@ -29,22 +19,34 @@ type HeadingDepthOptions = { headingDepthMap?: number[] };
  * This also does not take into account lifting title from heading to frontmatter;
  * any transformation there must be complete prior to this transform.
  */
-export async function headingDepthTransform(tree: GenericParent, opts?: HeadingDepthOptions) {
+export async function headingDepthTransform(
+  tree: GenericParent,
+  vfile: VFile,
+  opts?: HeadingDepthOptions,
+) {
+  const titleDepth = opts?.titleDepth && opts.titleDepth > 0 ? opts.titleDepth : 0;
   const headings = selectAll('heading', tree) as Heading[];
-  let headingDepthMap = opts?.headingDepthMap;
-  if (!headingDepthMap) {
-    const currentDepths = [...new Set(headings.map((heading) => heading.depth))].sort();
-    headingDepthMap = mapFromHeadingDepths(currentDepths);
+  if (headings.length === 0) return;
+  const currentDepths = [
+    ...new Set(headings.map((heading) => heading.depth).filter((depth) => !!depth)),
+  ].sort();
+  for (let i = currentDepths[0] + 1; i < currentDepths[currentDepths.length - 1]; i++) {
+    if (!currentDepths.includes(i)) {
+      fileWarn(vfile, `missing heading depth ${i}`);
+    }
+  }
+  if (currentDepths.length + titleDepth > 6) {
+    fileWarn(vfile, `max number of heading depth levels exceeded; must be < ${7 - titleDepth}`);
   }
   headings.forEach((heading) => {
-    const newDepth = headingDepthMap?.[heading.depth - 1];
-    if (newDepth && VALID_HEADING_DEPTHS.includes(newDepth)) {
-      heading.depth = newDepth as number;
-    }
+    const depthIndex = currentDepths.indexOf(heading.depth);
+    if (depthIndex < 0) return;
+    const newDepth = depthIndex + 1 + titleDepth;
+    heading.depth = newDepth < 7 ? newDepth : 6;
   });
 }
 
 export const headingDepthPlugin: Plugin<[HeadingDepthOptions], GenericParent, GenericParent> =
-  (opts) => (tree) => {
-    headingDepthTransform(tree, opts);
+  (opts) => (tree, vfile) => {
+    headingDepthTransform(tree, vfile, opts);
   };

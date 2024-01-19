@@ -40,7 +40,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts: Rec
   imageAltTextTransform(tree);
   blockquoteTransform(tree);
   removeUnicodeTransform(tree);
-  headingDepthTransform(tree, opts);
+  headingDepthTransform(tree, file, opts);
 }
 
 export const basicTransformationsPlugin: Plugin<

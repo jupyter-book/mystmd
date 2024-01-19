@@ -227,7 +227,7 @@ describe('getFrontmatter', () => {
     expect(tree).toEqual(input);
     expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: true });
   });
-  it('title extracted from h2 heading node, do not remove heading', () => {
+  it('title extracted from first h1 heading node, only first heading removed', () => {
     const input = {
       type: 'root',
       children: [
@@ -258,8 +258,26 @@ describe('getFrontmatter', () => {
       ],
     };
     const { tree, frontmatter } = getFrontmatter(new VFile(), copy(input), {});
-    expect(tree).toEqual(input);
-    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: true });
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'text',
+          value: 'hello',
+        },
+        {
+          type: 'heading',
+          depth: 1,
+          children: [
+            {
+              type: 'text',
+              value: 'Another Heading',
+            },
+          ],
+        },
+      ],
+    });
+    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
   });
   it('title extracted from single heading node, is removed', () => {
     const input = {
