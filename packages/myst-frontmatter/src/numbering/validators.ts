@@ -3,6 +3,7 @@ import {
   defined,
   incrementOptions,
   validateBoolean,
+  validateNumber,
   validateObjectKeys,
   validateString,
 } from 'simple-validators';
@@ -56,8 +57,17 @@ export function validateNumbering(input: any, opts: ValidationOptions): Numberin
     .filter((key) => !NUMBERING_OPTIONS.includes(key)) // For all the unknown options
     .forEach((key) => {
       if (defined(value[key])) {
-        const bool = validateBoolean(value[key], incrementOptions(key, opts));
-        if (defined(bool)) output[key] = bool;
+        if (typeof value[key] === 'number') {
+          const number = validateNumber(value[key], {
+            ...incrementOptions(key, opts),
+            integer: true,
+            min: 1,
+          });
+          if (defined(number)) output[key] = number;
+        } else {
+          const bool = validateBoolean(value[key], incrementOptions(key, opts));
+          if (defined(bool)) output[key] = bool;
+        }
       }
     });
   if (Object.keys(output).length === 0) return undefined;

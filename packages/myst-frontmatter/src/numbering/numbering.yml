@@ -19,7 +19,7 @@ cases:
   - title: invalid extras keys are removed
     raw:
       numbering:
-        list: 1
+        list: 'invalid'
     normalized: {}
     errors: 1
   - title: full object returns self
@@ -62,3 +62,20 @@ cases:
         heading_4: true
         heading_5: true
         heading_6: true
+  - title: Allow numbers to start at
+    raw:
+      numbering:
+        figure: 2
+        list: 1
+    normalized:
+      numbering:
+        figure: 2
+        list: 1
+  - title: Numbers can't be negative or fractional
+    raw:
+      numbering:
+        figure: 1.5 # Must not be a fraction
+        list: -1 # Must be positive
+        something: 0 # This should just be true
+    normalized: {}
+    errors: 3
