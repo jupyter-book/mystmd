@@ -3,7 +3,7 @@ import { remove } from 'unist-util-remove';
 import { select } from 'unist-util-select';
 import type { Block, Code, Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
-import { RuleId, fileError, toText } from 'myst-common';
+import { RuleId, fileError, toText, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 
@@ -38,6 +38,14 @@ export function getFrontmatter(
         ruleId: RuleId.frontmatterIsYaml,
       });
     }
+  }
+  if (frontmatter.title === null) {
+    if (frontmatter.content_includes_title === false) {
+      fileWarn(file, 'frontmatter title cannot be `null` if content_includes_title is false');
+    } else {
+      frontmatter.content_includes_title = true;
+    }
+    delete frontmatter.title;
   }
   const explicitContentIncludesTitle = frontmatter.content_includes_title;
   const firstHeadingNode = select('heading', tree) as Heading;

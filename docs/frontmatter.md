@@ -169,7 +169,7 @@ There are several fields to title MyST projects and pages. Primary page and proj
 
 Along with these title fields, pages and projects have `name` and `description`. These are intended more as MyST metadata and will not carry through to MyST site builds or exports.
 
-````{note} Defining Title in Markdown
+````{note} Defining Page Title in Markdown
 
 If `title` is not defined in the fronmtatter, it will be pulled from the a heading at the top of the markdown instead. In this case, the heading will be removed from the content to the frontmatter for usage in a MyST site header or exported document title page.
 
