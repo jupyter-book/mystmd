@@ -88,9 +88,6 @@ The following table lists the available frontmatter fields, a brief description 
 * - `subtitle`
   - a string (max 500 chars, see [](#titles))
   - page only
-* - `content_includes_title`
-  - boolean (true/false, see [](#titles))
-  - page only
 * - `date`
   - a valid date formatted string
   - page can override project
@@ -186,9 +183,9 @@ For this page, "My MyST Title" is the title!
 ...
 ```
 
-If removing the title causes unexpected problems with the page formatting, you may use the flag `content_includes_title: true` or just explicitly set `title: null` in the frontmatter to prevent heading removal. The first heading will _still_ be copied as a placeholder, but the title will not be removed from the markdown.
+If removing the title causes unexpected problems with the page formatting, you may set `title: null` in the frontmatter to prevent heading removal. The first heading will _still_ be copied as a placeholder title, but it will not be removed from the markdown.
 
-In these cases, though, it is easiest to simply define a title in frontmatter.
+In these cases, though, it is probably easiest to simply define a title in frontmatter.
 ````
 
 +++

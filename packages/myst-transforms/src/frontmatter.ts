@@ -39,15 +39,8 @@ export function getFrontmatter(
       });
     }
   }
-  if (frontmatter.title === null) {
-    if (frontmatter.content_includes_title === false) {
-      fileWarn(file, 'frontmatter title cannot be `null` if content_includes_title is false');
-    } else {
-      frontmatter.content_includes_title = true;
-    }
-    delete frontmatter.title;
-  }
-  const explicitContentIncludesTitle = frontmatter.content_includes_title;
+  const titleNull = frontmatter.title === null;
+  if (titleNull) delete frontmatter.title;
   const firstHeadingNode = select('heading', tree) as Heading;
   // If title is not defined, copy first header to title
   if (!frontmatter.title && firstHeadingNode) {
@@ -58,7 +51,7 @@ export function getFrontmatter(
   const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);
   const nextNodeIsH1 = nextNode?.type === 'heading' && nextNode.depth === 1;
   // Explicitly handle the case of an H1 directly after the frontmatter
-  if (nextNodeIsH1 && !explicitContentIncludesTitle) {
+  if (nextNodeIsH1 && !titleNull) {
     const title = toText(nextNode.children);
     // Only remove the title if it is the same
     if (frontmatter.title && frontmatter.title === title) {

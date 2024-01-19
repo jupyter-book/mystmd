@@ -9,7 +9,7 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   parts?: Record<string, string[]>;
   /** Flag if frontmatter title is duplicated in content
    *
-   * Usually just set during mdast transform
+   * Set during initial file/frontmatter load
    */
   content_includes_title?: boolean;
 };
