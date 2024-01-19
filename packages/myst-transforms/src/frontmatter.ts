@@ -39,6 +39,12 @@ export function getFrontmatter(
       });
     }
   }
+  if (frontmatter.content_includes_title != null) {
+    fileWarn(file, `'frontmatter' cannot explicitly set: content_includes_title`, {
+      ruleId: RuleId.validPageFrontmatter,
+    });
+    delete frontmatter.content_includes_title;
+  }
   const titleNull = frontmatter.title === null;
   if (titleNull) delete frontmatter.title;
   const firstHeadingNode = select('heading', tree) as Heading;
