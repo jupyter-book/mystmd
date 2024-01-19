@@ -68,15 +68,15 @@ The following table lists the available frontmatter fields, a brief description 
   - description
   - field behavior
 * - `title`
+  - a string (max 500 chars, see [](#titles))
+  - page & project
+* - `short_title`
+  - a string (max 40 chars, see [](#titles))
+  - page & project
+* - `name`
   - a string (max 500 chars)
   - page & project
 * - `description`
-  - a string (max 500 chars)
-  - page & project
-* - `short_title`
-  - a string (max 40 chars)
-  - page & project
-* - `name`
   - a string (max 500 chars)
   - page & project
 * - `tags`
@@ -86,7 +86,10 @@ The following table lists the available frontmatter fields, a brief description 
   - a link to a local or remote image
   - page only
 * - `subtitle`
-  - a string (max 500 chars)
+  - a string (max 500 chars, see [](#titles))
+  - page only
+* - `content_includes_title`
+  - boolean (true/false, see [](#titles))
   - page only
 * - `date`
   - a valid date formatted string
@@ -155,6 +158,38 @@ Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` o
 
 `page can override project`
 : the field is available on both page & project but the value of the field on the page will override any set of the project. Note that the page field must be omitted or undefined, for the project value to be used, value of `null` (or `[]` in the case of `authors`) will still override the project value but clear the field for that page.
+
++++
+
+(titles)=
+
+## Titles
+
+There are several fields to title MyST projects and pages. Primary page and project titles can be specified simply as `title`. Pages and projects also both have `short_title`; this should provide a summarized title in less than 40 characters. It is used where space is limited, for example a site navigation panel. On pages (not projects) you may specify `subtitle`; this conveys complimentary information to the title and may be displayed below the title.
+
+Along with these title fields, pages and projects have `name` and `description`. These are intended more as MyST metadata and will not carry through to MyST site builds or exports.
+
+````{note} Defining Title in Markdown
+
+If `title` is not defined in the fronmtatter, it will be pulled from the a heading at the top of the markdown instead. In this case, the heading will be removed from the content to the frontmatter for usage in a MyST site header or exported document title page.
+
+```markdown
+---
+author: Marissa Myst
+---
+
+# My MyST Title
+
+## Introduction
+
+For this page, "My MyST Title" is the title!
+...
+```
+
+If removing the title causes unexpected problems with the page formatting, you may use the flag `content_includes_title: true` or just explicitly set `title: null` in the frontmatter to prevent heading removal. The first heading will _still_ be copied as a placeholder, but the title will not be removed from the markdown.
+
+In these cases, though, it is easiest to simply define a title in frontmatter.
+````
 
 +++
 
