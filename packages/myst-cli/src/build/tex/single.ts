@@ -137,7 +137,12 @@ export async function localArticleToTexRaw(
     const includeFileBases = results.map((result, ind) => {
       const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
       const includeFile = path.format({ dir, ext, base });
-      writeFileToFolder(includeFile, result.value);
+      let part = '';
+      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
+      if (title && !content_includes_title) {
+        part = `\\section{${title}}\n\n`;
+      }
+      writeFileToFolder(includeFile, `${part}${result.value}`);
       return base;
     });
     const includeContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
@@ -248,7 +253,12 @@ export async function localArticleToTexTemplated(
     const includeFilenames = results.map((result, ind) => {
       const includeFilename = `${name}-${content[ind]?.slug ?? ind}`;
       const includeFile = path.format({ dir, ext, base: `${includeFilename}${ext}` });
-      writeFileToFolder(includeFile, result.value);
+      let part = '';
+      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
+      if (title && !content_includes_title) {
+        part = `\\section{${title}}\n\n`;
+      }
+      writeFileToFolder(includeFile, `${part}${result.value}`);
       return includeFilename;
     });
     texContent = includeFilenames.map((base) => `\\include{${base}}`).join('\n');
