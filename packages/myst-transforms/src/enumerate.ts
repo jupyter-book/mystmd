@@ -87,7 +87,7 @@ type Target = {
 };
 
 type TargetCounts = {
-  heading?: (number | null)[];
+  heading: (number | null)[];
 } & Record<string, { main: number; sub: number }>;
 
 export type StateOptions = {
@@ -96,12 +96,12 @@ export type StateOptions = {
 
 export type NumberingOptions = {
   enumerator?: string;
-  figure?: boolean;
-  subfigure?: boolean;
-  equation?: boolean;
-  subequation?: boolean;
-  table?: boolean;
-  code?: boolean;
+  figure?: boolean | number;
+  subfigure?: boolean | number;
+  equation?: boolean | number;
+  subequation?: boolean | number;
+  table?: boolean | number;
+  code?: boolean | number;
   heading_1?: boolean;
   heading_2?: boolean;
   heading_3?: boolean;
@@ -184,11 +184,11 @@ function shouldEnumerate(
   if (typeof override === 'boolean') return override;
   if (kind === 'heading' && node.type === 'heading') {
     return (
-      numbering[`heading_${node.depth}` as keyof Omit<NumberingOptions, 'enumerator'>] ?? false
+      !!numbering[`heading_${node.depth}` as keyof Omit<NumberingOptions, 'enumerator'>] ?? false
     );
   }
-  if (node.subcontainer) return numbering.subfigure ?? false;
-  return numbering[kind as keyof Omit<NumberingOptions, 'enumerator'>] ?? false;
+  if (node.subcontainer) return !!numbering.subfigure ?? false;
+  return !!numbering[kind as keyof Omit<NumberingOptions, 'enumerator'>] ?? false;
 }
 
 /**
@@ -252,7 +252,9 @@ export class ReferenceState implements IReferenceState {
     numbering?: boolean | NumberingOptions;
     file?: VFile;
   }) {
-    this.targetCounts = opts?.targetCounts || {};
+    this.targetCounts = opts?.targetCounts || ({} as TargetCounts);
+    // Initialize the heading counts (it is different)
+    this.targetCounts.heading ??= [0, 0, 0, 0, 0, 0];
     if (typeof opts?.numbering === 'boolean') {
       this.numberAll = opts?.numbering;
       this.numbering = {};
@@ -267,6 +269,16 @@ export class ReferenceState implements IReferenceState {
         ...opts?.numbering,
       };
     }
+    // Set the offset counts if the numbering does not start at zero
+    Object.entries(opts?.numbering ?? {}).forEach(([key, val]) => {
+      if (typeof val === 'number') {
+        if (key in ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6']) {
+          this.targetCounts.heading[Number.parseInt(key.slice(-1), 10) - 1] = val;
+        } else {
+          this.targetCounts[key] = { main: val, sub: 0 };
+        }
+      }
+    });
     this.targets = {};
     this.file = opts?.file;
   }
@@ -341,7 +353,6 @@ export class ReferenceState implements IReferenceState {
     if (kind === TargetKind.heading && node.type === 'heading') {
       // Ideally initializeNumberedHeadingDepths is called before incrementing
       // heading count to do a better job initializing headers based on tree
-      if (!this.targetCounts.heading) this.targetCounts.heading = [0, 0, 0, 0, 0, 0];
       this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
       enumerator = formatHeadingEnumerator(this.targetCounts.heading, this.numbering.enumerator);
       node.enumerator = enumerator;
@@ -563,7 +574,7 @@ function getCaptionLabel(kind?: string, subcontainer?: boolean) {
  * Requires container to be enumerated.
  *
  * By default, captionNumber is only added if caption already exists.
- * However, for subcontainers, captionNumber is always added.
+ * However, for sub-containers, captionNumber is always added.
  */
 export function addContainerCaptionNumbersTransform(
   tree: GenericParent,
