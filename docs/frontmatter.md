@@ -162,13 +162,11 @@ Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` o
 
 ## Titles
 
-There are several fields to title MyST projects and pages. Primary page and project titles can be specified simply as `title`. Pages and projects also both have `short_title`; this should provide a summarized title in less than 40 characters. It is used where space is limited, for example a site navigation panel. On pages (not projects) you may specify `subtitle`; this conveys complimentary information to the title and may be displayed below the title.
-
-Along with these title fields, pages and projects have `name` and `description`. These are intended more as MyST metadata and will not carry through to MyST site builds or exports.
+There are several fields to title MyST projects and pages. Primary page and project titles can be specified simply as `title`. Pages and projects also both have `short_title`; this should provide a summarized title in less than 40 characters. It is used where space is limited, for example a site navigation panel, running-head titles in an static export, etc. On pages (not projects) you may specify `subtitle`; this conveys complimentary information to the title and may be displayed below the title.
 
 ````{note} Defining Page Title in Markdown
 
-If `title` is not defined in the fronmtatter, it will be pulled from the a heading at the top of the markdown instead. In this case, the heading will be removed from the content to the frontmatter for usage in a MyST site header or exported document title page.
+If `title` is not defined in the frontmatter, it will be pulled from the a heading at the top of the markdown instead. In this case, the heading will be removed from the content to the frontmatter for usage in a MyST site header or exported document title page.
 
 ```markdown
 ---
@@ -183,9 +181,7 @@ For this page, "My MyST Title" is the title!
 ...
 ```
 
-If removing the title causes unexpected problems with the page formatting, you may set `title: null` in the frontmatter to prevent heading removal. The first heading will _still_ be copied as a placeholder title, but it will not be removed from the markdown.
-
-In these cases, though, it is probably easiest to simply define a title in frontmatter.
+If removing the title causes unexpected problems with the page formatting, you may set `title: null` in the frontmatter to prevent heading removal. The first heading will _still_ be copied as a placeholder title, but it will not be removed from the markdown. However, in these cases, it is probably easiest to simply define a title in frontmatter!
 ````
 
 +++
