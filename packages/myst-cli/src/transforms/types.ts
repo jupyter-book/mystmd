@@ -9,6 +9,7 @@ export type PreRendererData = {
   mdast: GenericParent;
   kind: SourceFileKind;
   frontmatter?: PageFrontmatter;
+  identifiers?: string[];
 };
 
 export type RendererData = PreRendererData & {

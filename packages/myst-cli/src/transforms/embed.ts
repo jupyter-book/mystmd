@@ -1,7 +1,7 @@
 import { filter } from 'unist-util-filter';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import type { IReferenceState, MultiPageReferenceState } from 'myst-transforms';
+import type { IReferenceStateResolver, MultiPageReferenceResolver } from 'myst-transforms';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { copyNode, liftChildren, normalizeLabel } from 'myst-common';
 import type { Dependency, Embed, Container } from 'myst-spec-ext';
@@ -17,7 +17,7 @@ export function embedTransform(
   mdast: GenericParent,
   file: string,
   dependencies: Dependency[],
-  state: IReferenceState,
+  state: IReferenceStateResolver,
 ) {
   const embedNodes = selectAll('embed', mdast) as Embed[];
   embedNodes.forEach((node) => {
@@ -49,19 +49,19 @@ export function embedTransform(
     } else {
       node.children = [newNode as any];
     }
-    const multiState = state as MultiPageReferenceState;
+    const multiState = state as MultiPageReferenceResolver;
     if (!multiState.states) return;
-    const { url, file: depFile } = multiState.resolveStateProvider(normalized.identifier) ?? {};
+    const { url, filePath } = multiState.resolveStateProvider(normalized.identifier) ?? {};
     if (!url) return;
     const source: Dependency = { url, label: node.source?.label };
-    if (depFile) {
+    if (filePath) {
       session.store.dispatch(
         watch.actions.addLocalDependency({
           path: file,
-          dependency: depFile,
+          dependency: filePath,
         }),
       );
-      const { kind, slug, frontmatter, location } = selectFile(session, depFile) ?? {};
+      const { kind, slug, frontmatter, location } = selectFile(session, filePath) ?? {};
       if (kind) source.kind = kind;
       if (slug) source.slug = slug;
       if (location) source.location = location;

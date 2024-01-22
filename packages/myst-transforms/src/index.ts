@@ -55,14 +55,14 @@ export { containerChildrenPlugin, containerChildrenTransform } from './container
 export { headingDepthPlugin, headingDepthTransform } from './headings.js';
 
 // Enumeration
-export type { IReferenceState, NumberingOptions, ReferenceKind } from './enumerate.js';
+export type { IReferenceStateResolver, NumberingOptions, ReferenceKind } from './enumerate.js';
 export {
   enumerateTargetsTransform,
   enumerateTargetsPlugin,
   resolveReferencesTransform,
   resolveReferencesPlugin,
   ReferenceState,
-  MultiPageReferenceState,
+  MultiPageReferenceResolver,
 } from './enumerate.js';
 
 // Composite plugins

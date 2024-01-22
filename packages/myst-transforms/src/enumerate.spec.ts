@@ -48,7 +48,7 @@ describe('enumeration', () => {
         u('math', { identifier: 'eq:3-4', kind: 'subequation' }),
       ]),
     ]);
-    const state = new ReferenceState({ numbering: { enumerator: 'A.%s' } });
+    const state = new ReferenceState('my-file.md', { numbering: { enumerator: 'A.%s' } });
     enumerateTargetsTransform(tree, { state });
     expect(state.getTarget('eq:1')?.node.enumerator).toBe('A.1');
     expect(state.getTarget('eq:1a')?.node.enumerator).toBe('A.1a');
@@ -67,7 +67,9 @@ describe('enumeration', () => {
       u('heading', { identifier: 'h2', depth: 2 }),
       u('heading', { identifier: 'h3', depth: 1 }),
     ]);
-    const state = new ReferenceState({ numbering: { heading_1: true, heading_2: true } });
+    const state = new ReferenceState('my-file.md', {
+      numbering: { heading_1: true, heading_2: true },
+    });
     enumerateTargetsTransform(tree, { state });
     expect(state.getTarget('h1')?.node.enumerator).toBe('1');
     expect(state.getTarget('h2')?.node.enumerator).toBe('1.1');
@@ -82,7 +84,7 @@ describe('enumeration', () => {
       ]),
       u('container', { identifier: 'fig:2', kind: 'figure' }, []),
     ]);
-    const state = new ReferenceState({ numbering: { enumerator: 'A.%s' } });
+    const state = new ReferenceState('my-file.md', { numbering: { enumerator: 'A.%s' } });
     enumerateTargetsTransform(tree, { state });
     expect(state.getTarget('fig:1')?.node.enumerator).toBe('A.1');
     expect(state.getTarget('fig:1a')?.node.enumerator).toBe('a');

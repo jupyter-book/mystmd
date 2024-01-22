@@ -608,4 +608,28 @@ describe('getFrontmatter', () => {
     expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
     expect(file.messages.length).toBe(1);
   });
+  it('first h1 label carries to page', () => {
+    const input = {
+      type: 'root',
+      children: [
+        {
+          type: 'heading',
+          depth: 1,
+          label: 'h1',
+          children: [
+            {
+              type: 'text',
+              value: 'Heading Title',
+            },
+          ],
+        },
+        {
+          type: 'text',
+          value: 'hello',
+        },
+      ],
+    };
+    const { identifiers } = getFrontmatter(new VFile(), copy(input), {});
+    expect(identifiers).toEqual(['h1']);
+  });
 });

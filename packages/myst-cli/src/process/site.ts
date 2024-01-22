@@ -6,7 +6,7 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
-import type { LinkTransformer } from 'myst-transforms';
+import type { LinkTransformer, ReferenceState } from 'myst-transforms';
 import { select } from 'unist-util-select';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
 import { getSiteManifest, resolvePageExports } from '../build/site/manifest.js';
@@ -21,7 +21,7 @@ import { ImageExtensions } from '../utils/resolveExtension.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
-import type { PageReferenceStates, TransformFn } from './mdast.js';
+import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 
 const WEB_IMAGE_EXTENSIONS = [
@@ -99,15 +99,14 @@ export async function addProjectReferencesToObjectsInv(
 ) {
   const { pages } = await loadProject(session, opts.projectPath);
   const pageReferenceStates = selectPageReferenceStates(session, pages);
-  pageReferenceStates.forEach((page) => {
-    const { title } = selectors.selectFileInfo(session.store.getState(), page.file);
+  pageReferenceStates.forEach((state) => {
     inv.setEntry({
       type: Domains.stdDoc,
-      name: (page.url as string).replace(/^\//, ''),
-      location: page.url as string,
-      display: title ?? '',
+      name: (state.url as string).replace(/^\//, ''),
+      location: state.url as string,
+      display: state.title ?? '',
     });
-    Object.entries(page.state.targets).forEach(([name, target]) => {
+    Object.entries(state.targets).forEach(([name, target]) => {
       if ((target.node as any).implicit) {
         // Don't include implicit references
         return;
@@ -115,7 +114,7 @@ export async function addProjectReferencesToObjectsInv(
       inv.setEntry({
         type: Domains.stdLabel,
         name,
-        location: `${page.url}#${(target.node as any).html_id ?? target.node.identifier}`,
+        location: `${state.url}#${(target.node as any).html_id ?? target.node.identifier}`,
         display: getReferenceTitleAsText(target.node),
       });
     });
@@ -139,17 +138,19 @@ export async function loadProject(
 
 export function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
   const cache = castSession(session);
-  const pageReferenceStates: PageReferenceStates = pages
+  const pageReferenceStates: ReferenceState[] = pages
     .map((page) => {
-      const selectedFile = selectors.selectFileInfo(session.store.getState(), page.file);
-      return {
-        state: cache.$internalReferences[page.file],
-        file: page.file,
-        url: selectedFile?.url ?? null,
-        dataUrl: selectedFile?.dataUrl ?? null,
-      };
+      const state = cache.$internalReferences[page.file];
+      if (state) {
+        const selectedFile = selectors.selectFileInfo(session.store.getState(), page.file);
+        if (selectedFile?.url) state.url = selectedFile.url;
+        if (selectedFile?.title) state.title = selectedFile.title;
+        if (selectedFile?.dataUrl) state.dataUrl = selectedFile.dataUrl;
+        return state;
+      }
+      return undefined;
     })
-    .filter(({ state }) => !!state);
+    .filter((state): state is ReferenceState => !!state);
   return pageReferenceStates;
 }
 
