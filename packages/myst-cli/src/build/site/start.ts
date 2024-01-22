@@ -108,8 +108,10 @@ export async function startServer(
   // Ensure we are on the latest version of the configs
   session.reload();
   warnOnHostEnvironmentVariable(session, opts);
-  const mystTemplate = await getMystTemplate(session, opts);
-  if (!opts.headless) await installSiteTemplate(session, mystTemplate);
+  if (!opts.headless) {
+    const mystTemplate = await getMystTemplate(session, opts);
+    await installSiteTemplate(session, mystTemplate);
+  }
   await buildSite(session, opts);
   const server = await startContentServer(session, opts);
   const { extraLinkTransformers, extraTransforms, defaultTemplate } = opts;
