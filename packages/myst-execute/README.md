@@ -1,3 +1,5 @@
 # MyST Execute
 
-This library executes MyST content with Jupyter. It provides a transform that take a MyST tree and fills output nodes. It also provides caching for accessing code block outputs by ID.
+Kernel execution of code and inline expressions using Jupyter. 
+
+This package provides a transform that takes a MyST tree, computes the executable content, and stores the results in the AST. It provides basic support for caching of outputs to avoid needless computation. 
