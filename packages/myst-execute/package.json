@@ -33,7 +33,10 @@
   },
   "dependencies": {
     "myst-common": "^1.1.21",
-    "vfile": "^5.3.7"
+    "vfile": "^5.3.7",
+    "@jupyterlab/services": "^7.0.0",
+    "@jupyterlab/nbformat": "^3.5.2",
+    "unist-util-select": "^4.0.3"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0"

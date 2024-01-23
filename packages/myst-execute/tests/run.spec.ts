@@ -2,8 +2,10 @@ import { describe, test, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { executionTransform } from '../src';
+import { kernelExecutionTransform, launchJupyterServer } from '../src';
 import type { GenericParent } from 'myst-common';
+import { VFile } from 'vfile';
+import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 
 type TestCase = {
   title: string;
@@ -26,14 +28,46 @@ const casesList: TestCases[] = fs
     return yaml.load(content) as TestCases;
   });
 
+class SessionManagerFactory {
+  _sessionManager: SessionManager | undefined;
+
+  async load(): Promise<SessionManager> {
+    if (this._sessionManager !== undefined) {
+      return this._sessionManager;
+    } else {
+      const serverSettings = ServerConnection.makeSettings(
+        await launchJupyterServer(__dirname, console),
+      );
+      const kernelManager = new KernelManager({ serverSettings });
+      const sessionManager = new SessionManager({ kernelManager, serverSettings });
+      this._sessionManager = sessionManager;
+      return sessionManager;
+    }
+  }
+}
+
+const sessionManagerFactory = new SessionManagerFactory();
+
 casesList.forEach(({ title, cases }) => {
   const filtered = cases.filter((c) => !only || c.title === only);
   if (filtered.length === 0) return;
   describe(title, () => {
     test.each(filtered.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
-      (_, { before, after }) => {
-        executionTransform(before);
+      async (_, { before, after }) => {
+        const file = new VFile();
+        file.path = path.join(__dirname, 'notebook.ipynb');
+        await kernelExecutionTransform(before, file, {
+          sessionFactory: async () => await sessionManagerFactory.load(),
+          cachePath: path.join(__dirname, 'execute'),
+          frontmatter: {
+            kernelspec: {
+              name: 'python3',
+            },
+          },
+          ignoreCache: true,
+          errorIsFatal: true,
+        });
         expect(yaml.dump(before)).toEqual(yaml.dump(after));
       },
     );

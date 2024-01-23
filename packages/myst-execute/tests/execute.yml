@@ -15,3 +15,73 @@ cases:
           children:
             - type: text
               value: My Paragraph
+  - title: tree with executable code is evaluated
+    before:
+      type: root
+      children:
+        - type: block
+          data:
+            id: nb-cell-0
+            type: notebook-code
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: print('abc')
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
+    after:
+      type: root
+      children:
+        - type: block
+          data:
+            id: nb-cell-0
+            type: notebook-code
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: print('abc')
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
+                - output_type: stream
+                  name: stdout
+                  text: |
+                    abc
+  - title: tree with inline expression is evaluated
+    before:
+      type: root
+      children:
+        - type: inlineExpression
+          name: expr-0
+          value: 1 + 2
+    after:
+      type: root
+      children:
+        - type: inlineExpression
+          name: expr-0
+          value: 1 + 2
+          result:
+            status: ok
+            data:
+              text/plain: '3'
+            metadata: {}
+
