@@ -1,7 +1,7 @@
-import { ServerConnection } from '@jupyterlab/services';
+import type { ServerConnection } from '@jupyterlab/services';
 import which from 'which';
 import { spawn, spawnSync } from 'node:child_process';
-import { Logger } from 'myst-cli-utils';
+import type { Logger } from 'myst-cli-utils';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
