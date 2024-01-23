@@ -84,4 +84,118 @@ cases:
             data:
               text/plain: '3'
             metadata: {}
+  - title: tree with bad inline expression throws
+    throws: An error occurred during kernel execution
+    before:
+      type: root
+      children:
+        - type: inlineExpression
+          name: expr-0
+          value: 1 + llama
+    after:
+      type: root
+      children:
+        - type: inlineExpression
+          name: expr-0
+          value: 1 + llama
+  - title: tree with bad executable code is evaluated and throws
+    throws: An error occurred during kernel execution
+    before:
+      type: root
+      children:
+        - type: block
+          data:
+            id: nb-cell-0
+            type: notebook-code
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: print('abc')
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
+        - type: block
+          data:
+            id: nb-cell-0
+            type: notebook-code
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: raise ValueError
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
+    after:
+      type: root
+      children:
+        - type: block
+          data:
+            id: nb-cell-0
+            type: notebook-code
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: print('abc')
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
+                - output_type: stream
+                  name: stdout
+                  text: |
+                    abc
+        - type: block
+          data:
+            id: nb-cell-0
+            type: notebook-code
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: raise ValueError
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
+              - output_type: error
+                traceback:
+                  - "\e[0;31m---------------------------------------------------------------------------\e[0m"
+                  - "\e[0;31mValueError\e[0m                                Traceback (most recent call last)"
+                  - "Cell \e[0;32mIn[2], line 1\e[0m\n\e[0;32m----> 1\e[0m \e[38;5;28;01mraise\e[39;00m \e[38;5;167;01mValueError\e[39;00m\n"
+                  - "\e[0;31mValueError\e[0m: "
+                ename: ValueError
+                evalue: ''
 

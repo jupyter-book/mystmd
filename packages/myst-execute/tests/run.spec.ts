@@ -11,6 +11,7 @@ type TestCase = {
   title: string;
   before: GenericParent;
   after: GenericParent;
+  throws?: string;  // RegExp pattern
 };
 
 type TestCases = {
@@ -54,9 +55,10 @@ casesList.forEach(({ title, cases }) => {
   describe(title, () => {
     test.each(filtered.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
-      async (_, { before, after }) => {
+      async (_, { before, after, throws }) => {
         const file = new VFile();
         file.path = path.join(__dirname, 'notebook.ipynb');
+
         await kernelExecutionTransform(before, file, {
           sessionFactory: async () => await sessionManagerFactory.load(),
           cachePath: path.join(__dirname, 'execute'),
@@ -68,6 +70,12 @@ casesList.forEach(({ title, cases }) => {
           ignoreCache: true,
           errorIsFatal: true,
         });
+        if (throws !== null && throws !== undefined) {
+          const fatalMessageReasons = file.messages
+            .filter((msg) => msg.fatal)
+            .map((msg) => msg.reason);
+          expect(fatalMessageReasons).toEqual(expect.arrayContaining([expect.stringMatching(throws)]));
+        }
         expect(yaml.dump(before)).toEqual(yaml.dump(after));
       },
     );
