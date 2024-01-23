@@ -53,6 +53,13 @@ export async function currentSiteRoutes(
 // This is defined in the remix `publicPath` and allows us to overwrite it here.
 const ASSETS_FOLDER = 'myst_assets_folder';
 
+/**
+ * Rewrite URLs in HTML/JS/JSON files pointing to the default assets folder in
+ * terms of the provided base URL
+ *
+ * @param directory directory of files to recursively rewrite
+ * @param baseurl base URL of the built site
+ */
 function rewriteAssetsFolder(directory: string, baseurl?: string): void {
   fs.readdirSync(directory).forEach((filename) => {
     const file = path.join(directory, filename);
@@ -74,6 +81,12 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
   });
 }
 
+/**
+ * Build a MyST project as a static HTML deployment
+ *
+ * @param session session with logging
+ * @param opts configuration options
+ */
 export async function buildHtml(session: ISession, opts: any) {
   const template = await getMystTemplate(session, opts);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages

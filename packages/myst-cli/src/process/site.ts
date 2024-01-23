@@ -50,6 +50,13 @@ type ProcessOptions = {
   minifyMaxCharacters?: number;
 };
 
+/**
+ * Trigger a file-changed notification, and clear the file from the cache
+ *
+ * @param session session with logging
+ * @param path path to the changed file
+ * @param eventType event corresponding to the change
+ */
 export function changeFile(session: ISession, path: string, eventType: string) {
   session.log.debug(`File modified: "${path}" (${eventType})`);
   const cache = castSession(session);
@@ -66,7 +73,9 @@ export async function writeSiteManifest(session: ISession, opts?: ProcessOptions
 }
 
 /**
- * Returns the heading title or the caption as text
+ * Return the heading title or the caption as text
+ *
+ * @param targetNode reference target of interest
  */
 function getReferenceTitleAsText(targetNode: Node): string | undefined {
   if (targetNode.type === 'heading') {
@@ -76,6 +85,13 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
   if (caption) return toText(caption);
 }
 
+/**
+ * Update an object inventory with references from the current session
+ *
+ * @param session session with logging
+ * @param inv intersphinx inventory to update
+ * @param opts configuration options
+ */
 export async function addProjectReferencesToObjectsInv(
   session: ISession,
   inv: Inventory,

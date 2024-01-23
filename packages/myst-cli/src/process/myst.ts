@@ -10,6 +10,13 @@ import type { ISession } from '../session/types.js';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
 import type { GenericParent } from 'myst-common';
 
+/**
+ * Parse MyST content using the full suite of built-in directives, roles, and plugins
+ *
+ * @param session session with logging
+ * @param content Markdown content to parse
+ * @param file path to file containing content
+ */
 export function parseMyst(session: ISession, content: string, file: string): GenericParent {
   const vfile = new VFile();
   vfile.path = file;

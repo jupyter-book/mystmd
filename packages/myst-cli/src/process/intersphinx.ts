@@ -7,6 +7,12 @@ import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
 
+/**
+ * Load an array of intersphinx inventories defined in the project frontmatter
+ *
+ * @param session session with logging
+ * @param opts loading options
+ */
 export async function loadIntersphinx(
   session: ISession,
   opts: { projectPath: string; force?: boolean },

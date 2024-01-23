@@ -18,6 +18,12 @@ import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
+/**
+ * Build a MyST project as JATS XML
+ *
+ * @param session session with logging
+ * @param opts configuration options
+ */
 export async function runJatsExport(
   session: ISession,
   sourceFile: string,
