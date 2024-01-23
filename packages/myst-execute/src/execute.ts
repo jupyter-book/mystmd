@@ -285,7 +285,7 @@ function applyComputedOutputsToNodes(
       output.data = thisResult === undefined ? [] : (thisResult as IOutput[]);
     } else if (isInlineExpression(matchedNode)) {
       // Set data of expression to the result, or empty if we don't have one
-      matchedNode.result =  // TODO: FIXME .data
+      matchedNode.result = // TODO: FIXME .data
         thisResult === undefined ? undefined : (thisResult as unknown as Record<string, unknown>);
     } else {
       // This should never happen

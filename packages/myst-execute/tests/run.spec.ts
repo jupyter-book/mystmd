@@ -11,7 +11,7 @@ type TestCase = {
   title: string;
   before: GenericParent;
   after: GenericParent;
-  throws?: string;  // RegExp pattern
+  throws?: string; // RegExp pattern
 };
 
 type TestCases = {
@@ -74,7 +74,9 @@ casesList.forEach(({ title, cases }) => {
           const fatalMessageReasons = file.messages
             .filter((msg) => msg.fatal)
             .map((msg) => msg.reason);
-          expect(fatalMessageReasons).toEqual(expect.arrayContaining([expect.stringMatching(throws)]));
+          expect(fatalMessageReasons).toEqual(
+            expect.arrayContaining([expect.stringMatching(throws)]),
+          );
         }
         expect(yaml.dump(before)).toEqual(yaml.dump(after));
       },
