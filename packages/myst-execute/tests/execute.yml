@@ -1,0 +1,17 @@
+title: executionTransform
+cases:
+  - title: tree with no code is unchanged
+    before:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: My Paragraph
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: My Paragraph
