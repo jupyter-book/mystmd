@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { RuleId, fileError } from 'myst-common';
 import type { Export } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, MULTI_ARTICLE_EXPORT_FORMATS } from 'myst-frontmatter';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
@@ -13,6 +13,7 @@ import { selectors } from '../../store/index.js';
 import type { ExportWithOutput, ExportOptions, ExportWithInputOutput } from '../types.js';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter.js';
 import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
+import type { LocalProjectPage } from '../../index.js';
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
 
@@ -68,6 +69,21 @@ async function prepareExportOptions(
   const filteredExportOptions = exportOptions
     .map((exp) => {
       if (!exp.articles?.length) {
+        if (MULTI_ARTICLE_EXPORT_FORMATS.includes(exp.format)) {
+          const cachedProject = selectors.selectLocalProject(
+            session.store.getState(),
+            projectPath ?? '.',
+          );
+          if (cachedProject) {
+            exp.articles = [
+              cachedProject.file,
+              ...cachedProject.pages
+                .filter((page): page is LocalProjectPage => !!(page as any).file)
+                .map(({ file }) => file),
+            ];
+            return exp;
+          }
+        }
         if (exp.format === ExportFormats.meca) {
           // MECA exports don't necessarily need to specify an article.
           // But it does help locate those other exports if you want!

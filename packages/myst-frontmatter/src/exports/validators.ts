@@ -40,6 +40,13 @@ export const RESERVED_EXPORT_KEYS = [
   ...Object.keys(EXPORT_KEY_OBJECT.alias),
 ];
 
+export const MULTI_ARTICLE_EXPORT_FORMATS = [
+  ExportFormats.pdf,
+  ExportFormats.tex,
+  ExportFormats.typst,
+  ExportFormats.pdftex,
+];
+
 export function validateExportsList(input: any, opts: ValidationOptions): Export[] | undefined {
   if (input === undefined) return undefined;
   const output = validateList(
@@ -131,9 +138,7 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       articles?.length &&
       articles.length > 1 &&
       validExport.format &&
-      ![ExportFormats.pdf, ExportFormats.tex, ExportFormats.typst, ExportFormats.pdftex].includes(
-        validExport.format,
-      )
+      !MULTI_ARTICLE_EXPORT_FORMATS.includes(validExport.format)
     ) {
       if (validExport.format === ExportFormats.xml && !defined(value.sub_articles)) {
         validationError(
