@@ -3,7 +3,7 @@ import { remove } from 'unist-util-remove';
 import { select } from 'unist-util-select';
 import type { Block, Code, Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
-import { RuleId, fileError, toText, fileWarn } from 'myst-common';
+import { RuleId, fileError, toText, fileWarn, normalizeLabel } from 'myst-common';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 
@@ -20,13 +20,14 @@ export function getFrontmatter(
   file: VFile,
   tree: GenericParent,
   opts: Options = { propagateTargets: true },
-): { tree: GenericParent; frontmatter: Record<string, any> } {
+): { tree: GenericParent; frontmatter: Record<string, any>; identifiers: string[] } {
   if (opts.propagateTargets) mystTargetsTransform(tree);
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
   const firstNode = firstParent.children?.[0] as Code;
   const secondNode = firstParent.children?.[1] as Heading;
   let frontmatter: Record<string, any> = {};
+  const identifiers: string[] = [];
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
   if (firstIsYaml) {
     try {
@@ -64,6 +65,10 @@ export function getFrontmatter(
       // If this has a label what do we do? Add this label as a document reference
       (nextNode as any).type = '__delete__';
       frontmatter.content_includes_title = false;
+      if (nextNode.label) {
+        const { identifier } = normalizeLabel(nextNode.label) ?? {};
+        if (identifier) identifiers.push(identifier);
+      }
     }
   }
   // Handles deleting the block if it is the only element in the block
@@ -72,5 +77,5 @@ export function getFrontmatter(
     // null is returned if tree itself didn’t pass the test or is cascaded away
     remove(tree, { cascade: false }, '__delete__');
   }
-  return { tree, frontmatter };
+  return { tree, frontmatter, identifiers };
 }

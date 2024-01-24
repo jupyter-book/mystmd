@@ -30,8 +30,8 @@ export function getPageFrontmatter(
   session: ISession,
   tree: GenericParent,
   vfile: VFile,
-): PageFrontmatter {
-  const { frontmatter: rawPageFrontmatter } = getFrontmatter(vfile, tree, {
+): { frontmatter: PageFrontmatter; identifiers: string[] } {
+  const { frontmatter: rawPageFrontmatter, identifiers } = getFrontmatter(vfile, tree, {
     propagateTargets: true,
   });
   unnestKernelSpec(rawPageFrontmatter);
@@ -48,7 +48,7 @@ export function getPageFrontmatter(
   };
   const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, validationOpts);
   logMessagesFromVFile(session, vfile);
-  return pageFrontmatter;
+  return { frontmatter: pageFrontmatter, identifiers };
 }
 
 export function processPageFrontmatter(

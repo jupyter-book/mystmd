@@ -10,7 +10,7 @@ import {
   htmlPlugin,
   footnotesPlugin,
   ReferenceState,
-  MultiPageReferenceState,
+  MultiPageReferenceResolver,
   resolveReferencesTransform,
   mathPlugin,
   codePlugin,
@@ -85,13 +85,6 @@ const htmlHandlers = {
   },
 };
 
-export type PageReferenceStates = {
-  state: ReferenceState;
-  file: string;
-  url: string | null;
-  dataUrl: string | null;
-}[];
-
 export type TransformFn = (
   session: ISession,
   opts: Parameters<typeof transformMdast>[1],
@@ -133,6 +126,7 @@ export async function transformMdast(
     kind,
     frontmatter: preFrontmatter,
     location,
+    identifiers,
   } = cache.$getMdast(file)?.pre ?? {};
   if (!mdastPre || !kind || !location) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
@@ -159,7 +153,7 @@ export async function transformMdast(
   const references: References = {
     cite: { order: [], data: {} },
   };
-  const state = new ReferenceState({ numbering: frontmatter.numbering, file: vfile });
+  const state = new ReferenceState(file, { numbering: frontmatter.numbering, identifiers, vfile });
   cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
   frontmatterPartsTransform(session, file, mdast, frontmatter);
@@ -178,7 +172,7 @@ export async function transformMdast(
     })
     .use(inlineMathSimplificationPlugin)
     .use(mathPlugin, { macros: frontmatter.math })
-    .use(glossaryPlugin, { state }) // This should be before the enumerate plugins
+    .use(glossaryPlugin) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
     .use(joinGatesPlugin);
@@ -273,7 +267,7 @@ export async function postProcessMdast(
   }: {
     file: string;
     checkLinks?: boolean;
-    pageReferenceStates?: PageReferenceStates;
+    pageReferenceStates?: ReferenceState[];
     extraLinkTransformers?: LinkTransformer[];
   },
 ) {
@@ -287,18 +281,18 @@ export async function postProcessMdast(
   const { mdast, dependencies } = mdastPost;
   const fileState = cache.$internalReferences[file];
   const state = pageReferenceStates
-    ? new MultiPageReferenceState(pageReferenceStates, file)
+    ? new MultiPageReferenceResolver(pageReferenceStates, file)
     : fileState;
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
     ...(extraLinkTransformers || []),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
-  linksTransform(mdast, state.file as VFile, {
+  linksTransform(mdast, state.vfile as VFile, {
     transformers,
     selector: LINKS_SELECTOR,
   });
-  resolveReferencesTransform(mdast, state.file as VFile, { state });
+  resolveReferencesTransform(mdast, state.vfile as VFile, { state });
   embedTransform(session, mdast, file, dependencies, state);
   const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
@@ -309,7 +303,7 @@ export async function postProcessMdast(
 
   // Ensure there are keys on every node after post processing
   keysTransform(mdast);
-  logMessagesFromVFile(session, fileState.file);
+  logMessagesFromVFile(session, fileState.vfile);
   logMessagesFromVFile(session, vfile);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
   if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);
