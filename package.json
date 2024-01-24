@@ -1,6 +1,6 @@
 {
   "name": "myst-spec",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "MyST schema, testcases, and typescript types",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/executablebooks/myst-spec",
