@@ -40,7 +40,7 @@
     "jats-xml": "^1.0.8",
     "myst-common": "^1.1.20",
     "myst-frontmatter": "^1.1.20",
-    "myst-spec": "^0.0.4",
+    "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.1.20",
     "myst-transforms": "^1.1.18",
     "unified": "^10.0.0",

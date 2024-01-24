@@ -15,4 +15,12 @@ describe('mystToHtml', () => {
     const html = mystToHtml(u('root', [u('html', '<p>hello world</>')]) as any);
     expect(html).toBe('');
   });
+  it('Applies `math-inline` to `inlineMath` nodes', () => {
+    const html = mystToHtml(u('root', [u('paragraph', [u('inlineMath', 'y = a x + b')])]));
+    expect(html).toBe('<p><span class="math-inline">y = a x + b</span></p>');
+  });
+  it('Applies `math-display` to `math` nodes', () => {
+    const html = mystToHtml(u('root', [u('math', 'y = a x + b')]));
+    expect(html).toBe('<div class="math-display">y = a x + b</div>');
+  });
 });
