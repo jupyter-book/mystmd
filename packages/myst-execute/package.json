@@ -40,6 +40,7 @@
     "which": "^4.0.0"
   },
   "devDependencies": {
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "node-fetch": "^3.3.0"
   }
 }

@@ -6,6 +6,16 @@ import { kernelExecutionTransform, launchJupyterServer } from '../src';
 import type { GenericParent } from 'myst-common';
 import { VFile } from 'vfile';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
+import { default as nodeFetch } from 'node-fetch';
+import { Headers, Request, Response } from 'node-fetch';
+
+// fetch polyfill for node<18
+if (!globalThis.fetch) {
+  globalThis.fetch = nodeFetch as any;
+  globalThis.Headers = Headers as any;
+  globalThis.Request = Request as any;
+  globalThis.Response = Response as any;
+}
 
 type TestCase = {
   title: string;
