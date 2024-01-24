@@ -8,6 +8,7 @@ import type { Store } from 'redux';
 
 import type { BuildWarning, RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
+import type { SessionManager } from '@jupyterlab/services';
 
 export type ISession = {
   API_URL: string;
@@ -24,6 +25,7 @@ export type ISession = {
   plugins: MystPlugin | undefined;
   loadPlugins(): Promise<MystPlugin>;
   getAllWarnings(ruleId: RuleId): (BuildWarning & { file: string })[];
+  jupyterSessionManager(): Promise<SessionManager | undefined>;
 };
 
 export type ISessionWithCache = ISession & {

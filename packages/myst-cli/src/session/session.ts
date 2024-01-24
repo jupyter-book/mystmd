@@ -1,8 +1,8 @@
 import path from 'node:path';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
-import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
+import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { MystPlugin, RuleId } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
@@ -19,6 +19,18 @@ import type { RootState } from '../store/reducers.js';
 import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
+import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
+import type { JupyterServerSettings } from 'myst-execute';
+import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
+import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
+
+// fetch polyfill for node<18
+if (!globalThis.fetch) {
+  globalThis.fetch = nodeFetch as any;
+  globalThis.Headers = Headers as any;
+  globalThis.Request = Request as any;
+  globalThis.Response = Response as any;
+}
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -62,6 +74,7 @@ export class Session implements ISession {
 
   _shownUpgrade = false;
   _latestVersion?: string;
+  _jupyterSessionManager: SessionManager | undefined | null = null;
 
   get log(): Logger {
     return this.$logger;
@@ -134,6 +147,7 @@ export class Session implements ISession {
   publicPath(): string {
     return path.join(this.sitePath(), 'public');
   }
+
   _clones: ISession[] = [];
 
   clone(): Session {
@@ -156,5 +170,43 @@ export class Session implements ISession {
       });
     });
     return warnings;
+  }
+
+  async jupyterSessionManager(): Promise<SessionManager | undefined> {
+    if (this._jupyterSessionManager !== null) {
+      return Promise.resolve(this._jupyterSessionManager);
+    }
+    try {
+      const partialServerSettings = await new Promise<JupyterServerSettings>((resolve, reject) => {
+        if (process.env.JUPYTER_BASE_URL === undefined) {
+          const settings = findExistingJupyterServer();
+          if (settings) {
+            console.log('LOADED EXISTING');
+            return resolve(settings);
+          } else {
+            console.log('LAUNCH NEW');
+            return launchJupyterServer(this.contentPath(), this.log).then((launchedSettings) => {
+              console.log('LOADED', launchedSettings);
+              resolve(launchedSettings);
+            });
+          }
+        } else {
+          resolve({
+            baseUrl: process.env.JUPYTER_BASE_URL,
+            token: process.env.JUPYTER_TOKEN,
+          });
+        }
+      });
+      const serverSettings = ServerConnection.makeSettings(partialServerSettings);
+      const kernelManager = new KernelManager({ serverSettings });
+      const manager = new SessionManager({ kernelManager, serverSettings });
+      // TODO: this is a race condition, even though we shouldn't hit if if this promise is actually awaited
+      this._jupyterSessionManager = manager;
+      return manager;
+    } catch (err) {
+      this.log.error('Unable to instantiate connection to Jupyter Server', err);
+      this._jupyterSessionManager = undefined;
+      return undefined;
+    }
   }
 }

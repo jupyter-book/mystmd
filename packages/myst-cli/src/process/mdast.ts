@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, PluginUtils, References } from 'myst-common';
+import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -217,6 +217,15 @@ export async function transformMdast(
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
+
+  const cachePath = path.join(session.buildPath(), 'execute');
+  await kernelExecutionTransform(mdast, vfile, {
+    cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+    sessionFactory: () => session.jupyterSessionManager(),
+    frontmatter: frontmatter,
+    ignoreCache: false,
+    errorIsFatal: false,
+  });
 
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });

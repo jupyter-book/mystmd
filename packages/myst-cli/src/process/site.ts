@@ -284,7 +284,7 @@ export async function processProject(
       ...project.bibliography.map((path) => loadFile(session, path, siteProject.path, '.bib')),
       // Load all content (.md and .ipynb)
       ...pages.map((page) =>
-        loadFile(session, page.file, siteProject.path, undefined, { minifyMaxCharacters }),
+        loadFile(session, page.file, siteProject.path, undefined),
       ),
       // Load up all the intersphinx references
       loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
