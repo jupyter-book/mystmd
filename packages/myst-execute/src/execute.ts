@@ -291,7 +291,9 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
     const sessionManager = await opts.sessionFactory();
     // Do we not have a working session?
     if (sessionManager === undefined) {
-      cachedResults = [];
+      fileError(file, `Could not load Jupyter session manager to run executable nodes`, {
+        fatal: opts.errorIsFatal,
+      });
     }
     // Otherwise, boot up a kernel, and execute each cell
     else {
@@ -336,10 +338,6 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
   if (cachedResults) {
     // Apply results to tree
     applyComputedOutputsToNodes(executableNodes, cachedResults);
-  } else {
-    fileError(file, `Could not load Jupyter session manager to run executable nodes`, {
-      fatal: opts.errorIsFatal,
-    });
   }
 }
 
