@@ -1,6 +1,6 @@
 import path from 'node:path';
 import chokidar from 'chokidar';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, filesFromArticles } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/index.js';
@@ -33,12 +33,13 @@ async function runExportAndWatch(
 ): Promise<ExportResults> {
   let results = await exportFn(session, $file, exportOptions, projectPath, clean);
   if (watch) {
+    const articleFiles = filesFromArticles(exportOptions.articles);
     const watchedFiles = new Set([
       $file,
-      ...exportOptions.articles,
-      ...exportOptions.articles
-        .map((article) => {
-          return selectors.selectFileDependencies(session.store.getState(), article);
+      ...articleFiles,
+      ...articleFiles
+        .map((file) => {
+          return selectors.selectFileDependencies(session.store.getState(), file);
         })
         .flat(),
     ]);

@@ -163,7 +163,7 @@ cases:
           output: out.pdf
           a: 1
           articles:
-            - index.md
+            - file: index.md
   - title: sub_article coerces to sub_articles
     raw:
       exports:
@@ -213,19 +213,19 @@ cases:
       exports:
         - format: pdf
           articles:
-            - a.md
-            - b.md
-            - c.md
+            - file: a.md
+            - file: b.md
+            - file: c.md
         - format: tex
           articles:
-            - a.md
-            - b.md
-            - c.md
+            - file: a.md
+            - file: b.md
+            - file: c.md
         - format: pdf+tex
           articles:
-            - a.md
-            - b.md
-            - c.md
+            - file: a.md
+            - file: b.md
+            - file: c.md
   - title: md/docx/jats do not support multiple articles
     raw:
       exports:
@@ -248,13 +248,13 @@ cases:
       exports:
         - format: md
           articles:
-            - a.md
+            - file: a.md
         - format: docx
           articles:
-            - a.md
+            - file: a.md
         - format: xml
           articles:
-            - a.md
+            - file: a.md
     errors: 3
   - title: pdf filename coerces to format and output
     raw:
@@ -291,4 +291,90 @@ cases:
       exports:
         - output: out.bad
     normalized: {}
+    errors: 1
+  - title: article object passes
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: 1
+              title: My article
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: 1
+              title: My article
+  - title: article objects with only file and only title pass
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - title: My article
+            - file: a.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - title: My article
+            - file: a.md
+  - title: article object with no file/title errors
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - level: 1
+            - file: a.md
+              level: 1
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: 1
+    errors: 1
+  - title: invalid article levels error
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: -2
+            - file: b.md
+              level: -1
+            - file: c.md
+              level: 0.5
+            - file: d.md
+              level: 7
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+            - file: b.md
+              level: -1
+            - file: c.md
+            - file: d.md
+    errors: 3
+  - title: empty articles is removed
+    raw:
+      exports:
+        - format: pdf
+          articles: []
+    normalized:
+      exports:
+        - format: pdf
+  - title: articles with only titles error
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - title: Article A
+            - title: Article B
+            - title: Article C
+    normalized:
+      exports:
+        - format: pdf
     errors: 1

@@ -28,14 +28,14 @@ export async function runMdExport(
   const { output, articles } = exportOptions;
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
-  if (!article) return { tempFolders: [] };
+  if (!article?.file) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
-  const [{ mdast, frontmatter }] = await getFileContent(session, [article], {
+  const [{ mdast, frontmatter }] = await getFileContent(session, [article.file], {
     projectPath,
     imageExtensions: KNOWN_IMAGE_EXTENSIONS,
     extraLinkTransformers,
   });
-  await finalizeMdast(session, mdast, frontmatter, article, {
+  await finalizeMdast(session, mdast, frontmatter, article.file, {
     imageWriteFolder: path.join(path.dirname(output), 'files'),
     imageAltOutputFolder: 'files/',
     imageExtensions: KNOWN_IMAGE_EXTENSIONS,

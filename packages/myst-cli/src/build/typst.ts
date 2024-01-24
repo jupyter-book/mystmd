@@ -5,7 +5,7 @@ import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, filesFromArticles } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTypst from 'myst-to-typst';
@@ -128,7 +128,8 @@ export async function localArticleToTypstRaw(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const content = await getFileContent(session, articles, {
+  const articleFiles = filesFromArticles(articles);
+  const content = await getFileContent(session, articleFiles, {
     projectPath,
     imageExtensions: TYPST_IMAGE_EXTENSIONS,
     extraLinkTransformers,
@@ -137,8 +138,8 @@ export async function localArticleToTypstRaw(
   const toc = tic();
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      const articleFile = articleFiles[ind];
+      await finalizeMdast(session, mdast, frontmatter, articleFile, {
         imageWriteFolder: path.join(path.dirname(output), 'files'),
         imageAltOutputFolder: 'files/',
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
@@ -152,18 +153,24 @@ export async function localArticleToTypstRaw(
     writeFileToFolder(output, results[0].value);
   } else {
     const { dir, name, ext } = path.parse(output);
-    const includeFileBases = results.map((result, ind) => {
-      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
-      const includeFile = path.format({ dir, ext, base });
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `= ${title}\n\n`;
+    let includeContent = '';
+    let fileInd = 0;
+    articles.forEach((article) => {
+      if (article.file) {
+        const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
+        const includeFile = path.format({ dir, ext, base });
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `= ${title}\n\n`;
+        }
+        writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
+        includeContent += `#include "${base}"\n\n`;
+        fileInd++;
+      } else if (article.title) {
+        includeContent += `= ${article.title}\n\n`;
       }
-      writeFileToFolder(includeFile, `${part}${result.value}`);
-      return base;
     });
-    const includeContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
     writeFileToFolder(output, includeContent);
   }
   // TODO: add imports and macros?
@@ -180,7 +187,8 @@ export async function localArticleToTypstTemplated(
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
   const filesPath = path.join(path.dirname(output), 'files');
-  const content = await getFileContent(session, articles, {
+  const articleFiles = filesFromArticles(articles);
+  const content = await getFileContent(session, articleFiles, {
     projectPath,
     imageExtensions: TYPST_IMAGE_EXTENSIONS,
     extraLinkTransformers,
@@ -219,8 +227,8 @@ export async function localArticleToTypstTemplated(
   const hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      const articleFile = articleFiles[ind];
+      await finalizeMdast(session, mdast, frontmatter, articleFile, {
         imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
@@ -233,7 +241,7 @@ export async function localArticleToTypstTemplated(
           addWarningForFile(
             session,
             file,
-            `multiple values for part '${def.id}' found; ignoring value from ${article}`,
+            `multiple values for part '${def.id}' found; ignoring value from ${articleFile}`,
             'error',
             { ruleId: RuleId.texRenders },
           );
@@ -264,19 +272,28 @@ export async function localArticleToTypstTemplated(
     const state = session.store.getState();
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
     const { dir, name, ext } = path.parse(output);
-    const includeFileBases = results.map((result, ind) => {
-      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
-      const includeFile = path.format({ dir, ext, base });
-      const exports = renderTypstImports(false, collected);
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `= ${title}\n\n`;
+    typstContent = '';
+    let fileInd = 0;
+    articles.forEach((article) => {
+      if (article.file) {
+        const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
+        const includeFile = path.format({ dir, ext, base });
+        const exports = renderTypstImports(false, collected);
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `= ${title}\n\n`;
+        }
+        writeFileToFolder(
+          includeFile,
+          `${versionString}\n\n${exports}\n\n${part}${results[fileInd].value}`,
+        );
+        typstContent += `#include "${base}"\n\n`;
+        fileInd++;
+      } else if (article.title) {
+        typstContent += `= ${article.title}\n\n`;
       }
-      writeFileToFolder(includeFile, `${versionString}\n\n${exports}\n\n${part}${result.value}`);
-      return base;
     });
-    typstContent = includeFileBases.map((base) => `#include "${base}"`).join('\n');
   }
   typstContent = `${versionString}\n\n${typstContent}`;
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));

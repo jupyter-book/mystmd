@@ -4,11 +4,12 @@ import {
   incrementOptions,
   validateEnum,
   validateList,
+  validateNumber,
   validateObjectKeys,
   validateString,
   validationError,
 } from 'simple-validators';
-import type { Export } from './types.js';
+import type { Export, ExportArticle } from './types.js';
 import { ExportFormats } from './types.js';
 
 const EXPORT_KEY_OBJECT = {
@@ -18,6 +19,10 @@ const EXPORT_KEY_OBJECT = {
     article: 'articles',
     sub_article: 'sub_articles',
   },
+};
+
+const EXPORT_ARTICLE_KEY_OBJECT = {
+  optional: ['file', 'title', 'level'],
 };
 
 const EXT_TO_FORMAT = {
@@ -66,6 +71,43 @@ function validateExportFormat(input: any, opts: ValidationOptions): ExportFormat
   if (input === 'jats') input = 'xml';
   const format = validateEnum<ExportFormats>(input, { ...opts, enum: ExportFormats });
   return format;
+}
+
+function validateExportArticle(input: any, opts: ValidationOptions): ExportArticle | undefined {
+  if (typeof input === 'string') {
+    input = { file: input };
+  }
+  const value = validateObjectKeys(input, EXPORT_ARTICLE_KEY_OBJECT, opts);
+  if (!value) return undefined;
+  const output: ExportArticle = {};
+  if (defined(value.file)) {
+    output.file = validateString(value.file, opts);
+  }
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
+  }
+  if (defined(value.level)) {
+    output.level = validateNumber(value.level, {
+      min: -1,
+      max: 6,
+      integer: true,
+      ...incrementOptions('level', opts),
+    });
+  }
+  if (!output.title && !output.file) {
+    return validationError('export articles must specify file or part/chapter title', opts);
+  }
+  return output;
+}
+
+export function filesFromArticles(articles?: ExportArticle[]) {
+  return articles?.map(({ file }) => file).filter((file): file is string => !!file) ?? [];
+}
+
+export function singleArticleWithFile(articles?: ExportArticle[]) {
+  const articleWithFile = articles?.find((article) => !!article.file);
+  if (!articleWithFile) return;
+  return { file: articleWithFile.file };
 }
 
 export function validateExport(input: any, opts: ValidationOptions): Export | undefined {
@@ -127,42 +169,47 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     return validationError('unable to determine export format', opts);
   }
   if (format === undefined && template === undefined) return undefined;
-  const validExport: Export = { ...value, format, output, template };
-  if (defined(value.articles)) {
+  const { articles: valueArticles, sub_articles: valueSubArticles, ...rest } = value;
+  const validExport: Export = { ...rest, format, output, template };
+  if (defined(valueArticles)) {
     const articles = validateList(
-      value.articles,
+      valueArticles,
       { coerce: true, ...incrementOptions('articles', opts) },
-      (item, ind) => validateString(item, incrementOptions(`articles.${ind}`, opts)),
+      (item, ind) => validateExportArticle(item, incrementOptions(`articles.${ind}`, opts)),
     );
-    if (
-      articles?.length &&
-      articles.length > 1 &&
-      validExport.format &&
-      !MULTI_ARTICLE_EXPORT_FORMATS.includes(validExport.format)
-    ) {
-      if (validExport.format === ExportFormats.xml && !defined(value.sub_articles)) {
-        validationError(
-          "multiple articles are not supported for 'jats' export - instead specify one article with additional sub_articles",
-          opts,
-        );
+    const singleArticle = singleArticleWithFile(articles);
+    if (articles?.length) {
+      if (!singleArticle) {
+        validationError('no files found in export article list', opts);
+      } else if (
+        articles.length > 1 &&
+        validExport.format &&
+        !MULTI_ARTICLE_EXPORT_FORMATS.includes(validExport.format)
+      ) {
+        if (validExport.format === ExportFormats.xml && !defined(valueSubArticles)) {
+          validationError(
+            "multiple articles are not supported for 'jats' export - instead specify one article with additional sub_articles",
+            opts,
+          );
+        } else {
+          validationError(
+            "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports",
+            opts,
+          );
+        }
+        validExport.articles = [singleArticle];
       } else {
-        validationError(
-          "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports",
-          opts,
-        );
+        validExport.articles = articles;
       }
-      validExport.articles = [articles[0]];
-    } else {
-      validExport.articles = articles;
     }
   }
-  if (defined(value.sub_articles)) {
+  if (defined(valueSubArticles)) {
     if (validExport.format !== ExportFormats.xml) {
       validationError("sub_articles are only supported for 'jats' export", opts);
       validExport.sub_articles = undefined;
     } else {
       validExport.sub_articles = validateList(
-        value.sub_articles,
+        valueSubArticles,
         { coerce: true, ...incrementOptions('sub_articles', opts) },
         (file, ind) => {
           return validateString(file, incrementOptions(`sub_articles.${ind}`, opts));

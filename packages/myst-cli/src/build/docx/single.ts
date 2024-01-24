@@ -87,12 +87,12 @@ export async function runWordExport(
   const { output, articles } = exportOptions;
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
-  if (!article) return { tempFolders: [] };
+  if (!article?.file) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const vfile = new VFile();
   vfile.path = output;
   const imageWriteFolder = createTempFolder(session);
-  const [data] = await getFileContent(session, [article], {
+  const [data] = await getFileContent(session, [article.file], {
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
@@ -117,7 +117,7 @@ export async function runWordExport(
     sourceFile: file,
   });
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
-  await finalizeMdast(session, data.mdast, data.frontmatter, article, {
+  await finalizeMdast(session, data.mdast, data.frontmatter, article.file, {
     imageWriteFolder,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     simplifyFigures: true,

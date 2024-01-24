@@ -6,7 +6,7 @@ import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, filesFromArticles } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
@@ -110,7 +110,8 @@ export async function localArticleToTexRaw(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const content = await getFileContent(session, articles, {
+  const articleFiles = filesFromArticles(articles);
+  const content = await getFileContent(session, articleFiles, {
     projectPath,
     imageExtensions: TEX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
@@ -119,8 +120,8 @@ export async function localArticleToTexRaw(
   const toc = tic();
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      const articleFile = articleFiles[ind];
+      await finalizeMdast(session, mdast, frontmatter, articleFile, {
         imageWriteFolder: path.join(path.dirname(output), 'files'),
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
@@ -133,19 +134,25 @@ export async function localArticleToTexRaw(
   if (results.length === 1) {
     writeFileToFolder(output, results[0].value);
   } else {
+    let includeContent = '';
+    let fileInd = 0;
     const { dir, name, ext } = path.parse(output);
-    const includeFileBases = results.map((result, ind) => {
-      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
-      const includeFile = path.format({ dir, ext, base });
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `\\section{${title}}\n\n`;
+    articles.forEach((article) => {
+      if (article.file) {
+        const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
+        const includeFile = path.format({ dir, ext, base });
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `\\section{${title}}\n\n`;
+        }
+        writeFileToFolder(includeFile, `${part}${results[fileInd]?.value}`);
+        includeContent += `\\include{${base}}\n\n`;
+        fileInd++;
+      } else if (article.title) {
+        includeContent += `\\chapter{${article.title}}\n\n`;
       }
-      writeFileToFolder(includeFile, `${part}${result.value}`);
-      return base;
     });
-    const includeContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
     writeFileToFolder(output, includeContent);
   }
   // TODO: add imports and macros?
@@ -162,7 +169,8 @@ export async function localArticleToTexTemplated(
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
   const filesPath = path.join(path.dirname(output), 'files');
-  const content = await getFileContent(session, articles, {
+  const articleFiles = filesFromArticles(articles);
+  const content = await getFileContent(session, articleFiles, {
     projectPath,
     imageExtensions: TEX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
@@ -204,8 +212,8 @@ export async function localArticleToTexTemplated(
   let hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      const articleFile = articleFiles[ind];
+      await finalizeMdast(session, mdast, frontmatter, articleFile, {
         imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
@@ -218,7 +226,7 @@ export async function localArticleToTexTemplated(
           addWarningForFile(
             session,
             file,
-            `multiple values for part '${def.id}' found; ignoring value from ${article}`,
+            `multiple values for part '${def.id}' found; ignoring value from ${articleFile}`,
             'error',
             { ruleId: RuleId.texRenders },
           );
@@ -250,18 +258,24 @@ export async function localArticleToTexTemplated(
     const state = session.store.getState();
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
     const { dir, name, ext } = path.parse(output);
-    const includeFilenames = results.map((result, ind) => {
-      const includeFilename = `${name}-${content[ind]?.slug ?? ind}`;
-      const includeFile = path.format({ dir, ext, base: `${includeFilename}${ext}` });
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `\\section{${title}}\n\n`;
+    texContent = '';
+    let fileInd = 0;
+    articles.forEach((article) => {
+      if (article.file) {
+        const includeFilename = `${name}-${content[fileInd]?.slug ?? fileInd}`;
+        const includeFile = path.format({ dir, ext, base: `${includeFilename}${ext}` });
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `\\section{${title}}\n\n`;
+        }
+        writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
+        texContent += `\\include{${includeFilename}}\n\n`;
+        fileInd++;
+      } else if (article.title) {
+        texContent += `\\chapter{${article.title}}\n\n`;
       }
-      writeFileToFolder(includeFile, `${part}${result.value}`);
-      return includeFilename;
     });
-    texContent = includeFilenames.map((base) => `\\include{${base}}`).join('\n');
   }
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));

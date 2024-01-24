@@ -1,8 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { RuleId, fileError } from 'myst-common';
-import type { Export } from 'myst-frontmatter';
-import { ExportFormats, MULTI_ARTICLE_EXPORT_FORMATS } from 'myst-frontmatter';
+import type { Export, ExportArticle } from 'myst-frontmatter';
+import {
+  ExportFormats,
+  MULTI_ARTICLE_EXPORT_FORMATS,
+  singleArticleWithFile,
+} from 'myst-frontmatter';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
@@ -13,7 +17,6 @@ import { selectors } from '../../store/index.js';
 import type { ExportWithOutput, ExportOptions, ExportWithInputOutput } from '../types.js';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter.js';
 import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
-import type { LocalProjectPage } from '../../index.js';
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
 
@@ -46,7 +49,7 @@ async function prepareExportOptions(
   exportOptions.forEach((exp) => {
     // If no files are specified, use the sourceFile for article
     if (!exp.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
-      exp.articles = [path.resolve(sourceFile)];
+      exp.articles = [{ file: path.resolve(sourceFile) }];
     }
     // Also validate that sub_articles exist
     if (exp.sub_articles) {
@@ -75,12 +78,7 @@ async function prepareExportOptions(
             projectPath ?? '.',
           );
           if (cachedProject) {
-            exp.articles = [
-              cachedProject.file,
-              ...cachedProject.pages
-                .filter((page): page is LocalProjectPage => !!(page as any).file)
-                .map(({ file }) => file),
-            ];
+            exp.articles = [{ file: cachedProject.file }, ...cachedProject.pages];
             return exp;
           }
         }
@@ -99,16 +97,17 @@ async function prepareExportOptions(
         return undefined;
       }
       const resolvedFiles = exp.articles?.map((article) => {
-        const resolvedFile = path.resolve(path.dirname(sourceFile), article);
+        if (!article.file) return article;
+        const resolvedFile = path.resolve(path.dirname(sourceFile), article.file);
         if (!fs.existsSync(resolvedFile)) {
-          fileError(vfile, `Invalid export article '${article}' in source: ${sourceFile}`, {
+          fileError(vfile, `Invalid export article '${article.file}' in source: ${sourceFile}`, {
             ruleId: RuleId.exportArticleExists,
           });
           return undefined;
         }
-        return resolvedFile;
+        return { ...article, file: resolvedFile };
       });
-      exp.articles = resolvedFiles.filter((file): file is string => !!file);
+      exp.articles = resolvedFiles.filter((article): article is ExportArticle => !!article);
       return exp;
     })
     .filter((exp) => !!exp);
@@ -161,7 +160,7 @@ function getOutput(
   if (!path.extname(output)) {
     const basename = getDefaultExportFilename(
       session,
-      exp.articles?.[0] ?? sourceFile,
+      singleArticleWithFile(exp.articles)?.file ?? sourceFile,
       projectPath,
     );
     output = path.join(output, `${basename}.${extension}`);

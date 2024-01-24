@@ -36,10 +36,10 @@ export async function runJatsExport(
   const { output, articles, sub_articles } = exportOptions;
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
-  if (!article) return { tempFolders: [] };
+  if (!article?.file) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const processedContents = (
-    await getFileContent(session, [article, ...(sub_articles ?? [])], {
+    await getFileContent(session, [article.file, ...(sub_articles ?? [])], {
       projectPath,
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
