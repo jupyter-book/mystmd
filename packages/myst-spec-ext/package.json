@@ -32,6 +32,6 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-spec": "^0.0.4"
+    "myst-spec": "^0.0.5"
   }
 }

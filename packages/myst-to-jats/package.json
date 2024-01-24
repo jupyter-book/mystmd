@@ -43,7 +43,7 @@
     "katex": "^0.15.2",
     "myst-common": "^1.1.20",
     "myst-frontmatter": "^1.1.20",
-    "myst-spec": "^0.0.4",
+    "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.1.20",
     "myst-transforms": "^1.1.18",
     "nbtx": "^0.2.3",
