@@ -252,7 +252,7 @@ function applyComputedOutputsToNodes(
 
 export type Options = {
   cache: ICache<(IExpressionResult | IOutput[])[]>;
-  sessionFactory: () => Promise<SessionManager>;
+  sessionFactory: () => Promise<SessionManager | undefined>;
   frontmatter: PageFrontmatter;
   ignoreCache?: boolean;
   errorIsFatal?: boolean;
