@@ -328,10 +328,15 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
         .finally(async () => sessionConnection !== undefined && sessionConnection.shutdown());
     }
   }
-  assert(cachedResults !== undefined);
 
-  // Apply results to tree
-  applyComputedOutputsToNodes(executableNodes, cachedResults);
+  if (cachedResults) {
+    // Apply results to tree
+    applyComputedOutputsToNodes(executableNodes, cachedResults);
+  } else {
+    fileError(file, `Could not load Jupyter session manager to run executable nodes`, {
+      fatal: opts.errorIsFatal,
+    });
+  }
 }
 
 export const kernelExecutionPlugin: Plugin<[Options], GenericParent, GenericParent> =
