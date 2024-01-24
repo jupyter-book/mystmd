@@ -89,7 +89,7 @@ cases:
       ```
     html: |-
       <p>see <a href="#matrix">(1)</a></p>
-      <div id="matrix" class="math block">Ax = b</div>
+      <div id="matrix" class="math-display">Ax = b</div>
   - title: Link-style equation reference
     mdast:
       type: root
@@ -122,4 +122,4 @@ cases:
       ```
     html: |-
       <p>see <a href="#matrix">(1)</a></p>
-      <div id="matrix" class="math block">Ax = b</div>
+      <div id="matrix" class="math-display">Ax = b</div>

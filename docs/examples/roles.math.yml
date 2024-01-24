@@ -17,4 +17,4 @@ cases:
     myst: |-
       This is genius {math}`e=mc^2`
     html: |-
-      <p>This is genius <span class="math inline">e=mc^2</span></p>
+      <p>This is genius <span class="math-inline">e=mc^2</span></p>
