@@ -271,6 +271,11 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
     tree,
   ) as (ICellBlock | InlineExpression)[];
 
+  // Only do something if we have any nodes!
+  if (executableNodes.length === 0) {
+    return;
+  }
+
   // See if we already cached this execution
   const cacheKey = buildCacheKey(executableNodes);
   let cachedResults: (IExpressionResult | IOutput[])[] | undefined = opts.cache.get(cacheKey);
