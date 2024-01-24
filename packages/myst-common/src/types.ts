@@ -154,8 +154,6 @@ export enum AdmonitionKind {
   warning = 'warning',
 }
 
-
-
 export interface IExpressionOutput {
   status: 'ok';
   data: nbformat.IMimeBundle;
