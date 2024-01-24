@@ -6,7 +6,7 @@ import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats, filesFromArticles } from 'myst-frontmatter';
+import { ExportFormats, articlesWithFile } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
@@ -103,6 +103,21 @@ export function extractTexPart(
   });
 }
 
+function titleToTexHeading(session: ISession, title: string, depth = 1) {
+  const headingMdast = {
+    type: 'root',
+    children: [
+      {
+        type: 'heading',
+        depth,
+        children: [{ type: 'text', value: title }],
+      },
+    ],
+  };
+  const content = mdastToTex(session, headingMdast, {}, {}, null, false);
+  return content.value;
+}
+
 export async function localArticleToTexRaw(
   session: ISession,
   templateOptions: ExportWithOutput,
@@ -110,18 +125,22 @@ export async function localArticleToTexRaw(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const articleFiles = filesFromArticles(articles);
-  const content = await getFileContent(session, articleFiles, {
-    projectPath,
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TEX_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+    },
+  );
 
   const toc = tic();
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const articleFile = articleFiles[ind];
-      await finalizeMdast(session, mdast, frontmatter, articleFile, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: path.join(path.dirname(output), 'files'),
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
@@ -144,13 +163,13 @@ export async function localArticleToTexRaw(
         let part = '';
         const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
         if (title && !content_includes_title) {
-          part = `\\section{${title}}\n\n`;
+          part = `${titleToTexHeading(session, title, article.level)}\n\n`;
         }
         writeFileToFolder(includeFile, `${part}${results[fileInd]?.value}`);
         includeContent += `\\include{${base}}\n\n`;
         fileInd++;
       } else if (article.title) {
-        includeContent += `\\chapter{${article.title}}\n\n`;
+        includeContent += `${titleToTexHeading(session, article.title, article.level)}\n\n`;
       }
     });
     writeFileToFolder(output, includeContent);
@@ -169,12 +188,17 @@ export async function localArticleToTexTemplated(
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
   const filesPath = path.join(path.dirname(output), 'files');
-  const articleFiles = filesFromArticles(articles);
-  const content = await getFileContent(session, articleFiles, {
-    projectPath,
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TEX_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+    },
+  );
   const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
@@ -212,8 +236,7 @@ export async function localArticleToTexTemplated(
   let hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const articleFile = articleFiles[ind];
-      await finalizeMdast(session, mdast, frontmatter, articleFile, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
@@ -226,7 +249,7 @@ export async function localArticleToTexTemplated(
           addWarningForFile(
             session,
             file,
-            `multiple values for part '${def.id}' found; ignoring value from ${articleFile}`,
+            `multiple values for part '${def.id}' found; ignoring value from ${fileArticles[ind].file}`,
             'error',
             { ruleId: RuleId.texRenders },
           );
@@ -267,13 +290,13 @@ export async function localArticleToTexTemplated(
         let part = '';
         const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
         if (title && !content_includes_title) {
-          part = `\\section{${title}}\n\n`;
+          part = `${titleToTexHeading(session, title, article.level)}\n\n`;
         }
         writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
         texContent += `\\include{${includeFilename}}\n\n`;
         fileInd++;
       } else if (article.title) {
-        texContent += `\\chapter{${article.title}}\n\n`;
+        texContent += `${titleToTexHeading(session, article.title, article.level)}\n\n`;
       }
     });
   }

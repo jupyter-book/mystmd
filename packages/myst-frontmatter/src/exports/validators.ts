@@ -100,14 +100,16 @@ function validateExportArticle(input: any, opts: ValidationOptions): ExportArtic
   return output;
 }
 
-export function filesFromArticles(articles?: ExportArticle[]) {
-  return articles?.map(({ file }) => file).filter((file): file is string => !!file) ?? [];
+export function articlesWithFile(articles?: ExportArticle[]) {
+  return (
+    articles?.filter((article): article is { file: string; level?: number; title?: string } => {
+      return !!article.file;
+    }) ?? []
+  );
 }
 
 export function singleArticleWithFile(articles?: ExportArticle[]) {
-  const articleWithFile = articles?.find((article) => !!article.file);
-  if (!articleWithFile) return;
-  return { file: articleWithFile.file };
+  return articlesWithFile(articles)[0];
 }
 
 export function validateExport(input: any, opts: ValidationOptions): Export | undefined {

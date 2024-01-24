@@ -17,10 +17,12 @@ export async function getFileContent(
     projectPath,
     imageExtensions,
     extraLinkTransformers,
+    titleDepths,
   }: {
     projectPath?: string;
     imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
+    titleDepths?: number | (number | undefined)[];
   },
 ) {
   const toc = tic();
@@ -43,8 +45,9 @@ export async function getFileContent(
   combineProjectCitationRenderers(session, projectPath);
 
   await Promise.all(
-    allFiles.map(async (file) => {
+    allFiles.map(async (file, ind) => {
       const pageSlug = pages.find((page) => page.file === file)?.slug;
+      const titleDepth = typeof titleDepths === 'number' ? titleDepths : titleDepths?.[ind];
       await transformMdast(session, {
         file,
         imageExtensions,
@@ -52,6 +55,7 @@ export async function getFileContent(
         pageSlug,
         minifyMaxCharacters: 0,
         index: project.index,
+        titleDepth,
       });
     }),
   );

@@ -5,7 +5,7 @@ import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats, filesFromArticles } from 'myst-frontmatter';
+import { ExportFormats, articlesWithFile } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTypst from 'myst-to-typst';
@@ -121,6 +121,21 @@ export function extractTypstPart(
   });
 }
 
+function titleToTypstHeading(session: ISession, title: string, depth = 1) {
+  const headingMdast = {
+    type: 'root',
+    children: [
+      {
+        type: 'heading',
+        depth,
+        children: [{ type: 'text', value: title }],
+      },
+    ],
+  };
+  const content = mdastToTypst(session, headingMdast, {}, {}, null, false);
+  return content.value;
+}
+
 export async function localArticleToTypstRaw(
   session: ISession,
   templateOptions: ExportWithOutput,
@@ -128,18 +143,22 @@ export async function localArticleToTypstRaw(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const articleFiles = filesFromArticles(articles);
-  const content = await getFileContent(session, articleFiles, {
-    projectPath,
-    imageExtensions: TYPST_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TYPST_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+    },
+  );
 
   const toc = tic();
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const articleFile = articleFiles[ind];
-      await finalizeMdast(session, mdast, frontmatter, articleFile, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: path.join(path.dirname(output), 'files'),
         imageAltOutputFolder: 'files/',
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
@@ -162,13 +181,13 @@ export async function localArticleToTypstRaw(
         let part = '';
         const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
         if (title && !content_includes_title) {
-          part = `= ${title}\n\n`;
+          part = `${titleToTypstHeading(session, title, article.level)}\n\n`;
         }
         writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
         includeContent += `#include "${base}"\n\n`;
         fileInd++;
       } else if (article.title) {
-        includeContent += `= ${article.title}\n\n`;
+        includeContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }
     });
     writeFileToFolder(output, includeContent);
@@ -187,12 +206,17 @@ export async function localArticleToTypstTemplated(
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
   const filesPath = path.join(path.dirname(output), 'files');
-  const articleFiles = filesFromArticles(articles);
-  const content = await getFileContent(session, articleFiles, {
-    projectPath,
-    imageExtensions: TYPST_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TYPST_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+    },
+  );
   const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
@@ -227,8 +251,7 @@ export async function localArticleToTypstTemplated(
   const hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const articleFile = articleFiles[ind];
-      await finalizeMdast(session, mdast, frontmatter, articleFile, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
@@ -241,7 +264,7 @@ export async function localArticleToTypstTemplated(
           addWarningForFile(
             session,
             file,
-            `multiple values for part '${def.id}' found; ignoring value from ${articleFile}`,
+            `multiple values for part '${def.id}' found; ignoring value from ${fileArticles[ind].file}`,
             'error',
             { ruleId: RuleId.texRenders },
           );
@@ -282,7 +305,7 @@ export async function localArticleToTypstTemplated(
         let part = '';
         const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
         if (title && !content_includes_title) {
-          part = `= ${title}\n\n`;
+          part = `${titleToTypstHeading(session, title, article.level)}\n\n`;
         }
         writeFileToFolder(
           includeFile,
@@ -291,7 +314,7 @@ export async function localArticleToTypstTemplated(
         typstContent += `#include "${base}"\n\n`;
         fileInd++;
       } else if (article.title) {
-        typstContent += `= ${article.title}\n\n`;
+        typstContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }
     });
   }
