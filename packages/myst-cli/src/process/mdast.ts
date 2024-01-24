@@ -168,7 +168,7 @@ export async function transformMdast(
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
-      titleDepth: titleDepth ?? (frontmatter.title && !frontmatter.content_includes_title ? 1 : 0),
+      firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
     })
     .use(inlineMathSimplificationPlugin)
     .use(mathPlugin, { macros: frontmatter.math })
