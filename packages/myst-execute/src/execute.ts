@@ -9,9 +9,9 @@ import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import type { IExpressionResult } from './types.js';
 import type { Plugin } from 'unified';
+import type { ICache } from './cache.js';
 
 /**
  * Interpret an IOPub message as an IOutput object
@@ -133,50 +133,6 @@ function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
   return createHash('md5').update(hashableString).digest('hex');
 }
 
-interface ICache<T> {
-  test(key: string): boolean;
-
-  get(key: string): T | undefined;
-
-  set(key: string, value: T): void;
-}
-
-/**
- * An implementation of a basic cache
- */
-class LocalDiskCache<T> implements ICache<T> {
-  constructor(cachePath: string) {
-    this._cachePath = cachePath;
-
-    if (!existsSync(cachePath)) {
-      mkdirSync(cachePath, { recursive: true });
-    }
-  }
-
-  private readonly _cachePath: string;
-
-  private _makeKeyPath(key: string): string {
-    return path.join(this._cachePath, `${key}.json`);
-  }
-
-  test(key: string): boolean {
-    return existsSync(this._makeKeyPath(key));
-  }
-
-  get(key: string): T | undefined {
-    const keyPath = this._makeKeyPath(key);
-    if (!existsSync(keyPath)) {
-      return undefined;
-    }
-    return JSON.parse(readFileSync(keyPath, { encoding: 'utf8' }));
-  }
-
-  set(key: string, item: T) {
-    const keyPath = this._makeKeyPath(key);
-    return writeFileSync(keyPath, JSON.stringify(item), { encoding: 'utf8' });
-  }
-}
-
 type ICellBlockOutput = GenericNode & {
   data: IOutput[];
 };
@@ -295,7 +251,7 @@ function applyComputedOutputsToNodes(
 }
 
 export type Options = {
-  cachePath: string;
+  cache: ICache<(IExpressionResult | IOutput[])[]>;
   sessionFactory: () => Promise<SessionManager>;
   frontmatter: PageFrontmatter;
   ignoreCache?: boolean;
@@ -310,8 +266,6 @@ export type Options = {
  * @param opts
  */
 export async function kernelExecutionTransform(tree: GenericParent, file: VFile, opts: Options) {
-  const cache = new LocalDiskCache<(IExpressionResult | IOutput[])[]>(opts.cachePath);
-
   // Pull out code-like nodes
   const executableNodes = selectAll(
     'block:has(code[executable=true]):has(output),inlineExpression',
@@ -320,7 +274,7 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
 
   // See if we already cached this execution
   const cacheKey = buildCacheKey(executableNodes);
-  let cachedResults: (IExpressionResult | IOutput[])[] | undefined = cache.get(cacheKey);
+  let cachedResults: (IExpressionResult | IOutput[])[] | undefined = opts.cache.get(cacheKey);
 
   // Do we need to re-execute notebook?
   if (opts.ignoreCache || cachedResults === undefined) {
@@ -360,7 +314,7 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
           );
           // Populate cache if things were successful
           if (!errorOccurred) {
-            cache.set(cacheKey, results);
+            opts.cache.set(cacheKey, results);
           } else {
             // Otherwise, keep tabs on the error
             fileError(file, 'An error occurred during kernel execution', {

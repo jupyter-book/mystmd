@@ -2,12 +2,14 @@ import { describe, test, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { kernelExecutionTransform, launchJupyterServer } from '../src';
+import { kernelExecutionTransform, launchJupyterServer, ICache } from '../src';
 import type { GenericParent } from 'myst-common';
 import { VFile } from 'vfile';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import { default as nodeFetch } from 'node-fetch';
 import { Headers, Request, Response } from 'node-fetch';
+import type { IExpressionResult } from '../src/types';
+import type { IOutput } from '@jupyterlab/nbformat';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -27,6 +29,13 @@ type TestCase = {
 type TestCases = {
   title: string;
   cases: TestCase[];
+};
+
+// Don't store or retrieve anything from cache
+const noOpCache: ICache<(IExpressionResult | IOutput[])[]> = {
+  test: (key: string) => false,
+  get: (key: string) => undefined,
+  set: (key: string, value: any) => {},
 };
 
 const only = '';
@@ -71,13 +80,12 @@ casesList.forEach(({ title, cases }) => {
 
         await kernelExecutionTransform(before, file, {
           sessionFactory: async () => await sessionManagerFactory.load(),
-          cachePath: path.join(__dirname, 'execute'),
+          cache: noOpCache,
           frontmatter: {
             kernelspec: {
               name: 'python3',
             },
           },
-          ignoreCache: true,
           errorIsFatal: true,
         });
         if (throws !== null && throws !== undefined) {
