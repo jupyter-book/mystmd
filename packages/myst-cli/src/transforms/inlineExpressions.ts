@@ -66,7 +66,25 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
   return [];
 }
 
-export function transformInlineExpressions(mdast: GenericParent, file: VFile) {
+export function transformRenderInlineExpressions(mdast: GenericParent, file: VFile) {
+  let count = 0;
+  const inlineNodes = selectAll('inlineExpression', mdast) as InlineExpression[];
+  inlineNodes.forEach((inlineExpression) => {
+    count += 1;
+    if (!inlineExpression.result) {
+      return;
+    }
+    inlineExpression.identifier = `eval-${count}`;
+    inlineExpression.children = renderExpression(inlineExpression, file);
+  });
+}
+
+export const renderInlineExpressionsPlugin: Plugin<[], GenericParent, GenericParent> =
+  () => (tree, file) => {
+    transformRenderInlineExpressions(tree, file);
+  };
+
+export function transformLoadInlineExpressions(mdast: GenericParent, file: VFile) {
   // Ensure block metadata is correctly structured
   blockMetadataTransform(mdast, file);
   const blocks = selectAll('block', mdast).filter(
@@ -82,14 +100,12 @@ export function transformInlineExpressions(mdast: GenericParent, file: VFile) {
       const data = findExpression(userExpressions, inlineExpression.value);
       if (!data) return;
       count += 1;
-      inlineExpression.identifier = `eval-${count}`;
       inlineExpression.result = data.result;
-      inlineExpression.children = renderExpression(inlineExpression, file);
     });
   });
 }
 
-export const inlineExpressionsPlugin: Plugin<[], GenericParent, GenericParent> =
+export const loadInlineExpressionsPlugin: Plugin<[], GenericParent, GenericParent> =
   () => (tree, file) => {
-    transformInlineExpressions(tree, file);
+    transformLoadInlineExpressions(tree, file);
   };
