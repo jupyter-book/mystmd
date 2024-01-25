@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { projectFromPath } from './fromPath';
-import { pagesFromToc } from './fromToc';
+import { pagesFromToc, projectFromToc } from './fromToc';
 import { tocFromProject } from './toToc';
 import { findProjectsOnPath } from './load';
 
@@ -626,6 +626,66 @@ describe('pagesFromToc', () => {
       { slug: 'b', file: 'b.md', level: 3 },
       { slug: 'c', file: 'c.md', level: 3 },
     ]);
+  });
+  it('project from toc', async () => {
+    memfs.vol.fromJSON({
+      '_toc.yml': TOC_FILE,
+      'index.md': '',
+      'a.md': '',
+      'b.md': '',
+      'c.md': '',
+    });
+    expect(projectFromToc(session, '.', 1)).toEqual({
+      index: 'index',
+      file: 'index.md',
+      path: '.',
+      pages: [
+        { slug: 'a', file: 'a.md', level: 1 },
+        { title: 'Sections', level: 1 },
+        { slug: 'b', file: 'b.md', level: 2 },
+        { slug: 'c', file: 'c.md', level: 2 },
+      ],
+    });
+  });
+  it('project from toc, level = 0', async () => {
+    memfs.vol.fromJSON({
+      '_toc.yml': TOC_FILE,
+      'index.md': '',
+      'a.md': '',
+      'b.md': '',
+      'c.md': '',
+    });
+    expect(projectFromToc(session, '.', 0)).toEqual({
+      index: 'index',
+      file: 'index.md',
+      path: '.',
+      pages: [
+        { slug: 'a', file: 'a.md', level: 0 },
+        { title: 'Sections', level: 0 },
+        { slug: 'b', file: 'b.md', level: 1 },
+        { slug: 'c', file: 'c.md', level: 1 },
+      ],
+    });
+  });
+  it('project from toc, level = -1', async () => {
+    memfs.vol.fromJSON({
+      '_toc.yml': TOC_FILE,
+      'index.md': '',
+      'a.md': '',
+      'b.md': '',
+      'c.md': '',
+    });
+    expect(projectFromToc(session, '.', -1)).toEqual({
+      index: 'index',
+      file: 'index.md',
+      path: '.',
+      pages: [
+        { slug: 'a', file: 'a.md', level: 0 },
+        { title: 'Sections', level: 0 },
+        { slug: 'b', file: 'b.md', level: 1 },
+        { slug: 'c', file: 'c.md', level: 1 },
+      ],
+    });
   });
   it('pages from toc, with extra files', async () => {
     memfs.vol.fromJSON({

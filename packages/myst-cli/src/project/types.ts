@@ -5,7 +5,11 @@
 
 export type PageSlugs = Record<string, number>;
 
-export type PageLevels = 1 | 2 | 3 | 4 | 5 | 6;
+/** Valid heading levels are 1-6 and default behavior only uses these.
+ * 
+ * However -1 and 0 may also be set for part/chapter
+ * */ 
+export type PageLevels = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export type LocalProjectFolder = {
   title: string;

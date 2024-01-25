@@ -51,7 +51,13 @@ function pagesFromChapters(
 }
 
 /**
- * Build project structure from jupyterbook '_toc.yml' file
+ * Build project structure from jupyterbook '_toc.yml' file on a path
+ *
+ * Starting level may be provided; by default this is 1. Numbers up to
+ * 6 may be provided for pages to start at a lower level. Level may
+ * also be -1 or 0. In these cases, the first "part" level will be -1
+ * and the first "chapter" level will be 0; However, "sections"
+ * will never be level < 1.
  */
 export function projectFromToc(
   session: ISession,
@@ -77,9 +83,17 @@ export function projectFromToc(
   }
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
-  if (toc.chapters) {
+  if (toc.sections) {
+    // Do not allow sections to have level < 1
+    if (level < 1) level = 1;
+    pagesFromChapters(session, path, toc.sections, pages, level, pageSlugs);
+  } else if (toc.chapters) {
+    // Do not allow chapters to have level < 0
+    if (level < 0) level = 0;
     pagesFromChapters(session, path, toc.chapters, pages, level, pageSlugs);
   } else if (toc.parts) {
+    // Do not allow parts to have level < -1
+    if (level < -1) level = -1;
     toc.parts.forEach((part, index) => {
       if (part.caption) {
         pages.push({ title: part.caption || `Part ${index + 1}`, level });
