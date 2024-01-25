@@ -378,3 +378,36 @@ cases:
       exports:
         - format: pdf
     errors: 1
+  - title: export toc passes
+    raw:
+      exports:
+        - format: pdf
+          toc: my/path/_toc.yml
+    normalized:
+      exports:
+        - format: pdf
+          toc: my/path/_toc.yml
+  - title: export toc and article errors
+    raw:
+      exports:
+        - format: pdf
+          toc: my/path/_toc.yml
+          article: a.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+    errors: 1
+  - title: export toc and sub_article errors
+    raw:
+      exports:
+        - format: xml
+          toc: my/path/_toc.yml
+          sub_article: a.md
+    normalized:
+      exports:
+        - format: xml
+          sub_articles:
+            - a.md
+    errors: 1

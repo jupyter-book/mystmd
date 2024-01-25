@@ -46,9 +46,9 @@ export const RESERVED_EXPORT_KEYS = [
 ];
 
 export const MULTI_ARTICLE_EXPORT_FORMATS = [
+  ExportFormats.typst,
   ExportFormats.pdf,
   ExportFormats.tex,
-  ExportFormats.typst,
   ExportFormats.pdftex,
 ];
 
@@ -171,11 +171,10 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     return validationError('unable to determine export format', opts);
   }
   if (format === undefined && template === undefined) return undefined;
-  const { articles: valueArticles, sub_articles: valueSubArticles, ...rest } = value;
-  const validExport: Export = { ...rest, format, output, template };
-  if (defined(valueArticles)) {
+  const validExport: Export = { ...value, format, output, template };
+  if (defined(value.articles)) {
     const articles = validateList(
-      valueArticles,
+      value.articles,
       { coerce: true, ...incrementOptions('articles', opts) },
       (item, ind) => validateExportArticle(item, incrementOptions(`articles.${ind}`, opts)),
     );
@@ -183,12 +182,13 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     if (articles?.length) {
       if (!singleArticle) {
         validationError('no files found in export article list', opts);
+        validExport.articles = undefined;
       } else if (
         articles.length > 1 &&
         validExport.format &&
         !MULTI_ARTICLE_EXPORT_FORMATS.includes(validExport.format)
       ) {
-        if (validExport.format === ExportFormats.xml && !defined(valueSubArticles)) {
+        if (validExport.format === ExportFormats.xml && !defined(value.sub_articles)) {
           validationError(
             "multiple articles are not supported for 'jats' export - instead specify one article with additional sub_articles",
             opts,
@@ -203,20 +203,34 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       } else {
         validExport.articles = articles;
       }
+    } else {
+      validExport.articles = undefined;
     }
   }
-  if (defined(valueSubArticles)) {
+  if (defined(value.sub_articles)) {
     if (validExport.format !== ExportFormats.xml) {
       validationError("sub_articles are only supported for 'jats' export", opts);
       validExport.sub_articles = undefined;
     } else {
       validExport.sub_articles = validateList(
-        valueSubArticles,
+        value.sub_articles,
         { coerce: true, ...incrementOptions('sub_articles', opts) },
         (file, ind) => {
           return validateString(file, incrementOptions(`sub_articles.${ind}`, opts));
         },
       );
+    }
+  }
+  if (defined(value.toc)) {
+    const tocOpts = incrementOptions('toc', opts);
+    if (validExport.articles || validExport.sub_articles) {
+      validationError(
+        'export cannot define both toc file and articles/sub_articles; ignoring toc',
+        tocOpts,
+      );
+      validExport.toc = undefined;
+    } else {
+      validExport.toc = validateString(value.toc, tocOpts);
     }
   }
   return validExport;
