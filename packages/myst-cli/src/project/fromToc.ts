@@ -24,9 +24,11 @@ function pagesFromChapters(
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
 ): (LocalProjectFolder | LocalProjectPage)[] {
+  const filename = tocFile(path);
+  const { dir } = parse(filename);
   chapters.forEach((chapter) => {
     // TODO: support globs and urls
-    const file = chapter.file ? resolveExtension(join(path, chapter.file)) : undefined;
+    const file = chapter.file ? resolveExtension(join(dir, chapter.file)) : undefined;
     if (file) {
       const { slug } = fileInfo(file, pageSlugs);
       pages.push({ file, level, slug });
@@ -71,13 +73,13 @@ export function projectFromToc(
   const { dir, base } = parse(filename);
   const toc = readTOC(session.log, { filename: base, path: dir });
   const pageSlugs: PageSlugs = {};
-  const indexFile = resolveExtension(join(path, toc.root));
+  const indexFile = resolveExtension(join(dir, toc.root));
   if (!indexFile) {
     throw Error(
       `The table of contents defined in "${tocFile(path)}" could not find file "${
         toc.root
       }" defined as the "root:" page. Please ensure that one of these files is defined:\n- ${VALID_FILE_EXTENSIONS.map(
-        (ext) => join(path, `${toc.root}${ext}`),
+        (ext) => join(dir, `${toc.root}${ext}`),
       ).join('\n- ')}\n`,
     );
   }
@@ -103,7 +105,7 @@ export function projectFromToc(
       }
     });
   }
-  return { path, file: indexFile, index: slug, pages };
+  return { path: dir, file: indexFile, index: slug, pages };
 }
 
 /**
