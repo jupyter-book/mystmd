@@ -83,12 +83,7 @@ export async function getRawFrontmatterFromFile(
   if (!cache.$getMdast(file)) await loadFile(session, file, projectPath);
   const result = cache.$getMdast(file);
   if (!result || !result.pre) return undefined;
-  const vfile = new VFile();
-  vfile.path = file;
-  // Copy the mdast, this is not a processing step!
-  const frontmatter = getFrontmatter(vfile, copyNode(result.pre.mdast));
-  logMessagesFromVFile(session, vfile);
-  return frontmatter.frontmatter;
+  return result.pre.frontmatter;
 }
 
 export function getExportListFromRawFrontmatter(
