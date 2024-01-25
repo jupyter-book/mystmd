@@ -23,28 +23,37 @@ import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
 
-function assignArticlesFromProject(exp: Export, proj: Omit<LocalProject, 'bibliography'>) {
+function assignArticlesFromProject(
+  exp: Export,
+  proj: Omit<LocalProject, 'bibliography'>,
+  vfile: VFile,
+) {
   const { file, pages } = proj;
+  const fileAsPage = { file, level: 1 };
+  const articles = pages?.length ? pages : [fileAsPage];
   if (MULTI_ARTICLE_EXPORT_FORMATS.includes(exp.format)) {
-    exp.articles = [{ file, level: 1 }, ...pages];
-  } else {
-    exp.articles = [{ file }];
-  }
-  if (exp.format === ExportFormats.xml) {
+    exp.articles = articles;
+  } else if (exp.format === ExportFormats.xml) {
+    exp.articles = [fileAsPage];
     exp.sub_articles = pages
       .map((page) => (page as any).file)
       .filter((pageFile): pageFile is string => !!pageFile);
+  } else {
+    fileError(vfile, "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports", {
+      ruleId: RuleId.validFrontmatterExportList,
+    });
+    exp.articles = [singleArticleWithFile(articles) ?? fileAsPage];
   }
 }
 
-function assignArticlesFromTOC(session: ISession, exp: Export, tocPath: string) {
+function assignArticlesFromTOC(session: ISession, exp: Export, tocPath: string, vfile: VFile) {
   const allowLevelLessThanOne = [
     ExportFormats.tex,
     ExportFormats.pdf,
     ExportFormats.pdftex,
   ].includes(exp.format);
   const proj = projectFromToc(session, tocPath, allowLevelLessThanOne ? -1 : 1);
-  assignArticlesFromProject(exp, proj);
+  assignArticlesFromProject(exp, proj, vfile);
 }
 
 async function prepareExportOptions(
@@ -78,7 +87,7 @@ async function prepareExportOptions(
     if (exp.toc && !exp.articles?.length && !exp.sub_articles?.length) {
       const resolvedToc = path.resolve(path.dirname(sourceFile), exp.toc);
       if (validateTOC(session, resolvedToc)) {
-        assignArticlesFromTOC(session, exp, resolvedToc);
+        assignArticlesFromTOC(session, exp, resolvedToc, vfile);
       }
     }
     // If no articles are specified, use the sourceFile for article
@@ -88,14 +97,14 @@ async function prepareExportOptions(
     // If still no articles, try to use explicit or implicit project toc
     if (!exp.articles?.length && !exp.sub_articles?.length) {
       if (validateTOC(session, projectPath ?? '.')) {
-        assignArticlesFromTOC(session, exp, projectPath ?? '.');
+        assignArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
       } else {
         const cachedProject = selectors.selectLocalProject(
           session.store.getState(),
           projectPath ?? '.',
         );
         if (cachedProject) {
-          assignArticlesFromProject(exp, cachedProject);
+          assignArticlesFromProject(exp, cachedProject, vfile);
         }
       }
     }
