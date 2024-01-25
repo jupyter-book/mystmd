@@ -68,7 +68,10 @@ async function prepareExportOptions(
   vfile.path = sourceFile;
   let rawFrontmatter: Record<string, any> | undefined;
   const state = session.store.getState();
-  if (projectPath && sourceFile === selectors.selectLocalConfigFile(state, projectPath)) {
+  if (
+    projectPath &&
+    path.resolve(sourceFile) === selectors.selectLocalConfigFile(state, projectPath)
+  ) {
     rawFrontmatter = selectors.selectLocalProjectConfig(state, projectPath);
   } else {
     rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);

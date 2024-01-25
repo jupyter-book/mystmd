@@ -8,7 +8,7 @@ import {
   validatePageFrontmatter,
 } from 'myst-frontmatter';
 import type { GenericParent } from 'myst-common';
-import { copyNode, fileError, fileWarn, RuleId } from 'myst-common';
+import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import type { ISession } from './session/types.js';
