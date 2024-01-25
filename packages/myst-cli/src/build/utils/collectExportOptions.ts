@@ -150,9 +150,9 @@ async function prepareExportOptions(
   return filteredExportOptions as (Export & { articles: string[] })[];
 }
 
-function filterAndMakeUnique(exports: (Export | undefined)[]) {
+function filterAndMakeUnique<T extends ExportWithOutput>(exports: (T | undefined)[]): T[] {
   return exports
-    .filter((exp): exp is ExportWithOutput => Boolean(exp))
+    .filter((exp): exp is T => Boolean(exp))
     .map((exp, ind, arr) => {
       // Make identical export output values unique
       const nMatch = (a: ExportWithOutput[]) => a.filter((e) => e.output === exp.output).length;
@@ -438,5 +438,5 @@ export async function collectExportOptions(
       );
     }),
   );
-  return exportOptionsList;
+  return filterAndMakeUnique(exportOptionsList);
 }
