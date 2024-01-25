@@ -105,7 +105,7 @@ export function projectFromToc(
       }
     });
   }
-  return { path: dir, file: indexFile, index: slug, pages };
+  return { path: dir || '.', file: indexFile, index: slug, pages };
 }
 
 /**
