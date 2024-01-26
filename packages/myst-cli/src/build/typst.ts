@@ -377,17 +377,17 @@ export async function runTypstZipExport(
 ): Promise<ExportResults> {
   if (clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
-  const texFolder = createTempFolder(session);
+  const typFolder = createTempFolder(session);
   exportOptions.output = path.join(
-    texFolder,
-    `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
+    typFolder,
+    `${path.basename(zipOutput, path.extname(zipOutput))}.typ`,
   );
   await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
   session.log.info(`🤐 Zipping typst outputs to ${zipOutput}`);
   const zip = new AdmZip();
-  zip.addLocalFolder(texFolder);
+  zip.addLocalFolder(typFolder);
   zip.writeZip(zipOutput);
-  return { tempFolders: [texFolder] };
+  return { tempFolders: [typFolder] };
 }
 
 export async function localArticleToTypst(
@@ -401,7 +401,7 @@ export async function localArticleToTypst(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'typ', [ExportFormats.tex], projectPath, opts)
+    await collectTexExportOptions(session, file, 'typ', [ExportFormats.typst], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
