@@ -1,4 +1,5 @@
 import AdmZip from 'adm-zip';
+import fs from 'node:fs';
 import path from 'node:path';
 import which from 'which';
 import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
@@ -390,6 +391,29 @@ export async function runTypstZipExport(
   return { tempFolders: [typFolder] };
 }
 
+export async function runTypstPdfExport(
+  session: ISession,
+  file: string,
+  exportOptions: ExportWithOutput,
+  projectPath?: string,
+  clean?: boolean,
+  extraLinkTransformers?: LinkTransformer[],
+): Promise<ExportResults> {
+  if (clean) cleanOutput(session, exportOptions.output);
+  const pdfOutput = exportOptions.output;
+  const typFolder = createTempFolder(session);
+  exportOptions.output = path.join(
+    typFolder,
+    `${path.basename(pdfOutput, path.extname(pdfOutput))}.typ`,
+  );
+  await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  const writeFolder = path.dirname(pdfOutput);
+  session.log.info(`🖨 Rendering typst pdf to ${pdfOutput}`);
+  if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
+  fs.copyFileSync(exportOptions.output.replace('.typ', '.pdf'), pdfOutput);
+  return { tempFolders: [typFolder] };
+}
+
 export async function localArticleToTypst(
   session: ISession,
   file: string,
@@ -412,6 +436,15 @@ export async function localArticleToTypst(
       let exportResults: ExportResults;
       if (path.extname(exportOptions.output) === '.zip') {
         exportResults = await runTypstZipExport(
+          session,
+          file,
+          exportOptions,
+          projectPath,
+          opts.clean,
+          extraLinkTransformers,
+        );
+      } else if (path.extname(exportOptions.output) === '.pdf') {
+        exportResults = await runTypstPdfExport(
           session,
           file,
           exportOptions,

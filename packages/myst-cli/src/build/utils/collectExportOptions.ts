@@ -245,7 +245,8 @@ export async function collectTexExportOptions(
       const rawOutput = filename || exp.output || '';
       const useZip =
         (extension === 'tex' || extension === 'typ') && (zip || path.extname(rawOutput) === '.zip');
-      const expExtension = useZip ? 'zip' : extension;
+      const usePdf = extension === 'typ' && path.extname(rawOutput) === '.pdf';
+      const expExtension = useZip ? 'zip' : usePdf ? 'pdf' : extension;
       const output = getOutput(
         session,
         sourceFile,

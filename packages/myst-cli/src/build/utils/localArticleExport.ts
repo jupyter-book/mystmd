@@ -13,7 +13,7 @@ import type {
 } from '../types.js';
 import { resolveAndLogErrors } from './resolveAndLogErrors.js';
 import { runTexZipExport, runTexExport } from '../tex/single.js';
-import { runTypstExport, runTypstZipExport } from '../typst.js';
+import { runTypstExport, runTypstPdfExport, runTypstZipExport } from '../typst.js';
 import { runWordExport } from '../docx/single.js';
 import { runJatsExport } from '../jats/single.js';
 import { texExportOptionsFromPdf } from '../pdf/single.js';
@@ -100,6 +100,8 @@ async function _localArticleExport(
       } else if (format === ExportFormats.typst) {
         if (path.extname(output) === '.zip') {
           exportFn = runTypstZipExport;
+        } else if (path.extname(output) === '.pdf') {
+          exportFn = runTypstPdfExport;
         } else {
           exportFn = runTypstExport;
         }
