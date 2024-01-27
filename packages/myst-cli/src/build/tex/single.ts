@@ -6,12 +6,13 @@ import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats, articlesWithFile } from 'myst-frontmatter';
+import { ExportFormats, PAGE_FRONTMATTER_KEYS, articlesWithFile } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
 import type { LatexResult, PreambleData } from 'myst-to-tex';
 import type { LinkTransformer } from 'myst-transforms';
+import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
 import { findCurrentProjectAndLoad } from '../../config.js';
@@ -134,6 +135,7 @@ export async function localArticleToTexRaw(
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
       titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) => filterKeys(article, PAGE_FRONTMATTER_KEYS)),
     },
   );
 
@@ -197,6 +199,7 @@ export async function localArticleToTexTemplated(
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
       titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) => filterKeys(article, PAGE_FRONTMATTER_KEYS)),
     },
   );
   const bibtexWritten = writeBibtexFromCitationRenderers(

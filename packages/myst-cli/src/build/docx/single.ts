@@ -3,13 +3,14 @@ import path from 'node:path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
 import { fileError, fileWarn, RuleId, TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
+import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { finalizeMdast } from '../../process/mdast.js';
@@ -96,6 +97,7 @@ export async function runWordExport(
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
+    preFrontmatters: [filterKeys(article, PAGE_FRONTMATTER_KEYS)],
   });
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.docx,

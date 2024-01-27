@@ -13,7 +13,8 @@ export type ExportArticle = {
   file?: string;
   level?: number;
   title?: string;
-};
+  // Page frontmatter defined here will override file frontmatter
+} & Record<string, any>;
 
 export type Export = {
   format: ExportFormats; // TODO: Optional if template is defined
