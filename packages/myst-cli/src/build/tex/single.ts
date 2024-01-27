@@ -6,7 +6,13 @@ import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats, PAGE_FRONTMATTER_KEYS, articlesWithFile } from 'myst-frontmatter';
+import {
+  ExportFormats,
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  articlesWithFile,
+  validateProjectFrontmatter,
+} from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
@@ -15,7 +21,9 @@ import type { LinkTransformer } from 'myst-transforms';
 import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
+import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
+import { frontmatterValidationOpts } from '../../frontmatter.js';
 import { finalizeMdast } from '../../process/mdast.js';
 import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
@@ -303,6 +311,14 @@ export async function localArticleToTexTemplated(
       }
     });
   }
+  const vfile = new VFile();
+  vfile.path = file;
+  const exportFrontmatter = validateProjectFrontmatter(
+    filterKeys(templateOptions, PROJECT_FRONTMATTER_KEYS),
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  frontmatter = { ...frontmatter, ...exportFrontmatter };
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   const { preamble, suffix } = generatePreamble(preambleData);

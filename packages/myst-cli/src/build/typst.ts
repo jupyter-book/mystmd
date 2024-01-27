@@ -6,7 +6,13 @@ import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats, PAGE_FRONTMATTER_KEYS, articlesWithFile } from 'myst-frontmatter';
+import {
+  ExportFormats,
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  articlesWithFile,
+  validateProjectFrontmatter,
+} from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTypst from 'myst-to-typst';
@@ -16,8 +22,10 @@ import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { TypstTemplateImports } from 'jtex';
+import { VFile } from 'vfile';
 import { mergeTypstTemplateImports, renderTemplate, renderTypstImports } from 'jtex';
 import { findCurrentProjectAndLoad } from '../config.js';
+import { frontmatterValidationOpts } from '../frontmatter.js';
 import { finalizeMdast } from '../process/mdast.js';
 import { loadProjectFromDisk } from '../project/load.js';
 import type { ISession } from '../session/types.js';
@@ -322,6 +330,14 @@ export async function localArticleToTypstTemplated(
       }
     });
   }
+  const vfile = new VFile();
+  vfile.path = file;
+  const exportFrontmatter = validateProjectFrontmatter(
+    filterKeys(templateOptions, PROJECT_FRONTMATTER_KEYS),
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  frontmatter = { ...frontmatter, ...exportFrontmatter };
   typstContent = `${versionString}\n\n${typstContent}`;
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
   renderTemplate(mystTemplate, {

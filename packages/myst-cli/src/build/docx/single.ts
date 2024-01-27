@@ -3,7 +3,12 @@ import path from 'node:path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import {
+  ExportFormats,
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  validateProjectFrontmatter,
+} from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
@@ -13,6 +18,7 @@ import { selectAll } from 'unist-util-select';
 import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
+import { frontmatterValidationOpts } from '../../frontmatter.js';
 import { finalizeMdast } from '../../process/mdast.js';
 import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
@@ -112,6 +118,13 @@ export async function runWordExport(
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   const toc = tic();
+
+  const exportFrontmatter = validateProjectFrontmatter(
+    filterKeys(exportOptions, PROJECT_FRONTMATTER_KEYS),
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  data.frontmatter = { ...data.frontmatter, ...exportFrontmatter };
   const { options, doc } = mystTemplate.prepare({
     frontmatter: data.frontmatter,
     parts: [],
