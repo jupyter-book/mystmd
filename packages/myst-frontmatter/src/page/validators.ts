@@ -9,35 +9,11 @@ import {
   validationError,
   validateBoolean,
 } from 'simple-validators';
-import {
-  PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  validateProjectAndPageFrontmatterKeys,
-} from '../project/validators.js';
-import type { PageFrontmatter } from './types.js';
+import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
+import { PAGE_FRONTMATTER_KEYS, PAGE_KNOWN_PARTS, type PageFrontmatter } from './types.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/validators.js';
-
-const KNOWN_PARTS = [
-  'abstract',
-  'summary',
-  'keypoints',
-  'dedication',
-  'epigraph',
-  'data_availability',
-  'acknowledgments',
-];
-
-export const PAGE_FRONTMATTER_KEYS = [
-  ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  // These keys only exist on the page
-  'kernelspec',
-  'jupytext',
-  'tags',
-  'parts',
-  'content_includes_title',
-  ...KNOWN_PARTS,
-];
 
 export const USE_PROJECT_FALLBACK = [
   'authors',
@@ -80,7 +56,7 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.parts)) {
     parts = validateObject(value.parts, partsOptions);
   }
-  KNOWN_PARTS.forEach((partKey) => {
+  PAGE_KNOWN_PARTS.forEach((partKey) => {
     if (defined(value[partKey])) {
       parts ??= {};
       if (parts[partKey]) {
