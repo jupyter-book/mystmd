@@ -1,21 +1,32 @@
 import AdmZip from 'adm-zip';
+import fs from 'node:fs';
 import path from 'node:path';
 import which from 'which';
 import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats, articlesWithFile } from 'myst-frontmatter';
+import {
+  ExportFormats,
+  FRONTMATTER_ALIASES,
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  articlesWithFile,
+  validateProjectFrontmatter,
+} from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTypst from 'myst-to-typst';
 import type { TypstResult } from 'myst-to-typst';
 import type { LinkTransformer } from 'myst-transforms';
+import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { TypstTemplateImports } from 'jtex';
+import { VFile } from 'vfile';
 import { mergeTypstTemplateImports, renderTemplate, renderTypstImports } from 'jtex';
 import { findCurrentProjectAndLoad } from '../config.js';
+import { frontmatterValidationOpts } from '../frontmatter.js';
 import { finalizeMdast } from '../process/mdast.js';
 import { loadProjectFromDisk } from '../project/load.js';
 import type { ISession } from '../session/types.js';
@@ -152,6 +163,9 @@ export async function localArticleToTypstRaw(
       imageExtensions: TYPST_IMAGE_EXTENSIONS,
       extraLinkTransformers,
       titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
     },
   );
 
@@ -215,6 +229,9 @@ export async function localArticleToTypstTemplated(
       imageExtensions: TYPST_IMAGE_EXTENSIONS,
       extraLinkTransformers,
       titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
     },
   );
   const bibtexWritten = writeBibtexFromCitationRenderers(
@@ -318,6 +335,14 @@ export async function localArticleToTypstTemplated(
       }
     });
   }
+  const vfile = new VFile();
+  vfile.path = file;
+  const exportFrontmatter = validateProjectFrontmatter(
+    filterKeys(templateOptions, [...PROJECT_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  frontmatter = { ...frontmatter, ...exportFrontmatter };
   typstContent = `${versionString}\n\n${typstContent}`;
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
   renderTemplate(mystTemplate, {
@@ -377,17 +402,40 @@ export async function runTypstZipExport(
 ): Promise<ExportResults> {
   if (clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
-  const texFolder = createTempFolder(session);
+  const typFolder = createTempFolder(session);
   exportOptions.output = path.join(
-    texFolder,
-    `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
+    typFolder,
+    `${path.basename(zipOutput, path.extname(zipOutput))}.typ`,
   );
   await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
   session.log.info(`🤐 Zipping typst outputs to ${zipOutput}`);
   const zip = new AdmZip();
-  zip.addLocalFolder(texFolder);
+  zip.addLocalFolder(typFolder);
   zip.writeZip(zipOutput);
-  return { tempFolders: [texFolder] };
+  return { tempFolders: [typFolder] };
+}
+
+export async function runTypstPdfExport(
+  session: ISession,
+  file: string,
+  exportOptions: ExportWithOutput,
+  projectPath?: string,
+  clean?: boolean,
+  extraLinkTransformers?: LinkTransformer[],
+): Promise<ExportResults> {
+  if (clean) cleanOutput(session, exportOptions.output);
+  const pdfOutput = exportOptions.output;
+  const typFolder = createTempFolder(session);
+  exportOptions.output = path.join(
+    typFolder,
+    `${path.basename(pdfOutput, path.extname(pdfOutput))}.typ`,
+  );
+  await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  const writeFolder = path.dirname(pdfOutput);
+  session.log.info(`🖨 Rendering typst pdf to ${pdfOutput}`);
+  if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
+  fs.copyFileSync(exportOptions.output.replace('.typ', '.pdf'), pdfOutput);
+  return { tempFolders: [typFolder] };
 }
 
 export async function localArticleToTypst(
@@ -401,7 +449,7 @@ export async function localArticleToTypst(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'typ', [ExportFormats.tex], projectPath, opts)
+    await collectTexExportOptions(session, file, 'typ', [ExportFormats.typst], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -412,6 +460,15 @@ export async function localArticleToTypst(
       let exportResults: ExportResults;
       if (path.extname(exportOptions.output) === '.zip') {
         exportResults = await runTypstZipExport(
+          session,
+          file,
+          exportOptions,
+          projectPath,
+          opts.clean,
+          extraLinkTransformers,
+        );
+      } else if (path.extname(exportOptions.output) === '.pdf') {
+        exportResults = await runTypstPdfExport(
           session,
           file,
           exportOptions,

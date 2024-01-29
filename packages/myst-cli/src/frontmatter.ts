@@ -17,6 +17,22 @@ import { logMessagesFromVFile } from './utils/logMessagesFromVFile.js';
 import { castSession } from './session/cache.js';
 import { loadFile } from './process/file.js';
 
+export function frontmatterValidationOpts(
+  vfile: VFile,
+  opts?: { property?: string; ruleId?: RuleId },
+): ValidationOptions {
+  return {
+    property: opts?.property ?? 'frontmatter',
+    file: vfile.path,
+    messages: {},
+    errorLogFn: (message: string) => {
+      fileError(vfile, message, { ruleId: opts?.ruleId ?? RuleId.validPageFrontmatter });
+    },
+    warningLogFn: (message: string) => {
+      fileWarn(vfile, message, { ruleId: opts?.ruleId ?? RuleId.validPageFrontmatter });
+    },
+  };
+}
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
  *
@@ -30,23 +46,17 @@ export function getPageFrontmatter(
   session: ISession,
   tree: GenericParent,
   vfile: VFile,
+  preFrontmatter?: Record<string, any>,
 ): { frontmatter: PageFrontmatter; identifiers: string[] } {
   const { frontmatter: rawPageFrontmatter, identifiers } = getFrontmatter(vfile, tree, {
     propagateTargets: true,
+    preFrontmatter,
   });
   unnestKernelSpec(rawPageFrontmatter);
-  const validationOpts = {
-    property: 'frontmatter',
-    vfile,
-    messages: {},
-    errorLogFn: (message: string) => {
-      fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
-    },
-    warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: RuleId.validPageFrontmatter });
-    },
-  };
-  const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, validationOpts);
+  const pageFrontmatter = validatePageFrontmatter(
+    rawPageFrontmatter,
+    frontmatterValidationOpts(vfile),
+  );
   logMessagesFromVFile(session, vfile);
   return { frontmatter: pageFrontmatter, identifiers };
 }
@@ -94,19 +104,12 @@ export function getExportListFromRawFrontmatter(
 ): Export[] {
   const vfile = new VFile();
   vfile.path = file;
-  const exportErrorMessages: ValidationOptions = {
-    property: 'exports',
-    messages: {},
-    errorLogFn: (message: string) => {
-      fileError(vfile, message, { ruleId: RuleId.validFrontmatterExportList });
-    },
-    warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: RuleId.validFrontmatterExportList });
-    },
-  };
   const exports = validateExportsList(
     rawFrontmatter?.exports ?? rawFrontmatter?.export,
-    exportErrorMessages,
+    frontmatterValidationOpts(vfile, {
+      property: 'exports',
+      ruleId: RuleId.validFrontmatterExportList,
+    }),
   );
   logMessagesFromVFile(session, vfile);
   if (!exports) return [];

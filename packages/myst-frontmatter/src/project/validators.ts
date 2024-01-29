@@ -15,46 +15,12 @@ import { validateBiblio } from '../biblio/validators.js';
 import { validateExportsList } from '../exports/validators.js';
 import { validateLicenses } from '../licenses/validators.js';
 import { validateNumbering } from '../numbering/validators.js';
-import {
-  FRONTMATTER_ALIASES,
-  SITE_FRONTMATTER_KEYS,
-  validateSiteFrontmatterKeys,
-} from '../site/validators.js';
+import { FRONTMATTER_ALIASES, validateSiteFrontmatterKeys } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateBooleanOrObject, validateDoi } from '../utils/validators.js';
+import { PROJECT_FRONTMATTER_KEYS } from './types.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
-
-export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
-  'date',
-  'name',
-  'doi',
-  'arxiv',
-  'open_access',
-  'license',
-  'binder',
-  'source',
-  'subject',
-  'biblio',
-  'oxa',
-  'numbering',
-  'bibliography',
-  'math',
-  'abbreviations',
-  'exports',
-  'settings', // We maybe want to move this into site frontmatter in the future
-  // Do not add any project specific keys here!
-  ...SITE_FRONTMATTER_KEYS,
-];
-
-export const PROJECT_FRONTMATTER_KEYS = [
-  ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  // These keys only exist on the project
-  'references',
-  'requirements',
-  'resources',
-  'thebe',
-];
 
 export function validateProjectAndPageFrontmatterKeys(
   value: Record<string, any>,

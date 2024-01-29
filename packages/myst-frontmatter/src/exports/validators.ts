@@ -9,6 +9,9 @@ import {
   validateString,
   validationError,
 } from 'simple-validators';
+import { PAGE_FRONTMATTER_KEYS } from '../page/types.js';
+import { PROJECT_FRONTMATTER_KEYS } from '../project/types.js';
+import { FRONTMATTER_ALIASES } from '../site/validators.js';
 import type { Export, ExportArticle } from './types.js';
 import { ExportFormats } from './types.js';
 
@@ -22,7 +25,13 @@ const EXPORT_KEY_OBJECT = {
 };
 
 const EXPORT_ARTICLE_KEY_OBJECT = {
-  optional: ['file', 'title', 'level'],
+  optional: [
+    'file',
+    'title',
+    'level',
+    ...PAGE_FRONTMATTER_KEYS,
+    ...Object.keys(FRONTMATTER_ALIASES),
+  ],
 };
 
 const EXT_TO_FORMAT = {
@@ -43,6 +52,8 @@ export const RESERVED_EXPORT_KEYS = [
   ...EXPORT_KEY_OBJECT.required,
   ...EXPORT_KEY_OBJECT.optional,
   ...Object.keys(EXPORT_KEY_OBJECT.alias),
+  ...PROJECT_FRONTMATTER_KEYS,
+  ...Object.keys(FRONTMATTER_ALIASES),
 ];
 
 export const MULTI_ARTICLE_EXPORT_FORMATS = [
@@ -79,7 +90,7 @@ function validateExportArticle(input: any, opts: ValidationOptions): ExportArtic
   }
   const value = validateObjectKeys(input, EXPORT_ARTICLE_KEY_OBJECT, opts);
   if (!value) return undefined;
-  const output: ExportArticle = {};
+  const output: ExportArticle = { ...value };
   if (defined(value.file)) {
     output.file = validateString(value.file, opts);
   }

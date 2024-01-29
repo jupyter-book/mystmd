@@ -14,6 +14,12 @@ type Options = {
    * so the title can be picked up by the frontmatter.
    */
   propagateTargets?: boolean;
+  /**
+   * `preFrontmatter` overrides frontmatter from the file. It must be taken
+   * into account this early so tile is not removed if preFrontmatter.title
+   * is defined.
+   */
+  preFrontmatter?: Record<string, any>;
 };
 
 export function getFrontmatter(
@@ -39,6 +45,9 @@ export function getFrontmatter(
         ruleId: RuleId.frontmatterIsYaml,
       });
     }
+  }
+  if (opts.preFrontmatter) {
+    frontmatter = { ...frontmatter, ...opts.preFrontmatter };
   }
   if (frontmatter.content_includes_title != null) {
     fileWarn(file, `'frontmatter' cannot explicitly set: content_includes_title`, {

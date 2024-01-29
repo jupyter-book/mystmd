@@ -5,9 +5,9 @@ import { tic } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
 import { RuleId, toText } from 'myst-common';
-import type { PageFrontmatter } from 'myst-frontmatter';
+import { validatePageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
-import { getPageFrontmatter } from '../frontmatter.js';
+import { frontmatterValidationOpts, getPageFrontmatter } from '../frontmatter.js';
 import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/cache.js';
 import { warnings, watch } from '../store/reducers.js';
@@ -35,13 +35,22 @@ function checkCache(cache: ISessionWithCache, content: string, file: string) {
  * @param projectPath path to project directory
  * @param extension pre-computed file extension
  * @param opts loading options
+ *
+ * @param opts.minifyMaxCharacters maximum size of notebook output that will
+ *     not be written to separate file
+ * @param opts.preFrontmatter raw page frontmatter, prioritized over frontmatter
+ *     read from the file. Fields defined here will override fields defined
+ *     in the file. Unlike project and page frontmatter which are carefully
+ *     combined to maintain affiliations, keep all math macros, etc, this
+ *     override simply replaces fields prior to any further processing or
+ *     validation.
  */
 export async function loadFile(
   session: ISession,
   file: string,
   projectPath?: string,
   extension?: '.md' | '.ipynb' | '.bib',
-  opts?: { minifyMaxCharacters?: number },
+  opts?: { minifyMaxCharacters?: number; preFrontmatter?: Record<string, any> },
 ) {
   await session.loadPlugins();
   const toc = tic();
@@ -66,7 +75,12 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const mdast = parseMyst(session, content, file);
-        const { frontmatter, identifiers } = getPageFrontmatter(session, mdast, vfile);
+        const { frontmatter, identifiers } = getPageFrontmatter(
+          session,
+          mdast,
+          vfile,
+          opts?.preFrontmatter,
+        );
         cache.$setMdast(file, {
           sha256,
           pre: { kind: SourceFileKind.Article, file, location, mdast, frontmatter, identifiers },
@@ -78,7 +92,12 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const mdast = await processNotebook(cache, file, content, opts);
-        const { frontmatter, identifiers } = getPageFrontmatter(session, mdast, vfile);
+        const { frontmatter, identifiers } = getPageFrontmatter(
+          session,
+          mdast,
+          vfile,
+          opts?.preFrontmatter,
+        );
         cache.$setMdast(file, {
           sha256,
           pre: { kind: SourceFileKind.Notebook, file, location, mdast, frontmatter, identifiers },
@@ -95,16 +114,20 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const tex = new TexParser(content, vfile);
+        const frontmatter = validatePageFrontmatter(
+          {
+            title: toText(tex.data.frontmatter.title as any),
+            short_title: toText(tex.data.frontmatter.short_title as any),
+            authors: tex.data.frontmatter.authors,
+            // TODO: affiliations: tex.data.frontmatter.affiliations,
+            keywords: tex.data.frontmatter.keywords,
+            math: tex.data.macros,
+            bibliography: tex.data.bibliography,
+            ...(opts?.preFrontmatter ?? {}),
+          },
+          frontmatterValidationOpts(vfile),
+        );
         logMessagesFromVFile(session, vfile);
-        const frontmatter: PageFrontmatter = {
-          title: toText(tex.data.frontmatter.title as any),
-          short_title: toText(tex.data.frontmatter.short_title as any),
-          authors: tex.data.frontmatter.authors,
-          // TODO: affiliations: tex.data.frontmatter.affiliations,
-          keywords: tex.data.frontmatter.keywords,
-          math: tex.data.macros,
-          bibliography: tex.data.bibliography,
-        };
         cache.$setMdast(file, {
           sha256,
           pre: {

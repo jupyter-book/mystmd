@@ -1,0 +1,49 @@
+myst: v1
+title: Plain LaTeX Book
+description: A plain latex book theme
+version: '1.0.0'
+authors:
+  - name: Rowan Cockett
+    website: https://row1.ca
+    affiliations:
+      - Curvenote
+      - Executable Books
+license: CC-BY-4.0
+thumbnail: ./thumbnail.png
+tags:
+  - book
+# parts:
+#   - id: acknowledgments
+#     description: >
+#       Add an acknowledgments to your book
+doc:
+  - id: title
+    required: true
+  - id: subtitle
+  - id: authors
+    required: true
+  # - id: keywords
+  #   description: |
+  #     Include a list of keywords after the abstract (minimum 3)
+  - id: bibliography
+# options:
+#   - id: double_spacing
+#     title: Double line spacing
+#     type: boolean
+#     description: Enable double line spacing
+#     default: false
+files:
+  - template.tex
+packages:
+  - babel
+  - caption
+  - enumitem
+  - fontenc
+  - framed
+  - geometry
+  - graphicx
+  - hyperref
+  - inputenc
+  - lmodern
+  - natbib
+  - xcolor

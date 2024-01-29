@@ -632,4 +632,77 @@ describe('getFrontmatter', () => {
     const { identifiers } = getFrontmatter(new VFile(), copy(input), {});
     expect(identifiers).toEqual(['h1']);
   });
+  it('preFrontmatter fills and replaces file frontmatter', () => {
+    const input = {
+      type: 'root',
+      children: [
+        {
+          type: 'code',
+          lang: 'yaml',
+          value: 'doi: 10.1000/abcd/efg012\ndate: 14 Dec 2021',
+        },
+        {
+          type: 'heading',
+          depth: 1,
+          children: [
+            {
+              type: 'text',
+              value: 'Heading Title',
+            },
+          ],
+        },
+        {
+          type: 'text',
+          value: 'hello',
+        },
+        {
+          type: 'heading',
+          depth: 1,
+          children: [
+            {
+              type: 'text',
+              value: 'Another Heading',
+            },
+          ],
+        },
+      ],
+    };
+    const { tree, frontmatter } = getFrontmatter(new VFile(), copy(input), {
+      preFrontmatter: { title: 'Pre Frontmatter Title', date: '4 May 2022' },
+    });
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'heading',
+          depth: 1,
+          children: [
+            {
+              type: 'text',
+              value: 'Heading Title',
+            },
+          ],
+        },
+        {
+          type: 'text',
+          value: 'hello',
+        },
+        {
+          type: 'heading',
+          depth: 1,
+          children: [
+            {
+              type: 'text',
+              value: 'Another Heading',
+            },
+          ],
+        },
+      ],
+    });
+    expect(frontmatter).toEqual({
+      title: 'Pre Frontmatter Title',
+      date: '4 May 2022',
+      doi: '10.1000/abcd/efg012',
+    });
+  });
 });

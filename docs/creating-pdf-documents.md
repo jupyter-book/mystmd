@@ -46,9 +46,11 @@ Based on the `output` field in the export list in the [frontmatter](#export-fron
 
 ```{danger}
 :class: dropdown
-# PDF exports require $\LaTeX$ to be installed
+# PDF exports require $\LaTeX$ or Typst to be installed
 
 The default PDF renderer uses $\LaTeX$ to create PDFs, which means that to work locally you will need to [](#install-latex). A warning will occur if MyST cannot find a $\LaTeX$ environment, as well as forcing the build process and reporting any errors.
+
+As an alternative, for faster PDF builds, you may use [Typst](#rendering-pdfs-with-typst) instead.
 ```
 
 The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](myst:jtex) templating library, to convert to $\LaTeX$ the [`myst-to-tex`](myst:myst-to-tex) packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
@@ -86,6 +88,24 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 % Probably a note in the future about running this remotely?
 
+(rendering-pdfs-with-typst)=
+
+## Rendering PDFs with Typst
+
+MyST also provides an option to build PDFs with [Typst](https://typst.app/). Typst is a markup-based typesetting language. Compared to $\LaTeX$, syntax is streamlined and consistent, and compile time is significantly faster. To render Typst PDFs locally, you must install the [Typst CLI](https://github.com/typst/typst).
+
+To add Typst to your export targets, add `format: typst` and select a Typst template. These templates use the same [MyST templating library](myst:jtex) as $\LaTeX$ templates to support document [frontmatter](./frontmatter.md).
+
+```yaml
+---
+title: My PDF
+exports:
+  - format: typst
+    template: lapreprint-typst
+    output: exports/my-document.pdf
+---
+```
+
 ## Choosing a Template
 
 There are currently 422 journals supported[^journals] and it is straight forward to add new personal templates, or contribute them back to the community.
@@ -94,7 +114,7 @@ There are currently 422 journals supported[^journals] and it is straight forward
 
     This is the total number of _journals_ that can be created from MyST, which is a higher number than the number of _templates_, as some templates support many different journal exports. As we add more templates we will probably switch this number to templates, which is closer to 15, but that doesn't sound as impressive out of the gate. 🚀
 
-To list all of the public templates, use the `myst templates` command:
+Templates exist for both $\LaTeX$ and Typst builds. To list all of the public templates, use the `myst templates` command:
 
 ```bash
 myst templates list --pdf --tag two-column
@@ -188,3 +208,78 @@ Please consider [contributing your template](/jtex/contribute-a-template) to the
 ## Excluding Source
 
 If you have a block or notebook cell that you do now want to render to your LaTeX output, add the `no-tex` tag to the cell.
+
+(multi-article-exports)=
+
+## Mulit-Article Exports
+
+Sometimes you may want to combine multiple MyST documents into a single export, for example a thesis or a book. MyST makes this possible with multi-article exports for PDFs built with either $\LaTeX$ or Typst.
+
+For perform a multi-article export, add multiple `articles` to the export frontmatter:
+
+```yaml
+---
+title: My PDF
+exports:
+  - format: pdf
+    template: plain_latex_book
+    output: exports/my-thesis.pdf
+    articles:
+      - introduction.md
+      - project-one.md
+      - project-two.md
+      - conclusions.md
+---
+```
+
+As an alternative to listing articles in MyST frontmatter, you may specify a table of contents using the [Jupyter Book format](#toc-format):
+
+```yaml
+---
+title: My PDF
+exports:
+  - format: pdf
+    template: plain_latex_book
+    output: exports/my-thesis.pdf
+    toc: thesis_toc.yml
+---
+```
+
+By default if no `articles` are given, exports defined in page frontmatter will produce a single-article export from of that page, and exports defined in the `myst.yml` project configuration will produce a multi-article export based on the project structure.
+
+## Custom Frontmatter for Exports
+
+Export frontmatter may differ from page or project frontmatter. For example, you may with to give your export its own title, which does not match the project title. To do so, add the alternative frontmatter to your export:
+
+```yaml
+---
+title: My Interactive Research!
+exports:
+  - format: pdf
+    title: My Static Research as a PDF
+    output: exports/my-document.pdf
+---
+```
+
+You may redefine [any frontmatter fields](./frontmatter.md). These redefined fields will replace the values found in page frontmatter and `myst.yml` project configuration.
+
+Further, for [](#multi-article-exports), you may redefine frontmatter for every specific page. To do so, you must use a list of article objects (as opposed to a `_toc.yml` file or a list of article names):
+
+```yaml
+---
+title: My PDF
+exports:
+  - format: pdf
+    title: My Thesis
+    date: 10 May 2023
+    template: plain_latex_book
+    output: exports/my-thesis.pdf
+    articles:
+      - file: introduction.md
+        title: Introduction to This Thesis
+      - file: project-one.md
+      - file: project-two.md
+      - file: conclusions.md
+        title: Summary of this Thesis
+---
+```
