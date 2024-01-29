@@ -176,27 +176,20 @@ export class Session implements ISession {
     if (this._jupyterSessionManager !== null) {
       return Promise.resolve(this._jupyterSessionManager);
     }
+
     try {
-      const partialServerSettings = await new Promise<JupyterServerSettings>((resolve, reject) => {
-        if (process.env.JUPYTER_BASE_URL === undefined) {
-          const settings = findExistingJupyterServer();
-          if (settings) {
-            console.log('LOADED EXISTING');
-            return resolve(settings);
-          } else {
-            console.log('LAUNCH NEW');
-            return launchJupyterServer(this.contentPath(), this.log).then((launchedSettings) => {
-              console.log('LOADED', launchedSettings);
-              resolve(launchedSettings);
-            });
-          }
-        } else {
-          resolve({
-            baseUrl: process.env.JUPYTER_BASE_URL,
-            token: process.env.JUPYTER_TOKEN,
-          });
-        }
-      });
+      let partialServerSettings: JupyterServerSettings | undefined;
+      if (process.env.JUPYTER_BASE_URL !== undefined) {
+        partialServerSettings = {
+          baseUrl: process.env.JUPYTER_BASE_URL,
+          token: process.env.JUPYTER_TOKEN,
+        };
+      } else {
+        partialServerSettings =
+          (await findExistingJupyterServer()) ||
+          (await launchJupyterServer(this.contentPath(), this.log));
+      }
+
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);
       const kernelManager = new KernelManager({ serverSettings });
       const manager = new SessionManager({ kernelManager, serverSettings });
