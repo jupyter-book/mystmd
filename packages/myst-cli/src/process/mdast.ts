@@ -43,10 +43,23 @@ import {
   importMdastFromJson,
   includeFilesTransform,
   liftCodeMetadataToBlock,
+  propagateBlockDataToCode,
+  reduceOutputs,
+  StaticFileTransformer,
+  transformBanner,
+  transformCitations,
+  transformDeleteBase64UrlSource,
+  transformFilterOutputStreams,
+  transformImageFormats,
+  transformImagesToDisk,
+  transformImagesToEmbed,
+  transformImagesWithoutExt,
+  transformLiftCodeBlocksInJupytext,
   transformLinkedDOIs,
   transformOutputsToCache,
-  transformCitations,
-  transformImageFormats,
+  transformOutputsToFile,
+  transformPlaceholderImages,
+  transformRenderInlineExpressions,
   transformThumbnail,
   StaticFileTransformer,
   inlineExpressionsPlugin,
@@ -177,8 +190,7 @@ export async function transformMdast(
     .use(glossaryPlugin) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
-    .use(joinGatesPlugin)
-    .use(renderInlineExpressionsPlugin);
+    .use(joinGatesPlugin);
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
@@ -226,6 +238,7 @@ export async function transformMdast(
     ignoreCache: false,
     errorIsFatal: false,
   });
+  transformRenderInlineExpressions(mdast, vfile);
 
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
