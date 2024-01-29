@@ -1,5 +1,79 @@
 # myst-cli
 
+## 1.1.38
+
+### Patch Changes
+
+- 70ee1eae: Log errors on failed export builds
+- 7596172: Support export toc
+- 7596172: Allow projectFromToc to set part/chapter labels -1/0
+- f78db0bf: Update myst-spec
+- 860c2976: Bibtex with capital ARTICLE now no longer duplicates all entries
+- 7596172: Fix typst zip exports to use correct extension
+- 7596172: Allow page frontmatter in export articles
+- 7596172: Change export articles into objects with file/title/level
+- 7596172: Allow pdf extension for typst exports
+- 7596172: Pass heading depth through multi-page transform
+- 85ae9b4a: Support cross-references to file allowing labels on lifted headers
+- 9178a214: Allow typst to have multiple pages for export (e.g. as a book)
+- d0eab1c2: Support html outputs in static exports
+- 7596172: Allow loading toc from an explicitly named, non-default toc file
+- aa335d74: Basic title consumption in tex/typst exports
+- 45823775: Supprt SVG not PDF in typst.
+- aa335d74: Gather page frontmatter on load
+- 7596172: Get export articles from project pages
+- 7596172: Support jb-article toc with top-level sections
+- 7596172: Simplify heading transform to use firstDepth and modify mdast processing correspondingly
+- 7596172: Quick fix for export output name collisions across files
+- 7596172: Fix build when myst.yml is specified as source file
+- 7596172: Fix bug with invalid reprocessing of frontmatter during export
+- aa335d74: Add heading depth transform to normalize headings
+- d0eab1c2: Fix static output priority image > html > text
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [2be01f12]
+- Updated dependencies [7596172]
+- Updated dependencies [409adad8]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [85ae9b4a]
+- Updated dependencies [d0eab1c2]
+- Updated dependencies [a7e15710]
+- Updated dependencies [9178a214]
+- Updated dependencies [cb3bad07]
+- Updated dependencies [9ea12b12]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [405caef7]
+- Updated dependencies [aa335d74]
+- Updated dependencies [dd23c26f]
+- Updated dependencies [7596172]
+- Updated dependencies [d0eab1c2]
+- Updated dependencies [4a496339]
+- Updated dependencies [405caef7]
+- Updated dependencies [aa335d74]
+- Updated dependencies [2be01f12]
+- Updated dependencies [d2e6e780]
+- Updated dependencies [363c93c5]
+- Updated dependencies [9ea12b12]
+- Updated dependencies [2be01f12]
+  - myst-frontmatter@1.1.22
+  - myst-transforms@1.2.0
+  - myst-ext-proof@1.0.8
+  - myst-spec-ext@1.1.22
+  - myst-to-docx@1.0.9
+  - myst-to-jats@1.0.21
+  - myst-common@1.1.22
+  - myst-parser@1.0.22
+  - myst-to-typst@0.0.9
+  - myst-to-tex@1.0.17
+  - myst-templates@1.0.16
+  - jtex@1.0.13
+  - tex-to-myst@1.0.17
+  - myst-config@1.1.22
+
 ## 1.1.37
 
 ### Patch Changes

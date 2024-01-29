@@ -1,5 +1,20 @@
 # myst-frontmatter
 
+## 1.1.22
+
+### Patch Changes
+
+- 7596172: Support export toc
+- 7596172: Allow page frontmatter in export articles
+- 7596172: Change export articles into objects with file/title/level
+- 7596172: Pass heading depth through multi-page transform
+- 7596172: Enumerate multi-article export formats
+- 7596172: Allow page frontmatter in export article validation
+- 9178a214: Allow typst to have multiple pages for export (e.g. as a book)
+- 7596172: Add export frontmatter at template render time
+- ffc1061f: Allow enumeration to start at a different number
+- aa335d74: Gather page frontmatter on load
+
 ## 1.1.21
 
 ### Patch Changes
