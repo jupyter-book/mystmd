@@ -11,3 +11,63 @@ cases:
     outputs:
       - path: no-config/_build/index.xml
         content: outputs/basic-md-and-config.xml
+  - title: Basic tex build
+    cwd: basic-tex
+    command: myst build --tex
+    outputs:
+      - path: basic-tex/_build/out.tex
+        content: outputs/basic-tex.tex
+  - title: Basic typst build
+    cwd: basic-typst
+    command: myst build --typst
+    outputs:
+      - path: basic-typst/_build/out.typ
+        content: outputs/basic-typst.typ
+  - title: Templated tex build
+    cwd: templated-tex
+    command: myst build --tex
+    outputs:
+      - path: templated-tex/_build/out.tex
+        content: outputs/templated-tex.tex
+  - title: Export frontmatter overrides project frontmatter
+    cwd: export-fm-override
+    command: myst build --tex
+    outputs:
+      - path: export-fm-override/_build/out.tex
+        content: outputs/templated-tex.tex
+  - title: Multi-page tex export with default toc
+    cwd: multi-page-toc-tex
+    command: myst build --tex
+    outputs:
+      - path: multi-page-toc-tex/_build/out.tex
+        content: outputs/multi-page-tex.tex
+      - path: multi-page-toc-tex/_build/out-one.tex
+        content: outputs/multi-page-tex-one.tex
+      - path: multi-page-toc-tex/_build/out-two.tex
+        content: outputs/multi-page-tex-two.tex
+      - path: multi-page-toc-tex/_build/out-three.tex
+        content: outputs/multi-page-tex-three.tex
+  - title: Multi-page tex export with explicit articles
+    cwd: multi-page-articles-tex
+    command: myst build --tex
+    outputs:
+      - path: multi-page-articles-tex/_build/out.tex
+        content: outputs/multi-page-tex.tex
+      - path: multi-page-articles-tex/_build/out-one.tex
+        content: outputs/multi-page-tex-one.tex
+      - path: multi-page-articles-tex/_build/out-two.tex
+        content: outputs/multi-page-tex-two.tex
+      - path: multi-page-articles-tex/_build/out-three.tex
+        content: outputs/multi-page-tex-three.tex
+  - title: Multi-page tex export frontmatter overrides
+    cwd: multi-page-override-tex
+    command: myst build --tex
+    outputs:
+      - path: multi-page-override-tex/_build/out.tex
+        content: outputs/multi-page-tex.tex
+      - path: multi-page-override-tex/_build/out-one.tex
+        content: outputs/multi-page-tex-one.tex
+      - path: multi-page-override-tex/_build/out-two.tex
+        content: outputs/multi-page-tex-two.tex
+      - path: multi-page-override-tex/_build/out-three.tex
+        content: outputs/multi-page-tex-three.tex
