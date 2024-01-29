@@ -8,7 +8,7 @@ import {
   validatePageFrontmatter,
 } from 'myst-frontmatter';
 import type { GenericParent } from 'myst-common';
-import { copyNode, fileError, fileWarn, RuleId } from 'myst-common';
+import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import type { ISession } from './session/types.js';
@@ -17,6 +17,22 @@ import { logMessagesFromVFile } from './utils/logMessagesFromVFile.js';
 import { castSession } from './session/cache.js';
 import { loadFile } from './process/file.js';
 
+export function frontmatterValidationOpts(
+  vfile: VFile,
+  opts?: { property?: string; ruleId?: RuleId },
+): ValidationOptions {
+  return {
+    property: opts?.property ?? 'frontmatter',
+    file: vfile.path,
+    messages: {},
+    errorLogFn: (message: string) => {
+      fileError(vfile, message, { ruleId: opts?.ruleId ?? RuleId.validPageFrontmatter });
+    },
+    warningLogFn: (message: string) => {
+      fileWarn(vfile, message, { ruleId: opts?.ruleId ?? RuleId.validPageFrontmatter });
+    },
+  };
+}
 /**
  * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
  *
@@ -30,23 +46,17 @@ export function getPageFrontmatter(
   session: ISession,
   tree: GenericParent,
   vfile: VFile,
+  preFrontmatter?: Record<string, any>,
 ): { frontmatter: PageFrontmatter; identifiers: string[] } {
   const { frontmatter: rawPageFrontmatter, identifiers } = getFrontmatter(vfile, tree, {
     propagateTargets: true,
+    preFrontmatter,
   });
   unnestKernelSpec(rawPageFrontmatter);
-  const validationOpts = {
-    property: 'frontmatter',
-    vfile,
-    messages: {},
-    errorLogFn: (message: string) => {
-      fileError(vfile, message, { ruleId: RuleId.validPageFrontmatter });
-    },
-    warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: RuleId.validPageFrontmatter });
-    },
-  };
-  const pageFrontmatter = validatePageFrontmatter(rawPageFrontmatter, validationOpts);
+  const pageFrontmatter = validatePageFrontmatter(
+    rawPageFrontmatter,
+    frontmatterValidationOpts(vfile),
+  );
   logMessagesFromVFile(session, vfile);
   return { frontmatter: pageFrontmatter, identifiers };
 }
@@ -83,12 +93,7 @@ export async function getRawFrontmatterFromFile(
   if (!cache.$getMdast(file)) await loadFile(session, file, projectPath);
   const result = cache.$getMdast(file);
   if (!result || !result.pre) return undefined;
-  const vfile = new VFile();
-  vfile.path = file;
-  // Copy the mdast, this is not a processing step!
-  const frontmatter = getFrontmatter(vfile, copyNode(result.pre.mdast));
-  logMessagesFromVFile(session, vfile);
-  return frontmatter.frontmatter;
+  return result.pre.frontmatter;
 }
 
 export function getExportListFromRawFrontmatter(
@@ -99,19 +104,12 @@ export function getExportListFromRawFrontmatter(
 ): Export[] {
   const vfile = new VFile();
   vfile.path = file;
-  const exportErrorMessages: ValidationOptions = {
-    property: 'exports',
-    messages: {},
-    errorLogFn: (message: string) => {
-      fileError(vfile, message, { ruleId: RuleId.validFrontmatterExportList });
-    },
-    warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: RuleId.validFrontmatterExportList });
-    },
-  };
   const exports = validateExportsList(
     rawFrontmatter?.exports ?? rawFrontmatter?.export,
-    exportErrorMessages,
+    frontmatterValidationOpts(vfile, {
+      property: 'exports',
+      ruleId: RuleId.validFrontmatterExportList,
+    }),
   );
   logMessagesFromVFile(session, vfile);
   if (!exports) return [];

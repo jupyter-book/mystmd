@@ -1,13 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { RuleId, fileError } from 'myst-common';
-import type { Export } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
+import type { Export, ExportArticle } from 'myst-frontmatter';
+import {
+  ExportFormats,
+  MULTI_ARTICLE_EXPORT_FORMATS,
+  singleArticleWithFile,
+} from 'myst-frontmatter';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { validateTOC } from '../../utils/toc.js';
+import { projectFromToc } from '../../project/fromToc.js';
 import { loadProjectFromDisk } from '../../project/load.js';
+import type { LocalProject } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import type { ExportWithOutput, ExportOptions, ExportWithInputOutput } from '../types.js';
@@ -15,6 +22,39 @@ import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../.
 import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
+
+function assignArticlesFromProject(
+  exp: Export,
+  proj: Omit<LocalProject, 'bibliography'>,
+  vfile: VFile,
+) {
+  const { file, pages } = proj;
+  const fileAsPage = { file, level: 1 };
+  const articles = pages?.length ? pages : [fileAsPage];
+  if (MULTI_ARTICLE_EXPORT_FORMATS.includes(exp.format)) {
+    exp.articles = articles;
+  } else if (exp.format === ExportFormats.xml) {
+    exp.articles = [fileAsPage];
+    exp.sub_articles = pages
+      .map((page) => (page as any).file)
+      .filter((pageFile): pageFile is string => !!pageFile);
+  } else {
+    fileError(vfile, "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports", {
+      ruleId: RuleId.validFrontmatterExportList,
+    });
+    exp.articles = [singleArticleWithFile(articles) ?? fileAsPage];
+  }
+}
+
+function assignArticlesFromTOC(session: ISession, exp: Export, tocPath: string, vfile: VFile) {
+  const allowLevelLessThanOne = [
+    ExportFormats.tex,
+    ExportFormats.pdf,
+    ExportFormats.pdftex,
+  ].includes(exp.format);
+  const proj = projectFromToc(session, tocPath, allowLevelLessThanOne ? -1 : 1);
+  assignArticlesFromProject(exp, proj, vfile);
+}
 
 async function prepareExportOptions(
   session: ISession,
@@ -28,7 +68,10 @@ async function prepareExportOptions(
   vfile.path = sourceFile;
   let rawFrontmatter: Record<string, any> | undefined;
   const state = session.store.getState();
-  if (projectPath && sourceFile === selectors.selectLocalConfigFile(state, projectPath)) {
+  if (
+    projectPath &&
+    path.resolve(sourceFile) === selectors.selectLocalConfigFile(state, projectPath)
+  ) {
     rawFrontmatter = selectors.selectLocalProjectConfig(state, projectPath);
   } else {
     rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);
@@ -43,66 +86,85 @@ async function prepareExportOptions(
     exportOptions = exportOptions.slice(0, 1);
   }
   exportOptions.forEach((exp) => {
-    // If no files are specified, use the sourceFile for article
-    if (!exp.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
-      exp.articles = [path.resolve(sourceFile)];
-    }
-    // Also validate that sub_articles exist
-    if (exp.sub_articles) {
-      exp.sub_articles = exp.sub_articles
-        .map((file: string) => {
-          const resolvedFile = path.resolve(path.dirname(sourceFile), file);
-          if (!fs.existsSync(resolvedFile)) {
-            fileError(vfile, `Invalid export sub_article '${file}' in source: ${sourceFile}`, {
-              ruleId: RuleId.exportArticleExists,
-            });
-            return undefined;
-          } else {
-            return resolvedFile;
-          }
-        })
-        .filter((resolvedFile: string | undefined): resolvedFile is string => !!resolvedFile);
-    }
-  });
-  // Remove exports with invalid article values
-  const filteredExportOptions = exportOptions
-    .map((exp) => {
-      if (!exp.articles?.length) {
-        if (exp.format === ExportFormats.meca) {
-          // MECA exports don't necessarily need to specify an article.
-          // But it does help locate those other exports if you want!
-          return exp;
-        }
-        if (!opts.force) {
-          // You cannot "--force" project exports with no article. This is expected
-          // and needs no error message.
-          fileError(vfile, `Invalid export - no 'article' in source: ${sourceFile}`, {
-            ruleId: RuleId.exportArticleExists,
-          });
-        }
-        return undefined;
+    // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
+    if (exp.toc && !exp.articles?.length && !exp.sub_articles?.length) {
+      const resolvedToc = path.resolve(path.dirname(sourceFile), exp.toc);
+      if (validateTOC(session, resolvedToc)) {
+        assignArticlesFromTOC(session, exp, resolvedToc, vfile);
       }
-      const resolvedFiles = exp.articles?.map((article) => {
-        const resolvedFile = path.resolve(path.dirname(sourceFile), article);
+    }
+    // If no articles are specified, use the sourceFile for article
+    if (!exp.articles?.length && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
+      exp.articles = [{ file: path.resolve(sourceFile) }];
+    }
+    // If still no articles, try to use explicit or implicit project toc
+    if (!exp.articles?.length && !exp.sub_articles?.length) {
+      if (validateTOC(session, projectPath ?? '.')) {
+        assignArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
+      } else {
+        const cachedProject = selectors.selectLocalProject(
+          session.store.getState(),
+          projectPath ?? '.',
+        );
+        if (cachedProject) {
+          assignArticlesFromProject(exp, cachedProject, vfile);
+        }
+      }
+    }
+
+    // Convert articles and sub_articles to relative path and ensure existence
+    exp.articles = exp.articles
+      ?.map((article) => {
+        if (!article.file) return article;
+        const resolvedFile = path.resolve(path.dirname(sourceFile), article.file);
         if (!fs.existsSync(resolvedFile)) {
-          fileError(vfile, `Invalid export article '${article}' in source: ${sourceFile}`, {
+          fileError(vfile, `Invalid export article '${article.file}' in source: ${sourceFile}`, {
             ruleId: RuleId.exportArticleExists,
           });
           return undefined;
         }
-        return resolvedFile;
-      });
-      exp.articles = resolvedFiles.filter((file): file is string => !!file);
-      return exp;
+        return { ...article, file: resolvedFile };
+      })
+      .filter((article): article is ExportArticle => !!article);
+
+    exp.sub_articles = exp.sub_articles
+      ?.map((file: string) => {
+        const resolvedFile = path.resolve(path.dirname(sourceFile), file);
+        if (!fs.existsSync(resolvedFile)) {
+          fileError(vfile, `Invalid export sub_article '${file}' in source: ${sourceFile}`, {
+            ruleId: RuleId.exportArticleExists,
+          });
+          return undefined;
+        } else {
+          return resolvedFile;
+        }
+      })
+      .filter((resolvedFile: string | undefined): resolvedFile is string => !!resolvedFile);
+  });
+  // Remove exports with invalid article values
+  const filteredExportOptions = exportOptions
+    .map((exp) => {
+      if (exp.articles?.length) return exp;
+      // MECA exports don't necessarily need to specify an article.
+      // But it does help locate those other exports if you want!
+      if (exp.format === ExportFormats.meca) return exp;
+      if (!opts.force) {
+        // You cannot "--force" project exports with no article. This is expected
+        // and needs no error message.
+        fileError(vfile, `Invalid export - unable to resolve 'articles' to export: ${sourceFile}`, {
+          ruleId: RuleId.exportArticleExists,
+        });
+      }
+      return undefined;
     })
     .filter((exp) => !!exp);
   logMessagesFromVFile(session, vfile);
   return filteredExportOptions as (Export & { articles: string[] })[];
 }
 
-function filterAndMakeUnique(exports: (Export | undefined)[]) {
+function filterAndMakeUnique<T extends ExportWithOutput>(exports: (T | undefined)[]): T[] {
   return exports
-    .filter((exp): exp is ExportWithOutput => Boolean(exp))
+    .filter((exp): exp is T => Boolean(exp))
     .map((exp, ind, arr) => {
       // Make identical export output values unique
       const nMatch = (a: ExportWithOutput[]) => a.filter((e) => e.output === exp.output).length;
@@ -145,7 +207,7 @@ function getOutput(
   if (!path.extname(output)) {
     const basename = getDefaultExportFilename(
       session,
-      exp.articles?.[0] ?? sourceFile,
+      singleArticleWithFile(exp.articles)?.file ?? sourceFile,
       projectPath,
     );
     output = path.join(output, `${basename}.${extension}`);
@@ -183,7 +245,8 @@ export async function collectTexExportOptions(
       const rawOutput = filename || exp.output || '';
       const useZip =
         (extension === 'tex' || extension === 'typ') && (zip || path.extname(rawOutput) === '.zip');
-      const expExtension = useZip ? 'zip' : extension;
+      const usePdf = extension === 'typ' && path.extname(rawOutput) === '.pdf';
+      const expExtension = useZip ? 'zip' : usePdf ? 'pdf' : extension;
       const output = getOutput(
         session,
         sourceFile,
@@ -388,5 +451,5 @@ export async function collectExportOptions(
       );
     }),
   );
-  return exportOptionsList;
+  return filterAndMakeUnique(exportOptionsList);
 }

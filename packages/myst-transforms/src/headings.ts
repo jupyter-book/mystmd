@@ -4,27 +4,30 @@ import type { Heading } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
-type HeadingDepthOptions = { titleDepth?: number };
+type HeadingDepthOptions = { firstDepth?: number };
 
 /**
- * Modify heading depths based on heading depth map
+ * Normalize heading depths based on specified first heading depth
  *
- * The map is a list where depths in the tree are converted to the value
- * at that one-based index.
+ * By default, firstDepth is 1; if, for example, the title should be
+ * depth 1 and the first heading of the content should be depth 2,
+ * you must specify firstDepth = 2. This transform does not take
+ * into account frontmatter title or content_includes_title flag;
+ * These must be taken into account when determining first depth.
+ * First depth cannot be < 1.
  *
- * If no map is provided, this will normalize heading depths to eliminate
- * skipped values, i.e. lowest existing heading depth will become 1, next
- * will become 2, etc.
- *
- * This also does not take into account lifting title from heading to frontmatter;
- * any transformation there must be complete prior to this transform.
+ * The heading levels will be modified so they are all sequential and begin
+ * at firstDepth. If heading depths are non-sequential, a warning will be
+ * raised and they will be normalized to sequential. If max heading depth
+ * is greater than 6, a warning is also raised, and all values greater than
+ * 6 will be left at 6.
  */
 export async function headingDepthTransform(
   tree: GenericParent,
   vfile: VFile,
   opts?: HeadingDepthOptions,
 ) {
-  const titleDepth = opts?.titleDepth && opts.titleDepth > 0 ? opts.titleDepth : 0;
+  const firstDepth = opts?.firstDepth && opts.firstDepth > 0 ? opts.firstDepth : 1;
   const headings = selectAll('heading', tree) as Heading[];
   if (headings.length === 0) return;
   const currentDepths = [
@@ -35,13 +38,13 @@ export async function headingDepthTransform(
       fileWarn(vfile, `missing heading depth ${i}`);
     }
   }
-  if (currentDepths.length + titleDepth > 6) {
-    fileWarn(vfile, `max number of heading depth levels exceeded; must be < ${7 - titleDepth}`);
+  if (currentDepths.length + firstDepth > 7) {
+    fileWarn(vfile, `max number of heading depth levels exceeded; must be ≤ ${7 - firstDepth}`);
   }
   headings.forEach((heading) => {
     const depthIndex = currentDepths.indexOf(heading.depth);
     if (depthIndex < 0) return;
-    const newDepth = depthIndex + 1 + titleDepth;
+    const newDepth = depthIndex + firstDepth;
     heading.depth = newDepth < 7 ? newDepth : 6;
   });
 }

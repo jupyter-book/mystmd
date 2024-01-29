@@ -1,6 +1,6 @@
 import path from 'node:path';
 import chokidar from 'chokidar';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, articlesWithFile } from 'myst-frontmatter';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/index.js';
@@ -13,7 +13,7 @@ import type {
 } from '../types.js';
 import { resolveAndLogErrors } from './resolveAndLogErrors.js';
 import { runTexZipExport, runTexExport } from '../tex/single.js';
-import { runTypstExport, runTypstZipExport } from '../typst.js';
+import { runTypstExport, runTypstPdfExport, runTypstZipExport } from '../typst.js';
 import { runWordExport } from '../docx/single.js';
 import { runJatsExport } from '../jats/single.js';
 import { texExportOptionsFromPdf } from '../pdf/single.js';
@@ -33,12 +33,13 @@ async function runExportAndWatch(
 ): Promise<ExportResults> {
   let results = await exportFn(session, $file, exportOptions, projectPath, clean);
   if (watch) {
+    const articleFiles = articlesWithFile(exportOptions.articles);
     const watchedFiles = new Set([
       $file,
-      ...exportOptions.articles,
-      ...exportOptions.articles
-        .map((article) => {
-          return selectors.selectFileDependencies(session.store.getState(), article);
+      ...articleFiles.map(({ file }) => file),
+      ...articleFiles
+        .map(({ file }) => {
+          return selectors.selectFileDependencies(session.store.getState(), file);
         })
         .flat(),
     ]);
@@ -99,6 +100,8 @@ async function _localArticleExport(
       } else if (format === ExportFormats.typst) {
         if (path.extname(output) === '.zip') {
           exportFn = runTypstZipExport;
+        } else if (path.extname(output) === '.pdf') {
+          exportFn = runTypstPdfExport;
         } else {
           exportFn = runTypstExport;
         }

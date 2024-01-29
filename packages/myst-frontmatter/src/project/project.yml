@@ -97,10 +97,10 @@ cases:
           output: out.tex
           a: 1
           articles:
-            - my-file.md
+            - file: my-file.md
         - format: xml
           articles:
-            - my-file.md
+            - file: my-file.md
           sub_articles:
             - my-notebook.ipynb
       requirements:

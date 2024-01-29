@@ -114,6 +114,8 @@ const handlers: Record<string, Handler> = {
       state.data.nextHeadingIsFrameTitle = false;
     } else {
       const star = enumerated !== false || state.options.beamer ? '' : '*';
+      if (depth === -1) state.write(`\\part${star}{`);
+      if (depth === 0) state.write(`\\chapter${star}{`);
       if (depth === 1) state.write(`\\section${star}{`);
       if (depth === 2) state.write(`\\subsection${star}{`);
       if (depth === 3) state.write(`\\subsubsection${star}{`);

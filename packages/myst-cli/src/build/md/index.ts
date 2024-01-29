@@ -1,8 +1,9 @@
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { writeMd } from 'myst-to-md';
 import type { LinkTransformer } from 'myst-transforms';
+import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { finalizeMdast } from '../../process/mdast.js';
@@ -28,14 +29,17 @@ export async function runMdExport(
   const { output, articles } = exportOptions;
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
-  if (!article) return { tempFolders: [] };
+  if (!article?.file) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
-  const [{ mdast, frontmatter }] = await getFileContent(session, [article], {
+  const [{ mdast, frontmatter }] = await getFileContent(session, [article.file], {
     projectPath,
     imageExtensions: KNOWN_IMAGE_EXTENSIONS,
     extraLinkTransformers,
+    preFrontmatters: [
+      filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    ],
   });
-  await finalizeMdast(session, mdast, frontmatter, article, {
+  await finalizeMdast(session, mdast, frontmatter, article.file, {
     imageWriteFolder: path.join(path.dirname(output), 'files'),
     imageAltOutputFolder: 'files/',
     imageExtensions: KNOWN_IMAGE_EXTENSIONS,

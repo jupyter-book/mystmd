@@ -17,25 +17,36 @@ export async function getFileContent(
     projectPath,
     imageExtensions,
     extraLinkTransformers,
+    titleDepths,
+    preFrontmatters,
   }: {
     projectPath?: string;
     imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
+    titleDepths?: number | (number | undefined)[];
+    preFrontmatters?: Record<string, any> | (Record<string, any> | undefined)[];
   },
 ) {
   const toc = tic();
   files = files.map((file) => resolve(file));
   projectPath = projectPath ?? resolve('.');
   const { project, pages } = await loadProject(session, projectPath);
-  const projectFiles = pages.map((page) => page.file);
-  const allFiles = [...new Set([...files, ...projectFiles])];
+  const projectFiles = pages.map((page) => page.file).filter((file) => !files.includes(file));
+  // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
+  const allFiles = [...files, ...projectFiles];
   await Promise.all([
     // Load all citations (.bib)
     ...project.bibliography.map((path) => loadFile(session, path, projectPath, '.bib')),
     // Load all content (.md and .ipynb)
-    ...allFiles.map((file) =>
-      loadFile(session, file, projectPath, undefined, { minifyMaxCharacters: 0 }),
-    ),
+    ...allFiles.map((file, ind) => {
+      const preFrontmatter = Array.isArray(preFrontmatters)
+        ? preFrontmatters?.[ind]
+        : preFrontmatters;
+      return loadFile(session, file, projectPath, undefined, {
+        minifyMaxCharacters: 0,
+        preFrontmatter,
+      });
+    }),
     // Load up all the intersphinx references
     loadIntersphinx(session, { projectPath }) as Promise<any>,
   ]);
@@ -43,8 +54,9 @@ export async function getFileContent(
   combineProjectCitationRenderers(session, projectPath);
 
   await Promise.all(
-    allFiles.map(async (file) => {
+    allFiles.map(async (file, ind) => {
       const pageSlug = pages.find((page) => page.file === file)?.slug;
+      const titleDepth = typeof titleDepths === 'number' ? titleDepths : titleDepths?.[ind];
       await transformMdast(session, {
         file,
         imageExtensions,
@@ -52,6 +64,7 @@ export async function getFileContent(
         pageSlug,
         minifyMaxCharacters: 0,
         index: project.index,
+        titleDepth,
       });
     }),
   );

@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { join, parse } from 'node:path';
+import { extname, join, parse } from 'node:path';
 import yaml from 'js-yaml';
 import type { Logger } from 'myst-cli-utils';
 import { silentLogger } from 'myst-cli-utils';
@@ -8,6 +8,7 @@ import type { ISession } from '../session/types.js';
 import { addWarningForFile } from './addWarningForFile.js';
 
 export const TOC_FORMAT = 'jb-book';
+export const TOC_FORMAT_ARTICLE = 'jb-article';
 
 export type TocOptions = {
   path?: string;
@@ -31,11 +32,15 @@ export type JupyterBookChapter = {
 export type TOC = {
   format: string;
   root: string;
+  sections?: JupyterBookChapter[];
   chapters?: JupyterBookChapter[];
   parts?: JupyterBookPart[];
 };
 
-export const tocFile = (filename: string): string => join(filename, '_toc.yml');
+export const tocFile = (filename: string): string => {
+  if (extname(filename) === '.yml') return filename;
+  return join(filename, '_toc.yml');
+};
 
 // See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
 function upgradeOldJupyterBookToc(oldToc: any[]) {
@@ -68,10 +73,13 @@ export function readTOC(log: Logger, opts?: TocOptions): TOC {
       );
     }
   }
-  const { format, root, chapters, parts } = toc;
-  if (format !== TOC_FORMAT) throw new Error(`The toc.format must be ${TOC_FORMAT}`);
+  const { format, root, sections, chapters, parts } = toc;
+  if (![TOC_FORMAT, TOC_FORMAT_ARTICLE].includes(format))
+    throw new Error(`The toc.format must be ${TOC_FORMAT} or ${TOC_FORMAT_ARTICLE}`);
   if (!root) throw new Error(`The toc.root must exist`);
-  if (!chapters && !parts) throw new Error(`The toc must have either chapters or parts`);
+  if (+!!sections + +!!chapters + +!!parts !== 1) {
+    throw new Error(`The toc must have one and only one sections, chapters, or parts`);
+  }
   log.debug('Basic validation of TOC passed');
   return toc;
 }

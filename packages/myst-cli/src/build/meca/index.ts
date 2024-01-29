@@ -158,7 +158,7 @@ export async function runMecaExport(
   const toc = tic();
   const { output, articles } = exportOptions;
   // At this point, export options are resolved to contain zero or one articles
-  const article = articles?.[0];
+  const articleFile = articles?.[0]?.file;
   const vfile = new VFile();
   vfile.path = output;
   const fileCopyErrorLogFn = (m: string) => {
@@ -169,13 +169,13 @@ export async function runMecaExport(
   const manifestItems: ManifestItem[] = [];
   const jatsExports = await collectExportOptions(
     session,
-    article ? [article] : [],
+    articleFile ? [articleFile] : [],
     [ExportFormats.xml],
     {
       projectPath,
     },
   );
-  if (jatsExports.length === 0 && article) {
+  if (jatsExports.length === 0 && articleFile) {
     // If no JATS export is defined but MECA specifies an article, build JATS implicitly from that article
     const jatsOutput = path.join(mecaFolder, 'article.xml');
     await runJatsExport(
@@ -244,7 +244,7 @@ export async function runMecaExport(
   const manuscriptExports = (
     await collectExportOptions(
       session,
-      article ? [article] : [],
+      articleFile ? [articleFile] : [],
       [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
       {
         projectPath,
@@ -338,8 +338,8 @@ export async function runMecaExport(
         );
       }),
     );
-  } else if (article) {
-    const articleDest = copyFileToFolder(session, article, bundle, fileCopyErrorLogFn);
+  } else if (articleFile) {
+    const articleDest = copyFileToFolder(session, articleFile, bundle, fileCopyErrorLogFn);
     addManifestItem(manifestItems, 'article-source', mecaFolder, articleDest);
   }
   if (fs.existsSync(bundle)) {

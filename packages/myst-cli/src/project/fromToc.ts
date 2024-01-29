@@ -24,9 +24,11 @@ function pagesFromChapters(
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
 ): (LocalProjectFolder | LocalProjectPage)[] {
+  const filename = tocFile(path);
+  const { dir } = parse(filename);
   chapters.forEach((chapter) => {
     // TODO: support globs and urls
-    const file = chapter.file ? resolveExtension(join(path, chapter.file)) : undefined;
+    const file = chapter.file ? resolveExtension(join(dir, chapter.file)) : undefined;
     if (file) {
       const { slug } = fileInfo(file, pageSlugs);
       pages.push({ file, level, slug });
@@ -51,7 +53,13 @@ function pagesFromChapters(
 }
 
 /**
- * Build project structure from jupyterbook '_toc.yml' file
+ * Build project structure from jupyterbook '_toc.yml' file on a path
+ *
+ * Starting level may be provided; by default this is 1. Numbers up to
+ * 6 may be provided for pages to start at a lower level. Level may
+ * also be -1 or 0. In these cases, the first "part" level will be -1
+ * and the first "chapter" level will be 0; However, "sections"
+ * will never be level < 1.
  */
 export function projectFromToc(
   session: ISession,
@@ -65,21 +73,29 @@ export function projectFromToc(
   const { dir, base } = parse(filename);
   const toc = readTOC(session.log, { filename: base, path: dir });
   const pageSlugs: PageSlugs = {};
-  const indexFile = resolveExtension(join(path, toc.root));
+  const indexFile = resolveExtension(join(dir, toc.root));
   if (!indexFile) {
     throw Error(
       `The table of contents defined in "${tocFile(path)}" could not find file "${
         toc.root
       }" defined as the "root:" page. Please ensure that one of these files is defined:\n- ${VALID_FILE_EXTENSIONS.map(
-        (ext) => join(path, `${toc.root}${ext}`),
+        (ext) => join(dir, `${toc.root}${ext}`),
       ).join('\n- ')}\n`,
     );
   }
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
-  if (toc.chapters) {
+  if (toc.sections) {
+    // Do not allow sections to have level < 1
+    if (level < 1) level = 1;
+    pagesFromChapters(session, path, toc.sections, pages, level, pageSlugs);
+  } else if (toc.chapters) {
+    // Do not allow chapters to have level < 0
+    if (level < 0) level = 0;
     pagesFromChapters(session, path, toc.chapters, pages, level, pageSlugs);
   } else if (toc.parts) {
+    // Do not allow parts to have level < -1
+    if (level < -1) level = -1;
     toc.parts.forEach((part, index) => {
       if (part.caption) {
         pages.push({ title: part.caption || `Part ${index + 1}`, level });
@@ -89,7 +105,7 @@ export function projectFromToc(
       }
     });
   }
-  return { path, file: indexFile, index: slug, pages };
+  return { path: dir || '.', file: indexFile, index: slug, pages };
 }
 
 /**

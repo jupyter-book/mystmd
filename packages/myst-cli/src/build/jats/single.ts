@@ -1,8 +1,9 @@
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats, FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { writeJats } from 'myst-to-jats';
 import type { LinkTransformer } from 'myst-transforms';
+import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { combineCitationRenderers } from '../../process/citations.js';
@@ -36,13 +37,16 @@ export async function runJatsExport(
   const { output, articles, sub_articles } = exportOptions;
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
-  if (!article) return { tempFolders: [] };
+  if (!article?.file) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const processedContents = (
-    await getFileContent(session, [article, ...(sub_articles ?? [])], {
+    await getFileContent(session, [article.file, ...(sub_articles ?? [])], {
       projectPath,
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      preFrontmatters: [
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ], // only apply to article, not sub_articles
     })
   ).map((content) => {
     const { kind, file, mdast, frontmatter, slug } = content;
