@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.22
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+
 ## 1.1.21
 
 ## 1.1.20

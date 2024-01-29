@@ -1,5 +1,15 @@
 # myst-parser
 
+## 1.0.22
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- Updated dependencies [f78db0bf]
+  - myst-common@1.1.22
+  - myst-roles@1.0.22
+  - myst-directives@1.0.22
+
 ## 1.0.21
 
 ### Patch Changes

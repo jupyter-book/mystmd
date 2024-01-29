@@ -1,5 +1,13 @@
 # myst-ext-proof
 
+## 1.0.8
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- Updated dependencies [f78db0bf]
+  - myst-common@1.1.22
+
 ## 1.0.7
 
 ### Patch Changes

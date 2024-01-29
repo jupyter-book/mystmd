@@ -1,5 +1,14 @@
 # myst-to-html
 
+## 1.0.22
+
+### Patch Changes
+
+- f78db0bf: Move to `math-display` and `math-inline` for class names to match remark.
+- f78db0bf: Update myst-spec
+- Updated dependencies [f78db0bf]
+  - myst-common@1.1.22
+
 ## 1.0.21
 
 ### Patch Changes

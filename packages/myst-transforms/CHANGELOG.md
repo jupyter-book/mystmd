@@ -1,5 +1,26 @@
 # myst-transforms
 
+## 1.2.0
+
+### Minor Changes
+
+- d2e6e780: Sort (frontmatter) abbreviations definitions by length
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- 7596172: Allow page frontmatter in export articles
+- 85ae9b4a: Support cross-references to file allowing labels on lifted headers
+- ffc1061f: Allow enumeration to start at a different number
+- aa335d74: Gather page frontmatter on load
+- 7596172: Simplify heading transform to use firstDepth and modify mdast processing correspondingly
+- aa335d74: Add heading depth transform to normalize headings
+- Updated dependencies [f78db0bf]
+- Updated dependencies [f78db0bf]
+  - myst-to-html@1.0.22
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.1.19
 
 ### Patch Changes

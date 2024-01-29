@@ -1,5 +1,26 @@
 # myst-to-tex
 
+## 1.0.17
+
+### Patch Changes
+
+- 7596172: Pass heading depth through multi-page transform
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+  - myst-ext-proof@1.0.8
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.0.16
 
 ### Patch Changes
