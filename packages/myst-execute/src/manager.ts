@@ -1,6 +1,7 @@
 import type { ServerConnection } from '@jupyterlab/services';
 import which from 'which';
 import { spawn, spawnSync } from 'node:child_process';
+import * as readline from 'node:readline';
 import type { Logger } from 'myst-cli-utils';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
@@ -24,14 +25,25 @@ interface JupyterServerListItem {
 /**
  * Find the newest (by PID) active Jupyter Server, or return undefined.
  */
-export function findExistingJupyterServer(): JupyterServerSettings | undefined {
+export async function findExistingJupyterServer(): Promise<JupyterServerSettings | undefined> {
   const pythonPath = which.sync('python');
-  const listProc = spawnSync(pythonPath, ['-m', 'jupyter_server', 'list', '--jsonlist']);
-  if (listProc.status !== 0) {
-    return undefined;
+  const listProc = spawn(pythonPath, ['-m', 'jupyter_server', 'list', '--json']);
+
+  const reader = readline.createInterface({ input: listProc.stdout });
+
+  const servers: JupyterServerListItem[] = [];
+  for await (const line of reader) {
+    let server: JupyterServerListItem | undefined;
+    try {
+      server = JSON.parse(line);
+    } catch {
+      /* empty */
+    }
+    if (server?.base_url !== undefined) {
+      servers.push(server);
+    }
   }
-  const servers = JSON.parse(listProc.stdout.toString()) as JupyterServerListItem[];
-  if (servers.length === 0) {
+  if (!servers.length) {
     return undefined;
   }
   servers.sort((a, b) => a.pid - b.pid);
