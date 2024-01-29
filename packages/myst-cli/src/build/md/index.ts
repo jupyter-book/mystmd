@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import { ExportFormats, FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { writeMd } from 'myst-to-md';
 import type { LinkTransformer } from 'myst-transforms';
 import { filterKeys } from 'simple-validators';
@@ -35,7 +35,9 @@ export async function runMdExport(
     projectPath,
     imageExtensions: KNOWN_IMAGE_EXTENSIONS,
     extraLinkTransformers,
-    preFrontmatters: [filterKeys(article, PAGE_FRONTMATTER_KEYS)],
+    preFrontmatters: [
+      filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    ],
   });
   await finalizeMdast(session, mdast, frontmatter, article.file, {
     imageWriteFolder: path.join(path.dirname(output), 'files'),

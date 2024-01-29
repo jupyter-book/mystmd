@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import { ExportFormats, FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { writeJats } from 'myst-to-jats';
 import type { LinkTransformer } from 'myst-transforms';
 import { filterKeys } from 'simple-validators';
@@ -44,7 +44,9 @@ export async function runJatsExport(
       projectPath,
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
-      preFrontmatters: [filterKeys(article, PAGE_FRONTMATTER_KEYS)], // only apply to article, not sub_articles
+      preFrontmatters: [
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ], // only apply to article, not sub_articles
     })
   ).map((content) => {
     const { kind, file, mdast, frontmatter, slug } = content;

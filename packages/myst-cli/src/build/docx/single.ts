@@ -5,6 +5,7 @@ import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import {
   ExportFormats,
+  FRONTMATTER_ALIASES,
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
   validateProjectFrontmatter,
@@ -103,7 +104,9 @@ export async function runWordExport(
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
-    preFrontmatters: [filterKeys(article, PAGE_FRONTMATTER_KEYS)],
+    preFrontmatters: [
+      filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    ],
   });
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.docx,
@@ -120,7 +123,7 @@ export async function runWordExport(
   const toc = tic();
 
   const exportFrontmatter = validateProjectFrontmatter(
-    filterKeys(exportOptions, PROJECT_FRONTMATTER_KEYS),
+    filterKeys(exportOptions, [...PROJECT_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
     frontmatterValidationOpts(vfile),
   );
   logMessagesFromVFile(session, vfile);

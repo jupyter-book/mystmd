@@ -8,6 +8,7 @@ import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import {
   ExportFormats,
+  FRONTMATTER_ALIASES,
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
   articlesWithFile,
@@ -162,7 +163,9 @@ export async function localArticleToTypstRaw(
       imageExtensions: TYPST_IMAGE_EXTENSIONS,
       extraLinkTransformers,
       titleDepths: fileArticles.map((article) => article.level),
-      preFrontmatters: fileArticles.map((article) => filterKeys(article, PAGE_FRONTMATTER_KEYS)),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
     },
   );
 
@@ -226,7 +229,9 @@ export async function localArticleToTypstTemplated(
       imageExtensions: TYPST_IMAGE_EXTENSIONS,
       extraLinkTransformers,
       titleDepths: fileArticles.map((article) => article.level),
-      preFrontmatters: fileArticles.map((article) => filterKeys(article, PAGE_FRONTMATTER_KEYS)),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
     },
   );
   const bibtexWritten = writeBibtexFromCitationRenderers(
@@ -333,7 +338,7 @@ export async function localArticleToTypstTemplated(
   const vfile = new VFile();
   vfile.path = file;
   const exportFrontmatter = validateProjectFrontmatter(
-    filterKeys(templateOptions, PROJECT_FRONTMATTER_KEYS),
+    filterKeys(templateOptions, [...PROJECT_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
     frontmatterValidationOpts(vfile),
   );
   logMessagesFromVFile(session, vfile);
