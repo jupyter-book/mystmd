@@ -105,3 +105,46 @@ cases:
               children:
                 - type: text
                   value: '%s'
+  - title: cref
+    tex: >
+      \section{Greetings}
+      \label{sec:greetings}
+
+      Hello!
+
+      \section{Referencing}
+
+      I greeted in section~\cref{sec:greetings}.
+    tree:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: heading
+              depth: 2
+              identifier: sec:greetings
+              label: sec:greetings
+              children:
+                - type: text
+                  value: Greetings
+            - type: paragraph
+              children:
+                - type: text
+                  value: Hello!
+        - type: block
+          children:
+            - type: heading
+              depth: 2
+              children:
+                - type: text
+                  value: Referencing
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'I greeted in section '
+                - type: crossReference
+                  identifier: sec:greetings
+                  label: sec:greetings
+                  children: []
+                - type: text
+                  value: '.'

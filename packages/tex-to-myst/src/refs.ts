@@ -51,4 +51,9 @@ export const REF_HANDLERS: Record<string, Handler> = {
     const label = texToText(getArguments(node, 'group'));
     state.pushNode(u('crossReference', { label }));
   },
+  macro_cref(node, state) {
+    state.openParagraph();
+    const label = texToText(getArguments(node, 'group'));
+    state.pushNode(u('crossReference', { label }, []));
+  },
 };
