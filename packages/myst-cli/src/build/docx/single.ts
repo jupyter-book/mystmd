@@ -27,7 +27,7 @@ import type { RendererData } from '../../transforms/types.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
-import type { ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
+import type { ExportFnOptions, ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { collectWordExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
@@ -88,11 +88,10 @@ export async function runWordExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles } = exportOptions;
+  const { clean, projectPath, extraLinkTransformers } = opts ?? {};
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
   if (!article?.file) return { tempFolders: [] };
@@ -166,14 +165,11 @@ export async function localArticleToWord(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      const exportResult = await runWordExport(
-        session,
-        file,
-        exportOptions,
+      const exportResult = await runWordExport(session, file, exportOptions, {
         projectPath,
-        opts.clean,
+        clean: opts.clean,
         extraLinkTransformers,
-      );
+      });
       results.tempFolders.push(...exportResult.tempFolders);
     }),
     opts.throwOnFailure,

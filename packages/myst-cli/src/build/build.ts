@@ -26,6 +26,7 @@ export type BuildOpts = {
   watch?: boolean;
   output?: string;
   checkLinks?: boolean;
+  ci?: boolean;
 };
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
@@ -129,7 +130,7 @@ function extToKind(ext: string): string {
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { site, all, watch } = opts;
+  const { site, all, watch, ci } = opts;
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   const exportLogList = exportOptionsList.map((exportOptions) => {
@@ -166,7 +167,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     }
   } else {
     session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);
-    await localArticleExport(session, exportOptionsList, { watch });
+    await localArticleExport(session, exportOptionsList, { watch, ci });
   }
   if (!performSiteBuild) return;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());

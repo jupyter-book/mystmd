@@ -21,7 +21,7 @@ import { castSession } from '../../session/cache.js';
 import { selectors } from '../../store/index.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
-import type { ExportWithOutput, ExportOptions } from '../types.js';
+import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { collectBasicExportOptions, collectExportOptions } from '../utils/collectExportOptions.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
@@ -151,12 +151,11 @@ export async function runMecaExport(
   session: ISession,
   sourceFile: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ) {
   const toc = tic();
   const { output, articles } = exportOptions;
+  const { projectPath, clean, extraLinkTransformers } = opts ?? {};
   // At this point, export options are resolved to contain zero or one articles
   const articleFile = articles?.[0]?.file;
   const vfile = new VFile();
@@ -182,9 +181,7 @@ export async function runMecaExport(
       session,
       sourceFile,
       { ...exportOptions, output: jatsOutput },
-      projectPath,
-      clean,
-      extraLinkTransformers,
+      { projectPath, clean, extraLinkTransformers },
     );
     addManifestItem(manifestItems, 'article-metadata', mecaFolder, jatsOutput);
     const jatsFiles = path.join(mecaFolder, 'files');
@@ -378,14 +375,11 @@ export async function localProjectToMeca(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runMecaExport(
-        session,
-        file,
-        exportOptions,
+      await runMecaExport(session, file, exportOptions, {
         projectPath,
-        opts.clean,
+        clean: opts.clean,
         extraLinkTransformers,
-      );
+      });
     }),
     opts.throwOnFailure,
   );

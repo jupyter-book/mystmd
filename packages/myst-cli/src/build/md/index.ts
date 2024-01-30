@@ -13,7 +13,7 @@ import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
 import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
-import type { ExportWithOutput, ExportOptions } from '../types.js';
+import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { getFileContent } from '../utils/getFileContent.js';
 
@@ -21,12 +21,11 @@ export async function runMdExport(
   session: ISession,
   sourceFile: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ) {
   const toc = tic();
   const { output, articles } = exportOptions;
+  const { clean, projectPath, extraLinkTransformers } = opts ?? {};
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
   if (!article?.file) return { tempFolders: [] };
@@ -73,14 +72,11 @@ export async function localArticleToMd(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runMdExport(
-        session,
-        file,
-        exportOptions,
+      await runMdExport(session, file, exportOptions, {
         projectPath,
-        opts.clean,
+        clean: opts.clean,
         extraLinkTransformers,
-      );
+      });
     }),
     opts.throwOnFailure,
   );

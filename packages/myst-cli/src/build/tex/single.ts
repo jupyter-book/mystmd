@@ -35,7 +35,7 @@ import { getFileContent } from '../utils/getFileContent.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
+import type { ExportWithOutput, ExportOptions, ExportResults, ExportFnOptions } from '../types.js';
 import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
 import { collectTexExportOptions } from '../utils/collectExportOptions.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
@@ -131,10 +131,10 @@ function titleToTexHeading(session: ISession, title: string, depth = 1) {
 export async function localArticleToTexRaw(
   session: ISession,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
+  const { projectPath, extraLinkTransformers } = opts ?? {};
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
     session,
@@ -195,11 +195,10 @@ export async function localArticleToTexTemplated(
   session: ISession,
   file: string,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  force?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
+  const { projectPath, extraLinkTransformers, clean, ci } = opts ?? {};
   const filesPath = path.join(path.dirname(output), 'files');
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
@@ -337,9 +336,10 @@ export async function localArticleToTexTemplated(
     sourceFile: file,
     imports: collectedImports,
     preamble,
-    force,
+    force: clean,
     packages: templateYml.packages,
     filesPath,
+    removeVersionComment: ci,
   });
   return { tempFolders: [], hasGlossaries };
 }
@@ -348,23 +348,14 @@ export async function runTexExport( // DBG: Must return an info on whether gloss
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   let result: ExportResults;
   if (exportOptions.template === null) {
-    result = await localArticleToTexRaw(session, exportOptions, projectPath, extraLinkTransformers);
+    result = await localArticleToTexRaw(session, exportOptions, opts);
   } else {
-    result = await localArticleToTexTemplated(
-      session,
-      file,
-      exportOptions,
-      projectPath,
-      clean,
-      extraLinkTransformers,
-    );
+    result = await localArticleToTexTemplated(session, file, exportOptions, opts);
   }
   return result;
 }
@@ -373,18 +364,16 @@ export async function runTexZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
   const texFolder = createTempFolder(session);
   exportOptions.output = path.join(
     texFolder,
     `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
   );
-  await runTexExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  await runTexExport(session, file, exportOptions, opts);
   session.log.info(`🤐 Zipping tex outputs to ${zipOutput}`);
   const zip = new AdmZip();
   zip.addLocalFolder(texFolder);
@@ -413,23 +402,17 @@ export async function localArticleToTex(
     exportOptionsList.map(async (exportOptions) => {
       let exportResults: ExportResults;
       if (path.extname(exportOptions.output) === '.zip') {
-        exportResults = await runTexZipExport(
-          session,
-          file,
-          exportOptions,
+        exportResults = await runTexZipExport(session, file, exportOptions, {
           projectPath,
-          opts.clean,
+          clean: opts.clean,
           extraLinkTransformers,
-        );
+        });
       } else {
-        exportResults = await runTexExport(
-          session,
-          file,
-          exportOptions,
+        exportResults = await runTexExport(session, file, exportOptions, {
           projectPath,
-          opts.clean,
+          clean: opts.clean,
           extraLinkTransformers,
-        );
+        });
       }
       results.tempFolders.push(...exportResults.tempFolders);
     }),
