@@ -17,6 +17,7 @@ import {
   makeMdOption,
   makeTypstOption,
   makeWatchOption,
+  makeCIOption,
 } from './options.js';
 
 export function makeBuildCLI(program: Command) {
@@ -38,6 +39,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeForceOption())
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())
+    .addOption(makeCIOption())
     .action(clirun(Session, build, program));
   return command;
 }

@@ -28,6 +28,7 @@ export type ExportOptions = {
   projectPath?: string;
   watch?: boolean;
   throwOnFailure?: boolean;
+  ci?: boolean;
   renderer?: (
     session: ISession,
     data: RendererData,
@@ -36,6 +37,13 @@ export type ExportOptions = {
     staticPath: string,
     vfile: VFile,
   ) => File;
+};
+
+export type ExportFnOptions = {
+  projectPath?: string;
+  clean?: boolean;
+  extraLinkTransformers?: LinkTransformer[];
+  ci?: boolean;
 };
 
 export type ExportResults = {
@@ -48,7 +56,5 @@ export type ExportFn = (
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ) => Promise<ExportResults>;

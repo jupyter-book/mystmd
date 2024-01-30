@@ -63,13 +63,10 @@ export async function localArticleToPdf(
         keepTexAndLogs,
         opts.clean,
       );
-      const texExportResults = await runTexExport(
-        session,
-        file,
-        texExportOptions,
+      const texExportResults = await runTexExport(session, file, texExportOptions, {
         projectPath,
-        opts.clean,
-      );
+        clean: opts.clean,
+      });
       const pdfExportResults = await createPdfGivenTexExport(
         session,
         texExportOptions,

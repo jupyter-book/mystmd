@@ -25,19 +25,19 @@ cases:
         content: outputs/basic-typst.typ
   - title: Templated tex build
     cwd: templated-tex
-    command: myst build --tex
+    command: myst build --tex --ci
     outputs:
       - path: templated-tex/_build/out.tex
         content: outputs/templated-tex.tex
   - title: Export frontmatter overrides project frontmatter
     cwd: export-fm-override
-    command: myst build --tex
+    command: myst build --tex --ci
     outputs:
       - path: export-fm-override/_build/out.tex
         content: outputs/templated-tex.tex
   - title: Multi-page tex export with default toc
     cwd: multi-page-toc-tex
-    command: myst build --tex
+    command: myst build --tex --ci
     outputs:
       - path: multi-page-toc-tex/_build/out.tex
         content: outputs/multi-page-tex.tex
@@ -49,7 +49,7 @@ cases:
         content: outputs/multi-page-tex-three.tex
   - title: Multi-page tex export with explicit articles
     cwd: multi-page-articles-tex
-    command: myst build --tex
+    command: myst build --tex --ci
     outputs:
       - path: multi-page-articles-tex/_build/out.tex
         content: outputs/multi-page-tex.tex
@@ -61,7 +61,7 @@ cases:
         content: outputs/multi-page-tex-three.tex
   - title: Multi-page tex export frontmatter overrides
     cwd: multi-page-override-tex
-    command: myst build --tex
+    command: myst build --tex --ci
     outputs:
       - path: multi-page-override-tex/_build/out.tex
         content: outputs/multi-page-tex.tex

@@ -28,10 +28,9 @@ async function runExportAndWatch(
   session: ISession,
   $file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
+  opts?: Options,
 ): Promise<ExportResults> {
-  let results = await exportFn(session, $file, exportOptions, projectPath, clean);
+  let results = await exportFn(session, $file, exportOptions, opts);
   if (watch) {
     const articleFiles = articlesWithFile(exportOptions.articles);
     const watchedFiles = new Set([
@@ -58,10 +57,10 @@ async function runExportAndWatch(
         while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
           // If reload(s) were requested during previous build, just reload everything once.
           session.store.dispatch(watchReducer.actions.markReloadRequested(false));
-          results = await exportFn(session, $file, exportOptions, projectPath, clean);
+          results = await exportFn(session, $file, exportOptions, opts);
         }
         session.store.dispatch(watchReducer.actions.markReloading(false));
-        results = await exportFn(session, $file, exportOptions, projectPath, clean);
+        results = await exportFn(session, $file, exportOptions, opts);
       });
   }
   return results;
@@ -69,7 +68,7 @@ async function runExportAndWatch(
 
 type Options = Pick<
   ExportOptions,
-  'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries' | 'watch'
+  'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries' | 'watch' | 'ci'
 >;
 
 async function _localArticleExport(
@@ -77,7 +76,7 @@ async function _localArticleExport(
   exportOptionsList: ExportWithInputOutput[],
   opts: Options,
 ) {
-  const { clean, projectPath, watch } = opts;
+  const { clean, projectPath, watch, ci } = opts;
   const errors = await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptionsWithFile) => {
@@ -115,34 +114,30 @@ async function _localArticleExport(
         exportFn = runMecaExport;
       } else {
         const keepTexAndLogs = format === ExportFormats.pdftex;
-        exportFn = async (fnSession, fnFile, fnOpts, fnPath, fnClean) => {
+        exportFn = async (fnSession, fnFile, fnExportOpts, fnOpts?) => {
           const texExportOptions = texExportOptionsFromPdf(
             fnSession,
-            fnOpts,
+            fnExportOpts,
             keepTexAndLogs,
-            fnClean,
+            fnOpts?.clean,
           );
-          const results = await runTexExport(fnSession, fnFile, texExportOptions, fnPath, fnClean);
+          const results = await runTexExport(fnSession, fnFile, texExportOptions, fnOpts);
           await createPdfGivenTexExport(
             fnSession,
             texExportOptions,
             output,
             keepTexAndLogs,
-            fnClean,
+            fnOpts?.clean,
             results.hasGlossaries,
           );
           return results;
         };
       }
-      await runExportAndWatch(
-        !!watch,
-        exportFn,
-        sessionClone,
-        $file,
-        exportOptions,
-        fileProjectPath,
+      await runExportAndWatch(!!watch, exportFn, sessionClone, $file, exportOptions, {
+        projectPath: fileProjectPath,
         clean,
-      );
+        ci,
+      });
     }),
     opts.throwOnFailure,
   );

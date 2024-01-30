@@ -129,6 +129,13 @@ export function makeYesOption() {
   return new Option('-y, --yes', 'Automatically respond yes to prompts').default(false);
 }
 
+export function makeCIOption() {
+  return new Option(
+    '--ci',
+    'Indicate the command is running during automated continuous integration',
+  ).default(false);
+}
+
 export function promptContinue() {
   return {
     name: 'cont',

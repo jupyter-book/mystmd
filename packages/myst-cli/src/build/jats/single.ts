@@ -13,7 +13,7 @@ import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
 import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
-import type { ExportWithOutput, ExportOptions } from '../types.js';
+import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
@@ -29,12 +29,11 @@ export async function runJatsExport(
   session: ISession,
   sourceFile: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ) {
   const toc = tic();
   const { output, articles, sub_articles } = exportOptions;
+  const { clean, projectPath, extraLinkTransformers } = opts ?? {};
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
   if (!article?.file) return { tempFolders: [] };
@@ -113,14 +112,11 @@ export async function localArticleToJats(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runJatsExport(
-        session,
-        file,
-        exportOptions,
+      await runJatsExport(session, file, exportOptions, {
         projectPath,
-        opts.clean,
+        clean: opts.clean,
         extraLinkTransformers,
-      );
+      });
     }),
     opts.throwOnFailure,
   );

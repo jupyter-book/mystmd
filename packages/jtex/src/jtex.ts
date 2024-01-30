@@ -58,6 +58,7 @@ export function renderTemplate(
     outputPath: string;
     sourceFile?: string;
     filesPath?: string;
+    removeVersionComment?: boolean;
   },
 ) {
   const ext = KIND_TO_EXT[template.kind];
@@ -96,6 +97,8 @@ export function renderTemplate(
   template.copyTemplateFiles(dirname(opts.outputPath), { force: opts.force });
   fs.writeFileSync(
     opts.outputPath,
-    `${commentSymbol(template.kind)} Created with jtex v.${version}\n${rendered}`,
+    opts.removeVersionComment
+      ? rendered
+      : `${commentSymbol(template.kind)} Created with jtex v.${version}\n${rendered}`,
   );
 }

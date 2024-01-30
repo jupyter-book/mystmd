@@ -38,7 +38,7 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { createTempFolder } from '../utils/createTempFolder.js';
 import version from '../version.js';
 import { cleanOutput } from './utils/cleanOutput.js';
-import type { ExportWithOutput, ExportOptions, ExportResults } from './types.js';
+import type { ExportWithOutput, ExportOptions, ExportResults, ExportFnOptions } from './types.js';
 import { writeBibtexFromCitationRenderers } from './utils/bibtex.js';
 import { collectTexExportOptions } from './utils/collectExportOptions.js';
 import { resolveAndLogErrors } from './utils/resolveAndLogErrors.js';
@@ -150,10 +150,10 @@ function titleToTypstHeading(session: ISession, title: string, depth = 1) {
 export async function localArticleToTypstRaw(
   session: ISession,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
+  const { projectPath, extraLinkTransformers } = opts ?? {};
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
     session,
@@ -214,11 +214,10 @@ export async function localArticleToTypstTemplated(
   session: ISession,
   file: string,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  force?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
+  const { projectPath, extraLinkTransformers, clean, ci } = opts ?? {};
   const filesPath = path.join(path.dirname(output), 'files');
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
@@ -304,7 +303,7 @@ export async function localArticleToTypstTemplated(
 
   let frontmatter: Record<string, any>;
   let typstContent: string;
-  const versionString = `/* Written by MyST v${version} */`;
+  const versionComment = ci ? '' : `/* Written by MyST v${version} */\n\n`;
   if (results.length === 1) {
     frontmatter = content[0].frontmatter;
     typstContent = results[0].value;
@@ -326,7 +325,7 @@ export async function localArticleToTypstTemplated(
         }
         writeFileToFolder(
           includeFile,
-          `${versionString}\n\n${exports}\n\n${part}${results[fileInd].value}`,
+          `${versionComment}${exports}\n\n${part}${results[fileInd].value}`,
         );
         typstContent += `#include "${base}"\n\n`;
         fileInd++;
@@ -343,7 +342,7 @@ export async function localArticleToTypstTemplated(
   );
   logMessagesFromVFile(session, vfile);
   frontmatter = { ...frontmatter, ...exportFrontmatter };
-  typstContent = `${versionString}\n\n${typstContent}`;
+  typstContent = `${versionComment}${typstContent}`;
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
   renderTemplate(mystTemplate, {
     contentOrPath: typstContent,
@@ -354,9 +353,10 @@ export async function localArticleToTypstTemplated(
     bibliography: bibtexWritten ? DEFAULT_BIB_FILENAME : undefined,
     sourceFile: file,
     imports: collected,
-    force,
+    force: clean,
     packages: templateYml.packages,
     filesPath,
+    removeVersionComment: ci,
   });
   await runTypstExecutable(session, output);
   return { tempFolders: [], hasGlossaries };
@@ -366,28 +366,14 @@ export async function runTypstExport( // DBG: Must return an info on whether glo
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   let result: ExportResults;
   if (exportOptions.template === null) {
-    result = await localArticleToTypstRaw(
-      session,
-      exportOptions,
-      projectPath,
-      extraLinkTransformers,
-    );
+    result = await localArticleToTypstRaw(session, exportOptions, opts);
   } else {
-    result = await localArticleToTypstTemplated(
-      session,
-      file,
-      exportOptions,
-      projectPath,
-      clean,
-      extraLinkTransformers,
-    );
+    result = await localArticleToTypstTemplated(session, file, exportOptions, opts);
   }
   return result;
 }
@@ -396,18 +382,16 @@ export async function runTypstZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
   const typFolder = createTempFolder(session);
   exportOptions.output = path.join(
     typFolder,
     `${path.basename(zipOutput, path.extname(zipOutput))}.typ`,
   );
-  await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  await runTypstExport(session, file, exportOptions, { ...(opts ?? {}), clean: false });
   session.log.info(`🤐 Zipping typst outputs to ${zipOutput}`);
   const zip = new AdmZip();
   zip.addLocalFolder(typFolder);
@@ -419,18 +403,16 @@ export async function runTypstPdfExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   const pdfOutput = exportOptions.output;
   const typFolder = createTempFolder(session);
   exportOptions.output = path.join(
     typFolder,
     `${path.basename(pdfOutput, path.extname(pdfOutput))}.typ`,
   );
-  await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  await runTypstExport(session, file, exportOptions, { ...(opts ?? {}), clean: false });
   const writeFolder = path.dirname(pdfOutput);
   session.log.info(`🖨 Rendering typst pdf to ${pdfOutput}`);
   if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
@@ -459,32 +441,23 @@ export async function localArticleToTypst(
     exportOptionsList.map(async (exportOptions) => {
       let exportResults: ExportResults;
       if (path.extname(exportOptions.output) === '.zip') {
-        exportResults = await runTypstZipExport(
-          session,
-          file,
-          exportOptions,
+        exportResults = await runTypstZipExport(session, file, exportOptions, {
           projectPath,
-          opts.clean,
+          clean: opts.clean,
           extraLinkTransformers,
-        );
+        });
       } else if (path.extname(exportOptions.output) === '.pdf') {
-        exportResults = await runTypstPdfExport(
-          session,
-          file,
-          exportOptions,
+        exportResults = await runTypstPdfExport(session, file, exportOptions, {
           projectPath,
-          opts.clean,
+          clean: opts.clean,
           extraLinkTransformers,
-        );
+        });
       } else {
-        exportResults = await runTypstExport(
-          session,
-          file,
-          exportOptions,
+        exportResults = await runTypstExport(session, file, exportOptions, {
           projectPath,
-          opts.clean,
+          clean: opts.clean,
           extraLinkTransformers,
-        );
+        });
       }
       results.tempFolders.push(...exportResults.tempFolders);
     }),
