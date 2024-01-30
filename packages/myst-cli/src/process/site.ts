@@ -48,6 +48,8 @@ type ProcessOptions = {
   defaultTemplate?: string;
   reloadProject?: boolean;
   minifyMaxCharacters?: number;
+  /** Execute flag for notebooks */
+  execute?: boolean;
 };
 
 /**
@@ -206,6 +208,7 @@ export async function fastProcessFile(
     extraLinkTransformers,
     extraTransforms,
     defaultTemplate,
+    execute,
   }: {
     file: string;
     pageSlug: string;
@@ -214,6 +217,7 @@ export async function fastProcessFile(
     extraLinkTransformers?: LinkTransformer[];
     extraTransforms?: TransformFn[];
     defaultTemplate?: string;
+    execute?: boolean;
   },
 ) {
   const toc = tic();
@@ -228,6 +232,7 @@ export async function fastProcessFile(
     watchMode: true,
     extraTransforms,
     index: project.index,
+    execute,
   });
   const pageReferenceStates = selectPageReferenceStates(session, pages);
   await postProcessMdast(session, {
@@ -267,6 +272,7 @@ export async function processProject(
     writeFiles = true,
     reloadProject,
     minifyMaxCharacters,
+    execute,
   } = opts || {};
   if (!siteProject.path) {
     const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
@@ -283,9 +289,7 @@ export async function processProject(
       // Load all citations (.bib)
       ...project.bibliography.map((path) => loadFile(session, path, siteProject.path, '.bib')),
       // Load all content (.md and .ipynb)
-      ...pages.map((page) =>
-        loadFile(session, page.file, siteProject.path, undefined),
-      ),
+      ...pages.map((page) => loadFile(session, page.file, siteProject.path, undefined)),
       // Load up all the intersphinx references
       loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
     ]);
@@ -306,6 +310,7 @@ export async function processProject(
         watchMode,
         extraTransforms: opts?.extraTransforms,
         index: project.index,
+        execute,
       }),
     ),
   );

@@ -3,6 +3,7 @@ import which from 'which';
 import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
 import type { Logger } from 'myst-cli-utils';
+import chalk from 'chalk';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
@@ -48,6 +49,7 @@ export async function findExistingJupyterServer(): Promise<JupyterServerSettings
   }
   servers.sort((a, b) => a.pid - b.pid);
   const server = servers.pop()!;
+  // TODO: We should ping the server to ensure that it actually is up!
   return {
     baseUrl: server.url,
     token: server.token,
@@ -64,6 +66,7 @@ export function launchJupyterServer(
   contentPath: string,
   log: Logger,
 ): Promise<JupyterServerSettings> {
+  log.info(`🚀 ${chalk.yellowBright('Starting new Jupyter server')}`);
   const pythonPath = which.sync('python');
   const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
   const promise = new Promise<JupyterServerSettings>((resolve, reject) => {
@@ -76,7 +79,7 @@ export function launchJupyterServer(
       }
 
       // Pull out the match information
-      const [_, addr, token] = match;
+      const [, addr, token] = match;
 
       // Resolve the promise
       resolve({
@@ -90,8 +93,9 @@ export function launchJupyterServer(
     setTimeout(reject, 20_000); // Fail after 20 seconds of nothing happening
   });
   // Inform log
-  promise.then((settings) =>
-    log.info(`Started up Jupyter Server on ${settings.baseUrl}?token=${settings.token}`),
-  );
+  promise.then((settings) => {
+    const url = `${settings.baseUrl}?token=${settings.token}`;
+    log.info(`🪐 ${chalk.greenBright('Jupyter Server Started')}\n   ${chalk.dim(url)}`);
+  });
   return promise;
 }

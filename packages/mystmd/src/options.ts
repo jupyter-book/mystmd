@@ -42,6 +42,10 @@ export function makeHtmlOption(description: string) {
   return new Option('--html', description).default(false);
 }
 
+export function makeExecuteOption(description: string) {
+  return new Option('--execute', description).default(false);
+}
+
 export function makeProjectOption(description: string) {
   return new Option('--project', description).default(false);
 }

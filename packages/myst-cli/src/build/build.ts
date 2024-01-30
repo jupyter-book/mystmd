@@ -27,6 +27,7 @@ export type BuildOpts = {
   output?: string;
   checkLinks?: boolean;
   ci?: boolean;
+  execute?: boolean;
 };
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {

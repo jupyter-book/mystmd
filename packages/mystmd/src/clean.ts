@@ -12,6 +12,7 @@ import {
   makeSiteOption,
   makeTexOption,
   makeTypstOption,
+  makeExecuteOption,
   makeYesOption,
 } from './options.js';
 
@@ -49,6 +50,7 @@ export function makeCleanCLI(program: Command) {
     .addOption(makeMecaOptions('Clean MECA zip output'))
     .addOption(makeSiteOption('Clean MyST site content'))
     .addOption(makeHtmlOption('Clean static HTML site content'))
+    .addOption(makeExecuteOption('Clean execute cache'))
     .addOption(makeTempOption())
     .addOption(makeExportsOption())
     .addOption(makeTemplatesOption())

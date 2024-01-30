@@ -185,9 +185,14 @@ export class Session implements ISession {
           token: process.env.JUPYTER_TOKEN,
         };
       } else {
-        partialServerSettings =
-          (await findExistingJupyterServer()) ||
-          (await launchJupyterServer(this.contentPath(), this.log));
+        const existing = await findExistingJupyterServer();
+        if (existing) {
+          this.log.debug(`Found existing server on: ${existing.appUrl}`);
+          partialServerSettings = existing;
+        } else {
+          this.log.debug(`Launching jupyter server on ${this.contentPath()}`);
+          partialServerSettings = await launchJupyterServer(this.contentPath(), this.log);
+        }
       }
 
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);

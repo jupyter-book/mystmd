@@ -17,6 +17,7 @@ import {
   enumerateTargetsPlugin,
   keysTransform,
   linksTransform,
+  MultiPageReferenceState,
   MystTransformer,
   WikiTransformer,
   GithubTransformer,
@@ -115,6 +116,7 @@ export async function transformMdast(
     pageSlug?: string;
     imageExtensions?: ImageExtensions[];
     watchMode?: boolean;
+    execute?: boolean;
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
     index?: string;
@@ -132,6 +134,7 @@ export async function transformMdast(
     minifyMaxCharacters,
     index,
     titleDepth,
+    execute,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -230,14 +233,17 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  const cachePath = path.join(session.buildPath(), 'execute');
-  await kernelExecutionTransform(mdast, vfile, {
-    cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
-    sessionFactory: () => session.jupyterSessionManager(),
-    frontmatter: frontmatter,
-    ignoreCache: false,
-    errorIsFatal: false,
-  });
+  if (execute) {
+    const cachePath = path.join(session.buildPath(), 'execute');
+    await kernelExecutionTransform(mdast, vfile, {
+      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+      sessionFactory: () => session.jupyterSessionManager(),
+      frontmatter: frontmatter,
+      ignoreCache: false,
+      errorIsFatal: false,
+      log: session.log,
+    });
+  }
   transformRenderInlineExpressions(mdast, vfile);
 
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
