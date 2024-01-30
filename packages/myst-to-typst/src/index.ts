@@ -286,15 +286,11 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 0, ' ');
   },
   cite(node, state) {
-    if (node.protocol === 'doi' || node.label?.startsWith('https://doi.org')) {
-      linkHandler(node, state);
-    } else {
-      state.write(`#cite(<${node.label}>`);
-      if (node.kind === 'narrative') state.write(`, form: "prose"`);
-      // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
-      if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
-      state.write(`)`);
-    }
+    state.write(`#cite(<${node.label}>`);
+    if (node.kind === 'narrative') state.write(`, form: "prose"`);
+    // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
+    if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
+    state.write(`)`);
   },
   embed(node, state) {
     state.renderChildren(node);
