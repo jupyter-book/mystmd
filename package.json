@@ -33,9 +33,5 @@
     "npm": ">=7.0.0",
     "node": ">=14.0.0"
   },
-  "packageManager": "npm@8.10.0",
-  "dependencies": {
-    "@citation-js/core": "^0.6.8",
-    "@citation-js/plugin-csl": "^0.6.9"
-  }
+  "packageManager": "npm@8.10.0"
 }
