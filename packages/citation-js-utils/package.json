@@ -41,7 +41,6 @@
     "sanitize-html": "^2.7.0"
   },
   "devDependencies": {
-    "@enact/jsdoc-to-ts": "^1.0.3",
     "@types/sanitize-html": "^2.6.2"
   }
 }
