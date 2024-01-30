@@ -1,6 +1,9 @@
-import type { CitationFormatOptions } from 'citation-js';
-import Cite from 'citation-js';
+import type { OutputOptions } from '@citation-js/core';
+import { Cite } from '@citation-js/core';
 import sanitizeHtml from 'sanitize-html';
+
+import '@citation-js/plugin-bibtex';
+import '@citation-js/plugin-csl';
 
 // This is duplicated in citation-js types, which are not exported
 export type CitationJson = {
@@ -43,7 +46,7 @@ function cleanRef(citation: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const defaultOpts: CitationFormatOptions = {
+const defaultOpts: OutputOptions = {
   format: 'string',
   type: 'json',
   style: 'ris',
@@ -61,7 +64,7 @@ export enum InlineCite {
   't' = 't',
 }
 
-const defaultString: CitationFormatOptions = {
+const defaultString: OutputOptions = {
   format: 'string',
   lang: 'en-US',
   type: 'html',
@@ -119,7 +122,7 @@ export type CitationRenderer = Record<
   }
 >;
 
-function wrapWithDoiAchorTag(doiStr: string) {
+function wrapWithDoiAnchorTag(doiStr: string) {
   if (!doiStr) return '';
   return `<a target="_blank" rel="noreferrer" href="https://doi.org/${doiStr}">${doiStr}</a>`;
 }
@@ -131,16 +134,15 @@ function replaceDoiWithAnchorElement(str: string, doi: string) {
   if (!str) return str;
   const match = str.match(URL_REGEX);
   if (!match) return str;
-  return str.replace(URL_REGEX, wrapWithDoiAchorTag(doi));
+  return str.replace(URL_REGEX, wrapWithDoiAnchorTag(doi));
 }
 
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
-  const parse = Cite.parse.input.async.chain;
   const cite = new Cite();
-  const p = await parse(bibtex);
+  const p = await Cite.async(bibtex);
 
   return Object.fromEntries(
-    p.map((c: any): [string, CitationRenderer[0]] => {
+    p.data.map((c: any): [string, CitationRenderer[0]] => {
       return [
         c.id,
         {

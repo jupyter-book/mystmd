@@ -35,10 +35,13 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "citation-js": "^0.6.3",
+    "@citation-js/core": "^0.6.8",
+    "@citation-js/plugin-bibtex": "^0.6.8",
+    "@citation-js/plugin-csl": "^0.6.9",
     "sanitize-html": "^2.7.0"
   },
   "devDependencies": {
+    "@enact/jsdoc-to-ts": "^1.0.3",
     "@types/sanitize-html": "^2.6.2"
   }
 }

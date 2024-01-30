@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/prefer-namespace-keyword */
 // https://fettblog.eu/typescript-react-extending-jsx-elements/
-
-declare module 'citation-js' {
-  export type CitationFormatOptions = {
+declare module '@citation-js/plugin-bibtex' {}
+declare module '@citation-js/plugin-csl' {}
+declare module '@citation-js/core' {
+  export type OutputOptions = {
     format: 'string';
     type: 'html' | 'json' | 'string';
     style:
@@ -17,7 +18,7 @@ declare module 'citation-js' {
   };
 
   // This is duplicated for export in index.ts
-  export type CitationJson = {
+  export type CSL = {
     type?: 'article-journal' | string;
     id: string;
     author?: { given: string; family: string }[];
@@ -37,17 +38,14 @@ declare module 'citation-js' {
   } & Record<string, any>;
 
   export class Cite {
-    constructor(input?: string | CitationJson);
+    constructor(input?: string | CSL);
 
-    static parse: any;
+    static async(data: string | Cite): Promise<Cite>;
 
     set(data: string | Cite): this;
 
-    get: (opts: CitationFormatOptions) => string;
+    get: (opts: OutputOptions) => string;
 
-    data: CitationJson[];
-
-    static new(): any;
+    data: CSL[];
   }
-  export default Cite;
 }
