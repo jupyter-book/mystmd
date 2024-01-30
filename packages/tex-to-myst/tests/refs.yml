@@ -145,8 +145,6 @@ cases:
                 - type: crossReference
                   identifier: sec:greetings
                   label: sec:greetings
-                  children:
-                    - type: text
-                      value: '%s'
+                  children: []
                 - type: text
                   value: '.'
