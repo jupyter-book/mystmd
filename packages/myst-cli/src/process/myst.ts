@@ -11,13 +11,28 @@ import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
 import type { GenericParent } from 'myst-common';
 
 /**
+ * Boiled-down options for parseMyst
+ *
+ * These options are far simpler than the extensive options allowed
+ * if myst-parser and markdown-it are used directly.
+ */
+type Options = {
+  ignoreFrontmatter?: boolean;
+};
+
+/**
  * Parse MyST content using the full suite of built-in directives, roles, and plugins
  *
  * @param session session with logging
  * @param content Markdown content to parse
  * @param file path to file containing content
  */
-export function parseMyst(session: ISession, content: string, file: string): GenericParent {
+export function parseMyst(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: Options,
+): GenericParent {
   const vfile = new VFile();
   vfile.path = file;
   const parsed = mystParse(content, {
@@ -31,6 +46,9 @@ export function parseMyst(session: ISession, content: string, file: string): Gen
       ...tabDirectives,
       ...(session.plugins?.directives ?? []),
     ],
+    extensions: {
+      frontmatter: !opts?.ignoreFrontmatter,
+    },
     roles: [reactiveRole, ...(session.plugins?.roles ?? [])],
     vfile,
   });

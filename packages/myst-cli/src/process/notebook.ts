@@ -93,7 +93,7 @@ export async function processNotebook(
         const cellContent = ensureString(cell.source);
         // If the first cell is a frontmatter block, do not put a block break above it
         const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
-        const cellMdast = parseMyst(session, cellContent, file);
+        const cellMdast = parseMyst(session, cellContent, file, { ignoreFrontmatter: index > 0 });
         if (cell.attachments) {
           replaceAttachmentsTransform(session, cellMdast, cell.attachments as IAttachments, file);
         }
