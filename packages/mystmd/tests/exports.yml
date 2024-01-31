@@ -71,3 +71,9 @@ cases:
         content: outputs/multi-page-tex-two.tex
       - path: multi-page-override-tex/_build/out-three.tex
         content: outputs/multi-page-tex-three.tex
+  - title: Notebook exports to tex; frontmatter from first cell only
+    cwd: notebook-with-fm
+    command: myst build --tex --ci
+    outputs:
+      - path: notebook-with-fm/_build/out.tex
+        content: outputs/notebook.tex
