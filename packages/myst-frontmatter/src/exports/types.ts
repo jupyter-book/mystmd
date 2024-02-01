@@ -17,7 +17,7 @@ export type ExportArticle = {
 } & Record<string, any>;
 
 export type Export = {
-  format: ExportFormats; // TODO: Optional if template is defined
+  format?: ExportFormats; // TODO: Optional if template is defined
   template?: string | null;
   output?: string;
   toc?: string;

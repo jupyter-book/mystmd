@@ -262,8 +262,7 @@ cases:
         - out.pdf
     normalized:
       exports:
-        - format: pdf
-          output: out.pdf
+        - output: out.pdf
   - title: pdf extension coerces to format
     raw:
       exports:
@@ -277,15 +276,14 @@ cases:
         - output: out.pdf
     normalized:
       exports:
-        - format: pdf
-          output: out.pdf
-  # - title: export with only template validates
-  #   raw:
-  #     exports:
-  #       - template: template
-  #   normalized:
-  #     exports:
-  #       - template: template
+        - output: out.pdf
+  - title: export with only template validates
+    raw:
+      exports:
+        - template: template
+    normalized:
+      exports:
+        - template: template
   - title: unknown output errors
     raw:
       exports:

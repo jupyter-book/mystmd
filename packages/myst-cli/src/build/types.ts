@@ -1,5 +1,5 @@
 import type { File } from 'docx';
-import type { Export, ExportArticle } from 'myst-frontmatter';
+import type { Export, ExportArticle, ExportFormats } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import type { VFile } from 'vfile';
@@ -7,6 +7,7 @@ import type { ISession } from '../session/types.js';
 import type { RendererData } from '../transforms/types.js';
 
 export type ExportWithOutput = Export & {
+  format: ExportFormats;
   articles: ExportArticle[];
   output: string;
 };
