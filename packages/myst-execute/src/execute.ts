@@ -244,7 +244,7 @@ function applyComputedOutputsToNodes(
         thisResult === undefined ? undefined : (thisResult as unknown as Record<string, unknown>);
     } else {
       // This should never happen
-      assert(false);
+      throw new Error('Node must be either code block or inline expression.');
     }
   }
 }
