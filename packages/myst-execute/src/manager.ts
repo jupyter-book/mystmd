@@ -1,6 +1,6 @@
 import type { ServerConnection } from '@jupyterlab/services';
 import which from 'which';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
 import type { Logger } from 'myst-cli-utils';
 
