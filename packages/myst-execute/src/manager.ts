@@ -67,7 +67,6 @@ export function launchJupyterServer(
   const pythonPath = which.sync('python');
   const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
   const promise = new Promise<JupyterServerSettings>((resolve, reject) => {
-    // proc.stderr.on('data', (data) => console.log({err: data.toString()}))
     proc.stderr.on('data', (buf) => {
       const data = buf.toString();
       // Wait for server to declare itself up

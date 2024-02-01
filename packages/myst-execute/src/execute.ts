@@ -42,7 +42,6 @@ async function executeCode(kernel: Kernel.IKernelConnection, code: string) {
       (msg.parent_header as any).msg_id !== future.msg.header.msg_id ||
       (msg.parent_header as any).msg_type !== 'execute_request'
     ) {
-      console.debug('Ignoring IOPub reply');
       return;
     }
     switch (msg.header.msg_type) {
@@ -53,7 +52,6 @@ async function executeCode(kernel: Kernel.IKernelConnection, code: string) {
         outputs.push(IOPubAsOutput(msg));
         break;
       default:
-        console.debug(`Ignoring IOPub reply (unexpected message type ${msg.header.msg_type})`);
         return;
     }
   };
