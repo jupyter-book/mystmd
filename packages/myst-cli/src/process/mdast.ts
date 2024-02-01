@@ -17,7 +17,6 @@ import {
   enumerateTargetsPlugin,
   keysTransform,
   linksTransform,
-  MultiPageReferenceState,
   MystTransformer,
   WikiTransformer,
   GithubTransformer,
