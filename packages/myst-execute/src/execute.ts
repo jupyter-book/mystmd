@@ -3,13 +3,12 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
 import { fileError, fileInfo, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
 import { createHash } from 'node:crypto';
-import type { IExpressionResult } from './types.js';
 import type { Plugin } from 'unified';
 import type { ICache } from './cache.js';
 

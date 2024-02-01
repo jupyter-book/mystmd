@@ -35,12 +35,12 @@
     "myst-common": "^1.1.21",
     "vfile": "^5.3.7",
     "@jupyterlab/services": "^7.0.0",
-    "@jupyterlab/nbformat": "^3.5.2",
     "unist-util-select": "^4.0.3",
     "which": "^4.0.0"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
-    "node-fetch": "^3.3.0"
+    "node-fetch": "^3.3.0",
+    "@jupyterlab/nbformat": "^3.5.2"
   }
 }

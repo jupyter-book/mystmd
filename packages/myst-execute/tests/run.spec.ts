@@ -8,7 +8,7 @@ import { VFile } from 'vfile';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import { default as nodeFetch } from 'node-fetch';
 import { Headers, Request, Response } from 'node-fetch';
-import type { IExpressionResult } from '../src/types';
+import type { IExpressionResult } from 'myst-common';
 import type { IOutput } from '@jupyterlab/nbformat';
 
 // fetch polyfill for node<18
