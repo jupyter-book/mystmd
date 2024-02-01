@@ -49,8 +49,7 @@ import {
   transformImageFormats,
   transformThumbnail,
   StaticFileTransformer,
-  renderInlineExpressionsPlugin,
-  loadInlineExpressionsPlugin,
+  inlineExpressionsPlugin,
   propagateBlockDataToCode,
   transformBanner,
   reduceOutputs,
@@ -71,6 +70,9 @@ import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
+import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
+import type { IOutput } from '@jupyterlab/nbformat';
+
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -165,7 +167,6 @@ export async function transformMdast(
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(loadInlineExpressionsPlugin) // Happens before math and images!
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),

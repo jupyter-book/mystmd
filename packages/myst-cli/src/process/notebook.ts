@@ -19,7 +19,8 @@ import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-import type { Code } from 'myst-spec-ext';
+import type { Code, InlineExpression } from 'myst-spec-ext';
+import { findExpression, IUserExpressionMetadata, metadataSection } from '../transforms/index.js';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
@@ -69,8 +70,7 @@ function replaceAttachmentsTransform(
 export async function processNotebook(
   session: ISession,
   file: string,
-  content: string,
-  opts?: { minifyMaxCharacters?: number },
+  content: string
 ): Promise<GenericParent> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
@@ -78,8 +78,6 @@ export async function processNotebook(
 
   const language = metadata?.kernelspec?.language ?? 'python';
   log.debug(`Processing Notebook: "${file}"`);
-
-  const cache = castSession(session);
 
   let end = cells.length;
   if (cells && cells.length > 1 && cells?.[cells.length - 1].source.length === 0) {
@@ -100,7 +98,19 @@ export async function processNotebook(
         if (omitBlockDivider) {
           return acc.concat(...cellMdast.children);
         }
-        return acc.concat(blockParent(cell, cellMdast.children));
+        const block = blockParent(cell, cellMdast.children) as GenericNode;
+
+        // Embed expression results into expression
+        const userExpressions = block.data?.[metadataSection] as IUserExpressionMetadata[];
+        const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
+        let count = 0;
+        inlineNodes.forEach((inlineExpression) => {
+          const data = findExpression(userExpressions, inlineExpression.value);
+          if (!data) return;
+          count += 1;
+          inlineExpression.result = data.result as unknown as Record<string, unknown>;
+        });
+        return acc.concat(block);
       }
       if (cell.cell_type === CELL_TYPES.raw) {
         const raw: Code = {
@@ -118,19 +128,15 @@ export async function processNotebook(
           value: ensureString(cell.source),
         };
 
-        const output: { type: 'output'; id: string; data: MinifiedOutput[] } = {
+        // Embed outputs in an output block
+        const output: { type: 'output'; id: string; data: IOutput[] } = {
           type: 'output',
           id: nanoid(),
           data: [],
         };
 
         if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
-          const minified: MinifiedOutput[] = await minifyCellOutput(
-            cell.outputs as IOutput[],
-            cache.$outputs,
-            { computeHash, maxCharacters: opts?.minifyMaxCharacters },
-          );
-          output.data = minified;
+          output.data = cell.outputs as IOutput[];
         }
         return acc.concat(blockParent(cell, [code, output]));
       }

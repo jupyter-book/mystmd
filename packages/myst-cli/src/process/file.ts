@@ -36,8 +36,6 @@ function checkCache(cache: ISessionWithCache, content: string, file: string) {
  * @param extension pre-computed file extension
  * @param opts loading options
  *
- * @param opts.minifyMaxCharacters maximum size of notebook output that will
- *     not be written to separate file
  * @param opts.preFrontmatter raw page frontmatter, prioritized over frontmatter
  *     read from the file. Fields defined here will override fields defined
  *     in the file. Unlike project and page frontmatter which are carefully
@@ -50,7 +48,7 @@ export async function loadFile(
   file: string,
   projectPath?: string,
   extension?: '.md' | '.ipynb' | '.bib',
-  opts?: { minifyMaxCharacters?: number; preFrontmatter?: Record<string, any> },
+  opts?: { preFrontmatter?: Record<string, any> },
 ) {
   await session.loadPlugins();
   const toc = tic();
@@ -91,7 +89,7 @@ export async function loadFile(
         const content = fs.readFileSync(file).toString();
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
-        const mdast = await processNotebook(cache, file, content, opts);
+        const mdast = await processNotebook(cache, file, content);
         const { frontmatter, identifiers } = getPageFrontmatter(
           session,
           mdast,
