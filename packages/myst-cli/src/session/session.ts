@@ -196,6 +196,8 @@ export class Session implements ISession {
         }
       }
 
+
+      this._disposeJupyterSessionManager = partialServerSettings.dispose;
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);
       const kernelManager = new KernelManager({ serverSettings });
       const manager = new SessionManager({ kernelManager, serverSettings });

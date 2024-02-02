@@ -5,6 +5,7 @@ import * as readline from 'node:readline';
 import type { Logger } from 'myst-cli-utils';
 import chalk from 'chalk';
 
+
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
 };
@@ -56,46 +57,51 @@ export async function findExistingJupyterServer(): Promise<JupyterServerSettings
   };
 }
 
+
 /**
  * Launch a new Jupyter Server whose root directory coincides with the content path
  *
  * @param contentPath path to server contents
  * @param log logger
  */
-export function launchJupyterServer(
+export async function launchJupyterServer(
   contentPath: string,
   log: Logger,
 ): Promise<JupyterServerSettings> {
   log.info(`🚀 ${chalk.yellowBright('Starting new Jupyter server')}`);
   const pythonPath = which.sync('python');
   const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
-  const promise = new Promise<JupyterServerSettings>((resolve, reject) => {
-    proc.stderr.on('data', (buf) => {
-      const data = buf.toString();
-      // Wait for server to declare itself up
-      const match = data.match(/([^\s]*?)\?token=([^\s]*)/);
-      if (match === null) {
-        return;
-      }
 
-      // Pull out the match information
-      const [, addr, token] = match;
+  const settings = await new Promise<JupyterServerSettings>((resolve, reject) => {
+      const reader = proc.stderr;
+      reader.on('data', (buf) => {
 
-      // Resolve the promise
-      resolve({
-        baseUrl: addr,
-        token: token,
-        dispose: () => proc.kill('SIGINT'),
-      });
-      // Unsubscribe from here-on-in
-      proc.stdout.removeAllListeners('data');
+        const data = buf.toString();
+        // Wait for server to declare itself up
+        const match = data.match(/([^\s]*?)\?token=([^\s]*)/);
+        if (match === null) {
+          return;
+        }
+
+        // Pull out the match information
+        const [, addr, token] = match;
+
+        // Resolve the promise
+        resolve({
+          baseUrl: addr,
+          token: token,
+        });
+        // Unsubscribe from here-on-in
+        reader.removeAllListeners('data');
     });
-    setTimeout(reject, 20_000); // Fail after 20 seconds of nothing happening
+    setTimeout(reject, 20_000).unref(); // Fail after 20 seconds of nothing happening
   });
+
   // Inform log
-  promise.then((settings) => {
-    const url = `${settings.baseUrl}?token=${settings.token}`;
-    log.info(`🪐 ${chalk.greenBright('Jupyter Server Started')}\n   ${chalk.dim(url)}`);
-  });
-  return promise;
+  const url = `${settings.baseUrl}?token=${settings.token}`;
+  log.info(`🪐 ${chalk.greenBright('Jupyter Server Started')}\n   ${chalk.dim(url)}`);
+
+  settings.dispose = () => proc.kill();
+
+  return settings;
 }
