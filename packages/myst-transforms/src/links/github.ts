@@ -3,7 +3,7 @@ import type { Link, LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
 
 const RESOLVER = 'https://github.com/';
-const TRANSFORM_SOURCE = 'LinkTransform:Github';
+// const TRANSFORM_SOURCE = 'LinkTransform:Github';
 
 type GithubFileLink = {
   kind: 'file';
