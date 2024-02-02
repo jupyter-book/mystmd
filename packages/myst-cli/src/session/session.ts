@@ -75,6 +75,7 @@ export class Session implements ISession {
   _shownUpgrade = false;
   _latestVersion?: string;
   _jupyterSessionManager: SessionManager | undefined | null = null;
+  _disposeJupyterSessionManager?: () => void;
 
   get log(): Logger {
     return this.$logger;
@@ -206,5 +207,13 @@ export class Session implements ISession {
       this._jupyterSessionManager = undefined;
       return undefined;
     }
+  }
+
+  maybeDisposeJupyterSessionManager() {
+    if (this._disposeJupyterSessionManager === undefined) {
+      return;
+    };
+    this._disposeJupyterSessionManager();
+    this._disposeJupyterSessionManager = undefined;
   }
 }

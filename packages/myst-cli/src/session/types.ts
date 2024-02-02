@@ -26,6 +26,7 @@ export type ISession = {
   loadPlugins(): Promise<MystPlugin>;
   getAllWarnings(ruleId: RuleId): (BuildWarning & { file: string })[];
   jupyterSessionManager(): Promise<SessionManager | undefined>;
+  maybeDisposeJupyterSessionManager(): void;
 };
 
 export type ISessionWithCache = ISession & {
