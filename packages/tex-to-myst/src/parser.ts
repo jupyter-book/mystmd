@@ -167,8 +167,8 @@ export class TexParser implements ITexParser {
         child.type === 'macro'
           ? `macro_${child.content}`
           : child.type === 'environment'
-            ? `env_${child.env}`
-            : child.type;
+          ? `env_${child.env}`
+          : child.type;
       this.currentPosition = child.position ?? this.currentPosition;
       const handler = this.handlers[kind] ?? this.data.dynamicHandlers[kind];
       if (handler) {
