@@ -97,6 +97,10 @@ async function prepareExportOptions(
     if (!exp.articles?.length && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
       exp.articles = [{ file: path.resolve(sourceFile) }];
     }
+    // If there is only one article with no explicit level, it should be 0, making the first section depth 1.
+    if (exp.articles?.length === 1 && exp.articles[0].level == null) {
+      exp.articles[0].level = 0;
+    }
     // If still no articles, try to use explicit or implicit project toc
     if (!exp.articles?.length && !exp.sub_articles?.length) {
       if (validateTOC(session, projectPath ?? '.')) {
