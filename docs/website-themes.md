@@ -31,7 +31,7 @@ To change your website theme from the default (`book-theme`), use the `site: the
 project:
   ...
 site:
-  theme: article-theme
+  template: article-theme
 ```
 
 ### Article Theme
