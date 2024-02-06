@@ -1,16 +1,11 @@
 name: MyST Install Action
-description: Checkout MyST and install Node, MyST, and other dependencies
+description: Install Node, MyST, and other dependencies
 inputs:
   node:
     required: true
 runs:
   using: 'composite'
   steps:
-    - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-          submodules: recursive
     - name: Install libxml
       run: |
         sudo apt-get update
