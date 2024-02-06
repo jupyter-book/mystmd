@@ -1,6 +1,8 @@
 import type { Plugin } from 'unified';
-import type { Node, Directive, Role } from 'myst-spec';
+import type { Directive, Node, Role } from 'myst-spec';
 import type { VFile } from 'vfile';
+import type * as nbformat from '@jupyterlab/nbformat';
+import type { PartialJSONObject } from '@lumino/coreutils';
 
 export type GenericNode<T extends Record<string, any> = Record<string, any>> = {
   type: string;
@@ -151,3 +153,27 @@ export enum AdmonitionKind {
   tip = 'tip',
   warning = 'warning',
 }
+
+export interface IExpressionOutput {
+  status: 'ok';
+  data: nbformat.IMimeBundle;
+  metadata: PartialJSONObject;
+}
+
+export interface IExpressionError {
+  status: 'error';
+  /**
+   * Exception name
+   */
+  ename: string;
+  /**
+   * Exception value
+   */
+  evalue: string;
+  /**
+   * Traceback
+   */
+  traceback: string[];
+}
+
+export type IExpressionResult = IExpressionError | IExpressionOutput;

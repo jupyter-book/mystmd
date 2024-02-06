@@ -1,4 +1,4 @@
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
 import { fileWarn, NotebookCell, RuleId } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { InlineExpression } from 'myst-spec-ext';
@@ -9,25 +9,6 @@ import type { VFile } from 'vfile';
 import { BASE64_HEADER_SPLIT } from './images.js';
 
 export const metadataSection = 'user_expressions';
-
-export interface IBaseExpressionResult {
-  status: string;
-}
-
-export interface IExpressionOutput extends IBaseExpressionResult {
-  status: 'ok';
-  data: Record<string, string>;
-  metadata: Record<string, string>;
-}
-
-export interface IExpressionError extends IBaseExpressionResult {
-  status: 'error';
-  traceback: string[];
-  ename: string;
-  evalue: string;
-}
-
-export type IExpressionResult = IExpressionError | IExpressionOutput;
 
 export interface IUserExpressionMetadata {
   expression: string;
@@ -69,11 +50,11 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
           },
         ];
       } else if (mimeType === 'text/latex') {
-        content = [{ type: 'inlineMath', value: processLatex(value) }];
+        content = [{ type: 'inlineMath', value: processLatex(value as string) }];
       } else if (mimeType === 'text/html') {
-        content = [{ type: 'html', value }];
+        content = [{ type: 'html', value: value as string }];
       } else if (mimeType === 'text/plain') {
-        content = [{ type: 'text', value }];
+        content = [{ type: 'text', value: value as string }];
       }
     });
     if (content) return content;

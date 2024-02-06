@@ -24,6 +24,7 @@ export {
   ParseTypesEnum,
   TargetKind,
 } from './types.js';
+export type { IExpressionResult, IExpressionError, IExpressionOutput } from './types.js';
 
 export type { MessageInfo } from './utils.js';
 export type {
