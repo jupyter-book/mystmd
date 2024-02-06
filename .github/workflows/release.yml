@@ -18,8 +18,6 @@ jobs:
           fetch-depth: 2
           submodules: recursive
       - uses: ./.github/actions/install
-        with:
-          node: '18'
       - name: Run tests
         run: npm run test
       - name: Version bump and create pull request OR publish to npm

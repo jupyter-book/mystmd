@@ -2,7 +2,9 @@ name: MyST Install Action
 description: Install Node, MyST, and other dependencies
 inputs:
   node:
+    description: 'Node version to install'
     required: true
+    default: '18'
 runs:
   using: 'composite'
   steps:
@@ -10,6 +12,7 @@ runs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libxml2-utils
+      shell: bash
     - name: Setup Node.js 18.x
       uses: actions/setup-node@v3
       with:
@@ -23,7 +26,9 @@ runs:
         cache-dependency-path: '.github/requirements/requirements-execute.txt'
     - name: Install execution requirements for ipykernel and jupyter-server
       run: python -m pip install -r .github/requirements/requirements-execute.txt
-    - name: Install node deps
-      run: npm install
-    - name: Run build
-      run: npm run build
+      shell: bash
+    - name: Install node deps and build Myst
+      run: |
+        npm install
+        npm run build
+      shell: bash
