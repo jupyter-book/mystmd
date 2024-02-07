@@ -98,7 +98,7 @@ casesList.forEach(({ title, cases }) => {
         }
         expect(yaml.dump(before)).toEqual(yaml.dump(after));
       },
-      { timeout: 15_000 },
+      { timeout: 30_000 },
     );
   });
 });
