@@ -236,7 +236,7 @@ export function reduceOutputs(
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
   outputs.forEach((node) => {
-    if (!node.data?.length) {
+    if (!node.data?.length && !node.children?.length) {
       node.type = '__delete__';
       return;
     }
@@ -304,7 +304,7 @@ export function reduceOutputs(
       .flat()
       .filter((output): output is Image | GenericNode => !!output);
     node.type = '__lift__';
-    node.children = children;
+    if (children.length || !node.children) node.children = children;
   });
   remove(mdast, '__delete__');
   liftChildren(mdast, '__lift__');
