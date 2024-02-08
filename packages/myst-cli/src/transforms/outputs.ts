@@ -240,6 +240,8 @@ export function reduceOutputs(
       node.type = '__delete__';
       return;
     }
+    node.type = '__lift__';
+    if (node.children?.length) return;
     const selectedOutputs: { content_type: string; hash: string }[] = [];
     node.data.forEach((output: MinifiedOutput) => {
       let selectedOutput: { content_type: string; hash: string } | undefined;
@@ -303,8 +305,7 @@ export function reduceOutputs(
       })
       .flat()
       .filter((output): output is Image | GenericNode => !!output);
-    node.type = '__lift__';
-    if (children.length || !node.children) node.children = children;
+    node.children = children;
   });
   remove(mdast, '__delete__');
   liftChildren(mdast, '__lift__');
