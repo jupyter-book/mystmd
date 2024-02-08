@@ -16,6 +16,7 @@ import type {
   Container as SpecContainer,
   InlineMath as SpecInlineMath,
   Math as SpecMath,
+  Node,
 } from 'myst-spec';
 
 type Visibility = 'show' | 'hide' | 'remove';
@@ -221,4 +222,15 @@ export type Container = Omit<SpecContainer, 'kind'> & {
   subcontainer?: boolean;
   noSubcontainers?: boolean;
   parentEnumerator?: string;
+};
+
+export type Output = Node & {
+  type: 'output';
+  id?: string;
+  identifier?: string;
+  label?: string;
+  html_id?: string;
+  data?: any[]; // MinifiedOutput[]
+  visibility?: Visibility;
+  children?: (FlowContent | ListContent | PhrasingContent)[];
 };
