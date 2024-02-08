@@ -21,6 +21,8 @@
     "lib": ["es2021", "DOM"],
     "typeRoots": [
       "./types",
+      "../types",
+      "../../types",
       "./node_modules/@types",
       "../../node_modules/@types",
       "../../../node_modules/@types",

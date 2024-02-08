@@ -443,7 +443,7 @@ const footnoteDefinition: Handler<FootnoteDefinition> = (state, node) => {
   state.current = [];
   state.renderChildren(node as Parent);
   // TODO: a problem here if there are numberings or images
-  state.footnotes[number] = { children: state.children as Paragraph[] };
+  state.footnotes[number] = { children: state.children as any[] };
   // Put the children back, and continue
   state.children = children;
   state.current = current;
