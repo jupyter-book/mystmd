@@ -35,7 +35,6 @@ export async function transformOutputsToCache(
   opts?: { minifyMaxCharacters?: number },
 ) {
   const outputs = selectAll('output', mdast) as GenericNode[];
-  // This happens sooner for notebooks
   if (!outputs.length) return;
   const cache = castSession(session);
   await Promise.all(
