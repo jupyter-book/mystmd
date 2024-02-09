@@ -5,7 +5,6 @@ import * as readline from 'node:readline';
 import type { Logger } from 'myst-cli-utils';
 import chalk from 'chalk';
 
-
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
 };
@@ -57,7 +56,6 @@ export async function findExistingJupyterServer(): Promise<JupyterServerSettings
   };
 }
 
-
 /**
  * Launch a new Jupyter Server whose root directory coincides with the content path
  *
@@ -72,43 +70,41 @@ export async function launchJupyterServer(
   const pythonPath = which.sync('python');
   const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
 
-  const reader = proc.stderr;    
+  const reader = proc.stderr;
   const settings = await new Promise<JupyterServerSettings>((resolve, reject) => {
-      // Fail after 20 seconds of nothing happening, but don't hang application
+    // Fail after 20 seconds of nothing happening, but don't hang application
 
-      const id = setTimeout(() => {     
-	log.error(`🪐 ${chalk.redBright('Jupyter server did not respond')}\n   ${chalk.dim(url)}`);
-	reject();
-      }, 20_000).unref(); 
+    const id = setTimeout(() => {
+      log.error(`🪐 ${chalk.redBright('Jupyter server did not respond')}\n   ${chalk.dim(url)}`);
+      reject();
+    }, 20_000).unref();
 
-      reader.on('data', (buf) => {
+    reader.on('data', (buf) => {
+      const data = buf.toString();
+      // Wait for server to declare itself up
+      const match = data.match(/([^\s]*?)\?token=([^\s]*)/);
+      if (match === null) {
+        return;
+      }
 
-        const data = buf.toString();
-        // Wait for server to declare itself up
-        const match = data.match(/([^\s]*?)\?token=([^\s]*)/);
-        if (match === null) {
-          return;
-        }
+      // Pull out the match information
+      const [, addr, token] = match;
 
-        // Pull out the match information
-        const [, addr, token] = match;
+      // Cancel timeout error now
+      clearTimeout(id);
 
-	// Cancel timeout error now
-	clearTimeout(id);
-
-        // Resolve the promise
-        resolve({
-          baseUrl: addr,
-          token: token,
-        });
+      // Resolve the promise
+      resolve({
+        baseUrl: addr,
+        token: token,
+      });
     });
   }).finally(() => reader.removeAllListeners('data'));
-  
+
   // Inform log
   const url = `${settings.baseUrl}?token=${settings.token}`;
   log.info(`🪐 ${chalk.greenBright('Jupyter server started')}\n   ${chalk.dim(url)}`);
 
-  settings.dispose = () => proc.kill();
-
-  return settings;
+  // Register settings destructor (to kill server)
+  return { ...settings, dispose: () => proc.kill() };
 }
