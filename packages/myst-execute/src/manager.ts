@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
 import type { Logger } from 'myst-cli-utils';
 import chalk from 'chalk';
+import fetch from 'node-fetch';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
@@ -48,12 +49,18 @@ export async function findExistingJupyterServer(): Promise<JupyterServerSettings
     return undefined;
   }
   servers.sort((a, b) => a.pid - b.pid);
-  const server = servers.pop()!;
-  // TODO: We should ping the server to ensure that it actually is up!
-  return {
-    baseUrl: server.url,
-    token: server.token,
-  };
+
+  // Return the first alive server
+  for (const entry of servers) {
+    const response = await fetch(`${entry.url}?token=${entry.token}`);
+    if (response.ok) {
+      return {
+        baseUrl: entry.url,
+        token: entry.token,
+      };
+    }
+  }
+  return undefined;
 }
 
 /**
