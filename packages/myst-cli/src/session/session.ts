@@ -74,7 +74,7 @@ export class Session implements ISession {
 
   _shownUpgrade = false;
   _latestVersion?: string;
-  _jupyterSessionManager: SessionManager | undefined | null = null;
+  _jupyterSessionManagerPromise?: Promise<SessionManager | undefined>;
 
   get log(): Logger {
     return this.$logger;
@@ -157,7 +157,7 @@ export class Session implements ISession {
   clone(): Session {
     const cloneSession = new Session({ logger: this.log });
     // TODO: clean this up through better state handling
-    cloneSession._jupyterSessionManager = this._jupyterSessionManager;
+    cloneSession._jupyterSessionManagerPromise = this._jupyterSessionManagerPromise;
     this._clones.push(cloneSession);
     return cloneSession;
   }
@@ -178,10 +178,14 @@ export class Session implements ISession {
     return warnings;
   }
 
-  async jupyterSessionManager(): Promise<SessionManager | undefined> {
-    if (this._jupyterSessionManager !== null) {
-      return Promise.resolve(this._jupyterSessionManager);
+  jupyterSessionManager(): Promise<SessionManager | undefined> {
+    if (this._jupyterSessionManagerPromise === undefined) {
+      this._jupyterSessionManagerPromise = this.createJupyterSessionManager();
     }
+    return this._jupyterSessionManagerPromise;
+  }
+
+  private async createJupyterSessionManager(): Promise<SessionManager | undefined> {
     try {
       let partialServerSettings: JupyterServerSettings | undefined;
       // Load from environment
@@ -212,18 +216,17 @@ export class Session implements ISession {
         kernelManager.dispose();
         partialServerSettings?.dispose?.();
       });
-      // TODO: this is a race condition, even though we shouldn't hit if if this promise is actually awaited
-      this._jupyterSessionManager = manager;
       return manager;
     } catch (err) {
       this.log.error('Unable to instantiate connection to Jupyter Server', err);
-      this._jupyterSessionManager = undefined;
       return undefined;
     }
   }
 
   dispose() {
-    this._jupyterSessionManager?.dispose?.();
-    this._jupyterSessionManager = undefined;
+    if (this._jupyterSessionManagerPromise) {
+      this._jupyterSessionManagerPromise.then((manager) => manager?.dispose?.());
+      this._jupyterSessionManagerPromise = undefined;
+    }
   }
 }
