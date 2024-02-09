@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling", "hatch-nodejs-version"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mystmd"
+dynamic = ["version", "description", "authors", "urls", "keywords", "license"]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: JavaScript",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.optional-dependencies]
+execute = [
+  "ipykernel",
+  "jupyter-server",
+]
+
+[project.scripts]
+myst = "mystmd_py.main:main"
+
+[tool.hatch.version]
+source = "nodejs"
+
+[tool.hatch.metadata.hooks.nodejs]
+fields = ["description", "authors", "urls", "keywords", "license"]
+
+[tool.hatch.build.targets.sdist]
+artifacts = [
+    "/package.json",
+    "/src/mystmd/myst.cjs"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mystmd_py"]
+artifacts = [
+    "/src/mystmd/myst.cjs"
+]
