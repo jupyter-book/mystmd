@@ -5,6 +5,8 @@ import sanitizeHtml from 'sanitize-html';
 import '@citation-js/plugin-bibtex';
 import '@citation-js/plugin-csl';
 
+const DOI_IN_TEXT = /(10.\d{4,9}\/[-._;()/:A-Z0-9]*[A-Z0-9])/i;
+
 // This is duplicated in citation-js types, which are not exported
 export type CitationJson = {
   type?: 'article-journal' | string;
@@ -143,6 +145,10 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
 
   return Object.fromEntries(
     p.data.map((c: any): [string, CitationRenderer[0]] => {
+      const matchDoi = c.note?.match(DOI_IN_TEXT);
+      if (!c.DOI && matchDoi) {
+        c.DOI = matchDoi[0];
+      }
       return [
         c.id,
         {
