@@ -13,22 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
           submodules: recursive
-      - name: Install libxml
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libxml2-utils
-      - name: Setup Node.js 18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-      - name: Install node deps
-        run: npm install
-      - name: Run build
-        run: npm run build
+      - uses: ./.github/actions/install
       - name: Run tests
         run: npm run test
       - name: Version bump and create pull request OR publish to npm

@@ -301,4 +301,53 @@ describe('propagateBlockDataToCode', () => {
       }
     }
   });
+  it('placeholder creates image node child of output', async () => {
+    const mdast: any = {
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'code',
+              executable: true,
+            },
+            {
+              type: 'output',
+            },
+          ],
+          data: {
+            placeholder: 'placeholder.png',
+          },
+        },
+      ],
+    };
+    propagateBlockDataToCode(new Session(), new VFile(), mdast);
+    const outputNode = mdast.children[0].children[1];
+    expect(outputNode.children?.length).toEqual(1);
+    expect(outputNode.children[0].type).toEqual('image');
+    expect(outputNode.children[0].placeholder).toBeTruthy();
+  });
+  it('placeholder passes with no output', async () => {
+    const mdast: any = {
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'code',
+              executable: true,
+            },
+          ],
+          data: {
+            placeholder: 'placeholder.png',
+          },
+        },
+      ],
+    };
+    propagateBlockDataToCode(new Session(), new VFile(), mdast);
+    expect(mdast.children.length).toEqual(1);
+    expect(mdast.children[0].children.length).toEqual(1);
+  });
 });

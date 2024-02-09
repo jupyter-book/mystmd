@@ -40,7 +40,7 @@ export const config = createSlice({
     currentSitePath: string | undefined;
     rawConfigs: Record<string, { raw: Record<string, any>; validated: Record<string, any> }>;
     projects: Record<string, ProjectConfig>;
-    sites: Record<string, SiteConfig>;
+    sites: Record<string, Record<string, any>>;
     filenames: Record<string, string>;
   },
   reducers: {

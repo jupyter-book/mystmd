@@ -1,5 +1,6 @@
 import type { GenericNode, GenericParent } from 'myst-common';
 import { NotebookCellTags, RuleId, fileError, fileWarn } from 'myst-common';
+import type { Image, Output } from 'myst-spec-ext';
 import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
 import type { VFile } from 'vfile';
@@ -149,12 +150,26 @@ export function checkMetaTags(
 }
 
 /**
- * Traverse mdast, propagate block tags to code and output
+ * Traverse mdast, propagate block metadata and tags to code and output
  */
 export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast: GenericParent) {
   const blocks = selectAll('block', mdast) as GenericNode[];
   blocks.forEach((block) => {
-    if (!block.data || !block.data.tags) return;
+    if (!block.data) return;
+    const outputNode = select('output', block) as Output | null;
+    if (block.data.placeholder && outputNode) {
+      if (!outputNode.children) outputNode.children = [];
+      outputNode.children.push({
+        type: 'image',
+        placeholder: true,
+        url: block.data.placeholder as string,
+        alt: block.data.alt as string,
+        width: block.data.width as string,
+        height: block.data.height as string,
+        align: block.data.align as Image['align'],
+      } as Image);
+    }
+    if (!block.data.tags) return;
     if (!Array.isArray(block.data.tags)) {
       fileError(vfile, `tags in code-cell directive must be a list of strings`, {
         node: block,
@@ -163,7 +178,6 @@ export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast:
     }
     const validMetatags = checkMetaTags(vfile, block, block.data.tags, true);
     const codeNode = select('code[executable=true]', block) as GenericNode | null;
-    const outputNode = select('output', block) as GenericNode | null;
     validMetatags.forEach((tag: string) => {
       switch (tag) {
         // should we raise when hide and remove both exist?

@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { getCitations, CitationJSStyles } from '../src';
-import { bibtex, TEST_APA_HTML, TEST_VANCOUVER_HTML } from './fixtures';
+import {
+  bibtex,
+  doiInNote,
+  TEST_APA_HTML,
+  TEST_DOI_IN_NOTE,
+  TEST_VANCOUVER_HTML,
+} from './fixtures';
 
 const key = 'Cockett2015SimPEG';
 
@@ -17,5 +23,9 @@ describe('Test reference rendering', () => {
     const citations = await getCitations(bibtex);
     const cite = citations[key];
     expect(cite.render(CitationJSStyles.vancouver)).toEqual(TEST_VANCOUVER_HTML);
+  });
+  it('Extract the DOI from the note', async () => {
+    const citations = await getCitations(doiInNote);
+    expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_NOTE);
   });
 });

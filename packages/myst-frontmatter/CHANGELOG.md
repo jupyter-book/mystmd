@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.23
+
+### Patch Changes
+
+- 50416784: Update licensese
+
 ## 1.1.22
 
 ### Patch Changes
