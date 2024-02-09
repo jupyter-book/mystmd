@@ -230,9 +230,8 @@ export async function transformMdast(
     });
   }
   transformRenderInlineExpressions(mdast, vfile);
-
-  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
+  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
