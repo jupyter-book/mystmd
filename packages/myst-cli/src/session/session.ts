@@ -75,7 +75,6 @@ export class Session implements ISession {
   _shownUpgrade = false;
   _latestVersion?: string;
   _jupyterSessionManager: SessionManager | undefined | null = null;
-  _disposeJupyterSessionManager?: () => void;
 
   get log(): Logger {
     return this.$logger;
@@ -205,15 +204,16 @@ export class Session implements ISession {
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);
       const kernelManager = new KernelManager({ serverSettings });
       const manager = new SessionManager({ kernelManager, serverSettings });
-      // TODO: this is a race condition, even though we shouldn't hit if if this promise is actually awaited
-      this._jupyterSessionManager = manager;
-      // Register destructor
-      this._disposeJupyterSessionManager = () => {
-              manager.dispose();
+
+      // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
+      manager.disposed.connect(
+	() => {
 	      kernelManager.dispose();
 	      partialServerSettings?.dispose?.();
-      }
-
+	}
+      );
+      // TODO: this is a race condition, even though we shouldn't hit if if this promise is actually awaited
+      this._jupyterSessionManager = manager;
       return manager;
     } catch (err) {
       this.log.error('Unable to instantiate connection to Jupyter Server', err);
@@ -223,10 +223,7 @@ export class Session implements ISession {
   }
 
   maybeDisposeJupyterSessionManager() {
-    if (this._disposeJupyterSessionManager === undefined) {
-      return;
-    };
-    this._disposeJupyterSessionManager();
-    this._disposeJupyterSessionManager = undefined;
+    this._jupyterSessionManager?.dispose?.()
+    this._jupyterSessionManager = undefined;
   }
 }
