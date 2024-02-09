@@ -74,6 +74,47 @@ describe('reduceOutputs', () => {
     reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
     expect(mdast.children[0].children.length).toEqual(1);
   });
+  it('output is replaced with placeholder image', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'hi',
+                },
+              ],
+            },
+            {
+              type: 'output',
+              id: 'abc123',
+              data: [],
+              children: [
+                {
+                  type: 'image',
+                  placeholder: true,
+                  url: 'placeholder.png',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(mdast.children[0].children.length).toEqual(2);
+    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
+    expect(mdast.children[0].children.length).toEqual(2);
+    expect(mdast.children[0].children[1]).toEqual({
+      type: 'image',
+      placeholder: true,
+      url: 'placeholder.png',
+    });
+  });
   // // These tests now require file IO...
   // it('image output converts to image node', async () => {
   //   const mdast = {

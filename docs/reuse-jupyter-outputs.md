@@ -13,6 +13,7 @@ Notebooks often hold computations that are useful to show in other articles. MyS
 A scientific article with two figures created in Jupyter Notebooks. Each figure can be labeled directly in the notebook and reused in any other page directly.
 ```
 
+(label-a-notebook-cell)=
 ## Label a Notebook Cell
 
 You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax[^black], or have this added directly in the notebook metadata for the cell.
@@ -71,6 +72,16 @@ It is possible that the Jupyter output may not work without computation, or you 
 ```
 
 The placeholder will be used in static exports when the output cannot be directly serialized.
+
+You may also define a placeholder image directly in a Jupyter notebook cell, in the same way you may [label the cell](#label-a-notebook-cell):
+
+```python
+#| label: my-cell
+#| placeholder: hello.png
+print('hello world')
+```
+
+In this case, the placeholder will replace _any_ output from the cell in static exports; outputs will only show up in interactive environments.
 
 ### Embed Directive
 
