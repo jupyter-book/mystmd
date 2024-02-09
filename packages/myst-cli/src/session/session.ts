@@ -156,6 +156,8 @@ export class Session implements ISession {
 
   clone(): Session {
     const cloneSession = new Session({ logger: this.log });
+    // TODO: clean this up through better state handling
+    cloneSession._jupyterSessionManager = this._jupyterSessionManager;
     this._clones.push(cloneSession);
     return cloneSession;
   }
@@ -189,14 +191,14 @@ export class Session implements ISession {
           token: process.env.JUPYTER_TOKEN,
         };
       } else {
-	// Load existing running server
+        // Load existing running server
         const existing = await findExistingJupyterServer();
         if (existing) {
           this.log.debug(`Found existing server on: ${existing.appUrl}`);
           partialServerSettings = existing;
         } else {
           this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
-	  // Create and load new server
+          // Create and load new server
           partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
         }
       }
@@ -206,12 +208,10 @@ export class Session implements ISession {
       const manager = new SessionManager({ kernelManager, serverSettings });
 
       // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
-      manager.disposed.connect(
-	() => {
-	      kernelManager.dispose();
-	      partialServerSettings?.dispose?.();
-	}
-      );
+      manager.disposed.connect(() => {
+        kernelManager.dispose();
+        partialServerSettings?.dispose?.();
+      });
       // TODO: this is a race condition, even though we shouldn't hit if if this promise is actually awaited
       this._jupyterSessionManager = manager;
       return manager;
@@ -223,7 +223,7 @@ export class Session implements ISession {
   }
 
   maybeDisposeJupyterSessionManager() {
-    this._jupyterSessionManager?.dispose?.()
+    this._jupyterSessionManager?.dispose?.();
     this._jupyterSessionManager = undefined;
   }
 }
