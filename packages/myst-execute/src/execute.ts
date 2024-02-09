@@ -31,12 +31,7 @@ function IOPubAsOutput(msg: KernelMessage.IIOPubMessage): IOutput {
  * @param kernel connection to an active kernel
  * @param code code to execute
  */
-async function executeCode(
-  kernel: Kernel.IKernelConnection,
-  code: string,
-  opts?: { log?: Logger },
-) {
-  const log = opts?.log ?? console;
+async function executeCode(kernel: Kernel.IKernelConnection, code: string) {
   const future = kernel.requestExecute({
     code: code,
   });
@@ -173,7 +168,7 @@ function isInlineExpression(node: GenericNode): node is InlineExpression {
 async function computeExecutableNodes(
   kernel: Kernel.IKernelConnection,
   nodes: (ICellBlock | InlineExpression)[],
-  opts: { vfile: VFile; log?: Logger },
+  opts: { vfile: VFile },
 ): Promise<{
   results: (IOutput[] | IExpressionResult)[];
   errorOccurred: boolean;
@@ -185,7 +180,7 @@ async function computeExecutableNodes(
     if (isCellBlock(matchedNode)) {
       // Pull out code to execute
       const code = select('code', matchedNode) as Code;
-      const { status, outputs } = await executeCode(kernel, code.value, { log: opts.log });
+      const { status, outputs } = await executeCode(kernel, code.value);
       // Cache result
       results.push(outputs);
 
@@ -333,7 +328,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
           const { results, errorOccurred } = await computeExecutableNodes(
             conn.kernel,
             executableNodes,
-            { vfile, log },
+            { vfile },
           );
           // Populate cache if things were successful
           if (!errorOccurred) {
