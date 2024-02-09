@@ -129,12 +129,16 @@ export class Session implements ISession {
     return this.plugins;
   }
 
-  buildPath(): string {
+  sourcePath(): string {
     const state = this.store.getState();
     const sitePath = selectors.selectCurrentSitePath(state);
     const projectPath = selectors.selectCurrentProjectPath(state);
     const root = sitePath ?? projectPath ?? '.';
-    return path.resolve(path.join(root, '_build'));
+    return path.resolve(root);
+  }
+
+  buildPath(): string {
+    return path.join(this.sourcePath(), '_build');
   }
 
   sitePath(): string {
@@ -177,32 +181,39 @@ export class Session implements ISession {
     if (this._jupyterSessionManager !== null) {
       return Promise.resolve(this._jupyterSessionManager);
     }
-
     try {
       let partialServerSettings: JupyterServerSettings | undefined;
+      // Load from environment
       if (process.env.JUPYTER_BASE_URL !== undefined) {
         partialServerSettings = {
           baseUrl: process.env.JUPYTER_BASE_URL,
           token: process.env.JUPYTER_TOKEN,
         };
       } else {
+	// Load existing running server
         const existing = await findExistingJupyterServer();
         if (existing) {
           this.log.debug(`Found existing server on: ${existing.appUrl}`);
           partialServerSettings = existing;
         } else {
-          this.log.debug(`Launching jupyter server on ${this.contentPath()}`);
-          partialServerSettings = await launchJupyterServer(this.contentPath(), this.log);
+          this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
+	  // Create and load new server
+          partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
         }
       }
 
-
-      this._disposeJupyterSessionManager = partialServerSettings.dispose;
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);
       const kernelManager = new KernelManager({ serverSettings });
       const manager = new SessionManager({ kernelManager, serverSettings });
       // TODO: this is a race condition, even though we shouldn't hit if if this promise is actually awaited
       this._jupyterSessionManager = manager;
+      // Register destructor
+      this._disposeJupyterSessionManager = () => {
+              manager.dispose();
+	      kernelManager.dispose();
+	      partialServerSettings?.dispose?.();
+      }
+
       return manager;
     } catch (err) {
       this.log.error('Unable to instantiate connection to Jupyter Server', err);
