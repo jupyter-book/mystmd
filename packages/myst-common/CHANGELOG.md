@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.1.23
+
+### Patch Changes
+
+- 01322e48: Move IExpressionResult types to myst-common
+- Updated dependencies [50416784]
+  - myst-frontmatter@1.1.23
+
 ## 1.1.22
 
 ### Patch Changes

@@ -1,5 +1,34 @@
 # myst-cli
 
+## 1.1.39
+
+### Patch Changes
+
+- 4d4116c5: Only parse frontmatter out of first notebook cell
+- 2563fec: Upgrade redux
+- 1b507308: Change github action to use v4 for setup-node and checkout
+- 2ffd6cc9: Fix section level for single article exports
+- 50416784: Add code cell metadata placeholder image to output children
+- 4b5ca6a2: Add build ci option to not write versions
+- 01322e48: Move IExpressionResult types to myst-common
+- Updated dependencies [50416784]
+- Updated dependencies [3fc3a353]
+- Updated dependencies [d4013a6b]
+- Updated dependencies [e2e6caa7]
+- Updated dependencies [50416784]
+- Updated dependencies [4b5ca6a2]
+- Updated dependencies [01322e48]
+- Updated dependencies [f7fd9053]
+  - myst-frontmatter@1.1.23
+  - citation-js-utils@1.1.0
+  - tex-to-myst@1.0.18
+  - myst-spec-ext@1.1.23
+  - jtex@1.0.14
+  - myst-common@1.1.23
+  - myst-to-typst@0.0.10
+  - myst-config@1.1.23
+  - myst-to-tex@1.0.18
+
 ## 1.1.38
 
 ### Patch Changes

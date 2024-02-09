@@ -1,5 +1,12 @@
 # myst-config
 
+## 1.1.23
+
+### Patch Changes
+
+- Updated dependencies [50416784]
+  - myst-frontmatter@1.1.23
+
 ## 1.1.22
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # jtex
 
+## 1.0.14
+
+### Patch Changes
+
+- 4b5ca6a2: Add build ci option to not write versions
+- Updated dependencies [50416784]
+- Updated dependencies [01322e48]
+  - myst-frontmatter@1.1.23
+  - myst-common@1.1.23
+
 ## 1.0.13
 
 ### Patch Changes

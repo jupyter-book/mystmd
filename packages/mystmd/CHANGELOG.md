@@ -1,5 +1,13 @@
 # mystmd
 
+## 1.1.39
+
+### Patch Changes
+
+- 4d4116c5: Only parse frontmatter out of first notebook cell
+- 2ffd6cc9: Fix section level for single article exports
+- 4b5ca6a2: Add build ci option to not write versions
+
 ## 1.1.38
 
 ## 1.1.37

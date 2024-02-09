@@ -1,6 +1,6 @@
 {
   "name": "myst-execute",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "sideEffects": false,
   "license": "MIT",
   "description": "Execute MyST content with Jupyter",
@@ -32,7 +32,7 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.1.21",
+    "myst-common": "^1.1.23",
     "vfile": "^5.3.7",
     "@jupyterlab/services": "^7.0.0",
     "unist-util-select": "^4.0.3",
