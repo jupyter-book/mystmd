@@ -7,10 +7,10 @@ thumbnail: thumbnails/execute-notebooks.png
 ## Overview
 
 :::{warning} MyST Execution is in Beta
-We are adding support for executing markdown notebooks and ipynb files, including inline execution. As we are adding this functionality we appreciate any feedback from the community on how it is working in your environments. Please add [issues](https://github.com/executablebooks/mystmd/issues/new) or join [Discord](https://discord.mystmd.org/) to give feedback.
+We are adding support for executing markdown notebooks and ipynb files, including inline execution. As we are adding this functionality we appreciate any feedback from the community on how it is working in your environments. Please add [issues](https://github.com/executablebooks/MyST/issues/new) or join [Discord](https://discord.MyST.org/) to give feedback.
 :::
 
-The mystmd CLI can execute your notebooks and markdown files by passing the `--execute` flag to the `start` and `build` commands, i.e.:
+The MyST CLI can execute your notebooks and markdown files by passing the `--execute` flag to the `start` and `build` commands, i.e.:
 
 ```bash
 myst start --execute
@@ -25,7 +25,7 @@ myst clean --execute
 
 ## Launching a Server
 
-mystmd performs execution of notebooks by communication with a Jupyter Server. Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.
+MyST performs execution of notebooks by communication with a Jupyter Server. Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.
 ```bash
 pip install jupyter-server
 ```
@@ -34,10 +34,10 @@ Jupyter Server is only responsible for orchestrating execution of your code. To 
 pip install ipykernel
 ```
 
-If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then mystmd will attempt to find an healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then mystmd will attempt to launch one using `python -m jupyter_server`.
+If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find an healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
 
 :::{note}
-Advanced users may wish to connect to non-local Jupyter Servers, e.g. those running on a remote server. It is possible to instruct mystmd to connect to a remote server by setting the `JUPYTER_BASE_URL` and `JUPYTER_TOKEN` environment variables.
+Advanced users may wish to connect to non-local Jupyter Servers, e.g. those running on a remote server. It is possible to instruct MyST to connect to a remote server by setting the `JUPYTER_BASE_URL` and `JUPYTER_TOKEN` environment variables.
 :::
 
 
