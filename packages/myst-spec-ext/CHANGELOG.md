@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.23
+
+### Patch Changes
+
+- 50416784: Add code cell metadata placeholder image to output children
+
 ## 1.1.22
 
 ### Patch Changes

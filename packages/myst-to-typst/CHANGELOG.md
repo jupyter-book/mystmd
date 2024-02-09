@@ -1,5 +1,17 @@
 # myst-to-typst
 
+## 0.0.10
+
+### Patch Changes
+
+- f7fd9053: Stop turning dois to links in typst
+- Updated dependencies [50416784]
+- Updated dependencies [50416784]
+- Updated dependencies [01322e48]
+  - myst-frontmatter@1.1.23
+  - myst-spec-ext@1.1.23
+  - myst-common@1.1.23
+
 ## 0.0.9
 
 ### Patch Changes

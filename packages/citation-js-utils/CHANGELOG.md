@@ -1,5 +1,15 @@
 # citation-js-utils
 
+## 1.1.0
+
+### Minor Changes
+
+- d4013a6b: Replace citation-js with @citation-js/core
+
+### Patch Changes
+
+- 3fc3a353: Extract DOI from note for citations
+
 ## 1.0.2
 
 ### Patch Changes
