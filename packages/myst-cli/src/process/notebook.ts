@@ -70,7 +70,7 @@ function replaceAttachmentsTransform(
 export async function processNotebook(
   session: ISession,
   file: string,
-  content: string
+  content: string,
 ): Promise<GenericParent> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;

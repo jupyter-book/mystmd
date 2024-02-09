@@ -73,7 +73,6 @@ import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
 
-
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
 const pluginUtils: PluginUtils = { select, selectAll };
