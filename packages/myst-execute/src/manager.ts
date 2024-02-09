@@ -72,12 +72,11 @@ export async function launchJupyterServer(
 
   const reader = proc.stderr;
   const settings = await new Promise<JupyterServerSettings>((resolve, reject) => {
-    // Fail after 20 seconds of nothing happening, but don't hang application
-
+    // Fail after 20 seconds of nothing happening
     const id = setTimeout(() => {
       log.error(`🪐 ${chalk.redBright('Jupyter server did not respond')}\n   ${chalk.dim(url)}`);
       reject();
-    }, 20_000).unref();
+    }, 20_000);
 
     reader.on('data', (buf) => {
       const data = buf.toString();
@@ -99,7 +98,10 @@ export async function launchJupyterServer(
         token: token,
       });
     });
-  }).finally(() => reader.removeAllListeners('data'));
+  }).finally(
+    // Don't keep listening to messages
+    () => reader.removeAllListeners('data'),
+  );
 
   // Inform log
   const url = `${settings.baseUrl}?token=${settings.token}`;
