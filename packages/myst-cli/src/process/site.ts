@@ -47,7 +47,6 @@ type ProcessOptions = {
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
   reloadProject?: boolean;
-  minifyMaxCharacters?: number;
   /** Execute flag for notebooks */
   execute?: boolean;
 };
@@ -271,7 +270,6 @@ export async function processProject(
     writeToc,
     writeFiles = true,
     reloadProject,
-    minifyMaxCharacters,
     execute,
   } = opts || {};
   if (!siteProject.path) {

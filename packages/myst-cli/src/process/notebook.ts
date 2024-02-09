@@ -1,9 +1,7 @@
-import { computeHash } from 'myst-cli-utils';
 import { NotebookCell, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
-import type { MinifiedOutput } from 'nbtx';
 import type {
   IAttachments,
   ICell,
@@ -12,15 +10,15 @@ import type {
   IOutput,
   MultilineString,
 } from '@jupyterlab/nbformat';
-import { CELL_TYPES, minifyCellOutput, ensureString } from 'nbtx';
+import { CELL_TYPES, ensureString } from 'nbtx';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
-import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
-import { findExpression, IUserExpressionMetadata, metadataSection } from '../transforms/index.js';
+import { findExpression, metadataSection } from '../transforms/index.js';
+import type { IUserExpressionMetadata } from '../transforms/index.js';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
@@ -103,11 +101,9 @@ export async function processNotebook(
         // Embed expression results into expression
         const userExpressions = block.data?.[metadataSection] as IUserExpressionMetadata[];
         const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
-        let count = 0;
         inlineNodes.forEach((inlineExpression) => {
           const data = findExpression(userExpressions, inlineExpression.value);
           if (!data) return;
-          count += 1;
           inlineExpression.result = data.result as unknown as Record<string, unknown>;
         });
         return acc.concat(block);

@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
-import type { Image } from 'myst-spec-ext';
-import { SourceFileKind } from 'myst-spec-ext';
+import type { Image, SourceFileKind } from 'myst-spec-ext';
 import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
