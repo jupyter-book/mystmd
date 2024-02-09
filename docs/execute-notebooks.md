@@ -34,7 +34,7 @@ Jupyter Server is only responsible for orchestrating execution of your code. To 
 pip install ipykernel
 ```
 
-If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find an healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
+If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find a healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
 
 :::{note}
 Advanced users may wish to connect to non-local Jupyter Servers, e.g. those running on a remote server. It is possible to instruct MyST to connect to a remote server by setting the `JUPYTER_BASE_URL` and `JUPYTER_TOKEN` environment variables.
