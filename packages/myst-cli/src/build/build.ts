@@ -187,5 +187,5 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     }
   }
 
-  session.maybeDisposeJupyterSessionManager();
+  session.dispose();
 }

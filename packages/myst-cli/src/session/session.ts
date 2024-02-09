@@ -222,7 +222,7 @@ export class Session implements ISession {
     }
   }
 
-  maybeDisposeJupyterSessionManager() {
+  dispose() {
     this._jupyterSessionManager?.dispose?.();
     this._jupyterSessionManager = undefined;
   }
