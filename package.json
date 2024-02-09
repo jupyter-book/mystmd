@@ -15,7 +15,8 @@
     "changeset": "changeset",
     "version": "changeset version && npm install && cd packages/mystmd-py && bash scripts/bump-version.sh",
     "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags",
-    "publish:ci": "npm run build && changeset publish && git push --follow-tags"
+    "publish:ci": "npm run build && changeset publish && git push --follow-tags",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
@@ -33,5 +34,8 @@
     "npm": ">=7.0.0",
     "node": ">=14.0.0"
   },
-  "packageManager": "npm@8.10.0"
+  "packageManager": "npm@8.10.0",
+  "dependencies": {
+    "patch-package": "^8.0.0"
+  }
 }

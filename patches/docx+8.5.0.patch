@@ -1,0 +1,13 @@
+diff --git a/node_modules/docx/package.json b/node_modules/docx/package.json
+index 61c314e..cd6c086 100644
+--- a/node_modules/docx/package.json
++++ b/node_modules/docx/package.json
+@@ -9,7 +9,7 @@
+     "exports": {
+         ".": {
+             "require": "./build/index.cjs",
+-            "types": "./build/index.d.ts",
++            "types": "./build",
+             "import": "./build/index.mjs",
+             "default": "./build/index.mjs"
+         }
