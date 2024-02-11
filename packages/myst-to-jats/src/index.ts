@@ -754,7 +754,7 @@ function renderBackSection(vfile: VFile, mdast: GenericParent, def: JatsPart, op
   return sec;
 }
 
-class JatsSerializer implements IJatsSerializer {
+export class JatsSerializer implements IJatsSerializer {
   file: VFile;
   data: StateData;
   handlers: Record<string, Handler>;
