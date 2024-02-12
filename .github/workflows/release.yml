@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - main
-
+  workflow_dispatch:
+    inputs:
+      forcePublishPyPI:
+        description: |
+          Force publish to PyPI, even if the NPM release has already occurred.i
+        type: boolean
+        required: false
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
@@ -53,7 +59,7 @@ jobs:
   release-py:  
     name: Release Python
     runs-on: ubuntu-latest
-    if: ${{ needs.build-npm.outputs.published }}
+    if: ${{ needs.build-npm.outputs.published || inputs.forcePublishPyPI }}
     needs:
       - release-npm
       - build-py
