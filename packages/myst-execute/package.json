@@ -1,6 +1,6 @@
 {
   "name": "myst-execute",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "sideEffects": false,
   "license": "MIT",
   "description": "Execute MyST content with Jupyter",
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "chalk": "^5.2.0",
-    "myst-common": "^1.1.23",
+    "myst-common": "^1.1.24",
     "vfile": "^5.3.7",
     "@jupyterlab/services": "^7.0.0",
     "unist-util-select": "^4.0.3",

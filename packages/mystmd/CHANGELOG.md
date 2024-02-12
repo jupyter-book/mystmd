@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.40
+
+### Patch Changes
+
+- d2a2a41: Integrate myst-execute into the CLI
+
 ## 1.1.39
 
 ### Patch Changes
