@@ -56,7 +56,7 @@ jobs:
   release-py:  
     name: Release Python
     runs-on: ubuntu-latest
-    if: ${{ needs.build-npm.outputs.published || inputs.forcePublishPyPI }}
+    if: ${{ needs.release-npm.outputs.published || inputs.forcePublishPyPI }}
     needs:
       - release-npm
     environment:
