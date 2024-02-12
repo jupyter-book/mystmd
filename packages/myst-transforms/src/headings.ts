@@ -9,25 +9,28 @@ type HeadingDepthOptions = { firstDepth?: number };
 /**
  * Normalize heading depths based on specified first heading depth
  *
- * By default, firstDepth is 1; if, for example, the title should be
- * depth 1 and the first heading of the content should be depth 2,
- * you must specify firstDepth = 2. This transform does not take
- * into account frontmatter title or content_includes_title flag;
- * These must be taken into account when determining first depth.
- * First depth cannot be < 1.
- *
- * The heading levels will be modified so they are all sequential and begin
+ * Heading levels will be modified so they are all sequential and begin
  * at firstDepth. If heading depths are non-sequential, a warning will be
  * raised and they will be normalized to sequential. If max heading depth
  * is greater than 6, a warning is also raised, and all values greater than
  * 6 will be left at 6.
+ *
+ * If firstDepth is undefined, the default, this transform will do nothing.
+ *
+ * If, for example, the title is defined in the frontmatter but should be
+ * depth 1, the first heading of the content should be depth 2 and
+ * you must specify firstDepth = 2. This transform does not take
+ * into account frontmatter title or content_includes_title flag;
+ * These must be considered when specifying firstDepth.
+ * First depth cannot be < 1.
  */
 export async function headingDepthTransform(
   tree: GenericParent,
   vfile: VFile,
   opts?: HeadingDepthOptions,
 ) {
-  const firstDepth = opts?.firstDepth && opts.firstDepth > 0 ? opts.firstDepth : 1;
+  if (opts?.firstDepth == null) return;
+  const firstDepth = opts.firstDepth > 0 ? opts.firstDepth : 1;
   const headings = selectAll('heading', tree) as Heading[];
   if (headings.length === 0) return;
   const currentDepths = [
