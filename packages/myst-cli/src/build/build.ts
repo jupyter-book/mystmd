@@ -27,6 +27,7 @@ export type BuildOpts = {
   output?: string;
   checkLinks?: boolean;
   ci?: boolean;
+  execute?: boolean;
 };
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
@@ -185,4 +186,6 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
       await buildSite(session, opts);
     }
   }
+
+  session.dispose();
 }

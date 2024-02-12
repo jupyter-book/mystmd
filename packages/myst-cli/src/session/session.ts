@@ -1,8 +1,8 @@
 import path from 'node:path';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
-import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
+import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { MystPlugin, RuleId } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
@@ -19,6 +19,18 @@ import type { RootState } from '../store/reducers.js';
 import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
+import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
+import type { JupyterServerSettings } from 'myst-execute';
+import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
+import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
+
+// fetch polyfill for node<18
+if (!globalThis.fetch) {
+  globalThis.fetch = nodeFetch as any;
+  globalThis.Headers = Headers as any;
+  globalThis.Request = Request as any;
+  globalThis.Response = Response as any;
+}
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -62,6 +74,7 @@ export class Session implements ISession {
 
   _shownUpgrade = false;
   _latestVersion?: string;
+  _jupyterSessionManagerPromise?: Promise<SessionManager | undefined>;
 
   get log(): Logger {
     return this.$logger;
@@ -115,12 +128,16 @@ export class Session implements ISession {
     return this.plugins;
   }
 
-  buildPath(): string {
+  sourcePath(): string {
     const state = this.store.getState();
     const sitePath = selectors.selectCurrentSitePath(state);
     const projectPath = selectors.selectCurrentProjectPath(state);
     const root = sitePath ?? projectPath ?? '.';
-    return path.resolve(path.join(root, '_build'));
+    return path.resolve(root);
+  }
+
+  buildPath(): string {
+    return path.join(this.sourcePath(), '_build');
   }
 
   sitePath(): string {
@@ -134,10 +151,13 @@ export class Session implements ISession {
   publicPath(): string {
     return path.join(this.sitePath(), 'public');
   }
+
   _clones: ISession[] = [];
 
   clone(): Session {
     const cloneSession = new Session({ logger: this.log });
+    // TODO: clean this up through better state handling
+    cloneSession._jupyterSessionManagerPromise = this._jupyterSessionManagerPromise;
     this._clones.push(cloneSession);
     return cloneSession;
   }
@@ -156,5 +176,57 @@ export class Session implements ISession {
       });
     });
     return warnings;
+  }
+
+  jupyterSessionManager(): Promise<SessionManager | undefined> {
+    if (this._jupyterSessionManagerPromise === undefined) {
+      this._jupyterSessionManagerPromise = this.createJupyterSessionManager();
+    }
+    return this._jupyterSessionManagerPromise;
+  }
+
+  private async createJupyterSessionManager(): Promise<SessionManager | undefined> {
+    try {
+      let partialServerSettings: JupyterServerSettings | undefined;
+      // Load from environment
+      if (process.env.JUPYTER_BASE_URL !== undefined) {
+        partialServerSettings = {
+          baseUrl: process.env.JUPYTER_BASE_URL,
+          token: process.env.JUPYTER_TOKEN,
+        };
+      } else {
+        // Load existing running server
+        const existing = await findExistingJupyterServer();
+        if (existing) {
+          this.log.debug(`Found existing server on: ${existing.appUrl}`);
+          partialServerSettings = existing;
+        } else {
+          this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
+          // Create and load new server
+          partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
+        }
+      }
+
+      const serverSettings = ServerConnection.makeSettings(partialServerSettings);
+      const kernelManager = new KernelManager({ serverSettings });
+      const manager = new SessionManager({ kernelManager, serverSettings });
+
+      // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
+      manager.disposed.connect(() => {
+        kernelManager.dispose();
+        partialServerSettings?.dispose?.();
+      });
+      return manager;
+    } catch (err) {
+      this.log.error('Unable to instantiate connection to Jupyter Server', err);
+      return undefined;
+    }
+  }
+
+  dispose() {
+    if (this._jupyterSessionManagerPromise) {
+      this._jupyterSessionManagerPromise.then((manager) => manager?.dispose?.());
+      this._jupyterSessionManagerPromise = undefined;
+    }
   }
 }

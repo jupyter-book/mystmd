@@ -112,12 +112,13 @@ export async function startServer(
   if (!opts.headless) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session, opts);
-  const { extraLinkTransformers, extraTransforms, defaultTemplate } = opts;
+  const { extraLinkTransformers, extraTransforms, defaultTemplate, execute } = opts;
   if (!opts.buildStatic) {
     watchContent(session, server.reload, {
       extraLinkTransformers,
       extraTransforms,
       defaultTemplate,
+      execute,
     });
   }
   if (opts.headless) {

@@ -6,11 +6,13 @@ import {
   makeHeadlessOption,
   makePortOption,
   makeServerPortOption,
+  makeExecuteOption,
 } from './options.js';
 
 export function makeStartCLI(program: Command) {
   const command = new Command('start')
     .description('Start the current project as a website')
+    .addOption(makeExecuteOption('Execute Notebooks'))
     .addOption(makeKeepHostOption())
     .addOption(makeHeadlessOption())
     .addOption(makePortOption())

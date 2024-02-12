@@ -2,13 +2,12 @@ import { describe, test, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { kernelExecutionTransform, launchJupyterServer, ICache } from '../src';
-import type { GenericParent } from 'myst-common';
+import type { ICache } from '../src';
+import { kernelExecutionTransform, launchJupyterServer } from '../src';
+import type { GenericParent, IExpressionResult } from 'myst-common';
 import { VFile } from 'vfile';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
-import { default as nodeFetch } from 'node-fetch';
-import { Headers, Request, Response } from 'node-fetch';
-import type { IExpressionResult } from 'myst-common';
+import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 import type { IOutput } from '@jupyterlab/nbformat';
 
 // fetch polyfill for node<18
@@ -96,7 +95,7 @@ casesList.forEach(({ title, cases }) => {
             expect.arrayContaining([expect.stringMatching(throws)]),
           );
         }
-        expect(yaml.dump(before)).toEqual(yaml.dump(after));
+        expect(before).toMatchObject(after);
       },
       { timeout: 30_000 },
     );

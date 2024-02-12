@@ -1,4 +1,5 @@
-src/version.ts
 *.egg-info
 dist
-mystmd_py/myst.cjs
+src/mystmd_py/myst.cjs
+package.json
+**/__pycache__/

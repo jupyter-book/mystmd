@@ -30,6 +30,7 @@ parts:
       - file: interactive-notebooks
       - file: reuse-jupyter-outputs
       - file: integrating-jupyter
+      - file: execute-notebooks
   - caption: Websites
     chapters:
       - file: table-of-contents

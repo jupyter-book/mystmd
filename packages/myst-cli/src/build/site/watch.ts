@@ -15,6 +15,7 @@ type TransformOptions = {
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
   reloadProject?: boolean;
+  execute?: boolean;
 };
 
 function watchConfigAndPublic(session: ISession, serverReload: () => void, opts: TransformOptions) {

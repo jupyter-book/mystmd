@@ -1,10 +1,11 @@
 import { select, selectAll } from 'unist-util-select';
+import type { Logger } from 'myst-cli-utils';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
-import { fileError, fileInfo, fileWarn } from 'myst-common';
+import { fileError, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
@@ -103,29 +104,32 @@ async function evaluateExpression(kernel: Kernel.IKernelConnection, expr: string
 /**
  * Build a cache key from an array of executable nodes
  *
- * @param nodes array of executable ndoes
+ * @param nodes array of executable nodes
  */
 function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
   // Build an array of hashable items from an array of nodes
   const hashableItems: {
     kind: string;
     content: string;
+    raisesException: boolean;
   }[] = [];
   for (const node of nodes) {
     if (isCellBlock(node)) {
       hashableItems.push({
         kind: node.type,
         content: (select('code', node) as Code).value,
+        raisesException: !!node.data?.tags?.['raises-exception'],
       });
     } else {
       assert(isInlineExpression(node));
       hashableItems.push({
         kind: node.type,
         content: node.value,
+        raisesException: false,
       });
     }
   }
-  // Serialise the array into JSON, and compute the hash
+  // Serialize the array into JSON, and compute the hash
   const hashableString = JSON.stringify(hashableItems);
   return createHash('md5').update(hashableString).digest('hex');
 }
@@ -158,7 +162,7 @@ function isInlineExpression(node: GenericNode): node is InlineExpression {
 
 /**
  * For each executable node, perform a kernel execution request and return the results.
- * Return an additional boolean indicating whether an error occured.
+ * Return an additional boolean indicating whether an error occurred.
  *
  * @param kernel
  * @param nodes
@@ -167,7 +171,7 @@ function isInlineExpression(node: GenericNode): node is InlineExpression {
 async function computeExecutableNodes(
   kernel: Kernel.IKernelConnection,
   nodes: (ICellBlock | InlineExpression)[],
-  vfile: VFile,
+  opts: { vfile: VFile },
 ): Promise<{
   results: (IOutput[] | IExpressionResult)[];
   errorOccurred: boolean;
@@ -187,7 +191,13 @@ async function computeExecutableNodes(
       const metadata = matchedNode.data || {};
       const allowErrors = !!metadata?.tags?.['raises-exception'];
       if (status === 'error' && !allowErrors) {
-        fileWarn(vfile, 'An exception occurred during code execution, halting further execution');
+        fileWarn(
+          opts.vfile,
+          'An exception occurred during code execution, halting further execution',
+          {
+            node: matchedNode,
+          },
+        );
         // Make a note of the failure
         errorOccurred = true;
         break;
@@ -199,8 +209,9 @@ async function computeExecutableNodes(
       // Check for errors
       if (status === 'error') {
         fileWarn(
-          vfile,
+          opts.vfile,
           'An exception occurred during expression evaluation, halting further execution',
+          { node: matchedNode },
         );
         // Make a note of the failure
         errorOccurred = true;
@@ -253,16 +264,18 @@ export type Options = {
   frontmatter: PageFrontmatter;
   ignoreCache?: boolean;
   errorIsFatal?: boolean;
+  log?: Logger;
 };
 
 /**
  * Transform an AST to include the outputs of executing the given notebook
  *
  * @param tree
- * @param file
+ * @param vfile
  * @param opts
  */
-export async function kernelExecutionTransform(tree: GenericParent, file: VFile, opts: Options) {
+export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile, opts: Options) {
+  const log = opts.log ?? console;
   // Pull out code-like nodes
   const executableNodes = selectAll(
     'block:has(code[executable=true]):has(output),inlineExpression',
@@ -280,16 +293,15 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
 
   // Do we need to re-execute notebook?
   if (opts.ignoreCache || cachedResults === undefined) {
-    fileInfo(
-      file,
-      opts.ignoreCache
-        ? 'Code cells and expressions will be re-evaluated, as the cache is being ignored'
-        : 'Code cells and expressions will be re-evaluated, as there is no entry in the execution cache',
+    log.info(
+      `💿 Executing Notebook (${vfile.path}) ${
+        opts.ignoreCache ? '[cache ignored]' : '[no execution cache found]'
+      }`,
     );
     const sessionManager = await opts.sessionFactory();
     // Do we not have a working session?
     if (sessionManager === undefined) {
-      fileError(file, `Could not load Jupyter session manager to run executable nodes`, {
+      fileError(vfile, `Could not load Jupyter session manager to run executable nodes`, {
         fatal: opts.errorIsFatal,
       });
     }
@@ -297,31 +309,36 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
     else {
       let sessionConnection: Session.ISessionConnection | undefined;
       const sessionOpts = {
-        path: file.path,
+        path: vfile.path,
         type: 'notebook',
-        name: path.basename(file.path),
+        name: path.basename(vfile.path),
         kernel: {
           name: opts.frontmatter?.kernelspec?.name ?? 'python3',
         },
       };
       await sessionManager
         .startNew(sessionOpts)
+        .catch((err) => {
+          log.debug((err as Error).stack);
+          log.error('Jupyter connection error');
+        })
         .then(async (conn) => {
+          if (!conn) return;
           sessionConnection = conn;
           assert(conn.kernel);
-          fileInfo(file, `Connected to kernel ${conn.kernel.name}`);
+          log.debug(`Connected to kernel ${conn.kernel.name}`);
           // Execute notebook
           const { results, errorOccurred } = await computeExecutableNodes(
             conn.kernel,
             executableNodes,
-            file,
+            { vfile },
           );
           // Populate cache if things were successful
           if (!errorOccurred) {
             opts.cache.set(cacheKey, results);
           } else {
             // Otherwise, keep tabs on the error
-            fileError(file, 'An error occurred during kernel execution', {
+            fileError(vfile, 'An error occurred during kernel execution', {
               fatal: opts.errorIsFatal,
             });
           }
@@ -331,6 +348,9 @@ export async function kernelExecutionTransform(tree: GenericParent, file: VFile,
         // Ensure that we shut-down the kernel
         .finally(async () => sessionConnection !== undefined && sessionConnection.shutdown());
     }
+  } else {
+    // We found the cache, adding them in below!
+    log.info(`💾 Adding Cached Notebook Outputs (${vfile.path})`);
   }
 
   if (cachedResults) {

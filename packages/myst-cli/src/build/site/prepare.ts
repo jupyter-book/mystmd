@@ -12,6 +12,7 @@ export type Options = {
   checkLinks?: boolean;
   yes?: boolean;
   port?: number;
+  execute?: boolean;
   serverPort?: number;
   writeToc?: boolean;
   keepHost?: boolean;
@@ -38,8 +39,15 @@ export function ensureBuildFoldersExist(session: ISession): void {
 }
 
 export async function buildSite(session: ISession, opts: Options) {
-  const { writeToc, strict, checkLinks, extraLinkTransformers, extraTransforms, defaultTemplate } =
-    opts;
+  const {
+    writeToc,
+    strict,
+    checkLinks,
+    extraLinkTransformers,
+    extraTransforms,
+    defaultTemplate,
+    execute,
+  } = opts;
   ensureBuildFoldersExist(session);
   await processSite(session, {
     writeToc,
@@ -48,5 +56,6 @@ export async function buildSite(session: ISession, opts: Options) {
     extraLinkTransformers,
     extraTransforms,
     defaultTemplate,
+    execute,
   });
 }

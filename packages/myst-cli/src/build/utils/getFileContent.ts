@@ -43,7 +43,6 @@ export async function getFileContent(
         ? preFrontmatters?.[ind]
         : preFrontmatters;
       return loadFile(session, file, projectPath, undefined, {
-        minifyMaxCharacters: 0,
         preFrontmatter,
       });
     }),

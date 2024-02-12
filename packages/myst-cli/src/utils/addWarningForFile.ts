@@ -28,7 +28,7 @@ export function addWarningForFile(
   const formatted = `${message}${note}${url}`;
   switch (kind) {
     case 'info':
-      session.log.info(`ℹ️ ${prefix}${formatted}`);
+      session.log.info(`ℹ️  ${prefix}${formatted}`);
       break;
     case 'error':
       session.log.error(`⛔️ ${prefix}${formatted}`);

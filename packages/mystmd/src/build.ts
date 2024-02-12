@@ -18,12 +18,14 @@ import {
   makeTypstOption,
   makeWatchOption,
   makeCIOption,
+  makeExecuteOption,
 } from './options.js';
 
 export function makeBuildCLI(program: Command) {
   const command = new Command('build')
     .description('Build PDF, LaTeX, Word and website exports from MyST files')
     .argument('[files...]', 'list of files to export')
+    .addOption(makeExecuteOption('Execute Notebooks'))
     .addOption(makePdfOption('Build PDF output'))
     .addOption(makeTexOption('Build LaTeX outputs'))
     .addOption(makeTypstOption('Build Typst outputs'))

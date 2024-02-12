@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, PluginUtils, References } from 'myst-common';
+import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -43,13 +43,13 @@ import {
   importMdastFromJson,
   includeFilesTransform,
   liftCodeMetadataToBlock,
-  transformLinkedDOIs,
-  transformOutputsToCache,
   transformCitations,
   transformImageFormats,
+  transformLinkedDOIs,
+  transformOutputsToCache,
+  transformRenderInlineExpressions,
   transformThumbnail,
   StaticFileTransformer,
-  inlineExpressionsPlugin,
   propagateBlockDataToCode,
   transformBanner,
   reduceOutputs,
@@ -70,6 +70,8 @@ import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
+import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
+import type { IOutput } from '@jupyterlab/nbformat';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -99,6 +101,7 @@ export async function transformMdast(
     pageSlug?: string;
     imageExtensions?: ImageExtensions[];
     watchMode?: boolean;
+    execute?: boolean;
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
     index?: string;
@@ -116,6 +119,7 @@ export async function transformMdast(
     minifyMaxCharacters,
     index,
     titleDepth,
+    execute,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -164,7 +168,6 @@ export async function transformMdast(
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(inlineExpressionsPlugin) // Happens before math and images!
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
@@ -215,8 +218,20 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
+  if (execute) {
+    const cachePath = path.join(session.buildPath(), 'execute');
+    await kernelExecutionTransform(mdast, vfile, {
+      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+      sessionFactory: () => session.jupyterSessionManager(),
+      frontmatter: frontmatter,
+      ignoreCache: false,
+      errorIsFatal: false,
+      log: session.log,
+    });
+  }
+  transformRenderInlineExpressions(mdast, vfile);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
+  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })

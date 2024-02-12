@@ -3,6 +3,8 @@ import which from 'which';
 import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
 import type { Logger } from 'myst-cli-utils';
+import chalk from 'chalk';
+import fetch from 'node-fetch';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
@@ -47,11 +49,18 @@ export async function findExistingJupyterServer(): Promise<JupyterServerSettings
     return undefined;
   }
   servers.sort((a, b) => a.pid - b.pid);
-  const server = servers.pop()!;
-  return {
-    baseUrl: server.url,
-    token: server.token,
-  };
+
+  // Return the first alive server
+  for (const entry of servers) {
+    const response = await fetch(`${entry.url}?token=${entry.token}`);
+    if (response.ok) {
+      return {
+        baseUrl: entry.url,
+        token: entry.token,
+      };
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -60,14 +69,23 @@ export async function findExistingJupyterServer(): Promise<JupyterServerSettings
  * @param contentPath path to server contents
  * @param log logger
  */
-export function launchJupyterServer(
+export async function launchJupyterServer(
   contentPath: string,
   log: Logger,
 ): Promise<JupyterServerSettings> {
+  log.info(`🚀 ${chalk.yellowBright('Starting new Jupyter server')}`);
   const pythonPath = which.sync('python');
   const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
-  const promise = new Promise<JupyterServerSettings>((resolve, reject) => {
-    proc.stderr.on('data', (buf) => {
+
+  const reader = proc.stderr;
+  const settings = await new Promise<JupyterServerSettings>((resolve, reject) => {
+    // Fail after 20 seconds of nothing happening
+    const id = setTimeout(() => {
+      log.error(`🪐 ${chalk.redBright('Jupyter server did not respond')}\n   ${chalk.dim(url)}`);
+      reject();
+    }, 20_000);
+
+    reader.on('data', (buf) => {
       const data = buf.toString();
       // Wait for server to declare itself up
       const match = data.match(/([^\s]*?)\?token=([^\s]*)/);
@@ -76,22 +94,26 @@ export function launchJupyterServer(
       }
 
       // Pull out the match information
-      const [_, addr, token] = match;
+      const [, addr, token] = match;
+
+      // Cancel timeout error now
+      clearTimeout(id);
 
       // Resolve the promise
       resolve({
         baseUrl: addr,
         token: token,
-        dispose: () => proc.kill('SIGINT'),
       });
-      // Unsubscribe from here-on-in
-      proc.stdout.removeAllListeners('data');
     });
-    setTimeout(reject, 20_000); // Fail after 20 seconds of nothing happening
-  });
-  // Inform log
-  promise.then((settings) =>
-    log.info(`Started up Jupyter Server on ${settings.baseUrl}?token=${settings.token}`),
+  }).finally(
+    // Don't keep listening to messages
+    () => reader.removeAllListeners('data'),
   );
-  return promise;
+
+  // Inform log
+  const url = `${settings.baseUrl}?token=${settings.token}`;
+  log.info(`🪐 ${chalk.greenBright('Jupyter server started')}\n   ${chalk.dim(url)}`);
+
+  // Register settings destructor (to kill server)
+  return { ...settings, dispose: () => proc.kill() };
 }
