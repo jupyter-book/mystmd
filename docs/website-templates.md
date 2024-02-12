@@ -1,9 +1,9 @@
 ---
-title: Website Themes
+title: Website Templates
 description: Export to over 400 journal templates from a MyST Markdown file, which uses LaTeX and can create print-ready, multi-column, professional PDF documents.
 ---
 
-There are currently two themes for MyST websites, a book-theme, which is the default and is based loosely on JupyterBook and an article-theme that is designed for scientific documents with supporting notebooks. The documentation for this site is using the `book-theme`, for a demonstration of the `article-theme`, you can see [an article on finite volume](https://simpeg.xyz/tle-finitevolume).
+There are currently two templates for MyST websites, a `book-theme`, which is the default and is based loosely on JupyterBook and an `article-theme` that is designed for scientific documents with supporting notebooks. The documentation for this site is using the `book-theme`, for a demonstration of the `article-theme`, you can see [an article on finite volume](https://simpeg.xyz/tle-finitevolume).
 
 :::::{tab-set}
 ::::{tab} Article Theme
@@ -19,14 +19,14 @@ Example of a site using the `book-theme`, ([online](https://mystmd.org), [source
 ::::
 :::::
 
-## Changing Themes
+## Changing Site Templates
 
-To change your website theme from the default (`book-theme`), use the `site: theme:` property:
+To change your website template from the default (`book-theme`), use the `site: template:` property:
 
 ```{code} yaml
 :filename: myst.yml
 :emphasize-lines: 4
-:caption: Change the `theme` property to `article-theme`.
+:caption: Change the `template` property to `article-theme`.
 :linenos:
 project:
   ...
