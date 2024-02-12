@@ -46,7 +46,7 @@ jobs:
           pip install build
           # Copy over needed files
           cp ../mystmd/dist/myst.cjs src/mystmd_py/
-          cp ../mystmd/package.json .          
+          cp ../mystmd/package.json .
           python -m build
         working-directory: packages/mystmd-py
       - name: Store the distribution packages
@@ -54,7 +54,7 @@ jobs:
         with:
           name: python-package-distributions
           path: packages/mystmd-py/dist/
-  release-py:  
+  release-py:
     name: Release Python
     runs-on: ubuntu-latest
     if: ${{ needs.release-npm.outputs.published == 'true' || inputs.forcePublishPyPI }}
@@ -65,11 +65,11 @@ jobs:
       url: https://pypi.org/p/mystmd
     permissions:
       id-token: write
-    steps:   
+    steps:
       - name: Download all the dists
         uses: actions/download-artifact@v4
         with:
           name: python-package-distributions
-          path: dist/       
+          path: dist/
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
