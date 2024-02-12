@@ -128,14 +128,17 @@ function fillReferenceEnumerators(
     'label' | 'identifier' | 'children' | 'template' | 'enumerator'
   > & { type: string },
   template: string,
-  enumerator?: string | number,
+  target?: TargetNodes,
   title?: string | PhrasingContent[],
 ) {
   const noNodeChildren = !node.children?.length;
   if (noNodeChildren) {
     setTextAsChild(node, template);
   }
-  const num = enumerator != null ? String(enumerator) : UNKNOWN_REFERENCE_ENUMERATOR;
+  const num =
+    target?.enumerator != null
+      ? `${target.parentEnumerator ?? ''}${target.enumerator}`
+      : UNKNOWN_REFERENCE_ENUMERATOR;
   if (!node.template) node.template = template;
   if (num && num !== UNKNOWN_REFERENCE_ENUMERATOR) node.enumerator = num;
   const used = {
@@ -147,6 +150,10 @@ function fillReferenceEnumerators(
     '%s': () => {
       used.s = true;
       return num;
+    },
+    '{subEnumerator}': () => {
+      used.number = true;
+      return target?.enumerator ?? UNKNOWN_REFERENCE_ENUMERATOR;
     },
     '{number}': () => {
       used.number = true;
@@ -456,11 +463,11 @@ export class ReferenceState implements IReferenceStateResolver {
         this.vfile,
         node,
         headingTemplate,
-        target.node.enumerator,
+        target.node,
         copyNode(target.node as Heading).children as PhrasingContent[],
       );
     } else if (target.kind === TargetKind.equation) {
-      fillReferenceEnumerators(this.vfile, node, '(%s)', target.node.enumerator);
+      fillReferenceEnumerators(this.vfile, node, '(%s)', target.node);
     } else {
       // By default look into the caption or admonition title if it exists
       const caption =
@@ -480,13 +487,7 @@ export class ReferenceState implements IReferenceStateResolver {
       const template = target.node.enumerator
         ? getDefaultNumberedReferenceLabel(target.kind)
         : getDefaultNamedReferenceLabel(target.kind, !!title);
-      fillReferenceEnumerators(
-        this.vfile,
-        node,
-        template,
-        `${target.node.parentEnumerator ?? ''}${target.node.enumerator}`,
-        title,
-      );
+      fillReferenceEnumerators(this.vfile, node, template, target.node, title);
     }
     node.resolved = true;
     // The identifier may have changed in the lookup, but unlikely
@@ -587,8 +588,9 @@ export const enumerateTargetsPlugin: Plugin<[StateOptions], GenericParent, Gener
     enumerateTargetsTransform(tree, opts);
   };
 
-function getCaptionLabel(kind?: string, subcontainer?: boolean) {
-  if (subcontainer) return `(%s)`;
+function getCaptionLabel(kind?: Container['kind'], subcontainer?: boolean) {
+  if (subcontainer && (kind === 'equation' || kind === 'subequation')) return `(%s)`;
+  if (subcontainer) return `({subEnumerator})`;
   if (!kind) return 'Figure %s:';
   const template = getDefaultNumberedReferenceLabel(kind);
   return `${template}:`;
@@ -610,8 +612,8 @@ export function addContainerCaptionNumbersTransform(
   containers
     .filter((container: Container) => container.enumerator)
     .forEach((container: Container) => {
-      const enumerator = opts.state.getTarget(container.identifier)?.node.enumerator;
-      if (!enumerator) return;
+      const target = opts.state.getTarget(container.identifier)?.node;
+      if (!target?.enumerator) return;
       // Only look for direct caption children
       let para = select(
         'paragraph',
@@ -629,13 +631,13 @@ export function addContainerCaptionNumbersTransform(
           label: container.label,
           identifier: container.identifier,
           html_id: (container as any).html_id,
-          enumerator,
+          enumerator: target.enumerator,
         };
         fillReferenceEnumerators(
           file,
           captionNumber,
           getCaptionLabel(container.kind, container.subcontainer),
-          enumerator,
+          target,
         );
         // The caption number is in the paragraph, it needs a link to the figure container
         // This is a bit awkward, but necessary for (efficient) rendering

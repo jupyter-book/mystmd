@@ -63,6 +63,7 @@ const macros: Record<string, number> = {
   primarypubs: 2,
   eqref: 1,
   nameref: 1,
+  subref: 1,
   textsubscript: 1,
   textsuperscript: 1,
   adjustwidth: 2,

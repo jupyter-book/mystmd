@@ -90,6 +90,8 @@ Some pictures of fruit and beaches!
 See [](#my-figure-fruit) for the fruit, and [](#my-figure) to reference both subfigures.
 ```
 
+By default, when referring to subfigures, the `{number}` that is used includes the parent enumerator (that is: `1a` rather than just `a`). To specifically use the sub-enumerator only, you can use the syntax `{subEnumerator}` in your text link which will be replaced with the sub-enumerator (that is: `a` rather than `1a`).
+
 ## Supported Image Formats
 
 MyST supports many images formats including `.png`, `.jpg`, `.gif`, `.tiff`, `.svg`, `.pdf`, and `.eps`.

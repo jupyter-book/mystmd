@@ -33,7 +33,11 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
     state.closeNode();
   },
   env_subfigure(node, state) {
+    state.closeParagraph();
+    state.openNode('container', { kind: 'figure' });
     state.renderChildren(node);
+    state.closeParagraph();
+    state.closeNode();
   },
   env_centering(node, state) {
     centering(node, state);

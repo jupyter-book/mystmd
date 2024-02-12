@@ -54,6 +54,13 @@ export const MISC_HANDLERS: Record<string, Handler> = {
   macro_and(node, state) {
     state.data.andCallback?.();
   },
+  env_landscape(node, state) {
+    state.closeParagraph();
+    state.openBlock({ landscape: true });
+    state.renderChildren(node);
+    state.closeParagraph();
+    state.closeBlock();
+  },
   macro_noindent: pass,
   macro_acknowledgments: pass,
   macro_def: pass,
