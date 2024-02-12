@@ -17,11 +17,7 @@ myst start --execute
 myst build --execute
 ```
 
-If the flag is passed, notebook cells and inline execution will be executed and the original notebook values ignored. By default, execution is disabled and will use the notebook outputs already saved in the notebook (for text-based notebooks, there are no outputs). The notebook outputs are cached based on the source to allow for speedy editing workflows of text without having to re-execute your notebooks. If any execution source changes (code cells or inline execute statements) the cache is invalidated, and the notebook is rerun. The execute cache can be cleaned using:
-
-```bash
-myst clean --execute
-```
+If the flag is passed, notebook cells and inline execution will be executed and the original notebook values ignored. By default, execution is disabled and will use the notebook outputs already saved in the notebook (for text-based notebooks, there are no outputs). The notebook outputs are cached based on the source to allow for speedy editing workflows of text without having to re-execute your notebooks. 
 
 ## Launching a Server
 
@@ -40,5 +36,9 @@ If Jupyter Server is installed and the `--execute` flag is passed to `myst start
 Advanced users may wish to connect to non-local Jupyter Servers, e.g. those running on a remote server. It is possible to instruct MyST to connect to a remote server by setting the `JUPYTER_BASE_URL` and `JUPYTER_TOKEN` environment variables.
 :::
 
+## Caching Outputs
 
-
+By default MyST caches the execution of a notebook according to its executable content. In simple terms, this means that MyST avoids re-running a kernel over a notebook if the notebook's code and inline-expressions do not change. This may not always be correct; if the execution environment (e.g. installed Python packages) changes, you may wish to re-run the notebook. For now, you can clear the execution cache with
+```bash
+myst clean --execute
+```
