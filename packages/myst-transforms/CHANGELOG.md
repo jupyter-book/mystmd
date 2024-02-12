@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.2.1
+
+### Patch Changes
+
+- 1fcbbbc6: Prevent basic transforms from modifying headings by default
+- d5416ff8: Allow for {subEnumerator} to be a reference target template.
+- Updated dependencies [d5416ff8]
+  - myst-spec-ext@1.1.24
+  - myst-common@1.1.24
+
 ## 1.2.0
 
 ### Minor Changes

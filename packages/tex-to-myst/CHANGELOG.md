@@ -1,5 +1,15 @@
 # tex-to-myst
 
+## 1.0.19
+
+### Patch Changes
+
+- d5416ff8: Add subref, subfigure, and landscape functions for tex
+- Updated dependencies [d5416ff8]
+  - myst-spec-ext@1.1.24
+  - myst-common@1.1.24
+  - myst-frontmatter@1.1.24
+
 ## 1.0.18
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.24
+
+### Patch Changes
+
+- d5416ff8: Allow the figure container to have an extensible kind
+
 ## 1.1.23
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # myst-cli
 
+## 1.1.40
+
+### Patch Changes
+
+- d2a2a41: Integrate myst-execute into the CLI
+- Updated dependencies [1fcbbbc6]
+- Updated dependencies [096baa0b]
+- Updated dependencies [d5416ff8]
+- Updated dependencies [d5416ff8]
+- Updated dependencies [d2a2a41]
+- Updated dependencies [d5416ff8]
+  - myst-transforms@1.2.1
+  - myst-to-jats@1.0.22
+  - tex-to-myst@1.0.19
+  - myst-execute@0.0.2
+  - myst-spec-ext@1.1.24
+  - myst-common@1.1.24
+  - myst-config@1.1.24
+  - myst-frontmatter@1.1.24
+  - myst-to-tex@1.0.19
+
 ## 1.1.39
 
 ### Patch Changes
