@@ -1,6 +1,7 @@
 ---
 title: Execute Notebooks with Jupyter
 description: MyST can execute notebooks using Jupyter Server, making it possible to build rich websites and documents from text-based notebooks.
+short_title: Executing Notebooks
 thumbnail: thumbnails/execute-notebooks.png
 ---
 
