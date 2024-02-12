@@ -10,6 +10,7 @@ on:
         description: |
           Force publish to PyPI, even if the NPM release has already occurred.
         type: boolean
+        default: false
         required: false
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -44,7 +45,7 @@ jobs:
         run: |
           pip install build
           # Copy over needed files
-          cp ../mystmd/dist/myst.cjs mystmd_py
+          cp ../mystmd/dist/myst.cjs src/mystmd_py/
           cp ../mystmd/package.json .          
           python -m build
         working-directory: packages/mystmd-py
