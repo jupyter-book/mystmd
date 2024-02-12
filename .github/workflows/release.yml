@@ -8,7 +8,7 @@ on:
     inputs:
       forcePublishPyPI:
         description: |
-          Force publish to PyPI, even if the NPM release has already occurred.i
+          Force publish to PyPI, even if the NPM release has already occurred.
         type: boolean
         required: false
 concurrency: ${{ github.workflow }}-${{ github.ref }}
