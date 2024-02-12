@@ -57,7 +57,7 @@ jobs:
   release-py:  
     name: Release Python
     runs-on: ubuntu-latest
-    if: ${{ needs.release-npm.outputs.published || inputs.forcePublishPyPI }}
+    if: ${{ needs.release-npm.outputs.published == 'true' || inputs.forcePublishPyPI }}
     needs:
       - release-npm
     environment:
@@ -65,7 +65,7 @@ jobs:
       url: https://pypi.org/p/mystmd
     permissions:
       id-token: write
-    steps:    
+    steps:   
       - name: Download all the dists
         uses: actions/download-artifact@v4
         with:
