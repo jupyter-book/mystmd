@@ -101,10 +101,15 @@ cases:
   - title: subfigure
     tex: |-
       \begin{figure}
+        \begin{subfigure}{0.49\textwidth}
+          \includegraphics[width=\textwidth]{figures/one.jpg}
+          \caption{This is Fig 1a}
+        \end{subfigure}
         \begin{subfigure}[b]{0.49\textwidth}
           \centering
-          \includegraphics[width=\textwidth]{figures/one.jpg}
+          \includegraphics[width=\textwidth]{figures/two.jpg}
         \end{subfigure}
+        \caption{This is the full figure caption.}
       \end{figure}
     tree:
       type: root
@@ -112,9 +117,29 @@ cases:
         - type: container
           kind: figure
           children:
-            - type: image
-              url: figures/one.jpg
-          align: center
+            - type: container
+              kind: figure
+              children:
+                - type: image
+                  url: figures/one.jpg
+                - type: caption
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: This is Fig 1a
+            - type: container
+              kind: figure
+              align: center
+              children:
+                - type: image
+                  url: figures/two.jpg
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This is the full figure caption.
   - title: minipage
     tex: |-
       \begin{figure}

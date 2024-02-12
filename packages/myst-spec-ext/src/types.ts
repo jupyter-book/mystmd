@@ -217,7 +217,7 @@ export type Include = {
 };
 
 export type Container = Omit<SpecContainer, 'kind'> & {
-  kind?: 'figure' | 'table' | 'quote' | 'code';
+  kind?: 'figure' | 'table' | 'quote' | 'code' | string;
   source?: Dependency;
   subcontainer?: boolean;
   noSubcontainers?: boolean;
