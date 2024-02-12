@@ -111,18 +111,21 @@ function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
   const hashableItems: {
     kind: string;
     content: string;
+    raisesException: boolean;
   }[] = [];
   for (const node of nodes) {
     if (isCellBlock(node)) {
       hashableItems.push({
         kind: node.type,
         content: (select('code', node) as Code).value,
+	raisesException: !!node.data?.tags?.['raises-exception'];
       });
     } else {
       assert(isInlineExpression(node));
       hashableItems.push({
         kind: node.type,
         content: node.value,
+	raisesException: false;
       });
     }
   }
