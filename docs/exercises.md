@@ -244,8 +244,8 @@ to include in an exercise or solution admonition.
 :label: ex1
 ```
 
-```{code-cell} python
-# Some setup code that needs executing
+```python
+# Some code to explain the figure
 ```
 
 and maybe you wish to add a figure
@@ -263,7 +263,7 @@ and maybe you wish to add a figure
 :label: ex1
 ```
 
-```{code-cell} python
+```python
 # Some setup code that needs executing
 ```
 
