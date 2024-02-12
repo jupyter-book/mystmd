@@ -46,9 +46,16 @@ jobs:
     needs:
       - release-npm
     steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Build Python package
         run: |
           pip install build
+          # Copy over needed files
+          cp ../mystmd/dist/myst.cjs mystmd_py
+          cp ../mystmd/package.json .          
           python -m build
         working-directory: packages/mystmd-py
       - name: Store the distribution packages
