@@ -118,14 +118,14 @@ function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
       hashableItems.push({
         kind: node.type,
         content: (select('code', node) as Code).value,
-	raisesException: !!node.data?.tags?.['raises-exception'];
+        raisesException: !!node.data?.tags?.['raises-exception'],
       });
     } else {
       assert(isInlineExpression(node));
       hashableItems.push({
         kind: node.type,
         content: node.value,
-	raisesException: false;
+        raisesException: false,
       });
     }
   }
