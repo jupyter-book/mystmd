@@ -88,5 +88,5 @@ cases:
             - type: text
               value: 'eqn: '
             - type: inlineCode
-              value: '# _'
-    typst: 'eqn: `# _`'
+              value: '# _ @'
+    typst: 'eqn: `# _ @`'

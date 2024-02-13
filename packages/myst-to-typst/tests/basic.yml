@@ -7,9 +7,9 @@ cases:
         - type: paragraph
           children:
             - type: text
-              value: 'This is * ` # %'
+              value: 'This is * ` # % @'
     typst: |-
-      This is \* \` \# %
+      This is \* \` \# % \@
   - title: text in paragraph
     mdast:
       type: root
