@@ -1,5 +1,7 @@
 # myst-cli
 
+## 1.1.41
+
 ## 1.1.40
 
 ### Patch Changes
