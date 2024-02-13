@@ -32,13 +32,15 @@ myst = "mystmd_py.main:main"
 
 [tool.hatch.version]
 source = "nodejs"
+path = "_package.json"		
 
 [tool.hatch.metadata.hooks.nodejs]
 fields = ["description", "authors", "urls", "keywords", "license"]
+path = "_package.json"
 
 [tool.hatch.build.targets.sdist]
 artifacts = [
-    "/package.json",
+    "/_package.json",
     "/src/mystmd_py/myst.cjs"
 ]
 
