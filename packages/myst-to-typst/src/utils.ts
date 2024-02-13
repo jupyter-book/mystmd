@@ -16,7 +16,7 @@ const TILDE = 'xxxxTILDExxxx';
 
 const hrefOnlyReplacements: Record<string, string> = {
   // Not allowed characters
-  // Typst escaped characters are: \ & ` $ # _ * { } [ ] ^
+  // Typst escaped characters are: \ & ` $ # _ * @ { } [ ] ^
   '&': '\\&',
   '`': '\\`',
   $: '\\$',
@@ -28,6 +28,7 @@ const hrefOnlyReplacements: Record<string, string> = {
   '[': '\\[',
   ']': '\\]',
   '^': '\\^',
+  '@': '\\@',
 };
 
 const textOnlyReplacements: Record<string, string> = {
