@@ -22,7 +22,18 @@ export const doiInNote = `@article{cury2020sparse,
   publisher={Frontiers}
 }`;
 
-export const TEST_DOI_IN_NOTE = '10.3389/fnins.2019.01451';
+export const doiInURL = `@article{cury2020sparse,
+  title={A sparse EEG-informed fMRI model for hybrid EEG-fMRI neurofeedback prediction},
+  author={Cury, Claire and Maurel, Pierre and Gribonval, R{\\'e}mi and Barillot, Christian},
+  journal={Frontiers in neuroscience},
+	url = {https://doi.org/10.3389/fnins.2019.01451},
+  volume={13},
+  pages={1451},
+  year={2020},
+  publisher={Frontiers}
+}`;
+
+export const TEST_DOI_IN_OTHER_FIELD = '10.3389/fnins.2019.01451';
 
 export const TEST_DATA_JSON =
   '{"type":"article","label":"Cockett2015SimPEG","properties":{"author":"Cockett, Rowan and Kang, Seogi and Heagy, Lindsey J. and Pidlisecky, Adam and Oldenburg, Douglas W.","journal":"Computers & Geosciences","year":"2015","month":"12","pages":"142--154","title":"SimPEG: An open source framework for simulation and gradient based parameter estimation in geophysical applications","volume":"85","doi": "10.1016/j.cageo.2015.09.015","issn": "0098-3004","url": "http://dx.doi.org/10.1016/j.cageo.2015.09.015"}}';
