@@ -1,5 +1,5 @@
 *.egg-info
 dist
 src/mystmd_py/myst.cjs
-package.json
 **/__pycache__/
+_package.json
