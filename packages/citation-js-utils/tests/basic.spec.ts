@@ -3,8 +3,9 @@ import { getCitations, CitationJSStyles } from '../src';
 import {
   bibtex,
   doiInNote,
+  doiInURL,
   TEST_APA_HTML,
-  TEST_DOI_IN_NOTE,
+  TEST_DOI_IN_OTHER_FIELD,
   TEST_VANCOUVER_HTML,
 } from './fixtures';
 
@@ -24,8 +25,11 @@ describe('Test reference rendering', () => {
     const cite = citations[key];
     expect(cite.render(CitationJSStyles.vancouver)).toEqual(TEST_VANCOUVER_HTML);
   });
-  it('Extract the DOI from the note', async () => {
-    const citations = await getCitations(doiInNote);
-    expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_NOTE);
+  it.each([
+    ['url', doiInURL],
+    ['note', doiInNote],
+  ])('Extract the DOI from the %s', async (_, src) => {
+    const citations = await getCitations(src);
+    expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_OTHER_FIELD);
   });
 });

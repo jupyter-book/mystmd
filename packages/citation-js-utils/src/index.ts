@@ -145,7 +145,7 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
 
   return Object.fromEntries(
     p.data.map((c: any): [string, CitationRenderer[0]] => {
-      const matchDoi = c.note?.match(DOI_IN_TEXT);
+      const matchDoi = c.URL?.match(DOI_IN_TEXT) ?? c.note?.match(DOI_IN_TEXT);
       if (!c.DOI && matchDoi) {
         c.DOI = matchDoi[0];
       }
