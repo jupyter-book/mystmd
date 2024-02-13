@@ -46,7 +46,7 @@ jobs:
           pip install build
           # Copy over needed files
           cp ../mystmd/dist/myst.cjs src/mystmd_py/
-          cp ../mystmd/package.json .
+          cp ../mystmd/package.json _package.json
           python -m build
         working-directory: packages/mystmd-py
       - name: Store the distribution packages
