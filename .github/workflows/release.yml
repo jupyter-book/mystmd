@@ -4,13 +4,22 @@ on:
   push:
     branches:
       - main
-
+  workflow_dispatch:
+    inputs:
+      forcePublishPyPI:
+        description: |
+          Force publish to PyPI, even if the NPM release has already occurred.
+        type: boolean
+        default: false
+        required: false
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  release:
-    name: Release
+  release-npm:
+    name: Release NPM
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -32,12 +41,35 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Publish to PyPI
-        if: steps.changesets.outputs.published == 'true'
+      - name: Build Python package
         run: |
-          pip install twine build
-          cd packages/mystmd-py
-          bash scripts/pypi-deploy.sh
-        env:
-          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          pip install build
+          # Copy over needed files
+          cp ../mystmd/dist/myst.cjs src/mystmd_py/
+          cp ../mystmd/package.json .
+          python -m build
+        working-directory: packages/mystmd-py
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: packages/mystmd-py/dist/
+  release-py:
+    name: Release Python
+    runs-on: ubuntu-latest
+    if: ${{ needs.release-npm.outputs.published == 'true' || inputs.forcePublishPyPI }}
+    needs:
+      - release-npm
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mystmd
+    permissions:
+      id-token: write
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
