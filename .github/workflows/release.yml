@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - pypi
+      - main
   workflow_dispatch:
     inputs:
       forcePublishPyPI:
