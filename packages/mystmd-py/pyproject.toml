@@ -39,11 +39,11 @@ fields = ["description", "authors", "urls", "keywords", "license"]
 [tool.hatch.build.targets.sdist]
 artifacts = [
     "/package.json",
-    "/src/mystmd/myst.cjs"
+    "/src/mystmd_py/myst.cjs"
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mystmd_py"]
 artifacts = [
-    "/src/mystmd/myst.cjs"
+    "/src/mystmd_py/myst.cjs"
 ]
