@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.41
+
+### Patch Changes
+
+- 7bf2ee8: Bump version for new Python release
+
 ## 1.1.40
 
 ### Patch Changes
