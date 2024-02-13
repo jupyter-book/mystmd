@@ -1,6 +1,6 @@
 {
   "name": "mystmd",
-  "version": "1.1.40",
+  "version": "1.1.41",
   "description": "Command line tools for MyST Markdown",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
