@@ -11,7 +11,7 @@ import { finalizeMdast } from '../../process/mdast.js';
 import { loadProjectFromDisk } from '../../project/load.js';
 import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
 import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';

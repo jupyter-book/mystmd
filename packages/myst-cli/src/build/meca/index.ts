@@ -20,7 +20,7 @@ import type { ISession } from '../../session/types.js';
 import { castSession } from '../../session/cache.js';
 import { selectors } from '../../store/index.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { collectBasicExportOptions, collectExportOptions } from '../utils/collectExportOptions.js';

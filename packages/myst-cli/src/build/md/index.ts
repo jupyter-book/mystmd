@@ -10,7 +10,7 @@ import { finalizeMdast } from '../../process/mdast.js';
 import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
 import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
 import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';

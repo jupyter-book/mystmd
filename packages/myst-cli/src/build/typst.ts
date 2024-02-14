@@ -32,7 +32,7 @@ import { loadProjectFromDisk } from '../project/load.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import { getFileContent } from './utils/getFileContent.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { createTempFolder } from '../utils/createTempFolder.js';

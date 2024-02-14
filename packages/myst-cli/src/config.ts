@@ -12,7 +12,7 @@ import { prepareToWrite } from './frontmatter.js';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
 import { config } from './store/reducers.js';
-import { logMessagesFromVFile } from './utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from './utils/logging.js';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 
 const VERSION = 1;
