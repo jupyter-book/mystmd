@@ -64,7 +64,7 @@ import {
   transformLiftCodeBlocksInJupytext,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { loadIntersphinx } from './intersphinx.js';

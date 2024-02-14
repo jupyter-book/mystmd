@@ -10,6 +10,8 @@ import { buildSite } from './site/prepare.js';
 import type { ExportWithInputOutput } from './types.js';
 import { localArticleExport } from './utils/localArticleExport.js';
 import { collectExportOptions } from './utils/collectExportOptions.js';
+import { writeFileToFolder } from 'myst-cli-utils';
+import { writeJsonLogs } from '../utils/logging.js';
 
 export type BuildOpts = {
   site?: boolean;
@@ -134,6 +136,15 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
   const { site, all, watch, ci } = opts;
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
+  // TODO: generalize and pull this out!
+  const buildLog: Record<string, any> = {
+    input: {
+      files: files,
+      opts: opts,
+      performSiteBuild,
+    },
+    exports: exportOptionsList,
+  };
   const exportLogList = exportOptionsList.map((exportOptions) => {
     return `${path.relative('.', exportOptions.$file)} -> ${exportOptions.output}`;
   });
@@ -170,22 +181,25 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);
     await localArticleExport(session, exportOptionsList, { watch, ci });
   }
-  if (!performSiteBuild) return;
-  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  if (!siteConfig) {
-    session.log.info('🌎 No site configuration found.');
-    session.log.debug(`To build a site, first run 'myst init --site'`);
-  } else {
-    session.log.info(`🌎 Building MyST site`);
-    if (watch) {
-      session.log.warn(`Site content will not be watched and updated; use 'myst start' instead`);
-    }
-    if (opts.html) {
-      await buildHtml(session, opts);
+  if (performSiteBuild) {
+    const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+    if (!siteConfig) {
+      session.log.info('🌎 No site configuration found.');
+      session.log.debug(`To build a site, first run 'myst init --site'`);
     } else {
-      await buildSite(session, opts);
+      session.log.info(`🌎 Building MyST site`);
+      if (watch) {
+        session.log.warn(`Site content will not be watched and updated; use 'myst start' instead`);
+      }
+      if (opts.html) {
+        buildLog.buildHtml = true;
+        await buildHtml(session, opts);
+      } else {
+        buildLog.buildSite = true;
+        await buildSite(session, opts);
+      }
     }
   }
-
+  writeJsonLogs(session, 'myst.build.json', buildLog);
   session.dispose();
 }

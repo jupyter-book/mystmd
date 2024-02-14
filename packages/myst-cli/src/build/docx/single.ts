@@ -25,7 +25,7 @@ import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
 import type { RendererData } from '../../transforms/types.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
 import type { ExportFnOptions, ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';

@@ -2,6 +2,8 @@ import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import type { WarningKind } from '../store/types.js';
 import { addWarningForFile } from './addWarningForFile.js';
+import { writeFileToFolder } from 'myst-cli-utils';
+import { join } from 'node:path';
 
 export function logMessagesFromVFile(session: ISession, file?: VFile): void {
   if (!file) return;
@@ -16,4 +18,8 @@ export function logMessagesFromVFile(session: ISession, file?: VFile): void {
     });
   });
   file.messages = [];
+}
+
+export function writeJsonLogs(session: ISession, name: string, logData: Record<string, any>) {
+  writeFileToFolder(join(session.buildPath(), 'logs', name), JSON.stringify(logData, null, 2));
 }

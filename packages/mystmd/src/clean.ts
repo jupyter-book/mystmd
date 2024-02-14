@@ -14,6 +14,7 @@ import {
   makeTypstOption,
   makeExecuteOption,
   makeYesOption,
+  makeLogsOption,
 } from './options.js';
 
 export function makeTempOption() {
@@ -52,6 +53,7 @@ export function makeCleanCLI(program: Command) {
     .addOption(makeHtmlOption('Clean static HTML site content'))
     .addOption(makeExecuteOption('Clean execute cache'))
     .addOption(makeTempOption())
+    .addOption(makeLogsOption('Clean CLI logs'))
     .addOption(makeExportsOption())
     .addOption(makeTemplatesOption())
     .addOption(

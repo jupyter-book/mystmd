@@ -12,7 +12,7 @@ import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/cache.js';
 import { warnings, watch } from '../store/reducers.js';
 import type { RendererData } from '../transforms/types.js';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadCitations } from './citations.js';
 import { parseMyst } from './myst.js';

@@ -5,7 +5,7 @@ import { VFile } from 'vfile';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 
 /**
  * Load an array of intersphinx inventories defined in the project frontmatter

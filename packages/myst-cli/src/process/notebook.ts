@@ -12,7 +12,7 @@ import type {
 } from '@jupyterlab/nbformat';
 import { CELL_TYPES, ensureString } from 'nbtx';
 import { VFile } from 'vfile';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';

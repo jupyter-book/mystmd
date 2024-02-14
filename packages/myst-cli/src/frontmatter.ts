@@ -13,7 +13,7 @@ import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import type { ISession } from './session/types.js';
 import { selectors, watch } from './store/index.js';
-import { logMessagesFromVFile } from './utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from './utils/logging.js';
 import { castSession } from './session/cache.js';
 import { loadFile } from './process/file.js';
 
