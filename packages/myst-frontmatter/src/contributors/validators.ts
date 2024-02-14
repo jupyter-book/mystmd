@@ -225,6 +225,9 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
     if (typeof affiliations === 'string') {
       affiliations = affiliations.split(';').map((aff) => aff.trim());
     }
+    if (!Array.isArray(affiliations)) {
+      affiliations = [affiliations];
+    }
     output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
       return validateAndStashObject(
         aff,

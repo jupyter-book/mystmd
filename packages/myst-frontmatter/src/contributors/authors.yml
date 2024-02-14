@@ -69,6 +69,38 @@ cases:
           name: University
         - id: Company
           name: Company
+  - title: Affiliations can be an object
+    raw:
+      authors:
+        - id: jn
+          name: Just A. Name
+          affiliation:
+            id: ubc
+            name: University of British Columbia
+        - id: rc
+          name: Remote Control
+          affiliation: ubc
+    normalized:
+      authors:
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+          affiliations:
+            - ubc
+        - id: rc
+          name: Remote Control
+          nameParsed:
+            literal: Remote Control
+            given: Remote
+            family: Control
+          affiliations:
+            - ubc
+      affiliations:
+        - id: ubc
+          name: University of British Columbia
   - title: First email is corresponding
     raw:
       author:
