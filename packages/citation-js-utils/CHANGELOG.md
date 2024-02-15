@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.1.1
+
+### Patch Changes
+
+- ada85e65: Extract DOI from the URL in bibtex
+
 ## 1.1.0
 
 ### Minor Changes

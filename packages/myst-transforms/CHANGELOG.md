@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.2.2
+
+### Patch Changes
+
+- 4ac0833: Export more include directive content for finer-grain use
+- 4ac0833: Add tex-include to allow for input of sub-tex files
+- 4ac0833: Allow include directive to be recursive
+  - myst-common@1.1.25
+  - myst-spec-ext@1.1.25
+
 ## 1.2.1
 
 ### Patch Changes

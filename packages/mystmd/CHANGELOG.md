@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.42
+
+### Patch Changes
+
+- b272e7a4: Add logs to mystmd build
+
 ## 1.1.41
 
 ### Patch Changes
