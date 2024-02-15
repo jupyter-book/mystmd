@@ -165,7 +165,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     buildFolders.push(session.buildPath());
   }
   buildFolders = [...new Set(buildFolders)].sort();
-  if (temp || logs || exports || templates || execute || html) {
+  if (temp || logs || cache || exports || templates || execute || html) {
     buildFolders.forEach((folder) => {
       if (temp) pathsToDelete.push(path.join(folder, 'temp'));
       if (logs) pathsToDelete.push(path.join(folder, 'logs'));
