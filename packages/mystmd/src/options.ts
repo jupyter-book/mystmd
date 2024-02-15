@@ -46,6 +46,10 @@ export function makeLogsOption(description: string) {
   return new Option('--logs', description).default(false);
 }
 
+export function makeCacheOption(description: string) {
+  return new Option('--cache', description).default(false);
+}
+
 export function makeExecuteOption(description: string) {
   return new Option('--execute', description).default(false);
 }
