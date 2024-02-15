@@ -18,7 +18,7 @@ This is a link in markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.64760
 
 It is also possible to to drop the link text, that is:\
 `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
-which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.).
+which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.). The citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory. This cache may be cleared with `myst clean --cache`.
 
 Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link. If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
 
