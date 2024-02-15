@@ -19,6 +19,7 @@ export type Options = {
  */
 export async function includeDirectiveTransform(tree: GenericParent, file: VFile, opts: Options) {
   const includeNodes = selectAll('include', tree) as Include[];
+  if (includeNodes.length === 0) return;
   await Promise.all(
     includeNodes.map(async (node) => {
       // If the transform has already run, don't run it again!
@@ -80,6 +81,8 @@ export async function includeDirectiveTransform(tree: GenericParent, file: VFile
         children = await opts.parseContent(node.file, content);
       }
       node.children = children as any;
+      // Recurse!
+      await includeDirectiveTransform(node as GenericParent, file, opts);
     }),
   );
 }
