@@ -7,6 +7,7 @@ import { changeFile, fastProcessFile, processSite } from '../../process/site.js'
 import type { TransformFn } from '../../process/mdast.js';
 import { selectors, watch } from '../../store/index.js';
 import { KNOWN_FAST_BUILDS } from '../../utils/resolveExtension.js';
+import chalk from 'chalk';
 
 // TODO: allow this to work from other paths
 
@@ -90,7 +91,9 @@ async function fileProcessor(
     });
   }
   if (dependencies.length) {
-    session.log.info(`🔄 Updating dependent pages`);
+    session.log.info(
+      `🔄 Updating dependent pages for ${file} ${chalk.dim(`[${dependencies.join(', ')}]`)}`,
+    );
     await Promise.all([
       dependencies.map((dep) => {
         const depSlug = selectors.selectPageSlug(session.store.getState(), projectPath, dep);

@@ -47,6 +47,7 @@ const files = [
   'verbatim.yml',
   'algorithm.yml',
   'macros.yml',
+  'input.yml',
 ];
 
 const only = ''; // Can set this to a test title
