@@ -1,5 +1,15 @@
 # myst-to-typst
 
+## 0.0.11
+
+### Patch Changes
+
+- a3f877d5: Add `@` to typst escaped characters
+- Updated dependencies [03db3a35]
+  - myst-frontmatter@1.1.25
+  - myst-common@1.1.25
+  - myst-spec-ext@1.1.25
+
 ## 0.0.10
 
 ### Patch Changes

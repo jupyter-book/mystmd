@@ -1,5 +1,16 @@
 # tex-to-myst
 
+## 1.0.20
+
+### Patch Changes
+
+- 4ac0833: Add tex-include to allow for input of sub-tex files
+- 4ac0833: Recognize input / include statements
+- Updated dependencies [03db3a35]
+  - myst-frontmatter@1.1.25
+  - myst-common@1.1.25
+  - myst-spec-ext@1.1.25
+
 ## 1.0.19
 
 ### Patch Changes

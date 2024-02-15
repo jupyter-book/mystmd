@@ -1,5 +1,28 @@
 # myst-cli
 
+## 1.1.42
+
+### Patch Changes
+
+- 4ac0833: Add tex-include to allow for input of sub-tex files
+- b272e7a4: Add logs to mystmd build
+- Updated dependencies [03db3a35]
+- Updated dependencies [ada85e65]
+- Updated dependencies [4ac0833]
+- Updated dependencies [a3f877d5]
+- Updated dependencies [4ac0833]
+- Updated dependencies [4ac0833]
+- Updated dependencies [4ac0833]
+  - myst-frontmatter@1.1.25
+  - citation-js-utils@1.1.1
+  - myst-transforms@1.2.2
+  - myst-to-typst@0.0.11
+  - tex-to-myst@1.0.20
+  - myst-common@1.1.25
+  - myst-config@1.1.25
+  - myst-spec-ext@1.1.25
+  - myst-to-tex@1.0.20
+
 ## 1.1.41
 
 ## 1.1.40

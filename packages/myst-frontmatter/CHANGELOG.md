@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.25
+
+### Patch Changes
+
+- 03db3a35: allow author affiliations to be an object and change it into an array for validation
+
 ## 1.1.24
 
 ## 1.1.23
