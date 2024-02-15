@@ -17,7 +17,7 @@ export type Options = {
  * RST documentation:
  *  - https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment
  */
-export async function includeDirectiveTransform(tree: GenericParent, file: VFile, opts: Options) {
+export async function includeDirectiveTransform(tree: GenericParent, vfile: VFile, opts: Options) {
   const includeNodes = selectAll('include', tree) as Include[];
   if (includeNodes.length === 0) return;
   await Promise.all(
@@ -26,7 +26,7 @@ export async function includeDirectiveTransform(tree: GenericParent, file: VFile
       if (node.children && node.children.length > 0) return;
       const rawContent = await opts.loadFile(node.file);
       if (rawContent == null) return;
-      const { content, startingLineNumber } = filterIncludedContent(file, node.filter, rawContent);
+      const { content, startingLineNumber } = filterIncludedContent(vfile, node.filter, rawContent);
       let children: GenericNode[];
       if (node.literal) {
         const code: Code = {
@@ -82,7 +82,7 @@ export async function includeDirectiveTransform(tree: GenericParent, file: VFile
       }
       node.children = children as any;
       // Recurse!
-      await includeDirectiveTransform(node as GenericParent, file, opts);
+      await includeDirectiveTransform(node as GenericParent, vfile, opts);
     }),
   );
 }

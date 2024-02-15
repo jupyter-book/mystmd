@@ -12,7 +12,7 @@ import { frontmatterValidationOpts, getPageFrontmatter } from '../frontmatter.js
 import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/cache.js';
 import { warnings, watch } from '../store/reducers.js';
-import type { RendererData } from '../transforms/types.js';
+import type { PreRendererData, RendererData } from '../transforms/types.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadCitations } from './citations.js';
@@ -52,7 +52,7 @@ export async function loadFile(
   projectPath?: string,
   extension?: '.md' | '.ipynb' | '.bib',
   opts?: { preFrontmatter?: Record<string, any> },
-) {
+): Promise<PreRendererData | undefined> {
   await session.loadPlugins();
   const toc = tic();
   session.store.dispatch(warnings.actions.clearWarnings({ file }));
@@ -165,6 +165,7 @@ export async function loadFile(
     success = false;
   }
   if (success) session.log.debug(toc(`loadFile: loaded ${file} in %s.`));
+  return cache.$getMdast(file)?.pre;
 }
 
 /**
