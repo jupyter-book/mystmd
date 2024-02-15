@@ -1,0 +1,9 @@
+title: Input
+cases:
+  - title: input
+    tex: \input{figures/main}
+    tree:
+      type: root
+      children:
+        - type: include
+          file: figures/main.tex

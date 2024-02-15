@@ -21,6 +21,8 @@ export async function includeDirectiveTransform(tree: GenericParent, file: VFile
   const includeNodes = selectAll('include', tree) as Include[];
   await Promise.all(
     includeNodes.map(async (node) => {
+      // If the transform has already run, don't run it again!
+      if (node.children && node.children.length > 0) return;
       const rawContent = await opts.loadFile(node.file);
       if (rawContent == null) return;
       const { content, startingLineNumber } = filterIncludedContent(file, node.filter, rawContent);

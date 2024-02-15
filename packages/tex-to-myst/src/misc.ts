@@ -61,6 +61,11 @@ export const MISC_HANDLERS: Record<string, Handler> = {
     state.closeParagraph();
     state.closeBlock();
   },
+  macro_input(node, state) {
+    const [content] = getArguments(node, 'group');
+    const file = texToText(content);
+    state.addLeaf('include', { file: file.endsWith('.tex') ? file : `${file}.tex` });
+  },
   macro_noindent: pass,
   macro_acknowledgments: pass,
   macro_def: pass,
