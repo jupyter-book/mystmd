@@ -85,6 +85,8 @@ And to fail the build if there are bad links:
 myst build --strict
 ```
 
+If a link successfully resolves during `--check-links`, the status will be cached to disk and the link will not be rechecked. If you need to recheck for broken links, you may clear this cache with `myst clean --cache`.
+
 ## MyST Start
 
 `myst start` starts a local web server for your MyST site.
@@ -119,7 +121,7 @@ You may also specify specific file types or source files. For example, to clean 
 myst clean --pdf index.md
 ```
 
-You may also specify `--templates`, `--site`, `--temp`, and `--exports` options to only delete the corresponding folders in the `_build` directory:
+You may also specify `--templates`, `--logs`, `--cache`, `--site`, `--temp`, and `--exports` options to only delete the corresponding folders in the `_build` directory:
 
 ```
 myst clean --templates

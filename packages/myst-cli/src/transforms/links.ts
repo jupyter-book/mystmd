@@ -7,7 +7,7 @@ import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
 import { RuleId, fileError, plural } from 'myst-common';
-import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
+import { computeHash, hashAndCopyStaticFile, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -24,6 +24,23 @@ const skippedDomains = [
   'twitter.com',
   'en.wikipedia.org',
 ];
+
+function checkLinkCacheFile(session: ISession, url: string) {
+  const filename = `checkLink-${computeHash(url)}.json`;
+  return path.join(session.buildPath(), 'cache', filename);
+}
+
+function writeLinkCache(session: ISession, link: ExternalLinkResult) {
+  session.log.debug(`Writing successful link check to cache file for "${link.url}"`);
+  writeFileToFolder(checkLinkCacheFile(session, link.url), JSON.stringify(link, null, 2));
+}
+
+function loadLinkCache(session: ISession, url: string) {
+  const cacheFile = checkLinkCacheFile(session, url);
+  if (!fs.existsSync(cacheFile)) return;
+  session.log.debug(`Using cached success for "${url}"`);
+  return JSON.parse(fs.readFileSync(cacheFile).toString());
+}
 
 export async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
   const cached = selectors.selectLinkStatus(session.store.getState(), url);
@@ -46,10 +63,14 @@ export async function checkLink(session: ISession, url: string): Promise<Externa
       return link;
     }
     session.log.debug(`Checking that "${url}" exists`);
-    const resp = await fetch(url, { headers: EXT_REQUEST_HEADERS });
+    const linkCache = loadLinkCache(session, url);
+    const resp = linkCache ?? (await fetch(url, { headers: EXT_REQUEST_HEADERS }));
     link.ok = resp.ok;
     link.status = resp.status;
     link.statusText = resp.statusText;
+    if (link.ok && !linkCache) {
+      writeLinkCache(session, link);
+    }
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
     session.log.debug(`Error fetching ${url} ${(error as Error).message}`);

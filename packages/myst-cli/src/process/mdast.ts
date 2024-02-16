@@ -202,7 +202,7 @@ export async function transformMdast(
 
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(
-    log,
+    session,
     vfile,
     mdast,
     cache.$doiRenderers,

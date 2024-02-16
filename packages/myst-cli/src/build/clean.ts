@@ -27,6 +27,7 @@ export type CleanOptions = {
   html?: boolean;
   temp?: boolean;
   logs?: boolean;
+  cache?: boolean;
   exports?: boolean;
   execute?: boolean;
   templates?: boolean;
@@ -45,6 +46,7 @@ const ALL_OPTS: CleanOptions = {
   html: true,
   temp: true,
   logs: true,
+  cache: true,
   exports: true,
   execute: true,
   templates: true,
@@ -76,6 +78,7 @@ function coerceOpts(opts: CleanOptions) {
     html,
     temp,
     logs,
+    cache,
     exports,
     execute,
     templates,
@@ -93,6 +96,7 @@ function coerceOpts(opts: CleanOptions) {
     !html &&
     !temp &&
     !logs &&
+    !cache &&
     !exports &&
     !execute &&
     !templates
@@ -135,7 +139,7 @@ function deduplicatePaths(paths: string[]) {
 
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
   opts = coerceOpts(opts);
-  const { site, html, temp, logs, exports, execute, templates, yes } = opts;
+  const { site, html, temp, logs, cache, exports, execute, templates, yes } = opts;
   let pathsToDelete: string[] = [];
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   if (exports) {
@@ -148,7 +152,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     });
   }
   let buildFolders: string[] = [];
-  if (temp || logs || exports || execute || templates || html) {
+  if (temp || logs || cache || exports || execute || templates || html) {
     const projectPaths = [
       ...getProjectPaths(session),
       ...exportOptionsList.map((exp) => exp.$project),
@@ -161,10 +165,11 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     buildFolders.push(session.buildPath());
   }
   buildFolders = [...new Set(buildFolders)].sort();
-  if (temp || logs || exports || templates || execute || html) {
+  if (temp || logs || cache || exports || templates || execute || html) {
     buildFolders.forEach((folder) => {
       if (temp) pathsToDelete.push(path.join(folder, 'temp'));
       if (logs) pathsToDelete.push(path.join(folder, 'logs'));
+      if (cache) pathsToDelete.push(path.join(folder, 'cache'));
       if (exports) pathsToDelete.push(path.join(folder, 'exports'));
       if (templates) pathsToDelete.push(path.join(folder, 'templates'));
       if (html) pathsToDelete.push(path.join(folder, 'html'));

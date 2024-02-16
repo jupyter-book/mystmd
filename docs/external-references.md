@@ -48,8 +48,8 @@ references:
   jupyterbook: https://jupyterbook.org/en/stable/
 ```
 
-When you specify these in your project configuration, MyST will load and cache the remote `objects.inv` file,
-and provide access to all of the references in that project.
+When you specify these in your project configuration, MyST will load the remote `objects.inv` file,
+and provide access to all of the references in that project. This `inv` file will be cached to disk locally in the `_build` folder, eliminating duplicate web requests on subsequent builds. If the target documentation updates and you must reload the remote references, you may delete the cache with `myst clean --cache`.
 
 ````{important}
 # Intersphinx Examples

@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import { join } from 'node:path';
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
 import { doi } from 'doi-utils';
@@ -6,40 +8,59 @@ import type { GenericNode, GenericParent } from 'myst-common';
 import { fileWarn, toText, RuleId, plural } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import fetch from 'node-fetch';
-import { tic } from 'myst-cli-utils';
-import type { Logger } from 'myst-cli-utils';
+import { computeHash, tic } from 'myst-cli-utils';
 import type { Cite } from 'myst-spec-ext';
 import type { SingleCitationRenderer } from './types.js';
 import type { VFile } from 'vfile';
+import type { ISession } from '../session/types.js';
 
-async function getDoiOrgBibtex(log: Logger, doiString: string): Promise<string | null> {
-  if (!doi.validate(doiString)) return null;
+function doiCacheFile(session: ISession, normalizedDoi: string) {
+  const filename = `doi-${computeHash(normalizedDoi)}.bib`;
+  const cacheFolder = join(session.buildPath(), 'cache');
+  if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
+  return join(cacheFolder, filename);
+}
+
+export async function getDoiOrgBibtex(
+  session: ISession,
+  doiString: string,
+): Promise<string | null> {
+  const normalizedDoi = doi.normalize(doiString);
+  if (!doi.validate(doiString) || !normalizedDoi) return null;
+  const cachePath = doiCacheFile(session, normalizedDoi);
+  if (fs.existsSync(cachePath)) {
+    const bibtex = fs.readFileSync(cachePath).toString();
+    session.log.debug(`Loaded cached reference information doi:${normalizedDoi}`);
+    return bibtex;
+  }
   const toc = tic();
-  log.debug('Fetching DOI information from doi.org');
-  const url = `https://doi.org/${doi.normalize(doiString)}`;
+  session.log.debug('Fetching DOI information from doi.org');
+  const url = `https://doi.org/${normalizedDoi}`;
   const response = await fetch(url, {
     headers: [['Accept', 'application/x-bibtex']],
   }).catch(() => {
-    log.debug(`Request to ${url} failed.`);
+    session.log.debug(`Request to ${url} failed.`);
     return null;
   });
   if (!response || !response.ok) {
-    log.debug(`doi.org fetch failed for ${doiString}}`);
+    session.log.debug(`doi.org fetch failed for ${doiString}}`);
     return null;
   }
   const bibtex = await response.text();
-  log.debug(toc(`Fetched reference information doi:${doi.normalize(doiString)} in %s`));
+  session.log.debug(toc(`Fetched reference information doi:${normalizedDoi} in %s`));
+  session.log.debug(`Saving doi to cache ${cachePath}`);
+  fs.writeFileSync(cachePath, bibtex);
   return bibtex;
 }
 
-async function getCitation(
-  log: Logger,
+export async function getCitation(
+  session: ISession,
   vfile: VFile,
   doiString: string,
   node: GenericNode,
 ): Promise<SingleCitationRenderer | null> {
   if (!doi.validate(doiString)) return null;
-  const bibtex = await getDoiOrgBibtex(log, doiString);
+  const bibtex = await getDoiOrgBibtex(session, doiString);
   if (!bibtex) {
     fileWarn(vfile, `Could not find DOI from link: ${doiString} as ${doi.normalize(doiString)}`, {
       node,
@@ -57,7 +78,7 @@ async function getCitation(
  * Find in-line DOIs and add them to the citation renderer
  */
 export async function transformLinkedDOIs(
-  log: Logger,
+  session: ISession,
   vfile: VFile,
   mdast: GenericParent,
   doiRenderer: Record<string, SingleCitationRenderer>,
@@ -78,13 +99,15 @@ export async function transformLinkedDOIs(
     citeDois.push(node as Cite);
   });
   if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
-  log.debug(`Found ${plural('%s DOI(s)', linkedDois.length + citeDois.length)} to auto link.`);
+  session.log.debug(
+    `Found ${plural('%s DOI(s)', linkedDois.length + citeDois.length)} to auto link.`,
+  );
   let number = 0;
   await Promise.all([
     ...linkedDois.map(async (node) => {
       let cite: SingleCitationRenderer | null = doiRenderer[node.url];
       if (!cite) {
-        cite = await getCitation(log, vfile, node.url, node);
+        cite = await getCitation(session, vfile, node.url, node);
         if (cite) number += 1;
         else return false;
       }
@@ -103,7 +126,7 @@ export async function transformLinkedDOIs(
     ...citeDois.map(async (node) => {
       let cite: SingleCitationRenderer | null = doiRenderer[node.label];
       if (!cite) {
-        cite = await getCitation(log, vfile, node.label, node);
+        cite = await getCitation(session, vfile, node.label, node);
         if (cite) number += 1;
         else return false;
       }
@@ -114,7 +137,7 @@ export async function transformLinkedDOIs(
     }),
   ]);
   if (number > 0) {
-    log.info(toc(`🪄  Linked ${number} DOI${number > 1 ? 's' : ''} in %s for ${path}`));
+    session.log.info(toc(`🪄  Linked ${number} DOI${number > 1 ? 's' : ''} in %s for ${path}`));
   }
   return renderer;
 }

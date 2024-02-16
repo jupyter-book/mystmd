@@ -148,9 +148,9 @@ Running `myst init` added:
 The `_build` folder also contains your templates (including the site template you installed) and any exports you make (when we build a PDF the exported document will show up in the `_build/exports` folder). You can clean up the built files at any time using `myst clean`[^clean-all].
 
 [^clean-all]:
-    By default the `myst clean` command doesn't remove installed templates, however, the function can with a:\
+    By default the `myst clean` command doesn't remove installed templates or cached web responses; however, the function can with a:\
     `myst clean --all`, or\
-    `myst clean --templates`.
+    `myst clean --templates --cache`.
 
     Before deleting any folders `myst` will confirm what is going to happen, or you can bypass this confirmation with the `-y` option. For example:
 
