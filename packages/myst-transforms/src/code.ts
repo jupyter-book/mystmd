@@ -3,12 +3,34 @@ import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
-import type { Code } from 'myst-spec';
+import type { Code, InlineCode } from 'myst-spec';
 
 type Options = {
   lang?: string;
   transformPython?: boolean;
 };
+
+/**
+ * Flatten any inline code that only has text in it to a single value.
+ */
+export function inlineCodeFlattenTransform(mdast: GenericParent, file: VFile) {
+  const code = selectAll('inlineCode', mdast) as (InlineCode & { children?: GenericNode[] })[];
+  code.forEach((node) => {
+    if (!node?.children) return;
+    if (node.value) {
+      fileWarn(file, 'Both children and value defined for inline code.', {
+        node,
+        ruleId: RuleId.inlineCodeMalformed,
+      });
+      // This is a warning, but can be ignored.
+      return;
+    }
+    if (!node.children.reduce((b, c) => b && c.type === 'text', true)) return;
+    // All the children are now text nodes
+    node.value = node.children.reduce((t, c) => t + c.value, '');
+    delete node.children;
+  });
+}
 
 export function codeTransform(mdast: GenericParent, file: VFile, opts?: Options) {
   const code = selectAll('code', mdast) as Code[];
@@ -65,3 +87,8 @@ export const codeBlockToDirectivePlugin: Plugin<
 > = (opts) => (tree, file) => {
   codeBlockToDirectiveTransform(tree, file, opts);
 };
+
+export const inlineCodeFlattenPlugin: Plugin<[], GenericParent, GenericParent> =
+  () => (tree, file) => {
+    inlineCodeFlattenTransform(tree, file);
+  };

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { VFile } from 'vfile';
-import { codeTransform } from './code';
+import { codeTransform, inlineCodeFlattenTransform } from './code';
 
 describe('Test codeTransform', () => {
   test('simple code block returns self', async () => {
@@ -65,6 +65,49 @@ describe('Test codeTransform', () => {
       type: 'root',
       children: [{ type: 'code', value: 'y=mx+b' }],
     });
+    expect(file.messages.length).toBe(1);
+  });
+
+  test('inline code with text children will flatten', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'inlineCode',
+          children: [
+            { type: 'text', value: 'one ' },
+            { type: 'text', value: 'two' },
+          ],
+        },
+      ],
+    };
+    const file = new VFile();
+    inlineCodeFlattenTransform(mdast, file);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [{ type: 'inlineCode', value: 'one two' }],
+    });
+  });
+
+  test('inline code with children and value warns', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'inlineCode',
+          value: 'blah',
+          children: [{ type: 'text', value: 'x' }],
+        },
+      ],
+    };
+    const file = new VFile();
+    inlineCodeFlattenTransform(mdast, file);
+    expect(mdast).toEqual({
+      type: 'root',
+      // No changes
+      children: [{ type: 'inlineCode', value: 'blah', children: [{ type: 'text', value: 'x' }] }],
+    });
+    // A warning was created
     expect(file.messages.length).toBe(1);
   });
 });
