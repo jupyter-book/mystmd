@@ -1,9 +1,5 @@
 import yaml from 'js-yaml';
 
-import { RuleId } from 'myst-common';
-import type { ISession } from '../session/types.js';
-import { addWarningForFile } from './addWarningForFile.js';
-
 export const TOC_FORMAT = 'jb-book';
 export const TOC_FORMAT_ARTICLE = 'jb-article';
 
