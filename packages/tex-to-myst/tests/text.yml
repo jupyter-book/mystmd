@@ -76,6 +76,15 @@ cases:
                   value: spie.cls
             - type: text
               value: '.'
+  - title: textrm --> text
+    tex: \textrm{text}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: text
   - title: verb
     tex: \verb|\section{}|
     tree:
