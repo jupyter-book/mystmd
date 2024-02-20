@@ -5,13 +5,17 @@ export const QUOTE_HANDLERS: Record<string, Handler> = {
   env_quote(node, state) {
     state.closeParagraph();
     state.openNode('blockquote');
+    state.openParagraph();
     state.renderChildren(node);
+    state.closeParagraph();
     state.closeNode();
   },
   env_displayquote(node, state) {
     state.closeParagraph();
     state.openNode('blockquote');
+    state.openParagraph();
     state.renderChildren(node);
+    state.closeParagraph();
     state.closeNode();
   },
   macro_epigraph(node, state) {
