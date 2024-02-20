@@ -30,32 +30,13 @@ export type TOC = {
   parts?: JupyterBookPart[];
 };
 
-// See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
-function upgradeOldJupyterBookToc(oldToc: any[]) {
-  // TODO: numbering is ignored
-  const [root, ...parts] = oldToc;
-  const toc: TOC = {
-    root: root.file,
-    format: TOC_FORMAT,
-    parts: parts.map(({ part, chapters }) => ({
-      caption: part,
-      chapters,
-    })),
-  };
-  return toc;
-}
 
-export function parseTOC(contents: string): {toc: TOC, didUpgrade: boolean} {
+export function parseTOC(contents: string): TOC {
   const toc = yaml.load(contents) as any;
   if (Array.isArray(toc)) {
-    try {
-      const old = upgradeOldJupyterBookToc(toc);
-      return {toc: old, didUpgrade: true};
-    } catch (error) {
-      throw new Error(
-        `Could not upgrade toc, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
+    throw new Error(
+        `Encountered a legacy ToC, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
       );
-    }
   }
   const { format, root, sections, chapters, parts } = toc;
   if (![TOC_FORMAT, TOC_FORMAT_ARTICLE].includes(format))
@@ -64,6 +45,6 @@ export function parseTOC(contents: string): {toc: TOC, didUpgrade: boolean} {
   if (+!!sections + +!!chapters + +!!parts !== 1) {
     throw new Error(`The toc must have one and only one sections, chapters, or parts`);
   }
-  return { toc, didUpgrade: false };
+  return toc;
 }
 

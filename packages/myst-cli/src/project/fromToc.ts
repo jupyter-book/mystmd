@@ -103,13 +103,7 @@ export function projectFromToc(
   }
   const { dir, base } = parse(filename);
   const contents = fs.readFileSync(filename).toString();
-  const { toc, didUpgrade} = parseTOC(contents);
-
-  if (didUpgrade) {
-    session.log.warn(
-      `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
-    ); 
-  };
+  const toc = parseTOC(contents);
 
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(dir, toc.root));

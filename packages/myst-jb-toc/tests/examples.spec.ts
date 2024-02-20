@@ -1,77 +1,47 @@
-import { describe, expect, test } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import type { ValidationOptions } from 'simple-validators';
-import { glob } from 'glob';
-import { validatePageFrontmatter, validateProjectFrontmatter } from '../src';
-
-type TestFile = {
-  title: string;
-  frontmatter?: 'project' | 'page';
-  cases: TestCase[];
-};
+import { parseTOC } from '../src';
 
 type TestCase = {
   title: string;
-  skip: boolean;
-  raw: string;
-  normalized?: string;
-  warnings?: number;
-  errors?: number;
-  opts?: Record<string, boolean>;
+  content: string;
+  throws?: string;  // RegExp pattern
+  output?: object;
 };
 
-const files = await glob(
-  [path.join(__dirname, '*.yml'), path.join(__dirname, '..', 'src', '**', '*.yml')],
-  {
-    ignore: path.join(__dirname, '..', 'src', 'utils', '*.yml'),
-  },
-);
+type TestCases = {
+  title: string;
+  cases: TestCase[];
+};
 
-const only = ''; // Can set this to a test title
+const only = '';
 
-const casesList = files
-  .map((file) => ({ name: file, data: fs.readFileSync(file).toString() }))
+const casesList: TestCases[] = fs
+  .readdirSync(__dirname)
+  .filter((file) => file.endsWith('.yml'))
   .map((file) => {
-    const tests = yaml.load(file.data) as TestFile;
-    tests.title = tests.title ?? file.name;
-    return tests;
+    const content = fs.readFileSync(path.join(__dirname, file), { encoding: 'utf-8' });
+    return yaml.load(content) as TestCases;
   });
 
-casesList.forEach(({ title, frontmatter, cases }) => {
-  const casesToUse = cases.filter((c) => (!only && !c.skip) || (only && c.title === only));
-  const skippedCases = cases.filter((c) => c.skip || (only && c.title !== only));
-  if (casesToUse.length === 0) return;
+casesList.forEach(({ title, cases }) => {
+  const filtered = cases.filter((c) => !only || c.title === only);
+  if (filtered.length === 0) return;
   describe(title, () => {
-    if (skippedCases.length > 0) {
-      // Log to test output for visibility
-      test.skip.each(skippedCases.map((c): [string, TestCase] => [c.title, c]))('%s', () => {});
-    }
-    test.each(casesToUse.map((c): [string, TestCase] => [c.title, c]))(
+    test.each(filtered.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
-      (_, { raw, normalized, warnings, errors }) => {
-        const opts: ValidationOptions = { property: '', messages: {} };
-        const validator =
-          frontmatter === 'project' ? validateProjectFrontmatter : validatePageFrontmatter;
-        const result = validator(raw, opts);
-        if (only) {
-          // This runs in "only" mode
-          console.log(raw);
-        }
-        // Print the warnings and errors if they are not expected
-        if ((opts.messages.warnings?.length ?? 0) !== (warnings ?? 0)) {
-          console.log(opts.messages.warnings);
-        }
-        if ((opts.messages.errors?.length ?? 0) !== (errors ?? 0)) {
-          console.log(opts.messages.errors);
-        }
-        expect(result).toEqual(normalized);
-        expect(opts.messages.warnings?.length ?? 0).toBe(warnings ?? 0);
-        expect(opts.messages.errors?.length ?? 0).toBe(errors ?? 0);
-
-        // Test that normalized frontmatter is idempotent
-        expect(validator(normalized, opts)).toEqual(normalized);
+      (_, { content, throws, output }) => {
+        if (output) {
+            const toc = parseTOC(content);
+	    expect(toc).toEqual(output);
+	} else if (throws) {
+	    const pattern = new RegExp(throws);
+	    expect(() => parseTOC(content)).toThrowError(pattern);	
+	} else {
+	    parseTOC(content);
+	}
       },
     );
   });
