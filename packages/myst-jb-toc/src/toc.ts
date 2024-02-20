@@ -1,8 +1,5 @@
-import fs from 'node:fs';
-import { extname, join, parse } from 'node:path';
 import yaml from 'js-yaml';
-import type { Logger } from 'myst-cli-utils';
-import { silentLogger } from 'myst-cli-utils';
+
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import { addWarningForFile } from './addWarningForFile.js';
@@ -37,11 +34,6 @@ export type TOC = {
   parts?: JupyterBookPart[];
 };
 
-export const tocFile = (filename: string): string => {
-  if (extname(filename) === '.yml') return filename;
-  return join(filename, '_toc.yml');
-};
-
 // See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
 function upgradeOldJupyterBookToc(oldToc: any[]) {
   // TODO: numbering is ignored
@@ -57,16 +49,12 @@ function upgradeOldJupyterBookToc(oldToc: any[]) {
   return toc;
 }
 
-export function readTOC(log: Logger, opts?: TocOptions): TOC {
-  const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
-  const toc = yaml.load(fs.readFileSync(filename).toString()) as any;
+export function parseTOC(contents: string): {toc: TOC, didUpgrade: boolean} {
+  const toc = yaml.load(contents) as any;
   if (Array.isArray(toc)) {
     try {
       const old = upgradeOldJupyterBookToc(toc);
-      log.warn(
-        `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
-      );
-      return old;
+      return {toc: old, didUpgrade: true};
     } catch (error) {
       throw new Error(
         `Could not upgrade toc, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
@@ -80,26 +68,6 @@ export function readTOC(log: Logger, opts?: TocOptions): TOC {
   if (+!!sections + +!!chapters + +!!parts !== 1) {
     throw new Error(`The toc must have one and only one sections, chapters, or parts`);
   }
-  log.debug('Basic validation of TOC passed');
-  return toc;
+  return { toc, didUpgrade: false };
 }
 
-export function validateTOC(session: ISession, path: string): boolean {
-  const filename = tocFile(path);
-  const { dir, base } = parse(filename);
-  if (!fs.existsSync(filename)) return false;
-  try {
-    readTOC(silentLogger(), { filename: base, path: dir });
-    return true;
-  } catch (error) {
-    const { message } = error as unknown as Error;
-    addWarningForFile(
-      session,
-      filename,
-      `Table of Contents (ToC) file did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
-      'error',
-      { ruleId: RuleId.validTocStructure },
-    );
-    return false;
-  }
-}

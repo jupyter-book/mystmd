@@ -1,13 +1,15 @@
 import fs from 'node:fs';
-import { join, parse } from 'node:path';
+import { join, parse, extname } from 'node:path';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import type { JupyterBookChapter } from '../utils/toc.js';
-import { readTOC, tocFile } from '../utils/toc.js';
+import { parseTOC } from '../utils/toc.js';
 import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtension.js';
 import { fileInfo } from '../utils/fileInfo.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { nextLevel } from '../utils/nextLevel.js';
+import type { Logger } from 'myst-cli-utils';
+import { silentLogger } from 'myst-cli-utils';
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -15,6 +17,35 @@ import type {
   LocalProject,
   PageSlugs,
 } from './types.js';
+
+
+export const tocFile = (filename: string): string => {
+  if (extname(filename) === '.yml') return filename;
+  return join(filename, '_toc.yml');
+};
+
+
+export function validateTOC(session: ISession, path: string): boolean {
+  const filename = tocFile(path);
+  const { dir, base } = parse(filename);
+  if (!fs.existsSync(filename)) return false;
+  const contents = fs.readFileSync(filename).toString();
+  try {
+    parseTOC(contents);
+    return true;
+  } catch (error) {
+    const { message } = error as unknown as Error;
+    addWarningForFile(
+      session,
+      filename,
+      `Table of Contents (ToC) file did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
+      'error',
+      { ruleId: RuleId.validTocStructure },
+    );
+    return false;
+  }
+}
+
 
 function pagesFromChapters(
   session: ISession,
@@ -71,7 +102,15 @@ export function projectFromToc(
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
   }
   const { dir, base } = parse(filename);
-  const toc = readTOC(session.log, { filename: base, path: dir });
+  const contents = fs.readFileSync(filename).toString();
+  const { toc, didUpgrade} = parseTOC(contents);
+
+  if (didUpgrade) {
+    session.log.warn(
+      `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
+    ); 
+  };
+
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(dir, toc.root));
   if (!indexFile) {

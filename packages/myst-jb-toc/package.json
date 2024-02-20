@@ -1,0 +1,38 @@
+{
+  "name": "myst-jb-toc",
+  "version": "0.0.0",
+  "sideEffects": false,
+  "license": "MIT",
+  "description": "Jupyter Book Table of Contents types and validation for the mystmd ecosystem",
+  "author": "Angus Hollands <goosey15@gmail.com>",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-jb-toc",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/executablebooks/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/executablebooks/mystmd/issues"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
