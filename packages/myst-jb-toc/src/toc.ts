@@ -30,13 +30,12 @@ export type TOC = {
   parts?: JupyterBookPart[];
 };
 
-
 export function parseTOC(contents: string): TOC {
   const toc = yaml.load(contents) as any;
   if (Array.isArray(toc)) {
     throw new Error(
-        `Encountered a legacy ToC, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
-      );
+      `Encountered a legacy ToC, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
+    );
   }
   const { format, root, sections, chapters, parts } = toc;
   if (![TOC_FORMAT, TOC_FORMAT_ARTICLE].includes(format))
@@ -47,4 +46,3 @@ export function parseTOC(contents: string): TOC {
   }
   return toc;
 }
-

@@ -18,12 +18,10 @@ import type {
   PageSlugs,
 } from './types.js';
 
-
 export const tocFile = (filename: string): string => {
   if (extname(filename) === '.yml') return filename;
   return join(filename, '_toc.yml');
 };
-
 
 export function validateTOC(session: ISession, path: string): boolean {
   const filename = tocFile(path);
@@ -45,7 +43,6 @@ export function validateTOC(session: ISession, path: string): boolean {
     return false;
   }
 }
-
 
 function pagesFromChapters(
   session: ISession,

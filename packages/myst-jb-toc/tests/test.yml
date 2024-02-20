@@ -1,0 +1,100 @@
+title: Table of Contents
+cases:
+  - title: Legacy TOC throws
+    content: |
+      - file: index
+        title: Toc
+      - chapter: A section
+        sections:
+        - file: subfolder/index
+          title: Subfolder
+          sections:
+          - file: subfolder/asubpage1
+            title: Asubpage
+      - chapter: Another section
+        sections:
+        - file: content2
+          title: Content1
+          sections:
+          - file: subfolder/asubpage2
+            title: Asubpage
+        - file: content2
+          title: Content2
+          sections:
+          - file: subfolder/asubpage3
+            title: Asubpage
+        - file: content4
+          title: Content3
+          sections:
+          - file: subfolder/asubpage4
+            title: Asubpage
+    throws: Encountered a legacy ToC
+  - title: JB book ToC Parses
+    content: |
+      root: intro
+      format: jb-book
+      chapters:
+        - title: User Guide
+          sections:
+          - file: user_guide/sphinx
+          - file: user_guide/cli
+          - file: user_guide/api    
+        - file: foo.md
+        - glob: bar/baz*.md
+  - title: JB article ToC Parses
+    content: |
+      root: intro
+      format: jb-article
+      sections:
+        - file: user_guide/sphinx
+        - file: user_guide/cli
+        - file: user_guide/api    
+        - file: foo.md
+        - glob: bar/baz*.md
+  - title: Unknown format fails
+    content: |
+      root: intro
+      format: jb-article-new
+      sections:
+        - file: user_guide/sphinx
+        - file: user_guide/cli
+        - file: user_guide/api    
+        - file: foo.md
+        - glob: bar/baz*.md
+    throws: 'The toc\.format must be'
+  - title: Parts and chapters fails
+    content: |
+      root: intro
+      format: jb-book
+      parts:
+        - file: user_guide/sphinx
+        - file: user_guide/cli
+        - file: user_guide/api    
+      chapters:
+        - file: foo.md
+        - glob: bar/baz*.md
+    throws: 'The toc must have one and only one'
+  - title: Sections and chapters fails
+    content: |
+      root: intro
+      format: jb-book
+      sections:
+        - file: user_guide/sphinx
+        - file: user_guide/cli
+        - file: user_guide/api    
+      chapters:
+        - file: foo.md
+        - glob: bar/baz*.md
+    throws: 'The toc must have one and only one'
+  - title: Sections and parts fails
+    content: |
+      root: intro
+      format: jb-book
+      sections:
+        - file: user_guide/sphinx
+        - file: user_guide/cli
+        - file: user_guide/api    
+      parts:
+        - file: foo.md
+        - glob: bar/baz*.md
+    throws: 'The toc must have one and only one'

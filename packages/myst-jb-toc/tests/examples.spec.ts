@@ -7,7 +7,7 @@ import { parseTOC } from '../src';
 type TestCase = {
   title: string;
   content: string;
-  throws?: string;  // RegExp pattern
+  throws?: string; // RegExp pattern
   output?: object;
 };
 
@@ -34,14 +34,14 @@ casesList.forEach(({ title, cases }) => {
       '%s',
       (_, { content, throws, output }) => {
         if (output) {
-            const toc = parseTOC(content);
-	    expect(toc).toEqual(output);
-	} else if (throws) {
-	    const pattern = new RegExp(throws);
-	    expect(() => parseTOC(content)).toThrowError(pattern);	
-	} else {
-	    parseTOC(content);
-	}
+          const toc = parseTOC(content);
+          expect(toc).toEqual(output);
+        } else if (throws) {
+          const pattern = new RegExp(throws);
+          expect(() => parseTOC(content)).toThrowError(pattern);
+        } else {
+          parseTOC(content);
+        }
       },
     );
   });

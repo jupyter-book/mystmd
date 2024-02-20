@@ -31,8 +31,6 @@
   "bugs": {
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
-  "dependencies": {
-  },
-  "devDependencies": {
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
