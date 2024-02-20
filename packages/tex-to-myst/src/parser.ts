@@ -26,6 +26,7 @@ import { FOOTNOTE_HANDLERS } from './footnotes.js';
 import { SIUNITX_HANDLERS } from './siunitx.js';
 import { CHEM_HANDLERS } from './chem.js';
 import { ALGORITHM_HANDLERS } from './algorithms.js';
+import { QUOTE_HANDLERS } from './quotes.js';
 
 const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
@@ -36,6 +37,7 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...MATH_HANDLERS,
   ...LIST_HANDLERS,
   ...LINK_HANDLERS,
+  ...QUOTE_HANDLERS,
   ...CITATION_HANDLERS,
   ...CHARACTER_HANDLERS,
   ...SECTION_HANDLERS,
