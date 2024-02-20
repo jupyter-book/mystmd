@@ -62,3 +62,13 @@ cases:
                   children:
                     - type: text
                       value: Hello world
+  - title: comment environment
+    tex: |-
+      \begin{comment}
+      This is a comment
+      \end{comment}
+    tree:
+      type: root
+      children:
+        - type: comment
+          value: This is a comment

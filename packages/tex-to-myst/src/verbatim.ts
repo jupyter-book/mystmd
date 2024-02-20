@@ -16,6 +16,10 @@ function parseFirstLine(code?: string) {
 
 export const VERBATIM_HANDLERS: Record<string, Handler> = {
   verbatim(node, state) {
+    if (node.env === 'comment') {
+      state.pushNode(u('comment', { value: node?.content.trim() ?? '' }));
+      return;
+    }
     state.closeParagraph();
     const { value, lang, caption } = parseFirstLine(node.content);
     if (caption) {
