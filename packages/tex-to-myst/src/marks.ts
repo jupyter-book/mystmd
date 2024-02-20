@@ -1,5 +1,6 @@
 import { u } from 'unist-builder';
 import type { Handler } from './types.js';
+import { texToText } from './utils.js';
 
 const marks = {
   textbf: 'strong',
@@ -52,6 +53,11 @@ const TEXT_MARKS_HANDLERS: Record<string, Handler> = {
     state.openNode('inlineCode');
     state.data.openGroups.push('inlineCode');
     state.data.ignoreNextWhitespace = true;
+  },
+  macro_textrm(node, state) {
+    state.openParagraph();
+    // TODO: this might not work if there are other macros inside of the textrm
+    state.text(texToText(node.args));
   },
   verb(node, state) {
     state.openParagraph();
