@@ -48,6 +48,7 @@ const files = [
   'algorithm.yml',
   'macros.yml',
   'input.yml',
+  'quote.yml',
 ];
 
 const only = ''; // Can set this to a test title

@@ -72,6 +72,7 @@ const macros: Record<string, number> = {
   affil: 1,
   affiliation: 1,
   framebox: 1,
+  epigraph: 2,
   tnote: 1,
   ['table*']: 1,
   arraystretch: 1,
