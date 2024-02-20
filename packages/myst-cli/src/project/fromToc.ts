@@ -8,8 +8,6 @@ import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtensi
 import { fileInfo } from '../utils/fileInfo.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { nextLevel } from '../utils/nextLevel.js';
-import type { Logger } from 'myst-cli-utils';
-import { silentLogger } from 'myst-cli-utils';
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -25,7 +23,6 @@ export const tocFile = (filename: string): string => {
 
 export function validateTOC(session: ISession, path: string): boolean {
   const filename = tocFile(path);
-  const { dir, base } = parse(filename);
   if (!fs.existsSync(filename)) return false;
   const contents = fs.readFileSync(filename).toString();
   try {
