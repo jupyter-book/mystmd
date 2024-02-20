@@ -10,7 +10,7 @@ import { htmlIdsTransform } from './htmlIds.js';
 import { imageAltTextTransform } from './images.js';
 import { mathLabelTransform, mathNestingTransform, subequationTransform } from './math.js';
 import { blockquoteTransform } from './blockquote.js';
-import { codeBlockToDirectiveTransform } from './code.js';
+import { codeBlockToDirectiveTransform, inlineCodeFlattenTransform } from './code.js';
 import { removeUnicodeTransform } from './removeUnicode.js';
 import { containerChildrenTransform } from './containers.js';
 import { headingDepthTransform } from './headings.js';
@@ -41,6 +41,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts: Rec
   blockquoteTransform(tree);
   removeUnicodeTransform(tree);
   headingDepthTransform(tree, file, opts);
+  inlineCodeFlattenTransform(tree, file);
 }
 
 export const basicTransformationsPlugin: Plugin<

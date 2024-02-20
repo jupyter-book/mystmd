@@ -33,7 +33,12 @@ export {
   blockMetadataPlugin,
   blockMetadataTransform,
 } from './blocks.js';
-export { codePlugin, codeTransform } from './code.js';
+export {
+  codePlugin,
+  codeTransform,
+  inlineCodeFlattenPlugin,
+  inlineCodeFlattenTransform,
+} from './code.js';
 export { blockquotePlugin, blockquoteTransform } from './blockquote.js';
 export { imageAltTextPlugin, imageAltTextTransform } from './images.js';
 export {

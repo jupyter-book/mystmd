@@ -85,6 +85,7 @@ export enum RuleId {
   codeMetatagsValid = 'code-metatags-valid',
   codeLangDefined = 'code-lang-defined',
   codeMetadataLoads = 'code-metadata-loads',
+  inlineCodeMalformed = 'inline-code-malformed',
   inlineExpressionRenders = 'inline-expression-renders',
   // Static file rules
   staticFileCopied = 'static-file-copied',
