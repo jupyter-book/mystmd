@@ -95,7 +95,7 @@ export function projectFromToc(
   if (!fs.existsSync(filename)) {
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
   }
-  const { dir, base } = parse(filename);
+  const { dir } = parse(filename);
   const contents = fs.readFileSync(filename).toString();
   const toc = parseTOC(contents);
 
