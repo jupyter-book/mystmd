@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "sideEffects": false,
   "license": "MIT",
-  "description": "Jupyter Book Table of Contents types and validation for the mystmd ecosystem",
+  "description": "Jupyter Book Table of Contents types and validation",
   "author": "Angus Hollands <goosey15@gmail.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/jupyterbook-toc",
   "type": "module",
