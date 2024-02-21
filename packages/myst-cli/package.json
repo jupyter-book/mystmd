@@ -69,7 +69,7 @@
     "myst-cli-utils": "^2.0.7",
     "myst-common": "^1.1.25",
     "myst-config": "^1.1.25",
-    "myst-jb-toc": "^0.0.0",
+    "jupyterbook-toc": "^0.0.0",
     "myst-execute": "^0.0.2",
     "myst-ext-card": "^1.0.5",
     "myst-ext-exercise": "^1.0.5",

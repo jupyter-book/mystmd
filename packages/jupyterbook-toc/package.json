@@ -1,11 +1,11 @@
 {
-  "name": "myst-jb-toc",
+  "name": "jupyterbook-toc",
   "version": "0.0.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "Jupyter Book Table of Contents types and validation for the mystmd ecosystem",
   "author": "Angus Hollands <goosey15@gmail.com>",
-  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-jb-toc",
+  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/jupyterbook-toc",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
