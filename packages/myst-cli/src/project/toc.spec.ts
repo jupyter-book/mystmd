@@ -15,11 +15,11 @@ const session = new Session();
 describe('site section generation', () => {
   it('empty', async () => {
     memfs.vol.fromJSON({});
-    expect(async () => await projectFromPath(session, '.')).toThrow();
+    expect((async () => await projectFromPath(session, '.'))()).rejects.toThrow();
   });
   it('invalid index', async () => {
     memfs.vol.fromJSON({ 'readme.md': '' });
-    expect(async () => await projectFromPath(session, '.', 'index.md')).toThrow();
+    expect((async () => await projectFromPath(session, '.', 'index.md'))()).rejects.toThrow();
   });
   it('readme.md only', async () => {
     memfs.vol.fromJSON({ 'readme.md': '' });
@@ -27,6 +27,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [],
     });
   });
@@ -36,6 +37,7 @@ describe('site section generation', () => {
       file: 'README.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [],
     });
   });
@@ -45,6 +47,7 @@ describe('site section generation', () => {
       file: 'index.md',
       path: '.',
       index: 'index',
+      implicitIndex: true,
       pages: [{ file: 'README.md', level: 1, slug: 'readme' }],
     });
   });
@@ -54,6 +57,7 @@ describe('site section generation', () => {
       file: 'index.md',
       path: '.',
       index: 'index',
+      implicitIndex: false,
       pages: [],
     });
   });
@@ -63,6 +67,7 @@ describe('site section generation', () => {
       file: 'folder/subfolder/index.md',
       path: '.',
       index: 'index',
+      implicitIndex: false,
       pages: [],
     });
   });
@@ -72,6 +77,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [
         {
           file: 'notebook.ipynb',
@@ -92,6 +98,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [
         {
           title: 'Folder',
@@ -120,6 +127,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [
         {
           title: 'Folder1',
@@ -152,6 +160,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [
         {
           file: 'zfile.md',
@@ -182,6 +191,7 @@ describe('site section generation', () => {
       file: 'folder1/folder2/readme.md',
       path: 'folder1',
       index: 'readme',
+      implicitIndex: false,
       pages: [
         {
           file: 'folder1/page1.md',
@@ -215,6 +225,7 @@ describe('site section generation', () => {
       file: 'folder/page.md',
       path: '.',
       index: 'page',
+      implicitIndex: true,
       pages: [
         {
           title: 'Folder',
@@ -234,6 +245,7 @@ describe('site section generation', () => {
       file: 'page.md',
       path: '.',
       index: 'page',
+      implicitIndex: true,
       pages: [
         {
           file: 'index.ipynb',
@@ -249,6 +261,7 @@ describe('site section generation', () => {
       file: 'index.ipynb',
       path: '.',
       index: 'index',
+      implicitIndex: true,
       pages: [
         {
           file: 'aaa.ipynb',
@@ -264,6 +277,7 @@ describe('site section generation', () => {
       file: 'folder/notebook.ipynb',
       path: '.',
       index: 'notebook',
+      implicitIndex: true,
       pages: [],
     });
   });
@@ -279,6 +293,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [
         {
           title: 'Folder',
@@ -308,6 +323,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [
         {
           file: 'chapter1.md',
@@ -340,6 +356,7 @@ describe('site section generation', () => {
       file: 'readme.md',
       path: '.',
       index: 'readme',
+      implicitIndex: true,
       pages: [
         {
           title: 'Folder',
@@ -718,10 +735,11 @@ describe('pagesFromToc', () => {
       'project/c.md': '',
       'project/d.md': '',
     });
-    expect(projectFromPath(session, '.')).toEqual({
+    expect(await projectFromPath(session, '.')).toEqual({
       path: '.',
       index: 'readme',
       file: 'readme.md',
+      implicitIndex: true,
       pages: [
         { slug: 'x', file: 'x.md', level: 1 },
         { slug: 'index', file: 'project/index.md', level: 1 },
@@ -748,10 +766,11 @@ describe('pagesFromToc', () => {
       'project/c.md': '',
       'project/d.md': '',
     });
-    expect(projectFromPath(session, '.')).toEqual({
+    expect(await projectFromPath(session, '.')).toEqual({
       path: '.',
       index: 'readme',
       file: 'readme.md',
+      implicitIndex: true,
       pages: [
         { slug: 'x', file: 'x.md', level: 1 },
         { title: 'Project', level: 1 },
