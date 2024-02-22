@@ -10,6 +10,7 @@ cases:
     normalized: {}
   - title: full object returns self
     raw:
+      id: my/project
       title: frontmatter
       description: project frontmatter
       venue:
@@ -58,6 +59,7 @@ cases:
       resources:
         - my-script.sh
     normalized:
+      id: my/project
       title: frontmatter
       description: project frontmatter
       venue:

@@ -147,6 +147,9 @@ export function validateProjectFrontmatterKeys(
 ) {
   const output: ProjectFrontmatter = validateProjectAndPageFrontmatterKeys(value, opts);
   // This is only for the project, and is not defined on pages
+  if (defined(value.id)) {
+    output.id = validateString(value.id, incrementOptions('id', opts));
+  }
   if (defined(value.references)) {
     const referencesOpts = incrementOptions('references', opts);
     const references = validateObject(value.references, referencesOpts);

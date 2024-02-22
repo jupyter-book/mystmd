@@ -139,6 +139,21 @@ The following table lists the available frontmatter fields, a brief description 
 * - `options`
   - a dictionary of arbitrary options validated and consumed by templates, for example, during site or PDF build
   - page can override project
+* - `id`
+  - id for the project, intended as a unique identifier as the project is used across different contexts
+  - project only
+* - `references`
+  - configuration for intersphinx references (see [](#intersphinx))
+  - project only
+* - `requirements`
+  - files required for reproducing the executional environment, included in the MECA bundle to enable portable execution
+  - project only
+* - `resources`
+  - other resources associated with your project, distributed in the MECA bundle
+  - project only
+* - `jupyter` or `thebe`
+  - configuration for Jupyter execution (see [](./integrating-jupyter.md))
+  - project only
 ```
 
 +++
@@ -155,6 +170,9 @@ Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` o
 
 `page can override project`
 : the field is available on both page & project but the value of the field on the page will override any set of the project. Note that the page field must be omitted or undefined, for the project value to be used, value of `null` (or `[]` in the case of `authors`) will still override the project value but clear the field for that page.
+
+`project only`
+: the field is only available on projects, and not present on pages and it will be ignored if set there.
 
 +++
 

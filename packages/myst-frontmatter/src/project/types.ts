@@ -32,6 +32,7 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
 export const PROJECT_FRONTMATTER_KEYS = [
   ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
   // These keys only exist on the project
+  'id',
   'references',
   'requirements',
   'resources',
@@ -62,6 +63,7 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
 };
 
 export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
+  id?: string;
   /** Intersphinx and cross-project references */
   references?: Record<string, { url: string }>;
   requirements?: string[];
