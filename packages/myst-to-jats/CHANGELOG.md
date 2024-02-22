@@ -1,5 +1,17 @@
 # myst-to-jats
 
+## 1.0.23
+
+### Patch Changes
+
+- ab4c7201: Update dependency on citation-js-utils
+- Updated dependencies [9cdd2044]
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-transforms@1.2.3
+  - myst-frontmatter@1.1.26
+  - myst-spec-ext@1.1.26
+
 ## 1.0.22
 
 ### Patch Changes

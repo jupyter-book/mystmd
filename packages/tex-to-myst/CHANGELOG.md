@@ -1,5 +1,20 @@
 # tex-to-myst
 
+## 1.0.21
+
+### Patch Changes
+
+- 84a89663: Support verbatim comment environment
+- 0234a0ff: Add support for texttimes
+- 9f359e2b: Support quote and displayquote environments as well as epigraph macro
+- 822ee744: Change \\ in latex to add a break, already supported in tables.
+- 5ed4fa65: Support textrm
+- 6a97176d: Add quotation to handlers
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-frontmatter@1.1.26
+  - myst-spec-ext@1.1.26
+
 ## 1.0.20
 
 ### Patch Changes
