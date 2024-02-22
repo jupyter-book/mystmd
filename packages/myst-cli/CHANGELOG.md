@@ -1,5 +1,34 @@
 # myst-cli
 
+## 1.1.43
+
+### Patch Changes
+
+- 9bd29068: Cache successful linkcheck results to file
+- 9bd29068: Add cache folder for intersphinx and doi fetches
+- e81a169: Exclude files listed in project confg from myst build and watch
+- Updated dependencies [84a89663]
+- Updated dependencies [0234a0ff]
+- Updated dependencies [9cdd2044]
+- Updated dependencies [9cdd2044]
+- Updated dependencies [9f359e2b]
+- Updated dependencies [ab4c7201]
+- Updated dependencies [822ee744]
+- Updated dependencies [aa877413]
+- Updated dependencies [5ed4fa65]
+- Updated dependencies [aa877413]
+- Updated dependencies [6a97176d]
+- Updated dependencies [e81a169]
+  - tex-to-myst@1.0.21
+  - myst-common@1.1.26
+  - myst-transforms@1.2.3
+  - myst-to-jats@1.0.23
+  - myst-to-tex@1.0.21
+  - jtex@1.0.15
+  - myst-config@1.1.26
+  - myst-frontmatter@1.1.26
+  - myst-spec-ext@1.1.26
+
 ## 1.1.42
 
 ### Patch Changes

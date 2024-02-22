@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.1.26
+
+### Patch Changes
+
+- 9cdd2044: Add inline code rule for errors
+  - myst-frontmatter@1.1.26
+
 ## 1.1.25
 
 ### Patch Changes

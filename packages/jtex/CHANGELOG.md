@@ -1,5 +1,14 @@
 # jtex
 
+## 1.0.15
+
+### Patch Changes
+
+- aa877413: Fix glossary tex rendering with no terms
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-frontmatter@1.1.26
+
 ## 1.0.14
 
 ### Patch Changes

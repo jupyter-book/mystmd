@@ -1,5 +1,16 @@
 # myst-to-tex
 
+## 1.0.21
+
+### Patch Changes
+
+- aa877413: Notebook figures become tex figures, not code
+- aa877413: Fix glossary tex rendering with no terms
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-frontmatter@1.1.26
+  - myst-spec-ext@1.1.26
+
 ## 1.0.20
 
 ### Patch Changes

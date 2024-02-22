@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 1.2.3
+
+### Patch Changes
+
+- 9cdd2044: Flatten inline code by default
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-spec-ext@1.1.26
+
 ## 1.2.2
 
 ### Patch Changes

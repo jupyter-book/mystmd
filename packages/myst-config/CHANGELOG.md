@@ -1,5 +1,12 @@
 # myst-config
 
+## 1.1.26
+
+### Patch Changes
+
+- e81a169: Exclude files listed in project confg from myst build and watch
+  - myst-frontmatter@1.1.26
+
 ## 1.1.25
 
 ### Patch Changes

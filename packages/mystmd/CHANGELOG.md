@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.43
+
+### Patch Changes
+
+- 9bd29068: Add cache folder for intersphinx and doi fetches
+
 ## 1.1.42
 
 ### Patch Changes
