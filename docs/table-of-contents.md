@@ -69,12 +69,14 @@ project:
     - '**/ignore.md'
 ```
 
-Additionally, files excluded in this way will also not be watched during `myst start`. This may be useful if you have a folder with a huge number of files (many thousands?) that causes `myst start` to crash. For example, in the `data/` directory, there may be no markdown and no notebooks but 100,000 small data files:
+Additionally, files excluded in this way will also not be watched during `myst start`. This may be useful if you have a folder with many thousands of files that causes the `myst start` watch task to crash. For example, in the `data/` directory, there may be no markdown and no notebooks but 100,000 small data files:
 
 ```yaml
 project:
   exclude: data/**
 ```
+
+Note that when these files are excluded, they can still be specifically referenced by other files in your project (e.g. in an {myst:directive}`include directives <include>` or as a download), however, a change in those files will not trigger a build. An alternative in this case is to generate a table of contents (see [](./table-of-contents.md)). By default hidden folders (those starting with `.`, like `.git`), `_build` and `node_modules` are excluded.
 
 (toc-format)=
 
