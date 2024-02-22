@@ -61,7 +61,7 @@ function nodeToCommand(node: Image | Table | Code | Math) {
       return fullWidth ? 'table*' : 'table';
     case CaptionKind.code:
       // TODO full width code
-      return 'code';
+      return 'figure';
     case CaptionKind.eq:
       return 'figure'; // not sure what to do here.
     default:
@@ -76,7 +76,7 @@ function nodeToLaTeXOptions(node: Image | Table | Code | Math) {
     case CaptionKind.table:
       return '!htbp';
     case CaptionKind.code:
-      return 'H';
+      return 'h';
     case CaptionKind.eq:
     default:
       return undefined;
