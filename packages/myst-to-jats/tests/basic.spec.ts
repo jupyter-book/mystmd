@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import { unified } from 'unified';
 import fs from 'node:fs';
-import { Session, silentLogger } from 'myst-cli-utils';
+import { silentLogger } from 'myst-cli-utils';
 import { validateProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { ValidationOptions } from 'simple-validators';
@@ -36,14 +36,14 @@ function loadCases(file: string) {
   return (yaml.load(testYaml) as TestFile).cases;
 }
 
-const testLogger = new Session({
-  logger: {
+const testLogger = {
+  log: {
     ...silentLogger(),
     error: (...args: any) => {
       console.error(...args);
     },
   },
-});
+};
 
 function addHeader(data: string) {
   return `<?xml version="1.0" encoding="UTF-8"?>

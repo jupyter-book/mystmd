@@ -2,9 +2,8 @@ import type { ServerConnection } from '@jupyterlab/services';
 import which from 'which';
 import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
-import type { Logger } from 'myst-cli-utils';
+import type { ISession, Logger } from 'myst-cli-utils';
 import chalk from 'chalk';
-import fetch from 'node-fetch';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
@@ -27,7 +26,9 @@ interface JupyterServerListItem {
 /**
  * Find the newest (by PID) active Jupyter Server, or return undefined.
  */
-export async function findExistingJupyterServer(): Promise<JupyterServerSettings | undefined> {
+export async function findExistingJupyterServer(
+  session: ISession,
+): Promise<JupyterServerSettings | undefined> {
   const pythonPath = which.sync('python');
   const listProc = spawn(pythonPath, ['-m', 'jupyter_server', 'list', '--json']);
 
@@ -52,7 +53,7 @@ export async function findExistingJupyterServer(): Promise<JupyterServerSettings
 
   // Return the first alive server
   for (const entry of servers) {
-    const response = await fetch(`${entry.url}?token=${entry.token}`);
+    const response = await session.fetch(`${entry.url}?token=${entry.token}`);
     if (response.ok) {
       return {
         baseUrl: entry.url,

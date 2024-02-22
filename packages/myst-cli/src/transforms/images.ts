@@ -5,7 +5,6 @@ import { RuleId, plural } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import fetch from 'node-fetch';
 import path from 'node:path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
@@ -75,7 +74,7 @@ export async function downloadAndSaveImage(
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
   try {
     const github = getGithubRawUrl(url);
-    const res = await fetch(github ?? url, { headers: EXT_REQUEST_HEADERS });
+    const res = await session.fetch(github ?? url, { headers: EXT_REQUEST_HEADERS });
     const contentType = res.headers.get('content-type') || '';
     const extension = mime.extension(contentType);
     if (!extension || !contentType) throw new Error('No content-type for image found.');

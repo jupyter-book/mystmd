@@ -22,6 +22,7 @@ import type { ISession } from './types.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
 import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
+import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 
 // fetch polyfill for node<18
@@ -116,6 +117,11 @@ export class Session implements ISession {
     return this;
   }
 
+  async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
+    const resp = await nodeFetch(url, init);
+    return resp;
+  }
+
   plugins: MystPlugin | undefined;
 
   _pluginPromise: Promise<MystPlugin> | undefined;
@@ -196,7 +202,7 @@ export class Session implements ISession {
         };
       } else {
         // Load existing running server
-        const existing = await findExistingJupyterServer();
+        const existing = await findExistingJupyterServer(this);
         if (existing) {
           this.log.debug(`Found existing server on: ${existing.appUrl}`);
           partialServerSettings = existing;

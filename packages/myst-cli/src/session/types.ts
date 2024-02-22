@@ -5,7 +5,7 @@ import type { MystPlugin, RuleId } from 'myst-common';
 import type { ReferenceState } from 'myst-transforms';
 import type { MinifiedContentCache } from 'nbtx';
 import type { Store } from 'redux';
-
+import type { RequestInfo, RequestInit, Response } from 'node-fetch';
 import type { BuildWarning, RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
 import type { SessionManager } from '@jupyterlab/services';
@@ -27,6 +27,7 @@ export type ISession = {
   getAllWarnings(ruleId: RuleId): (BuildWarning & { file: string })[];
   jupyterSessionManager(): Promise<SessionManager | undefined>;
   dispose(): void;
+  fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response>;
 };
 
 export type ISessionWithCache = ISession & {
