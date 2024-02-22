@@ -246,6 +246,7 @@ async function runCommands(
     pdfBuild,
     buildPath,
     vfile,
+    true,
   );
 
   return { buildError, toc };
@@ -260,6 +261,7 @@ async function runPdfBuildCommand(
   pdfBuild: string,
   buildPath: string,
   vfile: VFile,
+  debugLogsOnly?: boolean,
 ) {
   if (!isLatexmkAvailable()) {
     fileError(
@@ -289,7 +291,7 @@ async function runPdfBuildCommand(
 
   let buildError = false;
   try {
-    session.log.info(`🖨  Rendering PDF ${templateLogString} to ${pdfBuild}`);
+    if (!debugLogsOnly) session.log.info(`🖨  Rendering PDF ${templateLogString} to ${pdfBuild}`);
     session.log.debug(`Running command:\n> ${buildCommand}`);
     await exec(buildCommand, { cwd: buildPath });
     session.log.debug(`Done building LaTeX.`);
