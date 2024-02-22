@@ -28,39 +28,49 @@ function watchConfigAndPublic(session: ISession, serverReload: () => void, opts:
       ignoreInitial: true,
       awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
     })
-    .on('all', watchProcessor('processSite', session, null, serverReload, opts));
+    .on('all', watchProcessor(session, null, serverReload, opts));
 }
 
-function triggerProjectReload(file: string, eventType: string) {
-  // Reload project if toc changes
-  if (basename(file) === '_toc.yml') return true;
+function triggerProjectReload(
+  session: ISession,
+  file: string,
+  eventType: string,
+  projectPath?: string,
+) {
+  // Reload project if project config or toc changes
+  const state = session.store.getState();
+  const projectConfigFile = projectPath
+    ? selectors.selectLocalConfigFile(state, projectPath)
+    : selectors.selectCurrentProjectFile(state);
+  if (file === projectConfigFile || basename(file) === '_toc.yml') return true;
   // Reload project if file is added or remvoed
   if (['add', 'unlink'].includes(eventType)) return true;
   // Otherwise do not reload project
   return false;
 }
 
-async function siteProcessor(session: ISession, serverReload: () => void, opts: TransformOptions) {
-  session.log.info('💥 Triggered full site rebuild');
-  await processSite(session, opts);
-  serverReload();
-}
-
-async function fileProcessor(
+async function processorFn(
   session: ISession,
-  file: string,
+  file: string | null,
   eventType: string,
-  siteProject: SiteProject,
+  siteProject: SiteProject | null,
   serverReload: () => void,
   opts: TransformOptions,
 ) {
-  changeFile(session, file, eventType);
-  if (KNOWN_FAST_BUILDS.has(extname(file)) && eventType === 'unlink') {
-    session.log.info(`🚮 File ${file} deleted...`);
+  if (file) {
+    changeFile(session, file, eventType);
+    if (KNOWN_FAST_BUILDS.has(extname(file)) && eventType === 'unlink') {
+      session.log.info(`🚮 File ${file} deleted...`);
+    }
   }
-  if (!KNOWN_FAST_BUILDS.has(extname(file)) || ['add', 'unlink'].includes(eventType)) {
+  if (
+    !siteProject ||
+    !file ||
+    !KNOWN_FAST_BUILDS.has(extname(file)) ||
+    ['add', 'unlink'].includes(eventType)
+  ) {
     let reloadProject = false;
-    if (triggerProjectReload(file, eventType)) {
+    if (file && triggerProjectReload(session, file, eventType, siteProject?.path)) {
       session.log.info('💥 Triggered full project load and site rebuild');
       reloadProject = true;
     } else {
@@ -114,7 +124,6 @@ async function fileProcessor(
 }
 
 function watchProcessor(
-  operation: 'processSite' | 'processFile',
   session: ISession,
   siteProject: SiteProject | null,
   serverReload: () => void,
@@ -132,15 +141,14 @@ function watchProcessor(
     }
     session.store.dispatch(watch.actions.markReloading(true));
     session.log.debug(`File modified: "${file}" (${eventType})`);
-    if (operation === 'processSite' || !siteProject) {
-      await siteProcessor(session, serverReload, opts);
-    } else {
-      await fileProcessor(session, file, eventType, siteProject, serverReload, opts);
-    }
+    await processorFn(session, file, eventType, siteProject, serverReload, opts);
     while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
       // If reload(s) were requested during previous build, just reload everything once.
       session.store.dispatch(watch.actions.markReloadRequested(false));
-      await siteProcessor(session, serverReload, { reloadProject: true, ...opts });
+      await processorFn(session, null, eventType, null, serverReload, {
+        reloadProject: true,
+        ...opts,
+      });
     }
     session.store.dispatch(watch.actions.markReloading(false));
   };
@@ -164,6 +172,8 @@ export function watchContent(session: ISession, serverReload: () => void, opts: 
         ? localProjects.filter(({ path }) => path !== '.').map(({ path }) => join(path, '*'))
         : [];
     if (siteConfigFile) ignored.push(siteConfigFile);
+    const projectConfig = selectors.selectLocalProjectConfig(state, proj.path);
+    if (projectConfig?.exclude) ignored.push(...projectConfig.exclude);
     const dependencies = new Set(selectors.selectAllDependencies(state, proj.path));
     chokidar
       .watch([proj.path, ...dependencies], {
@@ -171,7 +181,7 @@ export function watchContent(session: ISession, serverReload: () => void, opts: 
         ignored: ['public', '**/_build/**', '**/.git/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
       })
-      .on('all', watchProcessor('processFile', session, proj, serverReload, opts));
+      .on('all', watchProcessor(session, proj, serverReload, opts));
   });
   // Watch the myst.yml
   watchConfigAndPublic(session, serverReload, opts);

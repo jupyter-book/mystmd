@@ -57,6 +57,27 @@ The “root” of a site is the page displayed when someone browses to the index
 All of these can be over-ridden by choosing an explicit `_toc.yml`, when that is present it will be used.
 ```
 
+### Excluding Files
+
+If there are markdown or notebook files within a project folder that you do not want included in your project, you may list these in the `myst.yml` project frontmatter under `exclude`. For example, to ignore a single file `notes.md`, all notebooks in the folder `hpc/`, and all files named `ignore.md`:
+
+```yaml
+project:
+  exclude:
+    - notes.md
+    - hpc/*.ipynb
+    - '**/ignore.md'
+```
+
+Additionally, files excluded in this way will also not be watched during `myst start`. This may be useful if you have a folder with many thousands of files that causes the `myst start` watch task to crash. For example, in the `data/` directory, there may be no markdown and no notebooks but 100,000 small data files:
+
+```yaml
+project:
+  exclude: data/**
+```
+
+Note that when these files are excluded, they can still be specifically referenced by other files in your project (e.g. in an {myst:directive}`include directives <include>` or as a download), however, a change in those files will not trigger a build. An alternative in this case is to generate a table of contents (see [](./table-of-contents.md)). By default hidden folders (those starting with `.`, like `.git`), `_build` and `node_modules` are excluded.
+
 (toc-format)=
 
 ## Defining a `_toc.yml` using Jupyter Book’s format

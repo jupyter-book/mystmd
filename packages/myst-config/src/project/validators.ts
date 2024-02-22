@@ -30,7 +30,7 @@ function validateProjectConfigKeys(value: Record<string, any>, opts: ValidationO
   if (defined(value.exclude)) {
     output.exclude = validateList(
       value.exclude,
-      incrementOptions('exclude', opts),
+      { coerce: true, ...incrementOptions('exclude', opts) },
       (file, index: number) => {
         return validateString(file, incrementOptions(`exclude.${index}`, opts));
       },

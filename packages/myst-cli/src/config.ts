@@ -140,11 +140,16 @@ export function loadConfig(session: ISession, path: string) {
   return conf;
 }
 
-export function resolveToAbsolute(session: ISession, basePath: string, relativePath: string) {
+export function resolveToAbsolute(
+  session: ISession,
+  basePath: string,
+  relativePath: string,
+  checkExists = true,
+) {
   let message: string;
   try {
     const absPath = resolve(join(basePath, relativePath));
-    if (fs.existsSync(absPath)) {
+    if (!checkExists || fs.existsSync(absPath)) {
       return absPath;
     }
     message = `Does not exist as local path: ${absPath}`;
@@ -155,10 +160,15 @@ export function resolveToAbsolute(session: ISession, basePath: string, relativeP
   return relativePath;
 }
 
-function resolveToRelative(session: ISession, basePath: string, absPath: string) {
+function resolveToRelative(
+  session: ISession,
+  basePath: string,
+  absPath: string,
+  checkExists = true,
+) {
   let message: string;
   try {
-    if (fs.existsSync(absPath)) {
+    if (!checkExists || fs.existsSync(absPath)) {
       // If it is the same path, use a '.'
       return relative(basePath, absPath) || '.';
     }
@@ -174,7 +184,12 @@ function resolveSiteConfigPaths(
   session: ISession,
   path: string,
   siteConfig: SiteConfig,
-  resolutionFn: (session: ISession, basePath: string, path: string) => string,
+  resolutionFn: (
+    session: ISession,
+    basePath: string,
+    path: string,
+    checkExists?: boolean,
+  ) => string,
 ) {
   const resolvedFields: SiteConfig = {};
   if (siteConfig.projects) {
@@ -195,7 +210,12 @@ function resolveProjectConfigPaths(
   session: ISession,
   path: string,
   projectConfig: ProjectConfig,
-  resolutionFn: (session: ISession, basePath: string, path: string) => string,
+  resolutionFn: (
+    session: ISession,
+    basePath: string,
+    path: string,
+    checkExists?: boolean,
+  ) => string,
 ) {
   const resolvedFields: ProjectConfig = {};
   if (projectConfig.bibliography) {
@@ -208,7 +228,7 @@ function resolveProjectConfigPaths(
   }
   if (projectConfig.exclude) {
     resolvedFields.exclude = projectConfig.exclude.map((file) => {
-      return resolutionFn(session, path, file);
+      return resolutionFn(session, path, file, false);
     });
   }
   if (projectConfig.plugins) {

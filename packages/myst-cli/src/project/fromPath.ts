@@ -1,8 +1,10 @@
 import fs from 'node:fs';
-import { extname, join } from 'node:path';
+import { extname, join, sep } from 'node:path';
+import { glob } from 'glob';
 import { isDirectory } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
+import { selectors } from '../store/index.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { fileInfo } from '../utils/fileInfo.js';
 import { nextLevel } from '../utils/nextLevel.js';
@@ -136,11 +138,11 @@ function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pa
 /**
  * Build project structure from local file/folder structure.
  */
-export function projectFromPath(
+export async function projectFromPath(
   session: ISession,
   path: string,
   indexFile?: string,
-): Omit<LocalProject, 'bibliography'> {
+): Promise<Omit<LocalProject, 'bibliography'>> {
   const ext_string = VALID_FILE_EXTENSIONS.join(' or ');
   if (indexFile) {
     if (!isValidFile(indexFile))
@@ -148,24 +150,39 @@ export function projectFromPath(
     if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
   const rootConfigYamls = session.configFiles.map((file) => join(path, file));
+  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
+  const excludePatterns = projectConfig?.exclude ?? [];
+  const excludeFiles = (
+    await Promise.all(
+      excludePatterns.map(async (pattern) => {
+        const matches = await glob(pattern.split(sep).join('/'));
+        return matches
+          .map((match) => match.split('/').join(sep))
+          .filter((match) => isValidFile(match));
+      }),
+    )
+  ).flat();
+  const ignoreFiles = [...rootConfigYamls, ...excludeFiles];
+  let implicitIndex = false;
   if (!indexFile) {
     const searchPages = projectPagesFromPath(
       session,
       path,
       1,
       {},
-      { ignore: rootConfigYamls, suppressWarnings: true },
+      { ignore: ignoreFiles, suppressWarnings: true },
     );
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
     }
     indexFile = indexFileFromPages(searchPages, path);
     if (!indexFile) throw Error(`Unable to find any index file in path "${path}"`);
+    implicitIndex = true;
   }
   const pageSlugs: PageSlugs = {};
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages = projectPagesFromPath(session, path, 1, pageSlugs, {
-    ignore: [indexFile, ...rootConfigYamls],
+    ignore: [indexFile, ...ignoreFiles],
   });
-  return { file: indexFile, index: slug, path, pages };
+  return { file: indexFile, index: slug, path, pages, implicitIndex };
 }
