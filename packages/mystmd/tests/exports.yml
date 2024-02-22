@@ -77,3 +77,15 @@ cases:
     outputs:
       - path: notebook-with-fm/_build/out.tex
         content: outputs/notebook.tex
+  - title: Templated tex with glossary
+    cwd: glossary
+    command: myst build --tex --ci
+    outputs:
+      - path: glossary/_build/out.tex
+        content: outputs/glossary.tex
+  - title: Templated tex with acronym
+    cwd: acronym
+    command: myst build --tex --ci
+    outputs:
+      - path: acronym/_build/out.tex
+        content: outputs/acronym.tex

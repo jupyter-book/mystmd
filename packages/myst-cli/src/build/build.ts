@@ -10,7 +10,6 @@ import { buildSite } from './site/prepare.js';
 import type { ExportWithInputOutput } from './types.js';
 import { localArticleExport } from './utils/localArticleExport.js';
 import { collectExportOptions } from './utils/collectExportOptions.js';
-import { writeFileToFolder } from 'myst-cli-utils';
 import { writeJsonLogs } from '../utils/logging.js';
 
 export type BuildOpts = {

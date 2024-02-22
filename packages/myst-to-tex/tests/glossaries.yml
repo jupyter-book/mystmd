@@ -29,6 +29,7 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: true
+    expectGlossary: false
   - title: one gls-ref in paragraph (glossary on)
     mdast:
       type: root
@@ -67,6 +68,7 @@ cases:
     latex: |-
       A simple \gls{term-t1} process
     printGlossaries: true
+    expectGlossary: true
   - title: one gls-ref in paragraph (glossary off)
     mdast:
       type: root
@@ -105,6 +107,7 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: false
+    expectGlossary: false
   - title: two gls-refs in paragraph (glossary on)
     mdast:
       type: root
@@ -162,6 +165,7 @@ cases:
     latex: |-
       A simple \gls{term-t1} process in the context of \gls{term-t2}
     printGlossaries: true
+    expectGlossary: true
   - title: two gls-refs in paragraph (glossary off)
     mdast:
       type: root
@@ -219,6 +223,7 @@ cases:
     latex: |-
       A simple PCA process in the context of MLR
     printGlossaries: false
+    expectGlossary: false
   - title: with unused glossary defs
     mdast:
       type: root
@@ -267,6 +272,7 @@ cases:
     latex: |-
       A simple \gls{term-t1} process
     printGlossaries: true
+    expectGlossary: true
   - title: with missing glossary def
     notes: |-
       The parser will never generate this mdast in case
@@ -309,6 +315,7 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: true
+    expectGlossary: true
   - title: with missing glossary def and unresolved ref
     notes: |-
       The parser will never generate this mdast in case
@@ -347,6 +354,7 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: true
+    expectGlossary: true
   - title: with missing glossary def and empty glossary
     notes: |-
       The parser will never generate this mdast in case
@@ -371,6 +379,7 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: true
+    expectGlossary: false
   - title: part with glossary reference (glossary off)
     notes: |-
       The parser will generate this structure when extracting
@@ -400,6 +409,7 @@ cases:
     latex: |-
       A simple PCA process
     printGlossaries: false
+    expectGlossary: false
   - title: part with glossary reference (glossary on)
     notes: |-
       The parser will generate this structure when extracting
@@ -431,7 +441,8 @@ cases:
                   value: ' process'
     latex: |-
       A simple PCA process
-    printGlossaries: on
+    printGlossaries: true
+    expectGlossary: false
   - title: with abbreviations (glossary on)
     mdast:
       type: root
@@ -452,6 +463,7 @@ cases:
     latex: |-
       This is a \acrshort{rv} with a distribution
     printGlossaries: true
+    expectGlossary: true
   - title: with abbreviations (glossary off)
     mdast:
       type: root
@@ -472,6 +484,7 @@ cases:
     latex: |-
       This is a RV with a distribution
     printGlossaries: false
+    expectGlossary: false
   - title: with one abbreviation and one gls-ref next to each other
     mdast:
       type: root
@@ -517,6 +530,7 @@ cases:
     latex: |-
       These are \gls{term-t1} \acrshort{rv}s we consider
     printGlossaries: true
+    expectGlossary: true
   - title: with one gls-ref and one abbreviation next to each other
     mdast:
       type: root
@@ -562,6 +576,7 @@ cases:
     latex: |-
       These \acrshort{rv}s are \gls{term-t1} by hypothesis
     printGlossaries: true
+    expectGlossary: true
   - title: with gls-refs and abbreviations
     mdast:
       type: root
@@ -654,3 +669,4 @@ cases:
     latex: |-
       The concept of \gls{term-t1} \acrshort{rv}s is key to understanding \gls{term-t2}, and \gls{term-t3} in the context of \acrshort{qt}
     printGlossaries: true
+    expectGlossary: true

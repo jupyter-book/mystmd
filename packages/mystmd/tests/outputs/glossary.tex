@@ -13,10 +13,14 @@
 \usepackage{enumitem}
 \setlist[itemize]{noitemsep, topsep=0pt}
 
+\usepackage{glossaries}
+\makeglossaries
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%  imports  %%%%%%%%%%%%%%%%%%%
-\usepackage{url}
+%%%%%%%%%%%%%%%%%%%  glossary  %%%%%%%%%%%%%%%%%%%
+\newglossaryentry{term-myst}{name=MyST,description={An amazing markup language that supports glossaries}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 % Style quotes
@@ -48,7 +52,7 @@
 }
 
 \title{\Huge \textbf{Lorem Ipsum}}
-\author{\textsc{Franklin Koch}}
+\author{\textsc{}}
 
 \begin{document}
 \sloppy
@@ -65,7 +69,12 @@
 % \include{preface.tex}
 % \include{acknowledgements.tex}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna \href{https://example.com}{aliqua}.
+You can use \gls{term-myst} to create glossaries.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%  acronyms & glossary  %%%%%%%%%%%%%
+\printglossaries
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 
