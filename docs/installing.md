@@ -49,3 +49,12 @@ Try the `myst --version` command before and after, with an update you should be 
 ### Dependencies for $\LaTeX$ and PDF
 
 If you are exporting to $\LaTeX$ with an open-source template specified (see all [templates](https://github.com/myst-templates)) or if you are creating a PDF you will need to install a version of [LaTeX](https://www.latex-project.org/get).
+
+## Working with a Proxy Policy
+
+MyST performs web requests to download templates, check DOIs, etc. If you are working on a network that enforces a strict proxy policy for internet access, you may specify a proxy configuration string with the `HTTPS_PROXY` environment variable, for example:
+
+```shell
+HTTPS_PROXY=http://168.63.76.32:3128 \
+myst build
+```

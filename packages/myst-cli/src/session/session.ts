@@ -7,6 +7,7 @@ import type { MystPlugin, RuleId } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import {
   findCurrentProjectAndLoad,
   findCurrentSiteAndLoad,
@@ -73,6 +74,7 @@ export class Session implements ISession {
   store: Store<RootState>;
   $logger: Logger;
 
+  proxyAgent?: HttpsProxyAgent<string>;
   _shownUpgrade = false;
   _latestVersion?: string;
   _jupyterSessionManagerPromise?: Promise<SessionManager | undefined>;
@@ -85,6 +87,8 @@ export class Session implements ISession {
     this.API_URL = API_URL;
     this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
+    const proxyUrl = process.env.HTTPS_PROXY;
+    if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
     this.store = createStore(rootReducer);
     this.reload();
     // Allow the latest version to be loaded
@@ -118,6 +122,12 @@ export class Session implements ISession {
   }
 
   async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
+    this.log.debug(`Fetching: ${url}`);
+    if (this.proxyAgent) {
+      if (!init) init = {};
+      init = { agent: this.proxyAgent, ...init };
+      this.log.debug(`Using HTTPS proxy: ${this.proxyAgent.proxy}`);
+    }
     const resp = await nodeFetch(url, init);
     return resp;
   }
