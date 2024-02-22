@@ -32,7 +32,7 @@ describe('determineCaptionKind', () => {
   it('container[code, image] -> figure', () => {
     const node = {
       type: 'container',
-      children: [{ type: 'code' }, { type: 'image'}],
+      children: [{ type: 'code' }, { type: 'image' }],
     };
     expect(determineCaptionKind(node)).toEqual(CaptionKind.fig);
   });
