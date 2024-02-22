@@ -1,23 +1,20 @@
-import type { Handler } from './types.js';
+import type { GenericNode } from 'myst-common';
+import type { Handler, ITexParser } from './types.js';
 import { getArguments } from './utils.js';
 
+function quoteHandler(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  state.openNode('blockquote');
+  state.openParagraph();
+  state.renderChildren(node);
+  state.closeParagraph();
+  state.closeNode();
+}
+
 export const QUOTE_HANDLERS: Record<string, Handler> = {
-  env_quote(node, state) {
-    state.closeParagraph();
-    state.openNode('blockquote');
-    state.openParagraph();
-    state.renderChildren(node);
-    state.closeParagraph();
-    state.closeNode();
-  },
-  env_displayquote(node, state) {
-    state.closeParagraph();
-    state.openNode('blockquote');
-    state.openParagraph();
-    state.renderChildren(node);
-    state.closeParagraph();
-    state.closeNode();
-  },
+  env_quote: quoteHandler,
+  env_quotation: quoteHandler,
+  env_displayquote: quoteHandler,
   macro_epigraph(node, state) {
     const [quote, author] = getArguments(node, 'group');
     if (author) {
