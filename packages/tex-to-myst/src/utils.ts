@@ -79,6 +79,7 @@ export const LatexSpecialSymbols = {
   AA: 'Å',
   dots: '…',
   ldots: '…',
+  texttimes: '×',
   textellipsis: '…',
   textdegree: 'º',
   textasciitilde: '~',
