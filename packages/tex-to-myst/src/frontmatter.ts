@@ -57,6 +57,7 @@ function extractEmailFromName(author: { name?: GenericNode | string; email?: str
 function getAuthorOrEmailFromNode(node: GenericNode | string) {
   if (typeof node === 'string') return extractEmailFromName({ name: node });
   const copy = copyNode(node);
+  remove(copy, 'break');
   const author: { name?: GenericNode | string; email?: string } = {};
   (selectAll('inlineCode,link', copy) as GenericNode[]).forEach((n) => {
     const maybeEmail = toText(n);
