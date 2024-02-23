@@ -7,6 +7,7 @@ import type { MystPlugin, RuleId } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import {
   findCurrentProjectAndLoad,
   findCurrentSiteAndLoad,
@@ -22,6 +23,7 @@ import type { ISession } from './types.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
 import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
+import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 
 // fetch polyfill for node<18
@@ -36,6 +38,7 @@ const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
 const NPM_COMMAND = 'npm i -g mystmd@latest';
 const PIP_COMMAND = 'pip install -U mystmd';
+const LOCALHOSTS = ['localhost', '127.0.0.1', '::1'];
 
 export function logUpdateAvailable({
   current,
@@ -72,6 +75,7 @@ export class Session implements ISession {
   store: Store<RootState>;
   $logger: Logger;
 
+  proxyAgent?: HttpsProxyAgent<string>;
   _shownUpgrade = false;
   _latestVersion?: string;
   _jupyterSessionManagerPromise?: Promise<SessionManager | undefined>;
@@ -84,6 +88,8 @@ export class Session implements ISession {
     this.API_URL = API_URL;
     this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
+    const proxyUrl = process.env.HTTPS_PROXY;
+    if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
     this.store = createStore(rootReducer);
     this.reload();
     // Allow the latest version to be loaded
@@ -114,6 +120,18 @@ export class Session implements ISession {
       reloadAllConfigsForCurrentSite(this);
     }
     return this;
+  }
+
+  async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
+    const urlOnly = new URL((url as Request).url ?? (url as URL | string));
+    this.log.debug(`Fetching: ${urlOnly}`);
+    if (this.proxyAgent && !LOCALHOSTS.includes(urlOnly.hostname)) {
+      if (!init) init = {};
+      init = { agent: this.proxyAgent, ...init };
+      this.log.debug(`Using HTTPS proxy: ${this.proxyAgent.proxy}`);
+    }
+    const resp = await nodeFetch(url, init);
+    return resp;
   }
 
   plugins: MystPlugin | undefined;
@@ -196,7 +214,7 @@ export class Session implements ISession {
         };
       } else {
         // Load existing running server
-        const existing = await findExistingJupyterServer();
+        const existing = await findExistingJupyterServer(this);
         if (existing) {
           this.log.debug(`Found existing server on: ${existing.appUrl}`);
           partialServerSettings = existing;

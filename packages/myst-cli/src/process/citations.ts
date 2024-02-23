@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import fetch from 'node-fetch';
 import type { CitationRenderer } from 'citation-js-utils';
 import { getCitations } from 'citation-js-utils';
 import { tic, isUrl } from 'myst-cli-utils';
@@ -14,7 +13,7 @@ export async function loadCitations(session: ISession, path: string): Promise<Ci
   let data: string;
   if (isUrl(path)) {
     session.log.debug(`Fetching citations at "${path}"`);
-    const res = await fetch(path);
+    const res = await session.fetch(path);
     if (!res.ok) {
       throw new Error(`Error fetching citations from "${path}": ${res.status} ${res.statusText}`);
     }

@@ -1,7 +1,6 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
-import fetch from 'node-fetch';
 import type { ISession } from '../../session/types.js';
 import { getSiteManifest } from '../site/manifest.js';
 import { getMystTemplate } from '../site/template.js';
@@ -111,7 +110,7 @@ export async function buildHtml(session: ISession, opts: any) {
   // Fetch all HTML pages and assets by the template
   await Promise.all(
     routes.map(async (page) => {
-      const resp = await fetch(page.url);
+      const resp = await session.fetch(page.url);
       const content = await resp.text();
       writeFileToFolder(path.join(htmlDir, page.path), content);
     }),

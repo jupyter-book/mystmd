@@ -7,7 +7,6 @@ import type { Link } from 'myst-spec';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { fileWarn, toText, RuleId, plural } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import fetch from 'node-fetch';
 import { computeHash, tic } from 'myst-cli-utils';
 import type { Cite } from 'myst-spec-ext';
 import type { SingleCitationRenderer } from './types.js';
@@ -36,12 +35,14 @@ export async function getDoiOrgBibtex(
   const toc = tic();
   session.log.debug('Fetching DOI information from doi.org');
   const url = `https://doi.org/${normalizedDoi}`;
-  const response = await fetch(url, {
-    headers: [['Accept', 'application/x-bibtex']],
-  }).catch(() => {
-    session.log.debug(`Request to ${url} failed.`);
-    return null;
-  });
+  const response = await session
+    .fetch(url, {
+      headers: [['Accept', 'application/x-bibtex']],
+    })
+    .catch(() => {
+      session.log.debug(`Request to ${url} failed.`);
+      return null;
+    });
   if (!response || !response.ok) {
     session.log.debug(`doi.org fetch failed for ${doiString}}`);
     return null;

@@ -32,16 +32,17 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "chalk": "^5.2.0",
-    "myst-common": "^1.1.24",
-    "vfile": "^5.3.7",
     "@jupyterlab/services": "^7.0.0",
+    "chalk": "^5.2.0",
+    "myst-cli-utils": "^2.0.7",
+    "myst-common": "^1.1.24",
+    "node-fetch": "^3.3.0",
     "unist-util-select": "^4.0.3",
-    "which": "^4.0.0",
-    "node-fetch": "^3.3.0"
+    "vfile": "^5.3.7",
+    "which": "^4.0.0"
   },
   "devDependencies": {
-    "js-yaml": "^4.1.0",
-    "@jupyterlab/nbformat": "^3.5.2"
+    "@jupyterlab/nbformat": "^3.5.2",
+    "js-yaml": "^4.1.0"
   }
 }

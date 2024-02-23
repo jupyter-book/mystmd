@@ -1,7 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import pLimit from 'p-limit';
-import fetch from 'node-fetch';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
@@ -64,7 +63,7 @@ export async function checkLink(session: ISession, url: string): Promise<Externa
     }
     session.log.debug(`Checking that "${url}" exists`);
     const linkCache = loadLinkCache(session, url);
-    const resp = linkCache ?? (await fetch(url, { headers: EXT_REQUEST_HEADERS }));
+    const resp = linkCache ?? (await session.fetch(url, { headers: EXT_REQUEST_HEADERS }));
     link.ok = resp.ok;
     link.status = resp.status;
     link.statusText = resp.statusText;

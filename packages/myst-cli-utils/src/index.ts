@@ -10,7 +10,6 @@ export {
 export { exec, makeExecutable } from './exec.js';
 export { clirun, tic } from './utils.js';
 export { isUrl } from './isUrl.js';
-export { Session, getSession } from './session.js';
 export {
   computeHash,
   copyFileMaintainPath,
