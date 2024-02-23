@@ -113,6 +113,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/inquirer": "^9.0.3",
     "@types/mime-types": "^2.1.1",
+    "@types/uuid": "^8.3.4",
     "@types/which": "^3.0.0",
     "@types/ws": "^8.5.5",
     "concurrently": "^8.2.0",
