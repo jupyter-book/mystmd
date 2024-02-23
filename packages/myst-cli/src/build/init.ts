@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
+import { v4 as uuid } from 'uuid';
 import { defaultConfigFile, loadConfig, writeConfigs } from '../config.js';
 import { loadProjectFromDisk } from '../project/load.js';
 import { selectors } from '../store/index.js';
@@ -8,12 +9,14 @@ import type { ISession } from '../session/types.js';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { startServer } from './site/start.js';
-import { getGithubUrl, githubCurvenoteAction, githubPagesAction } from './gh-actions/index.js';
+import { githubCurvenoteAction, githubPagesAction } from './gh-actions/index.js';
+import { getGithubUrl } from './utils/github.js';
 
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
   return `project:
+  id: ${uuid()}
   # title:
   # description:
   keywords: []
