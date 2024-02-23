@@ -21,7 +21,7 @@ import { castSession } from '../../session/cache.js';
 import { selectors } from '../../store/index.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
-import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
+import type { ExportWithOutput, ExportOptions, ExportFnOptions, ExportResults } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { collectBasicExportOptions, collectExportOptions } from '../utils/collectExportOptions.js';
 import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
@@ -372,15 +372,18 @@ export async function localProjectToMeca(
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
+  const results: ExportResults = { tempFolders: [] };
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runMecaExport(session, file, exportOptions, {
+      const exportResults = await runMecaExport(session, file, exportOptions, {
         projectPath,
         clean: opts.clean,
         extraLinkTransformers,
       });
+      results.tempFolders.push(...exportResults.tempFolders);
     }),
     opts.throwOnFailure,
   );
+  return results;
 }

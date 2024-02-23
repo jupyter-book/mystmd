@@ -13,7 +13,7 @@ import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
-import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
+import type { ExportWithOutput, ExportOptions, ExportFnOptions, ExportResults } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
@@ -109,15 +109,18 @@ export async function localArticleToJats(
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
+  const results: ExportResults = { tempFolders: [] };
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      await runJatsExport(session, file, exportOptions, {
+      const exportResults = await runJatsExport(session, file, exportOptions, {
         projectPath,
         clean: opts.clean,
         extraLinkTransformers,
       });
+      results.tempFolders.push(...exportResults.tempFolders);
     }),
     opts.throwOnFailure,
   );
+  return results;
 }
