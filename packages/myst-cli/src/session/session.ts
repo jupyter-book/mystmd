@@ -38,6 +38,7 @@ const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
 const NPM_COMMAND = 'npm i -g mystmd@latest';
 const PIP_COMMAND = 'pip install -U mystmd';
+const LOCALHOSTS = ['localhost', '127.0.0.1', '::1'];
 
 export function logUpdateAvailable({
   current,
@@ -122,8 +123,9 @@ export class Session implements ISession {
   }
 
   async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
-    this.log.debug(`Fetching: ${url}`);
-    if (this.proxyAgent) {
+    const urlOnly = new URL((url as Request).url ?? (url as URL | string));
+    this.log.debug(`Fetching: ${urlOnly}`);
+    if (this.proxyAgent && !LOCALHOSTS.includes(urlOnly.hostname)) {
       if (!init) init = {};
       init = { agent: this.proxyAgent, ...init };
       this.log.debug(`Using HTTPS proxy: ${this.proxyAgent.proxy}`);
