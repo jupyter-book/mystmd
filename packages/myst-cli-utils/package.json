@@ -1,6 +1,6 @@
 {
   "name": "myst-cli-utils",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "sideEffects": false,
   "license": "MIT",
   "description": "Utils for logging, error messages and session management",
