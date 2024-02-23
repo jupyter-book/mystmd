@@ -10,13 +10,13 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import { startServer } from './site/start.js';
 import { githubCurvenoteAction, githubPagesAction } from './gh-actions/index.js';
-import { getGithubUrl, githubIdFromUrl } from './utils/github.js';
+import { getGithubUrl } from './utils/github.js';
 
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
   return `project:
-  id: ${github ? githubIdFromUrl(github) : uuid()}
+  id: ${uuid()}
   # title:
   # description:
   keywords: []

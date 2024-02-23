@@ -12,12 +12,3 @@ export async function getGithubUrl() {
     return undefined;
   }
 }
-
-/**
- * Given a normalized Github url, return the org/project id
- *
- * https://github.com/<org>/<project> returns <org>/<project>
- */
-export function githubIdFromUrl(github: string) {
-  return new URL(github).pathname.replace(/^\//, '');
-}
