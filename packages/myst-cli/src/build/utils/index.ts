@@ -5,3 +5,4 @@ export * from './getFileContent.js';
 export * from './localArticleExport.js';
 export * from './resolveAndLogErrors.js';
 export * from './bibtex.js';
+export * from './github.js';

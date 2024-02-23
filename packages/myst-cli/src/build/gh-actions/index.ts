@@ -4,6 +4,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import type { ISession } from 'myst-cli-utils';
 import { makeExecutable, writeFileToFolder } from 'myst-cli-utils';
+import { getGithubUrl } from '../utils/github.js';
 
 function createGithubPagesAction({
   defaultBranch = 'main',
@@ -94,19 +95,6 @@ jobs:
         env:
           CURVENOTE_TOKEN: \${{ secrets.CURVENOTE_TOKEN }}
 `;
-}
-
-export async function getGithubUrl() {
-  try {
-    const gitUrl = await makeExecutable('git config --get remote.origin.url', null)();
-    if (!gitUrl.includes('github.com')) return undefined;
-    return gitUrl
-      .replace('git@github.com:', 'https://github.com/')
-      .trim()
-      .replace(/\.git$/, '');
-  } catch (error) {
-    return undefined;
-  }
 }
 
 async function checkFolderIsGit(): Promise<boolean> {
