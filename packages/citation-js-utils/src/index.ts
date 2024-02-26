@@ -12,7 +12,7 @@ export type CitationJson = {
   type?: 'article-journal' | string;
   id: string;
   author?: { given: string; family: string }[];
-  issued?: { 'date-parts': number[][] };
+  issued?: { 'date-parts'?: number[][]; literal?: string };
   publisher?: string;
   title?: string;
   'citation-key'?: string;
@@ -73,12 +73,20 @@ const defaultString: OutputOptions = {
   style: CitationJSStyles.apa,
 };
 
+export function yearFromCitation(data: CitationJson) {
+  let year: number | string | undefined = data.issued?.['date-parts']?.[0]?.[0];
+  if (year) return year;
+  year = data.issued?.['literal']?.match(/\b[12][0-9]{3}\b/)?.[0];
+  if (year) return year;
+  return 'n.d.';
+}
+
 export function getInlineCitation(data: CitationJson, kind: InlineCite, opts?: InlineOptions) {
   let authors = data.author;
   if (!authors || authors.length === 0) {
     authors = data.editor;
   }
-  const year = data.issued?.['date-parts']?.[0]?.[0];
+  const year = yearFromCitation(data);
   const prefix = opts?.prefix ? `${opts.prefix} ` : '';
   const suffix = opts?.suffix ? `, ${opts.suffix}` : '';
   let yearPart = kind === InlineCite.t ? ` (${year}${suffix})` : `, ${year}${suffix}`;
