@@ -132,19 +132,31 @@ export type CitationRenderer = Record<
   }
 >;
 
+function wrapWithAnchorTag(url: string, text?: string) {
+  if (!url) return '';
+  return `<a target="_blank" rel="noreferrer" href="${url}">${text ?? url}</a>`;
+}
+
 function wrapWithDoiAnchorTag(doiStr: string) {
   if (!doiStr) return '';
-  return `<a target="_blank" rel="noreferrer" href="https://doi.org/${doiStr}">${doiStr}</a>`;
+  return wrapWithAnchorTag(`https://doi.org/${doiStr}`, `${doiStr}`);
 }
 
 const URL_REGEX =
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
 
-function replaceDoiWithAnchorElement(str: string, doi: string) {
+function replaceUrlsWithAnchorElement(str: string, doi: string) {
   if (!str) return str;
-  const match = str.match(URL_REGEX);
-  if (!match) return str;
-  return str.replace(URL_REGEX, wrapWithDoiAnchorTag(doi));
+  const matches = [...str.matchAll(URL_REGEX)];
+  let newStr = str;
+  matches?.forEach((match) => {
+    if (doi && match[0].includes(doi)) {
+      newStr = newStr.replace(match[0], wrapWithDoiAnchorTag(doi));
+    } else {
+      newStr = newStr.replace(match[0], wrapWithAnchorTag(match[0]));
+    }
+  });
+  return newStr;
 }
 
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
@@ -164,7 +176,7 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
             return getInlineCitation(c, kind, opts);
           },
           render(style?: CitationJSStyles) {
-            return replaceDoiWithAnchorElement(
+            return replaceUrlsWithAnchorElement(
               cleanRef(cite.set(c).get({ ...defaultString, style: style ?? CitationJSStyles.apa })),
               c.DOI,
             );
