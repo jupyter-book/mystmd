@@ -1,5 +1,16 @@
 # myst-templates
 
+## 1.0.17
+
+### Patch Changes
+
+- 36decbb4: Move fetch function to session
+- Updated dependencies [36decbb4]
+- Updated dependencies [f1ee6f7]
+  - myst-cli-utils@2.0.8
+  - myst-frontmatter@1.1.27
+  - myst-common@1.1.27
+
 ## 1.0.16
 
 ### Patch Changes

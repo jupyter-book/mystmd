@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.8
+
+### Patch Changes
+
+- 36decbb4: Move fetch function to session
+
 ## 2.0.7
 
 ### Patch Changes

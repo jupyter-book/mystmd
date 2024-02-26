@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.27
+
+### Patch Changes
+
+- f1ee6f7: Add id to project frontmatter and populate on init
+
 ## 1.1.26
 
 ## 1.1.25

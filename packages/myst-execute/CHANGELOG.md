@@ -1,5 +1,14 @@
 # myst-execute
 
+## 0.0.3
+
+### Patch Changes
+
+- 36decbb4: Move fetch function to session
+- Updated dependencies [36decbb4]
+  - myst-cli-utils@2.0.8
+  - myst-common@1.1.27
+
 ## 0.0.2
 
 ### Patch Changes

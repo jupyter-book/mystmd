@@ -1,5 +1,24 @@
 # myst-cli
 
+## 1.1.44
+
+### Patch Changes
+
+- 36decbb4: Move fetch function to session
+- 36decbb4: Allow https proxy set as environment var
+- f1ee6f7: Add id to project frontmatter and populate on init
+- 4f5fe14e: Conform jats/meca export function interface to other export functions
+- Updated dependencies [36decbb4]
+- Updated dependencies [f1ee6f7]
+  - myst-cli-utils@2.0.8
+  - myst-templates@1.0.17
+  - myst-execute@0.0.3
+  - myst-to-jats@1.0.24
+  - myst-frontmatter@1.1.27
+  - myst-common@1.1.27
+  - myst-config@1.1.27
+  - myst-spec-ext@1.1.27
+
 ## 1.1.43
 
 ### Patch Changes
