@@ -12,19 +12,21 @@ function pushCite(
   references: Pick<References, 'cite'>,
   citeRenderer: CitationRenderer,
   label: string,
-) {
+): string {
   if (!references.cite) {
     references.cite = { order: [], data: {} };
   }
-  if (!references.cite?.data[label]) {
+  if (!references.cite.data[label]) {
     references.cite.order.push(label);
+    references.cite.data[label] = {
+      label,
+      enumerator: `${references.cite.order.length}`,
+      doi: citeRenderer[label]?.getDOI(),
+      html: citeRenderer[label]?.render(),
+      //url:
+    };
   }
-  references.cite.data[label] = {
-    // TODO: this number isn't right? Should be the last time it was seen, not the current size.
-    number: references.cite.order.length,
-    doi: citeRenderer[label]?.getDOI(),
-    html: citeRenderer[label]?.render(),
-  };
+  return references.cite.data[label].enumerator;
 }
 
 function addCitationChildren(
@@ -82,6 +84,6 @@ export function transformCitations(
     const citeLabel = cite.label as string;
     // push cites in order of appearance in the document
     const success = addCitationChildren(session, file, cite, renderer);
-    if (success) pushCite(references, renderer, citeLabel);
+    if (success) cite.enumerator = pushCite(references, renderer, citeLabel);
   });
 }

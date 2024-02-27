@@ -20,7 +20,10 @@ export type GenericParent<T extends Record<string, any> = Record<string, any>> =
 
 export type Citations = {
   order: string[];
-  data: Record<string, { html: string; number: number; doi: string | undefined }>;
+  data: Record<
+    string,
+    { label: string; html: string; enumerator: string; doi?: string; url?: string }
+  >;
 };
 
 export enum NotebookCell {
