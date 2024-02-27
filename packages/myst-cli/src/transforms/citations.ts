@@ -23,7 +23,7 @@ function pushCite(
       enumerator: `${references.cite.order.length}`,
       doi: citeRenderer[label]?.getDOI(),
       html: citeRenderer[label]?.render(),
-      //url:
+      url: citeRenderer[label]?.getURL(),
     };
   }
   return references.cite.data[label].enumerator;

@@ -128,28 +128,34 @@ export type CitationRenderer = Record<
     render: (style?: CitationJSStyles) => string;
     inline: (kind?: InlineCite, opts?: InlineOptions) => InlineNode[];
     getDOI: () => string | undefined;
+    getURL: () => string | undefined;
     cite: CitationJson;
   }
 >;
+
+function doiUrl(doi?: string) {
+  return doi ? `https://doi.org/${doi}` : undefined;
+}
 
 function wrapWithAnchorTag(url: string, text?: string) {
   if (!url) return '';
   return `<a target="_blank" rel="noreferrer" href="${url}">${text ?? url}</a>`;
 }
 
-function wrapWithDoiAnchorTag(doiStr: string) {
-  if (!doiStr) return '';
-  return wrapWithAnchorTag(`https://doi.org/${doiStr}`, `${doiStr}`);
+function wrapWithDoiAnchorTag(doi?: string) {
+  const url = doiUrl(doi);
+  if (!url) return '';
+  return wrapWithAnchorTag(url, doi);
 }
 
 const URL_REGEX =
   /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
 
-function replaceUrlsWithAnchorElement(str: string, doi: string) {
-  if (!str) return str;
+function replaceUrlsWithAnchorElement(str?: string, doi?: string) {
+  if (!str) return '';
   const matches = [...str.matchAll(URL_REGEX)];
   let newStr = str;
-  matches?.forEach((match) => {
+  matches.forEach((match) => {
     if (doi && match[0].includes(doi)) {
       newStr = newStr.replace(match[0], wrapWithDoiAnchorTag(doi));
     } else {
@@ -157,6 +163,12 @@ function replaceUrlsWithAnchorElement(str: string, doi: string) {
     }
   });
   return newStr;
+}
+
+export function firstNonDoiUrl(str?: string, doi?: string) {
+  if (!str) return;
+  const matches = [...str.matchAll(URL_REGEX)];
+  return matches.map((match) => match[0]).find((match) => !doi || !match.includes(doi));
 }
 
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
@@ -183,6 +195,9 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
           },
           getDOI(): string | undefined {
             return c.DOI || undefined;
+          },
+          getURL(): string | undefined {
+            return firstNonDoiUrl(cleanRef(cite.set(c).get(defaultString)), c.DOI) ?? doiUrl(c.DOI);
           },
           cite: c,
         },

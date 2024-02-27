@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getCitations, CitationJSStyles, yearFromCitation } from '../src';
+import { getCitations, CitationJSStyles, yearFromCitation, firstNonDoiUrl } from '../src';
 import {
   bibtex,
   doiInNote,
@@ -66,5 +66,29 @@ describe('yearFromCitation', () => {
   it('no date returns n.d.', async () => {
     const data = { id: 'id' };
     expect(yearFromCitation(data)).toEqual('n.d.');
+  });
+});
+
+describe('firstNonDoiUrl', () => {
+  it('no url returns undefined', async () => {
+    expect(firstNonDoiUrl('my citation', 'abc123')).toEqual(undefined);
+  });
+  it('one url returns url', async () => {
+    expect(firstNonDoiUrl('my citation https://example.com', 'abc123')).toEqual(
+      'https://example.com',
+    );
+  });
+  it('two urls returns first url', async () => {
+    expect(
+      firstNonDoiUrl('my citation https://example.com/a and https://example.com/b', 'abc123'),
+    ).toEqual('https://example.com/a');
+  });
+  it('doi urls is skipped', async () => {
+    expect(firstNonDoiUrl('my citation https://example.com/abc123', 'abc123')).toEqual(undefined);
+  });
+  it('url after doi url is returned', async () => {
+    expect(
+      firstNonDoiUrl('my citation https://example.com/abc123 and https://example.com/b', 'abc123'),
+    ).toEqual('https://example.com/b');
   });
 });
