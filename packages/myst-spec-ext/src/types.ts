@@ -141,6 +141,7 @@ export type Cite = {
   prefix?: string;
   suffix?: string;
   partial?: 'author' | 'year';
+  enumerator?: string;
 };
 
 export type CiteGroup = {

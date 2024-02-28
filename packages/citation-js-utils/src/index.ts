@@ -12,7 +12,7 @@ export type CitationJson = {
   type?: 'article-journal' | string;
   id: string;
   author?: { given: string; family: string }[];
-  issued?: { 'date-parts': number[][] };
+  issued?: { 'date-parts'?: number[][]; literal?: string };
   publisher?: string;
   title?: string;
   'citation-key'?: string;
@@ -73,12 +73,20 @@ const defaultString: OutputOptions = {
   style: CitationJSStyles.apa,
 };
 
+export function yearFromCitation(data: CitationJson) {
+  let year: number | string | undefined = data.issued?.['date-parts']?.[0]?.[0];
+  if (year) return year;
+  year = data.issued?.['literal']?.match(/\b[12][0-9]{3}\b/)?.[0];
+  if (year) return year;
+  return 'n.d.';
+}
+
 export function getInlineCitation(data: CitationJson, kind: InlineCite, opts?: InlineOptions) {
   let authors = data.author;
   if (!authors || authors.length === 0) {
     authors = data.editor;
   }
-  const year = data.issued?.['date-parts']?.[0]?.[0];
+  const year = yearFromCitation(data);
   const prefix = opts?.prefix ? `${opts.prefix} ` : '';
   const suffix = opts?.suffix ? `, ${opts.suffix}` : '';
   let yearPart = kind === InlineCite.t ? ` (${year}${suffix})` : `, ${year}${suffix}`;
@@ -120,23 +128,47 @@ export type CitationRenderer = Record<
     render: (style?: CitationJSStyles) => string;
     inline: (kind?: InlineCite, opts?: InlineOptions) => InlineNode[];
     getDOI: () => string | undefined;
+    getURL: () => string | undefined;
     cite: CitationJson;
   }
 >;
 
-function wrapWithDoiAnchorTag(doiStr: string) {
-  if (!doiStr) return '';
-  return `<a target="_blank" rel="noreferrer" href="https://doi.org/${doiStr}">${doiStr}</a>`;
+function doiUrl(doi?: string) {
+  return doi ? `https://doi.org/${doi}` : undefined;
+}
+
+function wrapWithAnchorTag(url: string, text?: string) {
+  if (!url) return '';
+  return `<a target="_blank" rel="noreferrer" href="${url}">${text ?? url}</a>`;
+}
+
+function wrapWithDoiAnchorTag(doi?: string) {
+  const url = doiUrl(doi);
+  if (!url) return '';
+  return wrapWithAnchorTag(url, doi);
 }
 
 const URL_REGEX =
-  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
 
-function replaceDoiWithAnchorElement(str: string, doi: string) {
-  if (!str) return str;
-  const match = str.match(URL_REGEX);
-  if (!match) return str;
-  return str.replace(URL_REGEX, wrapWithDoiAnchorTag(doi));
+function replaceUrlsWithAnchorElement(str?: string, doi?: string) {
+  if (!str) return '';
+  const matches = [...str.matchAll(URL_REGEX)];
+  let newStr = str;
+  matches.forEach((match) => {
+    if (doi && match[0].includes(doi)) {
+      newStr = newStr.replace(match[0], wrapWithDoiAnchorTag(doi));
+    } else {
+      newStr = newStr.replace(match[0], wrapWithAnchorTag(match[0]));
+    }
+  });
+  return newStr;
+}
+
+export function firstNonDoiUrl(str?: string, doi?: string) {
+  if (!str) return;
+  const matches = [...str.matchAll(URL_REGEX)];
+  return matches.map((match) => match[0]).find((match) => !doi || !match.includes(doi));
 }
 
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
@@ -156,13 +188,16 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
             return getInlineCitation(c, kind, opts);
           },
           render(style?: CitationJSStyles) {
-            return replaceDoiWithAnchorElement(
+            return replaceUrlsWithAnchorElement(
               cleanRef(cite.set(c).get({ ...defaultString, style: style ?? CitationJSStyles.apa })),
               c.DOI,
             );
           },
           getDOI(): string | undefined {
             return c.DOI || undefined;
+          },
+          getURL(): string | undefined {
+            return firstNonDoiUrl(cleanRef(cite.set(c).get(defaultString)), c.DOI) ?? doiUrl(c.DOI);
           },
           cite: c,
         },

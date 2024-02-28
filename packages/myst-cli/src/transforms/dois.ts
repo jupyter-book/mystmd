@@ -13,28 +13,38 @@ import type { SingleCitationRenderer } from './types.js';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 
-function doiCacheFile(session: ISession, normalizedDoi: string) {
+function doiBibtexCacheFile(session: ISession, normalizedDoi: string) {
   const filename = `doi-${computeHash(normalizedDoi)}.bib`;
   const cacheFolder = join(session.buildPath(), 'cache');
   if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
   return join(cacheFolder, filename);
 }
 
+function doiResolvesCacheFile(session: ISession, normalizedDoi: string) {
+  const filename = `doi-${computeHash(normalizedDoi)}.txt`;
+  const cacheFolder = join(session.buildPath(), 'cache');
+  if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
+  return join(cacheFolder, filename);
+}
+
+/**
+ * Fetch bibtex entry for doi from doi.org using application/x-bibtex accept header
+ */
 export async function getDoiOrgBibtex(
   session: ISession,
   doiString: string,
 ): Promise<string | null> {
   const normalizedDoi = doi.normalize(doiString);
-  if (!doi.validate(doiString) || !normalizedDoi) return null;
-  const cachePath = doiCacheFile(session, normalizedDoi);
+  const url = doi.buildUrl(normalizedDoi);
+  if (!doi.validate(doiString) || !normalizedDoi || !url) return null;
+  const cachePath = doiBibtexCacheFile(session, normalizedDoi);
   if (fs.existsSync(cachePath)) {
     const bibtex = fs.readFileSync(cachePath).toString();
-    session.log.debug(`Loaded cached reference information doi:${normalizedDoi}`);
+    session.log.debug(`Loaded cached reference bibtex for doi:${normalizedDoi}`);
     return bibtex;
   }
   const toc = tic();
-  session.log.debug('Fetching DOI information from doi.org');
-  const url = `https://doi.org/${normalizedDoi}`;
+  session.log.debug('Fetching DOI bibtex from doi.org');
   const response = await session
     .fetch(url, {
       headers: [['Accept', 'application/x-bibtex']],
@@ -44,14 +54,42 @@ export async function getDoiOrgBibtex(
       return null;
     });
   if (!response || !response.ok) {
-    session.log.debug(`doi.org fetch failed for ${doiString}}`);
+    session.log.debug(`doi.org fetch failed for ${doiString}`);
     return null;
   }
   const bibtex = await response.text();
-  session.log.debug(toc(`Fetched reference information doi:${normalizedDoi} in %s`));
-  session.log.debug(`Saving doi to cache ${cachePath}`);
+  session.log.debug(toc(`Fetched reference bibtex for doi:${normalizedDoi} in %s`));
+  session.log.debug(`Saving doi bibtex to cache ${cachePath}`);
   fs.writeFileSync(cachePath, bibtex);
   return bibtex;
+}
+
+/**
+ * Fetch doi from doi.org to see if it resolves
+ */
+export async function doiOrgResolves(session: ISession, doiString: string): Promise<boolean> {
+  const normalizedDoi = doi.normalize(doiString);
+  const url = doi.buildUrl(normalizedDoi);
+  if (!doi.validate(doiString) || !normalizedDoi || !url) return false;
+  const cachePath = doiResolvesCacheFile(session, normalizedDoi);
+  if (fs.existsSync(cachePath)) {
+    session.log.debug(`Loaded cached resolution result for doi:${normalizedDoi}`);
+    return true;
+  }
+  const toc = tic();
+  session.log.debug('Resolving doi existence from doi.org');
+  const response = await session.fetch(url).catch(() => {
+    session.log.debug(`Request to ${url} failed.`);
+    return null;
+  });
+  if (!response || !response.ok) {
+    session.log.debug(`doi.org fetch failed for ${doiString}`);
+    return false;
+  }
+  session.log.debug(toc(`Resolved doi existence for doi:${normalizedDoi} in %s`));
+  session.log.debug(`Saving resolution result to cache ${cachePath}`);
+  fs.writeFileSync(cachePath, 'ok');
+  return true;
 }
 
 export async function getCitation(
@@ -63,9 +101,20 @@ export async function getCitation(
   if (!doi.validate(doiString)) return null;
   const bibtex = await getDoiOrgBibtex(session, doiString);
   if (!bibtex) {
-    fileWarn(vfile, `Could not find DOI from link: ${doiString} as ${doi.normalize(doiString)}`, {
+    const resolves = await doiOrgResolves(session, doiString);
+    const normalizedDoi = doi.normalize(doiString);
+    let message: string;
+    let note: string | undefined;
+    if (resolves) {
+      message = `No bibtex available from doi.org for doi:${normalizedDoi}`;
+      note = `To resolve this error, visit ${doi.buildUrl(normalizedDoi)} and add citation info to .bib file`;
+    } else {
+      message = `Could not find DOI from link: ${doiString} as ${normalizedDoi}`;
+    }
+    fileWarn(vfile, message, {
       node,
       ruleId: RuleId.doiLinkValid,
+      note,
     });
     return null;
   }
