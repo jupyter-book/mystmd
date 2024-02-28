@@ -67,3 +67,6 @@ export const MARKDOWN_IT_CONFIG = {
     },
   },
 };
+
+// List of valid TLDs to exclude from linkify
+export const EXCLUDE_TLDS = ['py', 'md'];
