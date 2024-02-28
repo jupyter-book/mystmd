@@ -296,7 +296,7 @@ export async function postProcessMdast(
   const { mdast, dependencies } = mdastPost;
   const fileState = cache.$internalReferences[file];
   const state = pageReferenceStates
-    ? new MultiPageReferenceResolver(pageReferenceStates, file)
+    ? new MultiPageReferenceResolver(pageReferenceStates, file, vfile)
     : fileState;
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
