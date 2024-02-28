@@ -72,6 +72,7 @@ import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
+import { rawDirectiveTransform } from '../transforms/raw.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -163,6 +164,7 @@ export async function transformMdast(
   frontmatterPartsTransform(session, file, mdast, frontmatter);
   importMdastFromJson(session, file, mdast);
   await includeFilesTransform(session, file, mdast, vfile);
+  rawDirectiveTransform(mdast, vfile);
   // This needs to come before basic transformations since it may add labels to blocks
   liftCodeMetadataToBlock(session, vfile, mdast);
 

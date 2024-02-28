@@ -217,6 +217,13 @@ export type Include = {
   caption?: (FlowContent | ListContent | PhrasingContent)[];
 };
 
+export type Raw = {
+  type: 'raw';
+  lang?: string;
+  value: string;
+  children?: (FlowContent | ListContent | PhrasingContent)[];
+};
+
 export type Container = Omit<SpecContainer, 'kind'> & {
   kind?: 'figure' | 'table' | 'quote' | 'code' | string;
   source?: Dependency;

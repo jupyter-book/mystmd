@@ -15,6 +15,7 @@ import { mdastDirective } from './mdast.js';
 import { mermaidDirective } from './mermaid.js';
 import { mystdemoDirective } from './mystdemo.js';
 import { outputDirective } from './output.js';
+import { rawDirective } from './raw.js';
 
 export const defaultDirectives = [
   admonitionDirective,
@@ -36,6 +37,7 @@ export const defaultDirectives = [
   mermaidDirective,
   mystdemoDirective,
   outputDirective,
+  rawDirective,
 ];
 
 export { admonitionDirective } from './admonition.js';
@@ -54,3 +56,4 @@ export { mdastDirective } from './mdast.js';
 export { mermaidDirective } from './mermaid.js';
 export { mystdemoDirective } from './mystdemo.js';
 export { outputDirective } from './output.js';
+export { rawDirective } from './raw.js';
