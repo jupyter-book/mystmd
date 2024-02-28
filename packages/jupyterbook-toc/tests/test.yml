@@ -33,14 +33,18 @@ cases:
     content: |
       root: intro
       format: jb-book
-      chapters:
-        - title: User Guide
-          sections:
+      parts:
+        - caption: User Guide
+          chapters:
           - file: user_guide/sphinx
           - file: user_guide/cli
-          - file: user_guide/api    
-        - file: foo.md
-        - glob: bar/baz*.md
+          - file: user_guide/api  
+        - caption: Other
+          chapters:
+          - file: foo.md
+          - glob: bar/baz*.md
+            sections:
+              - file: other.md
   - title: JB article ToC Parses
     content: |
       root: intro
@@ -61,7 +65,7 @@ cases:
         - file: user_guide/api    
         - file: foo.md
         - glob: bar/baz*.md
-    throws: 'The toc\.format must be'
+    throws: 'The given contents do not form a valid TOC'
   - title: Parts and chapters fails
     content: |
       root: intro
@@ -73,7 +77,7 @@ cases:
       chapters:
         - file: foo.md
         - glob: bar/baz*.md
-    throws: 'The toc must have one and only one'
+    throws: 'The given contents do not form a valid TOC'
   - title: Sections and chapters fails
     content: |
       root: intro
@@ -85,7 +89,7 @@ cases:
       chapters:
         - file: foo.md
         - glob: bar/baz*.md
-    throws: 'The toc must have one and only one'
+    throws: 'The given contents do not form a valid TOC'
   - title: Sections and parts fails
     content: |
       root: intro
@@ -97,4 +101,4 @@ cases:
       parts:
         - file: foo.md
         - glob: bar/baz*.md
-    throws: 'The toc must have one and only one'
+    throws: 'The given contents do not form a valid TOC'

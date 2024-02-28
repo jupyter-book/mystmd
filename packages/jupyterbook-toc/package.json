@@ -26,13 +26,17 @@
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
-    "build": "npm-run-all -l clean -p build:esm"
+    "build:schema": "npx ts-json-schema-generator --path src/types.d.ts --type TOC -o ./schemas/schema.json",
+    "build": "npm-run-all -s -l clean -p build:schema build:esm"
   },
   "bugs": {
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
+    "ajv": "^8.12.0",
     "js-yaml": "^4.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "ts-json-schema-generator": "^1.5.0"
+  }
 }

@@ -1,34 +1,7 @@
 import yaml from 'js-yaml';
-
-export const TOC_FORMAT = 'jb-book';
-export const TOC_FORMAT_ARTICLE = 'jb-article';
-
-export type TocOptions = {
-  path?: string;
-  filename?: string;
-  ci?: boolean;
-};
-
-export type JupyterBookPart = {
-  caption?: string;
-  chapters?: JupyterBookChapter[];
-};
-
-export type JupyterBookChapter = {
-  file?: string;
-  url?: string;
-  title?: string;
-  glob?: string;
-  sections?: JupyterBookChapter[];
-};
-
-export type TOC = {
-  format: string;
-  root: string;
-  sections?: JupyterBookChapter[];
-  chapters?: JupyterBookChapter[];
-  parts?: JupyterBookPart[];
-};
+import type { TOC } from './types.d.ts';
+import schema from "../schemas/schema.json";
+import Ajv from "ajv";
 
 export function parseTOC(contents: string): TOC {
   const toc = yaml.load(contents) as any;
@@ -37,12 +10,17 @@ export function parseTOC(contents: string): TOC {
       `Encountered a legacy ToC, please see: https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
     );
   }
-  const { format, root, sections, chapters, parts } = toc;
-  if (![TOC_FORMAT, TOC_FORMAT_ARTICLE].includes(format))
-    throw new Error(`The toc.format must be ${TOC_FORMAT} or ${TOC_FORMAT_ARTICLE}`);
-  if (!root) throw new Error(`The toc.root must exist`);
-  if (+!!sections + +!!chapters + +!!parts !== 1) {
-    throw new Error(`The toc must have one and only one sections, chapters, or parts`);
+
+  const ajv = new Ajv.default({logger: console});
+  const validate = ajv.compile(schema);
+  if (!validate(toc)) {
+    const messages: string[] = [];
+    for (const error of validate.errors ?? []) {
+	    messages.push(`- ${error}`);
+    }
+    throw new Error(`The given contents do not form a valid TOC. Please see: https://sphinx-external-toc.readthedocs.io/en/latest/user_guide/sphinx.html#basic-structure for information about valid ToC contents`);
+    
   }
-  return toc;
+
+  return toc as TOC;
 }
