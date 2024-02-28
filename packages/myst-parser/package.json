@@ -55,6 +55,7 @@
     "myst-directives": "^1.0.22",
     "myst-roles": "^1.0.22",
     "myst-spec": "^0.0.5",
+    "tlds": "^1.250.0",
     "unified": "^10.1.1",
     "unist-builder": "^3.0.0",
     "unist-util-remove": "^3.1.0",

@@ -104,4 +104,18 @@ describe('linkify', () => {
       ],
     });
   });
+  it('dont linkify .py', () => {
+    const content = 'Link in paragraph: example.py';
+    const expected = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'Link in paragraph: example.py' }],
+        },
+      ],
+    };
+    expect(stripPositions(mystParse(content))).toEqual(expected);
+    expect(stripPositions(mystParse(content, { markdownit: { linkify: true } }))).toEqual(expected);
+  });
 });

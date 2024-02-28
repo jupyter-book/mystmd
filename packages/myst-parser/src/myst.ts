@@ -3,7 +3,8 @@ import { defaultDirectives } from 'myst-directives';
 import { defaultRoles } from 'myst-roles';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
-import { MARKDOWN_IT_CONFIG } from './config.js';
+import tlds from 'tlds';
+import { EXCLUDE_TLDS, MARKDOWN_IT_CONFIG } from './config.js';
 import { tokensToMyst } from './tokensToMyst.js';
 import {
   mathPlugin,
@@ -70,6 +71,9 @@ export function createTokenizer(opts?: Options) {
     } as any,
     markdownit,
   );
+  if (markdownit.linkify) {
+    tokenizer.linkify.tlds(tlds.filter((tld) => !EXCLUDE_TLDS.includes(tld)));
+  }
   if (extensions.smartquotes) tokenizer.enable('smartquotes');
   if (extensions.tables) tokenizer.enable('table');
   if (extensions.colonFences) tokenizer.use(colonFencePlugin);
