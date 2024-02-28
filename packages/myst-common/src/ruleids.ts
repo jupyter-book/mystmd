@@ -81,7 +81,6 @@ export enum RuleId {
   citationIsUnique = 'citation-is-unique',
   bibFileExists = 'bib-file-exists',
   citationRenders = 'citation-renders',
-  citationLabelExists = 'citation-label-exists',
   // Code rules
   codeMetadataLifted = 'code-metadata-lifted',
   codeMetatagsValid = 'code-metatags-valid',

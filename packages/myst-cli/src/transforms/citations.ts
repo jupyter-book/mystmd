@@ -37,9 +37,6 @@ function addCitationChildren(
 ): boolean {
   const render = renderer[cite.label as string];
   if (!render) {
-    addWarningForFile(session, file, `Citation not found for label: ${cite.label}`, 'error', {
-      ruleId: RuleId.citationLabelExists,
-    });
     cite.error = 'not found';
     return false;
   }
