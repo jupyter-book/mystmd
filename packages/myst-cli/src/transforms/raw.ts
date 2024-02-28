@@ -5,6 +5,7 @@ import { selectAll } from 'unist-util-select';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { TexParser } from 'tex-to-myst';
+import type { PhrasingContent } from 'myst-spec';
 
 export async function rawDirectiveTransform(tree: GenericParent, vfile: VFile) {
   const rawNodes = selectAll('raw', tree) as Raw[];
@@ -19,7 +20,9 @@ export async function rawDirectiveTransform(tree: GenericParent, vfile: VFile) {
           note: 'Treating content as text',
         });
       }
-      node.children = [{ type: 'paragraph', children: [{ type: 'text', value: node.value }] }];
+      node.children = [
+        { type: 'paragraph', children: [{ type: 'text', value: node.value }] as PhrasingContent[] },
+      ];
     }
   });
 }
