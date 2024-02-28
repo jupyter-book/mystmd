@@ -97,6 +97,8 @@ const macros: Record<string, number> = {
   ElsIf: 1,
   Comment: 1,
   Until: 1,
+  Procedure: 2,
+  Function: 2,
   // SI Units: https://texdoc.org/serve/siunitx/0
   SI: 2,
   si: 1,
