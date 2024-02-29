@@ -9,6 +9,7 @@ type TestCase = {
   content: string;
   throws?: string; // RegExp pattern
   output?: object;
+  didUpgrade?: boolean;
 };
 
 type TestCases = {
@@ -32,10 +33,11 @@ casesList.forEach(({ title, cases }) => {
   describe(title, () => {
     test.each(filtered.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
-      (_, { content, throws, output }) => {
+      (_, { content, throws, output, didUpgrade }) => {
         if (output) {
-          const toc = parseTOC(content);
+          const { toc, didUpgrade } = parseTOC(content);
           expect(toc).toEqual(output);
+	  expect(didUpgrade).toEqual(didUpgrade)
         } else if (throws) {
           const pattern = new RegExp(throws);
           expect(() => parseTOC(content)).toThrowError(pattern);

@@ -1,34 +1,62 @@
 title: Table of Contents
 cases:
-  - title: Legacy TOC throws
+  - title: Legacy TOC upgrades
     content: |
-      - file: index
-        title: Toc
-      - chapter: A section
-        sections:
-        - file: subfolder/index
-          title: Subfolder
+      - file: intro
+        title: Drop this title
+      - part: Get started
+        chapters:
+        - file: start/overview
+        - file: start/build
+        - file: start/publish
           sections:
-          - file: subfolder/asubpage1
-            title: Asubpage
-      - chapter: Another section
-        sections:
-        - file: content2
-          title: Content1
+            - file: publish/gh-pages
+            - file: publish/netlify
+        - file: customize/config
+        - file: customize/toc
+        - file: file-types/index
           sections:
-          - file: subfolder/asubpage2
-            title: Asubpage
-        - file: content2
-          title: Content2
+            - file: file-types/markdown
+            - file: file-types/notebooks
+            - file: file-types/myst-notebooks
+            - file: file-types/jupytext
+            - file: file-types/restructuredtext
+      - part: Write book content
+        chapters:
+        - file: content/myst
+        - file: content/content-blocks
+        - file: content/citations
+        - file: content/math
+        - file: content/figures
+        - file: content/layout
+        - file: content/execute
+        - file: content/code-outputs
+      - part: Make your book interactive
+        chapters:
+        - file: interactive/launchbuttons
+        - file: interactive/hiding
+        - file: interactive/interactive
+        - file: interactive/comments
           sections:
-          - file: subfolder/asubpage3
-            title: Asubpage
-        - file: content4
-          title: Content3
-          sections:
-          - file: subfolder/asubpage4
-            title: Asubpage
-    throws: Encountered a legacy ToC
+          - file: interactive/comments/hypothesis
+          - file: interactive/comments/utterances
+      - part: Advanced and miscellaneous
+        chapters:
+        - file: advanced/pdf
+        - file: advanced/sphinx
+        - file: advanced/advanced
+        - file: contribute/intro
+
+      - part: Reference
+        chapters:
+        - url: https://executablebooks.org/en/latest/gallery.html
+          title: Gallery of Jupyter Books
+        - file: reference/cheatsheet
+        - file: reference/cli
+        - file: reference/glossary
+        - file: reference/_changelog
+          title: Change log
+    didUpgrade: true
   - title: JB book ToC Parses
     content: |
       root: intro
