@@ -1,5 +1,13 @@
 # citation-js-utils
 
+## 1.1.2
+
+### Patch Changes
+
+- cff47b14: Get year from citation issued literal if it is not parsed
+- cff47b14: Pull url from citation data and add to citation node
+- cff47b14: Stop removing urls from citation html
+
 ## 1.1.1
 
 ### Patch Changes

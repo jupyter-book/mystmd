@@ -1,5 +1,32 @@
 # myst-cli
 
+## 1.1.45
+
+### Patch Changes
+
+- 3c9d9962: Log missing citations in the correct place
+- cff47b14: Pull url from citation data and add to citation node
+- cff47b14: Add better warning message for valid dois without bibtex
+- cff47b14: Add enumerator to citations and cite nodes
+- cff47b14: Add cli warnings for invalid citation labels
+- Updated dependencies [b289f03e]
+- Updated dependencies [cff47b14]
+- Updated dependencies [3c9d9962]
+- Updated dependencies [cff47b14]
+- Updated dependencies [8c148f7]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+  - myst-parser@1.0.23
+  - citation-js-utils@1.1.2
+  - myst-common@1.1.28
+  - tex-to-myst@1.0.22
+  - myst-spec-ext@1.1.28
+  - myst-config@1.1.28
+  - myst-frontmatter@1.1.28
+  - myst-to-tex@1.0.22
+  - myst-transforms@1.2.4
+
 ## 1.1.44
 
 ### Patch Changes

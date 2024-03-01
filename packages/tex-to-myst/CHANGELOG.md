@@ -1,5 +1,17 @@
 # tex-to-myst
 
+## 1.0.22
+
+### Patch Changes
+
+- 8c148f7: Add Function and Procedure to algorithm handlers
+- Updated dependencies [3c9d9962]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+  - myst-common@1.1.28
+  - myst-spec-ext@1.1.28
+  - myst-frontmatter@1.1.28
+
 ## 1.0.21
 
 ### Patch Changes

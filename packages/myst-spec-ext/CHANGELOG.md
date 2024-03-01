@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.28
+
+### Patch Changes
+
+- cff47b14: Add enumerator to citations and cite nodes
+
 ## 1.1.27
 
 ## 1.1.26

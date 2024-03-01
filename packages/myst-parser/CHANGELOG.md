@@ -1,5 +1,17 @@
 # myst-parser
 
+## 1.0.23
+
+### Patch Changes
+
+- b289f03e: Remove .py from linkify domains
+- Updated dependencies [3c9d9962]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+  - myst-common@1.1.28
+  - myst-roles@1.0.23
+  - myst-directives@1.0.23
+
 ## 1.0.22
 
 ### Patch Changes
