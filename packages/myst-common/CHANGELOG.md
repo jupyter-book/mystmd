@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.1.28
+
+### Patch Changes
+
+- 3c9d9962: Log missing citations in the correct place
+- cff47b14: Add enumerator to citations and cite nodes
+- cff47b14: Add cli warnings for invalid citation labels
+  - myst-frontmatter@1.1.28
+
 ## 1.1.27
 
 ### Patch Changes
