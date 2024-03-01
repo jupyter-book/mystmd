@@ -132,7 +132,13 @@ export class TexParser implements ITexParser {
     });
   }
 
-  pushNode(el?: GenericNode) {
+  pushNode(el?: GenericNode | GenericNode[]) {
+    if (Array.isArray(el)) {
+      el.forEach((e) => {
+        this.pushNode(e);
+      });
+      return;
+    }
     const top = this.top();
     if (this.stack.length && el && 'children' in top) {
       if (!el.position) el.position = this.currentPosition;
