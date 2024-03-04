@@ -2,8 +2,15 @@ import fs from 'node:fs';
 import { join, parse, extname } from 'node:path';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
-import type { JupyterBookChapter } from 'sphinx-external-toc';
-import { parseTOC } from 'sphinx-external-toc';
+import type {
+  ArticleSubtree,
+  BookSubtree,
+  BookOuterSubtree,
+  BasicSubtree,
+  BasicEntry,
+  TOC,
+} from 'sphinx-external-toc';
+import { parseTOC, asBasicTOC } from 'sphinx-external-toc';
 import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtension.js';
 import { fileInfo } from '../utils/fileInfo.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
@@ -26,7 +33,18 @@ export function validateTOC(session: ISession, path: string): boolean {
   if (!fs.existsSync(filename)) return false;
   const contents = fs.readFileSync(filename).toString();
   try {
-    parseTOC(contents);
+    const { toc, didUpgrade } = parseTOC(contents);
+
+    if (didUpgrade) {
+      addWarningForFile(
+        session,
+        filename,
+        `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
+        'warn',
+        { ruleId: RuleId.validTocStructure },
+      );
+    }
+
     return true;
   } catch (error) {
     const { message } = error as unknown as Error;
@@ -41,39 +59,60 @@ export function validateTOC(session: ISession, path: string): boolean {
   }
 }
 
-function pagesFromChapters(
+function pagesFromSubtree(
   session: ISession,
   path: string,
-  chapters: JupyterBookChapter[],
+  subtree: BasicSubtree,
   pages: (LocalProjectFolder | LocalProjectPage)[] = [],
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
 ): (LocalProjectFolder | LocalProjectPage)[] {
   const filename = tocFile(path);
   const { dir } = parse(filename);
-  chapters.forEach((chapter) => {
-    // TODO: support globs and urls
-    const file = chapter.file ? resolveExtension(join(dir, chapter.file)) : undefined;
-    if (file) {
-      const { slug } = fileInfo(file, pageSlugs);
-      pages.push({ file, level, slug });
+
+  // Does this subtree have a title? If so, make a folder
+  if ('title' in subtree) {
+    pages.push({ level, title: subtree.title as string });
+  }
+
+  // Now handle subtree contents
+  subtree.entries.forEach((entry) => {
+    // File entry
+    if ('file' in entry) {
+      const file = resolveExtension(join(dir, entry.file as string));
+      if (file) {
+        const { slug } = fileInfo(file, pageSlugs);
+        pages.push({ file, level, slug });
+      } else {
+        addWarningForFile(
+          session,
+          tocFile(path),
+          `Referenced file not found: ${entry.file}`,
+          'error',
+          { ruleId: RuleId.tocContentsExist },
+        );
+      }
     }
-    if (!file && chapter.file) {
-      addWarningForFile(
+
+    // Default subtree
+    if ('entries' in entry) {
+      pagesFromSubtree(
         session,
-        tocFile(path),
-        `Referenced file not found: ${chapter.file}`,
-        'error',
-        { ruleId: RuleId.tocContentsExist },
+        path,
+        { ...entry, ...entry.options },
+        pages,
+        nextLevel(level),
+        pageSlugs,
       );
     }
-    if (!file && chapter.title) {
-      pages.push({ level, title: chapter.title });
-    }
-    if (chapter.sections) {
-      pagesFromChapters(session, path, chapter.sections, pages, nextLevel(level), pageSlugs);
+    // Multiple subtrees
+    else if ('subtrees' in entry) {
+      entry.subtrees.forEach((entry) =>
+        pagesFromSubtree(session, path, entry, pages, nextLevel(level), pageSlugs),
+      );
     }
   });
+
   return pages;
 }
 
@@ -97,7 +136,8 @@ export function projectFromToc(
   }
   const { dir } = parse(filename);
   const contents = fs.readFileSync(filename).toString();
-  const toc = parseTOC(contents);
+  const parseResult = parseTOC(contents);
+  const toc = asBasicTOC(parseResult.toc);
 
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(dir, toc.root));
@@ -112,11 +152,18 @@ export function projectFromToc(
   }
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
-  if (toc.sections) {
+  if ('subtrees' in toc) {
+    toc.subtrees.forEach((subtree) =>
+      pagesFromSubtree(session, path, subtree, pages, level, pageSlugs),
+    );
+  } else if ('entries' in toc) {
+    pagesFromSubtree(session, path, { ...toc, ...toc.options }, pages, level, pageSlugs);
+  }
+  /**
+  if (toc.entries) {
     // Do not allow sections to have level < 1
     if (level < 1) level = 1;
-    pagesFromChapters(session, path, toc.sections, pages, level, pageSlugs);
-  } else if (toc.chapters) {
+      } else if (toc.subtrees) {
     // Do not allow chapters to have level < 0
     if (level < 0) level = 0;
     pagesFromChapters(session, path, toc.chapters, pages, level, pageSlugs);
@@ -132,6 +179,7 @@ export function projectFromToc(
       }
     });
   }
+  */
   return { path: dir || '.', file: indexFile, index: slug, pages };
 }
 
