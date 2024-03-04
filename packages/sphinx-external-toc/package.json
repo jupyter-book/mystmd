@@ -20,14 +20,14 @@
     "url": "git+https://github.com/executablebooks/mystmd.git"
   },
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist ./src/schema.json",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
-    "build:schema": "npx ts-json-schema-generator --path src/types.d.ts --type TOC -o ./schemas/schema.json",
-    "build": "npm-run-all -s -l clean -p build:schema build:esm"
+    "build:schema": "npx ts-json-schema-generator --path src/types.ts --type TOC -o ./src/schema.json",
+    "build": "npm-run-all -s -l clean build:schema build:esm"
   },
   "bugs": {
     "url": "https://github.com/executablebooks/mystmd/issues"

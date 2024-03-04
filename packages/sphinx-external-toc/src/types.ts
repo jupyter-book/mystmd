@@ -1,16 +1,15 @@
 ///////// Common types ////////
 
-
-/** 
+/**
  * Sphinx toctree options
-**/
+ **/
 export type ToctreeOptions = {
- caption?: string;
- hidden?: boolean;
- maxdepth?: number;
- numbered?: boolean;
- reversed?: boolean;
- titlesonly?: boolean;
+  caption?: string;
+  hidden?: boolean;
+  maxdepth?: number;
+  numbered?: boolean;
+  reversed?: boolean;
+  titlesonly?: boolean;
 };
 
 /**
@@ -37,11 +36,10 @@ export type GlobEntry = {
   glob: string;
 };
 
-
 ///// Basic format /////
 
 /**
- * Shorthand for a single (inline) subtree 
+ * Shorthand for a single (inline) subtree
  */
 export type BasicShorthandSubtree = BasicSubtree & {
   options?: ToctreeOptions;
@@ -54,45 +52,36 @@ export type BasicHasSubtrees = {
   subtrees: BasicSubtree[];
 };
 
-
 /**
  * Single TOC entry
  */
-export type BasicEntry = (BasicHasSubtrees | BasicShorthandSubtree | {}) & (FileEntry | URLEntry | GlobEntry);
-
+export type BasicEntry = (BasicHasSubtrees | BasicShorthandSubtree | {}) &
+  (FileEntry | URLEntry | GlobEntry);
 
 /**
  * Single toctree
  */
-export type BasicSubtree = {
+export type BasicSubtree = ToctreeOptions & {
   entries: BasicEntry[];
-  caption?: string;
-  hidden?: boolean;
-  maxdepth?: number;
-  numbered?: boolean;
-  reversed?: boolean;
-  titlesonly?: boolean;
 };
 
 /**
- * Basic (no format) table of contents 
+ * Basic (no format) table of contents
  */
 export type BasicTOC = {
   root: string;
   defaults?: ToctreeOptions;
 } & (BasicHasSubtrees | BasicShorthandSubtree | {});
 
-
 /////// Article format ///////
 
 //
 /**
- * Shorthand for a single (inline) subtree 
+ * Shorthand for a single (inline) subtree
  */
 export type ArticleShorthandSubtree = ArticleSubtree & {
   options?: ToctreeOptions;
 };
-
 
 /**
  * Object which has child subtrees
@@ -101,54 +90,43 @@ export type ArticleHasSubtrees = {
   subtrees: ArticleSubtree[];
 };
 
-
 /**
  * Single TOC entry
  */
-export type ArticleEntry = (ArticleHasSubtrees | ArticleShorthandSubtree | {}) & (FileEntry | URLEntry | GlobEntry);
-
+export type ArticleEntry = (ArticleHasSubtrees | ArticleShorthandSubtree | {}) &
+  (FileEntry | URLEntry | GlobEntry);
 
 /**
  * Single toctree
  */
-export type ArticleSubtree = {
+export type ArticleSubtree = ToctreeOptions & {
   sections: ArticleEntry[];
-  caption?: string;
-  hidden?: boolean;
-  maxdepth?: number;
-  numbered?: boolean;
-  reversed?: boolean;
-  titlesonly?: boolean;
 };
 
 /**
- * Article (jb-article) table of contents 
+ * Article (jb-article) table of contents
  */
 export type ArticleTOC = {
-  format: "jb-article";
+  format: 'jb-article';
   root: string;
   defaults?: ToctreeOptions;
 } & (ArticleHasSubtrees | ArticleShorthandSubtree | {});
 
-
 ////// Book format //////
 
-
 /**
- * Shorthand for a single outer (inline) subtree 
+ * Shorthand for a single outer (inline) subtree
  */
 export type BookOuterShorthandSubtree = BookOuterSubtree & {
   options?: ToctreeOptions;
 };
 
 /**
- * Shorthand for a single inner (inline) subtree 
+ * Shorthand for a single inner (inline) subtree
  */
 export type BookShorthandSubtree = BookSubtree & {
   options?: ToctreeOptions;
 };
-
-
 
 /**
  * Object which has child (outer) subtrees
@@ -157,8 +135,6 @@ export type BookOuterHasSubtrees = {
   parts: BookOuterSubtree[];
 };
 
-
-
 /**
  * Object which has child (inner) subtrees
  */
@@ -166,47 +142,33 @@ export type BookHasSubtrees = {
   subtrees: BookSubtree[];
 };
 
-
 /**
  * Single TOC entry
  */
-export type BookEntry = (BookHasSubtrees | BookShorthandSubtree | {}) & (FileEntry | URLEntry | GlobEntry);
-
+export type BookEntry = (BookHasSubtrees | BookShorthandSubtree | {}) &
+  (FileEntry | URLEntry | GlobEntry);
 
 /**
  * Single top-level toctree
  */
-export type BookOuterSubtree = {
+export type BookOuterSubtree = ToctreeOptions & {
   chapters: BookEntry[];
-  caption?: string;
-  hidden?: boolean;
-  maxdepth?: number;
-  numbered?: boolean;
-  reversed?: boolean;
-  titlesonly?: boolean;
 };
 
 /**
  * Single toctree
  */
-export type BookSubtree = {
+export type BookSubtree = ToctreeOptions & {
   sections: BookEntry[];
-  caption?: string;
-  hidden?: boolean;
-  maxdepth?: number;
-  numbered?: boolean;
-  reversed?: boolean;
-  titlesonly?: boolean;
 };
 
 /**
- * Book (jb-book) table of contents 
+ * Book (jb-book) table of contents
  */
 export type BookTOC = {
-  format: "jb-book";
+  format: 'jb-book';
   root: string;
   defaults?: ToctreeOptions;
 } & (BookOuterHasSubtrees | BookOuterShorthandSubtree | {});
-
 
 export type TOC = BasicTOC | ArticleTOC | BookTOC;

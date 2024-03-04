@@ -1,8 +1,21 @@
 import yaml from 'js-yaml';
-import type { TOC } from './types.d.ts';
-import schema from '../schemas/schema.json';
+import type {
+  TOC,
+  ArticleTOC,
+  BookTOC,
+  BasicTOC,
+  ToctreeOptions,
+  ArticleHasSubtrees,
+  ArticleSubtree,
+  ArticleShorthandSubtree,
+  ArticleEntry,
+  BasicHasSubtrees,
+  BasicSubtree,
+  BasicShorthandSubtree,
+  BasicEntry,
+} from './types.js';
+import schema from './schema.json';
 import Ajv from 'ajv';
-
 
 // See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
 // Implementation transpiled from https://github.com/executablebooks/sphinx-external-toc/blob/v1.0.1/sphinx_external_toc/tools.py#L277
@@ -21,8 +34,8 @@ function upgradeOldJupyterBookTOC(oldTOC: any[]) {
   for (const key of ['sections', 'chapters']) {
     if (key in tocUpdated) {
       topItemsKey = key;
-      let items: Record<string, unknown>[];
-      ({ key: items, ...tocUpdated } = tocUpdated);
+      const items = tocUpdated[key] as Record<string, unknown>[];
+      delete tocUpdated[key];
 
       if (!Array.isArray(items)) {
         throw new Error();
@@ -96,7 +109,7 @@ function upgradeOldJupyterBookTOC(oldTOC: any[]) {
   if (title !== undefined) {
     // Only set title for single default subtree
     if (hasDefaultSubtree) {
-      const options = toc['options'] ?? (toc['options'] = {});
+      const options = (toc['options'] ?? (toc['options'] = {})) as Record<string, unknown>;
       options['caption'] = title;
     }
   }
@@ -124,7 +137,6 @@ function upgradeOldJupyterBookTOC(oldTOC: any[]) {
   adjustConfig(toc);
   return toc;
 }
-
 
 /**
  * Parse a sphinx-external-toc table of contents
@@ -155,4 +167,85 @@ export function parseTOC(contents: string): { toc: TOC; didUpgrade: boolean } {
   }
 
   return { toc: toc as TOC, didUpgrade };
+}
+
+export function isBasicTOC(toc: TOC): toc is BasicTOC {
+  return !('format' in (toc as any));
+}
+
+export function isBookTOC(toc: TOC): toc is BookTOC {
+  return (toc as any).format === 'jb-book';
+}
+
+export function isArticleTOC(toc: TOC): toc is ArticleTOC {
+  return (toc as any).format === 'jb-article';
+}
+
+function bookToBasic(toc: BookTOC): BasicTOC {
+  throw new Error('not implemented');
+}
+
+function articleToBasic(toc: ArticleTOC): BasicTOC {
+  // Set new default
+  const defaults = (toc.defaults ?? (toc.defaults = {})) as ToctreeOptions;
+  defaults.titlesonly = defaults.titlesonly ?? true;
+
+  const transformSubtree = (item: ArticleSubtree): BasicSubtree => {
+    const { sections, ...rest } = item;
+    return { entries: sections.map(transformEntry), ...rest };
+  };
+
+  const transformHasSubtrees = (item: ArticleHasSubtrees): BasicHasSubtrees => {
+    return { subtrees: item.subtrees.map(transformSubtree) };
+  };
+
+  const transformShorthandSubtree = (item: ArticleShorthandSubtree): BasicShorthandSubtree => {
+    return { options: item.options, ...transformSubtree(item) };
+  };
+
+  const transformEntry = (item: ArticleEntry): BasicEntry => {
+    // Explicit subtrees
+    if ('subtrees' in item) {
+      const { subtrees, ...rest } = item;
+      return { ...rest, ...transformHasSubtrees(item) };
+    }
+    // Default subtree
+    else if ('sections' in item) {
+      const { sections, ...rest } = item;
+      // Rename sections to entries
+      return { ...rest, ...transformSubtree(item) };
+    } else {
+      return item;
+    }
+  };
+  const transformTOC = (item: ArticleTOC): BasicTOC => {
+    // Drop format
+    const { format, ...withoutFormat } = item;
+    // Explicit subtrees
+    if ('subtrees' in withoutFormat) {
+      const { subtrees, ...rest } = withoutFormat;
+      return { ...rest, ...transformHasSubtrees(withoutFormat) };
+    }
+    // Default subtree
+    else if ('sections' in withoutFormat) {
+      const { sections, ...rest } = withoutFormat;
+      // Rename sections to entries
+      return { ...rest, ...transformSubtree(withoutFormat) };
+    } else {
+      return withoutFormat;
+    }
+  };
+  return transformTOC(toc);
+}
+
+export function asBasicTOC(toc: TOC): BasicTOC {
+  if (isBasicTOC(toc)) {
+    return toc;
+  } else if (isArticleTOC(toc)) {
+    return articleToBasic(toc);
+  } else if (isBookTOC(toc)) {
+    return bookToBasic(toc);
+  } else {
+    throw new Error('impossible format');
+  }
 }
