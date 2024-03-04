@@ -53,7 +53,7 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   bibliography?: string[];
   biblio?: Biblio;
   oxa?: string;
-  numbering?: boolean | Numbering;
+  numbering?: Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, string>;
   /** Abbreviations used throughout the project */

@@ -27,6 +27,7 @@
     "hast-util-to-mdast": "^8.3.1",
     "mdast-util-find-and-replace": "^2.1.0",
     "myst-common": "^1.1.28",
+    "myst-frontmatter": "^1.1.27",
     "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.1.28",
     "myst-to-html": "1.0.23",
