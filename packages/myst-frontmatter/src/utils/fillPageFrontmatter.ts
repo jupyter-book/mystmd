@@ -22,7 +22,9 @@ export function fillPageFrontmatter(
 ) {
   const frontmatter = fillMissingKeys(pageFrontmatter, projectFrontmatter, USE_PROJECT_FALLBACK);
 
-  frontmatter.numbering = fillNumbering(pageFrontmatter.numbering, projectFrontmatter.numbering);
+  if (pageFrontmatter.numbering || projectFrontmatter.numbering) {
+    frontmatter.numbering = fillNumbering(pageFrontmatter.numbering, projectFrontmatter.numbering);
+  }
 
   // Combine all math macros defined on page and project
   if (projectFrontmatter.math || pageFrontmatter.math) {
