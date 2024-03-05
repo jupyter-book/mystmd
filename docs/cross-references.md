@@ -128,7 +128,7 @@ These will show up, for example, as `Section 1` and `Section 2.1`. To turn on al
 ## Header Numbering
 
 By default section numbering for headers is turned off with numbering for figure and table numbering enabled.
-To turn on `numbering` for headers, you can can change the frontmatter in the document or project.
+To turn on `numbering` for headers, you can can change the frontmatter in the document or project. See [](#numbering) for more details on the numbering object.
 
 ```{myst}
 
@@ -266,3 +266,64 @@ doc
 
 download
 : The `` {download}`./my-file.zip` `` syntax creates a download to a document, which is equivalent to `[](./my-file.zip)`.
+
+(numbering)=
+
+## Numbering
+
+Frontmatter may specify `numbering` to customize how various components of the page are numbered. By default, numbering is enabled for figures, equations, tables, and code blocks; it is disabled for headings and other content types contained on the page.
+
+To enable numbering of all content, you may simply use:
+
+```yaml
+numbering: true
+```
+
+Similarly, to disable all numbering:
+
+```yaml
+numbering: false
+```
+
+The `numbering` object allows you to be much more granular with enabling and disabling specific components:
+
+```yaml
+numbering:
+  code: false
+  headings: true
+```
+
+For components with numbering enabled you may specify `start` to begin counting at a number other than 1 and `template` to redefine how the component will render when referenced in the text. For this example, the figures on the page will start with `Figure 5` and when referenced in the text they will appear as "fig (5)"
+
+```yaml
+numbering:
+  figure:
+    start: 5
+    template: fig (%s)
+```
+
+Numbering may be used for `figure` as above, as well as `subfigure`, `equation`, `subequation`, `table`, `code`, `headings` (for all heading depths), and `heading_1` through `heading_6` (for modifying each depth separately).
+
+You may also add numbering for custom content kinds:
+
+```markdown
+---
+numbering:
+  box:
+    enabled: true
+---
+
+:::{figure} image.png
+:label: my-box
+:kind: box
+
+This figure will be numbered as "Box 1"
+:::
+```
+
+Finally, under the `numbering` object, you may specify `enumerator`. For now, this applies to all numberings on the page. Instead of enumerating as simply 1, 2, 3... they will follow the template set in `enumerator`. For example, in Appendix 1, you may want to use the following `numbering` so content is enumerated as A1.1, A1.2, A1.3...
+
+```yaml
+numbering:
+  enumerator: A1.%s
+```
