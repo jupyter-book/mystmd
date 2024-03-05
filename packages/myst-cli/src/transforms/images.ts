@@ -507,7 +507,7 @@ export async function transformThumbnail(
   file: string,
   frontmatter: PageFrontmatter,
   writeFolder: string,
-  opts?: { altOutputFolder?: string; webp?: boolean },
+  opts?: { altOutputFolder?: string; webp?: boolean; maxSizeWebp?: number },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {
   let thumbnail = frontmatter.thumbnail;
   // If the thumbnail is explicitly null, don't add an image
@@ -539,6 +539,7 @@ export async function transformThumbnail(
     const optimized = await imagemagick.convertImageToWebp(
       session,
       path.join(writeFolder, fileMatch),
+      { maxSize: opts.maxSizeWebp },
     );
     if (optimized) {
       const urlOptimized = url.replace(fileMatch, optimized);
@@ -554,7 +555,7 @@ export async function transformBanner(
   file: string,
   frontmatter: { banner?: string | null; bannerOptimized?: string },
   writeFolder: string,
-  opts?: { altOutputFolder?: string; webp?: boolean },
+  opts?: { altOutputFolder?: string; webp?: boolean; maxSizeWebp?: number },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {
   const banner = frontmatter.banner;
   // If the thumbnail is explicitly null, don't add an image
@@ -575,6 +576,7 @@ export async function transformBanner(
     const optimized = await imagemagick.convertImageToWebp(
       session,
       path.join(writeFolder, fileMatch),
+      { maxSize: opts.maxSizeWebp },
     );
     if (optimized) {
       const urlOptimized = url.replace(fileMatch, optimized);
@@ -587,7 +589,7 @@ export async function transformBanner(
 
 export async function transformWebp(
   session: ISession,
-  opts: { file: string; imageWriteFolder: string },
+  opts: { file: string; imageWriteFolder: string; maxSizeWebp?: number },
 ) {
   const { file, imageWriteFolder } = opts;
   const cache = castSession(session);
@@ -606,6 +608,7 @@ export async function transformWebp(
         const result = await imagemagick.convertImageToWebp(
           session,
           path.join(imageWriteFolder, fileMatch),
+          { maxSize: opts.maxSizeWebp },
         );
         if (result) image.urlOptimized = image.url.replace(fileMatch, result);
       } catch (error) {
@@ -624,6 +627,7 @@ export async function transformWebp(
             const result = await imagemagick.convertImageToWebp(
               session,
               path.join(imageWriteFolder, fileMatch),
+              { maxSize: opts.maxSizeWebp },
             );
             if (result) {
               frontmatter[attrOptimized] = frontmatter[attr]?.replace(fileMatch, result);

@@ -19,6 +19,7 @@ export type Options = {
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
+  maxSizeWebp?: number;
 };
 
 export function cleanSiteContent(session: ISession, info = true): void {
@@ -47,6 +48,7 @@ export async function buildSite(session: ISession, opts: Options) {
     extraTransforms,
     defaultTemplate,
     execute,
+    maxSizeWebp,
   } = opts;
   ensureBuildFoldersExist(session);
   await processSite(session, {
@@ -57,5 +59,6 @@ export async function buildSite(session: ISession, opts: Options) {
     extraTransforms,
     defaultTemplate,
     execute,
+    maxSizeWebp,
   });
 }

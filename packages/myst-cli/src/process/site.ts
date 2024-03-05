@@ -43,6 +43,7 @@ type ProcessOptions = {
   imageWriteFolder?: string;
   imageAltOutputFolder?: string;
   imageExtensions?: ImageExtensions[];
+  maxSizeWebp?: number;
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
   defaultTemplate?: string;
@@ -271,6 +272,7 @@ export async function processProject(
     writeFiles = true,
     reloadProject,
     execute,
+    maxSizeWebp,
   } = opts || {};
   if (!siteProject.path) {
     const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
@@ -336,6 +338,7 @@ export async function processProject(
             imageExtensions: usedImageExtensions,
             optimizeWebp: true,
             processThumbnail: true,
+            maxSizeWebp,
           });
         }
         return writeFile(session, {
