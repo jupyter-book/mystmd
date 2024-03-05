@@ -1,5 +1,19 @@
 import yaml from 'js-yaml';
-import type { TOC, ArticleTOC, BookTOC, BasicTOC } from './types.js';
+import type {
+  TOC,
+  ArticleTOC,
+  BookTOC,
+  BasicTOC,
+  ToctreeOptions,
+  ArticleHasSubtrees,
+  ArticleSubtree,
+  ArticleShorthandSubtree,
+  ArticleEntry,
+  BasicHasSubtrees,
+  BasicSubtree,
+  BasicShorthandSubtree,
+  BasicEntry,
+} from './types.js';
 import schema from './schema.json';
 import _Ajv from 'ajv';
 
@@ -147,7 +161,7 @@ export function parseTOC(contents: string): { toc: TOC; didUpgrade: boolean } {
     didUpgrade = true;
   }
 
-  const ajv = new Ajv.default();
+  const ajv = new Ajv();
   const validate = ajv.compile(schema);
   if (!validate(toc)) {
     throw new Error(
@@ -196,13 +210,13 @@ function articleToBasic(toc: ArticleTOC): BasicTOC {
     // Explicit subtrees
     if ('subtrees' in item) {
       const { subtrees, ...rest } = item;
-      return { ...rest, ...transformHasSubtrees(item) };
+      return { ...rest, ...transformHasSubtrees(item as ArticleHasSubtrees) };
     }
     // Default subtree
     else if ('sections' in item) {
-      const { sections, ...rest } = item;
+      const { sections, options, ...rest } = item;
       // Rename sections to entries
-      return { ...rest, ...transformSubtree(item) };
+      return { ...rest, ...transformShorthandSubtree(item as ArticleShorthandSubtree) };
     } else {
       return item;
     }
@@ -213,13 +227,13 @@ function articleToBasic(toc: ArticleTOC): BasicTOC {
     // Explicit subtrees
     if ('subtrees' in withoutFormat) {
       const { subtrees, ...rest } = withoutFormat;
-      return { ...rest, ...transformHasSubtrees(withoutFormat) };
+      return { ...rest, ...transformHasSubtrees(withoutFormat as ArticleHasSubtrees) };
     }
     // Default subtree
     else if ('sections' in withoutFormat) {
-      const { sections, ...rest } = withoutFormat;
+      const { sections, options, ...rest } = withoutFormat;
       // Rename sections to entries
-      return { ...rest, ...transformSubtree(withoutFormat) };
+      return { ...rest, ...transformShorthandSubtree(withoutFormat as ArticleShorthandSubtree) };
     } else {
       return withoutFormat;
     }

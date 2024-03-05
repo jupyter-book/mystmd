@@ -59,6 +59,7 @@ export function validateTOC(session: ISession, path: string): boolean {
   }
 }
 
+
 function pagesFromSubtree(
   session: ISession,
   path: string,
@@ -95,11 +96,12 @@ function pagesFromSubtree(
     }
 
     // Default subtree
-    if ('entries' in entry) {
+    if ('entries' in entry) { 
+      const subtree = { ...entry, ...entry.options } as BasicSubtree;
       pagesFromSubtree(
         session,
         path,
-        { ...entry, ...entry.options },
+        subtree,
         pages,
         nextLevel(level),
         pageSlugs,
@@ -157,7 +159,8 @@ export function projectFromToc(
       pagesFromSubtree(session, path, subtree, pages, level, pageSlugs),
     );
   } else if ('entries' in toc) {
-    pagesFromSubtree(session, path, { ...toc, ...toc.options }, pages, level, pageSlugs);
+    const subtree = { ...toc, ...toc.options } as BasicSubtree;
+    pagesFromSubtree(session, path, subtree, pages, level, pageSlugs);
   }
   /**
   if (toc.entries) {
