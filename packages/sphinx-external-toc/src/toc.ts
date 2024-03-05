@@ -169,3 +169,72 @@ export function isBookTOC(toc: TOC): toc is BookTOC {
 export function isArticleTOC(toc: TOC): toc is ArticleTOC {
   return (toc as any).format === 'jb-article';
 }
+
+function bookToBasic(toc: BookTOC): BasicTOC {
+  throw new Error('not implemented');
+}
+
+function articleToBasic(toc: ArticleTOC): BasicTOC {
+  // Set new default
+  const defaults = (toc.defaults ?? (toc.defaults = {})) as ToctreeOptions;
+  defaults.titlesonly = defaults.titlesonly ?? true;
+
+  const transformSubtree = (item: ArticleSubtree): BasicSubtree => {
+    const { sections, ...rest } = item;
+    return { entries: sections.map(transformEntry), ...rest };
+  };
+
+  const transformHasSubtrees = (item: ArticleHasSubtrees): BasicHasSubtrees => {
+    return { subtrees: item.subtrees.map(transformSubtree) };
+  };
+
+  const transformShorthandSubtree = (item: ArticleShorthandSubtree): BasicShorthandSubtree => {
+    return { options: item.options, ...transformSubtree(item) };
+  };
+
+  const transformEntry = (item: ArticleEntry): BasicEntry => {
+    // Explicit subtrees
+    if ('subtrees' in item) {
+      const { subtrees, ...rest } = item;
+      return { ...rest, ...transformHasSubtrees(item) };
+    }
+    // Default subtree
+    else if ('sections' in item) {
+      const { sections, ...rest } = item;
+      // Rename sections to entries
+      return { ...rest, ...transformSubtree(item) };
+    } else {
+      return item;
+    }
+  };
+  const transformTOC = (item: ArticleTOC): BasicTOC => {
+    // Drop format
+    const { format, ...withoutFormat } = item;
+    // Explicit subtrees
+    if ('subtrees' in withoutFormat) {
+      const { subtrees, ...rest } = withoutFormat;
+      return { ...rest, ...transformHasSubtrees(withoutFormat) };
+    }
+    // Default subtree
+    else if ('sections' in withoutFormat) {
+      const { sections, ...rest } = withoutFormat;
+      // Rename sections to entries
+      return { ...rest, ...transformSubtree(withoutFormat) };
+    } else {
+      return withoutFormat;
+    }
+  };
+  return transformTOC(toc);
+}
+
+export function asBasicTOC(toc: TOC): BasicTOC {
+  if (isBasicTOC(toc)) {
+    return toc;
+  } else if (isArticleTOC(toc)) {
+    return articleToBasic(toc);
+  } else if (isBookTOC(toc)) {
+    return bookToBasic(toc);
+  } else {
+    throw new Error('impossible format');
+  }
+}
