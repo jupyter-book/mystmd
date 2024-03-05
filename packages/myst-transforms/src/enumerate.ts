@@ -444,10 +444,6 @@ export class ReferenceState implements IReferenceStateResolver {
         target.node,
         copyNode(target.node as Heading).children as PhrasingContent[],
       );
-    } else if (target.kind === TargetKind.equation) {
-      // Equations are always numbered
-      const template = getReferenceTemplate(target, this.numbering, true, false);
-      fillReferenceEnumerators(this.vfile, node, template, target.node);
     } else {
       // By default look into the caption or admonition title if it exists
       const caption =
