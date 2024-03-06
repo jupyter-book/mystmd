@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.1.46
+
+### Patch Changes
+
+- 77549eea: Expose max size webp conversion to cli
+
 ## 1.1.45
 
 ## 1.1.44

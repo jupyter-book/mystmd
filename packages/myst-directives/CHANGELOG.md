@@ -1,5 +1,14 @@
 # myst-directives
 
+## 1.0.24
+
+### Patch Changes
+
+- cbad68cc: Add raw directive
+- Updated dependencies [cbad68cc]
+  - myst-spec-ext@1.1.29
+  - myst-common@1.1.29
+
 ## 1.0.23
 
 ### Patch Changes
