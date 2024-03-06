@@ -1,5 +1,23 @@
 # myst-cli
 
+## 1.1.46
+
+### Patch Changes
+
+- 77549eea: Expose max size for webp conversion
+- cbad68cc: Add raw directive
+- 77549eea: Expose max size webp conversion to cli
+- Updated dependencies [a4c7a116]
+- Updated dependencies [5565d60]
+- Updated dependencies [cbad68cc]
+- Updated dependencies [5565d60]
+  - myst-transforms@1.2.5
+  - myst-spec-ext@1.1.29
+  - myst-frontmatter@1.1.29
+  - myst-common@1.1.29
+  - myst-config@1.1.29
+  - myst-parser@1.0.24
+
 ## 1.1.45
 
 ### Patch Changes

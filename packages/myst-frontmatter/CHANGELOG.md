@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.29
+
+### Patch Changes
+
+- 5565d60: Expand numbering items to include template and start
+
 ## 1.1.28
 
 ## 1.1.27

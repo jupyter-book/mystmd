@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.29
+
+### Patch Changes
+
+- cbad68cc: Add raw directive
+
 ## 1.1.28
 
 ### Patch Changes

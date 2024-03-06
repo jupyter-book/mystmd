@@ -1,5 +1,18 @@
 # myst-transforms
 
+## 1.2.5
+
+### Patch Changes
+
+- a4c7a116: Do not recursively call include transform
+- 5565d60: Consume expanded numbering frontmatter
+- Updated dependencies [cbad68cc]
+- Updated dependencies [5565d60]
+  - myst-spec-ext@1.1.29
+  - myst-frontmatter@1.1.29
+  - myst-common@1.1.29
+  - myst-to-html@1.0.24
+
 ## 1.2.4
 
 ### Patch Changes
