@@ -288,7 +288,6 @@ export function initializeTargetCounts(
       targetCounts[key] = { main: val.start - 1, sub: 0 };
     }
   });
-  console.log(targetCounts);
   return targetCounts;
 }
 
