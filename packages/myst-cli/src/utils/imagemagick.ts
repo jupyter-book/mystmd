@@ -129,8 +129,11 @@ export async function convert(
 export async function convertImageToWebp(
   session: ISession,
   image: string,
-  quality = 80,
-  overwrite = false,
+  {
+    quality = 80,
+    overwrite = false,
+    maxSize = LARGE_IMAGE,
+  }: { quality?: number; overwrite?: boolean; maxSize?: number },
 ): Promise<string | null> {
   if (!fs.existsSync(image)) {
     // If the image does not exist, it will be caught elsewhere prior to webp conversion
@@ -146,7 +149,7 @@ export async function convertImageToWebp(
 
   const { size } = fs.statSync(image);
   // PDF and TIFF are not image formats that can be used in most web-browsers
-  if (size > LARGE_IMAGE && !(imageExt === '.pdf' || imageExt === '.tiff')) {
+  if (size > maxSize && !(imageExt === '.pdf' || imageExt === '.tiff')) {
     const inMB = (size / (1024 * 1024)).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,

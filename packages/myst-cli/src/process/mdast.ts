@@ -339,6 +339,7 @@ export async function finalizeMdast(
     optimizeWebp,
     simplifyFigures,
     processThumbnail,
+    maxSizeWebp,
   }: {
     imageWriteFolder: string;
     useExistingImages?: boolean;
@@ -347,6 +348,7 @@ export async function finalizeMdast(
     optimizeWebp?: boolean;
     simplifyFigures?: boolean;
     processThumbnail?: boolean;
+    maxSizeWebp?: number;
   },
 ) {
   const vfile = new VFile(); // Collect errors on this file
@@ -372,17 +374,19 @@ export async function finalizeMdast(
       imageExtensions,
     });
     if (optimizeWebp) {
-      await transformWebp(session, { file, imageWriteFolder });
+      await transformWebp(session, { file, imageWriteFolder, maxSizeWebp });
     }
     if (processThumbnail) {
       // Note, the thumbnail transform must be **after** images, as it may read the images
       await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
         altOutputFolder: imageAltOutputFolder,
         webp: optimizeWebp,
+        maxSizeWebp,
       });
       await transformBanner(session, file, frontmatter, imageWriteFolder, {
         altOutputFolder: imageAltOutputFolder,
         webp: optimizeWebp,
+        maxSizeWebp,
       });
     }
   }

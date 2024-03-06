@@ -19,6 +19,7 @@ import {
   makeWatchOption,
   makeCIOption,
   makeExecuteOption,
+  makeMaxSizeWebpOption,
 } from './options.js';
 
 export function makeBuildCLI(program: Command) {
@@ -42,6 +43,7 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())
     .addOption(makeCIOption())
+    .addOption(makeMaxSizeWebpOption())
     .action(clirun(Session, build, program));
   return command;
 }
