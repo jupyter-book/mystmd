@@ -19,8 +19,24 @@ import {
 } from 'myst-common';
 import type { Link } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
+import { fillNumbering, type Numbering } from 'myst-frontmatter';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
+
+const DEFAULT_NUMBERING: Numbering = {
+  equation: { enabled: true, template: '(%s)' },
+  subequation: { enabled: true, template: '(%s)' },
+  figure: { enabled: true, template: 'Figure %s' },
+  subfigure: { enabled: true, template: 'Figure %s' },
+  table: { enabled: true, template: 'Table %s' },
+  code: { enabled: true, template: 'Program %s' },
+  heading_1: { enabled: false, template: 'Section %s' },
+  heading_2: { enabled: false, template: 'Section %s' },
+  heading_3: { enabled: false, template: 'Section %s' },
+  heading_4: { enabled: false, template: 'Section %s' },
+  heading_5: { enabled: false, template: 'Section %s' },
+  heading_6: { enabled: false, template: 'Section %s' },
+};
 
 type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
   kind?: TargetKind | string;
@@ -35,28 +51,13 @@ type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
   html_id?: string;
 };
 
-function getDefaultNumberedReferenceLabel(kind: TargetKind | string) {
-  switch (kind) {
-    case TargetKind.heading:
-      return 'Section %s';
-    case TargetKind.equation:
-    case TargetKind.subequation:
-      return '(%s)';
-    case TargetKind.figure:
-      return 'Figure %s';
-    case TargetKind.table:
-      return 'Table %s';
-    case TargetKind.code:
-      return 'Program %s';
-    default: {
-      const domain = kind.includes(':') ? kind.split(':')[1] : kind;
-      // eslint-disable-next-line no-irregular-whitespace
-      return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)} %s`;
-    }
-  }
+function getDefaultNumberedReferenceTemplate(kind: TargetKind | string) {
+  const domain = kind.includes(':') ? kind.split(':')[1] : kind;
+  // eslint-disable-next-line no-irregular-whitespace
+  return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)} %s`;
 }
 
-function getDefaultNamedReferenceLabel(kind: TargetKind | string, hasTitle: boolean) {
+function getDefaultNamedReferenceTemplate(kind: TargetKind | string, hasTitle: boolean) {
   const domain = kind.includes(':') ? kind.split(':')[1] : kind;
   const name = `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)}`;
   switch (kind) {
@@ -68,6 +69,27 @@ function getDefaultNamedReferenceLabel(kind: TargetKind | string, hasTitle: bool
       if (hasTitle) return '{name}';
       return name;
   }
+}
+
+function getReferenceTemplate(
+  target: Target,
+  numbering: Numbering,
+  numbered: boolean,
+  hasTitle: boolean,
+) {
+  const { kind, node } = target;
+  let template: string | undefined;
+  if (numbered) {
+    if (kind === TargetKind.heading && node.type === 'heading') {
+      template = numbering[`heading_${node.depth}`]?.template;
+    } else if (node.subcontainer) {
+      template = numbering.subfigure?.template;
+    } else {
+      template = numbering[kind]?.template;
+    }
+    return template ?? getDefaultNumberedReferenceTemplate(kind);
+  }
+  return getDefaultNamedReferenceTemplate(kind, hasTitle);
 }
 
 export enum ReferenceKind {
@@ -98,22 +120,6 @@ export type StateOptions = {
 
 export type StateResolverOptions = {
   state: IReferenceStateResolver;
-};
-
-export type NumberingOptions = {
-  enumerator?: string;
-  figure?: boolean | number;
-  subfigure?: boolean | number;
-  equation?: boolean | number;
-  subequation?: boolean | number;
-  table?: boolean | number;
-  code?: boolean | number;
-  heading_1?: boolean;
-  heading_2?: boolean;
-  heading_3?: boolean;
-  heading_4?: boolean;
-  heading_5?: boolean;
-  heading_6?: boolean;
 };
 
 const UNKNOWN_REFERENCE_ENUMERATOR = '??';
@@ -191,17 +197,16 @@ function kindFromNode(node: TargetNodes): TargetKind | string {
 function shouldEnumerate(
   node: TargetNodes,
   kind: TargetKind | string,
-  numbering: NumberingOptions,
-  override?: boolean | null,
+  numbering: Numbering,
 ): boolean {
-  if (typeof override === 'boolean') return override;
+  // Node may override enumeration from numbering frontmatter
+  if (node.enumerated != null) return node.enumerated;
+  const enabledDefault = numbering.all?.enabled ?? false;
   if (kind === 'heading' && node.type === 'heading') {
-    return (
-      !!numbering[`heading_${node.depth}` as keyof Omit<NumberingOptions, 'enumerator'>] ?? false
-    );
+    return numbering[`heading_${node.depth}`]?.enabled ?? enabledDefault;
   }
-  if (node.subcontainer) return !!numbering.subfigure ?? false;
-  return !!numbering[kind as keyof Omit<NumberingOptions, 'enumerator'>] ?? false;
+  if (node.subcontainer) return !!numbering.subfigure?.enabled ?? enabledDefault;
+  return numbering[kind]?.enabled ?? enabledDefault;
 }
 
 /**
@@ -242,6 +247,50 @@ export function formatHeadingEnumerator(counts: (number | null)[], prefix?: stri
   return out;
 }
 
+export function initializeTargetCounts(
+  numbering: Numbering,
+  initialCounts?: TargetCounts,
+  tree?: GenericParent,
+): TargetCounts {
+  let heading: (number | null)[];
+  // Initialize headings based on explicit initial value, tree, or all zeros
+  if (initialCounts?.heading) {
+    heading = [...initialCounts.heading];
+  } else if (tree) {
+    const headingNodes = selectAll('heading', tree).filter(
+      (node) => (node as Heading).enumerated !== false,
+    );
+    const headingDepths = new Set(headingNodes.map((node) => (node as Heading).depth));
+    heading = [1, 2, 3, 4, 5, 6].map((depth) => (headingDepths.has(depth) ? 0 : null));
+  } else {
+    heading = [0, 0, 0, 0, 0, 0];
+  }
+  const targetCounts = { heading } as TargetCounts;
+  // Update with other initial values
+  Object.entries(initialCounts ?? {})
+    .filter(([key]) => key !== 'heading')
+    .forEach(([key, val]) => {
+      targetCounts[key] = { ...(val as { main: number; sub: number }) };
+    });
+  // Set the offset counts if the numbering defines start
+  // These start values take priority over the initialCounts
+  Object.entries(numbering).forEach(([key, val]) => {
+    if (
+      ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6'].includes(key)
+    ) {
+      const headingIndex = Number.parseInt(key.slice(-1), 10) - 1;
+      if (val.enabled === false) {
+        targetCounts.heading[headingIndex] = null;
+      } else if (val.start) {
+        targetCounts.heading[headingIndex] = val.start - 1;
+      }
+    } else if (val.start) {
+      targetCounts[key] = { main: val.start - 1, sub: 0 };
+    }
+  });
+  return targetCounts;
+}
+
 export interface IReferenceStateResolver {
   vfile?: VFile;
   /**
@@ -258,10 +307,10 @@ export class ReferenceState implements IReferenceStateResolver {
   url?: string;
   title?: string;
   dataUrl?: string;
-  numberAll: boolean | null = null;
-  numbering: NumberingOptions;
+  numbering: Numbering;
   targets: Record<string, Target>;
   targetCounts: TargetCounts;
+  initialCounts?: TargetCounts;
   identifiers: string[];
 
   constructor(
@@ -271,38 +320,14 @@ export class ReferenceState implements IReferenceStateResolver {
       dataUrl?: string;
       title?: string;
       targetCounts?: TargetCounts;
-      numbering?: boolean | NumberingOptions;
+      numbering?: Numbering;
       identifiers?: string[];
       vfile?: VFile;
     },
   ) {
-    this.targetCounts = opts?.targetCounts || ({} as TargetCounts);
-    // Initialize the heading counts (it is different)
-    this.targetCounts.heading ??= [0, 0, 0, 0, 0, 0];
-    if (typeof opts?.numbering === 'boolean') {
-      this.numberAll = opts?.numbering;
-      this.numbering = {};
-    } else {
-      this.numbering = {
-        equation: true,
-        subequation: true,
-        figure: true,
-        subfigure: true,
-        table: true,
-        code: true,
-        ...opts?.numbering,
-      };
-    }
-    // Set the offset counts if the numbering does not start at zero
-    Object.entries(opts?.numbering ?? {}).forEach(([key, val]) => {
-      if (typeof val === 'number') {
-        if (key in ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6']) {
-          this.targetCounts.heading[Number.parseInt(key.slice(-1), 10) - 1] = val;
-        } else {
-          this.targetCounts[key] = { main: val, sub: 0 };
-        }
-      }
-    });
+    this.numbering = fillNumbering(opts?.numbering, DEFAULT_NUMBERING);
+    this.initialCounts = opts?.targetCounts;
+    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts);
     this.identifiers = opts?.identifiers ?? [];
     this.targets = {};
     this.vfile = opts?.vfile;
@@ -326,22 +351,15 @@ export class ReferenceState implements IReferenceStateResolver {
       return;
     }
     const kind = kindFromNode(node);
-    const numberNode = shouldEnumerate(
-      node,
-      kind,
-      this.numbering,
-      this.numberAll || node.enumerated,
-    );
-    if (node.enumerated !== false && numberNode && !node.enumerator) {
+    const numberNode = shouldEnumerate(node, kind, this.numbering);
+    if (numberNode && !node.enumerator) {
       this.incrementCount(node, kind as TargetKind);
     }
     if (!(node as any).html_id) {
       (node as any).html_id = createHtmlId(node.identifier);
     }
-    if (
-      node.identifier &&
-      (this.targets[node.identifier] || this.identifiers.includes(node.identifier))
-    ) {
+    if (!node.identifier) return;
+    if (this.targets[node.identifier] || this.identifiers.includes(node.identifier)) {
       if (!this.vfile) return;
       if ((node as any).implicit) return; // Do not warn on implicit headings
       fileWarn(
@@ -355,22 +373,14 @@ export class ReferenceState implements IReferenceStateResolver {
       );
       return;
     }
-    if (node.identifier) {
-      this.targets[node.identifier] = {
-        node,
-        kind: kind as TargetKind,
-      };
-    }
+    this.targets[node.identifier] = {
+      node,
+      kind: kind as TargetKind,
+    };
   }
 
-  initializeNumberedHeadingDepths(tree: GenericParent) {
-    const headings = selectAll('heading', tree).filter(
-      (node) => (node as Heading).enumerated !== false,
-    );
-    const headingDepths = new Set(headings.map((node) => (node as Heading).depth));
-    this.targetCounts.heading = [1, 2, 3, 4, 5, 6].map((depth) =>
-      headingDepths.has(depth) ? 0 : null,
-    );
+  initializeNumberedTargetCounts(tree: GenericParent) {
+    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts, tree);
   }
 
   /**
@@ -383,15 +393,16 @@ export class ReferenceState implements IReferenceStateResolver {
   incrementCount(node: TargetNodes, kind: TargetKind | string): string {
     let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
-      // Ideally initializeNumberedHeadingDepths is called before incrementing
-      // heading count to do a better job initializing headers based on tree
       this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
-      enumerator = formatHeadingEnumerator(this.targetCounts.heading, this.numbering.enumerator);
+      enumerator = formatHeadingEnumerator(
+        this.targetCounts.heading,
+        this.numbering.enumerator?.template,
+      );
       node.enumerator = enumerator;
       return enumerator;
     }
     const resolveEnumerator = (val: any): string => {
-      const prefix = this.numbering.enumerator;
+      const prefix = this.numbering.enumerator?.template;
       return prefix ? prefix.replace(/%s/g, String(val)) : String(val);
     };
     const countKind = kind === TargetKind.subequation ? TargetKind.equation : kind;
@@ -451,23 +462,15 @@ export class ReferenceState implements IReferenceStateResolver {
     node.kind = target.kind;
     const noNodeChildren = !node.children?.length;
     if (target.kind === TargetKind.heading) {
-      const numberHeading = shouldEnumerate(
-        target.node,
-        TargetKind.heading,
-        this.numbering,
-        this.numberAll,
-      );
-      // The default for a heading changes if it is numbered
-      const headingTemplate = numberHeading ? 'Section %s' : '{name}';
+      const numberHeading = shouldEnumerate(target.node, TargetKind.heading, this.numbering);
+      const template = getReferenceTemplate(target, this.numbering, numberHeading, true);
       fillReferenceEnumerators(
         this.vfile,
         node,
-        headingTemplate,
+        template,
         target.node,
         copyNode(target.node as Heading).children as PhrasingContent[],
       );
-    } else if (target.kind === TargetKind.equation) {
-      fillReferenceEnumerators(this.vfile, node, '(%s)', target.node);
     } else {
       // By default look into the caption or admonition title if it exists
       const caption =
@@ -484,9 +487,12 @@ export class ReferenceState implements IReferenceStateResolver {
       if (title && node.kind === ReferenceKind.ref && noNodeChildren) {
         node.children = title as any;
       }
-      const template = target.node.enumerator
-        ? getDefaultNumberedReferenceLabel(target.kind)
-        : getDefaultNamedReferenceLabel(target.kind, !!title);
+      const template = getReferenceTemplate(
+        target,
+        this.numbering,
+        !!target.node.enumerator,
+        !!title,
+      );
       fillReferenceEnumerators(this.vfile, node, template, target.node, title);
     }
     node.resolved = true;
@@ -552,7 +558,7 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
 }
 
 export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOptions) => {
-  opts.state.initializeNumberedHeadingDepths(tree);
+  opts.state.initializeNumberedTargetCounts(tree);
   visit(tree, (node) => {
     if (
       node.identifier ||
@@ -592,7 +598,7 @@ function getCaptionLabel(kind?: Container['kind'], subcontainer?: boolean) {
   if (subcontainer && (kind === 'equation' || kind === 'subequation')) return `(%s)`;
   if (subcontainer) return `({subEnumerator})`;
   if (!kind) return 'Figure %s:';
-  const template = getDefaultNumberedReferenceLabel(kind);
+  const template = getDefaultNumberedReferenceTemplate(kind);
   return `${template}:`;
 }
 

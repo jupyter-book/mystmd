@@ -113,7 +113,9 @@ cases:
     raw:
       numbering: 'false'
     normalized:
-      numbering: false
+      numbering:
+        all:
+          enabled: false
   - title: invalid doi errors
     raw:
       doi: ''

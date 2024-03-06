@@ -15,17 +15,20 @@ cases:
         list: true
     normalized:
       numbering:
-        list: true
+        list:
+          enabled: true
   - title: invalid extras keys are removed
     raw:
       numbering:
-        list: 'invalid'
+        list:
+          invalid: true
     normalized: {}
-    errors: 1
+    warnings: 1
   - title: full object returns self
     raw:
       numbering:
         enumerator: ''
+        all: true
         figure: true
         equation: true
         table: true
@@ -38,17 +41,30 @@ cases:
         heading_6: true
     normalized:
       numbering:
-        enumerator: ''
-        figure: true
-        equation: true
-        table: true
-        code: true
-        heading_1: true
-        heading_2: true
-        heading_3: true
-        heading_4: true
-        heading_5: true
-        heading_6: true
+        enumerator:
+          template: ''
+        all:
+          enabled: true
+        figure:
+          enabled: true
+        equation:
+          enabled: true
+        table:
+          enabled: true
+        code:
+          enabled: true
+        heading_1:
+          enabled: true
+        heading_2:
+          enabled: true
+        heading_3:
+          enabled: true
+        heading_4:
+          enabled: true
+        heading_5:
+          enabled: true
+        heading_6:
+          enabled: true
   - title: headings unpack
     raw:
       numbering:
@@ -56,12 +72,18 @@ cases:
         h3: false # alias for heading_3
     normalized:
       numbering:
-        heading_1: true
-        heading_2: true
-        heading_3: false
-        heading_4: true
-        heading_5: true
-        heading_6: true
+        heading_1:
+          enabled: true
+        heading_2:
+          enabled: true
+        heading_3:
+          enabled: false
+        heading_4:
+          enabled: true
+        heading_5:
+          enabled: true
+        heading_6:
+          enabled: true
   - title: Allow numbers to start at
     raw:
       numbering:
@@ -69,8 +91,12 @@ cases:
         list: 1
     normalized:
       numbering:
-        figure: 2
-        list: 1
+        figure:
+          enabled: true
+          start: 2
+        list:
+          enabled: true
+          start: 1
   - title: Numbers can't be negative or fractional
     raw:
       numbering:
@@ -79,3 +105,84 @@ cases:
         something: 0 # This should just be true
     normalized: {}
     errors: 3
+  - title: String becomes template
+    raw:
+      numbering:
+        list: L%s
+    normalized:
+      numbering:
+        list:
+          enabled: true
+          template: L%s
+  - title: Specific heading overrides headings
+    raw:
+      numbering:
+        headings: Heading %s
+        heading_3: false
+        heading_4: H%s
+        heading_6: 4
+        list: true
+    normalized:
+      numbering:
+        heading_1:
+          enabled: true
+          template: Heading %s
+        heading_2:
+          enabled: true
+          template: Heading %s
+        heading_3:
+          enabled: false
+          template: Heading %s
+        heading_4:
+          enabled: true
+          template: H%s
+        heading_5:
+          enabled: true
+          template: Heading %s
+        heading_6:
+          enabled: true
+          start: 4
+          template: Heading %s
+        list:
+          enabled: true
+  - title: Boolean coerces
+    raw:
+      numbering: true
+    normalized:
+      numbering:
+        all:
+          enabled: true
+  - title: Extra fields on enumerator warn
+    raw:
+      numbering:
+        enumerator:
+          enabled: false
+          template: ''
+          start: 2
+    normalized:
+      numbering:
+        enumerator:
+          template: ''
+    warnings: 2
+  - title: Enumerator enabled removed without warning
+    raw:
+      numbering:
+        enumerator:
+          enabled: true
+          template: ''
+    normalized:
+      numbering:
+        enumerator:
+          template: ''
+  - title: Extra fields on all warn
+    raw:
+      numbering:
+        all:
+          enabled: false
+          template: ''
+          start: 2
+    normalized:
+      numbering:
+        all:
+          enabled: false
+    warnings: 2

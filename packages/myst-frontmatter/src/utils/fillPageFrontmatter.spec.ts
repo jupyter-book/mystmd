@@ -117,12 +117,29 @@ describe('fillPageFrontmatter', () => {
   it('page and project numbering are combined', async () => {
     expect(
       fillPageFrontmatter(
-        { numbering: { enumerator: '#', heading_5: true, heading_6: true } },
-        { numbering: { enumerator: '$', heading_1: true, heading_6: false } },
+        {
+          numbering: {
+            enumerator: { template: '#' },
+            heading_5: { enabled: true },
+            heading_6: { enabled: true },
+          },
+        },
+        {
+          numbering: {
+            enumerator: { template: '$' },
+            heading_1: { enabled: true },
+            heading_6: { enabled: false },
+          },
+        },
         opts,
       ),
     ).toEqual({
-      numbering: { enumerator: '#', heading_1: true, heading_5: true, heading_6: true },
+      numbering: {
+        enumerator: { template: '#' },
+        heading_1: { enabled: true },
+        heading_5: { enabled: true },
+        heading_6: { enabled: true },
+      },
     });
   });
   it('extra project affiliations are not included', async () => {

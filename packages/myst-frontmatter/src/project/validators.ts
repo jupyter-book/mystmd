@@ -17,7 +17,7 @@ import { validateLicenses } from '../licenses/validators.js';
 import { validateNumbering } from '../numbering/validators.js';
 import { FRONTMATTER_ALIASES, validateSiteFrontmatterKeys } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
-import { validateBooleanOrObject, validateDoi } from '../utils/validators.js';
+import { validateDoi } from '../utils/validators.js';
 import { PROJECT_FRONTMATTER_KEYS } from './types.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
@@ -77,11 +77,7 @@ export function validateProjectAndPageFrontmatterKeys(
     output.oxa = validateString(value.oxa, incrementOptions('oxa', opts));
   }
   if (defined(value.numbering)) {
-    output.numbering = validateBooleanOrObject(
-      value.numbering,
-      incrementOptions('numbering', opts),
-      validateNumbering,
-    );
+    output.numbering = validateNumbering(value.numbering, incrementOptions('numbering', opts));
   }
   if (defined(value.math)) {
     const mathOpts = incrementOptions('math', opts);

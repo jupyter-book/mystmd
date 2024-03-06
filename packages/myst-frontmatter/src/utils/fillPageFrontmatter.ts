@@ -2,7 +2,7 @@ import type { ValidationOptions } from 'simple-validators';
 import { fillMissingKeys, incrementOptions, validationWarning } from 'simple-validators';
 import type { Affiliation } from '../affiliations/types.js';
 import type { Contributor } from '../contributors/types.js';
-import { NUMBERING_KEYS } from '../numbering/validators.js';
+import { fillNumbering } from '../numbering/validators.js';
 import { USE_PROJECT_FALLBACK } from '../page/validators.js';
 import type { PageFrontmatter } from '../page/types.js';
 import type { ProjectFrontmatter } from '../project/types.js';
@@ -22,17 +22,8 @@ export function fillPageFrontmatter(
 ) {
   const frontmatter = fillMissingKeys(pageFrontmatter, projectFrontmatter, USE_PROJECT_FALLBACK);
 
-  // If numbering is an object, combine page and project settings.
-  // Otherwise, the value filled above is correct.
-  if (
-    typeof pageFrontmatter.numbering === 'object' &&
-    typeof projectFrontmatter.numbering === 'object'
-  ) {
-    frontmatter.numbering = fillMissingKeys(
-      pageFrontmatter.numbering,
-      projectFrontmatter.numbering,
-      NUMBERING_KEYS,
-    );
+  if (pageFrontmatter.numbering || projectFrontmatter.numbering) {
+    frontmatter.numbering = fillNumbering(pageFrontmatter.numbering, projectFrontmatter.numbering);
   }
 
   // Combine all math macros defined on page and project
