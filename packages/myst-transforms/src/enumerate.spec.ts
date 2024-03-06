@@ -4,6 +4,7 @@ import {
   enumerateTargetsTransform,
   formatHeadingEnumerator,
   incrementHeadingCounts,
+  initializeTargetCounts,
 } from './enumerate';
 import { u } from 'unist-builder';
 
@@ -98,5 +99,81 @@ describe('enumeration', () => {
     expect(state.getTarget('fig:1-c')?.node.enumerator).toBe('c');
     expect(state.getTarget('fig:1-c')?.node.parentEnumerator).toBe('A.1');
     expect(state.getTarget('fig:2')?.node.enumerator).toBe('A.2');
+  });
+});
+describe('initializeTargetCounts', () => {
+  test('no inputs initializes heading', () => {
+    expect(initializeTargetCounts({})).toEqual({ heading: [0, 0, 0, 0, 0, 0] });
+  });
+  test('initialCounts only is unchanged', () => {
+    const initialCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+      other: { main: 0, sub: 0 },
+    };
+    expect(initializeTargetCounts({}, initialCounts as any)).toEqual(initialCounts);
+  });
+  test('numbering starts are respected', () => {
+    const numbering = {
+      heading_1: { enabled: true, start: 5 },
+      heading_2: { enabled: false, start: 2 },
+      heading_5: { enabled: true, start: 2 },
+      figure: { enabled: true, start: 5 },
+      other: { enabled: true, start: 8 },
+    };
+    expect(initializeTargetCounts(numbering)).toEqual({
+      heading: [4, null, 0, 0, 1, 0],
+      figure: { main: 4, sub: 0 },
+      other: { main: 7, sub: 0 },
+    });
+  });
+  test('tree headings are respected', () => {
+    const tree = {
+      type: 'root',
+      children: [
+        { type: 'heading', depth: 1, children: [] },
+        { type: 'heading', depth: 3, children: [] },
+        { type: 'heading', depth: 4, children: [] },
+      ],
+    };
+    expect(initializeTargetCounts({}, undefined, tree)).toEqual({
+      heading: [0, null, 0, 0, null, null],
+    });
+  });
+  test('initialCounts override tree headings', () => {
+    const initialCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+      other: { main: 0, sub: 0 },
+    };
+    const tree = {
+      type: 'root',
+      children: [
+        { type: 'heading', depth: 1, children: [] },
+        { type: 'heading', depth: 3, children: [] },
+        { type: 'heading', depth: 4, children: [] },
+      ],
+    };
+    expect(initializeTargetCounts({}, initialCounts as any, tree)).toEqual(initialCounts);
+  });
+  test('explicit numberings override initialCounts', () => {
+    const initialCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+      other: { main: 0, sub: 0 },
+    };
+    const numbering = {
+      heading_1: { enabled: true, start: 5 },
+      heading_2: { enabled: false, start: 2 },
+      heading_5: { enabled: true, start: 2 },
+      figure: { enabled: true, start: 5 },
+      code: { enabled: true, start: 8 },
+    };
+    expect(initializeTargetCounts(numbering, initialCounts as any)).toEqual({
+      heading: [4, null, 1, 0, 1, null],
+      figure: { main: 4, sub: 0 },
+      other: { main: 0, sub: 0 },
+      code: { main: 7, sub: 0 },
+    });
   });
 });

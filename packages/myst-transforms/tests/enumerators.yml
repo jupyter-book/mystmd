@@ -668,3 +668,83 @@ cases:
                       children:
                         - type: text
                           value: Something! A legend!?
+  - title: heading numbering with start
+    opts:
+      numbering:
+        heading_1:
+          enabled: true
+          start: 5
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: three
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+          enumerator: '5'
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+          enumerator: '6'
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: three
+          enumerator: '7'
+  - title: heading numbering with enumerator
+    opts:
+      numbering:
+        enumerator:
+          template: A%s
+        heading_1:
+          enabled: true
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: one
+          enumerator: 'A1'
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: two
+          enumerator: 'A2'

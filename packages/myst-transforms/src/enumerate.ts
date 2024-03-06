@@ -247,6 +247,51 @@ export function formatHeadingEnumerator(counts: (number | null)[], prefix?: stri
   return out;
 }
 
+export function initializeTargetCounts(
+  numbering: Numbering,
+  initialCounts?: TargetCounts,
+  tree?: GenericParent,
+): TargetCounts {
+  let heading: (number | null)[];
+  // Initialize headings based on explicit initial value, tree, or all zeros
+  if (initialCounts?.heading) {
+    heading = [...initialCounts.heading];
+  } else if (tree) {
+    const headingNodes = selectAll('heading', tree).filter(
+      (node) => (node as Heading).enumerated !== false,
+    );
+    const headingDepths = new Set(headingNodes.map((node) => (node as Heading).depth));
+    heading = [1, 2, 3, 4, 5, 6].map((depth) => (headingDepths.has(depth) ? 0 : null));
+  } else {
+    heading = [0, 0, 0, 0, 0, 0];
+  }
+  const targetCounts = { heading } as TargetCounts;
+  // Update with other initial values
+  Object.entries(initialCounts ?? {})
+    .filter(([key]) => key !== 'heading')
+    .forEach(([key, val]) => {
+      targetCounts[key] = { ...(val as { main: number; sub: number }) };
+    });
+  // Set the offset counts if the numbering defines start
+  // These start values take priority over the initialCounts
+  Object.entries(numbering).forEach(([key, val]) => {
+    if (
+      ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6'].includes(key)
+    ) {
+      const headingIndex = Number.parseInt(key.slice(-1), 10) - 1;
+      if (val.enabled === false) {
+        targetCounts.heading[headingIndex] = null;
+      } else if (val.start) {
+        targetCounts.heading[headingIndex] = val.start - 1;
+      }
+    } else if (val.start) {
+      targetCounts[key] = { main: val.start - 1, sub: 0 };
+    }
+  });
+  console.log(targetCounts);
+  return targetCounts;
+}
+
 export interface IReferenceStateResolver {
   vfile?: VFile;
   /**
@@ -266,6 +311,7 @@ export class ReferenceState implements IReferenceStateResolver {
   numbering: Numbering;
   targets: Record<string, Target>;
   targetCounts: TargetCounts;
+  initialCounts?: TargetCounts;
   identifiers: string[];
 
   constructor(
@@ -280,19 +326,9 @@ export class ReferenceState implements IReferenceStateResolver {
       vfile?: VFile;
     },
   ) {
-    this.targetCounts = opts?.targetCounts || ({} as TargetCounts);
-    // Initialize the heading counts (it is different)
-    this.targetCounts.heading ??= [0, 0, 0, 0, 0, 0];
     this.numbering = fillNumbering(opts?.numbering, DEFAULT_NUMBERING);
-    // Set the offset counts if the numbering does not start at zero
-    Object.entries(opts?.numbering ?? {}).forEach(([key, val]) => {
-      if (!val.start) return;
-      if (key in ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6']) {
-        this.targetCounts.heading[Number.parseInt(key.slice(-1), 10) - 1] = val.start - 1;
-      } else {
-        this.targetCounts[key] = { main: val.start - 1, sub: 0 };
-      }
-    });
+    this.initialCounts = opts?.targetCounts;
+    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts);
     this.identifiers = opts?.identifiers ?? [];
     this.targets = {};
     this.vfile = opts?.vfile;
@@ -344,14 +380,8 @@ export class ReferenceState implements IReferenceStateResolver {
     };
   }
 
-  initializeNumberedHeadingDepths(tree: GenericParent) {
-    const headings = selectAll('heading', tree).filter(
-      (node) => (node as Heading).enumerated !== false,
-    );
-    const headingDepths = new Set(headings.map((node) => (node as Heading).depth));
-    this.targetCounts.heading = [1, 2, 3, 4, 5, 6].map((depth) =>
-      headingDepths.has(depth) ? 0 : null,
-    );
+  initializeNumberedTargetCounts(tree: GenericParent) {
+    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts, tree);
   }
 
   /**
@@ -364,8 +394,6 @@ export class ReferenceState implements IReferenceStateResolver {
   incrementCount(node: TargetNodes, kind: TargetKind | string): string {
     let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
-      // Ideally initializeNumberedHeadingDepths is called before incrementing
-      // heading count to do a better job initializing headers based on tree
       this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
       enumerator = formatHeadingEnumerator(
         this.targetCounts.heading,
@@ -531,7 +559,7 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
 }
 
 export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOptions) => {
-  opts.state.initializeNumberedHeadingDepths(tree);
+  opts.state.initializeNumberedTargetCounts(tree);
   visit(tree, (node) => {
     if (
       node.identifier ||
