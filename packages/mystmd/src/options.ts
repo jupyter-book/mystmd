@@ -148,6 +148,19 @@ export function makeCIOption() {
   ).default(false);
 }
 
+export function makeMaxSizeWebpOption() {
+  return new Option('--max-size-webp <size>', 'Max image size to convert to webp format in MB')
+    .default(1.5 * 1024 * 1024, '1.5')
+    .argParser((value) => {
+      if (value == null) return undefined;
+      const parsedValue = parseFloat(value);
+      if (isNaN(parsedValue)) {
+        throw new InvalidArgumentError('Must be number');
+      }
+      return parsedValue * 1024 * 1024;
+    });
+}
+
 export function promptContinue() {
   return {
     name: 'cont',

@@ -7,6 +7,7 @@ import {
   makePortOption,
   makeServerPortOption,
   makeExecuteOption,
+  makeMaxSizeWebpOption,
 } from './options.js';
 
 export function makeStartCLI(program: Command) {
@@ -17,6 +18,7 @@ export function makeStartCLI(program: Command) {
     .addOption(makeHeadlessOption())
     .addOption(makePortOption())
     .addOption(makeServerPortOption())
+    .addOption(makeMaxSizeWebpOption())
     .action(clirun(Session, startServer, program));
   return command;
 }

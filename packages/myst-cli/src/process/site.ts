@@ -209,6 +209,7 @@ export async function fastProcessFile(
     extraTransforms,
     defaultTemplate,
     execute,
+    maxSizeWebp,
   }: {
     file: string;
     pageSlug: string;
@@ -218,6 +219,7 @@ export async function fastProcessFile(
     extraTransforms?: TransformFn[];
     defaultTemplate?: string;
     execute?: boolean;
+    maxSizeWebp?: number;
   },
 ) {
   const toc = tic();
@@ -248,6 +250,7 @@ export async function fastProcessFile(
       imageExtensions: WEB_IMAGE_EXTENSIONS,
       optimizeWebp: true,
       processThumbnail: true,
+      maxSizeWebp,
     });
   }
   await writeFile(session, { file, pageSlug, projectSlug });

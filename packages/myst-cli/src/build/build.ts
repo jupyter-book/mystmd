@@ -29,6 +29,7 @@ export type BuildOpts = {
   checkLinks?: boolean;
   ci?: boolean;
   execute?: boolean;
+  maxSizeWebp?: number;
 };
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {

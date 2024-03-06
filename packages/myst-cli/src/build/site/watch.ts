@@ -17,6 +17,7 @@ type TransformOptions = {
   defaultTemplate?: string;
   reloadProject?: boolean;
   execute?: boolean;
+  maxSizeWebp?: number;
 };
 
 function watchConfigAndPublic(session: ISession, serverReload: () => void, opts: TransformOptions) {
