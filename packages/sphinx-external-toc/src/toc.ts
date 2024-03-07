@@ -24,7 +24,7 @@ function upgradeOldJupyterBookTOC(oldTOC: any[]) {
       delete tocUpdated[key];
 
       if (!Array.isArray(items)) {
-        throw new Error();
+        throw new Error(`'${key}' in toc must be an array`);
       }
 
       firstItems = [...firstItems, ...items];
