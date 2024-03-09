@@ -61,3 +61,6 @@ parts:
       - file: frontmatter
       - file: settings
       - file: glossary
+  - caption: Contribute
+    chapters:
+      - file: contribute/docs
