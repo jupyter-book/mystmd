@@ -63,4 +63,4 @@ parts:
       - file: glossary
   - caption: Contribute
     chapters:
-      - file: contribute/docs
+      - file: contribute-docs
