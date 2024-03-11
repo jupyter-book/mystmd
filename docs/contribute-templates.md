@@ -25,4 +25,4 @@ MyST welcomes contributions of new templates, or improvements to any of our cura
 - 🏋🏽‍♀️ [create your own template](https://mystmd.org/jtex/create-a-latex-template) - Learn how to create your own template in a few easy steps!
 - 🤝 [contribute a template](https://mystmd.org/jtex/contribute-a-template) - Even if it's partial or barely started we'll help test and get it over the line.
 
-For more details on contributing, learning about the structure of templates specifically and how to build one. See the [Contributors Guide](https://mystmd.org/jtex/contribute-a-template) in `jtex`.
+For more details on contributing, learning about the structure of templates specifically and how to build one. See the [Contributors Guide](https://mystmd.org/jtex/contribute-a-template), currently the documentation is written for creating a LaTeX templates but you can follows the same approach for any MyST Template or see [MyST templates organization](https://github.com/myst-templates) for a range of examples.
