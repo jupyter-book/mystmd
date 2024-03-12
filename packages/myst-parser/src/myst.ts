@@ -3,7 +3,7 @@ import { defaultDirectives } from 'myst-directives';
 import { defaultRoles } from 'myst-roles';
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
-import tlds from 'tlds';
+import { tlds } from './tlds.js';
 import { EXCLUDE_TLDS, MARKDOWN_IT_CONFIG } from './config.js';
 import { tokensToMyst } from './tokensToMyst.js';
 import {
