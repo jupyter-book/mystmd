@@ -179,7 +179,7 @@ export function watchContent(session: ISession, serverReload: () => void, opts: 
     chokidar
       .watch([proj.path, ...dependencies], {
         ignoreInitial: true,
-        ignored: ['public', '**/_build/**', '**/.git/**', ...ignored],
+        ignored: ['public', '**/_build/**', '**/node_modules/**', '**/.*/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
       })
       .on('all', watchProcessor(session, proj, serverReload, opts));
