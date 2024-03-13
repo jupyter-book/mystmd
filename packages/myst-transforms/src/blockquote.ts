@@ -6,7 +6,7 @@ import { remove } from 'unist-util-remove';
 import { copyNode, liftChildren } from 'myst-common';
 import { visit } from 'unist-util-visit';
 
-const ATTRIBUTION_PATTERN = /(?:---?(?!-)|\u2014) +(.*)/;
+const ATTRIBUTION_PATTERN = /^(?:---?(?!-)|\u2014) +(.*)/;
 
 function maybeLiftAttribution(container: Container, quote: Blockquote): boolean {
   // Make this idempotent
