@@ -1,4 +1,6 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { normalizeLabel } from 'myst-common';
+import type { Container } from 'myst-spec-ext';
 import classNames from 'classnames';
 
 export const blockQuoteDirective: DirectiveSpec = {
@@ -27,12 +29,13 @@ export const blockQuoteDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const className = data.options?.class as string;
-    const container = {
+    const container: Container = {
       type: 'container',
       kind: 'quote',
-      label: data.options?.label as string | undefined,
+      label,
+      identifier,
       class: classNames({ [className]: className, [data.name]: data.name !== 'block-quote' }),
       children: [
         {
