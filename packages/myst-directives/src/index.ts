@@ -40,6 +40,7 @@ export const defaultDirectives = [
   mystdemoDirective,
   outputDirective,
   rawDirective,
+  pullQuoteDirective
 ];
 
 export { admonitionDirective } from './admonition.js';
