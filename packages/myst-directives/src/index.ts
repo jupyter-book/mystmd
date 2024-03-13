@@ -15,7 +15,7 @@ import { mdastDirective } from './mdast.js';
 import { mermaidDirective } from './mermaid.js';
 import { mystdemoDirective } from './mystdemo.js';
 import { outputDirective } from './output.js';
-import { blockQuoteDirective } from './blockquote.js';
+import { blockquoteDirective } from './blockquote.js';
 import { rawDirective } from './raw.js';
 
 export const defaultDirectives = [
@@ -25,7 +25,7 @@ export const defaultDirectives = [
   codeCellDirective,
   dropdownDirective,
   embedDirective,
-  blockQuoteDirective,
+  blockquoteDirective,
   figureDirective,
   iframeDirective,
   imageDirective,
@@ -58,5 +58,5 @@ export { mdastDirective } from './mdast.js';
 export { mermaidDirective } from './mermaid.js';
 export { mystdemoDirective } from './mystdemo.js';
 export { outputDirective } from './output.js';
-export { blockQuoteDirective } from './blockquote.js';
+export { blockquoteDirective } from './blockquote.js';
 export { rawDirective } from './raw.js';

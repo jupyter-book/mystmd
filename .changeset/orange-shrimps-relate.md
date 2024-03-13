@@ -1,5 +1,5 @@
 ---
-"myst-spec-ext": major
+'myst-spec-ext': patch
 ---
 
 Require `kind` for `Container`

@@ -3,7 +3,7 @@ import { normalizeLabel } from 'myst-common';
 import type { Container } from 'myst-spec-ext';
 import classNames from 'classnames';
 
-export const blockQuoteDirective: DirectiveSpec = {
+export const blockquoteDirective: DirectiveSpec = {
   name: 'blockquote',
   alias: ['epigraph', 'pull-quote'],
   doc: 'Block quotes are used to indicate that the enclosed content forms an extended quotation. They may be followed by an inscription or attribution formed of a paragraph beginning with `--`, `---`, or an em-dash.',
@@ -14,15 +14,15 @@ export const blockQuoteDirective: DirectiveSpec = {
     },
     class: {
       type: String,
-      doc: `CSS classes to add to your block-quote. Special classes include:
+      doc: `CSS classes to add to your blockquote. Special classes include:
 
-- \`pull-quote\`: used for block-quotes which should attract attention
-- \`epigraph\`: used for block-quotes that are usually found at the beginning of a document`,
+- \`pull-quote\`: used for a blockquote node which should attract attention
+- \`epigraph\`: used for a blockquote node that are usually found at the beginning of a document`,
     },
   },
   body: {
     type: 'myst',
-    doc: 'The body of the quote.',
+    doc: 'The body of the quote, which may contain a special attribution paragraph that is turned into a caption',
   },
   run(data: DirectiveData): GenericNode[] {
     const children: GenericNode[] = [];
@@ -36,7 +36,7 @@ export const blockQuoteDirective: DirectiveSpec = {
       kind: 'quote',
       label,
       identifier,
-      class: classNames({ [className]: className, [data.name]: data.name !== 'block-quote' }),
+      class: classNames({ [className]: className, [data.name]: data.name !== 'blockquote' }),
       children: [
         {
           // @ts-expect-error: myst-spec needs updating to support blockquote

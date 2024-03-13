@@ -25,8 +25,8 @@ function createOption(directive, optName, option) {
           optName === 'arg'
             ? 'Directive Argument'
             : optName === 'body'
-            ? 'Directive Body'
-            : optName,
+              ? 'Directive Body'
+              : optName,
         ),
       ]),
       ...(optType
