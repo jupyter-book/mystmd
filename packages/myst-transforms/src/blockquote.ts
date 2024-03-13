@@ -29,14 +29,20 @@ function maybeLiftAttribution(container: Container, quote: Blockquote): boolean 
     return false;
   }
 
-  // We've found an attribution, now we want to strip the prefix
+  // We've found a non-empty text-component in the attribution
   if (match[1]) {
+    // Bow we want to strip the prefix
     maybeCaptionText.value = match[1];
   }
-  // There's no remainder, delete the text node entirely
-  else {
+  // There's no leading text component, but there is subsequent markup
+  else if (maybeCaptionParagraph.children.length > 1){
+    // Delete the text node entirely
     (maybeCaptionText as GenericNode).type = '__delete__';
     remove(maybeCaptionParagraph, '__delete__');
+  } 
+  // There's nothing to use as an attribution, cancel!
+  else {
+    return false;
   }
   // Delete original (final) paragraph
   quote.children.pop();

@@ -68,25 +68,36 @@ describe('Test blockquoteTransform', () => {
     const mdast = u('root', [
       u('blockquote', [
         u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
-          u('paragraph', [
-            u('text', `-- `),
-            u('strong', [u('text', 'Hamlet act 4, Scene 5')]),
-          ]),
+        u('paragraph', [u('text', '-- '), u('strong', [u('text', 'Hamlet act 4, Scene 5')])]),
       ]),
     ]);
     blockquoteTransform(mdast);
     expect(mdast).toEqual(
-        u('root', [
-          u('container', { kind: 'quote' }, [
-            u('blockquote', [
-              u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
-            ]),
-            u('caption', [
-              u('paragraph', [u('strong', [u('text', 'Hamlet act 4, Scene 5')])]),
-            ]),
+      u('root', [
+        u('container', { kind: 'quote' }, [
+          u('blockquote', [
+            u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
           ]),
+          u('caption', [u('paragraph', [u('strong', [u('text', 'Hamlet act 4, Scene 5')])])]),
         ]),
-      );
-    },
-  );
+      ]),
+    );
+  });
+  test('blockquote with empty attribution is unchanged', async () => {
+    const mdast = u('root', [
+      u('blockquote', [
+        u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+        u('paragraph', [u('text', '-- ')]),
+      ]),
+    ]);
+    blockquoteTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u('blockquote', [
+          u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+          u('paragraph', [u('text', '-- ')]),
+        ]),
+      ]),
+    );
+  });
 });
