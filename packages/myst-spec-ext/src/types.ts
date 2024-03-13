@@ -225,7 +225,7 @@ export type Raw = {
 };
 
 export type Container = Omit<SpecContainer, 'kind'> & {
-  kind?: 'figure' | 'table' | 'quote' | 'code' | string;
+  kind: 'figure' | 'table' | 'quote' | 'code' | string;
   source?: Dependency;
   subcontainer?: boolean;
   noSubcontainers?: boolean;
