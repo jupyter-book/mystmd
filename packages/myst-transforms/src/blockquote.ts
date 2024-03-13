@@ -67,29 +67,27 @@ export function blockquoteTransform(mdast: GenericParent) {
         maybeLiftAttribution(quoteParent as unknown as Container, quote);
         return 'skip';
       }
-      // Otherwise, we create a container, and replace the blockquote with a container
-      // containing the blockquote
-      else {
-        const container = {
-          type: 'container',
-          kind: 'quote',
-          children: [quote],
-        };
-        if (maybeLiftAttribution(container as unknown as Container, quote)) {
-          // Copy container before we modify the quote node
-          const nextContainer = copyNode(container);
-          // Erase the original blockquote node, using it as a mechanism
-          // to lift the new container into the right place
-          (quote as GenericNode).type = '__lift__';
-          quote.children = [nextContainer as unknown as Container];
-          // Let's be safe for now (due to ! assertion below)
-          if (quoteParent === undefined) {
-            throw new Error("Encountered root-level blockquote, can't replace parent");
-          }
-          liftChildren(quoteParent!, '__lift__');
-        }
-        return 'skip';
+
+      // Otherwise, we create a container
+      const container = {
+        type: 'container',
+        kind: 'quote',
+        children: [quote],
+      };
+
+      // If we find an attribution, lift it into this new container
+      if (maybeLiftAttribution(container as unknown as Container, quote)) {
+        // Having found an attribution, we need to replace the existing quote with the container
+        // Copy container before we modify the quote node
+        const nextContainer = copyNode(container);
+        // Overwrite the original Blockquote with the new container
+        // Normally we'd just use a lift utility, but this quote _might_ be the root node.
+        const containerDest = quote as GenericNode;
+        containerDest.type = 'container';
+        containerDest.kind = 'quote';
+        containerDest.children = nextContainer.children;
       }
+      return 'skip';
     },
   );
 }
