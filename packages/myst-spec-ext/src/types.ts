@@ -242,8 +242,3 @@ export type Output = Node & {
   visibility?: Visibility;
   children?: (FlowContent | ListContent | PhrasingContent)[];
 };
-
-export type Epigraph = Node & {
-  type: 'epigraph';
-  children?: FlowContent[];
-};
