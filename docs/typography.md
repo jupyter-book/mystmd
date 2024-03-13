@@ -111,12 +111,23 @@ See [](#abbreviations) for more information.
 
 ## Quotations
 
-Quotations are controlled with standard Markdown syntax, by inserting a caret (`>`) symbol in front of one or more lines of text. You can provide an attribution to a blockquote by adding `- author or source` to the final line.
+Quotations are controlled with standard Markdown syntax, by inserting a caret (`>`) symbol in front of one or more lines of text. You can provide an attribution to a blockquote by adding a final paragraph whose text starts with `--` or an emdash (`—`), followed by the author or source`. The blank `>` line is required!
 
 ```{myst}
 > We know what we are, but know not what we may be.
-> - Hamlet act 4, Scene 5
+> 
+> -- Hamlet act 4, Scene 5
 ```
+
+MyST also supports pull-quotes via the `pull-quote` directive, which act as attention-grabbing visual elements.
+```{myst}
+:::{pull-quote}
+We know what we are
+:::
+
+They say the owl was a baker’s daughter. Lord, we know what we are but know not what we may be. God be at your table.
+```
+
 
 (definition-lists)=
 
