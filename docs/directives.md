@@ -21,6 +21,9 @@ description: Code and code-blocks can be used to show programming languages.
 :::{myst:directive} embed
 :::
 
+:::{myst:directive} epigraph
+:::
+
 :::{myst:directive} figure
 :::
 
@@ -58,4 +61,7 @@ description: Code and code-blocks can be used to show programming languages.
 :::
 
 :::{myst:directive} output
+:::
+
+:::{myst:directive} pull-quote
 :::
