@@ -1,4 +1,5 @@
 import type { Handler, ITexSerializer } from './types.js';
+import assert from 'node:assert';
 
 function addMacrosToState(value: string, state: ITexSerializer) {
   if (!state.options.math) return;
@@ -47,15 +48,29 @@ const math: Handler = (node, state) => {
     state.write(node.value);
     state.write(' \\)');
   } else {
-    // TODO: AMS math
-    state.write(`\\begin{equation${enumerated === false ? '*' : ''}}\n`);
-    if (label) {
-      state.write(`\\label{${label}}`);
+    // TODO: properly handle AMS math environments
+    // For now only checking if a multi-line AMSMath environment is used, than avoid using
+    // equation and label
+    const AMSMath = /\\(begin|end)\{(gather)\*?\}/g;
+    if (node.value.match(AMSMath)) {
+      // If multi-line AMSMath is used, use the contents as-is
+      if (label) {
+        throw new Error('Multi-line AMSMath environment is incompatible with math.label');
+      }
+      state.ensureNewLine();
+      state.write(node.value);
+      state.ensureNewLine(true);
+    } else {
+      // Otherwise enclose the math envrioment by equation+label
+      state.write(`\\begin{equation${enumerated === false ? '*' : ''}}\n`);
+      if (label) {
+        state.write(`\\label{${label}}`);
+      }
+      state.ensureNewLine();
+      state.write(node.value);
+      state.ensureNewLine(true);
+      state.write(`\\end{equation${enumerated === false ? '*' : ''}}`);
     }
-    state.ensureNewLine();
-    state.write(node.value);
-    state.ensureNewLine(true);
-    state.write(`\\end{equation${enumerated === false ? '*' : ''}}`);
   }
   if (!state.data.isInTable) state.closeBlock(node);
 };
