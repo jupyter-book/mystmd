@@ -52,11 +52,9 @@ function maybeLiftAttribution(container: Container, quote: Blockquote): boolean 
   return true;
 }
 export function blockquoteTransform(mdast: GenericParent) {
-  visit(mdast, 'blockquote', (quote: Blockquote, quoteParent: GenericNode | undefined) => {
-    const isContainer = matches('container[kind=quote]', quoteParent);
-
+  visit(mdast, 'blockquote', (quote: Blockquote, index: number, quoteParent: GenericNode | undefined) => {
     // If there's already a `container`, then we just lift the attribution into the container
-    if (isContainer) {
+    if (matches('container[kind=quote]', quoteParent)) {
       maybeLiftAttribution(quoteParent as unknown as Container, quote);
       return 'skip';
     }
