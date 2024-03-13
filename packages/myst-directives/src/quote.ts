@@ -1,7 +1,10 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-export const epigraphDirective: DirectiveSpec = {
-  name: 'epigraph',
-  doc: 'Inscriptions, or "epigraphs", provide a short quote or inscription at the beginning of a topic. They are usually pertinent to the subsequent content, either to set the theme, or establish a counter-example.',
+import classNames from 'classnames';
+
+export const blockQuoteDirective: DirectiveSpec = {
+  name: 'block-quote',
+  alias: ["epigraph", "pull-quote"],
+  doc: 'Block quotes are used to indicate that the enclosed content forms an extended quotation. They may be followed by an inscription or attribution formed of a paragraph beginning with `--`, `---`, or an em-dash.',
   options: {
     label: {
       type: String,
@@ -9,13 +12,15 @@ export const epigraphDirective: DirectiveSpec = {
     },
     class: {
       type: String,
-      alias: ['figclass'],
-      doc: `CSS classes to add to your epigraph`,
+      doc: `CSS classes to add to your block-quote. Special classes include:
+
+- \`pull-quote\`: used for block-quotes which should attract attention
+- \`epigraph\`: used for block-quotes that are usually found at the beginning of a document`,
     },
   },
   body: {
     type: 'myst',
-    doc: 'The body of the epigraph.',
+    doc: 'The body of the block-quote.',
   },
   run(data: DirectiveData): GenericNode[] {
     const children: GenericNode[] = [];
@@ -23,10 +28,11 @@ export const epigraphDirective: DirectiveSpec = {
       children.push(...(data.body as GenericNode[]));
     }
 
+    const className = data.options?.class as string;
     const container = {
       type: 'container',
       kind: 'quote',
-      class: 'epigraph',
+      class: classNames({ [className]: className, [data.name]: data.name !== 'block-quote'}),
       children: [
         {
           type: 'blockquote',
@@ -36,43 +42,4 @@ export const epigraphDirective: DirectiveSpec = {
     };
     return [container];
   },
-};
-
-export const pullQuoteDirective: DirectiveSpec = {
-  name: 'pull-quote',
-  doc: 'Pull-quotes add emphasis to a small selection of text by pulling it out into a separate, quoted block - usually of a larger typeface. They are used to attract attention, especially in documents that consist of considerable prose.',
-  options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
-    class: {
-      type: String,
-      alias: ['figclass'],
-      doc: `CSS classes to add to your pull-quote`,
-    },
-  },
-  body: {
-    type: 'myst',
-    doc: 'The body of the pull-quote.',
-  },
-  run(data: DirectiveData): GenericNode[] {
-    const children: GenericNode[] = [];
-    if (data.body) {
-      children.push(...(data.body as GenericNode[]));
-    }
-
-    const container = {
-      type: 'container',
-      kind: 'quote',
-      class: 'pull-quote',
-      children: [
-        {
-          type: 'blockquote',
-          children: children as any[],
-        },
-      ],
-    };
-    return [container];
-  },
-};
+}; 
