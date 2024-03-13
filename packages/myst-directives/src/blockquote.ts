@@ -4,7 +4,7 @@ import type { Container } from 'myst-spec-ext';
 import classNames from 'classnames';
 
 export const blockQuoteDirective: DirectiveSpec = {
-  name: 'block-quote',
+  name: 'blockquote',
   alias: ['epigraph', 'pull-quote'],
   doc: 'Block quotes are used to indicate that the enclosed content forms an extended quotation. They may be followed by an inscription or attribution formed of a paragraph beginning with `--`, `---`, or an em-dash.',
   options: {
