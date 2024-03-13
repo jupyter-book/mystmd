@@ -22,7 +22,7 @@ export const blockQuoteDirective: DirectiveSpec = {
   },
   body: {
     type: 'myst',
-    doc: 'The body of the block-quote.',
+    doc: 'The body of the quote.',
   },
   run(data: DirectiveData): GenericNode[] {
     const children: GenericNode[] = [];
