@@ -32,6 +32,7 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
     "js-yaml": "^4.1.0",
     "myst-common": "^1.1.29",
     "myst-spec-ext": "^1.1.29",
