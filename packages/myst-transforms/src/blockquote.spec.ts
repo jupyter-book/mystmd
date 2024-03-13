@@ -3,6 +3,69 @@ import { u } from 'unist-builder';
 import { blockquoteTransform } from './blockquote';
 
 describe('Test blockquoteTransform', () => {
+  test('block-quote with attribution inside container preserves container', async (quote) => {
+    const mdast = u('root', [
+      u('container', { kind: 'quote', class: 'pull-quote' }, [
+        u('blockquote', [
+          u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+          u('paragraph', [u('text', '-- Hamlet'), u('strong', [u('text', 'act 4, Scene 5')])]),
+        ]),
+      ]),
+    ]);
+    blockquoteTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u('container', { kind: 'quote', class: 'pull-quote' }, [
+          u('blockquote', [
+            u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+          ]),
+          u('caption', [
+            u('paragraph', [u('text', 'Hamlet'), u('strong', [u('text', 'act 4, Scene 5')])]),
+          ]),
+        ]),
+      ]),
+    );
+  });
+  test('block-quote without attribution inside container drops container', async (quote) => {
+    const mdast = u('root', [
+      u('container', { kind: 'quote' }, [
+        u('blockquote', [
+          u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+          u('paragraph', [u('text', 'Hamlet'), u('strong', [u('text', 'act 4, Scene 5')])]),
+        ]),
+      ]),
+    ]);
+    blockquoteTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u('blockquote', [
+          u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+          u('paragraph', [u('text', 'Hamlet'), u('strong', [u('text', 'act 4, Scene 5')])]),
+        ]),
+      ]),
+    );
+  });
+  test('block-quote without attribution inside container with class preserves container', async (quote) => {
+    const mdast = u('root', [
+      u('container', { kind: 'quote', class: 'foo' }, [
+        u('blockquote', [
+          u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+          u('paragraph', [u('text', 'Hamlet'), u('strong', [u('text', 'act 4, Scene 5')])]),
+        ]),
+      ]),
+    ]);
+    blockquoteTransform(mdast);
+    expect(mdast).toEqual(
+      u('root', [
+        u('container', { kind: 'quote', class: 'foo' }, [
+          u('blockquote', [
+            u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+            u('paragraph', [u('text', 'Hamlet'), u('strong', [u('text', 'act 4, Scene 5')])]),
+          ]),
+        ]),
+      ]),
+    );
+  });
   test('blockquote without attribution is unchanged', async () => {
     const mdast = u('root', [
       u('blockquote', [

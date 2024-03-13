@@ -1,9 +1,9 @@
 import type { Plugin } from 'unified';
 import type { Blockquote, Caption, Container } from 'myst-spec';
-import { select, matches } from 'unist-util-select';
+import { select, matches, selectAll } from 'unist-util-select';
 import type { GenericParent, GenericNode } from 'myst-common';
 import { remove } from 'unist-util-remove';
-import { copyNode } from 'myst-common';
+import { copyNode, liftChildren } from 'myst-common';
 import { visit } from 'unist-util-visit';
 
 // Attributions start with one of `--`, `---`, `—` (an emdash) followed by at least one space
@@ -39,7 +39,6 @@ function maybeLiftAttributionAsCaption(container: Container, quote: Blockquote):
   else if (maybeCaptionParagraph.children.length > 1) {
     // Delete the text node entirely
     (maybeCaptionText as GenericNode).type = '__delete__';
-    remove(maybeCaptionParagraph, '__delete__');
   }
   // There's nothing to use as an attribution, cancel!
   else {
@@ -63,10 +62,14 @@ export function blockquoteTransform(mdast: GenericParent) {
     mdast,
     'blockquote',
     (quote: Blockquote, index: number, quoteParent: GenericNode | undefined) => {
+      if (quoteParent === undefined) {
+        throw new Error('parent node was undefined, but there should always be a root node');
+      }
       // Have we already performed a transform of this block-quote and its sibling?
       // i.e. was this blockquote previously a bare blockquote with an attribution,
       // which has been given a caption using this transform?
-      if (quoteParent?.children?.some((node) => matches('caption', node))) {
+      const parentHasCaption = !!quoteParent?.children?.some((node) => matches('caption', node));
+      if (parentHasCaption) {
         // If so, skip application of the transform at _this_ depth
         return;
       }
@@ -74,7 +77,14 @@ export function blockquoteTransform(mdast: GenericParent) {
       // Do we have a pre-built container-of-blockquote (e.g. epigraph, pull-quote directive results)
       // If there's already a `container`, then we just lift the attribution into the container
       if (matches('container[kind=quote]', quoteParent)) {
-        maybeLiftAttributionAsCaption(quoteParent as unknown as Container, quote);
+        const container = quoteParent as unknown as Container;
+        // Try and lift attribution
+        const didLiftAttribution = maybeLiftAttributionAsCaption(container, quote);
+        // Or, check whether the container can be erased (i.e. does it have a class?)
+        if (!didLiftAttribution && !container.class) {
+          // Lift node out of container if the container is not needed
+          (container as GenericNode).type = '__lift__';
+        }
         // Don't need to return special index; new caption sibling is automatically visited
         return;
       }
@@ -91,15 +101,15 @@ export function blockquoteTransform(mdast: GenericParent) {
         // Having found an attribution, we need to replace the existing quote with the container
         // Copy container before we modify the quote node
         const nextContainer = copyNode(container);
-        // Overwrite the original Blockquote with the new container
-        // Normally we'd just use a lift utility, but this quote _might_ be the root node.
+        // Use the existing quote as a "lift" node
         const containerDest = quote as GenericNode;
-        containerDest.type = 'container';
-        containerDest.kind = 'quote';
-        containerDest.children = nextContainer.children;
+        containerDest.type = '__lift__';
+        containerDest.children = [nextContainer];
       }
     },
   );
+  liftChildren(mdast, '__lift__');
+  remove(mdast, '__delete__');
 }
 
 export const blockquotePlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
