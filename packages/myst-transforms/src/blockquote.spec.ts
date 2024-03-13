@@ -7,7 +7,7 @@ describe('Test blockquoteTransform', () => {
     const mdast = u('root', [
       u('blockquote', [
         u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
-        u('list', { ordered: false }, [u('listItem', [u('text', 'Hamlet act 4, Scene 5')])]),
+        u('paragraph', [u('text', '-- Hamlet act 4, Scene 5')]),
       ]),
     ]);
     blockquoteTransform(mdast);
