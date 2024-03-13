@@ -32,6 +32,7 @@ export const blockQuoteDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'quote',
+      label: data.options?.label as string | undefined,
       class: classNames({ [className]: className, [data.name]: data.name !== 'block-quote' }),
       children: [
         {
