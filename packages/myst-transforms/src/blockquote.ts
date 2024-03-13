@@ -1,6 +1,6 @@
 import type { Plugin } from 'unified';
 import type { Blockquote, Caption, Container } from 'myst-spec';
-import { select, matches, selectAll } from 'unist-util-select';
+import { select, matches } from 'unist-util-select';
 import type { GenericParent, GenericNode } from 'myst-common';
 import { remove } from 'unist-util-remove';
 import { copyNode, liftChildren } from 'myst-common';
