@@ -9,7 +9,7 @@ description: Code and code-blocks can be used to show programming languages.
 :::{myst:directive} bibliography
 :::
 
-:::{myst:directive} block-quote
+:::{myst:directive} blockquote
 :::
 
 :::{myst:directive} code
