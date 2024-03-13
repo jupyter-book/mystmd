@@ -64,6 +64,46 @@ describe('Test blockquoteTransform', () => {
       );
     },
   );
+  test.each(['---', '--', '—'])(
+    "blockquote with nested '%s'-format attribution becomes container of container",
+    async (quote) => {
+      const mdast = u('root', [
+        u('blockquote', [
+          u('blockquote', [
+            u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+            u('paragraph', [
+              u('text', `${quote} Hamlet`),
+              u('strong', [u('text', 'act 4, Scene 5')]),
+            ]),
+          ]),
+          u('paragraph', [
+            u('text', `${quote} Hamlet`),
+            u('strong', [u('text', 'act 4, Scene 5')]),
+          ]),
+        ]),
+      ]);
+      blockquoteTransform(mdast);
+      expect(mdast).toEqual(
+        u('root', [
+          u('container', { kind: 'quote' }, [
+            u('blockquote', [
+              u('container', { kind: 'quote' }, [
+                u('blockquote', [
+                  u('paragraph', [u('text', 'We know what we are, but know not what we may be.')]),
+                ]),
+                u('caption', [
+                  u('paragraph', [u('text', `Hamlet`), u('strong', [u('text', 'act 4, Scene 5')])]),
+                ]),
+              ]),
+            ]),
+            u('caption', [
+              u('paragraph', [u('text', `Hamlet`), u('strong', [u('text', 'act 4, Scene 5')])]),
+            ]),
+          ]),
+        ]),
+      );
+    },
+  );
   test('blockquote with only-markup attribution loses text node', async () => {
     const mdast = u('root', [
       u('blockquote', [
