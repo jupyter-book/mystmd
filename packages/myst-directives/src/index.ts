@@ -16,7 +16,7 @@ import { mermaidDirective } from './mermaid.js';
 import { mystdemoDirective } from './mystdemo.js';
 import { outputDirective } from './output.js';
 import { rawDirective } from './raw.js';
-import { epigraphDirective } from './quote.js';
+import { epigraphDirective, pullQuoteDirective } from './quote.js';
 
 export const defaultDirectives = [
   admonitionDirective,
@@ -59,4 +59,4 @@ export { mermaidDirective } from './mermaid.js';
 export { mystdemoDirective } from './mystdemo.js';
 export { outputDirective } from './output.js';
 export { rawDirective } from './raw.js';
-export { epigraphDirective } from './quote.js';
+export { epigraphDirective, pullQuoteDirective } from './quote.js';
