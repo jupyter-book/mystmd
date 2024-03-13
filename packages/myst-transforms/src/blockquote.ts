@@ -35,11 +35,11 @@ function maybeLiftAttribution(container: Container, quote: Blockquote): boolean 
     maybeCaptionText.value = match[1];
   }
   // There's no leading text component, but there is subsequent markup
-  else if (maybeCaptionParagraph.children.length > 1){
+  else if (maybeCaptionParagraph.children.length > 1) {
     // Delete the text node entirely
     (maybeCaptionText as GenericNode).type = '__delete__';
     remove(maybeCaptionParagraph, '__delete__');
-  } 
+  }
   // There's nothing to use as an attribution, cancel!
   else {
     return false;
@@ -58,36 +58,40 @@ function maybeLiftAttribution(container: Container, quote: Blockquote): boolean 
   return true;
 }
 export function blockquoteTransform(mdast: GenericParent) {
-  visit(mdast, 'blockquote', (quote: Blockquote, index: number, quoteParent: GenericNode | undefined) => {
-    // If there's already a `container`, then we just lift the attribution into the container
-    if (matches('container[kind=quote]', quoteParent)) {
-      maybeLiftAttribution(quoteParent as unknown as Container, quote);
-      return 'skip';
-    }
-    // Otherwise, we create a container, and replace the blockquote with a container
-    // containing the blockquote
-    else {
-      const container = {
-        type: 'container',
-        kind: 'quote',
-        children: [quote],
-      };
-      if (maybeLiftAttribution(container as unknown as Container, quote)) {
-        // Copy container before we modify the quote node
-        const nextContainer = copyNode(container);
-        // Erase the original blockquote node, using it as a mechanism
-        // to lift the new container into the right place
-        (quote as GenericNode).type = '__lift__';
-        quote.children = [nextContainer as unknown as Container];
-        // Let's be safe for now (due to ! assertion below)
-        if (quoteParent === undefined) {
-          throw new Error("Encountered root-level blockquote, can't replace parent");
-        }
-        liftChildren(quoteParent!, '__lift__');
+  visit(
+    mdast,
+    'blockquote',
+    (quote: Blockquote, index: number, quoteParent: GenericNode | undefined) => {
+      // If there's already a `container`, then we just lift the attribution into the container
+      if (matches('container[kind=quote]', quoteParent)) {
+        maybeLiftAttribution(quoteParent as unknown as Container, quote);
+        return 'skip';
       }
-      return 'skip';
-    }
-  });
+      // Otherwise, we create a container, and replace the blockquote with a container
+      // containing the blockquote
+      else {
+        const container = {
+          type: 'container',
+          kind: 'quote',
+          children: [quote],
+        };
+        if (maybeLiftAttribution(container as unknown as Container, quote)) {
+          // Copy container before we modify the quote node
+          const nextContainer = copyNode(container);
+          // Erase the original blockquote node, using it as a mechanism
+          // to lift the new container into the right place
+          (quote as GenericNode).type = '__lift__';
+          quote.children = [nextContainer as unknown as Container];
+          // Let's be safe for now (due to ! assertion below)
+          if (quoteParent === undefined) {
+            throw new Error("Encountered root-level blockquote, can't replace parent");
+          }
+          liftChildren(quoteParent!, '__lift__');
+        }
+        return 'skip';
+      }
+    },
+  );
 }
 
 export const blockquotePlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
