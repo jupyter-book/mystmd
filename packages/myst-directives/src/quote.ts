@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 export const blockQuoteDirective: DirectiveSpec = {
   name: 'block-quote',
-  alias: ["epigraph", "pull-quote"],
+  alias: ['epigraph', 'pull-quote'],
   doc: 'Block quotes are used to indicate that the enclosed content forms an extended quotation. They may be followed by an inscription or attribution formed of a paragraph beginning with `--`, `---`, or an em-dash.',
   options: {
     label: {
@@ -32,7 +32,7 @@ export const blockQuoteDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'quote',
-      class: classNames({ [className]: className, [data.name]: data.name !== 'block-quote'}),
+      class: classNames({ [className]: className, [data.name]: data.name !== 'block-quote' }),
       children: [
         {
           type: 'blockquote',
@@ -42,4 +42,4 @@ export const blockQuoteDirective: DirectiveSpec = {
     };
     return [container];
   },
-}; 
+};
