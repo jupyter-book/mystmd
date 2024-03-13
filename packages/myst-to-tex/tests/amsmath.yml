@@ -1,0 +1,34 @@
+title: myst-to-tex amsmath tests
+cases:
+  - title: gather
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{gather}
+                E=mc^2
+            \end{gather}
+    latex: |-
+      \begin{gather}
+          E=mc^2
+      \end{gather}
+  - title: alignat*
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{alignat*}{3}
+            & m   \quad && \text{módulo}            \quad && m>0\\
+            & a   \quad && \text{multiplicador}     \quad && 0<a<m\\
+            & c   \quad && \text{constante aditiva} \quad && 0\leq c<m\\
+            & x_0 \quad && \text{valor inicial}     \quad && 0\leq x_0 <m
+            \end{alignat*}
+    latex: |-
+      \begin{alignat*}{3}
+      & m   \quad && \text{módulo}            \quad && m>0\\
+      & a   \quad && \text{multiplicador}     \quad && 0<a<m\\
+      & c   \quad && \text{constante aditiva} \quad && 0\leq c<m\\
+      & x_0 \quad && \text{valor inicial}     \quad && 0\leq x_0 <m
+      \end{alignat*}

@@ -1,5 +1,34 @@
 import type { Handler, ITexSerializer } from './types.js';
-import assert from 'node:assert';
+
+// Top level environments in amsmath version 2.1 (and eqnarray), see:
+// http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf
+const ENVIRONMENTS = [
+  'equation',
+  'multline',
+  'gather',
+  'align',
+  'alignat',
+  'flalign',
+  'matrix',
+  'pmatrix',
+  'bmatrix',
+  'Bmatrix',
+  'vmatrix',
+  'Vmatrix',
+  'eqnarray',
+];
+
+const RE_OPEN = new RegExp(`^\\\\begin{(${ENVIRONMENTS.join('|')})([*]?)}`);
+
+function isAmsmathEnvironment(value: string) {
+  const matchOpen = value.trim().match(RE_OPEN);
+  if (!matchOpen) return false;
+  const [, environment, numbered] = matchOpen;
+  const end = `\\end{${environment}${numbered}}`;
+  const matchClose = value.trim().endsWith(end);
+  if (!matchClose) return false;
+  return { environment, numbered };
+}
 
 function addMacrosToState(value: string, state: ITexSerializer) {
   if (!state.options.math) return;
@@ -48,20 +77,15 @@ const math: Handler = (node, state) => {
     state.write(node.value);
     state.write(' \\)');
   } else {
-    // TODO: properly handle AMS math environments
-    // For now only checking if a multi-line AMSMath environment is used, than avoid using
-    // equation and label
-    const AMSMath = /\\(begin|end)\{(gather)\*?\}/g;
-    if (node.value.match(AMSMath)) {
-      // If multi-line AMSMath is used, use the contents as-is
-      if (label) {
-        throw new Error('Multi-line AMSMath environment is incompatible with math.label');
-      }
+    // Check if the node is an AMSMath environment, if so, render it directly
+    const isAmsMath = isAmsmathEnvironment(node.value);
+    if (isAmsMath) {
+      // TODO: labels may be stripped previously in the transform, we may need to back that out
       state.ensureNewLine();
       state.write(node.value);
       state.ensureNewLine(true);
     } else {
-      // Otherwise enclose the math envrioment by equation+label
+      // Otherwise enclose the math environment by equation + label
       state.write(`\\begin{equation${enumerated === false ? '*' : ''}}\n`);
       if (label) {
         state.write(`\\label{${label}}`);
