@@ -14,7 +14,7 @@ function maybeLiftAttribution(container: Container, quote: Blockquote): boolean 
     return false;
   }
   // Do we have a final paragraph
-  const maybeCaptionParagraph = quote.children[quote.children.length-1];//.at(-1);
+  const maybeCaptionParagraph = quote.children[quote.children.length - 1]; //.at(-1);
   if (maybeCaptionParagraph?.type !== 'paragraph') {
     return false;
   }
@@ -69,7 +69,7 @@ export function blockquoteTransform(mdast: GenericParent) {
         children: [quote],
       };
       if (maybeLiftAttribution(container as unknown as Container, quote)) {
-	// Copy container before we modify the quote node
+        // Copy container before we modify the quote node
         const nextContainer = copyNode(container);
         // Erase the original blockquote node, using it as a mechanism
         // to lift the new container into the right place

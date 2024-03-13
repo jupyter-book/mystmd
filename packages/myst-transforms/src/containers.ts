@@ -115,8 +115,8 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
   const containers = selectAll('container', tree) as GenericParent[];
   // Process in reverse so subfigure processing persists
   containers.reverse().forEach((container) => {
-    if (container.kind === "quote") {
-	return;
+    if (container.kind === 'quote') {
+      return;
     }
     hoistContentOutOfParagraphs(container);
     let subfigures: GenericNode[] = [];
