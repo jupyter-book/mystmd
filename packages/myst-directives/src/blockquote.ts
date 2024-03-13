@@ -39,6 +39,7 @@ export const blockQuoteDirective: DirectiveSpec = {
       class: classNames({ [className]: className, [data.name]: data.name !== 'block-quote' }),
       children: [
         {
+          // @ts-expect-error: myst-spec needs updating to support blockquote
           type: 'blockquote',
           children: children as any[],
         },
