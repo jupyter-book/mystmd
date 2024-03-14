@@ -1,5 +1,23 @@
 # myst-cli
 
+## 1.1.47
+
+### Patch Changes
+
+- 42af3800: Add pullquotes, blockquotes and epigraph directives
+- c0fdc221: Ignore hidden directories from watch
+- Updated dependencies [974dde17]
+- Updated dependencies [42af3800]
+- Updated dependencies [42af3800]
+- Updated dependencies [ca09d63]
+  - myst-parser@1.1.0
+  - myst-spec-ext@1.1.30
+  - myst-transforms@1.3.0
+  - myst-cli-utils@2.0.9
+  - myst-common@1.1.30
+  - myst-config@1.1.30
+  - myst-frontmatter@1.1.30
+
 ## 1.1.46
 
 ### Patch Changes
