@@ -65,3 +65,4 @@ parts:
     chapters:
       - file: contribute-templates
       - file: contribute-docs
+      - file: contribute-add-feature
