@@ -1,5 +1,7 @@
 # mystmd
 
+## 1.1.47
+
 ## 1.1.46
 
 ### Patch Changes

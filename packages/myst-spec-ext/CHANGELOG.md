@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.1.30
+
+### Patch Changes
+
+- 42af3800: Require `kind` for `Container`
+
 ## 1.1.29
 
 ### Patch Changes

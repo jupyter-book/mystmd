@@ -1,5 +1,19 @@
 # myst-transforms
 
+## 1.3.0
+
+### Minor Changes
+
+- 42af3800: Add support for epigraphs and pull-quotes using a new blockquote directive.
+
+### Patch Changes
+
+- Updated dependencies [42af3800]
+  - myst-spec-ext@1.1.30
+  - myst-common@1.1.30
+  - myst-frontmatter@1.1.30
+  - myst-to-html@1.1.0
+
 ## 1.2.5
 
 ### Patch Changes
