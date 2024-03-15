@@ -3,7 +3,7 @@ title: Add a New MyST Feature
 short_title: Add a Feature
 --- 
 
-In this guide, we will walk through the process of adding a new word-counter role `{word-count}` to MyST. Although it is possible to [write a plugin](plugins.md) to extend and customize MyST, this guide covers the steps required to implement this feature as a core feature of MyST. We will start from the very beginning of cloning the MyST repository, and finish with a working `word-count` feature!
+In this guide, we will walk through the process of adding a new word-counter role `{word-count}` to MyST. Although it is possible to [write a plugin](plugins.md) to extend and customize MyST, this guide covers the steps required to implement this feature as a core component of MyST. We will start from the very beginning of cloning the MyST repository, and finish with a working `word-count` role!
 
 ## Cloning the Repository
 The rest of this guide will assume that you have basic knowledge of using Git, and running commands in a terminal/console on one of the major operating systems. Although this guide can be used to author a new MyST feature on any (supported) operating system, we will assume that you are using a typical Linux distribution for simplicity.
@@ -77,7 +77,7 @@ export[Export AST to Website/Article]
 
 parse --> transform --> export
 :::
-At the heart of MyST is the AST, which is a structured representation of a document. The MyST AST is defined by the [MyST Specification](https://spec.mystmd.org/). Whilst directives, roles, and fragments of Markdown syntax are individually processed to build this AST, transforms are performed on the entire AST, i.e. over the entire document. As computing the word-count requires access to the entire document, it is clear that all of the logic of our new feature will need to be implemented as a transform. Therefore, our role definition can be very simple - generating a simple AST node that our yet-unwritten transform can later replace:
+At the heart of MyST is the AST, defined by the [MyST Specification](https://spec.mystmd.org/), which serves as a structured representation of a document. Whilst directives, roles, and fragments of Markdown syntax are individually processed to build this AST, transforms are performed on the _entire_ tree, i.e. over the entire document. As computing the word-count requires access to the entire document, it is clear that all of the logic of our new feature will need to be implemented as a transform. Therefore, our role definition will be very simple - generating a simple AST node that our yet-unwritten transform can later replace:
 
 :::{code-block} typescript
 :linenos:
@@ -106,7 +106,7 @@ Our new role is not-yet ready to be used. We next need to tell MyST that it shou
 ```typescript
 import { wordCountRole } from './word-count.js';
 ```
-Notice the `.js` extension instead of `.ts`, it is important!
+Notice the `.js` extension instead of `.ts`; it is important!
 
 Next, we must instruct MyST to load our role when parsing a document, by adding it to `defaultRoles`:
 :::{code-block} typescript
@@ -155,7 +155,7 @@ The build process may take a little while, as it has to build every package when
 ```bash
 npm run dev
 ```
-After running these steps, the MyST CLI (as described in {doc}`quickstart-myst-websites`) can be used.
+After running these steps, the MyST CLI (as described in [](quickstart-myst-websites.md)) can be used.
 
 ## Investigating the AST
 
@@ -166,6 +166,13 @@ With a development build of our customized MyST application installed, we can se
 This document is not very long. It is {word-count}`{number} words long`.
 ```
 
-We can then run `myst build` in the `demo/` directory to run MyST.
+We can then initialize a simple MyST project with 
+```bash
+myst init
+```
+
+Once `myst init` has finished setting up the project, it will ask you whether to run `myst start`. For now, we'll press {kbd}`n` to exit.
+
+We can then run `myst build` in the `demo/` directory to run MyST and build the AST for the project.
 
 [^src]: Source files are files that are added under the `src/` directory of a package, e.g. `packages/myst-roles/src/abbreviation.ts`
