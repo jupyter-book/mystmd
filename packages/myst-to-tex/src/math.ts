@@ -1,5 +1,35 @@
 import type { Handler, ITexSerializer } from './types.js';
 
+// Top level environments in amsmath version 2.1 (and eqnarray), see:
+// http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf
+const ENVIRONMENTS = [
+  'equation',
+  'multline',
+  'gather',
+  'align',
+  'alignat',
+  'flalign',
+  'matrix',
+  'pmatrix',
+  'bmatrix',
+  'Bmatrix',
+  'vmatrix',
+  'Vmatrix',
+  'eqnarray',
+];
+
+const RE_OPEN = new RegExp(`^\\\\begin{(${ENVIRONMENTS.join('|')})([*]?)}`);
+
+function isAmsmathEnvironment(value: string): boolean {
+  const matchOpen = value.trim().match(RE_OPEN);
+  if (!matchOpen) return false;
+  const [, environment, star] = matchOpen;
+  const end = `\\end{${environment}${star}}`;
+  const matchClose = value.trim().endsWith(end);
+  if (!matchClose) return false;
+  return true;
+}
+
 function addMacrosToState(value: string, state: ITexSerializer) {
   if (!state.options.math) return;
   Object.entries(state.options.math).forEach(([k, v]) => {
@@ -47,15 +77,24 @@ const math: Handler = (node, state) => {
     state.write(node.value);
     state.write(' \\)');
   } else {
-    // TODO: AMS math
-    state.write(`\\begin{equation${enumerated === false ? '*' : ''}}\n`);
-    if (label) {
-      state.write(`\\label{${label}}`);
+    // Check if the node is an AMSMath environment, if so, render it directly
+    const isAmsMath = isAmsmathEnvironment(node.value);
+    if (isAmsMath) {
+      // TODO: labels may be stripped previously in the transform, we may need to back that out
+      state.ensureNewLine();
+      state.write(node.value);
+      state.ensureNewLine(true);
+    } else {
+      // Otherwise enclose the math environment by equation + label
+      state.write(`\\begin{equation${enumerated === false ? '*' : ''}}\n`);
+      if (label) {
+        state.write(`\\label{${label}}`);
+      }
+      state.ensureNewLine();
+      state.write(node.value);
+      state.ensureNewLine(true);
+      state.write(`\\end{equation${enumerated === false ? '*' : ''}}`);
     }
-    state.ensureNewLine();
-    state.write(node.value);
-    state.ensureNewLine(true);
-    state.write(`\\end{equation${enumerated === false ? '*' : ''}}`);
   }
   if (!state.data.isInTable) state.closeBlock(node);
 };
