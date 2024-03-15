@@ -2,4 +2,4 @@
 "myst-roles": minor
 ---
 
-Add `kbd`/`keystrokes` role
+Add `kbd`/`keyboard` role
