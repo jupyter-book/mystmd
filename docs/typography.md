@@ -91,17 +91,17 @@ H{sub}`2`O, and 4{sup}`th` of July
 
 % For chemicals you can use the {chem}`H2O`
 
-(keystrokes)=
+(keyboard-input)=
 
-## Keystrokes
+## Keyboard Input
 
-To write a sequence of keystrokes, such as {kbd}`Ctrl+Space`, you can use the `kbd`[^long-names-kbd] role, e.g.
+To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl+Space`, you can use the `kbd`[^long-names-kbd] role, e.g.
 
 ```{myst}
 {kbd}`Ctrl+Space`
 ```
 
-[^long-names-kbd]: This role is also accessible through `keystrokes`.
+[^long-names-kbd]: This role is also accessible through `keyboard`.
 
 
 

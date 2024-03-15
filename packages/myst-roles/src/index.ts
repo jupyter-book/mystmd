@@ -13,7 +13,7 @@ import { smallcapsRole } from './smallcaps.js';
 import { subscriptRole } from './subscript.js';
 import { superscriptRole } from './superscript.js';
 import { underlineRole } from './underline.js';
-import { keystrokesRole } from './keystrokes.js';
+import { keyboardRole } from './keyboard.js';
 
 export const defaultRoles = [
   abbreviationRole,
@@ -31,7 +31,7 @@ export const defaultRoles = [
   subscriptRole,
   superscriptRole,
   underlineRole,
-  keystrokesRole,
+  keyboardRole,
 ];
 export { abbreviationRole } from './abbreviation.js';
 export { chemRole } from './chem.js';
@@ -47,4 +47,4 @@ export { smallcapsRole } from './smallcaps.js';
 export { subscriptRole } from './subscript.js';
 export { superscriptRole } from './superscript.js';
 export { underlineRole } from './underline.js';
-export { keystrokesRole } from './keystrokes.js';
+export { keyboardRole } from './keyboard.js';
