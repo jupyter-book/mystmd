@@ -292,7 +292,7 @@ Now that we have the text nodes, let's split them by whitespace, and count the t
 
 :::{code-block} typescript
 :filename: packages/myst-transforms/src/word-count.ts
-:linenos:../
+:linenos:
 :emphasize-lines: 8,9,10,11,12,13,14,15,16,17,18,19
 
 import type { Plugin } from 'unified';
@@ -430,7 +430,7 @@ import {
 Finally, we'll _use_ this plugin as part of the MyST transformations in the same file
 :::{code-block} typescript
 :filename: packages/myst-transforms/src/index.ts
-:linenos:../
+:linenos:
 :emphasize-lines: 7
 
 export async function transformMdast(...) {
