@@ -91,6 +91,20 @@ H{sub}`2`O, and 4{sup}`th` of July
 
 % For chemicals you can use the {chem}`H2O`
 
+(keystrokes)=
+
+## Keystrokes
+
+To write a sequence of keystrokes, such as {kbd}`Ctrl+Space`, you can use the `kbd`[^long-names-kbd] role, e.g.
+
+```{myst}
+{kbd}`Ctrl+Space`
+```
+
+[^long-names-kbd]: This role is also accessible through `keystrokes`.
+
+
+
 (abbr-role)=
 
 ## Abbreviations
