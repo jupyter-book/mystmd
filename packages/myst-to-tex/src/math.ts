@@ -20,14 +20,14 @@ const ENVIRONMENTS = [
 
 const RE_OPEN = new RegExp(`^\\\\begin{(${ENVIRONMENTS.join('|')})([*]?)}`);
 
-function isAmsmathEnvironment(value: string) {
+function isAmsmathEnvironment(value: string): boolean {
   const matchOpen = value.trim().match(RE_OPEN);
   if (!matchOpen) return false;
-  const [, environment, numbered] = matchOpen;
-  const end = `\\end{${environment}${numbered}}`;
+  const [, environment, star] = matchOpen;
+  const end = `\\end{${environment}${star}}`;
   const matchClose = value.trim().endsWith(end);
   if (!matchClose) return false;
-  return { environment, numbered };
+  return true;
 }
 
 function addMacrosToState(value: string, state: ITexSerializer) {
