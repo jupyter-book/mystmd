@@ -6,15 +6,15 @@ short_title: Add a Feature
 In this guide, we will walk through the process of adding a new word-counter role `{word-count}` to MyST. Although it is possible to [write a plugin](plugins.md) to extend and customize MyST, this guide covers the steps required to implement this feature as a core component of MyST. We will start from the very beginning of cloning the MyST repository, and finish with a working `word-count` role!
 
 ## Cloning the Repository
-The rest of this guide will assume that you have basic knowledge of using Git, and running commands in a terminal/shell on one of the major operating systems. Although this guide can be used to author a new MyST feature on any (supported) operating system, we will assume that you are using a typical Linux distribution for simplicity.
+The rest of this guide requires that you have basic knowledge of using Git and running commands in a terminal/shell (using one of the major operating systems). Although you can author a new MyST feature on any (supported) operating system, we will assume that you are using a typical Linux distribution for simplicity.
 
-:::{tip}
+:::{tip} Unfamiliar with Git?
 :class: dropdown
 
 If you have not used Git before, the [Git Book](https://git-scm.com/book/) is a _comprehensive_ guide to the tool. Whilst it is recommended to develop a good understanding of Git, if you're short on time, Roger Dudler's [Git Guide](https://rogerdudler.github.io/git-guide/) describes itself as 
 > just a simple guide for getting started with git. no deep shit ;)
 
-which should cover enough to get you started. Before doing anything, though, you will need to install Git, which [is described in the Git Guide](https://rogerdudler.github.io/git-guide/#setup). 
+which should cover enough to get you started.  
 :::
 
 First, let's clone the current state of the [the `mystmd` repository](https://github.com/executablebooks/mystmd).
@@ -23,31 +23,45 @@ First, let's clone the current state of the [the `mystmd` repository](https://gi
 $ git clone https://github.com/executablebooks/mystmd
 ```
 
-This will populate a new `mystmd` directory in the working directory with the current (development) checkout (state) of the MyST repository. This checkout may include new features that have yet to be released to the public, or new bugs that have yet to be identified! We will modify these sources to add a new role and its associated transformation logic.
+This will populate a new `mystmd` directory in the working directory with the current checkout (snapshot) of the MyST repository. This checkout may include new features that have yet to be released to the public, or new bugs that have yet to be identified! We will modify these sources to add a new role and its associated transformation logic.
 
 Before moving on to the next step, let's change to the `mystmd` directory
 ```shell
 $ cd mystmd
 ```
+From this point in the guide, terminal sessions will show the current working directory before the `$` prefix, excluding the path to the `mystmd` directory itself e.g.
+```shell
+$ echo MyST is cool!
+MyST is cool!
+$ cd packages
+(packages)$ echo MyST is cool!
+MyST is cool!
+```
 
 (defining-roles)=
 ## Defining a Role
-The core specification for MyST as a markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book software stack) can agree on the manner in which MyST documents should be parsed and rendered. Despite its importance, we can ignore exploring the process of updating the specification for this guide.
+The core specification for MyST as a markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book software stack) can agree on the manner in which the contents should be parsed and rendered. Despite its importance, we can ignore exploring the process of updating the specification for this guide.
 
-What is a role? The spec [defines roles](https://mystmd.org/spec/overview#roles) as 
+We should begin by asking the question "What is a role?" The spec [defines roles](https://mystmd.org/spec/overview#roles) as 
 > similar to directives, but they are written entirely in one line.
 
-We want to create a new `word-count` role that injects the total word count into a document. It should accept a format-string that allows us to format the resulting text, i.e.
+We want to create a _new_ `word-count` role that injects the total word count into a document. It should accept a format-string that allows us to format the resulting text, i.e.
 ```markdown
 This is a lengthy document ...
 
 {word-count}`The number of words in this document is {number} words`
 ```
+should become
+```markdown
+This is a lengthy document ...
 
-Some of the "core" roles in `mystmd` are implemented in the [`myst-roles` package](https://github.com/executablebooks/mystmd/tree/main/packages/myst-roles). Although a word-count role might not be considered a "core" feature, we will pretend it is for this tutorial. Let's start by looking at the existing `abbreviation` role in [`packages/myst-roles/src/abbreviation.ts`](https://github.com/executablebooks/mystmd/blob/main/packages/myst-roles/src/abbreviation.ts)
+The number of words in this document is 5 words
+```
+
+Many of the "core" roles in `mystmd` are implemented in the [`myst-roles` package](https://github.com/executablebooks/mystmd/tree/mapackages/myst-roles). Although a word-count role might not be considered a "core" feature, we will pretend it is for this tutorial. Let's start by looking at the existing `abbreviation` role in [`packages/myst-roles/src/abbreviation.ts`](https://github.com/executablebooks/mystmd/blob/main/packages/myst-roles/src/abbreviation.ts)
 
 :::{tip}
-You can hover your mouse cursor over the link to [`packages/myst-roles/src/abbreviation.ts`](https://github.com/executablebooks/mystmd/blob/main/packages/myst-roles/src/abbreviation.ts) to see the contents of the file.
+You can hover your mouse cursor over the link to [`packages/myst-roles/src/abbreviation.ts`](https://github.com/executablebooks/mystmd/blob/mapackages/myst-roles/src/abbreviation.ts) to see the contents of the file.
 :::
 
 We can see that `abbrevationRole` is annotated with the type `RoleSpec`. This is the basic type of a role declaration defined by the MyST specification. There are a number of important fields, such as the `name`, `alias`, and `body`. Our role will have the name `word-count`, and knowing that, we can define a barebones implementation that doesn't do anything! Let's add a new source file[^src] `word-count.ts` in the `myst-roles` package, and write the following:
@@ -106,9 +120,11 @@ export const wordCountRole: RoleSpec = {
 :::
 
 Our new role is not-yet ready to be used. We next need to tell MyST that it should be included in the main program. To do this, first we must import the role in `packages/myst-roles/src/index.ts`
-```typescript
+:::{code-block} typescript
+:filename: packages/myst-roles/src/index.ts
+
 import { wordCountRole } from './word-count.js';
-```
+:::
 Notice the `.js` extension instead of `.ts`; it is important!
 
 Next, we must instruct MyST to load our role when parsing a document, by adding it to `defaultRoles`:
@@ -146,7 +162,7 @@ export { wordCountRole } from './word-count.js';
 
 
 ## Building MyST
-In order to test our role, we need to build the `myst` application. Whilst a detailed description of getting started with development is [given in the README](https://github.com/executablebooks/mystmd/blob/main/README.md#development), we will outline the basic process here. Like most NodeJS applications, MyST uses the NPM package manager to manage dependencies. You will need NodeJS installed before running the commands in this section.
+In order to test our role, we need to build the `myst` application. Whilst a detailed description of getting started with development is [given in the README](https://github.com/executablebooks/mystmd/blob/main/README.md#development), we will outline the basic process here. Like most NodeJS applications, MyST uses the NPM package manager to manage dependencies; you will need to have installed NodeJS before running the commands in this section.
 
 First, we must use `npm` in the base directory to install the MyST dependencies
 ```shell
@@ -164,10 +180,15 @@ After running these steps, the MyST CLI (as described in [](quickstart-myst-webs
 
 ## Investigating the AST
 
-With our custom role now included in a development build of MyST, we can see it in action. First, we'll create a playground directory in which we can build a MyST project. Let's add a new file `demo/main.md` in which we will write the following:
+With our custom role now included in a development build of MyST, we can see it in action. First, we'll create a playground directory in which we can build a MyST project. Let's switch to a new `demo` directory
+```shell
+$ mkdir demo
+$ cd demo
+```
+and add a new file `main.md` in which we will write the following:
 :::{code-block} markdown
 :name: main-md
-:filename: main.md
+:filename: demo/main.md
 
 # Demo
 
@@ -176,24 +197,24 @@ This document is not very long. {word-count}`It is {number} words long`.
 
 We can then initialize a simple MyST project with 
 ```shell
-$ myst init
+(demo)$ myst init
 ```
 
 Once `myst init` has finished setting up the project, it will ask you whether to run `myst start`. For now, we'll press {kbd}`n` to exit, because we want to run a single build (rather than continually rebuild the project on any changes).
 
 Now we can run `myst build` in the `demo/` directory to run MyST, and build the AST for the project. 
 ```shell
-$ myst build
+(demo)$ myst build
 ```
 MyST outputs the final AST in the `_build/site/content` directory. Running `ls`, we can see
 ```shell
-$ ls _build/site/content
+(demo)$ ls _build/site/content
 main.json
 ```
 
 The contents of `main.json` are the MyST AST. We can pretty-print the file with the `jq` utility
 ```shell
-$ jq . _build/site/content/main.json
+(demo)$ jq . _build/site/content/main.json
 ```
 The new `wordCount` node generated by our `wordCount` role can clearly be seen:
 ```json
@@ -209,7 +230,7 @@ The new `wordCount` node generated by our `wordCount` role can clearly be seen:
 
 ## Writing a Transform
 
-As discussed in [](#defining-roles), the "business logic" of our word count feature needs to be implemented as a transform, so that we can view the entire document. Most transforms in MyST are defined in the [`myst-transforms` package](https://mystmd.org/myst-transforms), such as [the image alt-text transform](https://github.com/executablebooks/mystmd/blob/main/packages/myst-transforms/src/images.ts) which generates an image alt-text from figure captions. Our transform will need to visit every text-like node and perform a basic word-count.
+As discussed in [](#defining-roles), the "business logic" of our word count feature needs to be implemented as a transform, so that we can view the entire document. Most transforms in MyST are defined in the [`myst-transforms` package](https://mystmd.org/myst-transforms), such as [the image alt-text transform](https://github.com/executablebooks/mystmd/blob/mapackages/myst-transforms/src/images.ts) which generates an image alt-text from figure captions. Our transform will need to visit every text-like node and perform a basic word-count.
 
 Let's make a start. First, we need to implement a function that accepts a MysT AST `tree`, and modifies it in-place. We'll call it `wordCountTransform`, and define it in a new file `packages/myst-transforms/src/word-count.ts`:
 :::{code-block} typescript
@@ -271,7 +292,7 @@ Now that we have the text nodes, let's split them by whitespace, and count the t
 
 :::{code-block} typescript
 :filename: packages/myst-transforms/src/word-count.ts
-:linenos:
+:linenos:../
 :emphasize-lines: 8,9,10,11,12,13,14,15,16,17,18,19
 
 import type { Plugin } from 'unified';
@@ -409,7 +430,7 @@ import {
 Finally, we'll _use_ this plugin as part of the MyST transformations in the same file
 :::{code-block} typescript
 :filename: packages/myst-transforms/src/index.ts
-:linenos:
+:linenos:../
 :emphasize-lines: 7
 
 export async function transformMdast(...) {
@@ -423,8 +444,8 @@ export async function transformMdast(...) {
 Having modified all of the source files required to implement our word count feature, we can build `myst` and see what happens!
 
 ```shell
-$ npm run build
-$ myst start
+(demo)$ npm run build
+(demo)$ myst start
 ```
 
 At the time of writing, the result of running `myst start` is promising, but not quite correct.
