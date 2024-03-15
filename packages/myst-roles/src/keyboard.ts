@@ -9,7 +9,10 @@ export const keyboardRole: RoleSpec = {
   },
   run(data) {
     const body = data.body as string;
-    const link: GenericNode = { type: 'keyboard', value: body };
-    return [link];
+    const node: GenericNode = {
+      type: 'keyboard',
+      children: [{ type: 'text', value: body }],
+    };
+    return [node];
   },
 };
