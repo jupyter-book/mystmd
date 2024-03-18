@@ -3,7 +3,7 @@ title: Add a New MyST Feature
 short_title: Add a Feature
 --- 
 
-In this guide, we will walk through the process of adding a new word-counter role `{word-count}` to MyST. Although it is possible to [write a plugin](plugins.md) to extend and customize MyST, this guide covers the steps required to implement this feature as a core component of MyST. We will start from the very beginning of cloning the MyST repository, and finish with a working `word-count` role!
+In this guide, we will walk through the process of adding a new word-counter role `{word-count}` to MyST. Although it is possible to extend MyST by [writing a plugin](plugins.md), this guide covers the steps required to implement a feature that ships with MyST out-of-the-box. We will start from the very beginning of cloning the MyST repository, and finish with a working `word-count` role!
 
 ## Cloning the Repository
 The rest of this guide requires that you have basic knowledge of using Git and running commands in a terminal/shell (using one of the major operating systems). Although you can author a new MyST feature on any (supported) operating system, we will assume that you are using a typical Linux distribution for simplicity.
@@ -17,13 +17,13 @@ If you have not used Git before, the [Git Book](https://git-scm.com/book/) is a 
 which should cover enough to get you started.  
 :::
 
-First, let's clone the current state of the [the `mystmd` repository](https://github.com/executablebooks/mystmd).
+First, let's clone [the `mystmd` repository](https://github.com/executablebooks/mystmd).
 
 ```shell
 $ git clone https://github.com/executablebooks/mystmd
 ```
 
-This will populate a new `mystmd` directory in the working directory with the current checkout (snapshot) of the MyST repository. This checkout may include new features that have yet to be released to the public, or new bugs that have yet to be identified! We will modify these sources to add a new role and its associated transformation logic.
+This will populate a new `mystmd` directory in the working directory with the current checkout (snapshot) of the MyST source code. This checkout may include new features that have yet to be released to the public, or new bugs that have yet to be identified!
 
 Before moving on to the next step, let's change to the `mystmd` directory
 ```shell
@@ -40,11 +40,15 @@ MyST is cool!
 
 (defining-roles)=
 ## Defining a Role
-The core specification for MyST as a markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book software stack) can agree on the manner in which the contents should be parsed and rendered. Despite its importance, we can ignore exploring the process of updating the specification for this guide.
+The core specification for the MyST markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book software stack) can agree on the manner in which the contents should be parsed and rendered. Despite its importance, we can ignore exploring the process of updating the specification for this guide.
 
 We should begin by asking the question "What is a role?" The spec [defines roles](https://mystmd.org/spec/overview#roles) as 
 > similar to directives, but they are written entirely in one line.
 
+One such role is the `underline` role, which can be used to format text:
+```{myst}
+The following text {underline}`is underlined`
+```
 We want to create a _new_ `word-count` role that injects the total word count into a document. It should accept a format-string that allows us to format the resulting text, i.e.
 ```markdown
 This is a lengthy document ...
@@ -58,13 +62,13 @@ This is a lengthy document ...
 The number of words in this document is 5 words
 ```
 
-Many of the "core" roles in `mystmd` are implemented in the [`myst-roles` package](https://github.com/executablebooks/mystmd/tree/main/packages/myst-roles). Although a word-count role might not be considered a "core" feature, we will pretend it is for this tutorial. Let's start by looking at the existing `abbreviation` role in [`packages/myst-roles/src/abbreviation.ts`](https://github.com/executablebooks/mystmd/blob/main/packages/myst-roles/src/abbreviation.ts)
+Many of the "core" roles in `mystmd` (including `underline`) are implemented in the [`myst-roles` package](https://github.com/executablebooks/mystmd/tree/main/packages/myst-roles). Although a word-count role might not be considered a "core" feature, we will pretend it is for this tutorial. Let's start by looking at the existing `abbreviation` role in [`packages/myst-roles/src/abbreviation.ts`](https://github.com/executablebooks/mystmd/blob/main/packages/myst-roles/src/abbreviation.ts)
 
 :::{tip}
 You can hover your mouse cursor over the link to [`packages/myst-roles/src/abbreviation.ts`](https://github.com/executablebooks/mystmd/blob/main/packages/myst-roles/src/abbreviation.ts) to see the contents of the file.
 :::
 
-We can see that `abbrevationRole` is annotated with the type `RoleSpec`. This is the basic type of a role declaration defined by the MyST specification. There are a number of important fields, such as the `name`, `alias`, and `body`. Our role will have the name `word-count`, and knowing that, we can define a barebones implementation that doesn't do anything! Let's add a new source file[^src] `word-count.ts` in the `myst-roles` package, and write the following:
+We can see that `abbrevationRole` is annotated with the type `RoleSpec`. This is the basic type of a role declaration defined by the MyST specification. There are a number of important fields, such as the `name`, `alias`, and `body`. Let's add a new source file[^src] `word-count.ts` in the `myst-roles` package, and write the following:
 ```{code-block} typescript
 :filename: packages/myst-roles/src/word-count.ts
 
@@ -82,8 +86,7 @@ export const wordCountRole: RoleSpec = {
   }
 };
 ```
-
-In order to determine what should our `run` function should do, we must understand how MyST documents are built. MyST generates a website or article from a MyST Markdown file in roughly three phases, shown in the diagram below.
+This defines a simple role called `word-count` that doesn't do anything! In order to determine what should our `run` function _should_ do, we must understand how MyST documents are built. MyST generates a website or article from a MyST Markdown file in roughly three phases, shown in the diagram below.
 :::{mermaid}
 
 graph LR;
