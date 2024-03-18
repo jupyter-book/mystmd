@@ -49,6 +49,7 @@ One such role is the `underline` role, which can be used to format text:
 ```{myst}
 The following text {underline}`is underlined`
 ```
+
 We want to create a _new_ `word-count` role that injects the total word count into a document. It should accept a format-string that allows us to format the resulting text, i.e.
 ```markdown
 This is a lengthy document ...
@@ -86,7 +87,18 @@ export const wordCountRole: RoleSpec = {
   }
 };
 ```
-This defines a simple role called `word-count` that doesn't do anything! In order to determine what should our `run` function _should_ do, we must understand how MyST documents are built. MyST generates a website or article from a MyST Markdown file in roughly three phases, shown in the diagram below.
+This defines a simple role called `word-count`, whose _body_ (the raw text between the backticks in `` {word-count}`<BODY>` ``) is a string. 
+:::{tip} Other kinds of `role` body types
+:class: dropdown
+
+It is also possible to write a role whose body is an AST, using `type: 'myst'`, e.g. [the `underline` role](https://github.com/executablebooks/mystmd/blob/e07d55a0b32673ff9d557991ea1260c5f0bf835e/packages/myst-roles/src/underline.ts#L7). Declaring `body` as a MyST AST allows us to implement more complex markup, such as nesting roles-in-roles:
+```{myst}
+The following text {underline}`is underlined and also **bold!**`
+```
+For our role, however, we are keeping things simple!
+:::
+
+With an empty `run` function, this role doesn't do anything! In order to determine what should our `run` function _should_ do, we must understand how MyST documents are built. MyST generates a website or article from a MyST Markdown file in roughly three phases, shown in the diagram below.
 :::{mermaid}
 
 graph LR;
