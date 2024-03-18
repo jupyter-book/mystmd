@@ -286,8 +286,8 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 0, ' ');
   },
   cite(node, state) {
-    const needsLabel = !(/^[a-zA-Z0-9_\-:\.]+$/.test(node.label));
-    const label = needsLabel ? `label("${ node.label }")` : `<${node.label}>`;
+    const needsLabel = !/^[a-zA-Z0-9_\-:\.]+$/.test(node.label);
+    const label = needsLabel ? `label("${node.label}")` : `<${node.label}>`;
     state.write(`#cite(${label})`);
     if (node.kind === 'narrative') state.write(`, form: "prose"`);
     // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
