@@ -288,7 +288,7 @@ const handlers: Record<string, Handler> = {
   cite(node, state) {
     const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(node.label);
     const label = needsLabel ? `label("${node.label}")` : `<${node.label}>`;
-    state.write(`#cite(${label})`);
+    state.write(`#cite(${label}`);
     if (node.kind === 'narrative') state.write(`, form: "prose"`);
     // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
     if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
