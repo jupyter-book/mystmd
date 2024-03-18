@@ -1,5 +1,15 @@
 # myst-parser
 
+## 1.1.0
+
+### Patch Changes
+
+- 974dde17: Remove tlds package
+- Updated dependencies [42af3800]
+  - myst-directives@1.1.0
+  - myst-common@1.1.30
+  - myst-roles@1.1.0
+
 ## 1.0.24
 
 ### Patch Changes

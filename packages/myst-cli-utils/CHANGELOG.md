@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.9
+
+### Patch Changes
+
+- ca09d63: Restore basic session on myst-cli-utils
+
 ## 2.0.8
 
 ### Patch Changes
