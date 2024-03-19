@@ -47,7 +47,7 @@ If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](
 Frontmatter fields can be added directly to any `project:` section within a `myst.yml` file. If your root `myst.yml` file only contains a `site:` section, and you want to add frontmatter, add a `project:` section at the top level and add the fields there. e.g.
 
 ```yaml
-myst: v1
+version: 1
 site: ...
 project:
   license: CC-BY-4.0
