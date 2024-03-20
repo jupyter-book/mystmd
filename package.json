@@ -8,6 +8,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "clean": "turbo run clean --parallel && find . -name '.turbo' -type d -prune -exec rimraf '{}' +",
+    "link": "turbo run link",
     "lint": "turbo run lint",
     "lint:format": "turbo run lint:format",
     "test": "turbo run test",
