@@ -9,6 +9,7 @@ import { imageDirective } from './image.js';
 import { includeDirective } from './include.js';
 import { tableDirective, listTableDirective } from './table.js';
 import { marginDirective } from './margin.js';
+import { sidebarDirective } from './sidebar.js';
 import { glossaryDirective } from './glossary.js';
 import { mathDirective } from './math.js';
 import { mdastDirective } from './mdast.js';
@@ -33,6 +34,7 @@ export const defaultDirectives = [
   tableDirective,
   listTableDirective,
   marginDirective,
+  sidebarDirective,
   glossaryDirective,
   mathDirective,
   mdastDirective,
@@ -53,6 +55,7 @@ export { imageDirective } from './image.js';
 export { includeDirective } from './include.js';
 export { listTableDirective, tableDirective } from './table.js';
 export { marginDirective } from './margin.js';
+export { sidebarDirective } from './sidebar.js';
 export { mathDirective } from './math.js';
 export { mdastDirective } from './mdast.js';
 export { mermaidDirective } from './mermaid.js';
