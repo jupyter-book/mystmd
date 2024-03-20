@@ -152,7 +152,7 @@ These commands allow you to use the `myst` CLI in any directory as usual, and up
 
 Tests are also a helpful development tool, which don't require full rebuilding. You can run the entire test suite using `npm run test`. If you are working in a particular package, change your working directory and run the tests there, to run in watch mode use `npm run test:watch`.
 
-When contributing code, the continuous integration will run linting and formatting, you can run `npm run lint` and `npm run lint:format` locally to ensure they will pass. Developing in VSCode can be setup to show you changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
+When contributing code, the continuous integration will run linting and formatting. You can run `npm run lint` and `npm run lint:format` locally to ensure they will pass. If you are using the VSCode editor, it can be setup to show you changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
 
 We use `changesets` for tracking changes to packages and updating versions, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change. Commit the changeset file to the repository as a part of your pull request.
 
