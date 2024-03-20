@@ -138,14 +138,14 @@ npm run build
 
 The `mystmd` libraries and command line tools are written in TypeScript, and require [NodeJS and npm](https://nodejs.org) for local development. The `mystmd-py` package, which is a thin Python wrapper around the `mystmd` bundle, can be installed by users using `pip` or `conda`. If you have already installed `mystmd` (e.g. via `pip` or `conda`), it is recommended that you uninstall it (or deactivate the relevant environment) before using the local development instructions below.
 
-For local development, [clone the repository](https://github.com/executablebooks/mystmd) and install the dependencies using npm. You can then build the libraries (`npm run build`) and then optionally link to your globally installed `mystmd` in node using the `npm link` command.
+For local development, [clone the repository](https://github.com/executablebooks/mystmd) and install the dependencies using npm. You can then build the libraries (`npm run build`) and then optionally link to your globally installed `mystmd` in node using the `npm run link` command.
 
 ```shell
 git clone git@github.com:executablebooks/mystmd.git
 cd mystmd
 npm install
 npm run build
-npm link
+npm run link
 ```
 
 These commands allow you to use the `myst` CLI in any directory as usual, and updates to the build are picked up when you rebuild. After making changes, you must rebuild the packages (via `npm run build` in the top-level directory), which is done efficiently depending on how deep your change is in the dependency tree. After the build is complete, you can reuse the myst client.
