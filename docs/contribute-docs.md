@@ -52,7 +52,7 @@ It is **not** how most people build websites with MyST Markdown, but is a good "
 The MyST documentation uses a custom theme that inherits from a chain of base themes.
 Here's a brief overview of where to look for things:
 
-- The MyST documentation theme is a custom MyST theme defined [at the `curvenote/mystmd.org` repository](https://github.com/curvenote/mystmd.org).
+- The MyST documentation theme is a custom MyST theme defined in the [`executablebooks/mystmd.org`](https://github.com/executablebooks/mystmd.org) repository.
 - It uses a modified version of [the MyST Book theme at `executablebooks/myst-theme: /themes/book/`](https://github.com/executablebooks/myst-theme/tree/main/themes/book).
 - The `Book` and `Article` themes are both located in [the `executablebooks/myst-theme` repository in the `/themes` directory](https://github.com/executablebooks/myst-theme).
 - Each is programmatically published to a repository in [the `myst-templates` GitHub organization](https://github.com/myst-templates) for easier and optimized public consumption.
