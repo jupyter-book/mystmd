@@ -57,6 +57,7 @@ export function isTypstAvailable() {
 
 export async function runTypstExecutable(session: ISession, typstFile: string) {
   if (!isTypstAvailable()) {
+    throw new Error(`typst CLI must be installed to build PDFs from typst`);
     session.log.debug('typst CLI must be installed to build PDFs from typst');
     return;
   }
