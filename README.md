@@ -145,7 +145,7 @@ git clone git@github.com:executablebooks/mystmd.git
 cd mystmd
 npm install
 npm run build
-npm run link
+npm link
 ```
 
 These commands allow you to use the `myst` CLI in any directory as usual, and updates to the build are picked up when you rebuild. After making changes, you must rebuild the packages (via `npm run build` in the top-level directory), which is done efficiently depending on how deep your change is in the dependency tree. After the build is complete, you can reuse the myst client.
