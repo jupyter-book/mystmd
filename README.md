@@ -148,7 +148,7 @@ npm run build
 npm run link
 ```
 
-These commands allow you to use the `myst` CLI in any directory as usual, and updates to the build are picked up when you rebuild. After making changes, you must rebuild the packages (run `npm run build` again after changing a file), which is done efficiently depending on how deep your change is in the dependency tree, after the build is complete, you can reuse the myst client.
+These commands allow you to use the `myst` CLI in any directory as usual, and updates to the build are picked up when you rebuild. After making changes, you must rebuild the packages (via `npm run build` in the top-level directory), which is done efficiently depending on how deep your change is in the dependency tree. After the build is complete, you can reuse the myst client.
 
 Tests are also a helpful development tool, which don't require full rebuilding. You can run the entire test suite using `npm run test`. If you are working in a particular package, change your working directory and run the tests there, to run in watch mode use `npm run test:watch`.
 
