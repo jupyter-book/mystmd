@@ -62,7 +62,8 @@ All packages for `mystmd` are included in this repository (a monorepo!).
 
 **Command Line Tools:**
 
-- `mystmd` this provides CLI functionality for `myst build mystdoc.md`
+- `mystmd` this provides CLI functionality for `myst start`
+- `mystmd-py` a python wrapper over `mystmd`, to ease install for the Python community. Not recommended for local development.
 
 **Core Packages:**
 
@@ -135,17 +136,27 @@ npm run build
 
 ## Developing
 
-For the [mystmd](https://github.com/executablebooks/mystmd) library on GitHub, `git clone` and you can install the dependencies and then create a local copy of the library with the `npm run dev` command.
+The `mystmd` libraries and command line tools are written in typescript, and require [node and npm](https://nodejs.org) for development locally. The `mystmd` package can be installed by users using pip or conda, which is a thin python wrapper around the mystmd bundle. If you have installed mystmd in using python, uninstall the python version or deactivate your environment to use the local development version.
+
+For local development, [clone the repository](https://github.com/executablebooks/mystmd) and install the dependencies using npm. You can then build the libraries (`npm run build`) and then optionally link to your globally installed `mystmd` in node using the `npm run link` command.
 
 ```shell
 git clone git@github.com:executablebooks/mystmd.git
 cd mystmd
 npm install
 npm run build
-npm run dev
+npm run link
 ```
 
-This will create a local copy of `myst` for use on the command line and start various web-servers for testing.
+These commands allow you to use the `myst` CLI in any directory as usual, and updates to the build are picked up when you rebuild. After making changes, you must rebuild the packages (run `npm run build` again after changing a file), which is done efficiently depending on how deep your change is in the dependency tree, after the build is complete, you can reuse the myst client.
+
+Tests are also a helpful development tool, which don't require full rebuilding. You can run the entire test suite using `npm run test`. If you are working in a particular package, change your working directory and run the tests there, to run in watch mode use `npm run test:watch`.
+
+When contributing code, the continuous integration will run linting and formatting, you can run `npm run lint` and `npm run lint:format` locally to ensure they will pass. Developing in VSCode can be setup to show you changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
+
+We use `changesets` for tracking changes to packages and updating versions, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change. Commit the changeset file to the repository as a part of your pull request.
+
+Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
 
 ---
 
