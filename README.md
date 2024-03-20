@@ -136,7 +136,7 @@ npm run build
 
 ## Developing
 
-The `mystmd` libraries and command line tools are written in typescript, and require [node and npm](https://nodejs.org) for development locally. The `mystmd` package can be installed by users using pip or conda, which is a thin python wrapper around the mystmd bundle. If you have installed mystmd in using python, uninstall the python version or deactivate your environment to use the local development version.
+The `mystmd` libraries and command line tools are written in TypeScript, and require [NodeJS and npm](https://nodejs.org) for local development. The `mystmd-py` package, which is a thin Python wrapper around the `mystmd` bundle, can be installed by users using `pip` or `conda`. If you have already installed `mystmd` (e.g. via `pip` or `conda`), it is recommended that you uninstall it (or deactivate the relevant environment) before using the local development instructions below.
 
 For local development, [clone the repository](https://github.com/executablebooks/mystmd) and install the dependencies using npm. You can then build the libraries (`npm run build`) and then optionally link to your globally installed `mystmd` in node using the `npm run link` command.
 
