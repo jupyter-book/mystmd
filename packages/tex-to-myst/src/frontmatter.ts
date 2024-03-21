@@ -88,7 +88,7 @@ function addAffiliation(node: GenericNode, state: ITexParser) {
   state.closeParagraph();
   const renderedAffil = state.stack.pop();
   const fmAffil = { id: affilNumber, name: getContentFromRenderedSpan(renderedAffil) };
-  if (!affilNumber) {
+  if (!affilNumber && fm.authors.length > 0) {
     const lastAuthor = fm.authors[fm.authors.length - 1];
     if (!lastAuthor.affiliations) lastAuthor.affiliations = [];
     lastAuthor.affiliations.push(childrenOrString(fmAffil.name) as any);
