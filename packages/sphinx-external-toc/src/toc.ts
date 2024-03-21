@@ -1,7 +1,10 @@
 import yaml from 'js-yaml';
 import type { TOC, ArticleTOC, BookTOC, BasicTOC } from './types.js';
 import schema from './schema.json';
-import Ajv from 'ajv';
+import _Ajv from 'ajv';
+
+// Adjust types for ES module
+const Ajv = _Ajv as unknown as typeof _Ajv.default;
 
 // See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
 // Implementation transpiled from https://github.com/executablebooks/sphinx-external-toc/blob/v1.0.1/sphinx_external_toc/tools.py#L277
