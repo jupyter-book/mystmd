@@ -81,13 +81,13 @@ You can use GitHub Flavoured Markdown to create task lists, these may be read on
 
 For inline typography for subscript and superscript formatting, it is best practice to use a text-based representation over resorting to math exponents, i.e. `4$^{th}$`.
 This is required in some journal submissions, and using these roles ensure that the output in HTML and $\LaTeX$ is correct.
-The two roles for subscript and superscript are `sub` and `sup`[^long-names], respectively.
+The two roles for subscript and superscript are {myst:role}`sub` and {myst:role}`sup`[^long-names], respectively.
 
 ```{myst}
 H{sub}`2`O, and 4{sup}`th` of July
 ```
 
-[^long-names]: These two roles are also accessible through `subscript` and `superscript`.
+[^long-names]: These two roles are also accessible through {myst:role}`subscript` and {myst:role}`superscript`.
 
 % For chemicals you can use the {chem}`H2O`
 
@@ -107,7 +107,7 @@ To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl` + {kbd}`Spac
 
 ## Abbreviations
 
-To create an abbreviation, you can use the `abbr` role, in HTML this will ensure that the title of the acronym or abbreviation appears in the title when you hover over the element. In the role, follow the syntax `HR (Heart Rate)` with the abbreviation first followed by the expanded title in parenthesis.
+To create an abbreviation, you can use the {myst:role}`abbr` role, in HTML this will ensure that the title of the acronym or abbreviation appears in the title when you hover over the element. In the role, follow the syntax `HR (Heart Rate)` with the abbreviation first followed by the expanded title in parenthesis.
 
 ```{myst}
 Well {abbr}`MyST (Markedly Structured Text)` is cool!
