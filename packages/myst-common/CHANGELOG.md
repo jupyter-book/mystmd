@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.1.31
+
+### Patch Changes
+
+- 1880a465: Update extractParts to pull implicit parts from sections based on heading
+- 22c5fff: Add `doc` to the myst-role spec.
+- Updated dependencies [1880a465]
+  - myst-frontmatter@1.1.31
+
 ## 1.1.30
 
 ### Patch Changes

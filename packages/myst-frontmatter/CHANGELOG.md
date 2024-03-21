@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.31
+
+### Patch Changes
+
+- 1880a465: Expand parts to other aliases
+
 ## 1.1.30
 
 ## 1.1.29

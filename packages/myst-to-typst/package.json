@@ -1,6 +1,6 @@
 {
   "name": "myst-to-typst",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Export from MyST mdast to Typst",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-to-tex",
@@ -37,9 +37,9 @@
     "url": "https://github.com/executablebooks/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.1.25",
-    "myst-frontmatter": "^1.1.25",
-    "myst-spec-ext": "^1.1.25",
+    "myst-common": "^1.1.31",
+    "myst-frontmatter": "^1.1.31",
+    "myst-spec-ext": "^1.1.31",
     "tex-to-typst": "^0.0.5",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
