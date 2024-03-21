@@ -95,15 +95,13 @@ H{sub}`2`O, and 4{sup}`th` of July
 
 ## Keyboard Input
 
-To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl` + {kbd}`Space`, you can use the `kbd`[^long-names-kbd] role, e.g.
+To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl` + {kbd}`Space`, you can use the {myst:role}`kbd` role[^long-names-kbd].
+
+[^long-names-kbd]: This role is also accessible through {myst:role}`keyboard`.
 
 ```{myst}
 {kbd}`Ctrl` + {kbd}`Space`
 ```
-
-[^long-names-kbd]: This role is also accessible through `keyboard`.
-
-
 
 (abbr-role)=
 

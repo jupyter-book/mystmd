@@ -59,6 +59,7 @@ parts:
       - file: commonmark
       - file: syntax-overview
       - file: directives
+      - file: roles
       - file: frontmatter
       - file: document-parts
       - file: settings

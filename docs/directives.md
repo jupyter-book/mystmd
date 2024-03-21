@@ -1,6 +1,6 @@
 ---
 title: Directives
-description: Code and code-blocks can be used to show programming languages.
+description: A full list of the directives included in MyST Markdown by default.
 ---
 
 :::{myst:directive} admonition

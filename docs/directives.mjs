@@ -1,6 +1,7 @@
 import { u } from 'unist-builder';
 import { mystParse } from 'myst-parser';
 import { defaultDirectives } from 'myst-directives';
+import { defaultRoles } from 'myst-roles';
 import { fileError } from 'myst-common';
 
 /**
@@ -116,6 +117,49 @@ const mystDirective = {
   },
 };
 
+/**
+ * Create a documentation section for a directive
+ *
+ * @type {import('myst-common').DirectiveSpec}
+ */
+const mystRole = {
+  name: 'myst:role',
+  arg: {
+    type: String,
+    required: true,
+  },
+  run(data, vfile) {
+    const name = data.arg;
+    const role = defaultRoles.find((d) => d.name === name);
+    if (!role) {
+      fileError(vfile, `myst:role: Unknown myst role "${name}"`);
+      return [];
+    }
+    const heading = u('heading', { depth: 2, identifier: `role-${name}` }, [
+      u('inlineCode', name),
+      u('text', ' role'),
+    ]);
+    const doc = role.doc ? mystParse(role.doc).children : [];
+    let alias = [];
+    if (role.alias && role.alias.length > 0) {
+      alias = [
+        u('paragraph', [
+          u('strong', [u('text', 'Alias')]),
+          u('text', ': '),
+          ...role.alias
+            .map((a, i) => {
+              const c = [u('inlineCode', a)];
+              if (i < role.alias.length - 1) c.push(u('text', ', '));
+              return c;
+            })
+            .flat(),
+        ]),
+      ];
+    }
+    return [heading, u('div', [...doc, ...alias])];
+  },
+};
+
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
 
 /**
@@ -145,14 +189,38 @@ const mystDirectiveRole = {
 };
 
 /**
+ * Create a documentation section for a directive
+ *
+ * @type {import('myst-common').RoleSpec}
+ */
+const mystRoleRole = {
+  name: 'myst:role',
+  body: {
+    type: String,
+    required: true,
+  },
+  run(data) {
+    const match = REF_PATTERN.exec(data.body);
+    const [, modified, rawLabel] = match ?? [];
+    const label = rawLabel ?? data.body;
+    const [name, opt] = label?.split('.') ?? [];
+    const role = defaultRoles.find((d) => d.name === name || d.alias?.includes(name));
+    const identifier = opt ? `role-${role?.name ?? name}-${opt}` : `role-${role?.name ?? name}`;
+    return [
+      u('crossReference', { identifier }, [u('inlineCode', modified?.trim() || opt || name)]),
+    ];
+  },
+};
+
+/**
  * @type {import('myst-common').MystPlugin}
  */
 const plugin = {
   name: 'MyST Documentation Plugins',
   author: 'Rowan Cockett',
   license: 'MIT',
-  directives: [mystDirective],
-  roles: [mystDirectiveRole],
+  directives: [mystDirective, mystRole],
+  roles: [mystDirectiveRole, mystRoleRole],
 };
 
 export default plugin;

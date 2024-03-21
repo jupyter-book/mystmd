@@ -98,6 +98,7 @@ export type DirectiveSpec = {
 export type RoleSpec = {
   name: string;
   alias?: string[];
+  doc?: string;
   body?: BodyDefinition;
   validate?: (data: RoleData, vfile: VFile) => RoleData;
   run: (data: RoleData, vfile: VFile) => GenericNode[];
