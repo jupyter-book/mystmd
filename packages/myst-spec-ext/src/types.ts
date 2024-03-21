@@ -242,3 +242,9 @@ export type Output = Node & {
   visibility?: Visibility;
   children?: (FlowContent | ListContent | PhrasingContent)[];
 };
+
+export type Aside = Node & {
+  type: 'aside';
+  kind?: 'sidebar';
+  children?: (FlowContent | ListContent | PhrasingContent)[];
+};
