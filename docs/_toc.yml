@@ -59,6 +59,7 @@ parts:
       - file: syntax-overview
       - file: directives
       - file: frontmatter
+      - file: document-parts
       - file: settings
       - file: glossary
   - caption: Contribute

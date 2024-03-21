@@ -46,9 +46,17 @@ export const FRONTMATTER_ALIASES = {
   ack: 'acknowledgments',
   acknowledgements: 'acknowledgments',
   availability: 'data_availability',
-  plain_language_summary: 'summary',
+  dataAvailability: 'data_availability',
+  'data-availability': 'data_availability',
   quote: 'epigraph',
+  plain_language_summary: 'summary',
+  'plain-language-summary': 'summary',
+  plainLanguageSummary: 'summary',
   lay_summary: 'summary',
+  'lay-summary': 'summary',
+  keyPoints: 'keypoints',
+  key_points: 'keypoints',
+  'key-points': 'keypoints',
   image: 'thumbnail',
 };
 
