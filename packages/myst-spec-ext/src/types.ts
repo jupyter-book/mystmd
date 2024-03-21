@@ -245,6 +245,6 @@ export type Output = Node & {
 
 export type Aside = Node & {
   type: 'aside';
-  kind?: 'sidebar';
+  kind?: 'sidebar' | 'margin';
   children?: (FlowContent | ListContent | PhrasingContent)[];
 };
