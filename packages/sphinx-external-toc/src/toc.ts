@@ -4,6 +4,7 @@ import schema from './schema.json';
 import _Ajv from 'ajv';
 
 // Adjust types for ES module
+// @ts-ignore
 const Ajv = _Ajv as unknown as typeof _Ajv.default;
 
 // See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
