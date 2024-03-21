@@ -2,6 +2,7 @@ import type { GenericNode, RoleSpec } from 'myst-common';
 
 export const keyboardRole: RoleSpec = {
   name: 'keyboard',
+  doc: 'The keyboard role denote textual user input from a keyboard, such as "Ctrl" + "Space".',
   alias: ['kbd'],
   body: {
     type: String,

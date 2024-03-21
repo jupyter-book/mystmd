@@ -4,8 +4,10 @@ import type { Embed } from 'myst-spec-ext';
 
 export const embedDirective: DirectiveSpec = {
   name: 'embed',
+  doc: 'The embed directive allows you to duplicate content from another part of your project. This can also be done through the figure directive.',
   arg: {
     type: String,
+    doc: 'The label of the node that you are embedding.',
     required: true,
   },
   options: {
