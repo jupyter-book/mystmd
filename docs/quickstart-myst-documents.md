@@ -151,23 +151,25 @@ Once these are added, the myst theme (in this case the `book-theme` template) ca
 The myst theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
 :::
 
-### Add an abstract block
+### Add an abstract part
 
-We will also add data about the "parts" of our document, for example, the abstract. This will be important when we export to PDF and also visually changes the `book-theme`.
+We will also add metadata about the "parts" of our document, for example, the abstract.
+This will be important when we export to PDF and also visually changes the `book-theme`.
 
-🛠 In `01-paper.md`: surround the abstract in a block `+++ {"part": "abstract"}`
+🛠 In `01-paper.md`: move the abstract into the frontmatter using a multiline YAML syntax `abstract: |`
 
 ```{code-block} markdown
 :linenos:
-:emphasize-lines: 1,5
-+++ {"part": "abstract"}
-
-We introduce, a set of open-source, community-driven ...
-
-+++
+:emphasize-lines: 4,5
+---
+title: How to MyST, without being mystified 🧙
+...
+abstract: |
+  We introduce, a set of open-source, community-driven ...
+---
 ```
 
-You can make other blocks, like `data-availability` or `acknowledgments` or `key-points`, templates will treat these differently and may require specific parts to fully render.
+You can make other parts, like `data_availability` or `acknowledgments` or `keypoints`, templates will treat these differently and may require specific parts to fully render. See [document parts](./document-parts.md) for additional information.
 
 ### Add a citation
 

@@ -15,7 +15,7 @@ cell 2
 ```
 
 ```{tip}
-To identify a part of a document, like an abstract, use `+++ {"part": "abstract"}`, this will allow tools like the [](./creating-pdf-documents.md) to be created with the appropriate parts of information.
+To identify a [part of a document](./document-parts.md), like an abstract, use `+++ { "part": "abstract" }`, this will allow tools like the [](./creating-pdf-documents.md) to be created with the appropriate parts of information.
 ```
 
 ## Comments
