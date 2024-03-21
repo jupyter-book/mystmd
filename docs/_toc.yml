@@ -23,6 +23,7 @@ parts:
       - file: exercises
       - file: blocks
       - file: diagrams
+      - file: asides
       - file: dropdowns-cards-and-tabs
       - file: glossaries-and-terms
   - caption: Executable Content

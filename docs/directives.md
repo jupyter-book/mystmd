@@ -45,7 +45,7 @@ description: Code and code-blocks can be used to show programming languages.
 :::{myst:directive} list-table
 :::
 
-:::{myst:directive} margin
+:::{myst:directive} aside
 :::
 
 :::{myst:directive} math
