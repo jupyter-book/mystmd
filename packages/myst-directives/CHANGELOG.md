@@ -1,5 +1,18 @@
 # myst-directives
 
+## 1.2.0
+
+### Minor Changes
+
+- a9250ae6: Add `aside` directive
+
+### Patch Changes
+
+- Updated dependencies [1880a465]
+- Updated dependencies [22c5fff]
+  - myst-common@1.1.31
+  - myst-spec-ext@1.1.31
+
 ## 1.1.0
 
 ### Minor Changes

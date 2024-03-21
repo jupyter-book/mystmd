@@ -1,5 +1,17 @@
 # tex-to-myst
 
+## 1.0.23
+
+### Patch Changes
+
+- 1880a465: Fix bug where certain affiliations without authors crash tex-to-myst
+- Updated dependencies [1880a465]
+- Updated dependencies [22c5fff]
+- Updated dependencies [1880a465]
+  - myst-common@1.1.31
+  - myst-frontmatter@1.1.31
+  - myst-spec-ext@1.1.31
+
 ## 1.0.22
 
 ### Patch Changes

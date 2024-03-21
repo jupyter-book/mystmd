@@ -1,5 +1,26 @@
 # myst-cli
 
+## 1.1.48
+
+### Patch Changes
+
+- 8aca668f: Throw loud error if `typst` is not available
+- Updated dependencies [1880a465]
+- Updated dependencies [1880a465]
+- Updated dependencies [1b3c9e24]
+- Updated dependencies [22c5fff]
+- Updated dependencies [1880a465]
+- Updated dependencies [03914dff]
+  - myst-common@1.1.31
+  - tex-to-myst@1.0.23
+  - myst-to-tex@1.0.23
+  - myst-frontmatter@1.1.31
+  - myst-to-typst@0.0.12
+  - myst-config@1.1.31
+  - myst-spec-ext@1.1.31
+  - myst-parser@1.2.0
+  - myst-transforms@1.3.1
+
 ## 1.1.47
 
 ### Patch Changes

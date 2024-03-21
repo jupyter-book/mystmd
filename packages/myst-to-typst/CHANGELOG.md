@@ -1,5 +1,17 @@
 # myst-to-typst
 
+## 0.0.12
+
+### Patch Changes
+
+- 03914dff: Wrap non-identifier citations in `label()`
+- Updated dependencies [1880a465]
+- Updated dependencies [22c5fff]
+- Updated dependencies [1880a465]
+  - myst-common@1.1.31
+  - myst-frontmatter@1.1.31
+  - myst-spec-ext@1.1.31
+
 ## 0.0.11
 
 ### Patch Changes
