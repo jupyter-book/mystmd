@@ -100,7 +100,7 @@ describe('extractPart', () => {
       ],
     });
   });
-  it('extract parts (with lists)', async () => {
+  it('extract parts (with lists and case insensitivity)', async () => {
     expect(
       extractPart(
         {
@@ -108,17 +108,17 @@ describe('extractPart', () => {
           children: [
             {
               type: 'block' as any,
-              data: { tags: ['tagged_part'] },
+              data: { tags: ['TAGGED_part'] },
               children: [{ type: 'text', value: 'untagged content' }],
             },
             {
               type: 'block' as any,
-              data: { tags: ['other_tag', 'test_part'] },
+              data: { tags: ['other_tag', 'TEST_PART'] },
               children: [{ type: 'text', value: 'also tagged content' }],
             },
           ],
         },
-        ['test_part', 'tagged_part'],
+        ['test_part', 'TAGGED_PART'],
         { removePartData: false },
       ),
     ).toEqual({
