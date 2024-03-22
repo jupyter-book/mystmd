@@ -1,5 +1,6 @@
 ---
-title: Code and code-blocks
+title: Code and Code-blocks
+short_title: Code & Code-blocks
 description: Code and code-blocks can be used to show programming languages.
 thumbnail: ./thumbnails/code.png
 numbering:

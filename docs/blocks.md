@@ -1,5 +1,6 @@
 ---
-title: Blocks and comments
+title: Blocks and Comments
+short_title: Blocks & Comments
 description: Blocks provide structural division in a MyST document using `+++`. These correspond, for example, to separate cells in a Jupyter Notebook. To add a comment, start your line with `%`.
 ---
 

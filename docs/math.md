@@ -1,5 +1,6 @@
 ---
-title: Math and equations
+title: Math and Equations
+short_title: Math & Equations
 description: Use LaTeX style math in your documents, including references, inline math, and equations.
 thumbnail: ./thumbnails/math.png
 ---

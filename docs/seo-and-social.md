@@ -1,5 +1,6 @@
 ---
 title: Search Engines and Social
+short_title: Search Engines & Social
 description: How to have your site content indexed by Google and support rich link previews.
 ---
 
