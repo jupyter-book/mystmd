@@ -1,6 +1,6 @@
 ---
 title: Proofs, Theorems and Algorithms
-short_title: Proofs and theorems
+short_title: Proofs & Theorems
 description: MyST supports creating and referencing algorithms, axioms, conjectures, corollaries, criteria, definitions, examples, lemmas, observations, properties, propositions, proofs, remarks, and theorems.
 thumbnail: ./thumbnails/proof.png
 ---

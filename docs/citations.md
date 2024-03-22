@@ -1,5 +1,6 @@
 ---
-title: Citations and bibliography
+title: Citations and Bibliography
+short_title: Citations & Bibliography
 description: Add academic citations to your documents easily, have hover-references and an automatically created bibliography.
 thumbnail: ./thumbnails/citations.png
 ---

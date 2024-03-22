@@ -1,6 +1,6 @@
 ---
 title: Asides, Margin Content, and Sidebars
-short_title: Asides and Margin Content
+short_title: Asides & Margins
 description: Asides provide an easy way to represent content that is only indirectly related to the article's main content, such as in the sidebar or margin.
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: Deploying your MyST Site
 short_title: Deployment
-description: Deploy your
+description: Deploy your MyST site to static HTML or a MyST-aware server.
 ---
 
 The default themes for MyST sites are applications that render structured data _dynamically_, and are not static HTML sites. This choice allows the websites to include many [performance enhancements](./accessibility-and-performance.md) such as pre-fetching for instant page-transitions, loading indicators, and smaller network payloads. However, these advantages require that your website either (a) requires a web server or service that understands MyST sites; or (b) is changed to an HTML export that does not include these features but does allow you to host static files on services like GitHub pages.

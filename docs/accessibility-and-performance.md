@@ -1,5 +1,6 @@
 ---
-title: Accessibility & performance
+title: Accessibility and Performance
+short_title: Accessibility & Performance
 description: MyST sites are designed for mobile and desktop sites, accessibility and speedy page loads.
 ---
 

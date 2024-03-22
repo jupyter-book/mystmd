@@ -1,5 +1,5 @@
 ---
-title: External references
+title: External References
 description: External references dynamically include content into your MyST Markdown projects, from Wikipedia, intersphinx, DOIs, RRIDs, and any other MyST projects. Allowing your documents to be rich, interactive and automatically kept up to date.
 thumbnail: ./thumbnails/external-references.png
 ---
