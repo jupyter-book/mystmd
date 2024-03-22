@@ -8,6 +8,8 @@ description: This tutorial walks through the process of adding a new word-count 
 
 The goal of this tutorial is to walk through the process of adding a new word-count role to MyST, `{word-count}`, as a core feature. It is also possible to extend MyST by [writing a plugin](plugins.md), however, this tutorial covers the steps required to implement a feature that ships with MyST _out-of-the-box_. We will start from the very beginning of cloning the MyST repository, and finish with a working `word-count` role!
 
+A full, unmerged pull request of this feature is available in [#1027](https://github.com/executablebooks/mystmd/pull/1027) to see the end-result.
+
 :::
 
 ![](#lookout-for-tutorial-actions)
@@ -537,3 +539,11 @@ This will result in the following page with the word count that excludes it's ow
 
 The result of running `myst start` with support for our new `word-count` role in [our document](#main-md).
 :::
+
+## Contributing
+
+The next steps to bring this into being a core feature would be [adding documentation](./contribute-docs.md) and running `npm run changeset` to add a description of what you have completed. You can then open a pull request, and the developers of MyST will aim to get this into MyST and released so everyone can use it!
+
+A full, unmerged pull request of this feature is available in [#1027](https://github.com/executablebooks/mystmd/pull/1027) to see the end-result.
+
+Thanks for your contributions! 🥳
