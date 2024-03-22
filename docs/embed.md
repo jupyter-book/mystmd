@@ -91,7 +91,11 @@ Here's a nice sunset with a caption!
 Here's a nice sunset with a caption!
 ```
 
-The new label can be referred to in this context, i.e. `[@sunset-figure]`: [@sunset-figure], which refers to the new figure rather than the original image. This allows you to scroll to embedded content on the page, rather than jumping to the original document. Note that this is especially useful with [embedding Jupyter Notebook outputs](./reuse-jupyter-outputs.md).
+The new label can be referred to in this context, i.e. `[@sunset-figure]`: [@sunset-figure], which refers to the new figure rather than the original image. This allows you to scroll to embedded content on the page, rather than jumping to the original document. Note that this is especially useful with [embedding Jupyter Notebook outputs](./reuse-jupyter-outputs.md). For example:
+
+```{figure} #altair-horsepower
+This figure has been included from a Jupyter Notebook and can be referred to in cross-references through a different label. See [](./reuse-jupyter-outputs.md) for more information.
+```
 
 ## Embed notebook content and outputs
 
