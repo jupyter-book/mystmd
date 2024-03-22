@@ -137,7 +137,7 @@ The following table lists the available frontmatter fields, a brief description 
   - object for customizing content numbering (see [](#numbering))
   - page can override project
 * - `parts`
-  - a dictionary of arbitrary content parts, not part of the main article, for example `abstract`, `data_availability`
+  - a dictionary of arbitrary content parts, not part of the main article, for example `abstract`, `data_availability` see [](./document-parts.md).
   - page only
 * - `options`
   - a dictionary of arbitrary options validated and consumed by templates, for example, during site or PDF build
