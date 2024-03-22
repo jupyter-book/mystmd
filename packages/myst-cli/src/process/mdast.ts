@@ -27,6 +27,7 @@ import {
   abbreviationPlugin,
   reconstructHtmlPlugin,
   inlineMathSimplificationPlugin,
+  wordCountPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -180,7 +181,8 @@ export async function transformMdast(
     .use(glossaryPlugin) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
-    .use(joinGatesPlugin);
+    .use(joinGatesPlugin)
+    .use(wordCountPlugin);
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;

@@ -14,8 +14,10 @@ import { subscriptRole } from './subscript.js';
 import { superscriptRole } from './superscript.js';
 import { underlineRole } from './underline.js';
 import { keyboardRole } from './keyboard.js';
+import { wordCountRole } from './word-count.js';
 
 export const defaultRoles = [
+  wordCountRole,
   abbreviationRole,
   chemRole,
   citeRole,
