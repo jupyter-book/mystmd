@@ -36,6 +36,7 @@ The {myst:directive}`embed` directive can be used like so:
 ````
 
 ```{embed} #myLabel
+
 ```
 
 Note that this works for any labeled item in your MyST document, including from other pages.
@@ -47,6 +48,7 @@ For example, the following references the admonitions list in [](admonitions.md)
 ````
 
 ```{embed} #admonitions-list
+
 ```
 
 ## The `![](#embed)` short-hand
@@ -75,20 +77,21 @@ For example, we'll define an image with a label below:
 (nice-sunset)=
 ![](https://source.unsplash.com/random/500x150?sunset)
 
-And embed it into a figure next:
+And embed it into a figure next with a new `label`:
 
 ````
 ```{figure} #nice-sunset
+:label: sunset-figure
 Here's a nice sunset with a caption!
 ```
 ````
 
 ```{figure} #nice-sunset
+:label: sunset-figure
 Here's a nice sunset with a caption!
 ```
 
-Note that this is especially useful with [embedding Jupyter Notebook outputs](./reuse-jupyter-outputs.md).
-
+The new label can be referred to in this context, i.e. `[@sunset-figure]`: [@sunset-figure], which refers to the new figure rather than the original image. This allows you to scroll to embedded content on the page, rather than jumping to the original document. Note that this is especially useful with [embedding Jupyter Notebook outputs](./reuse-jupyter-outputs.md).
 
 ## Embed notebook content and outputs
 
