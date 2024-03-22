@@ -3,6 +3,8 @@ title: Contribute to the MyST documentation
 short_title: Write Documentation
 ---
 
+The documentation of MyST is inspired by the [Diataxis Documentation Framework](https://diataxis.fr).
+
 ## Build the MyST guide documentation locally
 
 To build the MyST guide documentation:
