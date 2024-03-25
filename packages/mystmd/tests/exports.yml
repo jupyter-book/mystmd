@@ -17,6 +17,12 @@ cases:
     outputs:
       - path: basic-tex/_build/out.tex
         content: outputs/basic-tex.tex
+  - title: Basic tex math build
+    cwd: basic-tex-math
+    command: myst build --tex
+    outputs:
+      - path: basic-tex-math/_build/out.tex
+        content: outputs/basic-tex-math.tex
   - title: Basic typst build
     cwd: basic-typst
     command: myst build --typst

@@ -72,7 +72,7 @@ export type OptionDefinition = ArgDefinition & {
 
 export type DirectiveData = {
   name: string;
-  node: Directive;
+  node: Directive & { tight?: boolean | 'before' | 'after' };
   arg?: ParseTypes;
   options?: Record<string, ParseTypes>;
   body?: ParseTypes;

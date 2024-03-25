@@ -85,6 +85,14 @@ function stripPositions(tree: GenericParent) {
   return tree;
 }
 
+function removeTightAnnotations(tree: GenericParent) {
+  selectAll('mystDirective', tree).forEach((node) => {
+    // These are added on afterwards and we aren't taking them into account in myst spec
+    delete (node as any).tight;
+  });
+  return tree;
+}
+
 function replaceMystCommentNodes(tree: GenericParent) {
   selectAll('comment', tree).forEach((node) => {
     // In a future version of the spec, hopefully this is removed
@@ -107,19 +115,21 @@ describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
       const mdastString = yaml.dump(mdast);
-      const newAst = replaceMystCommentNodes(
-        stripPositions(
-          mystParse(myst, {
-            mdast: {
-              hoistSingleImagesOutofParagraphs: false,
-              nestBlocks: false,
-            },
-            extensions: {
-              frontmatter: false, // Frontmatter screws with some tests!
-              citations: false,
-              smartquotes: false,
-            },
-          }),
+      const newAst = removeTightAnnotations(
+        replaceMystCommentNodes(
+          stripPositions(
+            mystParse(myst, {
+              mdast: {
+                hoistSingleImagesOutofParagraphs: false,
+                nestBlocks: false,
+              },
+              extensions: {
+                frontmatter: false, // Frontmatter screws with some tests!
+                citations: false,
+                smartquotes: false,
+              },
+            }),
+          ),
         ),
       );
       // Figure caption/legend creation described in myst-spec has been moved

@@ -8,6 +8,20 @@ import { stateError, stateWarn } from './utils.js';
 
 const COLON_OPTION_REGEX = /^:(?<option>[^:\s]+?):(\s*(?<value>.*)){0,1}\s*$/;
 
+function computeBlockTightness(
+  src: string,
+  map: [number, number] | null | undefined,
+): boolean | 'before' | 'after' {
+  const lines = src.split('\n');
+  const tightBefore =
+    typeof map?.[0] === 'number' && map[0] > 0 ? lines[map[0] - 1].trim() !== '' : false;
+  const tightAfter =
+    typeof map?.[1] === 'number' && map[1] < lines.length ? lines[map[1]].trim() !== '' : false;
+  const tight =
+    tightBefore && tightAfter ? true : tightBefore ? 'before' : tightAfter ? 'after' : false;
+  return tight;
+}
+
 /** Convert fences identified as directives to `directive` tokens */
 function replaceFences(state: StateCore): boolean {
   for (const token of state.tokens) {
@@ -51,6 +65,7 @@ function runDirectives(state: StateCore): boolean {
         directiveOpen.meta = {
           arg,
           options: simplifyDirectiveOptions(options),
+          tight: computeBlockTightness(state.src, token.map),
         };
         const startLineNumber = map ? map[0] : 0;
         const argTokens = directiveArgToTokens(arg, startLineNumber, state);

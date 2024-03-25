@@ -28,9 +28,11 @@ export function withoutTrailingNewline(str: string) {
  * Loosely based on prosemirror-markdown
  */
 export class MarkdownParseState {
+  src: string;
   stack: GenericNode[];
   handlers: Record<string, TokenHandler>;
-  constructor(handlers: Record<string, TokenHandlerSpec>) {
+  constructor(src: string, handlers: Record<string, TokenHandlerSpec>) {
+    this.src = src;
     this.stack = [u('root', [] as GenericParent[])];
     this.handlers = getTokenHandlers(handlers);
   }
@@ -77,8 +79,9 @@ export class MarkdownParseState {
     tokens?.forEach((token, index) => {
       if (token.hidden && !UNHIDDEN_TOKENS.has(token.type)) return;
       const handler = this.handlers[token.type];
-      if (!handler)
+      if (!handler) {
         throw new Error(`Token type ${token.type} not supported by tokensToMyst parser`);
+      }
       handler(this, token, tokens, index);
     });
   }
@@ -111,8 +114,14 @@ type TokenHandler = (
   index: number,
 ) => void;
 
-function getAttrs(spec: TokenHandlerSpec, token: Token, tokens: Token[], index: number) {
-  const attrs = spec.getAttrs?.(token, tokens, index) || spec.attrs || {};
+function getAttrs(
+  state: MarkdownParseState,
+  spec: TokenHandlerSpec,
+  token: Token,
+  tokens: Token[],
+  index: number,
+) {
+  const attrs = spec.getAttrs?.(token, tokens, index, state) || spec.attrs || {};
   if ('type' in attrs) throw new Error('You can not have "type" as attrs.');
   if ('children' in attrs) throw new Error('You can not have "children" as attrs.');
   return attrs;
@@ -134,17 +143,17 @@ function getTokenHandlers(specHandlers: Record<string, TokenHandlerSpec>) {
             withoutTrailingNewline(tok.content),
             tok,
             spec.type,
-            getAttrs(spec, tok, tokens, i),
+            getAttrs(state, spec, tok, tokens, i),
           );
           return;
         }
-        state.openNode(nodeType, tok, getAttrs(spec, tok, tokens, i), spec.isLeaf);
+        state.openNode(nodeType, tok, getAttrs(state, spec, tok, tokens, i), spec.isLeaf);
         state.addText(withoutTrailingNewline(tok.content), tok);
         state.closeNode();
       };
     } else {
       handlers[type + '_open'] = (state, tok, tokens, i) =>
-        state.openNode(nodeType, tok, getAttrs(spec, tok, tokens, i));
+        state.openNode(nodeType, tok, getAttrs(state, spec, tok, tokens, i));
       handlers[type + '_close'] = (state) => state.closeNode();
     }
   });

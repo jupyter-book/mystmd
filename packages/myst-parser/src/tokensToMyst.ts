@@ -9,6 +9,22 @@ import { u } from 'unist-builder';
 import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown.js';
 import type { MdastOptions, TokenHandlerSpec } from './types.js';
 
+export function computeAmsmathTightness(
+  src: string,
+  map: [number, number] | null | undefined,
+): boolean | 'before' | 'after' {
+  const lines = src.split('\n');
+  const tightBefore =
+    typeof map?.[0] === 'number' && map[0] > 0 ? lines[map[0] - 1].trim() !== '' : false;
+  // Note: The end line might be different/wrong for AMS math. If that is updated, remove the `+1` that shifts the index
+  const last = typeof map?.[1] === 'number' ? map?.[1] + 1 : undefined;
+  const tightAfter =
+    typeof last === 'number' && last < lines.length ? lines[last]?.trim() !== '' : false;
+  const tight =
+    tightBefore && tightAfter ? true : tightBefore ? 'before' : tightAfter ? 'after' : false;
+  return tight;
+}
+
 const NUMBERED_CLASS = /^numbered$/;
 const ALIGN_CLASS = /(?:(?:align-)|^)(left|right|center)/;
 
@@ -298,10 +314,13 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
     type: 'math',
     noCloseToken: true,
     isText: true,
-    getAttrs(t) {
-      return {
+    getAttrs(t, tokens, index, state) {
+      const tight = computeAmsmathTightness(state.src, t.map);
+      const attrs = {
         enumerated: t.meta?.enumerated,
-      };
+      } as Record<string, any>;
+      if (tight) attrs.tight = tight;
+      return attrs;
     },
   },
   footnote_ref: {
@@ -360,6 +379,7 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
         args: t.meta?.arg,
         options: t.meta?.options,
         value: t.content || undefined,
+        tight: t.meta?.tight || undefined,
       };
     },
   },
@@ -489,13 +509,17 @@ const defaultOptions: MdastOptions = {
   nestBlocks: true,
 };
 
-export function tokensToMyst(tokens: Token[], options = defaultOptions): GenericParent {
+export function tokensToMyst(
+  src: string,
+  tokens: Token[],
+  options = defaultOptions,
+): GenericParent {
   const opts = {
     ...defaultOptions,
     ...options,
     handlers: { ...defaultOptions.handlers, ...options?.handlers },
   };
-  const state = new MarkdownParseState(opts.handlers);
+  const state = new MarkdownParseState(src, opts.handlers);
   state.parseTokens(tokens);
   let tree: GenericParent;
   do {

@@ -241,6 +241,30 @@ export function mathNestingTransform(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   file: VFile,
 ) {
+  const paragraphs = selectAll('paragraph', tree) as GenericParent[];
+  paragraphs.forEach((paragraph) => {
+    if (paragraph.children.length === 1) return; // no need to traverse, the math node can never be tight!
+    paragraph.children.forEach((child, index) => {
+      if (child.type !== 'math') return;
+      const math = child as Math;
+      const before = paragraph.children[index - 1];
+      const after = paragraph.children[index + 1];
+      if (index === 0) {
+        math.tight = 'after';
+      } else if (index === paragraph.children.length - 1) {
+        math.tight = 'before';
+      } else {
+        math.tight = true;
+      }
+      // Note: There is likely a bug in the dollar-math parser that we are correcting here
+      if (before?.type === 'text') {
+        before.value = before.value?.replace(/\n$/, '') ?? '';
+      }
+      if (after?.type === 'text') {
+        after.value = after.value?.replace(/^\n/, '') ?? '';
+      }
+    });
+  });
   unnestTransform(tree as GenericParent, 'paragraph', 'math');
 }
 
@@ -253,6 +277,7 @@ export function mathLabelTransform(tree: GenericParent, file: VFile) {
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function subequationTransform(tree: GenericParent, file: VFile) {
   const nodes = selectAll('mathGroup > math', tree) as Math[];
   nodes.forEach((node) => {
