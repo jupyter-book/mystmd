@@ -29,7 +29,7 @@ describe('Test math tightness', () => {
     const tree = mystParse(src);
     expect((select('math', tree) as Math)?.tight).toBe(tight);
   });
-  test.only.each([
+  test.each([
     // [true, 'a\n\\begin{equation}\nAx=b\n\\end{equation}\nb'],
     [undefined, 'a\n\n\\begin{equation}\nAx=b\n\\end{equation}\n\nb'],
     ['before', 'p\n\\begin{equation}\nAx=b\n\\end{equation}\n\np'],
