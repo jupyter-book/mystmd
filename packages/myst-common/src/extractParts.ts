@@ -9,7 +9,7 @@ function coercePart(part?: string | string[]): string[] {
     // Prevent an undefined, null or empty part comparison
     return [];
   }
-  return typeof part === 'string' ? [part] : part;
+  return typeof part === 'string' ? [part.toLowerCase()] : part.map((s) => s.toLowerCase());
 }
 
 /**
@@ -20,13 +20,12 @@ export function selectBlockParts(tree: GenericParent, part?: string | string[]):
   const parts = coercePart(part);
   if (parts.length === 0) return [];
   const blockParts = selectAll('block', tree).filter((block) => {
+    const blockTags: string[] = (
+      block.data?.tags && Array.isArray(block.data.tags) ? block.data.tags : []
+    ).map((tag) => tag?.toLowerCase());
+    const blockPart = (block.data?.part as string)?.toLowerCase();
     return parts
-      .map((p) => {
-        return (
-          block.data?.part === p ||
-          (block.data?.tags && Array.isArray(block.data.tags) && block.data.tags.includes(p))
-        );
-      })
+      .map((p) => blockPart === p || blockTags.includes(p))
       .reduce((a, b) => a || b, false);
   });
   return blockParts as Block[];
@@ -138,9 +137,11 @@ export function extractPart(
     if (
       block.data.tags &&
       Array.isArray(block.data.tags) &&
-      block.data.tags.reduce((a, t) => a || partStrings.includes(t), false)
+      block.data.tags.reduce((a, t) => a || partStrings.includes(t.toLowerCase()), false)
     ) {
-      block.data.tags = block.data.tags.filter((tag) => !partStrings.includes(tag)) as string[];
+      block.data.tags = block.data.tags.filter(
+        (tag) => !partStrings.includes(tag.toLowerCase()),
+      ) as string[];
       if ((block.data.tags as string[]).length === 0) {
         delete block.data.tags;
       }

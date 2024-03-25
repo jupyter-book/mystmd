@@ -73,7 +73,12 @@ export async function runJatsExport(
     abstractParts: [
       { part: 'abstract' },
       {
-        part: ['plain-language-summary', 'plain-language-abstract', 'summary'],
+        part: [
+          'plain-language-summary',
+          'plain-language-abstract',
+          'summary',
+          'plain language summary',
+        ],
         type: 'plain-language-summary',
         title: 'Plain Language Summary',
       },
@@ -81,7 +86,7 @@ export async function runJatsExport(
     ],
     backSections: [
       {
-        part: ['data-availability', 'data_availability', 'availability'],
+        part: ['data-availability', 'data_availability', 'availability', 'data availability'],
         type: 'data-availability',
         title: 'Data Availability',
       },

@@ -5,7 +5,7 @@ description: Parts allow you to specify special parts of your document, like abs
 
 Document parts allow you to add metadata to your documents with specific components of your page, for example, abstract, dedication, or acknowledgments. Many templates put these in specific places.
 
-There are three ways that you can define parts of a document: (1) in your page frontmatter; (2) implicitly using a section heading; and (3) on a block using a `part` or `tag` annotation.
+There are three ways that you can define parts of a document: (1) in your page frontmatter; (2) implicitly using a section heading; and (3) on a block using a `part` or `tag` annotation. These are all based on a part name, which is case insensitive.
 
 ## Parts in Frontmatter
 
@@ -76,7 +76,7 @@ Complete this using a header as usual:
 This is my abstract!
 ```
 
-Note that frontmatter parts and explicitly tagged cells/blocks will take precedence over this method.
+Note that frontmatter parts and explicitly tagged cells/blocks will take precedence over this method. Themes may choose to only pick up a subset of implicit parts, for example, only an `Abstract` and not `Summary` as summary section can be used in other contexts.
 
 ## In a Jupyter Notebook cells and blocks
 
