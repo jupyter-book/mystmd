@@ -1,6 +1,7 @@
-import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import type { DirectiveSpec, DirectiveData, DirectiveContext, GenericNode } from 'myst-common';
 import { fileError, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
+import { parse } from 'csv-parse/sync';
 
 export const tableDirective: DirectiveSpec = {
   name: 'table',
@@ -159,6 +160,97 @@ export const listTableDirective: DirectiveSpec = {
       class: data.options?.class,
       children,
     };
+    return [container];
+  },
+};
+
+export const csvTableDirective: DirectiveSpec = {
+  name: 'csv-table',
+  arg: {
+    type: 'myst',
+  },
+  options: {
+    label: {
+      type: String,
+      alias: ['name'],
+    },
+    'header-rows': {
+      type: Number,
+      // nonnegative int
+    },
+    class: {
+      type: String,
+      // class_option: list of strings?
+      doc: `CSS classes to add to your table. Special classes include:
+
+- \`full-width\`: changes the table environment to cover two columns in LaTeX`,
+    },
+    align: {
+      type: String,
+      // choice(['left', 'center', 'right'])
+    },
+    delim: {
+      type: String,
+    },
+    escape: {
+      type: String,
+    },
+    keepspace: {
+      type: Boolean,
+    },
+    quote: {
+      type: String,
+    },
+  },
+  body: {
+    type: String,
+    required: true,
+  },
+  run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
+    const delimiter = (data.options?.delimiter ?? ',') as string;
+    const records = parse(data.body as string, {
+      delimiter,
+      ltrim: !data.options?.keepspace,
+      escape: (data.options?.escape ?? delimiter) as string,
+      quote: (data.options?.quote ?? '"') as string,
+    });
+
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
+
+    let headerCount = (data.options?.['header-rows'] as number) || 0;
+    const rows = records.map((record: any, recordIndex: number) => {
+      const cells = record.map((cell: string) => {
+        const rawCells = ctx.parseMyst(cell, recordIndex);
+        if (!(rawCells.length === 1 && rawCells[0].type === 'paragraph')) {
+          throw new Error(`Expected a single paragraph node, encountered ${rawCells[0].type}`);
+        }
+        return {
+          type: 'tableCell',
+          header: headerCount > 0 ? true : undefined,
+          children: rawCells[0].children,
+        };
+      });
+      headerCount -= 1;
+      // Parsing produes multiple nodes
+      return {
+        type: 'tableRow',
+        children: cells,
+      };
+    });
+    const table = {
+      type: 'table',
+      align: data.options?.align,
+      children: rows,
+    };
+    const container = {
+      type: 'container',
+      kind: 'table',
+      identifier: identifier,
+      label: label,
+      class: data.options?.class,
+      children: [...(data.arg as GenericNode[]), table],
+    };
+
     return [container];
   },
 };
