@@ -1,16 +1,17 @@
 import path from 'node:path';
 import chalk from 'chalk';
-import { ExportFormats } from 'myst-frontmatter';
+import { EXT_TO_FORMAT, ExportFormats } from 'myst-frontmatter';
 import { filterPages, loadProjectFromDisk } from '../project/load.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { uniqueArray } from '../utils/uniqueArray.js';
 import { buildHtml } from './html/index.js';
 import { buildSite } from './site/prepare.js';
-import type { ExportWithInputOutput } from './types.js';
+import type { ExportWithFormat, ExportWithInputOutput } from './types.js';
 import { localArticleExport } from './utils/localArticleExport.js';
-import { collectExportOptions } from './utils/collectExportOptions.js';
+import { collectExportOptions, resolveExportArticles } from './utils/collectExportOptions.js';
 import { writeJsonLogs } from '../utils/logging.js';
+import { findCurrentProjectAndLoad } from '../config.js';
 
 export type BuildOpts = {
   site?: boolean;
@@ -27,6 +28,7 @@ export type BuildOpts = {
   watch?: boolean;
   output?: string;
   checkLinks?: boolean;
+  strict?: boolean;
   ci?: boolean;
   execute?: boolean;
   maxSizeWebp?: number;
@@ -37,18 +39,51 @@ export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
   return docx || pdf || tex || typst || xml || md || meca || false;
 }
 
-export function getExportFormats(opts: BuildOpts & { explicit?: boolean; extension?: string }) {
-  const { docx, pdf, tex, typst, xml, md, meca, all, explicit, extension } = opts;
+/**
+ * Determine all allowed export formats based on CLI options and arguments
+ *
+ * @param opts.docx docx export explicitly requested with --docx option
+ * @param opts.pdf pdf export explicitly requested with --pdf option
+ * @param opts.tex (all formats follow as above)
+ * @param opts.typst
+ * @param opts.xml
+ * @param opts.md
+ * @param opts.meca
+ * @param opts.all all exports requested with --all option
+ * @param opts.explicit explicit input file was provided
+ */
+export function getAllowedExportFormats(opts: BuildOpts & { explicit?: boolean }) {
+  const { docx, pdf, tex, typst, xml, md, meca, all, explicit } = opts;
   const formats = [];
   const any = hasAnyExplicitExportFormat(opts);
-  const override = all || (!any && explicit && !extension);
-  if (docx || override || extension === '.docx') formats.push(ExportFormats.docx);
-  if (pdf || override || extension === '.pdf') formats.push(ExportFormats.pdf);
-  if (tex || override || extension === '.tex') formats.push(ExportFormats.tex);
-  if (typst || override || extension === '.typ') formats.push(ExportFormats.typst);
-  if (xml || override || extension === '.xml') formats.push(ExportFormats.xml);
-  if (md || override || extension === '.md') formats.push(ExportFormats.md);
+  const override = all || (!any && explicit);
+  if (docx || override) formats.push(ExportFormats.docx);
+  if (pdf || override) {
+    formats.push(ExportFormats.pdf, ExportFormats.pdftex, ExportFormats.typst);
+  }
+  if (tex || override) {
+    formats.push(ExportFormats.tex, ExportFormats.pdftex);
+  }
+  if (typst || override) formats.push(ExportFormats.typst);
+  if (xml || override) formats.push(ExportFormats.xml);
+  if (md || override) formats.push(ExportFormats.md);
   if (meca || override) formats.push(ExportFormats.meca);
+  return [...new Set(formats)];
+}
+
+/**
+ * Return requested formats from CLI options
+ */
+export function getRequestedExportFormats(opts: BuildOpts) {
+  const { docx, pdf, tex, typst, xml, md, meca } = opts;
+  const formats = [];
+  if (docx) formats.push(ExportFormats.docx);
+  if (pdf) formats.push(ExportFormats.pdf);
+  if (tex) formats.push(ExportFormats.tex);
+  if (typst) formats.push(ExportFormats.typst);
+  if (xml) formats.push(ExportFormats.xml);
+  if (md) formats.push(ExportFormats.md);
+  if (meca) formats.push(ExportFormats.meca);
   return formats;
 }
 
@@ -69,6 +104,13 @@ export function getProjectPaths(session: ISession) {
   return uniqueArray(projectPaths);
 }
 
+/**
+ * Gather a list of export objects with resolved format/input/output values
+ *
+ * @param files list of files to export; if empty, current project will be loaded
+ *     and all project files (including the config file) will be searched for exports
+ * @param opts user-provided options, including desired export formats and output filename
+ */
 export async function collectAllBuildExportOptions(
   session: ISession,
   files: string[],
@@ -79,44 +121,81 @@ export async function collectAllBuildExportOptions(
   if (output && files.length !== 1) {
     throw new Error('When specifying a named output for export, you must list exactly one file.');
   }
-  const formats = getExportFormats({
-    ...opts,
-    explicit: files.length > 0,
-    extension: output ? path.extname(output) : undefined,
-  });
-  if (output && formats.length !== 1) {
-    throw new Error(`Unrecognized file extension for output: ${path.extname(output)}`);
+  const requestedFormats = getRequestedExportFormats(opts);
+  if (output && requestedFormats.length > 1) {
+    throw new Error(`When specifying output, you can only request one format`);
   }
-  session.log.debug(`Exporting formats: "${formats.join('", "')}"`);
   let exportOptionsList: ExportWithInputOutput[];
-  if (files.length) {
-    exportOptionsList = await collectExportOptions(session, files, formats, {
-      // If there is an output and file specified, force is implied
-      force: force || !!output || hasAnyExplicitExportFormat(opts),
-    });
-    if (output) {
-      if (exportOptionsList.length !== 1) {
-        // This should be caught above
-        throw new Error('Expecting only a single export when using output');
-      }
-      // Override the exports with the command line options
-      exportOptionsList[0].output = path.join(path.resolve('.'), output);
+  const projectPath = findCurrentProjectAndLoad(session, files[0] ? path.dirname(files[0]) : '.');
+  if (projectPath) await loadProjectFromDisk(session, projectPath);
+  if (output) {
+    session.log.debug(`Exporting formats: "${requestedFormats.join('", "')}"`);
+    const format = requestedFormats[0] ?? EXT_TO_FORMAT[path.extname(output)];
+    if (!format) {
+      throw new Error(
+        `Cannot specify format from output "${output}" - please specify format option, e.g. --pdf`,
+      );
     }
+    exportOptionsList = resolveExportArticles(
+      session,
+      files[0],
+      [{ format, output: path.join(path.resolve('.'), output) }],
+      projectPath,
+      opts,
+    ).map((exp) => {
+      return { ...exp, $file: files[0], $project: projectPath };
+    });
+  } else if (files.length) {
+    const allowedFormats = getAllowedExportFormats({
+      ...opts,
+      explicit: true,
+    });
+    session.log.debug(`Exporting formats: "${allowedFormats.join('", "')}"`);
+    exportOptionsList = (
+      await Promise.all(
+        files.map(async (file) => {
+          const fileExportOptionsList = await collectExportOptions(
+            session,
+            [file],
+            allowedFormats,
+            {},
+          );
+          // If requested exports were defined in file frontmatter, return those.
+          if (fileExportOptionsList.length > 0) {
+            return fileExportOptionsList;
+          }
+          // If no requested exports were found, force them to build.
+          return resolveExportArticles(
+            session,
+            file,
+            requestedFormats.map((format) => {
+              return { format } as ExportWithFormat;
+            }),
+            projectPath,
+            opts,
+          ).map((exp) => {
+            return { ...exp, $file: files[0], $project: projectPath };
+          });
+        }),
+      )
+    ).flat();
   } else {
+    const allowedFormats = getAllowedExportFormats(opts);
+    session.log.debug(`Exporting formats: "${allowedFormats.join('", "')}"`);
     const projectPaths = getProjectPaths(session);
     exportOptionsList = (
       await Promise.all(
-        projectPaths.map(async (projectPath) => {
+        projectPaths.map(async (projPath) => {
           try {
-            const project = await loadProjectFromDisk(session, projectPath);
+            const project = await loadProjectFromDisk(session, projPath);
             files = filterPages(project).map((page) => page.file);
           } catch (err) {
-            session.log.debug(`Unable to load any content from project at: ${projectPath}\n${err}`);
+            session.log.debug(`Unable to load any content from project at: ${projPath}\n${err}`);
             return [];
           }
-          const exportOptions = await collectExportOptions(session, files, formats, {
+          const exportOptions = await collectExportOptions(session, files, allowedFormats, {
             force,
-            projectPath,
+            projectPath: projPath,
           });
           return exportOptions;
         }),
@@ -153,7 +232,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
       // Print out the kinds that are filtered
       const kinds = Object.entries(opts)
         .filter(
-          ([k, v]) => k !== 'force' && k !== 'output' && k !== 'checkLinks' && k !== 'site' && v,
+          ([k, v]) => !['force', 'output', 'checkLinks', 'site', 'maxSizeWebp'].includes(k) && v,
         )
         .map(([k]) => k);
       session.log.info(
