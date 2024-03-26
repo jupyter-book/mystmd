@@ -156,14 +156,14 @@ function resolveArticles(
   const { articles, sub_articles } = exp;
   let resolved: ResolvedArticles = { articles, sub_articles };
   // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
-  if (exp.toc && !resolved.articles?.length && !resolved.sub_articles?.length) {
+  if (exp.toc && !resolved.articles && !resolved.sub_articles) {
     const resolvedToc = path.resolve(path.dirname(sourceFile), exp.toc);
     if (validateTOC(session, resolvedToc)) {
       resolved = resolveArticlesFromTOC(session, exp, resolvedToc, vfile);
     }
   }
   // If no articles are specified, use the sourceFile for article
-  if (!resolved.articles?.length && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
+  if (!resolved.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
     resolved.articles = [{ file: path.resolve(sourceFile) }];
   }
   // If there is only one article with no explicit level, it should be 0, making the first section depth 1.
@@ -171,7 +171,7 @@ function resolveArticles(
     resolved.articles[0].level = 0;
   }
   // If still no articles, try to use explicit or implicit project toc
-  if (!resolved.articles?.length && !resolved.sub_articles?.length) {
+  if (!resolved.articles && !resolved.sub_articles) {
     if (validateTOC(session, projectPath ?? '.')) {
       resolved = resolveArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
     } else {
@@ -184,6 +184,12 @@ function resolveArticles(
       }
     }
   }
+  if (!resolved.articles?.length && exp.format !== ExportFormats.meca) {
+    fileError(vfile, `Unable to resolve any 'articles' to export`, {
+      ruleId: RuleId.exportArticleExists,
+    });
+    return resolved;
+  }
 
   // Convert articles and sub_articles to relative path and ensure existence
   resolved.articles = resolved.articles
@@ -191,7 +197,7 @@ function resolveArticles(
       if (!article.file) return article;
       const resolvedFile = path.resolve(path.dirname(sourceFile), article.file);
       if (!fs.existsSync(resolvedFile)) {
-        fileError(vfile, `Invalid export article '${article.file}' in source: ${sourceFile}`, {
+        fileError(vfile, `Invalid export article - '${article.file}' does not exist`, {
           ruleId: RuleId.exportArticleExists,
         });
         return undefined;
@@ -204,7 +210,7 @@ function resolveArticles(
     ?.map((file: string) => {
       const resolvedFile = path.resolve(path.dirname(sourceFile), file);
       if (!fs.existsSync(resolvedFile)) {
-        fileError(vfile, `Invalid export sub_article '${file}' in source: ${sourceFile}`, {
+        fileError(vfile, `Invalid export sub_article - '${file}' does not exist`, {
           ruleId: RuleId.exportArticleExists,
         });
         return undefined;
@@ -338,7 +344,7 @@ export function resolveExportArticles(
   projectPath: string | undefined,
   opts: ExportOptions,
 ): ExportWithOutput[] {
-  const { force, renderer } = opts;
+  const { renderer } = opts;
 
   const vfile = new VFile();
   vfile.path = sourceFile;
@@ -353,17 +359,6 @@ export function resolveExportArticles(
       );
       if (!articles?.length && exp.format !== ExportFormats.meca) {
         // All export formats except meca require article(s)
-        if (!force) {
-          // You cannot "--force" project exports with no article. This is expected
-          // and needs no error message.
-          fileError(
-            vfile,
-            `Invalid export - unable to resolve 'articles' to export: ${sourceFile}`,
-            {
-              ruleId: RuleId.exportArticleExists,
-            },
-          );
-        }
         return undefined;
       }
       const output = resolveOutput(session, sourceFile, vfile, exp, projectPath);
@@ -388,96 +383,6 @@ function filterAndMakeUnique<T extends ExportWithOutput>(exports: (T | undefined
         output: path.join(dir, `${name}_${nMatch(arr.slice(0, ind))}${ext}`),
       };
     });
-}
-
-async function legacyCollectExportOptions(
-  session: ISession,
-  sourceFile: string,
-  extension: string,
-  formats: ExportFormats[],
-  projectPath: string | undefined,
-  opts: ExportOptions,
-) {
-  let extensionIsOk = false;
-  formats.forEach((fmt) => {
-    if (ALLOWED_EXTENSIONS[fmt].includes(extension)) extensionIsOk = true;
-  });
-  if (!extensionIsOk) {
-    throw new Error(`invalid extension for export of formats ${formats.join(', ')} "${extension}"`);
-  }
-  if (opts.template && opts.disableTemplate) {
-    throw new Error(`cannot specify template "${opts.template}" and "disable template"`);
-  }
-  if (opts.filename || opts.template) {
-    const explicitExport: ExportWithFormat = {
-      format: formats[0],
-      template: opts.disableTemplate ? null : opts.template,
-      output: opts.filename,
-    };
-    return resolveExportArticles(session, sourceFile, [explicitExport], projectPath, opts);
-  }
-  const exportOptions = await collectExportOptions(session, [sourceFile], formats, {
-    ...opts,
-    projectPath,
-  });
-  return exportOptions;
-}
-
-export async function collectTexExportOptions(
-  session: ISession,
-  sourceFile: string,
-  extension: string,
-  formats: ExportFormats[],
-  projectPath: string | undefined,
-  opts: ExportOptions,
-) {
-  const exportOptions = await legacyCollectExportOptions(
-    session,
-    sourceFile,
-    extension,
-    formats,
-    projectPath,
-    opts,
-  );
-  return exportOptions;
-}
-
-export async function collectBasicExportOptions(
-  session: ISession,
-  sourceFile: string,
-  extension: string,
-  formats: ExportFormats[],
-  projectPath: string | undefined,
-  opts: ExportOptions,
-) {
-  const exportOptions = await legacyCollectExportOptions(
-    session,
-    sourceFile,
-    extension,
-    formats,
-    projectPath,
-    opts,
-  );
-  return exportOptions;
-}
-
-export async function collectWordExportOptions(
-  session: ISession,
-  sourceFile: string,
-  extension: string,
-  formats: ExportFormats[],
-  projectPath: string | undefined,
-  opts: ExportOptions,
-) {
-  const exportOptions = await legacyCollectExportOptions(
-    session,
-    sourceFile,
-    extension,
-    formats,
-    projectPath,
-    opts,
-  );
-  return exportOptions;
 }
 
 /**
@@ -534,3 +439,43 @@ export async function collectExportOptions(
   );
   return filterAndMakeUnique(exportOptionsList);
 }
+
+/**
+ * Legacy exportOptions support to maintain exported functionality
+ */
+async function legacyCollectExportOptions(
+  session: ISession,
+  sourceFile: string,
+  extension: string,
+  formats: ExportFormats[],
+  projectPath: string | undefined,
+  opts: ExportOptions,
+) {
+  let extensionIsOk = false;
+  formats.forEach((fmt) => {
+    if (ALLOWED_EXTENSIONS[fmt].includes(extension)) extensionIsOk = true;
+  });
+  if (!extensionIsOk) {
+    throw new Error(`invalid extension for export of formats ${formats.join(', ')} "${extension}"`);
+  }
+  if (opts.template && opts.disableTemplate) {
+    throw new Error(`cannot specify template "${opts.template}" and "disable template"`);
+  }
+  if (opts.filename || opts.template) {
+    const explicitExport: ExportWithFormat = {
+      format: formats[0],
+      template: opts.disableTemplate ? null : opts.template,
+      output: opts.filename,
+    };
+    return resolveExportArticles(session, sourceFile, [explicitExport], projectPath, opts);
+  }
+  const exportOptions = await collectExportOptions(session, [sourceFile], formats, {
+    ...opts,
+    projectPath,
+  });
+  return exportOptions;
+}
+
+export const collectTexExportOptions = legacyCollectExportOptions;
+export const collectBasicExportOptions = legacyCollectExportOptions;
+export const collectWordExportOptions = legacyCollectExportOptions;

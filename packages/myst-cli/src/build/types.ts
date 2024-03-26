@@ -39,7 +39,6 @@ export type ExportOptions = {
   clean?: boolean;
   glossaries?: boolean;
   zip?: boolean;
-  force?: boolean;
   projectPath?: string;
   watch?: boolean;
   throwOnFailure?: boolean;

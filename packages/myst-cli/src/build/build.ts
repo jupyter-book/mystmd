@@ -116,7 +116,7 @@ export async function collectAllBuildExportOptions(
   files: string[],
   opts: BuildOpts,
 ) {
-  const { force, output } = opts;
+  const { output } = opts;
   files = files.map((file) => path.resolve(file));
   if (output && files.length !== 1) {
     throw new Error('When specifying a named output for export, you must list exactly one file.');
@@ -194,7 +194,6 @@ export async function collectAllBuildExportOptions(
             return [];
           }
           const exportOptions = await collectExportOptions(session, files, allowedFormats, {
-            force,
             projectPath: projPath,
           });
           return exportOptions;
