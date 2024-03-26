@@ -15,13 +15,16 @@ export const mathDirective: DirectiveSpec = {
   },
   run(data: DirectiveData): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
-    return [
-      {
-        type: 'math',
-        identifier,
-        label,
-        value: data.body as string,
-      },
-    ];
+    const math = {
+      type: 'math',
+      identifier,
+      label,
+      value: data.body as string,
+    } as GenericNode;
+    if (data.node.tight) {
+      // The default `false` is not written to the AST
+      math.tight = data.node.tight;
+    }
+    return [math];
   },
 };

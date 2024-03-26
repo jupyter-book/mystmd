@@ -57,6 +57,7 @@ export type InlineMath = SpecInlineMath & {
 
 export type Math = SpecMath & {
   kind?: 'subequation';
+  tight?: 'before' | 'after' | boolean;
 };
 
 export type MathGroup = {

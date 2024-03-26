@@ -176,4 +176,19 @@ describe('parses directives', () => {
     expect(tokens.map((t) => t.type)).toEqual(['fence']);
     expect(tokens[0].info).toEqual(' { ab c }');
   });
+  it.each([
+    [false, 'Paragraph\n\n```{math}\nAx=b\n```\n\nAfter paragraph'],
+    [false, '```{math}\nAx=b\n```'],
+    [false, '```{math}\nAx=b\n```\n\nAfter paragraph'],
+    [true, 'Paragraph\n```{math}\nAx=b\n```\nAfter paragraph'],
+    ['before', 'Paragraph\n```{math}\nAx=b\n```\n\nAfter paragraph'],
+    ['before', 'Paragraph\n```{math}\nAx=b\n```'],
+    ['after', 'Paragraph\n\n```{math}\nAx=b\n```\nAfter paragraph'],
+    ['after', '```{math}\nAx=b\n```\nAfter paragraph'],
+  ])('directives have tightness information: "%s"', (tight, src) => {
+    const mdit = MarkdownIt().use(plugin);
+    const tokens = mdit.parse(src, {});
+    const open = tokens.find((t) => t.type === 'parsed_directive_open');
+    expect(open?.meta.tight).toBe(tight);
+  });
 });

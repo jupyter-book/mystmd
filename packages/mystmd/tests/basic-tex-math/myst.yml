@@ -1,0 +1,8 @@
+version: 1
+project:
+  export:
+    format: tex
+    template: null
+    output: _build/out.tex
+    article: input.md
+site: {}

@@ -13,10 +13,41 @@ cases:
           name: math
           options:
             label: addition
-
           value: 1+2
           children:
             - type: math
               identifier: addition
               label: addition
               value: 1+2
+  - title: tight math
+    markdown: |-
+      Tight above
+      ```{math}
+      :label: addition
+      1+2
+      ```
+
+      But not below
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Tight above
+        - type: mystDirective
+          name: math
+          tight: before
+          options:
+            label: addition
+          value: 1+2
+          children:
+            - type: math
+              identifier: addition
+              label: addition
+              tight: before
+              value: 1+2
+        - type: paragraph
+          children:
+            - type: text
+              value: But not below

@@ -21,4 +21,20 @@ describe('myst-to-tex math', () => {
     expect((file.result as LatexResult).value).toEqual('$\\aRecursion$');
     expect((file.result as LatexResult).commands).toEqual(plugins);
   });
+  it.each([
+    [false, 'start\n\n\\begin{equation}\nAx=b\n\\end{equation}\n\nend'],
+    ['before', 'start\n\\begin{equation}\nAx=b\n\\end{equation}\n\nend'],
+    ['after', 'start\n\n\\begin{equation}\nAx=b\n\\end{equation}\nend'],
+    [true, 'start\n\\begin{equation}\nAx=b\n\\end{equation}\nend'],
+  ])('works with tight math %s', (tight, tex) => {
+    const tree = u('root', [
+      u('paragraph', [u('text', 'start')]),
+      u('math', { value: 'Ax=b', tight }),
+      u('paragraph', [u('text', 'end')]),
+    ]);
+    const pipe = unified().use(mystToTex);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as LatexResult).value).toEqual(tex);
+  });
 });

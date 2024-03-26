@@ -70,6 +70,12 @@ export function withRecursiveCommands(
 
 const math: Handler = (node, state) => {
   const { label, enumerated } = node;
+  const tightBefore = node.tight === true || node.tight === 'before';
+  const tightAfter = node.tight === true || node.tight === 'after';
+  if (tightBefore) {
+    // Removes the preceding space
+    state.ensureNewLine(true);
+  }
   state.usePackages('amsmath');
   addMacrosToState(node.value, state);
   if (state.data.isInTable) {
@@ -96,7 +102,12 @@ const math: Handler = (node, state) => {
       state.write(`\\end{equation${enumerated === false ? '*' : ''}}`);
     }
   }
-  if (!state.data.isInTable) state.closeBlock(node);
+  if (state.data.isInTable) return;
+  if (tightAfter) {
+    state.ensureNewLine(true);
+  } else {
+    state.closeBlock(node);
+  }
 };
 
 const inlineMath: Handler = (node, state) => {

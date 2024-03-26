@@ -3,6 +3,7 @@ import type Token from 'markdown-it/lib/token.js';
 import type { DirectiveSpec, RoleSpec } from 'myst-common';
 import type { VFile } from 'vfile';
 import type { MathExtensionOptions } from './plugins.js';
+import type { MarkdownParseState } from './fromMarkdown.js';
 
 export type MdastOptions = {
   handlers?: Record<string, TokenHandlerSpec>;
@@ -12,7 +13,12 @@ export type MdastOptions = {
 
 export type TokenHandlerSpec = {
   type: string;
-  getAttrs?: (token: Token, tokens: Token[], index: number) => Record<string, any>;
+  getAttrs?: (
+    token: Token,
+    tokens: Token[],
+    index: number,
+    state: MarkdownParseState,
+  ) => Record<string, any>;
   attrs?: Record<string, any>;
   noCloseToken?: boolean;
   isText?: boolean;
