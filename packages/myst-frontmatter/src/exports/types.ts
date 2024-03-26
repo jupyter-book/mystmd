@@ -20,6 +20,7 @@ export type Export = {
   format?: ExportFormats; // TODO: Optional if template is defined
   template?: string | null;
   output?: string;
+  zip?: boolean;
   toc?: string;
   articles?: ExportArticle[];
   /** sub_articles are only for jats xml export */

@@ -2,6 +2,7 @@ import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
+  validateBoolean,
   validateEnum,
   validateList,
   validateNumber,
@@ -17,7 +18,17 @@ import { ExportFormats } from './types.js';
 
 const EXPORT_KEY_OBJECT = {
   required: [],
-  optional: ['format', 'template', 'output', 'id', 'name', 'renderer', 'articles', 'sub_articles'],
+  optional: [
+    'format',
+    'template',
+    'output',
+    'zip',
+    'id',
+    'name',
+    'renderer',
+    'articles',
+    'sub_articles',
+  ],
   alias: {
     article: 'articles',
     sub_article: 'sub_articles',
@@ -164,6 +175,10 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       Object.keys(EXT_TO_FORMAT).forEach((ext) => {
         if (outputString.endsWith(ext)) output = outputString;
       });
+      // If there is no '.' in the output string (aside from first character) this is assumed to be a folder.
+      if (!outputString.slice(1).includes('.')) {
+        output = outputString;
+      }
       if (!output) {
         return validationError(`unknown export output extension: ${outputString}`, outputOpts);
       }
@@ -178,6 +193,9 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     return validationError('export must specify one of: format, template, or output', opts);
   }
   const validExport: Export = { ...value, format, output, template };
+  if (defined(value.zip)) {
+    validExport.zip = validateBoolean(value.zip, incrementOptions('zip', opts));
+  }
   if (defined(value.articles)) {
     const articles = validateList(
       value.articles,
