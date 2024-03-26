@@ -1,15 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { RuleId, fileError } from 'myst-common';
+import { RuleId, fileError, fileWarn } from 'myst-common';
 import type { Export, ExportArticle } from 'myst-frontmatter';
 import {
+  EXT_TO_FORMAT,
   ExportFormats,
   MULTI_ARTICLE_EXPORT_FORMATS,
   singleArticleWithFile,
 } from 'myst-frontmatter';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
-import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 import { validateTOC } from '../../utils/toc.js';
 import { projectFromToc } from '../../project/fromToc.js';
@@ -17,53 +17,291 @@ import { loadProjectFromDisk } from '../../project/load.js';
 import type { LocalProject } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
-import type { ExportWithOutput, ExportOptions, ExportWithInputOutput } from '../types.js';
+import type {
+  ExportWithOutput,
+  ExportOptions,
+  ExportWithInputOutput,
+  ExportWithFormat,
+} from '../types.js';
 import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter.js';
 import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
 
-function assignArticlesFromProject(
-  exp: Export,
+type ResolvedArticles = Pick<Export, 'articles' | 'sub_articles'>;
+
+function resolveArticlesFromProject(
+  exp: ExportWithFormat,
   proj: Omit<LocalProject, 'bibliography'>,
   vfile: VFile,
-) {
+): ResolvedArticles {
   const { file, pages } = proj;
   const fileAsPage = { file, level: 1 };
   const articles = pages?.length ? pages : [fileAsPage];
   if (MULTI_ARTICLE_EXPORT_FORMATS.includes(exp.format)) {
-    exp.articles = articles;
-  } else if (exp.format === ExportFormats.xml) {
-    exp.articles = [fileAsPage];
-    exp.sub_articles = pages
-      .map((page) => (page as any).file)
-      .filter((pageFile): pageFile is string => !!pageFile);
+    return { articles };
+  }
+  if (exp.format === ExportFormats.xml) {
+    return {
+      articles: [fileAsPage],
+      sub_articles: pages
+        .map((page) => (page as any).file)
+        .filter((pageFile): pageFile is string => !!pageFile),
+    };
   } else {
     fileError(vfile, "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports", {
       ruleId: RuleId.validFrontmatterExportList,
     });
-    exp.articles = [singleArticleWithFile(articles) ?? fileAsPage];
+    return { articles: [singleArticleWithFile(articles) ?? fileAsPage] };
   }
 }
 
-function assignArticlesFromTOC(session: ISession, exp: Export, tocPath: string, vfile: VFile) {
+function resolveArticlesFromTOC(
+  session: ISession,
+  exp: ExportWithFormat,
+  tocPath: string,
+  vfile: VFile,
+): ResolvedArticles {
   const allowLevelLessThanOne = [
     ExportFormats.tex,
     ExportFormats.pdf,
     ExportFormats.pdftex,
   ].includes(exp.format);
   const proj = projectFromToc(session, tocPath, allowLevelLessThanOne ? -1 : 1);
-  assignArticlesFromProject(exp, proj, vfile);
+  return resolveArticlesFromProject(exp, proj, vfile);
 }
 
-async function prepareExportOptions(
+/**
+ * Resolve template to absolute path
+ *
+ * If `disableTemplate: true` template resolves to `null`
+ *
+ * Otherwise, if it exists on the path relative to the source file, it is
+ * resolved to absolute path. If not, it is unchanged.
+ */
+function resolveTemplate(
+  sourceFile: string,
+  exp: Export,
+  disableTemplate?: boolean,
+): string | null | undefined {
+  if (disableTemplate) return null;
+  if (exp.template) {
+    const resolvedTemplatePath = path.resolve(path.dirname(sourceFile), exp.template);
+    if (fs.existsSync(resolvedTemplatePath)) {
+      return resolvedTemplatePath;
+    }
+  }
+  return exp.template;
+}
+
+/**
+ * Resolve format based on export format/template/output
+ *
+ * User-provided `format` is prioritized, then `template` type, then `output` file extension.
+ * (Validation ensures one of format/output/template is provided.)
+ *
+ * If `format` or `output` give PDF export, we look at the template kind and switch to `typst`
+ * in the case of a typst template.
+ */
+function resolveFormat(vfile: VFile, exp: Export): ExportFormats | undefined {
+  // Explicit format is always respected except for PDF, which may mean typst.
+  if (exp.format && exp.format !== ExportFormats.pdf) {
+    return exp.format;
+  }
+  // Default if we cannot figure anything else out from output or template
+  let suggestedPdfFormat = ExportFormats.pdf;
+  let suggestedOutputFormat: ExportFormats | undefined;
+  if (exp.output) {
+    const ext = path.extname(exp.output);
+    if (!ext) {
+      // If its a folder and we have no other info, fall back to pdftex format instead of pdf
+      suggestedPdfFormat = ExportFormats.pdftex;
+    } else {
+      // Unknown output extensions are ignored here, but will raise errors later on type/extension mismatch
+      suggestedOutputFormat = EXT_TO_FORMAT[ext];
+    }
+  }
+  if (!exp.template) return suggestedOutputFormat ?? suggestedPdfFormat;
+  if (exp.template.endsWith('-tex')) return suggestedPdfFormat;
+  if (exp.template.endsWith('-typst')) return ExportFormats.typst;
+  if (exp.template.endsWith('-docx')) return ExportFormats.docx;
+  if (fs.existsSync(exp.template)) {
+    const templateFiles = fs.readdirSync(exp.template);
+    const templateTexFiles = templateFiles.filter((file) => file.endsWith('.tex'));
+    const templateTypFiles = templateFiles.filter((file) => file.endsWith('.typ'));
+    if (templateTexFiles.length && !templateTypFiles.length) return suggestedPdfFormat;
+    if (!templateTexFiles.length && templateTypFiles.length) return ExportFormats.typst;
+  }
+  fileError(
+    vfile,
+    `Cannot determine export type from template ${exp.template} - you must specify export 'format'`,
+    { ruleId: RuleId.exportFormatDetermined },
+  );
+  return undefined;
+}
+
+/**
+ * Resolve articles and sub_articles based on explicit or implicit table of contents
+ *
+ * This also takes into account format, to determine if multiple articles or sub_articles
+ * are allowed.
+ */
+function resolveArticles(
+  session: ISession,
+  sourceFile: string,
+  vfile: VFile,
+  exp: ExportWithFormat,
+  projectPath?: string,
+) {
+  const { articles, sub_articles } = exp;
+  let resolved: ResolvedArticles = { articles, sub_articles };
+  // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
+  if (exp.toc && !resolved.articles?.length && !resolved.sub_articles?.length) {
+    const resolvedToc = path.resolve(path.dirname(sourceFile), exp.toc);
+    if (validateTOC(session, resolvedToc)) {
+      resolved = resolveArticlesFromTOC(session, exp, resolvedToc, vfile);
+    }
+  }
+  // If no articles are specified, use the sourceFile for article
+  if (!resolved.articles?.length && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
+    resolved.articles = [{ file: path.resolve(sourceFile) }];
+  }
+  // If there is only one article with no explicit level, it should be 0, making the first section depth 1.
+  if (resolved.articles?.length === 1 && resolved.articles[0].level == null) {
+    resolved.articles[0].level = 0;
+  }
+  // If still no articles, try to use explicit or implicit project toc
+  if (!resolved.articles?.length && !resolved.sub_articles?.length) {
+    if (validateTOC(session, projectPath ?? '.')) {
+      resolved = resolveArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
+    } else {
+      const cachedProject = selectors.selectLocalProject(
+        session.store.getState(),
+        projectPath ?? '.',
+      );
+      if (cachedProject) {
+        resolved = resolveArticlesFromProject(exp, cachedProject, vfile);
+      }
+    }
+  }
+
+  // Convert articles and sub_articles to relative path and ensure existence
+  resolved.articles = resolved.articles
+    ?.map((article) => {
+      if (!article.file) return article;
+      const resolvedFile = path.resolve(path.dirname(sourceFile), article.file);
+      if (!fs.existsSync(resolvedFile)) {
+        fileError(vfile, `Invalid export article '${article.file}' in source: ${sourceFile}`, {
+          ruleId: RuleId.exportArticleExists,
+        });
+        return undefined;
+      }
+      return { ...article, file: resolvedFile };
+    })
+    .filter((article): article is ExportArticle => !!article);
+
+  resolved.sub_articles = resolved.sub_articles
+    ?.map((file: string) => {
+      const resolvedFile = path.resolve(path.dirname(sourceFile), file);
+      if (!fs.existsSync(resolvedFile)) {
+        fileError(vfile, `Invalid export sub_article '${file}' in source: ${sourceFile}`, {
+          ruleId: RuleId.exportArticleExists,
+        });
+        return undefined;
+      } else {
+        return resolvedFile;
+      }
+    })
+    .filter((resolvedFile: string | undefined): resolvedFile is string => !!resolvedFile);
+  return resolved;
+}
+
+const ALLOWED_EXTENSIONS: Record<ExportFormats, string[]> = {
+  [ExportFormats.docx]: ['.doc', '.docx'],
+  [ExportFormats.md]: ['md'],
+  [ExportFormats.meca]: ['.zip', '.meca'],
+  [ExportFormats.pdf]: ['.pdf'],
+  [ExportFormats.pdftex]: ['.pdf', '.tex', '.zip'],
+  [ExportFormats.tex]: ['.tex', '.zip'],
+  [ExportFormats.typst]: ['.pdf', '.typ', '.typst', '.zip'],
+  [ExportFormats.xml]: ['.xml', '.jats'],
+};
+
+/**
+ * Resolve output based on format and existing output value
+ *
+ * By default, this will generate a file with a valid extension in
+ * the _build directory.
+ *
+ * If output is provided with a valid extension, it is respected.
+ * If output is provided with an invalid extension, an error is logged.
+ * If output has no extension, it is assumed to be the output folder and
+ * will be used in place of the _build directory.
+ */
+function resolveOutput(
+  session: ISession,
+  sourceFile: string,
+  vfile: VFile,
+  exp: Export & { format: ExportFormats },
+  projectPath?: string,
+) {
+  let output: string;
+  if (exp.output) {
+    // output path from file frontmatter needs resolution relative to working directory
+    output = path.resolve(path.dirname(sourceFile), exp.output);
+  } else {
+    output = getDefaultExportFolder(session, sourceFile, exp.format, projectPath);
+  }
+  if (exp.format === ExportFormats.meca && exp.zip === false) {
+    fileWarn(vfile, `ignoring "zip: false" for export of format "${ExportFormats.meca}"`);
+  }
+  if (exp.zip && !ALLOWED_EXTENSIONS[exp.format]?.includes('.zip')) {
+    fileWarn(vfile, `ignoring "zip: true" for export of format "${exp.format}"`);
+    exp.zip = false;
+  }
+  if (!path.extname(output)) {
+    const basename = getDefaultExportFilename(
+      session,
+      singleArticleWithFile(exp.articles)?.file ?? sourceFile,
+      projectPath,
+    );
+    const ext = exp.zip ? '.zip' : ALLOWED_EXTENSIONS[exp.format]?.[0];
+    output = path.join(output, `${basename}${ext ?? ''}`);
+  }
+  if (!ALLOWED_EXTENSIONS[exp.format]?.includes(path.extname(output))) {
+    fileError(
+      vfile,
+      `Output file "${output}" has invalid extension for export format of "${exp.format}"`,
+      { ruleId: RuleId.exportExtensionCorrect },
+    );
+    return undefined;
+  }
+  if (exp.zip && path.extname(output) !== '.zip') {
+    fileWarn(
+      vfile,
+      `Output file "${output}" has non-zip extension but "zip: true" is specified; ignoring "zip: true"`,
+      { ruleId: RuleId.exportExtensionCorrect },
+    );
+  }
+  return output;
+}
+
+/**
+ * Pull export lists from files, resolve format/template values, and filter based on desired formats
+ *
+ * @param sourceFile
+ * @param formats desired output formats
+ * @param projectPath
+ * @param opts.disableTemplate override templating for raw, untemplated outputs
+ */
+async function resolveFileExportFormats(
   session: ISession,
   sourceFile: string,
   formats: ExportFormats[],
   projectPath: string | undefined,
   opts: ExportOptions,
-) {
-  const { disableTemplate, filename, template } = opts;
+): Promise<ExportWithFormat[]> {
+  const { disableTemplate } = opts;
   const vfile = new VFile();
   vfile.path = sourceFile;
   let rawFrontmatter: Record<string, any> | undefined;
@@ -76,94 +314,65 @@ async function prepareExportOptions(
   } else {
     rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);
   }
-  let exportOptions = getExportListFromRawFrontmatter(session, formats, rawFrontmatter, sourceFile);
-  // If no export options are provided in frontmatter, instantiate default options
-  if (exportOptions.length === 0 && formats.length && opts.force) {
-    exportOptions = [{ format: formats[0] }];
-  }
-  // If any arguments are provided on the CLI, only do a single export using the first available frontmatter tex options
-  if (filename || disableTemplate || template) {
-    exportOptions = exportOptions.slice(0, 1);
-  }
-  exportOptions.forEach((exp) => {
-    // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
-    if (exp.toc && !exp.articles?.length && !exp.sub_articles?.length) {
-      const resolvedToc = path.resolve(path.dirname(sourceFile), exp.toc);
-      if (validateTOC(session, resolvedToc)) {
-        assignArticlesFromTOC(session, exp, resolvedToc, vfile);
-      }
-    }
-    // If no articles are specified, use the sourceFile for article
-    if (!exp.articles?.length && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
-      exp.articles = [{ file: path.resolve(sourceFile) }];
-    }
-    // If there is only one article with no explicit level, it should be 0, making the first section depth 1.
-    if (exp.articles?.length === 1 && exp.articles[0].level == null) {
-      exp.articles[0].level = 0;
-    }
-    // If still no articles, try to use explicit or implicit project toc
-    if (!exp.articles?.length && !exp.sub_articles?.length) {
-      if (validateTOC(session, projectPath ?? '.')) {
-        assignArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
-      } else {
-        const cachedProject = selectors.selectLocalProject(
-          session.store.getState(),
-          projectPath ?? '.',
-        );
-        if (cachedProject) {
-          assignArticlesFromProject(exp, cachedProject, vfile);
-        }
-      }
-    }
+  const exportList = getExportListFromRawFrontmatter(session, rawFrontmatter, sourceFile);
 
-    // Convert articles and sub_articles to relative path and ensure existence
-    exp.articles = exp.articles
-      ?.map((article) => {
-        if (!article.file) return article;
-        const resolvedFile = path.resolve(path.dirname(sourceFile), article.file);
-        if (!fs.existsSync(resolvedFile)) {
-          fileError(vfile, `Invalid export article '${article.file}' in source: ${sourceFile}`, {
-            ruleId: RuleId.exportArticleExists,
-          });
-          return undefined;
-        }
-        return { ...article, file: resolvedFile };
-      })
-      .filter((article): article is ExportArticle => !!article);
-
-    exp.sub_articles = exp.sub_articles
-      ?.map((file: string) => {
-        const resolvedFile = path.resolve(path.dirname(sourceFile), file);
-        if (!fs.existsSync(resolvedFile)) {
-          fileError(vfile, `Invalid export sub_article '${file}' in source: ${sourceFile}`, {
-            ruleId: RuleId.exportArticleExists,
-          });
-          return undefined;
-        } else {
-          return resolvedFile;
-        }
-      })
-      .filter((resolvedFile: string | undefined): resolvedFile is string => !!resolvedFile);
-  });
-  // Remove exports with invalid article values
-  const filteredExportOptions = exportOptions
+  const exportListWithFormat = exportList
     .map((exp) => {
-      if (exp.articles?.length) return exp;
-      // MECA exports don't necessarily need to specify an article.
-      // But it does help locate those other exports if you want!
-      if (exp.format === ExportFormats.meca) return exp;
-      if (!opts.force) {
-        // You cannot "--force" project exports with no article. This is expected
-        // and needs no error message.
-        fileError(vfile, `Invalid export - unable to resolve 'articles' to export: ${sourceFile}`, {
-          ruleId: RuleId.exportArticleExists,
-        });
-      }
-      return undefined;
+      const template = resolveTemplate(sourceFile, exp, disableTemplate);
+      const format = resolveFormat(vfile, exp);
+      if (!format || !formats.includes(format)) return undefined;
+      return { ...exp, template, format } as ExportWithFormat;
     })
-    .filter((exp) => !!exp);
+    .filter((exp): exp is ExportWithFormat => !!exp);
   logMessagesFromVFile(session, vfile);
-  return filteredExportOptions as (Export & { articles: string[] })[];
+  return exportListWithFormat;
+}
+
+/**
+ * Resolve export list with formats to export list with articles and outputs
+ */
+export function resolveExportArticles(
+  session: ISession,
+  sourceFile: string,
+  exportList: ExportWithFormat[],
+  projectPath: string | undefined,
+  opts: ExportOptions,
+): ExportWithOutput[] {
+  const { force, renderer } = opts;
+
+  const vfile = new VFile();
+  vfile.path = sourceFile;
+  const filteredExportOptions = exportList
+    .map((exp) => {
+      const { articles, sub_articles } = resolveArticles(
+        session,
+        sourceFile,
+        vfile,
+        exp,
+        projectPath,
+      );
+      if (!articles?.length && exp.format !== ExportFormats.meca) {
+        // All export formats except meca require article(s)
+        if (!force) {
+          // You cannot "--force" project exports with no article. This is expected
+          // and needs no error message.
+          fileError(
+            vfile,
+            `Invalid export - unable to resolve 'articles' to export: ${sourceFile}`,
+            {
+              ruleId: RuleId.exportArticleExists,
+            },
+          );
+        }
+        return undefined;
+      }
+      const output = resolveOutput(session, sourceFile, vfile, exp, projectPath);
+      if (!output) return undefined;
+      return { ...exp, output, articles, sub_articles, renderer } as ExportWithOutput;
+    })
+    .filter((exp): exp is ExportWithOutput => !!exp);
+  logMessagesFromVFile(session, vfile);
+  return filteredExportOptions;
 }
 
 function filterAndMakeUnique<T extends ExportWithOutput>(exports: (T | undefined)[]): T[] {
@@ -181,52 +390,37 @@ function filterAndMakeUnique<T extends ExportWithOutput>(exports: (T | undefined
     });
 }
 
-function getOutput(
+async function legacyCollectExportOptions(
   session: ISession,
   sourceFile: string,
-  exp: Export,
-  filename: string | undefined,
   extension: string,
   formats: ExportFormats[],
   projectPath: string | undefined,
+  opts: ExportOptions,
 ) {
-  let output: string;
-  if (filename) {
-    output = filename;
-  } else if (exp.output) {
-    // output path from file frontmatter needs resolution relative to working directory
-    output = path.resolve(path.dirname(sourceFile), exp.output);
-  } else {
-    output = getDefaultExportFolder(
-      session,
-      sourceFile,
-      projectPath,
-      formats.includes(ExportFormats.tex)
-        ? 'tex'
-        : formats.includes(ExportFormats.typst)
-          ? 'typ'
-          : undefined,
-    );
+  let extensionIsOk = false;
+  formats.forEach((fmt) => {
+    if (ALLOWED_EXTENSIONS[fmt].includes(extension)) extensionIsOk = true;
+  });
+  if (!extensionIsOk) {
+    throw new Error(`invalid extension for export of formats ${formats.join(', ')} "${extension}"`);
   }
-  if (!path.extname(output)) {
-    const basename = getDefaultExportFilename(
-      session,
-      singleArticleWithFile(exp.articles)?.file ?? sourceFile,
-      projectPath,
-    );
-    output = path.join(output, `${basename}.${extension}`);
+  if (opts.template && opts.disableTemplate) {
+    throw new Error(`cannot specify template "${opts.template}" and "disable template"`);
   }
-  if (!output.endsWith(`.${extension}`)) {
-    addWarningForFile(
-      session,
-      sourceFile,
-      `The filename must end with '.${extension}': "${output}"`,
-      'error',
-      { ruleId: RuleId.exportExtensionCorrect },
-    );
-    return undefined;
+  if (opts.filename || opts.template) {
+    const explicitExport: ExportWithFormat = {
+      format: formats[0],
+      template: opts.disableTemplate ? null : opts.template,
+      output: opts.filename,
+    };
+    return resolveExportArticles(session, sourceFile, [explicitExport], projectPath, opts);
   }
-  return output;
+  const exportOptions = await collectExportOptions(session, [sourceFile], formats, {
+    ...opts,
+    projectPath,
+  });
+  return exportOptions;
 }
 
 export async function collectTexExportOptions(
@@ -237,48 +431,15 @@ export async function collectTexExportOptions(
   projectPath: string | undefined,
   opts: ExportOptions,
 ) {
-  const exportOptions = await prepareExportOptions(session, sourceFile, formats, projectPath, opts);
-  const { disableTemplate, filename, template, zip } = opts;
-  if (disableTemplate && template) {
-    throw new Error(
-      'Conflicting tex export options: disableTemplate requested but a template was provided',
-    );
-  }
-  const resolvedExportOptions: ExportWithOutput[] = filterAndMakeUnique(
-    exportOptions.map((exp): ExportWithOutput | undefined => {
-      const rawOutput = filename || exp.output || '';
-      const useZip =
-        (extension === 'tex' || extension === 'typ') && (zip || path.extname(rawOutput) === '.zip');
-      const usePdf = extension === 'typ' && path.extname(rawOutput) === '.pdf';
-      const expExtension = useZip ? 'zip' : usePdf ? 'pdf' : extension;
-      const output = getOutput(
-        session,
-        sourceFile,
-        exp,
-        filename,
-        expExtension,
-        formats,
-        projectPath,
-      );
-      if (!output) return undefined;
-      const resolvedOptions: { output: string; template?: string | null } = { output };
-      if (disableTemplate) {
-        resolvedOptions.template = null;
-      } else if (template) {
-        resolvedOptions.template = template;
-      } else if (exp.template) {
-        // template path from file frontmatter needs resolution relative to working directory
-        const resolvedTemplatePath = path.resolve(path.dirname(sourceFile), exp.template);
-        if (fs.existsSync(resolvedTemplatePath)) {
-          resolvedOptions.template = resolvedTemplatePath;
-        } else {
-          resolvedOptions.template = exp.template;
-        }
-      }
-      return { ...exp, ...resolvedOptions };
-    }),
+  const exportOptions = await legacyCollectExportOptions(
+    session,
+    sourceFile,
+    extension,
+    formats,
+    projectPath,
+    opts,
   );
-  return resolvedExportOptions;
+  return exportOptions;
 }
 
 export async function collectBasicExportOptions(
@@ -289,16 +450,15 @@ export async function collectBasicExportOptions(
   projectPath: string | undefined,
   opts: ExportOptions,
 ) {
-  const exportOptions = await prepareExportOptions(session, sourceFile, formats, projectPath, opts);
-  const { filename } = opts;
-  const resolvedExportOptions: ExportWithOutput[] = filterAndMakeUnique(
-    exportOptions.map((exp): ExportWithOutput | undefined => {
-      const output = getOutput(session, sourceFile, exp, filename, extension, formats, projectPath);
-      if (!output) return undefined;
-      return { ...exp, output };
-    }),
+  const exportOptions = await legacyCollectExportOptions(
+    session,
+    sourceFile,
+    extension,
+    formats,
+    projectPath,
+    opts,
   );
-  return resolvedExportOptions;
+  return exportOptions;
 }
 
 export async function collectWordExportOptions(
@@ -309,37 +469,25 @@ export async function collectWordExportOptions(
   projectPath: string | undefined,
   opts: ExportOptions,
 ) {
-  const exportOptions = await prepareExportOptions(session, sourceFile, formats, projectPath, opts);
-  const { template, filename, renderer } = opts;
-  const resolvedExportOptions: ExportWithOutput[] = filterAndMakeUnique(
-    exportOptions.map((exp): ExportWithOutput | undefined => {
-      const output = getOutput(session, sourceFile, exp, filename, extension, formats, projectPath);
-      if (!output) return undefined;
-      const resolvedOptions: {
-        output: string;
-        renderer?: ExportOptions['renderer'];
-        template?: string | null;
-      } = { output };
-      if (renderer) {
-        resolvedOptions.renderer = renderer;
-      }
-      if (template) {
-        resolvedOptions.template = template;
-      } else if (exp.template) {
-        // template path from file frontmatter needs resolution relative to working directory
-        const resolvedTemplatePath = path.resolve(path.dirname(sourceFile), exp.template);
-        if (fs.existsSync(resolvedTemplatePath)) {
-          resolvedOptions.template = resolvedTemplatePath;
-        } else {
-          resolvedOptions.template = exp.template;
-        }
-      }
-      return { ...exp, ...resolvedOptions };
-    }),
+  const exportOptions = await legacyCollectExportOptions(
+    session,
+    sourceFile,
+    extension,
+    formats,
+    projectPath,
+    opts,
   );
-  return resolvedExportOptions;
+  return exportOptions;
 }
 
+/**
+ * Given source files and desired export formats, collect all export objects
+ *
+ * @param files source files to inspect for exports
+ * @param formats list of requested ExportFormat types
+ * @param opts export options, mostly passed in from the command line
+ * @param opts.projectPath if provided, exports will also be loaded from the project config
+ */
 export async function collectExportOptions(
   session: ISession,
   files: string[],
@@ -363,91 +511,20 @@ export async function collectExportOptions(
       } else {
         fileProjectPath = projectPath;
       }
-      const fileExportOptionsList: ExportWithOutput[] = [];
-      if (formats.includes(ExportFormats.docx)) {
-        fileExportOptionsList.push(
-          ...(await collectWordExportOptions(
-            session,
-            file,
-            'docx',
-            [ExportFormats.docx],
-            fileProjectPath,
-            opts,
-          )),
-        );
-      }
-      if (formats.includes(ExportFormats.pdf) || formats.includes(ExportFormats.pdftex)) {
-        fileExportOptionsList.push(
-          ...(await collectTexExportOptions(
-            session,
-            file,
-            'pdf',
-            [ExportFormats.pdf, ExportFormats.pdftex],
-            fileProjectPath,
-            opts,
-          )),
-        );
-      }
-      if (formats.includes(ExportFormats.tex)) {
-        fileExportOptionsList.push(
-          ...(await collectTexExportOptions(
-            session,
-            file,
-            'tex',
-            [ExportFormats.tex],
-            fileProjectPath,
-            opts,
-          )),
-        );
-      }
-      if (formats.includes(ExportFormats.typst)) {
-        fileExportOptionsList.push(
-          ...(await collectTexExportOptions(
-            session,
-            file,
-            'typ',
-            [ExportFormats.typst],
-            fileProjectPath,
-            opts,
-          )),
-        );
-      }
-      if (formats.includes(ExportFormats.xml)) {
-        fileExportOptionsList.push(
-          ...(await collectBasicExportOptions(
-            session,
-            file,
-            'xml',
-            [ExportFormats.xml],
-            fileProjectPath,
-            opts,
-          )),
-        );
-      }
-      if (formats.includes(ExportFormats.md)) {
-        fileExportOptionsList.push(
-          ...(await collectBasicExportOptions(
-            session,
-            file,
-            'md',
-            [ExportFormats.md],
-            fileProjectPath,
-            opts,
-          )),
-        );
-      }
-      if (formats.includes(ExportFormats.meca)) {
-        fileExportOptionsList.push(
-          ...(await collectBasicExportOptions(
-            session,
-            file,
-            'zip',
-            [ExportFormats.meca],
-            fileProjectPath,
-            opts,
-          )),
-        );
-      }
+      const fileExports = await resolveFileExportFormats(
+        session,
+        file,
+        formats,
+        fileProjectPath,
+        opts,
+      );
+      const fileExportOptionsList = resolveExportArticles(
+        session,
+        file,
+        fileExports,
+        fileProjectPath,
+        opts,
+      );
       exportOptionsList.push(
         ...fileExportOptionsList.map((exportOptions) => {
           return { ...exportOptions, $file: file, $project: fileProjectPath };
