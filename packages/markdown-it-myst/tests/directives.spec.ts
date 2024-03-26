@@ -185,7 +185,7 @@ describe('parses directives', () => {
     ['before', 'Paragraph\n```{math}\nAx=b\n```'],
     ['after', 'Paragraph\n\n```{math}\nAx=b\n```\nAfter paragraph'],
     ['after', '```{math}\nAx=b\n```\nAfter paragraph'],
-  ])('directives have tightness information %s', (tight, src) => {
+  ])('directives have tightness information: "%s"', (tight, src) => {
     const mdit = MarkdownIt().use(plugin);
     const tokens = mdit.parse(src, {});
     const open = tokens.find((t) => t.type === 'parsed_directive_open');
