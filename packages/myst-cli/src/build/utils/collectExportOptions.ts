@@ -30,7 +30,7 @@ export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
 
 type ResolvedArticles = Pick<Export, 'articles' | 'sub_articles'>;
 
-function resolveArticlesFromProject(
+export function resolveArticlesFromProject(
   exp: ExportWithFormat,
   proj: Omit<LocalProject, 'bibliography'>,
   vfile: VFile,
@@ -49,9 +49,15 @@ function resolveArticlesFromProject(
         .filter((pageFile): pageFile is string => !!pageFile),
     };
   } else {
-    fileError(vfile, "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports", {
-      ruleId: RuleId.validFrontmatterExportList,
-    });
+    if (articles.length > 1) {
+      fileError(
+        vfile,
+        "multiple articles are only supported for 'tex', 'typst', and 'pdf' exports",
+        {
+          ruleId: RuleId.validFrontmatterExportList,
+        },
+      );
+    }
     return { articles: [singleArticleWithFile(articles) ?? fileAsPage] };
   }
 }
@@ -79,7 +85,7 @@ function resolveArticlesFromTOC(
  * Otherwise, if it exists on the path relative to the source file, it is
  * resolved to absolute path. If not, it is unchanged.
  */
-function resolveTemplate(
+export function resolveTemplate(
   sourceFile: string,
   exp: Export,
   disableTemplate?: boolean,
@@ -103,7 +109,7 @@ function resolveTemplate(
  * If `format` or `output` give PDF export, we look at the template kind and switch to `typst`
  * in the case of a typst template.
  */
-function resolveFormat(vfile: VFile, exp: Export): ExportFormats | undefined {
+export function resolveFormat(vfile: VFile, exp: Export): ExportFormats | undefined {
   // Explicit format is always respected except for PDF, which may mean typst.
   if (exp.format && exp.format !== ExportFormats.pdf) {
     return exp.format;
@@ -121,7 +127,10 @@ function resolveFormat(vfile: VFile, exp: Export): ExportFormats | undefined {
       suggestedOutputFormat = EXT_TO_FORMAT[ext];
     }
   }
-  if (!exp.template) return suggestedOutputFormat ?? suggestedPdfFormat;
+  if (!exp.template) {
+    if (exp.format) return suggestedPdfFormat;
+    return suggestedOutputFormat ?? suggestedPdfFormat;
+  }
   if (exp.template.endsWith('-tex')) return suggestedPdfFormat;
   if (exp.template.endsWith('-typst')) return ExportFormats.typst;
   if (exp.template.endsWith('-docx')) return ExportFormats.docx;
@@ -146,7 +155,7 @@ function resolveFormat(vfile: VFile, exp: Export): ExportFormats | undefined {
  * This also takes into account format, to determine if multiple articles or sub_articles
  * are allowed.
  */
-function resolveArticles(
+export function resolveArticles(
   session: ISession,
   sourceFile: string,
   vfile: VFile,
@@ -224,7 +233,7 @@ function resolveArticles(
 
 const ALLOWED_EXTENSIONS: Record<ExportFormats, string[]> = {
   [ExportFormats.docx]: ['.doc', '.docx'],
-  [ExportFormats.md]: ['md'],
+  [ExportFormats.md]: ['.md'],
   [ExportFormats.meca]: ['.zip', '.meca'],
   [ExportFormats.pdf]: ['.pdf'],
   [ExportFormats.pdftex]: ['.pdf', '.tex', '.zip'],
@@ -244,11 +253,11 @@ const ALLOWED_EXTENSIONS: Record<ExportFormats, string[]> = {
  * If output has no extension, it is assumed to be the output folder and
  * will be used in place of the _build directory.
  */
-function resolveOutput(
+export function resolveOutput(
   session: ISession,
   sourceFile: string,
   vfile: VFile,
-  exp: Export & { format: ExportFormats },
+  exp: ExportWithFormat,
   projectPath?: string,
 ) {
   let output: string;
