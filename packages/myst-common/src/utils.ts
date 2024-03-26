@@ -58,6 +58,7 @@ export function normalizeLabel(
   if (!label) return undefined;
   const identifier = label
     .replace(/[\t\n\r ]+/g, ' ')
+    .replace(/['‘’"“”]+/g, '') // These can make matching difficult, especially in glossaries and terms
     .trim()
     .toLowerCase();
   const html_id = createHtmlId(identifier) as string;

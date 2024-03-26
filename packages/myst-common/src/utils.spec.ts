@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
-import { liftChildren, mergeTextNodes, toText } from './utils';
+import { liftChildren, mergeTextNodes, normalizeLabel, toText } from './utils';
 
 describe('Test text utils', () => {
   test('toText', () => {
@@ -64,5 +64,20 @@ describe('Test liftChildren', () => {
     const after = u('root', [u('block', [u('paragraph', [u('text', 'value')])])]);
     liftChildren(before, 'text');
     expect(before).toEqual(after);
+  });
+});
+
+describe('Test normalize labels', () => {
+  test.each([
+    ['test', 'test', 'test'],
+    ['has spaces', 'has spaces', 'has-spaces'],
+    ['has    many   spaces', 'has many spaces', 'has-many-spaces'],
+    ['colon:Caps', 'colon:caps', 'colon-caps'],
+    ['“MyST’s” ‘influence’', 'mysts influence', 'mysts-influence'],
+  ])('normalize label "%s" -> "%s" (#%s)', (label, identifier, html_id) => {
+    const result = normalizeLabel(label);
+    expect(result?.label).toBe(label);
+    expect(result?.identifier).toBe(identifier);
+    expect(result?.html_id).toBe(html_id);
   });
 });
