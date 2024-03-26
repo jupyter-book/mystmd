@@ -21,7 +21,10 @@ export const mathDirective: DirectiveSpec = {
       label,
       value: data.body as string,
     } as GenericNode;
-    if (data.node.tight) math.tight = data.node.tight;
+    if (data.node.tight) {
+      // The default `false` is not written to the AST
+      math.tight = data.node.tight;
+    }
     return [math];
   },
 };

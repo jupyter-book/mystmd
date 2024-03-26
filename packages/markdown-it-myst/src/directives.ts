@@ -65,6 +65,7 @@ function runDirectives(state: StateCore): boolean {
         directiveOpen.meta = {
           arg,
           options: simplifyDirectiveOptions(options),
+          // Tightness is computed for all directives (are they separated by a newline before/after)
           tight: computeBlockTightness(state.src, token.map),
         };
         const startLineNumber = map ? map[0] : 0;

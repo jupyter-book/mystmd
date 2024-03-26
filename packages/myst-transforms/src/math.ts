@@ -241,6 +241,9 @@ export function mathNestingTransform(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   file: VFile,
 ) {
+  // Dollar math can be nested inside of a paragraph
+  // This finds those and marks them as `tight` in some way, depending on where they are in the paragraph
+  // Directives and AMSMath will never follow this path
   const paragraphs = selectAll('paragraph', tree) as GenericParent[];
   paragraphs.forEach((paragraph) => {
     if (paragraph.children.length === 1) return; // no need to traverse, the math node can never be tight!
