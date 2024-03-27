@@ -9,7 +9,7 @@ import { buildHtml } from './html/index.js';
 import { buildSite } from './site/prepare.js';
 import type { ExportWithFormat, ExportWithInputOutput } from './types.js';
 import { localArticleExport } from './utils/localArticleExport.js';
-import { collectExportOptions, resolveExportArticles } from './utils/collectExportOptions.js';
+import { collectExportOptions, resolveExportListArticles } from './utils/collectExportOptions.js';
 import { writeJsonLogs } from '../utils/logging.js';
 import { findCurrentProjectAndLoad } from '../config.js';
 
@@ -136,7 +136,7 @@ export async function collectAllBuildExportOptions(
         `Cannot specify format from output "${output}" - please specify format option, e.g. --pdf`,
       );
     }
-    exportOptionsList = resolveExportArticles(
+    exportOptionsList = resolveExportListArticles(
       session,
       files[0],
       [{ format, output: path.join(path.resolve('.'), output) }],
@@ -165,7 +165,7 @@ export async function collectAllBuildExportOptions(
             return fileExportOptionsList;
           }
           // If no requested exports were found, force them to build.
-          return resolveExportArticles(
+          return resolveExportListArticles(
             session,
             file,
             requestedFormats.map((format) => {

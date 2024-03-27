@@ -302,23 +302,19 @@ export function resolveOutput(
 }
 
 /**
- * Pull export lists from files, resolve format/template values, and filter based on desired formats
+ * Pull export lists from files and resolve template values
  *
  * @param sourceFile
- * @param formats desired output formats
  * @param projectPath
  * @param opts.disableTemplate override templating for raw, untemplated outputs
  */
-async function resolveFileExportFormats(
+async function getExportListFromFile(
   session: ISession,
   sourceFile: string,
-  formats: ExportFormats[],
   projectPath: string | undefined,
   opts: ExportOptions,
-): Promise<ExportWithFormat[]> {
+): Promise<Export[]> {
   const { disableTemplate } = opts;
-  const vfile = new VFile();
-  vfile.path = sourceFile;
   let rawFrontmatter: Record<string, any> | undefined;
   const state = session.store.getState();
   if (
@@ -330,13 +326,35 @@ async function resolveFileExportFormats(
     rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);
   }
   const exportList = getExportListFromRawFrontmatter(session, rawFrontmatter, sourceFile);
-
-  const exportListWithFormat = exportList
+  const exportListWithTemplate = exportList
     .map((exp) => {
       const template = resolveTemplate(sourceFile, exp, disableTemplate);
+      return { ...exp, template } as Export;
+    })
+    .filter((exp): exp is Export => !!exp);
+  return exportListWithTemplate;
+}
+
+/**
+ * Resolve formats on export list and filter based on desired formats
+ *
+ * @param sourceFile
+ * @param formats desired output formats
+ * @param exportList list of export objects from a file or defined explicitly
+ */
+function resolveExportListFormats(
+  session: ISession,
+  sourceFile: string,
+  formats: ExportFormats[],
+  exportList: Export[],
+): ExportWithFormat[] {
+  const vfile = new VFile();
+  vfile.path = sourceFile;
+  const exportListWithFormat = exportList
+    .map((exp) => {
       const format = resolveFormat(vfile, exp);
       if (!format || !formats.includes(format)) return undefined;
-      return { ...exp, template, format } as ExportWithFormat;
+      return { ...exp, format } as ExportWithFormat;
     })
     .filter((exp): exp is ExportWithFormat => !!exp);
   logMessagesFromVFile(session, vfile);
@@ -346,7 +364,7 @@ async function resolveFileExportFormats(
 /**
  * Resolve export list with formats to export list with articles and outputs
  */
-export function resolveExportArticles(
+export function resolveExportListArticles(
   session: ISession,
   sourceFile: string,
   exportList: ExportWithFormat[],
@@ -354,7 +372,6 @@ export function resolveExportArticles(
   opts: ExportOptions,
 ): ExportWithOutput[] {
   const { renderer } = opts;
-
   const vfile = new VFile();
   vfile.path = sourceFile;
   const filteredExportOptions = exportList
@@ -425,22 +442,17 @@ export async function collectExportOptions(
       } else {
         fileProjectPath = projectPath;
       }
-      const fileExports = await resolveFileExportFormats(
+      const fileExports = await getExportListFromFile(session, file, fileProjectPath, opts);
+      const fileExportsWithFormat = resolveExportListFormats(session, file, formats, fileExports);
+      const fileExportsResolved = resolveExportListArticles(
         session,
         file,
-        formats,
-        fileProjectPath,
-        opts,
-      );
-      const fileExportOptionsList = resolveExportArticles(
-        session,
-        file,
-        fileExports,
+        fileExportsWithFormat,
         fileProjectPath,
         opts,
       );
       exportOptionsList.push(
-        ...fileExportOptionsList.map((exportOptions) => {
+        ...fileExportsResolved.map((exportOptions) => {
           return { ...exportOptions, $file: file, $project: fileProjectPath };
         }),
       );
@@ -473,25 +485,30 @@ async function legacyCollectExportOptions(
   }
   // Handle explicitly requested exports
   if (opts.filename || opts.template) {
-    const explicitExport: ExportWithFormat = {
-      format: formats[0],
-      template: opts.disableTemplate ? null : opts.template,
-      output: opts.filename,
-    };
-    return resolveExportArticles(session, sourceFile, [explicitExport], projectPath, opts);
+    const explicitExports = resolveExportListFormats(session, sourceFile, formats, [
+      {
+        format: formats[0],
+        template: opts.disableTemplate ? null : opts.template,
+        output: opts.filename,
+      },
+    ]);
+    return resolveExportListArticles(session, sourceFile, explicitExports, projectPath, opts);
   }
   // Handle exports defined in project config / file frontmatter
   const exportOptions = await collectExportOptions(session, [sourceFile], formats, {
     ...opts,
     projectPath,
   });
+  console.log(exportOptions);
   if (exportOptions.length > 0) return exportOptions;
   // Handle fallback if no exports are explicitly requested and no exports are found in files
-  const implicitExport: ExportWithFormat = {
-    format: formats[0],
-    template: opts.disableTemplate ? null : undefined,
-  };
-  return resolveExportArticles(session, sourceFile, [implicitExport], projectPath, opts);
+  const implicitExports = resolveExportListFormats(session, sourceFile, formats, [
+    {
+      format: formats[0],
+      template: opts.disableTemplate ? null : undefined,
+    },
+  ]);
+  return resolveExportListArticles(session, sourceFile, implicitExports, projectPath, opts);
 }
 
 export const collectTexExportOptions = legacyCollectExportOptions;
