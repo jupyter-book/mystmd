@@ -109,6 +109,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `license`
   - a license object or a string
   - page can override project
+* - `copyright`
+  - a string
+  - page can override project
 * - `funding`
   - a funding object
   - page can override project

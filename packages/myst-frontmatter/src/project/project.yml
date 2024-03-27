@@ -58,6 +58,7 @@ cases:
         - requirements.txt
       resources:
         - my-script.sh
+      copyright: Authors et al.
     normalized:
       id: my/project
       title: frontmatter
@@ -109,6 +110,7 @@ cases:
         - requirements.txt
       resources:
         - my-script.sh
+      copyright: Authors et al.
   - title: boolean numbering is valid
     raw:
       numbering: 'false'
@@ -174,3 +176,8 @@ cases:
         what: ok
     warnings: 1
     normalized: {}
+  - title: invalid copyright errors
+    raw:
+      copyright: {}
+    normalized: {}
+    errors: 1

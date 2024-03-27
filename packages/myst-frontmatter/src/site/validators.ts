@@ -33,6 +33,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'keywords',
   'affiliations',
   'funding',
+  'copyright',
   'options',
 ];
 
@@ -158,6 +159,9 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
         return validateFunding(fund, stash, incrementOptions(`funding.${index}`, opts));
       },
     );
+  }
+  if (defined(value.copyright)) {
+    output.copyright = validateString(value.copyright, incrementOptions('copyright', opts));
   }
   if (defined(value.options)) {
     const optionsOptions = incrementOptions('options', opts);
