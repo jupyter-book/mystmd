@@ -460,6 +460,7 @@ async function legacyCollectExportOptions(
   projectPath: string | undefined,
   opts: ExportOptions,
 ) {
+  if (!extension.startsWith('.')) extension = `.${extension}`;
   let extensionIsOk = false;
   formats.forEach((fmt) => {
     if (ALLOWED_EXTENSIONS[fmt].includes(extension)) extensionIsOk = true;
@@ -470,6 +471,7 @@ async function legacyCollectExportOptions(
   if (opts.template && opts.disableTemplate) {
     throw new Error(`cannot specify template "${opts.template}" and "disable template"`);
   }
+  // Handle explicitly requested exports
   if (opts.filename || opts.template) {
     const explicitExport: ExportWithFormat = {
       format: formats[0],
@@ -478,11 +480,18 @@ async function legacyCollectExportOptions(
     };
     return resolveExportArticles(session, sourceFile, [explicitExport], projectPath, opts);
   }
+  // Handle exports defined in project config / file frontmatter
   const exportOptions = await collectExportOptions(session, [sourceFile], formats, {
     ...opts,
     projectPath,
   });
-  return exportOptions;
+  if (exportOptions.length > 0) return exportOptions;
+  // Handle fallback if no exports are explicitly requested and no exports are found in files
+  const implicitExport: ExportWithFormat = {
+    format: formats[0],
+    template: opts.disableTemplate ? null : undefined,
+  };
+  return resolveExportArticles(session, sourceFile, [implicitExport], projectPath, opts);
 }
 
 export const collectTexExportOptions = legacyCollectExportOptions;
