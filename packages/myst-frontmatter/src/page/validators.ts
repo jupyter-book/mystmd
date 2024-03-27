@@ -31,6 +31,7 @@ export const USE_PROJECT_FALLBACK = [
   'numbering',
   'keywords',
   'funding',
+  'copyright',
   'affiliations',
 ];
 

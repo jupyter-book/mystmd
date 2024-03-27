@@ -18,6 +18,7 @@ export type SiteFrontmatter = {
   github?: string;
   keywords?: string[];
   funding?: Funding[];
+  copyright?: string;
   contributors?: Contributor[];
   options?: Record<string, any>;
 };
