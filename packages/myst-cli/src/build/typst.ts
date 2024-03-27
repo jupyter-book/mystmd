@@ -413,7 +413,7 @@ export async function runTypstPdfExport(
   );
   await runTypstExport(session, file, exportOptions, { ...(opts ?? {}), clean: false });
   const writeFolder = path.dirname(pdfOutput);
-  session.log.info(`🖨 Rendering typst pdf to ${pdfOutput}`);
+  session.log.info(`🖨  Rendering typst pdf to ${pdfOutput}`);
   if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
   fs.copyFileSync(exportOptions.output.replace('.typ', '.pdf'), pdfOutput);
   return { tempFolders: [typFolder] };
@@ -438,29 +438,48 @@ export async function localArticleToTypst(
   await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptions) => {
-      let exportResults: ExportResults;
-      if (path.extname(exportOptions.output) === '.zip') {
-        exportResults = await runTypstZipExport(session, file, exportOptions, {
-          projectPath,
-          clean: opts.clean,
-          extraLinkTransformers,
-        });
-      } else if (path.extname(exportOptions.output) === '.pdf') {
-        exportResults = await runTypstPdfExport(session, file, exportOptions, {
-          projectPath,
-          clean: opts.clean,
-          extraLinkTransformers,
-        });
-      } else {
-        exportResults = await runTypstExport(session, file, exportOptions, {
-          projectPath,
-          clean: opts.clean,
-          extraLinkTransformers,
-        });
-      }
+      const exportResults = await typstExportRunner(
+        session,
+        file,
+        opts,
+        exportOptions,
+        projectPath,
+        extraLinkTransformers,
+      );
       results.tempFolders.push(...exportResults.tempFolders);
     }),
     opts.throwOnFailure,
   );
   return results;
+}
+
+export async function typstExportRunner(
+  session: ISession,
+  file: string,
+  opts: ExportOptions,
+  exportOptions: ExportWithOutput,
+  projectPath?: string,
+  extraLinkTransformers?: LinkTransformer[],
+): Promise<ExportResults> {
+  let exportResults: ExportResults;
+  if (path.extname(exportOptions.output) === '.zip') {
+    exportResults = await runTypstZipExport(session, file, exportOptions, {
+      projectPath,
+      clean: opts.clean,
+      extraLinkTransformers,
+    });
+  } else if (path.extname(exportOptions.output) === '.pdf') {
+    exportResults = await runTypstPdfExport(session, file, exportOptions, {
+      projectPath,
+      clean: opts.clean,
+      extraLinkTransformers,
+    });
+  } else {
+    exportResults = await runTypstExport(session, file, exportOptions, {
+      projectPath,
+      clean: opts.clean,
+      extraLinkTransformers,
+    });
+  }
+  return exportResults;
 }

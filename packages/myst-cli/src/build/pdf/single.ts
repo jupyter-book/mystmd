@@ -5,6 +5,7 @@ import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { runTexExport } from '../tex/single.js';
+import { typstExportRunner } from '../typst.js';
 import type { ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { collectTexExportOptions } from '../utils/collectExportOptions.js';
@@ -44,7 +45,7 @@ export async function localArticleToPdf(
       session,
       file,
       'pdf',
-      [ExportFormats.pdf, ExportFormats.pdftex],
+      [ExportFormats.pdf, ExportFormats.pdftex, ExportFormats.typst],
       projectPath,
       opts,
     )
@@ -52,10 +53,22 @@ export async function localArticleToPdf(
     return { ...exportOptions, ...templateOptions };
   });
   const results: ExportResults = { logFiles: [], tempFolders: [] };
+  console.log(pdfExportOptionsList);
   await resolveAndLogErrors(
     session,
     pdfExportOptionsList.map(async (exportOptions) => {
       const { format, output } = exportOptions;
+      if (format === ExportFormats.typst) {
+        const typstExportResults = await typstExportRunner(
+          session,
+          file,
+          opts,
+          exportOptions,
+          projectPath,
+        );
+        results.tempFolders.push(...typstExportResults.tempFolders);
+        return;
+      }
       const keepTexAndLogs = format === ExportFormats.pdftex;
       const texExportOptions = texExportOptionsFromPdf(
         session,
