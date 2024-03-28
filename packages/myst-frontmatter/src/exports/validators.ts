@@ -2,6 +2,7 @@ import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
+  validateBoolean,
   validateEnum,
   validateList,
   validateNumber,
@@ -17,7 +18,17 @@ import { ExportFormats } from './types.js';
 
 const EXPORT_KEY_OBJECT = {
   required: [],
-  optional: ['format', 'template', 'output', 'id', 'name', 'renderer', 'articles', 'sub_articles'],
+  optional: [
+    'format',
+    'template',
+    'output',
+    'zip',
+    'id',
+    'name',
+    'renderer',
+    'articles',
+    'sub_articles',
+  ],
   alias: {
     article: 'articles',
     sub_article: 'sub_articles',
@@ -34,7 +45,7 @@ const EXPORT_ARTICLE_KEY_OBJECT = {
   ],
 };
 
-const EXT_TO_FORMAT = {
+export const EXT_TO_FORMAT: Record<string, ExportFormats> = {
   '.pdf': ExportFormats.pdf,
   '.tex': ExportFormats.tex,
   '.doc': ExportFormats.docx,
@@ -125,22 +136,18 @@ export function singleArticleWithFile(articles?: ExportArticle[]) {
 
 export function validateExport(input: any, opts: ValidationOptions): Export | undefined {
   if (typeof input === 'string') {
+    // If export is a string it may be (1) format, (2) extension, or (3) output filename
     let format: string | undefined;
     let output: string | undefined;
-    if (input.includes('.')) {
+    if (input.startsWith('.')) {
       Object.entries(EXT_TO_FORMAT).forEach(([ext, fmt]) => {
-        if (input === ext) {
-          format = fmt;
-        } else if (input.endsWith(ext)) {
-          output = input;
-        }
+        if (input === ext) format = fmt; // Input is a known, format-specific extension
       });
-      if (!format && !output) {
-        output = input;
-      }
+    } else if (input.includes('.')) {
+      output = input; // Input is filename; format TBD
     }
     if (!format && !output) {
-      format = validateExportFormat(input, opts);
+      format = validateExportFormat(input, opts); // Input is valid format
       if (!format) return undefined;
     }
     input = { format, output };
@@ -162,27 +169,33 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     template = validateString(value.template, incrementOptions('template', opts));
   }
   if (defined(value.output)) {
-    output = validateString(value.output, incrementOptions('output', opts));
+    const outputOpts = incrementOptions('output', opts);
+    const outputString = validateString(value.output, outputOpts);
+    if (outputString) {
+      Object.keys(EXT_TO_FORMAT).forEach((ext) => {
+        if (outputString.endsWith(ext)) output = outputString;
+      });
+      // If there is no '.' in the output string (aside from first character) this is assumed to be a folder.
+      if (!outputString.slice(1).includes('.')) {
+        output = outputString;
+      }
+      if (!output) {
+        return validationError(`unknown export output extension: ${outputString}`, outputOpts);
+      }
+    }
   }
   if (defined(value.format)) {
     format = validateExportFormat(value.format, incrementOptions('format', opts));
     // If format is defined but invalid, validation fails
     if (!format) return undefined;
-  } else if (output) {
-    // If output is defined, format is inferred from output
-    Object.entries(EXT_TO_FORMAT).forEach(([ext, fmt]) => {
-      if (output?.endsWith(ext)) format = fmt;
-    });
-    if (!format) {
-      return validationError(`unable to infer export format from export: ${output}`, opts);
-    }
-  } else {
-    // if (!template) {
-    // TODO: If template is defined, that will tell us the format later!
-    return validationError('unable to determine export format', opts);
   }
-  if (format === undefined && template === undefined) return undefined;
+  if (!format && !template && !output) {
+    return validationError('export must specify one of: format, template, or output', opts);
+  }
   const validExport: Export = { ...value, format, output, template };
+  if (defined(value.zip)) {
+    validExport.zip = validateBoolean(value.zip, incrementOptions('zip', opts));
+  }
   if (defined(value.articles)) {
     const articles = validateList(
       value.articles,

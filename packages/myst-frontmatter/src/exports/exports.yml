@@ -262,8 +262,7 @@ cases:
         - out.pdf
     normalized:
       exports:
-        - format: pdf
-          output: out.pdf
+        - output: out.pdf
   - title: pdf extension coerces to format
     raw:
       exports:
@@ -277,21 +276,34 @@ cases:
         - output: out.pdf
     normalized:
       exports:
-        - format: pdf
-          output: out.pdf
-  # - title: export with only template validates
-  #   raw:
-  #     exports:
-  #       - template: template
-  #   normalized:
-  #     exports:
-  #       - template: template
+        - output: out.pdf
+  - title: export with only template validates
+    raw:
+      exports:
+        - template: template
+    normalized:
+      exports:
+        - template: template
   - title: unknown output errors
     raw:
       exports:
         - output: out.bad
     normalized: {}
     errors: 1
+  - title: output folder passes
+    raw:
+      exports:
+        - output: my-folder
+    normalized:
+      exports:
+        - output: my-folder
+  - title: output hidden folder passes
+    raw:
+      exports:
+        - output: .my-folder
+    normalized:
+      exports:
+        - output: .my-folder
   - title: article object passes
     raw:
       exports:
@@ -410,4 +422,22 @@ cases:
         - format: xml
           sub_articles:
             - a.md
+    errors: 1
+  - title: zip passes
+    raw:
+      exports:
+        - format: pdf
+          zip: true
+    normalized:
+      exports:
+        - format: pdf
+          zip: true
+  - title: invalid zip errors
+    raw:
+      exports:
+        - format: pdf
+          zip: pdf
+    normalized:
+      exports:
+        - format: pdf
     errors: 1

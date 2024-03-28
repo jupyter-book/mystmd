@@ -22,6 +22,7 @@ export enum RuleId {
   texRenders = 'tex-renders',
   exportExtensionCorrect = 'export-extension-correct',
   exportArticleExists = 'export-article-exists',
+  exportFormatDetermined = 'export-format-determined',
   // Parse rules
   texParses = 'tex-parses',
   jatsParses = 'jats-parses',

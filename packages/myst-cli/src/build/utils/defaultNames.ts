@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { ExportFormats } from 'myst-frontmatter';
 import type { ISession } from '../../session/types.js';
 import { selectPageSlug } from '../../store/selectors.js';
 import { createSlug } from '../../utils/fileInfo.js';
@@ -29,12 +30,16 @@ export function getDefaultExportFilename(session: ISession, file: string, projec
 export function getDefaultExportFolder(
   session: ISession,
   file: string,
+  format: ExportFormats,
   projectPath?: string,
-  ext?: 'tex' | 'typ',
 ) {
   const subpaths = [projectPath || path.parse(file).dir, '_build', 'exports'];
-  // Extra folder for tex export content
-  if (ext === 'tex') subpaths.push(`${getDefaultExportFilename(session, file, projectPath)}_tex`);
-  if (ext === 'typ') subpaths.push(`${getDefaultExportFilename(session, file, projectPath)}_typst`);
+  // Extra folder for tex/typst export content
+  if (format === ExportFormats.tex) {
+    subpaths.push(`${getDefaultExportFilename(session, file, projectPath)}_tex`);
+  }
+  if (format === ExportFormats.typst) {
+    subpaths.push(`${getDefaultExportFilename(session, file, projectPath)}_typst`);
+  }
   return path.join(...subpaths);
 }

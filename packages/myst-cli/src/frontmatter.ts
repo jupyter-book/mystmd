@@ -1,5 +1,5 @@
 import { getFrontmatter } from 'myst-transforms';
-import type { Export, ExportFormats, Licenses, PageFrontmatter } from 'myst-frontmatter';
+import type { Export, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import {
   validateExportsList,
   fillPageFrontmatter,
@@ -98,7 +98,6 @@ export async function getRawFrontmatterFromFile(
 
 export function getExportListFromRawFrontmatter(
   session: ISession,
-  formats: ExportFormats[],
   rawFrontmatter: Record<string, any> | undefined,
   file: string,
 ): Export[] {
@@ -112,11 +111,7 @@ export function getExportListFromRawFrontmatter(
     }),
   );
   logMessagesFromVFile(session, vfile);
-  if (!exports) return [];
-  const exportOptions: Export[] = exports.filter(
-    (exp: Export | undefined): exp is Export => !!exp && formats.includes(exp.format),
-  );
-  return exportOptions;
+  return exports ?? [];
 }
 
 export function updateFileInfoFromFrontmatter(
