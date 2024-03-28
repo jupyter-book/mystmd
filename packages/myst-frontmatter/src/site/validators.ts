@@ -221,8 +221,10 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (stashContribAuthors?.length) {
     output.authors = stashContribAuthors;
     // Ensure there is a corresponding author if an email is provided
-    const correspondingAuthor = output.authors?.find((a) => a.corresponding !== undefined);
-    const personWithEmail = output.authors?.find((a) => a.email && !a.collaboration);
+    const correspondingAuthor = output.authors?.find((a) => a.corresponding);
+    const personWithEmail = output.authors?.find(
+      (a) => a.email && !a.collaboration && a.corresponding === undefined,
+    );
     if (!correspondingAuthor && personWithEmail) {
       personWithEmail.corresponding = true;
     }

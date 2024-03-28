@@ -134,13 +134,15 @@ cases:
             family: Name
           email: example@example.com
           corresponding: false
-  - title: No email is corresponding if first is false
+  - title: Next email is corresponding if first is false
     raw:
       author:
         - id: jn
           name: Just A. Name
           email: example@example.com
           corresponding: false
+        - id: ne
+          name: No Email
         - id: an
           name: A. Nother Name
           email: example@example.com
@@ -154,6 +156,12 @@ cases:
             family: Name
           email: example@example.com
           corresponding: false
+        - id: ne
+          name: No Email
+          nameParsed:
+            literal: No Email
+            given: No
+            family: Email
         - id: an
           name: A. Nother Name
           nameParsed:
@@ -161,6 +169,7 @@ cases:
             given: A. Nother
             family: Name
           email: example@example.com
+          corresponding: true
   - title: Respect corresponding flag
     raw:
       authors:
