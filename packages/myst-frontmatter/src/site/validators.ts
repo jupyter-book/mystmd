@@ -211,7 +211,7 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     }
   }
 
-  // Contributor resolution should happen last
+  // Author/Contributor/Affiliation resolution should happen last
   const stashContribAuthors = stash.contributors?.filter((contrib) =>
     stash.authorIds?.includes(contrib.id),
   );
