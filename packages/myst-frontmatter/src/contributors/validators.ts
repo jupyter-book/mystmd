@@ -74,8 +74,10 @@ const NAME_ALIASES = {
  */
 export function validateName(input: any, opts: ValidationOptions) {
   let output: Name;
+  let raiseCommaWarnings = false;
   if (typeof input === 'string') {
     output = parseName(input);
+    raiseCommaWarnings = true;
   } else {
     const value = validateObjectKeys(input, { optional: NAME_KEYS, alias: NAME_ALIASES }, opts);
     if (value === undefined) return undefined;
@@ -106,22 +108,31 @@ export function validateName(input: any, opts: ValidationOptions) {
     }
     if (Object.keys(output).length === 1 && output.literal) {
       output = { ...output, ...parseName(output.literal) };
+      raiseCommaWarnings = true;
     } else if (!output.literal) {
       output.literal = formatName(output);
+      if (output.literal.startsWith(',')) {
+        validationWarning(
+          `unexpected comma at beginning of name: ${output.literal} - you may need to define 'name.literal' explicitly`,
+          opts,
+        );
+      }
     }
   }
-  const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
-    if (part && part.includes(',')) {
-      validationWarning(`unexpected comma in name part: ${part}`, o);
-    }
-  };
-  warnOnComma(output.given, incrementOptions('given', opts));
-  warnOnComma(output.family, incrementOptions('family', opts));
-  warnOnComma(output.non_dropping_particle, incrementOptions('non_dropping_particle', opts));
-  warnOnComma(output.dropping_particle, incrementOptions('dropping_particle', opts));
-  warnOnComma(output.suffix, incrementOptions('suffix', opts));
-  if (!output.family) {
-    validationWarning(`No family name for name '${output.literal}'`, opts);
+  if (raiseCommaWarnings) {
+    const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
+      if (part && part.includes(',')) {
+        validationWarning(
+          `unexpected comma in name part: ${part} - you may need to define 'name' explicitly as an object`,
+          o,
+        );
+      }
+    };
+    warnOnComma(output.given, incrementOptions('given', opts));
+    warnOnComma(output.family, incrementOptions('family', opts));
+    warnOnComma(output.non_dropping_particle, incrementOptions('non_dropping_particle', opts));
+    warnOnComma(output.dropping_particle, incrementOptions('dropping_particle', opts));
+    warnOnComma(output.suffix, incrementOptions('suffix', opts));
   }
   return output;
 }
@@ -263,8 +274,14 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
   if (defined(value.note)) {
     output.note = validateString(value.note, incrementOptions('note', opts));
   }
-  if (!isStashPlaceholder(output) && output.nameParsed && !output.nameParsed?.given) {
-    validationWarning(`No given name for name '${output.nameParsed.literal}'`, opts);
+  if (isStashPlaceholder(output) || !output.nameParsed) return output;
+  if (value.nameParsed || (value.name && typeof value.name !== 'string')) return output;
+  const suffix = " - if this is intended, you may define 'name' explicitly as an object";
+  if (!output.nameParsed.given) {
+    validationWarning(`No given name for name '${output.nameParsed.literal}'${suffix}`, opts);
+  }
+  if (!output.nameParsed.family) {
+    validationWarning(`No family name for name '${output.nameParsed.literal}'${suffix}`, opts);
   }
   return output;
 }

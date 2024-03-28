@@ -182,7 +182,20 @@ cases:
           email: example@example.com
           corresponding: true
     warnings: 1
-  - title: Warn if author has no family name
+  - title: Allow no family name if defined explicitly
+    raw:
+      authors:
+        - name:
+            literal: Someone
+            given: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: 'Someone'
+          nameParsed:
+            literal: 'Someone'
+            given: Someone
+  - title: Warn if computed literal starts with comma
     raw:
       authors:
         - name:
@@ -195,7 +208,20 @@ cases:
             literal: ', Someone'
             given: Someone
     warnings: 1
-  - title: Warn if author has no given name
+  - title: Allow explicit literal to start with comma
+    raw:
+      authors:
+        - name:
+            literal: ', Someone'
+            given: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: ', Someone'
+          nameParsed:
+            literal: ', Someone'
+            given: Someone
+  - title: Warn if parsed author name has no given name
     raw:
       authors:
         - name: Someone
@@ -207,6 +233,18 @@ cases:
             literal: 'Someone'
             family: Someone
     warnings: 1
+  - title: Allow no given name if defined explicitly
+    raw:
+      authors:
+        - name:
+            family: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: 'Someone'
+          nameParsed:
+            literal: 'Someone'
+            family: Someone
   - title: Parsed name is maintained
     raw:
       authors:
@@ -227,26 +265,38 @@ cases:
             non_dropping_particle: von
             family: Junior
             suffix: Jr.
-  - title: Name object with lots of commas warns
+  - title: Name object with explicit commas is ok
     raw:
       authors:
         - name:
-            literal: Commas, here, are, great,
-            given: Commas,
-            non_dropping_particle: here,
-            family: are,
-            suffix: warnings,
+            literal: Doe, John, III, M.D.
+            family: Doe
+            given: John
+            suffix: III, M.D.
     normalized:
       authors:
         - id: contributors-generated-uid-0
-          name: Commas, here, are, great,
+          name: Doe, John, III, M.D.
           nameParsed:
-            literal: Commas, here, are, great,
-            given: Commas,
-            non_dropping_particle: here,
-            family: are,
-            suffix: warnings,
-    warnings: 4
+            literal: Doe, John, III, M.D.
+            family: Doe
+            given: John
+            suffix: III, M.D.
+  - title: Name that parses to values with commas warns
+    raw:
+      authors:
+        - name:
+            literal: Doe, John, III, M.D.
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Doe, John, III, M.D.
+          nameParsed:
+            literal: Doe, John, III, M.D.
+            family: Doe, John
+            given: M.D.
+            suffix: III
+    warnings: 1
   - title: Name string with extra comma warns
     raw:
       authors:
