@@ -12,12 +12,16 @@ import {
   validationError,
   validationWarning,
 } from 'simple-validators';
+import { orcid } from 'orcid';
 import { validateAffiliation } from '../affiliations/validators.js';
 import type { ReferenceStash } from '../utils/referenceStash.js';
-import { validateAndStashObject } from '../utils/referenceStash.js';
+import {
+  isStashPlaceholder,
+  stashPlaceholder,
+  validateAndStashObject,
+} from '../utils/referenceStash.js';
 import type { Contributor, Name } from './types.js';
 import { formatName, parseName } from '../utils/parseName.js';
-import { orcid } from 'orcid';
 
 const CONTRIBUTOR_KEYS = [
   'id',
@@ -40,6 +44,7 @@ const CONTRIBUTOR_KEYS = [
   'fax',
 ];
 const CONTRIBUTOR_ALIASES = {
+  ref: 'id', // Used in QMD to reference a contributor
   role: 'roles',
   'equal-contributor': 'equal_contributor',
   affiliation: 'affiliations',
@@ -69,8 +74,10 @@ const NAME_ALIASES = {
  */
 export function validateName(input: any, opts: ValidationOptions) {
   let output: Name;
+  let raiseCommaWarnings = false;
   if (typeof input === 'string') {
     output = parseName(input);
+    raiseCommaWarnings = true;
   } else {
     const value = validateObjectKeys(input, { optional: NAME_KEYS, alias: NAME_ALIASES }, opts);
     if (value === undefined) return undefined;
@@ -101,25 +108,31 @@ export function validateName(input: any, opts: ValidationOptions) {
     }
     if (Object.keys(output).length === 1 && output.literal) {
       output = { ...output, ...parseName(output.literal) };
+      raiseCommaWarnings = true;
     } else if (!output.literal) {
       output.literal = formatName(output);
+      if (output.literal.startsWith(',')) {
+        validationWarning(
+          `unexpected comma at beginning of name: ${output.literal} - you may need to define 'name.literal' explicitly`,
+          opts,
+        );
+      }
     }
   }
-  const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
-    if (part && part.includes(',')) {
-      validationWarning(`unexpected comma in name part: ${part}`, o);
-    }
-  };
-  warnOnComma(output.given, incrementOptions('given', opts));
-  warnOnComma(output.family, incrementOptions('family', opts));
-  warnOnComma(output.non_dropping_particle, incrementOptions('non_dropping_particle', opts));
-  warnOnComma(output.dropping_particle, incrementOptions('dropping_particle', opts));
-  warnOnComma(output.suffix, incrementOptions('suffix', opts));
-  if (!output.family) {
-    validationWarning(`No family name for name '${output.literal}'`, opts);
-  }
-  if (!output.given) {
-    validationWarning(`No given name for name '${output.literal}'`, opts);
+  if (raiseCommaWarnings) {
+    const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
+      if (part && part.includes(',')) {
+        validationWarning(
+          `unexpected comma in name part: ${part} - you may need to define 'name' explicitly as an object`,
+          o,
+        );
+      }
+    };
+    warnOnComma(output.given, incrementOptions('given', opts));
+    warnOnComma(output.family, incrementOptions('family', opts));
+    warnOnComma(output.non_dropping_particle, incrementOptions('non_dropping_particle', opts));
+    warnOnComma(output.dropping_particle, incrementOptions('dropping_particle', opts));
+    warnOnComma(output.suffix, incrementOptions('suffix', opts));
   }
   return output;
 }
@@ -129,7 +142,7 @@ export function validateName(input: any, opts: ValidationOptions) {
  */
 export function validateContributor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
   if (typeof input === 'string') {
-    input = { id: input, name: input };
+    input = stashPlaceholder(input);
   }
   const value = validateObjectKeys(
     input,
@@ -137,6 +150,11 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
     opts,
   );
   if (value === undefined) return undefined;
+  // If contributor only has an id, give it a matching name; this is equivalent to the case
+  // where a simple string is provided as a contributor.
+  if (Object.keys(value).length === 1 && value.id) {
+    value.name = value.id;
+  }
   const output: Contributor = {};
   if (defined(value.id)) {
     output.id = validateString(value.id, incrementOptions('id', opts));
@@ -255,6 +273,15 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
   }
   if (defined(value.note)) {
     output.note = validateString(value.note, incrementOptions('note', opts));
+  }
+  if (isStashPlaceholder(output) || !output.nameParsed) return output;
+  if (value.nameParsed || (value.name && typeof value.name !== 'string')) return output;
+  const suffix = " - if this is intended, you may define 'name' explicitly as an object";
+  if (!output.nameParsed.given) {
+    validationWarning(`No given name for name '${output.nameParsed.literal}'${suffix}`, opts);
+  }
+  if (!output.nameParsed.family) {
+    validationWarning(`No family name for name '${output.nameParsed.literal}'${suffix}`, opts);
   }
   return output;
 }
