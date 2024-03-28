@@ -13,7 +13,12 @@ import {
   validationWarning,
 } from 'simple-validators';
 import { orcid } from 'orcid';
-import { validateAffiliation } from '../affiliations/validators.js';
+import {
+  AFFILIATION_ALIASES,
+  AFFILIATION_KEYS,
+  validateAffiliation,
+} from '../affiliations/validators.js';
+import { formatName, parseName } from '../utils/parseName.js';
 import type { ReferenceStash } from '../utils/referenceStash.js';
 import {
   isStashPlaceholder,
@@ -21,9 +26,8 @@ import {
   validateAndStashObject,
 } from '../utils/referenceStash.js';
 import type { Contributor, Name } from './types.js';
-import { formatName, parseName } from '../utils/parseName.js';
 
-const CONTRIBUTOR_KEYS = [
+const PERSON_KEYS = [
   'id',
   'userId',
   'name',
@@ -43,7 +47,7 @@ const CONTRIBUTOR_KEYS = [
   'phone',
   'fax',
 ];
-const CONTRIBUTOR_ALIASES = {
+const PERSON_ALIASES = {
   ref: 'id', // Used in QMD to reference a contributor
   role: 'roles',
   'equal-contributor': 'equal_contributor',
@@ -140,16 +144,34 @@ export function validateName(input: any, opts: ValidationOptions) {
 /**
  * Validate Contributor object against the schema
  */
-export function validateContributor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
+export function validateContributor(
+  input: any,
+  stash: ReferenceStash,
+  opts: ValidationOptions,
+): Contributor | undefined {
+  const inputAff = validateObjectKeys(
+    input,
+    { optional: AFFILIATION_KEYS, alias: AFFILIATION_ALIASES },
+    {
+      ...opts,
+      suppressErrors: true,
+      suppressWarnings: true,
+    },
+  );
+  if (inputAff?.collaboration === true) {
+    return validateAffiliation(input, opts);
+  }
   if (typeof input === 'string') {
     input = stashPlaceholder(input);
   }
-  const value = validateObjectKeys(
-    input,
-    { optional: CONTRIBUTOR_KEYS, alias: CONTRIBUTOR_ALIASES },
-    opts,
-  );
+  const value = validateObjectKeys(input, { optional: PERSON_KEYS, alias: PERSON_ALIASES }, opts);
   if (value === undefined) return undefined;
+  if (inputAff && Object.keys(inputAff).length > Object.keys(value).length) {
+    validationWarning(
+      'contributor may be a collaboration, not a person - if so, add "collaboration: true"',
+      opts,
+    );
+  }
   // If contributor only has an id, give it a matching name; this is equivalent to the case
   // where a simple string is provided as a contributor.
   if (Object.keys(value).length === 1 && value.id) {
