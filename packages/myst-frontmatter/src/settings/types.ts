@@ -9,5 +9,6 @@ export type ProjectSettings = {
   output_stderr?: OutputRemovalOptions;
   output_stdout?: OutputRemovalOptions;
   output_matplotlib_strings?: OutputRemovalOptions;
+  legacy_glossary_syntax?: boolean;
   myst_to_tex?: MystToTexSettings;
 };

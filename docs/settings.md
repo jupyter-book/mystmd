@@ -34,6 +34,10 @@ output_matplotlib_strings
     - `"remove-warn"` (default) or `"remove-error"`: remove all matplotlib strings in outputs, and log a warning or error
     - `"warn"` or "error": log a warning or error if matplotlib strings in outputs
 
+(setting:legacy_glossary_syntax)=
+legacy_glossary_syntax
+: Attempt to treat glossary directive in "Sphinx style", indicating that terms definitions are defined through indentation rather than definition lists.
+
 ## LaTeX Rendering Settings
 
 Adding an object of `myst_to_tex` to the settings will allow you to control various default parts of how the LaTeX renderer behaves.
