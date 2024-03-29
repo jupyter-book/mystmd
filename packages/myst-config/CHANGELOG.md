@@ -1,5 +1,20 @@
 # myst-config
 
+## 1.1.32
+
+### Patch Changes
+
+- Updated dependencies [6f0183de]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [bba5baf9]
+- Updated dependencies [62620a8d]
+- Updated dependencies [bba5baf9]
+  - myst-frontmatter@1.1.32
+
 ## 1.1.31
 
 ### Patch Changes
