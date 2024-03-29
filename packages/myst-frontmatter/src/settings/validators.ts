@@ -1,5 +1,11 @@
 import type { ValidationOptions } from 'simple-validators';
-import { defined, incrementOptions, validateChoice, validateObjectKeys } from 'simple-validators';
+import {
+  defined,
+  incrementOptions,
+  validateBoolean,
+  validateChoice,
+  validateObjectKeys,
+} from 'simple-validators';
 import type { ProjectSettings } from './types.js';
 import { validateMystToTexSettings } from './validatorsMystToTex.js';
 
@@ -16,6 +22,7 @@ export const PROJECT_SETTINGS = [
   'output_stdout',
   'output_matplotlib_strings',
   'myst_to_tex',
+  'legacy_glossary_syntax',
 ];
 export const PROJECT_SETTINGS_ALIAS = {
   stderr_output: 'output_stderr',
@@ -62,6 +69,13 @@ export function validateProjectAndPageSettings(
       incrementOptions('myst_to_tex', opts),
     );
     if (myst_to_tex) output.myst_to_tex = myst_to_tex;
+  }
+  if (defined(settings.legacy_glossary_syntax)) {
+    const legacy_glossary_syntax = validateBoolean(
+      settings.legacy_glossary_syntax,
+      incrementOptions('legacy_glossary_syntax', opts),
+    );
+    if (legacy_glossary_syntax != null) output.legacy_glossary_syntax = legacy_glossary_syntax;
   }
   if (Object.keys(output).length === 0) return undefined;
   return output;

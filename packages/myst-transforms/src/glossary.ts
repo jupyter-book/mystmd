@@ -43,19 +43,19 @@ function maybeLiftLegacyDefinitionTerm(node: GenericParent): GenericParent | und
 export function glossaryTransform<T extends Node | GenericParent>(
   mdast: T,
   file: VFile,
-  opts: Options,
+  opts?: Options,
 ) {
   const glossaries = selectAll('glossary', mdast) as GenericParent[];
   glossaries.forEach((glossary) => {
     // Do we have a ReST-like glossary? If so, pull it out.
-    if (opts.upgradeLegacySyntax && !select('definitionList', glossary)) {
+    if (opts?.upgradeLegacySyntax && !select('definitionList', glossary)) {
       fileWarn(
         file,
-        `Unexpected node as a child of a glossary, expected only \`definitionList\` children
-  Treating glossary as a legacy-format glossary and attempting to upgrade.`,
+        'Unexpected node as a child of a glossary, expected only `definitionList` children.',
         {
           node: glossary,
           ruleId: RuleId.glossaryUsesDefinitionList,
+          note: 'Treating glossary as a legacy-format glossary and attempting to upgrade.',
         },
       );
 
@@ -110,7 +110,7 @@ export function glossaryTransform<T extends Node | GenericParent>(
   });
 }
 
-export const glossaryPlugin: Plugin<[Options], GenericParent, GenericParent> =
+export const glossaryPlugin: Plugin<[Options?], GenericParent, GenericParent> =
   (opts) => (tree, file) => {
     glossaryTransform(tree, file, opts);
   };
