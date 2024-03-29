@@ -280,7 +280,8 @@ export class TexParser implements ITexParser {
     this.closeNode();
   }
 
-  closeNode() {
+  closeNode(type?: string) {
+    if (type && this.top().type !== type) return this.top();
     const node = this.stack.pop();
     this.pushNode(node);
     return node as GenericNode;

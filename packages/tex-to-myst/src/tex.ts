@@ -80,6 +80,8 @@ const macros: Record<string, number> = {
   multicolumn: 3,
   subfigure: 2,
   tabularx: 2,
+  longtable: 2,
+  ['longtable*']: 2,
   supertabular: 1,
   cmidrule: 2,
   cline: 1,

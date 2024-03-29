@@ -35,17 +35,14 @@ cases:
                 - type: tableRow
                   children:
                     - type: tableCell
-                      header: true
                       children:
                         - type: text
                           value: Margin
                     - type: tableCell
-                      header: true
                       children:
                         - type: text
                           value: A4
                     - type: tableCell
-                      header: true
                       children:
                         - type: text
                           value: Letter
@@ -88,10 +85,8 @@ cases:
                 - type: tableRow
                   children:
                     - type: tableCell
-                      header: true
+                      align: center
                       children:
-                        - type: comment
-                          value: '% tabular useful for creating an array of images'
                         - type: image
                           url: mcr3b.eps
             - type: caption
@@ -106,7 +101,7 @@ cases:
       \caption{Parameter values}\label{table1}
       \begin{threeparttable}
       \def\arraystretch{1.5}
-      \begin{tabular}{c|c|c|c|c|c}
+      \begin{tabular}{l|l|l|l}
       \toprule
       Symbol & Name & Value & Unit \\
       \midrule
@@ -137,22 +132,18 @@ cases:
                 - type: tableRow
                   children:
                     - type: tableCell
-                      header: true
                       children:
                         - type: text
                           value: Symbol
                     - type: tableCell
-                      header: true
                       children:
                         - type: text
                           value: Name
                     - type: tableCell
-                      header: true
                       children:
                         - type: text
                           value: Value
                     - type: tableCell
-                      header: true
                       children:
                         - type: text
                           value: Unit
@@ -199,10 +190,10 @@ cases:
                   children:
                     - type: text
                       value: Note this is freezing.
-  - title: multirow
+  - title: multirow - simple
     tex: |-
       \begin{tabular}{l c}
-        a & \multirow{2}{0.4\linewidth}[0cm]{b} \\ c &
+        a & \multirow{2}{0.4\linewidth}[0cm]{b} \\ c & \\
       \end{tabular}
     tree:
       type: root
@@ -212,13 +203,12 @@ cases:
             - type: tableRow
               children:
                 - type: tableCell
-                  header: true
                   children:
                     - type: text
                       value: a
                 - type: tableCell
-                  header: true
                   rowspan: 2
+                  align: center
                   children:
                     - type: text
                       value: b
@@ -231,7 +221,7 @@ cases:
   - title: multicolumn
     tex: |-
       \begin{tabular}{l c}
-        a & b \\ \multicolumn{2}{0.4\linewidth}[0cm]{\em c}\\ d & e
+        a & b \\ \multicolumn{2}{|c|}[0cm]{\em c}\\ d & e
       \end{tabular}
     tree:
       type: root
@@ -241,12 +231,11 @@ cases:
             - type: tableRow
               children:
                 - type: tableCell
-                  header: true
                   children:
                     - type: text
                       value: a
                 - type: tableCell
-                  header: true
+                  align: center
                   children:
                     - type: text
                       value: b
@@ -266,6 +255,7 @@ cases:
                     - type: text
                       value: d
                 - type: tableCell
+                  align: center
                   children:
                     - type: text
                       value: e
@@ -274,7 +264,7 @@ cases:
       \begin{table}[!ht]
       \begin{adjustwidth}{-2.6in}{0in}
       \caption{{Parameter values}}
-      \begin{tabular}{|c|c|}
+      \begin{tabular}{|l|l|l|}
       \hline
       \multicolumn{2}{|c|}{Sym.} & \bf Description \\ \hline
       one & two & three \\
@@ -299,13 +289,12 @@ cases:
                 - type: tableRow
                   children:
                     - type: tableCell
-                      header: true
                       colspan: 2
+                      align: center
                       children:
                         - type: text
                           value: Sym.
                     - type: tableCell
-                      header: true
                       children:
                         - type: strong
                           children:
@@ -327,3 +316,300 @@ cases:
                           value: three
           label: table:modelparams
           identifier: table:modelparams
+  - title: longtable
+    tex: |-
+      \begin{longtable}[c]{| l | l |}
+      \caption{Long table caption.}\label{long}\\
+
+      \hline
+      \multicolumn{2}{| c |}{   Begin of Table   }\\
+      \hline
+      Something & something else\\
+      \hline
+      \endfirsthead
+
+      \hline
+      \multicolumn{2}{|c|}{Continuation of Table \ref{long}}\\
+      \hline
+      Something & something else\\
+      \hline
+      \endhead
+
+      \hline
+      \endfoot
+
+      \hline
+      \multicolumn{2}{| c |}{End of Table  }\\
+      \hline\hline
+      \endlastfoot
+
+      Lots of lines & like this  \\
+      \end{longtable}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: table
+          identifier: long
+          label: long
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Long table caption.
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      colspan: 2
+                      align: center
+                      children:
+                        - type: text
+                          value: Begin of Table
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Something
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: something else
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: Lots of lines
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: like this
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      colspan: 2
+                      align: center
+                      children:
+                        - type: text
+                          value: End of Table
+  - title: multirow
+    tex: |-
+      \begin{tabular}{|l|l|l|l|}\hline
+        \multirow{10}{*}{numeric literals} & \multirow{5}{*}{integers} & in decimal & \verb|8743| \\ \cline{3-4}
+        & & \multirow{2}{*}{in octal} & \verb|0o7464| \\ \cline{4-4}
+        & & & \verb|0O103| \\ \cline{3-4}
+        & & \multirow{2}{*}{in hexadecimal} & \verb|0x5A0FF| \\ \cline{4-4}
+        & & & \verb|0xE0F2| \\ \cline{2-4}
+        & \multirow{5}{*}{fractionals} & \multirow{5}{*}{in decimal} & \verb|140.58| \\ \cline{4-4}
+        & & & \verb|8.04e7| \\ \cline{4-4}
+        & & & \verb|0.347E+12| \\ \cline{4-4}
+        & & & \verb|5.47E-12| \\ \cline{4-4}
+        & & & \verb|47e22| \\ \cline{1-4}
+        \multicolumn{3}{|l|}{\multirow{3}{*}{char literals}} & \verb|'H'| \\ \cline{4-4}
+        \multicolumn{3}{|l|}{} & \verb|'\n'| \\ \cline{4-4}          %% here
+        \multicolumn{3}{|l|}{} & \verb|'\x65'| \\ \cline{1-4}        %% here
+        \multicolumn{3}{|l|}{\multirow{2}{*}{string literals}} & \verb|"bom dia"| \\ \cline{4-4}
+        \multicolumn{3}{|l|}{} & \verb|"ouro preto\nmg"| \\ \cline{1-4}          %% here
+      \end{tabular}
+    tree:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  rowspan: 10
+                  children:
+                    - type: text
+                      value: numeric literals
+                - type: tableCell
+                  rowspan: 5
+                  children:
+                    - type: text
+                      value: integers
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: in decimal
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '8743'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  rowspan: 2
+                  children:
+                    - type: text
+                      value: in octal
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '0o7464'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '0O103'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  rowspan: 2
+                  children:
+                    - type: text
+                      value: in hexadecimal
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '0x5A0FF'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '0xE0F2'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  rowspan: 5
+                  children:
+                    - type: text
+                      value: fractionals
+                - type: tableCell
+                  rowspan: 5
+                  children:
+                    - type: text
+                      value: in decimal
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '140.58'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '8.04e7'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '0.347E+12'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '5.47E-12'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '47e22'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  colspan: 3
+                  rowspan: 3
+                  children:
+                    - type: text
+                      value: char literals
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: "'H'"
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: "'\\n'"
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: "'\\x65'"
+            - type: tableRow
+              children:
+                - type: tableCell
+                  colspan: 3
+                  rowspan: 2
+                  children:
+                    - type: text
+                      value: string literals
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '"bom dia"'
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: inlineCode
+                      value: '"ouro preto\nmg"'
+  - title: table alignment
+    tex: |-
+      \begin{tabular}{|l|r|c |}
+      \hline
+      \multicolumn{3}{|c|}{Header across all columns} \\
+      \hline
+      Left-aligned & Right-aligned & Centered \\
+      \hline
+      Data 1 & Data 2 & Data 3 \\
+      \hline
+      \end{tabular}
+    tree:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  colspan: 3
+                  align: 'center'
+                  children:
+                    - type: text
+                      value: Header across all columns
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Left-aligned
+                - type: tableCell
+                  align: right
+                  children:
+                    - type: text
+                      value: Right-aligned
+                - type: tableCell
+                  align: center
+                  children:
+                    - type: text
+                      value: Centered
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Data 1
+                - type: tableCell
+                  align: right
+                  children:
+                    - type: text
+                      value: Data 2
+                - type: tableCell
+                  align: center
+                  children:
+                    - type: text
+                      value: Data 3
