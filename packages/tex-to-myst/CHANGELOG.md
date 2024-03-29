@@ -1,5 +1,29 @@
 # tex-to-myst
 
+## 1.0.24
+
+### Patch Changes
+
+- d247a88: Parse latex table alignments and longtable
+- Updated dependencies [bba5baf9]
+- Updated dependencies [117d6008]
+- Updated dependencies [ebe65816]
+- Updated dependencies [20108545]
+- Updated dependencies [6f0183de]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [bba5baf9]
+- Updated dependencies [20108545]
+- Updated dependencies [117d6008]
+- Updated dependencies [62620a8d]
+- Updated dependencies [bba5baf9]
+  - myst-common@1.1.32
+  - myst-spec-ext@1.1.32
+  - myst-frontmatter@1.1.32
+
 ## 1.0.23
 
 ### Patch Changes

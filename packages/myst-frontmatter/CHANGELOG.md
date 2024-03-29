@@ -1,5 +1,19 @@
 # myst-frontmatter
 
+## 1.1.32
+
+### Patch Changes
+
+- 6f0183de: Add copyright to frontmatter
+- 62620a8d: Allow referencing contributors with ref:
+- 62620a8d: Make no-give-name warning less agressive
+- 62620a8d: Add reviewers and editors to frontmatter
+- ffb239a9: Add collaborations to Contributor type
+- ffb239a9: Always find a corresponding author unless (1) no email or (2) all corresponding:false
+- bba5baf9: Add zip to export frontmatter
+- 62620a8d: More care around name warnings - do not warn on explicitly defined parts
+- bba5baf9: Update export validation for optional format
+
 ## 1.1.31
 
 ### Patch Changes
