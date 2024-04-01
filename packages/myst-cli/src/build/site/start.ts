@@ -123,7 +123,7 @@ export async function startServer(
     });
   }
   if (opts.headless) {
-    const local = chalk.green(`http://localhost:${server.port}`);
+    const local = chalk.green(`http://${process.env.HOST ?? 'localhost'}:${server.port}`);
     session.log.info(
       `\n🔌 Content server started on port ${server.port}!  🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
     );
