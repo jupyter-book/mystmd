@@ -142,6 +142,7 @@ export async function startServer(
         cwd: mystTemplate.templatePath,
         env: {
           ...process.env,
+          CONTENT_CDN_HOST: process.env.HOST ?? 'localhost',
           CONTENT_CDN_PORT: String(server.port),
           PORT: String(port),
           MODE: opts.buildStatic ? 'static' : 'app',
