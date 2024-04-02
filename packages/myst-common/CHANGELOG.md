@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.1.33
+
+### Patch Changes
+
+- 855414ff: Fix bug causing pdf exports to fail
+  - myst-frontmatter@1.1.33
+
 ## 1.1.32
 
 ### Patch Changes

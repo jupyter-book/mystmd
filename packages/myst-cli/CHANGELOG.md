@@ -1,5 +1,17 @@
 # myst-cli
 
+## 1.1.50
+
+### Patch Changes
+
+- 6a6f445: Avoid undefined bug when finding expressions
+- 855414ff: Fix bug causing pdf exports to fail
+- Updated dependencies [855414ff]
+  - myst-common@1.1.33
+  - myst-config@1.1.33
+  - myst-frontmatter@1.1.33
+  - myst-spec-ext@1.1.33
+
 ## 1.1.49
 
 ### Patch Changes
