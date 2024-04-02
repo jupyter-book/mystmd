@@ -99,7 +99,9 @@ export async function processNotebook(
         const block = blockParent(cell, cellMdast.children) as GenericNode;
 
         // Embed expression results into expression
-        const userExpressions = block.data?.[metadataSection] as IUserExpressionMetadata[];
+        const userExpressions = block.data?.[metadataSection] as
+          | IUserExpressionMetadata[]
+          | undefined;
         const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
         inlineNodes.forEach((inlineExpression) => {
           const data = findExpression(userExpressions, inlineExpression.value);
