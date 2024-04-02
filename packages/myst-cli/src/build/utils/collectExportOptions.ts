@@ -127,26 +127,18 @@ export function resolveFormat(vfile: VFile, exp: Export): ExportFormats | undefi
       suggestedOutputFormat = EXT_TO_FORMAT[ext];
     }
   }
-  if (!exp.template) {
-    if (exp.format) return suggestedPdfFormat;
-    return suggestedOutputFormat ?? suggestedPdfFormat;
-  }
-  if (exp.template.endsWith('-tex')) return suggestedPdfFormat;
-  if (exp.template.endsWith('-typst')) return ExportFormats.typst;
-  if (exp.template.endsWith('-docx')) return ExportFormats.docx;
-  if (fs.existsSync(exp.template)) {
+  if (exp.template?.endsWith('-tex')) return suggestedPdfFormat;
+  if (exp.template?.endsWith('-typst')) return ExportFormats.typst;
+  if (exp.template?.endsWith('-docx')) return ExportFormats.docx;
+  if (exp.template && fs.existsSync(exp.template)) {
     const templateFiles = fs.readdirSync(exp.template);
     const templateTexFiles = templateFiles.filter((file) => file.endsWith('.tex'));
     const templateTypFiles = templateFiles.filter((file) => file.endsWith('.typ'));
     if (templateTexFiles.length && !templateTypFiles.length) return suggestedPdfFormat;
     if (!templateTexFiles.length && templateTypFiles.length) return ExportFormats.typst;
   }
-  fileError(
-    vfile,
-    `Cannot determine export type from template ${exp.template} - you must specify export 'format'`,
-    { ruleId: RuleId.exportFormatDetermined },
-  );
-  return undefined;
+  if (exp.format) return suggestedPdfFormat;
+  return suggestedOutputFormat ?? suggestedPdfFormat;
 }
 
 /**
