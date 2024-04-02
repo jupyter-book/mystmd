@@ -236,10 +236,57 @@ async function resolveTemplateFileOptions(
   return resolvedOptions;
 }
 
-function resolveSiteManifestAction(session: ISession, action: SiteAction): SiteAction {
-  if (!action.static || !action.url) return { ...action };
-  if (!fs.existsSync(action.url))
-    throw new Error(`Could not find static resource at "${action.url}". See 'config.site.actions'`);
+function isUrl(value: string) {
+  // Allow simple relative path in project
+  if (value.match('^(/[a-zA-Z0-9._-]+)+$')) return true;
+  try {
+    new URL(value);
+  } catch {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Resolves Site Action, including hashing and copying static files
+ *
+ * Infers `static: true` if url is an existing local file
+ */
+function resolveSiteManifestAction(
+  session: ISession,
+  action: SiteAction,
+  file?: string,
+): SiteAction | undefined {
+  if (action.static === false || !action.url) return { ...action };
+  // Cases where url does not exist as a local file
+  if (!fs.existsSync(action.url)) {
+    if (action.static) {
+      addWarningForFile(
+        session,
+        file,
+        `Could not find static resource at "${action.url}" in site config 'actions'`,
+        'error',
+        { ruleId: RuleId.staticActionFileCopied },
+      );
+      return undefined;
+    }
+    if (!isUrl(action.url)) {
+      addWarningForFile(
+        session,
+        file,
+        `Site action "${action.url}" should be a URL or path to static file`,
+      );
+    }
+    return { ...action };
+  }
+  if (!action.static && isUrl(action.url)) {
+    // Unlikely case where url is both an existing local file and a valid URL
+    addWarningForFile(
+      session,
+      file,
+      `Linking site action "${action.url}" to static file; to mark this as a URL instead, use 'static: false'`,
+    );
+  }
   const fileHash = hashAndCopyStaticFile(session, action.url, session.publicPath(), (m: string) => {
     addWarningForFile(session, action.url, m, 'error', {
       ruleId: RuleId.staticActionFileCopied,
@@ -265,6 +312,7 @@ export async function getSiteManifest(
 ): Promise<SiteManifest> {
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);
+  const siteConfigFile = selectors.selectCurrentSiteFile(state);
   if (!siteConfig) throw Error('no site config defined');
   const siteProjects: ManifestProject[] = (
     await Promise.all(
@@ -272,10 +320,11 @@ export async function getSiteManifest(
     )
   ).filter((p): p is ManifestProject => !!p);
   const { nav } = siteConfig;
-  const actions = siteConfig.actions?.map((action) => resolveSiteManifestAction(session, action));
+  const actions = siteConfig.actions
+    ?.map((action) => resolveSiteManifestAction(session, action, siteConfigFile))
+    .filter((action): action is SiteAction => !!action);
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const mystTemplate = await getMystTemplate(session, opts);
-  const siteConfigFile = selectors.selectCurrentSiteFile(state);
   const validatedOptions = mystTemplate.validateOptions(
     siteFrontmatter.options ?? {},
     siteConfigFile,
