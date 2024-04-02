@@ -103,13 +103,13 @@ export function validateSiteAction(input: any, opts: ValidationOptions) {
   );
   if (value === undefined) return undefined;
   const title = validateString(value.title, incrementOptions('title', opts));
+  const url = validateString(value.url, incrementOptions('url', opts));
+  if (!title || !url) return undefined;
+  const output: SiteAction = { title, url };
   if (defined(value.static)) {
-    value.static = validateBoolean(value.static, incrementOptions('static', opts));
+    output.static = validateBoolean(value.static, incrementOptions('static', opts));
   }
-  const actionUrlValidator = value.static ? validateString : validateUrlOrPath;
-  const url = actionUrlValidator(value.url, incrementOptions('url', opts));
-  if (title === undefined || !url) return undefined;
-  return value as SiteAction;
+  return output;
 }
 
 export function validateSiteConfigKeys(
