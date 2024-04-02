@@ -257,7 +257,17 @@ function resolveSiteManifestAction(
   action: SiteAction,
   file?: string,
 ): SiteAction | undefined {
-  if (action.static === false || !action.url) return { ...action };
+  if (!action.url) return { ...action };
+  if (action.static === false) {
+    if (!isUrl(action.url)) {
+      addWarningForFile(
+        session,
+        file,
+        `Non-static site action "${action.url}" should be a valid URL`,
+      );
+    }
+    return { ...action };
+  }
   // Cases where url does not exist as a local file
   if (!fs.existsSync(action.url)) {
     if (action.static) {
