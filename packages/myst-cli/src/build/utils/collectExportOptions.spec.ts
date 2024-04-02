@@ -279,7 +279,7 @@ describe('resolveFormat', () => {
     ).toBe(ExportFormats.docx);
     expect(vfile.messages.length).toBe(0);
   });
-  it('errors if format cannot be determined from template', async () => {
+  it('defaults to pdf if format cannot be determined from template', async () => {
     const vfile = new VFile();
     expect(
       resolveFormat(vfile, {
@@ -287,8 +287,7 @@ describe('resolveFormat', () => {
         output: 'out.pdf',
         template: 'template',
       }),
-    ).toBe(undefined);
-    expect(vfile.messages.length).toBe(1);
+    ).toBe(ExportFormats.pdf);
   });
 });
 
