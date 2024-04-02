@@ -19,10 +19,10 @@ export interface IUserExpressionsMetadata {
 }
 
 export function findExpression(
-  expressions: IUserExpressionMetadata[],
+  expressions: IUserExpressionMetadata[] | undefined,
   value: string,
 ): IUserExpressionMetadata | undefined {
-  return expressions.find((expr) => expr.expression === value);
+  return expressions?.find((expr) => expr.expression === value);
 }
 
 function processLatex(value: string) {
