@@ -2,7 +2,7 @@ import { unified } from 'unified';
 import type { Plugin } from 'unified';
 import { liftChildren, normalizeLabel } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
-import type { Parent } from 'myst-spec';
+import type { Parent, TableCell } from 'myst-spec';
 import { mystToHtml } from 'myst-to-html';
 import type { Element } from 'rehype-format';
 import { fromHtml } from 'hast-util-from-html';
@@ -38,6 +38,13 @@ function convertStylesStringToObject(stringStyles: string) {
   }, {});
 }
 
+function getAlignment(alignment?: string): TableCell['align'] {
+  if (!alignment) return undefined;
+  if (alignment === 'center') return 'center';
+  if (alignment === 'left') return 'left';
+  if (alignment === 'right') return 'right';
+}
+
 function addClassAndIdentifier(
   node: GenericNode,
   attrs: Record<string, string | Record<string, string> | number | boolean> = {},
@@ -65,6 +72,8 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       const attrs = addClassAndIdentifier(node, { header: true });
       const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
       const colSpan = Number.parseInt(node.properties.colSpan, 10);
+      const align = getAlignment(node.properties.align);
+      if (align && align !== 'left') attrs.align = align;
       if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
       if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
       return h(node, 'tableCell', attrs, all(h, node));
@@ -77,6 +86,8 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       const attrs = addClassAndIdentifier(node);
       const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
       const colSpan = Number.parseInt(node.properties.colSpan, 10);
+      const align = getAlignment(node.properties.align);
+      if (align && align !== 'left') attrs.align = align;
       if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
       if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
       return h(node, 'tableCell', attrs, all(h, node));
