@@ -62,6 +62,23 @@ cases:
                   children:
                     - type: text
                       value: Hello world
+  - title: lstlisting and line numbers
+    tex: |
+      \begin{lstlisting}[language=c,numbers=left,firstnumber=2,label=lst:loop]
+          for (int i = 0; i < 10; i++) {
+              /* do something */
+          }
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: code
+          lang: c
+          label: lst:loop
+          identifier: lst:loop
+          showLineNumbers: true
+          startingLineNumber: 2
+          value: "    for (int i = 0; i < 10; i++) {\n        /* do something */\n    }"
   - title: comment environment
     tex: |-
       \begin{comment}
