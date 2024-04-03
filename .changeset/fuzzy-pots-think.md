@@ -3,4 +3,4 @@
 "myst-parser": patch
 ---
 
-Code block only trims end, not start of lines.
+Only trim end of line for myst-directives, not both the start and end of lines. This is important for keeping indentation in code blocks.
