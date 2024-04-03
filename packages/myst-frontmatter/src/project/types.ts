@@ -1,5 +1,5 @@
 import type { Biblio } from '../biblio/types.js';
-import type { Export } from '../exports/types.js';
+import type { Download, Export } from '../exports/types.js';
 import type { Licenses } from '../licenses/types.js';
 import type { Numbering } from '../numbering/types.js';
 import type { ProjectSettings } from '../settings/types.js';
@@ -24,6 +24,7 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'math',
   'abbreviations',
   'exports',
+  'downloads',
   'settings', // We maybe want to move this into site frontmatter in the future
   // Do not add any project specific keys here!
   ...SITE_FRONTMATTER_KEYS,
@@ -59,6 +60,7 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   /** Abbreviations used throughout the project */
   abbreviations?: Record<string, string>;
   exports?: Export[];
+  downloads?: Download[];
   settings?: ProjectSettings;
 };
 

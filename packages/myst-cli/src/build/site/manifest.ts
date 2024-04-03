@@ -2,9 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { SiteAction, SiteManifest } from 'myst-config';
-import type { Export } from 'myst-frontmatter';
-import { ExportFormats, PROJECT_FRONTMATTER_KEYS, SITE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import type { PageDownload, SiteAction, SiteManifest } from 'myst-config';
+import {
+  EXT_TO_FORMAT,
+  ExportFormats,
+  PROJECT_FRONTMATTER_KEYS,
+  SITE_FRONTMATTER_KEYS,
+} from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
 import { resolveToAbsolute } from '../../config.js';
@@ -16,11 +20,12 @@ import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import version from '../../version.js';
 import { getMystTemplate } from './template.js';
 import { collectExportOptions } from '../utils/collectExportOptions.js';
-import type { ExportWithOutput } from '../types.js';
+import { filterPages } from '../../project/load.js';
+import { getRawFrontmatterFromFile } from '../../frontmatter.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 
-export async function resolvePageExports(session: ISession, file: string) {
+export async function resolvePageExports(session: ISession, file: string): Promise<PageDownload[]> {
   const exports = (
     await collectExportOptions(
       session,
@@ -41,21 +46,72 @@ export async function resolvePageExports(session: ISession, file: string) {
     })
     .filter((exp) => {
       return fs.existsSync(exp.output);
-    }) as Export[];
-  exports.forEach((exp) => {
-    const { output } = exp as ExportWithOutput;
+    });
+  const exportsAsDownloads = exports.map((exp) => {
+    const { format, output } = exp;
     const fileHash = hashAndCopyStaticFile(session, output, session.publicPath(), (m: string) => {
       addWarningForFile(session, file, m, 'error', {
         ruleId: RuleId.exportFileCopied,
       });
     });
-    exp.filename = path.basename(output);
-    exp.url = `/${fileHash}`;
-    delete exp.$file;
-    delete exp.$project;
-    delete exp.output;
+    return { format, filename: path.basename(output), url: `/${fileHash}` };
   });
-  return exports;
+  return exportsAsDownloads;
+}
+
+export async function resolvePageDownloads(
+  session: ISession,
+  file: string,
+  projectPath?: string,
+): Promise<PageDownload[]> {
+  const state = session.store.getState();
+  if (!projectPath) {
+    projectPath = selectors.selectCurrentProjectPath(state);
+  }
+  const project = projectPath
+    ? selectors.selectLocalProject(session.store.getState(), projectPath)
+    : undefined;
+  const files = project ? filterPages(project).map((page) => page.file) : [file];
+  const allExports = await collectExportOptions(session, files, [...Object.values(ExportFormats)], {
+    projectPath,
+  });
+  const expLookup: Record<string, { format: ExportFormats; output: string }> = {};
+  allExports.forEach((exp) => {
+    if (exp.id) expLookup[exp.id] = exp;
+  });
+  const pageFrontmatter = await getRawFrontmatterFromFile(session, file, projectPath);
+  const resolvedDownloads = pageFrontmatter?.downloads
+    ?.map((download) => {
+      let format: ExportFormats | undefined;
+      let downloadFile: string;
+      const exp = expLookup[download.file];
+      const resolvedFile = path.resolve(path.dirname(file), download.file);
+      if (exp) {
+        format = exp.format;
+        downloadFile = exp.output;
+      } else if (fs.existsSync(resolvedFile)) {
+        format = EXT_TO_FORMAT[path.extname(resolvedFile)];
+        downloadFile = resolvedFile;
+      } else {
+        addWarningForFile(session, file, `Unable to resolve download "${download.file}"`, 'error', {
+          ruleId: RuleId.exportFileCopied,
+        });
+        return undefined;
+      }
+      const fileHash = hashAndCopyStaticFile(
+        session,
+        downloadFile,
+        session.publicPath(),
+        (m: string) => {
+          addWarningForFile(session, file, m, 'error', {
+            ruleId: RuleId.exportFileCopied,
+          });
+        },
+      );
+      return { format, filename: path.basename(downloadFile), url: `/${fileHash}` } as PageDownload;
+    })
+    .filter((download): download is PageDownload => !!download);
+  return resolvedDownloads ?? [];
 }
 
 /**
@@ -95,7 +151,7 @@ export async function localToManifestProject(
         const date = fileInfo.date ?? '';
         const tags = fileInfo.tags ?? [];
         const { slug, level } = page;
-        const projectPage: Required<SiteManifest>['projects'][0]['pages'][0] = {
+        const projectPage: ManifestProject['pages'][0] = {
           slug,
           title,
           short_title,
@@ -116,10 +172,9 @@ export async function localToManifestProject(
 
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   const projConfigFile = selectors.selectLocalConfigFile(state, projectPath);
-  const exports = projConfigFile
-    ? (await resolvePageExports(session, projConfigFile)).map(({ format, filename, url }) => {
-        return { format, filename, url };
-      })
+  const exports = projConfigFile ? await resolvePageExports(session, projConfigFile) : [];
+  const downloads = projConfigFile
+    ? await resolvePageDownloads(session, projConfigFile, projectPath)
     : [];
   const banner = await transformBanner(
     session,
@@ -144,6 +199,7 @@ export async function localToManifestProject(
     banner: banner?.url || projectFileInfo.banner,
     bannerOptimized: banner?.urlOptimized || projectFileInfo.bannerOptimized || undefined,
     exports,
+    downloads,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',
     slug: projectSlug,

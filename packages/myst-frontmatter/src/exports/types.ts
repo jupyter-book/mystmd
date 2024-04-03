@@ -17,7 +17,8 @@ export type ExportArticle = {
 } & Record<string, any>;
 
 export type Export = {
-  format?: ExportFormats; // TODO: Optional if template is defined
+  id?: string;
+  format?: ExportFormats;
   template?: string | null;
   output?: string;
   zip?: boolean;
@@ -27,3 +28,8 @@ export type Export = {
   sub_articles?: string[];
   /** MECA: to, from later */
 } & Record<string, any>;
+
+export type Download = {
+  format?: ExportFormats;
+  file: string;
+};

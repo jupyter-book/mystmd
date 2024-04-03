@@ -13,7 +13,7 @@ import {
 import { PAGE_FRONTMATTER_KEYS } from '../page/types.js';
 import { PROJECT_FRONTMATTER_KEYS } from '../project/types.js';
 import { FRONTMATTER_ALIASES } from '../site/validators.js';
-import type { Export, ExportArticle } from './types.js';
+import type { Download, Export, ExportArticle } from './types.js';
 import { ExportFormats } from './types.js';
 
 const EXPORT_KEY_OBJECT = {
@@ -43,6 +43,14 @@ const EXPORT_ARTICLE_KEY_OBJECT = {
     ...PAGE_FRONTMATTER_KEYS,
     ...Object.keys(FRONTMATTER_ALIASES),
   ],
+};
+
+const DOWNLOAD_KEY_OBJECT = {
+  required: ['file'],
+  optional: ['format'],
+  alias: {
+    id: 'file',
+  },
 };
 
 export const EXT_TO_FORMAT: Record<string, ExportFormats> = {
@@ -81,6 +89,19 @@ export function validateExportsList(input: any, opts: ValidationOptions): Export
     { coerce: true, ...incrementOptions('exports', opts) },
     (exp, ind) => {
       return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
+    },
+  );
+  if (!output || output.length === 0) return undefined;
+  return output;
+}
+
+export function validateDownloadsList(input: any, opts: ValidationOptions): Download[] | undefined {
+  if (input === undefined) return undefined;
+  const output = validateList(
+    input,
+    { coerce: true, ...incrementOptions('downloads', opts) },
+    (exp, ind) => {
+      return validateDownload(exp, incrementOptions(`downloads.${ind}`, opts));
     },
   );
   if (!output || output.length === 0) return undefined;
@@ -193,6 +214,9 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     return validationError('export must specify one of: format, template, or output', opts);
   }
   const validExport: Export = { ...value, format, output, template };
+  if (defined(value.id)) {
+    validExport.id = validateString(value.id, incrementOptions('id', opts));
+  }
   if (defined(value.zip)) {
     validExport.zip = validateBoolean(value.zip, incrementOptions('zip', opts));
   }
@@ -258,4 +282,19 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     }
   }
   return validExport;
+}
+
+export function validateDownload(input: any, opts: ValidationOptions): Download | undefined {
+  if (typeof input === 'string') {
+    input = { file: input };
+  }
+  const value = validateObjectKeys(input, DOWNLOAD_KEY_OBJECT, opts);
+  if (value === undefined) return undefined;
+  const file = validateString(value.file, incrementOptions('file', opts));
+  if (file === undefined) return undefined;
+  const output: Download = { file };
+  if (defined(value.format)) {
+    output.format = validateExportFormat(value.format, incrementOptions('format', opts));
+  }
+  return output;
 }

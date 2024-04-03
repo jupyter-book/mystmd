@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { getFrontmatter } from 'myst-transforms';
 import type { Export, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import {
@@ -89,6 +90,10 @@ export async function getRawFrontmatterFromFile(
   file: string,
   projectPath?: string,
 ) {
+  const state = session.store.getState();
+  if (projectPath && resolve(file) === selectors.selectLocalConfigFile(state, projectPath)) {
+    return selectors.selectLocalProjectConfig(state, projectPath);
+  }
   const cache = castSession(session);
   if (!cache.$getMdast(file)) await loadFile(session, file, projectPath);
   const result = cache.$getMdast(file);

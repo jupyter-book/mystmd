@@ -79,6 +79,12 @@ The following table lists the available frontmatter fields, a brief description 
 * - `description`
   - a string (max 500 chars)
   - page & project
+* - `exports`
+  - an export object, see [](#exports)
+  - page & project
+* - `downloads`
+  - a file or export ID, see [](#downloads)
+  - page & project
 * - `tags`
   - a list of strings
   - page only
@@ -506,6 +512,45 @@ The date field is a string and should conform to a valid Javascript data format.
 - `2022-12-14` - `YYYY-MM-DD`
 
 Where the latter example in that list are valid [IETF timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14)
+
+(exports)=
+
+## Exports
+
+You may define desired static exports in page or project frontmatter. In the export object, you may specify a filename, format, and/or template, as well as the article(s) you wish to include in your export. You may also provide any additional options required by your template in the export object. Formats currently supported by MyST include `pdf`, `tex`, `typst`, `docx`, `jats`, and `meca`. For examples of how to create exports, see [](./creating-pdf-documents.md). You can also explore the [MyST templating](myst:jtex) documentation for a deeper dive into defining templates.
+
+After defining `exports` in your frontmatter, you may build them with the `myst build` [CLI command](./quickstart-myst-documents.md).
+
+The following table shows the available properties for each export. You must define at least one of `format`, `output`, or `template` for MyST to be able to perform your output. You may also specify a string instead of a full export object; this string will be inferred to be either the export format or the output filename.
+
+```{list-table} Frontmatter export definitions
+:header-rows: 1
+:name: table-frontmatter-exports
+* - field
+  - description
+* - `id`
+  - a string - a local identifier that can be used to reference the export
+* - `format`
+  - one of `pdf` (built with $\LaTeX$ or Typst, depending on the template), `tex` (raw $\LaTeX$ files), `pdf+tex` (both PDF and raw $\LaTeX$ files) `typst` (raw Typst files and built PDF file), `docx`, `md`, `jats`, or `meca`
+* - `template`
+  - a string - name of an existing [MyST template](https://github.com/myst-templates) or a local path to a template folder. Templates are only available for `pdf`, `tex`, `typst`, and `docx` formats.
+* - `output`
+  - a string - export output filename with a valid extension or destination folder
+* - `zip`
+  - a boolean - if `true`, zip the output - only applies for multi-file exports `tex`, `pdf+tex` and `typst`.
+* - `articles`
+  - a list of strings - path(s) to articles to include in your export - this is required for exports defined in project frontmatter; for page frontmatter, the default article will be the page itself. Not all exports currently support multiple articles.
+* - `toc`
+  - a string - path to jupyterbook `_toc.yml` file - may be used as an alternative to listing `articles`
+* - `sub_articles`
+  - a list of strings - path(s) to sub-articles for `jats` export
+```
+
+(downloads)=
+
+## Downloads
+
+Downloads are files you want available on your MyST site. They may be defined at the project or the page level. In your frontmatter, `downloads` may include (a) relative paths to local files or (b) export `id` values to indicate you would like a specific export available as a download.
 
 (licenses)=
 

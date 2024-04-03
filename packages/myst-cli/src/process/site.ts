@@ -9,7 +9,11 @@ import type { Node } from 'myst-spec';
 import type { LinkTransformer, ReferenceState } from 'myst-transforms';
 import { select } from 'unist-util-select';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
-import { getSiteManifest, resolvePageExports } from '../build/site/manifest.js';
+import {
+  getSiteManifest,
+  resolvePageDownloads,
+  resolvePageExports,
+} from '../build/site/manifest.js';
 import { filterPages, loadProjectFromDisk } from '../project/load.js';
 import type { LocalProject } from '../project/types.js';
 import { castSession } from '../session/cache.js';
@@ -167,7 +171,12 @@ async function resolvePageSource(session: ISession, file: string) {
 
 export async function writeFile(
   session: ISession,
-  { file, pageSlug, projectSlug }: { file: string; pageSlug: string; projectSlug?: string },
+  {
+    file,
+    pageSlug,
+    projectSlug,
+    projectPath,
+  }: { file: string; pageSlug: string; projectSlug?: string; projectPath?: string },
 ) {
   const toc = tic();
   const selectedFile = selectFile(session, file);
@@ -178,7 +187,8 @@ export async function writeFile(
     resolvePageSource(session, file),
     ...(await resolvePageExports(session, file)),
   ]);
-  const frontmatterWithExports = { ...frontmatter, exports };
+  const downloads = await resolvePageDownloads(session, file, projectPath);
+  const frontmatterWithExports = { ...frontmatter, exports, downloads };
   const jsonFilenameParts = [session.contentPath()];
   if (projectSlug) jsonFilenameParts.push(projectSlug);
   jsonFilenameParts.push(`${pageSlug}.json`);
@@ -253,7 +263,7 @@ export async function fastProcessFile(
       maxSizeWebp,
     });
   }
-  await writeFile(session, { file, pageSlug, projectSlug });
+  await writeFile(session, { file, pageSlug, projectSlug, projectPath });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
 }
@@ -347,6 +357,7 @@ export async function processProject(
         return writeFile(session, {
           file: page.file,
           projectSlug: siteProject.slug as string,
+          projectPath: siteProject.path,
           pageSlug: page.slug,
         });
       }),

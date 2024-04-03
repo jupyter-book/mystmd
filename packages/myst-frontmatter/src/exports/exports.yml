@@ -441,3 +441,34 @@ cases:
       exports:
         - format: pdf
     errors: 1
+  - title: export allows id
+    raw:
+      exports:
+        - format: pdf
+          id: my-pdf
+    normalized:
+      exports:
+        - format: pdf
+          id: my-pdf
+  - title: download string coerces to file
+    raw:
+      download: my-file.pdf
+    normalized:
+      downloads:
+        - file: my-file.pdf
+  - title: download id coerces to file
+    raw:
+      download:
+        id: my-file
+    normalized:
+      downloads:
+        - file: my-file
+  - title: downloads file and format pass
+    raw:
+      downloads:
+        - file: my-file.pdf
+          format: md
+    normalized:
+      downloads:
+        - file: my-file.pdf
+          format: md
