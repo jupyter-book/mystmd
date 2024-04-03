@@ -56,7 +56,7 @@ function runDirectives(state: StateCore): boolean {
           body.shift();
           bodyOffset++;
         }
-        const bodyString = body.join('\n').trim();
+        const bodyString = body.join('\n').trimEnd();
         const directiveOpen = new state.Token('parsed_directive_open', '', 1);
         directiveOpen.info = info;
         directiveOpen.hidden = true;

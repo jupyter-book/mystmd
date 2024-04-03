@@ -85,8 +85,10 @@ function stripPositions(tree: GenericParent) {
   return tree;
 }
 
-function removeTightAnnotations(tree: GenericParent) {
+function fixMystDirectives(tree: GenericParent) {
   selectAll('mystDirective', tree).forEach((node) => {
+    // Node markdown is trimmed
+    (node as any).value = (node as any).value?.trim();
     // These are added on afterwards and we aren't taking them into account in myst spec
     delete (node as any).tight;
   });
@@ -115,7 +117,7 @@ describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
       const mdastString = yaml.dump(mdast);
-      const newAst = removeTightAnnotations(
+      const newAst = fixMystDirectives(
         replaceMystCommentNodes(
           stripPositions(
             mystParse(myst, {

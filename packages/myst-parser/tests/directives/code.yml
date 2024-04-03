@@ -24,6 +24,34 @@ cases:
               value: |-
                 # here is math
                 1+2
+  - title: code-block with indentation
+    markdown: |-
+      ```{code-block} c
+      :linenos: true
+      :lineno-start: 2
+      :emphasize-lines: 3
+          for (int i = 0; i < 10; i++) {
+              /* do something */
+          }
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: c
+          options:
+            emphasize-lines: 3
+            lineno-start: 2
+            linenos: true
+          value: "    for (int i = 0; i < 10; i++) {\n        /* do something */\n    }"
+          children:
+            - type: code
+              lang: c
+              showLineNumbers: true
+              startingLineNumber: 2
+              emphasizeLines: [3]
+              value: "    for (int i = 0; i < 10; i++) {\n        /* do something */\n    }"
   - title: code-block with name language options parses
     markdown: |-
       ```{code-block} python
