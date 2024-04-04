@@ -1,4 +1,4 @@
-import { NotebookCell, RuleId, fileWarn } from 'myst-common';
+import { NotebookCell, RuleId, copyNode, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
@@ -22,7 +22,7 @@ import type { IUserExpressionMetadata } from '../transforms/index.js';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
-  return { type: 'block', meta: JSON.stringify({ type, ...cell.metadata }), children };
+  return { type: 'block', data: copyNode({ type, ...cell.metadata }), children };
 }
 
 /**
