@@ -2,7 +2,7 @@ import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
-import { fileError, toText } from 'myst-common';
+import { fileError, fileWarn, toText } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 // import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITypstSerializer, TypstResult, Options, StateData } from './types.js';
@@ -226,6 +226,15 @@ const handlers: Record<string, Handler> = {
     state.ensureNewLine();
   },
   abbreviation(node, state) {
+    state.renderChildren(node);
+  },
+  inlineExpression(node, state) {
+    // TODO: This is **very** simple at the moment
+    // It will work for inline nodes likely only, we can make it better soon
+    fileWarn(state.file, 'inlineExpression rendering in typst is in beta', {
+      node,
+      note: 'Rendering will work only for text nodes',
+    });
     state.renderChildren(node);
   },
   link: linkHandler,
