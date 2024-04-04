@@ -76,7 +76,7 @@ export function extractImplicitPart(
   let insideImplicitPart = false;
   const blockParts: GenericNode[] = [];
   let paragraphs: GenericNode[] = [];
-  tree.children.forEach((child, index) => {
+  tree.children?.forEach((child, index) => {
     // Add this paragraph to the part
     if (insideImplicitPart && child.type === 'paragraph') {
       paragraphs.push(copyNode(child));

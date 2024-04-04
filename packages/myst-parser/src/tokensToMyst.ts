@@ -573,9 +573,6 @@ export function tokensToMyst(
     let lastBlock: GenericNode | undefined;
     const pushBlock = () => {
       if (!lastBlock) return;
-      if (lastBlock.children?.length === 0) {
-        delete lastBlock.children;
-      }
       newTree.children.push(lastBlock);
     };
     (tree as GenericNode).children?.forEach((node) => {
