@@ -261,15 +261,6 @@ function resolveSiteAction(
 ): SiteAction | undefined {
   const title = action.title;
   if (action.static === false) {
-    if (!isUrl(action.url)) {
-      addWarningForFile(
-        session,
-        file,
-        `Non-static resource "${action.url}" in ${property} should be a valid URL`,
-        'error',
-      );
-      return undefined;
-    }
     if (!title) {
       addWarningForFile(
         session,
