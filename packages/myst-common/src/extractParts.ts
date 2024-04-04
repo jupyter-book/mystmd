@@ -46,6 +46,14 @@ function createPartBlock(
   return block;
 }
 
+function forcedRemove(tree: GenericParent, test: string) {
+  let success = remove(tree, test);
+  if (!success) {
+    success = remove(tree, { cascade: false }, test);
+  }
+  return success;
+}
+
 /**
  * Extract implicit part based on heading name
  *
@@ -68,7 +76,7 @@ export function extractImplicitPart(
   let insideImplicitPart = false;
   const blockParts: GenericNode[] = [];
   let paragraphs: GenericNode[] = [];
-  tree.children.forEach((child, index) => {
+  tree.children?.forEach((child, index) => {
     // Add this paragraph to the part
     if (insideImplicitPart && child.type === 'paragraph') {
       paragraphs.push(copyNode(child));
@@ -104,7 +112,7 @@ export function extractImplicitPart(
   });
   if (blockParts.length === 0) return;
   const partsTree = { type: 'root', children: blockParts } as GenericParent;
-  remove(tree, '__part_delete__');
+  forcedRemove(tree, '__part_delete__');
   return partsTree;
 }
 
@@ -156,6 +164,6 @@ export function extractPart(
   blockParts.forEach((block) => {
     (block as any).type = '__delete__';
   });
-  remove(tree, '__delete__');
+  forcedRemove(tree, '__delete__');
   return partsTree;
 }
