@@ -63,7 +63,7 @@ export async function runTypstExecutable(session: ISession, typstFile: string) {
     throw new Error(`invalid input file for typst executable: ${typstFile}`);
   }
   session.log.debug('Running typst compile');
-  await makeExecutable(`typst compile ${typstFile}`, session.log)();
+  await makeExecutable(`typst compile "${typstFile}"`, session.log)();
 }
 
 export function mdastToTypst(
