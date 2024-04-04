@@ -6,6 +6,5 @@ export type Download = {
   id?: string;
   url?: string;
   filename?: string;
-  internal?: boolean;
   static?: boolean;
 };

@@ -35,7 +35,7 @@ cases:
         - format: md
     normalized: {}
     errors: 1
-  - title: full download object passes
+  - title: cannot set internal
     raw:
       downloads:
         - url: my-file.pdf
@@ -49,4 +49,19 @@ cases:
           format: md
           title: My File
           static: true
-          internal: false
+    warnings: 1
+  - title: full download object passes
+    raw:
+      downloads:
+        - url: my-file.pdf
+          format: md
+          title: My File
+          static: true
+          filename: file.md
+    normalized:
+      downloads:
+        - url: my-file.pdf
+          format: md
+          title: My File
+          static: true
+          filename: file.md

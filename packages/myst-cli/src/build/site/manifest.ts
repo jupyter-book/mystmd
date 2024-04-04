@@ -284,7 +284,7 @@ function resolveSiteAction(
       url: action.url,
       filename: action.filename,
       format: action.format,
-      internal: action.internal ?? isInternalUrl(action.url),
+      internal: isInternalUrl(action.url),
       static: false,
     };
   }
@@ -324,7 +324,7 @@ function resolveSiteAction(
       url: action.url,
       filename: action.filename,
       format: action.format,
-      internal: action.internal ?? isInternalUrl(action.url),
+      internal: isInternalUrl(action.url),
       static: false,
     };
   }
@@ -359,7 +359,6 @@ function resolveSiteAction(
     url: `/${fileHash}`,
     filename,
     format: action.format ?? EXT_TO_FORMAT[path.extname(resolvedFile)],
-    internal: action.internal,
     static: true,
   };
 }
