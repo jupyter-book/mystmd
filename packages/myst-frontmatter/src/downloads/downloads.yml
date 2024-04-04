@@ -5,7 +5,7 @@ cases:
       download: my-file.pdf
     normalized:
       downloads:
-        - file: my-file.pdf
+        - url: my-file.pdf
   - title: download ref coerces to id
     raw:
       download:
@@ -20,12 +20,12 @@ cases:
           format: md
     normalized:
       downloads:
-        - file: my-file.pdf
+        - url: my-file.pdf
           format: md
-  - title: download with file and id errors
+  - title: download with url and id errors
     raw:
       downloads:
-        - file: my-file.pdf
+        - url: my-file.pdf
           id: my-file
     normalized: {}
     errors: 1
@@ -38,14 +38,14 @@ cases:
   - title: full download object passes
     raw:
       downloads:
-        - file: my-file.pdf
+        - url: my-file.pdf
           format: md
           title: My File
           static: true
           internal: false
     normalized:
       downloads:
-        - file: my-file.pdf
+        - url: my-file.pdf
           format: md
           title: My File
           static: true
