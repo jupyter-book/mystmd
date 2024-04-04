@@ -12,7 +12,8 @@ import {
   validateUrl,
 } from 'simple-validators';
 import { validateBiblio } from '../biblio/validators.js';
-import { validateDownloadsList, validateExportsList } from '../exports/validators.js';
+import { validateDownloadsList } from '../downloads/validators.js';
+import { validateExportsList } from '../exports/validators.js';
 import { validateLicenses } from '../licenses/validators.js';
 import { validateNumbering } from '../numbering/validators.js';
 import { FRONTMATTER_ALIASES, validateSiteFrontmatterKeys } from '../site/validators.js';

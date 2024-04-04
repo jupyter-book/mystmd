@@ -28,8 +28,3 @@ export type Export = {
   sub_articles?: string[];
   /** MECA: to, from later */
 } & Record<string, any>;
-
-export type Download = {
-  format?: ExportFormats;
-  file: string;
-};

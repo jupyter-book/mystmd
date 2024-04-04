@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { PageDownload, SiteAction, SiteManifest } from 'myst-config';
+import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
 import {
   EXT_TO_FORMAT,
   ExportFormats,
@@ -25,7 +25,7 @@ import { getRawFrontmatterFromFile } from '../../frontmatter.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 
-export async function resolvePageExports(session: ISession, file: string): Promise<PageDownload[]> {
+export async function resolvePageExports(session: ISession, file: string): Promise<SiteExport[]> {
   const exports = (
     await collectExportOptions(
       session,
@@ -63,7 +63,7 @@ export async function resolvePageDownloads(
   session: ISession,
   file: string,
   projectPath?: string,
-): Promise<PageDownload[]> {
+): Promise<SiteAction[]> {
   const state = session.store.getState();
   if (!projectPath) {
     projectPath = selectors.selectCurrentProjectPath(state);
@@ -81,7 +81,7 @@ export async function resolvePageDownloads(
   });
   const pageFrontmatter = await getRawFrontmatterFromFile(session, file, projectPath);
   const resolvedDownloads = pageFrontmatter?.downloads
-    ?.map((download) => {
+    ?.map((download): SiteAction | undefined => {
       let format: ExportFormats | undefined;
       let downloadFile: string;
       const exp = expLookup[download.file];
@@ -108,9 +108,9 @@ export async function resolvePageDownloads(
           });
         },
       );
-      return { format, filename: path.basename(downloadFile), url: `/${fileHash}` } as PageDownload;
+      return { format, filename: path.basename(downloadFile), url: `/${fileHash}` };
     })
-    .filter((download): download is PageDownload => !!download);
+    .filter((download): download is SiteAction => !!download);
   return resolvedDownloads ?? [];
 }
 

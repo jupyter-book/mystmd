@@ -1,6 +1,7 @@
 export * from './affiliations/index.js';
 export * from './biblio/index.js';
 export * from './contributors/index.js';
+export * from './downloads/index.js';
 export * from './exports/index.js';
 export * from './funding/index.js';
 export * from './jupytext/index.js';

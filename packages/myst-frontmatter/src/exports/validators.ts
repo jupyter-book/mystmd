@@ -13,7 +13,7 @@ import {
 import { PAGE_FRONTMATTER_KEYS } from '../page/types.js';
 import { PROJECT_FRONTMATTER_KEYS } from '../project/types.js';
 import { FRONTMATTER_ALIASES } from '../site/validators.js';
-import type { Download, Export, ExportArticle } from './types.js';
+import type { Export, ExportArticle } from './types.js';
 import { ExportFormats } from './types.js';
 
 const EXPORT_KEY_OBJECT = {
@@ -43,14 +43,6 @@ const EXPORT_ARTICLE_KEY_OBJECT = {
     ...PAGE_FRONTMATTER_KEYS,
     ...Object.keys(FRONTMATTER_ALIASES),
   ],
-};
-
-const DOWNLOAD_KEY_OBJECT = {
-  required: ['file'],
-  optional: ['format'],
-  alias: {
-    id: 'file',
-  },
 };
 
 export const EXT_TO_FORMAT: Record<string, ExportFormats> = {
@@ -95,20 +87,10 @@ export function validateExportsList(input: any, opts: ValidationOptions): Export
   return output;
 }
 
-export function validateDownloadsList(input: any, opts: ValidationOptions): Download[] | undefined {
-  if (input === undefined) return undefined;
-  const output = validateList(
-    input,
-    { coerce: true, ...incrementOptions('downloads', opts) },
-    (exp, ind) => {
-      return validateDownload(exp, incrementOptions(`downloads.${ind}`, opts));
-    },
-  );
-  if (!output || output.length === 0) return undefined;
-  return output;
-}
-
-function validateExportFormat(input: any, opts: ValidationOptions): ExportFormats | undefined {
+export function validateExportFormat(
+  input: any,
+  opts: ValidationOptions,
+): ExportFormats | undefined {
   if (input === undefined) return undefined;
   if (input === 'tex+pdf') input = 'pdf+tex';
   if (input === 'jats') input = 'xml';
@@ -282,19 +264,4 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     }
   }
   return validExport;
-}
-
-export function validateDownload(input: any, opts: ValidationOptions): Download | undefined {
-  if (typeof input === 'string') {
-    input = { file: input };
-  }
-  const value = validateObjectKeys(input, DOWNLOAD_KEY_OBJECT, opts);
-  if (value === undefined) return undefined;
-  const file = validateString(value.file, incrementOptions('file', opts));
-  if (file === undefined) return undefined;
-  const output: Download = { file };
-  if (defined(value.format)) {
-    output.format = validateExportFormat(value.format, incrementOptions('format', opts));
-  }
-  return output;
 }

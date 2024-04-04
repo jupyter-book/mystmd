@@ -1,5 +1,6 @@
 import type { Biblio } from '../biblio/types.js';
-import type { Download, Export } from '../exports/types.js';
+import type { Download } from '../downloads/types.js';
+import type { Export } from '../exports/types.js';
 import type { Licenses } from '../licenses/types.js';
 import type { Numbering } from '../numbering/types.js';
 import type { ProjectSettings } from '../settings/types.js';

@@ -18,6 +18,7 @@ export interface SiteAction {
   title: string;
   url: string;
   filename?: string;
+  format?: ExportFormats;
   internal?: boolean;
   static?: boolean;
 }
@@ -31,10 +32,10 @@ export type SiteConfig = SiteFrontmatter & {
   template?: string;
 };
 
-export type PageDownload = {
-  format?: ExportFormats;
-  filename: string;
+export type SiteExport = {
   url: string;
+  filename: string;
+  format?: ExportFormats;
 };
 
 type ManifestProjectItem = {
@@ -49,8 +50,7 @@ type ManifestProjectItem = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
-  exports?: PageDownload[];
-  downloads?: PageDownload[];
+  exports?: SiteExport[];
 };
 
 type ManifestProject = {
@@ -63,8 +63,9 @@ type ManifestProject = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
-  downloads?: PageDownload[];
-} & Omit<ProjectFrontmatter, 'downloads'>;
+  downloads: SiteAction[];
+  exports?: SiteExport[];
+} & Omit<ProjectFrontmatter, 'downloads' | 'exports'>;
 
 export type SiteManifest = SiteFrontmatter & {
   myst: string;
