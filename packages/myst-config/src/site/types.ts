@@ -50,7 +50,6 @@ type ManifestProjectItem = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
-  exports?: SiteExport[];
 };
 
 type ManifestProject = {
