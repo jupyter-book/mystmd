@@ -3,6 +3,7 @@ import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
+import type { Download } from 'myst-frontmatter';
 import {
   EXT_TO_FORMAT,
   ExportFormats,
@@ -82,33 +83,29 @@ export async function resolvePageDownloads(
   const pageFrontmatter = await getRawFrontmatterFromFile(session, file, projectPath);
   const resolvedDownloads = pageFrontmatter?.downloads
     ?.map((download): SiteAction | undefined => {
-      let format: ExportFormats | undefined;
-      let downloadFile: string;
-      const exp = expLookup[download.file];
-      const resolvedFile = path.resolve(path.dirname(file), download.file);
-      if (exp) {
-        format = exp.format;
-        downloadFile = exp.output;
-      } else if (fs.existsSync(resolvedFile)) {
-        format = EXT_TO_FORMAT[path.extname(resolvedFile)];
-        downloadFile = resolvedFile;
-      } else {
-        addWarningForFile(session, file, `Unable to resolve download "${download.file}"`, 'error', {
-          ruleId: RuleId.exportFileCopied,
-        });
+      if (download.id && !expLookup[download.id]) {
+        addWarningForFile(
+          session,
+          file,
+          `Locate download file by export id "${download.id}"`,
+          'error',
+          {
+            ruleId: RuleId.exportFileCopied,
+          },
+        );
         return undefined;
       }
-      const fileHash = hashAndCopyStaticFile(
-        session,
-        downloadFile,
-        session.publicPath(),
-        (m: string) => {
-          addWarningForFile(session, file, m, 'error', {
-            ruleId: RuleId.exportFileCopied,
-          });
-        },
-      );
-      return { format, filename: path.basename(downloadFile), url: `/${fileHash}` };
+      const idOrUrl = download.id ?? download.url;
+      // Validation will catch this earlier
+      if (!idOrUrl) return undefined;
+      const exp = expLookup[idOrUrl];
+      if (exp) {
+        download.format = exp.format;
+        download.url = exp.output;
+        download.static = true;
+      }
+      if (!download.url) return undefined;
+      return resolveSiteAction(session, download as SiteAction, file, 'downloads');
     })
     .filter((download): download is SiteAction => !!download);
   return resolvedDownloads ?? [];
@@ -236,9 +233,13 @@ async function resolveTemplateFileOptions(
   return resolvedOptions;
 }
 
+function isInternalUrl(value: string) {
+  return !!value.match('^(/[a-zA-Z0-9._-]+)+$');
+}
+
 function isUrl(value: string) {
   // Allow simple relative path in project
-  if (value.match('^(/[a-zA-Z0-9._-]+)+$')) return true;
+  if (isInternalUrl(value)) return true;
   try {
     new URL(value);
   } catch {
@@ -252,29 +253,49 @@ function isUrl(value: string) {
  *
  * Infers `static: true` if url is an existing local file
  */
-function resolveSiteManifestAction(
+function resolveSiteAction(
   session: ISession,
-  action: SiteAction,
-  file?: string,
+  action: SiteAction | (Download & { url: string }),
+  file: string,
+  property: string,
 ): SiteAction | undefined {
-  if (!action.url) return { ...action };
+  const title = action.title;
   if (action.static === false) {
     if (!isUrl(action.url)) {
       addWarningForFile(
         session,
         file,
-        `Non-static site action "${action.url}" should be a valid URL`,
+        `Non-static resource "${action.url}" in ${property} should be a valid URL`,
+        'error',
       );
+      return undefined;
     }
-    return { ...action };
+    if (!title) {
+      addWarningForFile(
+        session,
+        file,
+        `"title" is required for resource "${action.url}" in ${property}`,
+        'error',
+      );
+      return undefined;
+    }
+    return {
+      title,
+      url: action.url,
+      filename: action.filename,
+      format: action.format,
+      internal: action.internal ?? isInternalUrl(action.url),
+      static: false,
+    };
   }
+  const resolvedFile = path.resolve(path.dirname(file), action.url);
   // Cases where url does not exist as a local file
-  if (!fs.existsSync(action.url)) {
+  if (!fs.existsSync(resolvedFile)) {
     if (action.static) {
       addWarningForFile(
         session,
         file,
-        `Could not find static resource at "${action.url}" in site config 'actions'`,
+        `Could not find static resource at "${action.url}" in ${property}`,
         'error',
         { ruleId: RuleId.staticActionFileCopied },
       );
@@ -284,28 +305,61 @@ function resolveSiteManifestAction(
       addWarningForFile(
         session,
         file,
-        `Site action "${action.url}" should be a URL or path to static file`,
+        `Resource "${action.url}" in ${property} should be a URL or path to static file`,
+        'error',
       );
+      return undefined;
     }
-    return { ...action };
+    if (!title) {
+      addWarningForFile(
+        session,
+        file,
+        `"title" is required for resource "${action.url}" in ${property}`,
+        'error',
+      );
+      return undefined;
+    }
+    return {
+      title,
+      url: action.url,
+      filename: action.filename,
+      format: action.format,
+      internal: action.internal ?? isInternalUrl(action.url),
+      static: false,
+    };
   }
   if (!action.static && isUrl(action.url)) {
     // Unlikely case where url is both an existing local file and a valid URL
     addWarningForFile(
       session,
       file,
-      `Linking site action "${action.url}" to static file; to mark this as a URL instead, use 'static: false'`,
+      `Linking resource "${action.url}" in ${property} to static file; to mark this as a URL instead, use 'static: false'`,
     );
   }
-  const fileHash = hashAndCopyStaticFile(session, action.url, session.publicPath(), (m: string) => {
-    addWarningForFile(session, action.url, m, 'error', {
-      ruleId: RuleId.staticActionFileCopied,
-    });
-  });
+  const fileHash = hashAndCopyStaticFile(
+    session,
+    resolvedFile,
+    session.publicPath(),
+    (m: string) => {
+      addWarningForFile(session, resolvedFile, m, 'error', {
+        ruleId: RuleId.staticActionFileCopied,
+      });
+    },
+  );
+  if (!title) {
+    addWarningForFile(
+      session,
+      file,
+      `using filename for title of resource "${action.url}" in ${property}`,
+    );
+  }
+  const filename = action.filename ?? path.basename(resolvedFile);
   return {
-    title: action.title,
-    filename: path.basename(action.url),
+    title: action.title ?? filename,
     url: `/${fileHash}`,
+    filename,
+    format: action.format ?? EXT_TO_FORMAT[path.extname(resolvedFile)],
+    internal: action.internal,
     static: true,
   };
 }
@@ -323,7 +377,7 @@ export async function getSiteManifest(
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);
   const siteConfigFile = selectors.selectCurrentSiteFile(state);
-  if (!siteConfig) throw Error('no site config defined');
+  if (!siteConfig || !siteConfigFile) throw Error('no site config defined');
   const siteProjects: ManifestProject[] = (
     await Promise.all(
       siteConfig.projects?.map(async (p) => localToManifestProject(session, p.path, p.slug)) ?? [],
@@ -331,7 +385,7 @@ export async function getSiteManifest(
   ).filter((p): p is ManifestProject => !!p);
   const { nav } = siteConfig;
   const actions = siteConfig.actions
-    ?.map((action) => resolveSiteManifestAction(session, action, siteConfigFile))
+    ?.map((action) => resolveSiteAction(session, action, siteConfigFile, 'actions'))
     .filter((action): action is SiteAction => !!action);
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const mystTemplate = await getMystTemplate(session, opts);

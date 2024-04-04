@@ -13,9 +13,10 @@ import type { Download } from './types.js';
 
 const DOWNLOAD_KEY_OBJECT = {
   required: [],
-  optional: ['title', 'file', 'id', 'format', 'internal', 'static'],
+  optional: ['title', 'url', 'id', 'filename', 'format', 'internal', 'static'],
   alias: {
     ref: 'id',
+    file: 'url',
   },
 };
 
@@ -40,6 +41,9 @@ export function validateDownload(input: any, opts: ValidationOptions): Download 
   }
   if (defined(value.title)) {
     output.title = validateString(value.title, incrementOptions('title', opts));
+  }
+  if (defined(value.filename)) {
+    output.filename = validateString(value.filename, incrementOptions('filename', opts));
   }
   if (defined(value.format)) {
     output.format = validateExportFormat(value.format, incrementOptions('format', opts));
