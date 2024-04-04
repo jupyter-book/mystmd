@@ -320,7 +320,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
         .startNew(sessionOpts)
         .catch((err) => {
           log.debug((err as Error).stack);
-          log.error('Jupyter connection error');
+          log.error(`Jupyter Connection Error: ${(err as Error).message}`);
         })
         .then(async (conn) => {
           if (!conn) return;
