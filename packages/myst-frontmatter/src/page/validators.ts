@@ -13,7 +13,7 @@ import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js'
 import { PAGE_FRONTMATTER_KEYS, PAGE_KNOWN_PARTS, type PageFrontmatter } from './types.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
-import { FRONTMATTER_ALIASES } from '../site/validators.js';
+import { FRONTMATTER_ALIASES } from '../site/types.js';
 
 export const USE_PROJECT_FALLBACK = [
   'authors',

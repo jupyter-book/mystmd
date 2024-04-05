@@ -12,7 +12,7 @@ import {
 } from 'simple-validators';
 import { PAGE_FRONTMATTER_KEYS } from '../page/types.js';
 import { PROJECT_FRONTMATTER_KEYS } from '../project/types.js';
-import { FRONTMATTER_ALIASES } from '../site/validators.js';
+import { FRONTMATTER_ALIASES } from '../site/types.js';
 import type { Export, ExportArticle } from './types.js';
 import { ExportFormats } from './types.js';
 
