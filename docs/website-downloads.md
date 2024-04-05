@@ -38,6 +38,10 @@ project:
       title: A PDF of this book
 ```
 
+```{warning} This is not yet implemented in the book theme
+See this issue for more details: https://github.com/executablebooks/myst-theme/issues/352
+```
+
 ```{warning} Note that this will over-ride the sourcefile download option of each page!
 ```
 
