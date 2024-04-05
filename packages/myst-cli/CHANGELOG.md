@@ -1,5 +1,19 @@
 # myst-cli
 
+## 1.1.52
+
+### Patch Changes
+
+- be3befd: Fix circular deps
+- Updated dependencies [be3befd]
+- Updated dependencies [be3befd]
+  - myst-frontmatter@1.1.35
+  - myst-parser@1.2.3
+  - myst-common@1.1.35
+  - myst-config@1.1.35
+  - myst-spec-ext@1.1.35
+  - myst-transforms@1.3.4
+
 ## 1.1.51
 
 ### Patch Changes

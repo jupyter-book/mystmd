@@ -1,5 +1,14 @@
 # myst-parser
 
+## 1.2.3
+
+### Patch Changes
+
+- be3befd: Fix circular deps
+  - myst-common@1.1.35
+  - myst-roles@1.2.3
+  - myst-directives@1.2.3
+
 ## 1.2.2
 
 ### Patch Changes
