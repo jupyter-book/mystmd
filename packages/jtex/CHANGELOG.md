@@ -1,5 +1,16 @@
 # jtex
 
+## 1.0.16
+
+### Patch Changes
+
+- 7d9ffa14: Typst compile in quotes
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [c38cc28]
+  - myst-common@1.1.34
+  - myst-frontmatter@1.1.34
+
 ## 1.0.15
 
 ### Patch Changes

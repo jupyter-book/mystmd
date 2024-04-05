@@ -1,5 +1,36 @@
 # myst-cli
 
+## 1.1.51
+
+### Patch Changes
+
+- e0b9a122: Update inquirer
+- 7d9ffa14: Typst compile in quotes
+- c38cc28: Relax site action validation and move later in the build
+- c38cc28: Add downloads to page/project frontmatter and site config
+- 49fd6b98: Cell metadata from jupyter should not be serialized to `meta` on the block.
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [6a57ab77]
+- Updated dependencies [49fd6b98]
+- Updated dependencies [7d9ffa14]
+- Updated dependencies [d24ab936]
+- Updated dependencies [c38cc28]
+- Updated dependencies [c38cc28]
+- Updated dependencies [5b6f367e]
+- Updated dependencies [ab7fa83c]
+  - myst-common@1.1.34
+  - myst-parser@1.2.2
+  - myst-execute@0.0.4
+  - jtex@1.0.16
+  - myst-to-typst@0.0.13
+  - myst-config@1.1.34
+  - myst-frontmatter@1.1.34
+  - tex-to-myst@1.0.25
+  - myst-transforms@1.3.3
+  - myst-spec-ext@1.1.34
+  - myst-to-tex@1.0.25
+
 ## 1.1.50
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.1.34
+
+### Patch Changes
+
+- c38cc28: Add downloads to page/project frontmatter and site config
+
 ## 1.1.33
 
 ## 1.1.32

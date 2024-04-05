@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.7
+
+### Patch Changes
+
+- 6a57ab77: Only trim end of line for myst-directives, not both the start and end of lines. This is important for keeping indentation in code blocks.
+
 ## 1.0.6
 
 ### Patch Changes

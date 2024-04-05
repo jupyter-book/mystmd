@@ -1,5 +1,18 @@
 # myst-transforms
 
+## 1.3.3
+
+### Patch Changes
+
+- ab7fa83c: add html align property to table headers and data
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [c38cc28]
+  - myst-common@1.1.34
+  - myst-frontmatter@1.1.34
+  - myst-spec-ext@1.1.34
+  - myst-to-html@1.2.2
+
 ## 1.3.2
 
 ### Patch Changes
