@@ -80,10 +80,10 @@ The following table lists the available frontmatter fields, a brief description 
   - a string (max 500 chars)
   - page & project
 * - `exports`
-  - an export object, see [](#exports)
+  - an export object, see [](./documents-exports.md)
   - page & project
 * - `downloads`
-  - a download object, see [](#downloads)
+  - a download object, see [](./website-downloads.md)
   - page & project
 * - `tags`
   - a list of strings
@@ -513,15 +513,12 @@ The date field is a string and should conform to a valid Javascript data format.
 
 Where the latter example in that list are valid [IETF timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14)
 
-(exports)=
+(frontmatter:exports)=
 
 ## Exports
 
-You may define desired static exports in page or project frontmatter. In the export object, you may specify a filename, format, and/or template, as well as the article(s) you wish to include in your export. You may also provide any additional options required by your template in the export object. Formats currently supported by MyST include `pdf`, `tex`, `typst`, `docx`, `jats`, and `meca`. For examples of how to create exports, see [](./creating-pdf-documents.md). You can also explore the [MyST templating](myst:jtex) documentation for a deeper dive into defining templates.
-
-After defining `exports` in your frontmatter, you may build them with the `myst build` [CLI command](./quickstart-myst-documents.md).
-
-The following table shows the available properties for each export. You must define at least one of `format`, `output`, or `template` for MyST to be able to perform your output. You may also specify a string instead of a full export object; this string will be inferred to be either the export format or the output filename.
+Exports allow you to generate static versions of your MyST documents, often through intermediary build engines like Latex.
+For usage information, see [](./documents-exports.md).
 
 ```{list-table} Frontmatter export definitions
 :header-rows: 1
@@ -546,11 +543,34 @@ The following table shows the available properties for each export. You must def
   - a list of strings - path(s) to sub-articles for `jats` export
 ```
 
-(downloads)=
+(frontmatter:downloads)=
 
 ## Downloads
 
-Downloads are downloadable files or useful links you want available on your MyST site. They may be defined at the project or the page level. In your frontmatter, a download may only specify one of `id`, `file`, or `url`. Descriptions of these fields and other available fields are in the table below.
+Downloads allow you to include downloadable files with a MyST website.
+They are specified in either:
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  downloads:
+    - file: ...
+    - id: ...
+```
+
+In **page frontmatter**:
+
+```{code-block} yaml
+:filename: page.md
+---
+downloads:
+  - file: ...
+  - id: ...
+---
+```
+
+See [](./website-downloads.md) information about how to use this feature.
+Below is a list of all possible downloads configuration.
 
 ```{list-table} Frontmatter download definitions
 :header-rows: 1
@@ -569,33 +589,6 @@ Downloads are downloadable files or useful links you want available on your MyST
   - a string - name of the file upon download. By default, this will match the original filename. `url` values do no require a `filename`; if provided, the `url` will be treated as a download link rather than page navigation.
 * - `static`
   - a boolean - this is automatically set to `true` for local files and `false` otherwise. You may also explicitly set this to `false`; this will bypass any attempt to find the file locally and will keep the value for `url` exactly as it is provided.
-```
-
-You may include the raw source of a file as a download by referencing the file itself in the download frontmatter. For example inside file `index.md`, you may do:
-
-```yaml
-downloads:
-  file: index.md
-  title: Source File
-```
-
-The following example has several downloads: the source file, as above, an exported pdf, a remote file, and a link to another website:
-
-```yaml
-exports:
-  - output: paper.pdf
-    template: lapreprint-typst
-    id: my-paper
-downloads:
-  - file: index.md
-    title: Source File
-  - id: my-paper
-    title: Publication
-  - url: https://example.com/files/script.py
-    filename: script.py
-    title: Sample Code
-  - url: https://example.com/more-info
-    title: More Info
 ```
 
 (licenses)=
