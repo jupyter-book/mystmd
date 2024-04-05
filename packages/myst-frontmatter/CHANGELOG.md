@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.1.35
+
+### Patch Changes
+
+- be3befd: Fix circular deps
+- be3befd: Move site aliases to prevent circular dependencies
+
 ## 1.1.34
 
 ### Patch Changes
