@@ -25,6 +25,22 @@ downloads:
 
 An entry for this PDF will now show up in your page's downloads dropdown.
 
+## Specify a download for all pages of a MyST site
+
+If you'd like a download link to show up for all pages of a MyST site, use configuration at the `myst.yml` level.
+For example, let's say you used `typst` to generate a PDF of *all documents in your MyST site*, called `mybook.pdf`.
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  downloads:
+    - file: ./_build/pdf/mybook.pdf
+      title: A PDF of this book
+```
+
+```{warning} Note that this will over-ride the sourcefile download option of each page!
+```
+
 ## Include the raw source file
 
 You may include the raw source of a file as a download by referencing the file itself in the download frontmatter. For example inside file `index.md`, you may do:
