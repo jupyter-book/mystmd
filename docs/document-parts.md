@@ -7,6 +7,8 @@ Document parts allow you to add metadata to your documents with specific compone
 
 There are three ways that you can define parts of a document: (1) in your page frontmatter; (2) implicitly using a section heading; and (3) on a block using a `part` or `tag` annotation. These are all based on a part name, which is case insensitive.
 
+(parts:frontmatter)=
+
 ## Parts in Frontmatter
 
 On any page, you can add a part to your document directly in the frontmatter, for example, the `abstract`:
@@ -65,6 +67,8 @@ parts:
 
 The advantage of this method is that the content is not rendered in your document.
 
+(parts:implicit)=
+
 ## Implicit Parts using a Title
 
 If you are rendering your project in other places, it can be helpful to leave these sections directly in the document.
@@ -77,6 +81,8 @@ This is my abstract!
 ```
 
 Note that frontmatter parts and explicitly tagged cells/blocks will take precedence over this method. Themes may choose to only pick up a subset of implicit parts, for example, only an `Abstract` and not `Summary` as summary section can be used in other contexts.
+
+(parts:blocks)=
 
 ## In a Jupyter Notebook cells and blocks
 

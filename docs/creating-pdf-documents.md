@@ -24,7 +24,8 @@ To create a new `pdf` export type for your MyST document, in your document front
 
 (export-frontmatter-pdf)=
 
-```yaml
+```{code-block} yaml
+:filename: article.md
 ---
 title: My PDF
 exports:
@@ -92,11 +93,12 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 ## Rendering PDFs with Typst
 
-MyST also provides an option to build PDFs with [Typst](https://typst.app/). Typst is a markup-based typesetting language. Compared to $\LaTeX$, syntax is streamlined and consistent, and compile time is significantly faster. To render Typst PDFs locally, you must install the [Typst CLI](https://github.com/typst/typst).
+MyST also provides an option to build PDFs with [Typst](https://typst.app). Typst is a markup-based typesetting language. Compared to $\LaTeX$, syntax is streamlined and consistent, and compile time is significantly faster. To render Typst PDFs locally, you must install the [Typst CLI](https://github.com/typst/typst).
 
 To add Typst to your export targets, add `format: typst` and select a Typst template. These templates use the same [MyST templating library](myst:jtex) as $\LaTeX$ templates to support document [frontmatter](./frontmatter.md).
 
-```yaml
+```{code-block} yaml
+:filename: article.md
 ---
 title: My PDF
 exports:
@@ -148,21 +150,19 @@ There are two ways to provide information to a template, through `parts` and `op
 
 ## Template `parts`
 
-The `parts` of a template are things like `abstract`, `acknowledgments` or `data_availability`, they are usually written pieces of a document, but are placed specifically in a template. For example, an abstract usually has a place in templates, with a box or other typographic choices applied. These parts can be marked as `required`, and will raise error in the PDF export process, however, myst will always try to complete the build.
+The `parts` of a template are things like `abstract`, `acknowledgments` or `data_availability`, see [](./document-parts.md) for more information. These parts are usually written pieces of a document, but are placed specifically in a template. For example, an abstract usually has a place in templates, with a box or other typographic choices applied. These parts can be marked as `required`, and will raise error in the PDF export process, however, myst will always try to complete the build.
 
-A `part` of a template is defined using metadata on a MyST [block](./blocks.md):
+A `part` of a template can be defined using the [page frontmatter](#parts:frontmatter) or [metadata on a block](#parts:blocks). An example of using the frontmatter is:
 
-```markdown
-+++ { "part": "abstract" }
-
-MyST (Markedly Structured Text) is designed to create publication-quality documents
-written entirely in Markdown. The markup and publishing build system is fantastic,
-MyST seamlessly exports to any PDF template, while collecting metadata to make your
-writing process as easy as possible.
-
-+++
-
-# Introduction
+```{code-block} yaml
+:filename: article.md
+---
+abstract: |
+  MyST (Markedly Structured Text) is designed to create publication-quality documents
+  written entirely in Markdown. The markup and publishing build system is fantastic,
+  MyST seamlessly exports to any PDF template, while collecting metadata to make your
+  writing process as easy as possible.
+---
 ```
 
 ### Template `options`
@@ -172,6 +172,7 @@ Template authors should choose to use [standard frontmatter](./frontmatter.md) p
 ```{code-block} yaml
 :linenos:
 :emphasize-lines: 7
+:filename: article.md
 ---
 title: My PDF
 exports:
@@ -191,6 +192,7 @@ The export list can also point to local templates, for $\LaTeX$ these are built 
 To make use of the template locally, validate it using `jtex check` and then point to the template folder in your export:
 
 ```{code-block} yaml
+:filename: article.md
 :linenos:
 :emphasize-lines: 5
 :caption: The template can be a path to a `jtex` template, which contains a `template.yml` and `template.tex` as well as any other `cls` or `def` files.
@@ -217,7 +219,8 @@ Sometimes you may want to combine multiple MyST documents into a single export, 
 
 For perform a multi-article export, add multiple `articles` to the export frontmatter:
 
-```yaml
+```{code-block} yaml
+:filename: article.md
 ---
 title: My PDF
 exports:
@@ -234,7 +237,8 @@ exports:
 
 As an alternative to listing articles in MyST frontmatter, you may specify a table of contents using the [Jupyter Book format](#toc-format):
 
-```yaml
+```{code-block} yaml
+:filename: article.md
 ---
 title: My PDF
 exports:
@@ -251,7 +255,8 @@ By default if no `articles` are given, exports defined in page frontmatter will 
 
 Export frontmatter may differ from page or project frontmatter. For example, you may with to give your export its own title, which does not match the project title. To do so, add the alternative frontmatter to your export:
 
-```yaml
+```{code-block} yaml
+:filename: article.md
 ---
 title: My Interactive Research!
 exports:
@@ -265,7 +270,8 @@ You may redefine [any frontmatter fields](./frontmatter.md). These redefined fie
 
 Further, for [](#multi-article-exports), you may redefine frontmatter for every specific page. To do so, you must use a list of article objects (as opposed to a `_toc.yml` file or a list of article names):
 
-```yaml
+```{code-block} yaml
+:filename: article.md
 ---
 title: My PDF
 exports:

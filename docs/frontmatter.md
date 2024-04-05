@@ -80,10 +80,10 @@ The following table lists the available frontmatter fields, a brief description 
   - a string (max 500 chars)
   - page & project
 * - `exports`
-  - an export object, see [](#exports)
+  - an export object, see [](./documents-exports.md)
   - page & project
 * - `downloads`
-  - a download object, see [](#downloads)
+  - a download object, see [](./website-downloads.md)
   - page & project
 * - `tags`
   - a list of strings
@@ -518,7 +518,7 @@ Where the latter example in that list are valid [IETF timestamps](https://datatr
 ## Exports
 
 Exports allow you to generate static versions of your MyST documents, often through intermediary build engines like Latex.
-For usage information, see [](#exports).
+For usage information, see [](./documents-exports.md).
 
 ```{list-table} Frontmatter export definitions
 :header-rows: 1
@@ -550,7 +550,7 @@ For usage information, see [](#exports).
 Downloads allow you to include downloadable files with a MyST website.
 They are specified in either:
 
-```{code-block}
+```{code-block} yaml
 :filename: myst.yml
 project:
   downloads:
@@ -560,7 +560,7 @@ project:
 
 In **page frontmatter**:
 
-```{code-block}
+```{code-block} yaml
 :filename: page.md
 ---
 downloads:
@@ -569,7 +569,7 @@ downloads:
 ---
 ```
 
-See [](#downloads) information about how to use this feature.
+See [](./website-downloads.md) information about how to use this feature.
 Below is a list of all possible downloads configuration.
 
 ```{list-table} Frontmatter download definitions

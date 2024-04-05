@@ -47,7 +47,7 @@ parts:
       # - file: publishing
   - caption: Documents
     chapters:
-      - file: documents-export
+      - file: documents-exports
       - file: creating-pdf-documents
       - file: creating-word-documents
       - file: creating-jats-xml
