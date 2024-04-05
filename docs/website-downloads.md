@@ -1,9 +1,14 @@
 (downloads)=
 # Download links to documents and static files
 
-Downloads are downloadable files or useful links you want available on your MyST site. They may be defined at the project or the page level. In your frontmatter, a download may only specify one of `id`, `file`, or `url`. Descriptions of these fields and other available fields are in the table below.
+Downloads are downloadable files or useful links you want available on your MyST site. They may be defined at the project or the page level.
 
-See the following list of downloads from [the Downloads configuration reference](#frontmatter:downloads).
+If you specify project-level `downloads:` configuration, it will **append each item to the sourcefile download of each page**.
+
+If you specify page-level `downloads:` configuration, it will **over-ride project-level configuration as well as page defaults**.
+
+Note that each entry may only specify one of `id`, `file`, or `url`.
+Descriptions of these fields and other available fields are in the table below from [the Downloads configuration reference](#frontmatter:downloads).
 
 ![](#table-frontmatter-downloads)
 
@@ -36,13 +41,6 @@ project:
   downloads:
     - file: ./_build/pdf/mybook.pdf
       title: A PDF of this book
-```
-
-```{warning} This is not yet implemented in the book theme
-See this issue for more details: https://github.com/executablebooks/myst-theme/issues/352
-```
-
-```{warning} Note that this will over-ride the sourcefile download option of each page!
 ```
 
 ## Include the raw source file
