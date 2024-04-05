@@ -5,7 +5,7 @@ import type { Licenses } from '../licenses/types.js';
 import type { Numbering } from '../numbering/types.js';
 import type { ProjectSettings } from '../settings/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
-import { SITE_FRONTMATTER_KEYS } from '../site/validators.js';
+import { SITE_FRONTMATTER_KEYS } from '../site/types.js';
 import type { ExpandedThebeFrontmatter } from '../thebe/types.js';
 
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [

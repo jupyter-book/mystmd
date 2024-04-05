@@ -24,7 +24,7 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
-import { loadIntersphinx } from './intersphinx.js';
+import { loadIntersphinx } from './loadIntersphinx.js';
 import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 

@@ -17,55 +17,6 @@ import { validateVenue } from '../venues/validators.js';
 import type { SiteFrontmatter } from './types.js';
 import { RESERVED_EXPORT_KEYS } from '../exports/validators.js';
 
-export const SITE_FRONTMATTER_KEYS = [
-  'title',
-  'subtitle',
-  'short_title',
-  'description',
-  'thumbnail',
-  'thumbnailOptimized',
-  'banner',
-  'bannerOptimized',
-  'authors',
-  'reviewers',
-  'editors',
-  'contributors',
-  'venue',
-  'github',
-  'keywords',
-  'affiliations',
-  'funding',
-  'copyright',
-  'options',
-];
-
-export const FRONTMATTER_ALIASES = {
-  author: 'authors',
-  reviewer: 'reviewers',
-  editor: 'editors',
-  contributor: 'contributors',
-  affiliation: 'affiliations',
-  export: 'exports',
-  download: 'downloads',
-  jupyter: 'thebe',
-  part: 'parts',
-  ack: 'acknowledgments',
-  acknowledgements: 'acknowledgments',
-  availability: 'data_availability',
-  dataAvailability: 'data_availability',
-  'data-availability': 'data_availability',
-  quote: 'epigraph',
-  plain_language_summary: 'summary',
-  'plain-language-summary': 'summary',
-  plainLanguageSummary: 'summary',
-  lay_summary: 'summary',
-  'lay-summary': 'summary',
-  keyPoints: 'keypoints',
-  key_points: 'keypoints',
-  'key-points': 'keypoints',
-  image: 'thumbnail',
-};
-
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
   if (defined(value.title)) {

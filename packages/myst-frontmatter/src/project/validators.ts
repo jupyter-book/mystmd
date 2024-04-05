@@ -16,12 +16,13 @@ import { validateDownloadsList } from '../downloads/validators.js';
 import { validateExportsList } from '../exports/validators.js';
 import { validateLicenses } from '../licenses/validators.js';
 import { validateNumbering } from '../numbering/validators.js';
-import { FRONTMATTER_ALIASES, validateSiteFrontmatterKeys } from '../site/validators.js';
+import { validateSiteFrontmatterKeys } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateDoi } from '../utils/validators.js';
 import { PROJECT_FRONTMATTER_KEYS } from './types.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
+import { FRONTMATTER_ALIASES } from '../site/types.js';
 
 export function validateProjectAndPageFrontmatterKeys(
   value: Record<string, any>,

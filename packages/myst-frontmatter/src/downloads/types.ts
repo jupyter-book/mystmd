@@ -1,4 +1,4 @@
-import type { ExportFormats } from '../index.js';
+import type { ExportFormats } from '../exports/types.js';
 
 export type Download = {
   title?: string;

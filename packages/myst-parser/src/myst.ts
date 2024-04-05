@@ -20,7 +20,7 @@ import {
 } from './plugins.js';
 import { applyDirectives } from './directives.js';
 import { applyRoles } from './roles.js';
-import type { AllOptions } from './types.js';
+import type { AllOptions } from './fromMarkdown.js';
 import type { GenericParent } from 'myst-common';
 
 type Options = Partial<AllOptions>;

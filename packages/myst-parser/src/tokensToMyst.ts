@@ -7,7 +7,7 @@ import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown.js';
-import type { MdastOptions, TokenHandlerSpec } from './types.js';
+import type { MdastOptions, TokenHandlerSpec } from './fromMarkdown.js';
 
 export function computeAmsmathTightness(
   src: string,

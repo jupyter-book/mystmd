@@ -1,4 +1,3 @@
-import { resolve } from 'node:path';
 import { getFrontmatter } from 'myst-transforms';
 import type { Export, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import {
@@ -15,8 +14,6 @@ import { VFile } from 'vfile';
 import type { ISession } from './session/types.js';
 import { selectors, watch } from './store/index.js';
 import { logMessagesFromVFile } from './utils/logging.js';
-import { castSession } from './session/cache.js';
-import { loadFile } from './process/file.js';
 
 export function frontmatterValidationOpts(
   vfile: VFile,
@@ -83,22 +80,6 @@ export function processPageFrontmatter(
 export function prepareToWrite(frontmatter: { license?: Licenses }) {
   if (!frontmatter.license) return { ...frontmatter };
   return { ...frontmatter, license: licensesToString(frontmatter.license) };
-}
-
-export async function getRawFrontmatterFromFile(
-  session: ISession,
-  file: string,
-  projectPath?: string,
-) {
-  const state = session.store.getState();
-  if (projectPath && resolve(file) === selectors.selectLocalConfigFile(state, projectPath)) {
-    return selectors.selectLocalProjectConfig(state, projectPath);
-  }
-  const cache = castSession(session);
-  if (!cache.$getMdast(file)) await loadFile(session, file, projectPath);
-  const result = cache.$getMdast(file);
-  if (!result || !result.pre) return undefined;
-  return result.pre.frontmatter;
 }
 
 export function getExportListFromRawFrontmatter(

@@ -4,7 +4,7 @@ import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
 import { combineProjectCitationRenderers } from '../../process/citations.js';
 import { loadFile, selectFile } from '../../process/file.js';
-import { loadIntersphinx } from '../../process/intersphinx.js';
+import { loadIntersphinx } from '../../process/loadIntersphinx.js';
 import { postProcessMdast, transformMdast } from '../../process/mdast.js';
 import { loadProject, selectPageReferenceStates } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
