@@ -41,11 +41,13 @@ parts:
       - file: accessibility-and-performance
       # - file: search
       - file: analytics
+      - file: website-downloads
       - file: deployment
       - file: website-templates
       # - file: publishing
   - caption: Documents
     chapters:
+      - file: documents-export
       - file: creating-pdf-documents
       - file: creating-word-documents
       - file: creating-jats-xml
