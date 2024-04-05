@@ -83,7 +83,7 @@ The following table lists the available frontmatter fields, a brief description 
   - an export object, see [](#exports)
   - page & project
 * - `downloads`
-  - a file or export ID, see [](#downloads)
+  - a download object, see [](#downloads)
   - page & project
 * - `tags`
   - a list of strings
@@ -550,7 +550,53 @@ The following table shows the available properties for each export. You must def
 
 ## Downloads
 
-Downloads are files you want available on your MyST site. They may be defined at the project or the page level. In your frontmatter, `downloads` may include (a) relative paths to local files or (b) export `id` values to indicate you would like a specific export available as a download.
+Downloads are downloadable files or useful links you want available on your MyST site. They may be defined at the project or the page level. In your frontmatter, a download may only specify one of `id`, `file`, or `url`. Descriptions of these fields and other available fields are in the table below.
+
+```{list-table} Frontmatter download definitions
+:header-rows: 1
+:name: table-frontmatter-downloads
+* - field
+  - description
+* - `id`
+  - a string - reference to an existing `export` identifier. The referenced export may be defined in a different file. If `id` is defined, `file`/`url` are not allowed.
+* - `file`
+  - a string - a path to a local file. If `file` is defined, `id`/`url` are not allowed.
+* - `url`
+  - a string - either a full URL or a relative URL of a page in your MyST project. If `url` is defined, `id`/`file` are not allowed.
+* - `title`
+  - a string - title of the `downloads` entry. This will show up as text on the link in your MyST site. `title` is recommended for all downloads, but only required for `url` values; files will default to `filename` title
+* - `filename`
+  - a string - name of the file upon download. By default, this will match the original filename. `url` values do no require a `filename`; if provided, the `url` will be treated as a download link rather than page navigation.
+* - `static`
+  - a boolean - this is automatically set to `true` for local files and `false` otherwise. You may also explicitly set this to `false`; this will bypass any attempt to find the file locally and will keep the value for `url` exactly as it is provided.
+```
+
+You may include the raw source of a file as a download by referencing the file itself in the download frontmatter. For example inside file `index.md`, you may do:
+
+```yaml
+downloads:
+  file: index.md
+  title: Source File
+```
+
+The following example has several downloads: the source file, as above, an exported pdf, a remote file, and a link to another website:
+
+```yaml
+exports:
+  - output: paper.pdf
+    template: lapreprint-typst
+    id: my-paper
+downloads:
+  - file: index.md
+    title: Source File
+  - id: my-paper
+    title: Publication
+  - url: https://example.com/files/script.py
+    filename: script.py
+    title: Sample Code
+  - url: https://example.com/more-info
+    title: More Info
+```
 
 (licenses)=
 
