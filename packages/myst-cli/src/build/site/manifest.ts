@@ -22,7 +22,7 @@ import version from '../../version.js';
 import { getMystTemplate } from './template.js';
 import { collectExportOptions } from '../utils/collectExportOptions.js';
 import { filterPages } from '../../project/load.js';
-import { getRawFrontmatterFromFile } from '../../frontmatter.js';
+import { getRawFrontmatterFromFile } from '../../process/file.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 

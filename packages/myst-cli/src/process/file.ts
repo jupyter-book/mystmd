@@ -18,8 +18,9 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadCitations } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebook } from './notebook.js';
-import { makeFileLoader } from '../index.js';
 import { includeDirectiveTransform } from 'myst-transforms';
+import { makeFileLoader } from '../transforms/include.js';
+import { selectors } from '../store/index.js';
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');
@@ -210,4 +211,20 @@ export function selectFile(session: ISession, file: string): RendererData | unde
     return undefined;
   }
   return mdastPost;
+}
+
+export async function getRawFrontmatterFromFile(
+  session: ISession,
+  file: string,
+  projectPath?: string,
+) {
+  const state = session.store.getState();
+  if (projectPath && path.resolve(file) === selectors.selectLocalConfigFile(state, projectPath)) {
+    return selectors.selectLocalProjectConfig(state, projectPath);
+  }
+  const cache = castSession(session);
+  if (!cache.$getMdast(file)) await loadFile(session, file, projectPath);
+  const result = cache.$getMdast(file);
+  if (!result || !result.pre) return undefined;
+  return result.pre.frontmatter;
 }

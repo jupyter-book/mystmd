@@ -23,8 +23,9 @@ import type {
   ExportWithInputOutput,
   ExportWithFormat,
 } from '../types.js';
-import { getExportListFromRawFrontmatter, getRawFrontmatterFromFile } from '../../frontmatter.js';
+import { getExportListFromRawFrontmatter } from '../../frontmatter.js';
 import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
+import { getRawFrontmatterFromFile } from '../../process/file.js';
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
 
