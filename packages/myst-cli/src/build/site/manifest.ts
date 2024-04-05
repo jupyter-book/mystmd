@@ -87,7 +87,7 @@ export async function resolvePageDownloads(
         addWarningForFile(
           session,
           file,
-          `Locate download file by export id "${download.id}"`,
+          `Unable to locate download file by export id "${download.id}"`,
           'error',
           {
             ruleId: RuleId.exportFileCopied,
