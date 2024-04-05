@@ -71,9 +71,9 @@ export function getFrontmatter(
     const title = toText(nextNode.children);
     // Only remove the title if it is the same
     if (frontmatter.title && frontmatter.title === title) {
-      // If this has a label what do we do? Add this label as a document reference
       (nextNode as any).type = '__delete__';
       frontmatter.content_includes_title = false;
+      // If this has a label add it to the page identifiers for reference resolution
       if (nextNode.label) {
         const { identifier } = normalizeLabel(nextNode.label) ?? {};
         if (identifier) identifiers.push(identifier);
