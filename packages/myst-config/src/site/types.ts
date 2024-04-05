@@ -1,4 +1,4 @@
-import type { Export, ProjectFrontmatter, SiteFrontmatter } from 'myst-frontmatter';
+import type { ExportFormats, ProjectFrontmatter, SiteFrontmatter } from 'myst-frontmatter';
 
 export interface SiteProject {
   slug?: string;
@@ -18,6 +18,7 @@ export interface SiteAction {
   title: string;
   url: string;
   filename?: string;
+  format?: ExportFormats;
   internal?: boolean;
   static?: boolean;
 }
@@ -29,6 +30,12 @@ export type SiteConfig = SiteFrontmatter & {
   domains?: string[];
   favicon?: string;
   template?: string;
+};
+
+export type SiteExport = {
+  url: string;
+  filename: string;
+  format?: ExportFormats;
 };
 
 type ManifestProjectItem = {
@@ -43,7 +50,6 @@ type ManifestProjectItem = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
-  exports?: Export[];
 };
 
 type ManifestProject = {
@@ -56,7 +62,9 @@ type ManifestProject = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
-} & ProjectFrontmatter;
+  downloads?: SiteAction[];
+  exports?: SiteExport[];
+} & Omit<ProjectFrontmatter, 'downloads' | 'exports'>;
 
 export type SiteManifest = SiteFrontmatter & {
   myst: string;

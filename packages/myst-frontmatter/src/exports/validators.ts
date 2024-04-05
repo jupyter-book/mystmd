@@ -87,7 +87,10 @@ export function validateExportsList(input: any, opts: ValidationOptions): Export
   return output;
 }
 
-function validateExportFormat(input: any, opts: ValidationOptions): ExportFormats | undefined {
+export function validateExportFormat(
+  input: any,
+  opts: ValidationOptions,
+): ExportFormats | undefined {
   if (input === undefined) return undefined;
   if (input === 'tex+pdf') input = 'pdf+tex';
   if (input === 'jats') input = 'xml';
@@ -193,6 +196,9 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     return validationError('export must specify one of: format, template, or output', opts);
   }
   const validExport: Export = { ...value, format, output, template };
+  if (defined(value.id)) {
+    validExport.id = validateString(value.id, incrementOptions('id', opts));
+  }
   if (defined(value.zip)) {
     validExport.zip = validateBoolean(value.zip, incrementOptions('zip', opts));
   }

@@ -12,6 +12,7 @@ import {
   validateUrl,
 } from 'simple-validators';
 import { validateBiblio } from '../biblio/validators.js';
+import { validateDownloadsList } from '../downloads/validators.js';
 import { validateExportsList } from '../exports/validators.js';
 import { validateLicenses } from '../licenses/validators.js';
 import { validateNumbering } from '../numbering/validators.js';
@@ -104,6 +105,10 @@ export function validateProjectAndPageFrontmatterKeys(
   if (defined(value.exports)) {
     const exports = validateExportsList(value.exports, opts);
     if (exports) output.exports = exports;
+  }
+  if (defined(value.downloads)) {
+    const downloads = validateDownloadsList(value.downloads, opts);
+    if (downloads) output.downloads = downloads;
   }
   if (value.thumbnail === null) {
     // It is possible for the thumbnail to explicitly be null.

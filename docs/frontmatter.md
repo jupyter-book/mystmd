@@ -79,6 +79,12 @@ The following table lists the available frontmatter fields, a brief description 
 * - `description`
   - a string (max 500 chars)
   - page & project
+* - `exports`
+  - an export object, see [](#exports)
+  - page & project
+* - `downloads`
+  - a download object, see [](#downloads)
+  - page & project
 * - `tags`
   - a list of strings
   - page only
@@ -506,6 +512,91 @@ The date field is a string and should conform to a valid Javascript data format.
 - `2022-12-14` - `YYYY-MM-DD`
 
 Where the latter example in that list are valid [IETF timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14)
+
+(exports)=
+
+## Exports
+
+You may define desired static exports in page or project frontmatter. In the export object, you may specify a filename, format, and/or template, as well as the article(s) you wish to include in your export. You may also provide any additional options required by your template in the export object. Formats currently supported by MyST include `pdf`, `tex`, `typst`, `docx`, `jats`, and `meca`. For examples of how to create exports, see [](./creating-pdf-documents.md). You can also explore the [MyST templating](myst:jtex) documentation for a deeper dive into defining templates.
+
+After defining `exports` in your frontmatter, you may build them with the `myst build` [CLI command](./quickstart-myst-documents.md).
+
+The following table shows the available properties for each export. You must define at least one of `format`, `output`, or `template` for MyST to be able to perform your output. You may also specify a string instead of a full export object; this string will be inferred to be either the export format or the output filename.
+
+```{list-table} Frontmatter export definitions
+:header-rows: 1
+:name: table-frontmatter-exports
+* - field
+  - description
+* - `id`
+  - a string - a local identifier that can be used to reference the export
+* - `format`
+  - one of `pdf` (built with $\LaTeX$ or Typst, depending on the template), `tex` (raw $\LaTeX$ files), `pdf+tex` (both PDF and raw $\LaTeX$ files) `typst` (raw Typst files and built PDF file), `docx`, `md`, `jats`, or `meca`
+* - `template`
+  - a string - name of an existing [MyST template](https://github.com/myst-templates) or a local path to a template folder. Templates are only available for `pdf`, `tex`, `typst`, and `docx` formats.
+* - `output`
+  - a string - export output filename with a valid extension or destination folder
+* - `zip`
+  - a boolean - if `true`, zip the output - only applies for multi-file exports `tex`, `pdf+tex` and `typst`.
+* - `articles`
+  - a list of strings - path(s) to articles to include in your export - this is required for exports defined in project frontmatter; for page frontmatter, the default article will be the page itself. Not all exports currently support multiple articles.
+* - `toc`
+  - a string - path to jupyterbook `_toc.yml` file - may be used as an alternative to listing `articles`
+* - `sub_articles`
+  - a list of strings - path(s) to sub-articles for `jats` export
+```
+
+(downloads)=
+
+## Downloads
+
+Downloads are downloadable files or useful links you want available on your MyST site. They may be defined at the project or the page level. In your frontmatter, a download may only specify one of `id`, `file`, or `url`. Descriptions of these fields and other available fields are in the table below.
+
+```{list-table} Frontmatter download definitions
+:header-rows: 1
+:name: table-frontmatter-downloads
+* - field
+  - description
+* - `id`
+  - a string - reference to an existing `export` identifier. The referenced export may be defined in a different file. If `id` is defined, `file`/`url` are not allowed.
+* - `file`
+  - a string - a path to a local file. If `file` is defined, `id`/`url` are not allowed.
+* - `url`
+  - a string - either a full URL or a relative URL of a page in your MyST project. If `url` is defined, `id`/`file` are not allowed.
+* - `title`
+  - a string - title of the `downloads` entry. This will show up as text on the link in your MyST site. `title` is recommended for all downloads, but only required for `url` values; files will default to `filename` title
+* - `filename`
+  - a string - name of the file upon download. By default, this will match the original filename. `url` values do no require a `filename`; if provided, the `url` will be treated as a download link rather than page navigation.
+* - `static`
+  - a boolean - this is automatically set to `true` for local files and `false` otherwise. You may also explicitly set this to `false`; this will bypass any attempt to find the file locally and will keep the value for `url` exactly as it is provided.
+```
+
+You may include the raw source of a file as a download by referencing the file itself in the download frontmatter. For example inside file `index.md`, you may do:
+
+```yaml
+downloads:
+  file: index.md
+  title: Source File
+```
+
+The following example has several downloads: the source file, as above, an exported pdf, a remote file, and a link to another website:
+
+```yaml
+exports:
+  - output: paper.pdf
+    template: lapreprint-typst
+    id: my-paper
+downloads:
+  - file: index.md
+    title: Source File
+  - id: my-paper
+    title: Publication
+  - url: https://example.com/files/script.py
+    filename: script.py
+    title: Sample Code
+  - url: https://example.com/more-info
+    title: More Info
+```
 
 (licenses)=
 

@@ -307,16 +307,7 @@ async function getExportListFromFile(
   opts: ExportOptions,
 ): Promise<Export[]> {
   const { disableTemplate } = opts;
-  let rawFrontmatter: Record<string, any> | undefined;
-  const state = session.store.getState();
-  if (
-    projectPath &&
-    path.resolve(sourceFile) === selectors.selectLocalConfigFile(state, projectPath)
-  ) {
-    rawFrontmatter = selectors.selectLocalProjectConfig(state, projectPath);
-  } else {
-    rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);
-  }
+  const rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);
   const exportList = getExportListFromRawFrontmatter(session, rawFrontmatter, sourceFile);
   const exportListWithTemplate = exportList
     .map((exp) => {

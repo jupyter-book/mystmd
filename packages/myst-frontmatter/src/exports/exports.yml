@@ -441,3 +441,12 @@ cases:
       exports:
         - format: pdf
     errors: 1
+  - title: export allows id
+    raw:
+      exports:
+        - format: pdf
+          id: my-pdf
+    normalized:
+      exports:
+        - format: pdf
+          id: my-pdf

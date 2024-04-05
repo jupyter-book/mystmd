@@ -46,6 +46,7 @@ export const FRONTMATTER_ALIASES = {
   contributor: 'contributors',
   affiliation: 'affiliations',
   export: 'exports',
+  download: 'downloads',
   jupyter: 'thebe',
   part: 'parts',
   ack: 'acknowledgments',
