@@ -9,7 +9,7 @@ You may define desired static exports in page or project frontmatter. In the exp
 
 Below are supported export types and links to documentation for further reading:
 
-```{list-table} Frontmatter download definitions
+```{list-table} Frontmatter Export Formats
 :header-rows: 1
 :name: table-export-docs
 - * Export type
