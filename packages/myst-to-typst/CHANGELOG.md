@@ -1,5 +1,17 @@
 # myst-to-typst
 
+## 0.0.13
+
+### Patch Changes
+
+- d24ab936: Add initial inlineExpression for typst.
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [c38cc28]
+  - myst-common@1.1.34
+  - myst-frontmatter@1.1.34
+  - myst-spec-ext@1.1.34
+
 ## 0.0.12
 
 ### Patch Changes

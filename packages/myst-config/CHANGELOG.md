@@ -1,5 +1,14 @@
 # myst-config
 
+## 1.1.34
+
+### Patch Changes
+
+- c38cc28: Relax site action validation and move later in the build
+- c38cc28: Add downloads to page/project frontmatter and site config
+- Updated dependencies [c38cc28]
+  - myst-frontmatter@1.1.34
+
 ## 1.1.33
 
 ### Patch Changes

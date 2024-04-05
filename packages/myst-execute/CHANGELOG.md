@@ -1,5 +1,14 @@
 # myst-execute
 
+## 0.0.4
+
+### Patch Changes
+
+- 49fd6b98: Better error messages when connection to Jupyter fails
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+  - myst-common@1.1.34
+
 ## 0.0.3
 
 ### Patch Changes

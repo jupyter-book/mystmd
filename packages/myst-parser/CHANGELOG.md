@@ -1,5 +1,19 @@
 # myst-parser
 
+## 1.2.2
+
+### Patch Changes
+
+- 5aa3ea2f: Handle blocks with empty children
+- 6a57ab77: Only trim end of line for myst-directives, not both the start and end of lines. This is important for keeping indentation in code blocks.
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [6a57ab77]
+  - myst-common@1.1.34
+  - markdown-it-myst@1.0.7
+  - myst-roles@1.2.2
+  - myst-directives@1.2.2
+
 ## 1.2.1
 
 ### Patch Changes

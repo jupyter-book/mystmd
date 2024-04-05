@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.1.34
+
+### Patch Changes
+
+- 5aa3ea2f: Handle blocks with empty children
+- 5aa3ea2f: Extract parts is more careful to remove parts from tree
+- Updated dependencies [c38cc28]
+  - myst-frontmatter@1.1.34
+
 ## 1.1.33
 
 ### Patch Changes
