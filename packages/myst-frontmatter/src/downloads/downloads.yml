@@ -22,18 +22,25 @@ cases:
       downloads:
         - url: my-file.pdf
           format: md
+  - title: empty downloads persists as empty list
+    raw:
+      downloads: []
+    normalized:
+      downloads: []
   - title: download with url and id errors
     raw:
       downloads:
         - url: my-file.pdf
           id: my-file
-    normalized: {}
+    normalized:
+      downloads: []
     errors: 1
   - title: download with neither file nor id errors
     raw:
       downloads:
         - format: md
-    normalized: {}
+    normalized:
+      downloads: []
     errors: 1
   - title: cannot set internal
     raw:

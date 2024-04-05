@@ -63,6 +63,6 @@ export function validateDownloadsList(input: any, opts: ValidationOptions): Down
       return validateDownload(exp, incrementOptions(`downloads.${ind}`, opts));
     },
   );
-  if (!output || output.length === 0) return undefined;
+  if (!output) return undefined;
   return output;
 }

@@ -62,7 +62,7 @@ type ManifestProject = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
-  downloads: SiteAction[];
+  downloads?: SiteAction[];
   exports?: SiteExport[];
 } & Omit<ProjectFrontmatter, 'downloads' | 'exports'>;
 

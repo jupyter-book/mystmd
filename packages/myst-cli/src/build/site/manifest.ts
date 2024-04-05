@@ -64,7 +64,7 @@ export async function resolvePageDownloads(
   session: ISession,
   file: string,
   projectPath?: string,
-): Promise<SiteAction[]> {
+): Promise<SiteAction[] | undefined> {
   const state = session.store.getState();
   if (!projectPath) {
     projectPath = selectors.selectCurrentProjectPath(state);
@@ -108,7 +108,7 @@ export async function resolvePageDownloads(
       return resolveSiteAction(session, download as SiteAction, file, 'downloads');
     })
     .filter((download): download is SiteAction => !!download);
-  return resolvedDownloads ?? [];
+  return resolvedDownloads;
 }
 
 /**
@@ -172,7 +172,7 @@ export async function localToManifestProject(
   const exports = projConfigFile ? await resolvePageExports(session, projConfigFile) : [];
   const downloads = projConfigFile
     ? await resolvePageDownloads(session, projConfigFile, projectPath)
-    : [];
+    : undefined;
   const banner = await transformBanner(
     session,
     path.join(projectPath, 'myst.yml'),
