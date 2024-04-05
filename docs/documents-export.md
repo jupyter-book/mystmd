@@ -3,6 +3,8 @@
 
 You may define desired static exports in page or project frontmatter. In the export object, you may specify a filename, format, and/or template, as well as the article(s) you wish to include in your export. You may also provide any additional options required by your template in the export object.
 
+## Types of documents you can export
+
 Below are supported export types and links to documentation for further reading:
 
 
@@ -27,9 +29,11 @@ Below are supported export types and links to documentation for further reading:
 You can also explore the [MyST templating](myst:jtex) documentation for a deeper dive into defining templates.
 ```
 
-After defining `exports` in your frontmatter, you may build them with the `myst build` [CLI command](./quickstart-myst-documents.md).
+## Export configuration
 
 The following table shows the available properties for each export. You must define at least one of `format`, `output`, or `template` for MyST to be able to perform your output. You may also specify a string instead of a full export object; this string will be inferred to be either the export format or the output filename.
+
+After defining `exports` in your frontmatter, you may build them with the `myst build` [CLI command](./quickstart-myst-documents.md).
 
 See the table below from [](#frontmatter:exports).
 

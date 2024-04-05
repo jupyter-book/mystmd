@@ -7,6 +7,9 @@ If you specify project-level `downloads:` configuration, it will **append each i
 
 If you specify page-level `downloads:` configuration, it will **over-ride project-level configuration as well as page defaults**.
 
+## Download links configuration
+
+Each download link entry has configuration that modifies its behavior.
 Note that each entry may only specify one of `id`, `file`, or `url`.
 Descriptions of these fields and other available fields are in the table below from [the Downloads configuration reference](#frontmatter:downloads).
 
