@@ -127,7 +127,7 @@ To create a cross-reference, you need to label a "target", like a figure, sectio
 
 ````{myst}
 ```{figure} https://source.unsplash.com/random/500x200/?mountain
-:name: my-fig
+:label: my-fig
 :align: center
 
 My **bold** mountain 🏔🚠.

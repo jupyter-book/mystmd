@@ -229,7 +229,7 @@ $ cd demo
 and add a new file `main.md` in which we will write the following:
 
 ```{code-block} markdown
-:name: main-md
+:label: main-md
 :filename: demo/main.md
 
 # Demo

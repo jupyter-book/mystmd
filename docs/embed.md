@@ -15,13 +15,13 @@ For the examples below, we are defining a figure with a label:
 
 ```markdown
 :::{figure} https://source.unsplash.com/random/400x200?beach,ocean
-:name: myLabel
+:label: myLabel
 Here's a cool figure.
 :::
 ```
 
 :::{figure} https://source.unsplash.com/random/400x200?beach,ocean
-:name: myLabel
+:label: myLabel
 Here's a cool figure.
 :::
 ::::

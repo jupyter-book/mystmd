@@ -9,7 +9,7 @@ thumbnail: thumbnails/reuse-jupyter-outputs.png
 Notebooks often hold computations that are useful to show in other articles. MyST allows you to add a label, and cross reference and/or embed these outputs directly in other articles. By linking directly to the notebook you can improve the reproducibility of your technical work.
 
 ```{figure} ./images/reuse-jupyter-outputs.png
-:name: reuse-jupyter-outputs
+:label: reuse-jupyter-outputs
 A scientific article with two figures created in Jupyter Notebooks. Each figure can be labeled directly in the notebook and reused in any other page directly.
 ```
 
@@ -45,7 +45,7 @@ The labeled output can also be used in `figure` directive, where you can then ad
 or
 
 :::{figure} #my-cell
-:name: fig-my-cell
+:label: fig-my-cell
 :::
 ```
 

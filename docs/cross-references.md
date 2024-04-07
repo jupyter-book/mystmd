@@ -26,7 +26,7 @@ Targets are custom anchors that you can refer to elsewhere, for example, a figur
 
 ````{myst}
 ```{figure} https://source.unsplash.com/random/500x200/?mountain
-:name: my-fig
+:label: my-fig
 :align: center
 
 My **bold** mountain 🏔🚠.
@@ -194,7 +194,7 @@ or as a `figure` directive, where you can then add a caption. If you are referri
 
 ```markdown
 :::{figure} #my-cell
-:name: fig-my-cell
+:label: fig-my-cell
 :::
 ```
 
@@ -208,7 +208,7 @@ See more about reusing Jupyter outputs in figures, adding placeholders, and othe
 The following example embeds a figure from [](./interactive-notebooks.ipynb), and can be used in cross references [](#fig-altair-horsepower).
 
 ```{figure} #altair-horsepower
-:name: fig-altair-horsepower
+:label: fig-altair-horsepower
 This figure has been included from [](./interactive-notebooks.ipynb) and can be referred to in cross-references through a different label.
 ```
 
