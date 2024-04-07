@@ -55,3 +55,8 @@ You can use the {myst:directive}`table` directive to add a caption to a markdown
 ```{note}
 You may have inline markdown in the table caption, however, if it includes backticks, you must use a [colon fence](#example-fence).
 ```
+
+## Notebook outputs as tables
+
+You can embed Jupyter Notebook outputs as tables.
+See [](reuse-jupyter-outputs.md) for more information.
