@@ -80,7 +80,7 @@ jupyter lab
 
 :::{figure} ./images/jupyterlab-myst.png
 :width: 100%
-:name: jupyterlab-myst
+:label: jupyterlab-myst
 
 MyST in JupyterLab, showing frontmatter and admonitions that are natively rendered! 🎉
 :::

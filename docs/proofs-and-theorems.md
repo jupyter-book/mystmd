@@ -39,7 +39,7 @@ The vector $\hat y$ is called the **orthogonal projection** of $y$ onto $S$.
 :::
 
 ```{list-table} Proof kinds that can be used as directives
-:name: proof-list
+:label: proof-list
 :header-rows: 0
 
 * - `prf:algorithm`

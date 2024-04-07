@@ -26,7 +26,7 @@ The real-world deployment of your site will depend on the infrastructure that yo
 Lighthouse is a tool included in Chrome that measures accessibility, performance, and search engine performance (see [lighthouse on GitHub](https://github.com/GoogleChrome/lighthouse)). Although not perfect, the tool does do a good job at highlighting issues with performance, search engine crawling, and accessibility. These scores indicate the real-world performance of a site as well as can effect search engine rankings.
 
 ```{figure} ./images/lighthouse-2022_09_15.png
-:name: lighthouse
+:label: lighthouse
 Lighthouse score run Sept 15, 2022 on deployed site using Curvenote's global CDN.
 ```
 
@@ -49,12 +49,12 @@ Some performance and accessibility considerations:
 As a comparison to JupyterBook or Quarto, which are both static site generators for scientific content, and assets built by Sphinx and Pandoc, respectively. There are improvements possible primarily in the bundling of Javascript assets, which is very difficult to do in the Sphinx build process, for example.
 
 ```{figure} ./images/lighthouse-jb-2022_09_15.png
-:name: lighthouse-jb
+:label: lighthouse-jb
 Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are around bundling assets, reducing javascript used, optimizing images, and speed to initial page load.
 ```
 
 ```{figure} ./images/lighthouse-quarto-2022_09_15.png
-:name: lighthouse-quarto
+:label: lighthouse-quarto
 Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are image sizing, main-thread work, and high network payloads.
 ```
 ````

@@ -45,7 +45,7 @@ There are two directives that can be used to add additional information about th
 
 ````{myst}
 ```{figure} https://source.unsplash.com/random/400x200?beach,ocean
-:name: myFigure
+:label: myFigure
 :alt: Random image of the beach or ocean!
 :align: center
 
@@ -63,7 +63,7 @@ Subfigures can be created by omitting the directive argument to figure, and havi
 These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 
 :::{figure}
-:name: subFigure
+:label: subFigure
 :align: left
 
 ![Banff, Canada](https://source.unsplash.com/random/600x225?banff)
@@ -76,7 +76,7 @@ You can also cross-reference either the whole figure [@subFigure], or an individ
 
 ```{myst}
 :::{figure}
-:name: my-figure
+:label: my-figure
 :align: left
 
 (my-figure-fruit)=

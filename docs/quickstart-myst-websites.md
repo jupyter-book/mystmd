@@ -109,7 +109,7 @@ The example site in this tutorial only has three pages and by default the `01-pa
 
 :::{figure} ./images/frontmatter-before.png
 :width: 50%
-:name: frontmatter-before
+:label: frontmatter-before
 :class: framed
 
 The myst theme for the `01-paper.md` page without any changes made.
@@ -206,7 +206,7 @@ Saving the `myst.yml` will have triggered a "full site rebuild"[^myst-start] and
 
 :::{figure} ./images/frontmatter-site-title.png
 :width: 50%
-:name: frontmatter-site-title
+:label: frontmatter-site-title
 
 The site title will control site meta tags, and the browser-tab title, which is appended to each page title in the `book-theme`.
 :::

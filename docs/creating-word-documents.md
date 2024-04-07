@@ -6,7 +6,7 @@ description: Export to Microsoft Word directly from MyST Markdown.
 You can render your MyST documents as Microsoft Word documents.
 
 ```{figure} ./images/word-export.png
-:name: fig-export-to-word
+:label: fig-export-to-word
 :width: 50%
 
 Export to a Microsoft Word document to easily share with your colleagues.
@@ -44,7 +44,7 @@ Based on the `output` field in the export list in the [frontmatter](#export-fron
 The default export creates links for cross references and citations, and the first time this is opened Microsoft Word asks you if you would like to link these. **Click Yes**.
 
 ```{figure} ./images/export-word-link.png
-:name: export-word-link
+:label: export-word-link
 :width: 40%
 
 Allow word to fix links for cross-references and citations.
@@ -61,7 +61,7 @@ Currently MyST export does not fully create math in Word's format, instead, $\La
 4. Click convert
 
 ```{figure} ./images/convert-word-equations.png
-:name: convert-word-equations
+:label: convert-word-equations
 :width: 100%
 
 To fix equations in Word, use the equation toolbar to select `LaTeX` and from the dropdown select, all professional, then click convert.

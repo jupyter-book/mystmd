@@ -114,7 +114,7 @@ This will produce a document that looks like:
 
 :::{figure} ./images/frontmatter-before.png
 :width: 80%
-:name: frontmatter-before-pdf
+:label: frontmatter-before-pdf
 :class: framed
 
 The myst theme for the `01-paper.md` page using inline document and author information.
@@ -145,7 +145,7 @@ Once these are added, the myst theme (in this case the `book-theme` template) ca
 
 :::{figure} ./images/frontmatter-after.png
 :width: 80%
-:name: frontmatter-after
+:label: frontmatter-after
 :class: framed
 
 The myst theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
@@ -199,7 +199,7 @@ If you have replaced both of these citations, you can now safely remove the text
 This will have created a **References** section at the bottom of the page automatically!
 
 :::{figure} ./images/references.png
-:name: references
+:label: references
 :class: framed
 
 The references are shown automatically at the bottom of the page, and linked to the correct DOI source!
@@ -224,7 +224,7 @@ with:
 
 ```markdown
 :::{figure} ./images/citations.png
-:name: citations
+:label: citations
 Citations are rendered with a popup directly inline.
 :::
 ```
@@ -247,7 +247,7 @@ See [](./figures.md) for more information about adding and referencing figures a
 The "`Figure 1`" text will be automatically filled in, for example, [](#figure-hover).
 
 :::{figure} ./images/figure-hover.gif
-:name: figure-hover
+:label: figure-hover
 :width: 60%
 :class: framed
 When you cross-reference content in MyST, they become hover-references, allowing you to stay in context when you are reading.
@@ -326,7 +326,7 @@ The export process will run for any known files with `docx` specified in the `ex
 In this case, the default word template was used, resulting in a document formatted like this:
 
 :::{figure} ./images/export-docx.png
-:name: export-docx
+:label: export-docx
 :width: 80%
 Exporting your article to `docx` using `myst export --docx`.
 :::
@@ -437,7 +437,7 @@ You can now see your two-column PDF in a submission ready format for the journal
 Notice also that the PDF has converted dynamic images to a static alternative (e.g. GIFs are now PNGs).
 
 :::{figure} ./images/export-pdf.png
-:name: export-pdf
+:label: export-pdf
 :width: 80%
 Exporting the article to a two column PDF with appropriate metadata to submit to a Journal.
 :::

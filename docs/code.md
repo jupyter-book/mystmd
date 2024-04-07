@@ -36,7 +36,7 @@ The above code is not a directive, it is just standard markdown syntax, which ca
 
 ````{myst}
 ```{code} python
-:name: my-program
+:label: my-program
 :caption: Creating a TensorMesh using SimPEG
 from discretize import TensorMesh
 

@@ -11,7 +11,7 @@ Below are supported export types and links to documentation for further reading:
 
 ```{list-table} Frontmatter Export Formats
 :header-rows: 1
-:name: table-export-docs
+:label: table-export-docs
 - * Export type
   * Learn more
 - * `pdf`

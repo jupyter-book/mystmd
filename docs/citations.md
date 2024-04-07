@@ -60,7 +60,7 @@ This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#
 
 ```{list-table} Examples of Markdown citations
 :header-rows: 1
-:name: table-pandoc-citations
+:label: table-pandoc-citations
 * - Markdown
   - Rendered
   - Explanation

@@ -6,7 +6,7 @@ description: Export to over 400 journal templates from a MyST Markdown file, whi
 You can render your MyST documents as print-ready scientific papers, by converting to $\LaTeX$ and render to over 400 journal templates already available. Alternatively, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
 
 ```{figure} ./images/pdf-exports.png
-:name: fig-export-to-pdf
+:label: fig-export-to-pdf
 :width: 100%
 
 Export to over 400 journal templates from a MyST Markdown file, which uses $\LaTeX$ and can create print-ready, multi-column, professional PDF documents.

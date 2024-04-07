@@ -16,7 +16,7 @@ Try changing `tip` to `warning`!
 In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like `{note}` or `{danger}`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon using the {myst:directive}`admonition.class` option. There are ten kinds[^docutils-admonitions] of admonitions available:
 
 ```{list-table} Named admonitions that can be used as directives
-:name: admonitions-list
+:label: admonitions-list
 * - 🔵 `note`
   - 🟠 `attention`
 * - 🔵 `important`

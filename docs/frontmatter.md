@@ -62,7 +62,7 @@ The following table lists the available frontmatter fields, a brief description 
 
 ```{list-table} A list of available frontmatter fields and their behavior across projects and pages
 :header-rows: 1
-:name: table-frontmatter
+:label: table-frontmatter
 
 * - field
   - description
@@ -241,7 +241,7 @@ banner: banner.png
 ```
 
 :::{figure} ./images/article-theme.png
-:name: banner-example
+:label: banner-example
 Example of a banner in a site using the `article-theme`.
 :::
 
@@ -253,7 +253,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 
 ````{list-table} Frontmatter information for authors
 :header-rows: 1
-:name: table-frontmatter-authors
+:label: table-frontmatter-authors
 * - field
   - description
 * - `name`
@@ -456,7 +456,7 @@ affiliations:
 
 ````{list-table} Frontmatter information for affiliations
 :header-rows: 1
-:name: table-frontmatter-affiliations
+:label: table-frontmatter-affiliations
 * - field
   - description
 * - `id`
@@ -522,7 +522,7 @@ For usage information, see [](./documents-exports.md).
 
 ```{list-table} Frontmatter export definitions
 :header-rows: 1
-:name: table-frontmatter-exports
+:label: table-frontmatter-exports
 * - field
   - description
 * - `id`
@@ -574,7 +574,7 @@ Below is a list of all possible downloads configuration.
 
 ```{list-table} Frontmatter download definitions
 :header-rows: 1
-:name: table-frontmatter-downloads
+:label: table-frontmatter-downloads
 * - field
   - description
 * - `id`
@@ -603,7 +603,7 @@ String values for licenses should be a valid “Identifier” string from the [S
 
 ```{list-table}
 :header-rows: 1
-:name: table-common-licenses
+:label: table-common-licenses
 
 * - Common Content Licenses
   - Common Code Licenses

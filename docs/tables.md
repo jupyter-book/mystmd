@@ -41,7 +41,7 @@ You can use the {myst:directive}`table` directive to add a caption to a markdown
 ````{myst}
 ```{list-table} This table title
 :header-rows: 1
-:name: example-table
+:label: example-table
 
 * - Training
   - Validation
