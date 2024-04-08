@@ -35,7 +35,7 @@ export async function getDoiOrgBibtex(
   doiString: string,
 ): Promise<string | null> {
   const normalizedDoi = doi.normalize(doiString);
-  const url = doi.buildUrl(normalizedDoi);
+  const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
   if (!doi.validate(doiString) || !normalizedDoi || !url) return null;
   const cachePath = doiBibtexCacheFile(session, normalizedDoi);
   if (fs.existsSync(cachePath)) {
@@ -69,7 +69,7 @@ export async function getDoiOrgBibtex(
  */
 export async function doiOrgResolves(session: ISession, doiString: string): Promise<boolean> {
   const normalizedDoi = doi.normalize(doiString);
-  const url = doi.buildUrl(normalizedDoi);
+  const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
   if (!doi.validate(doiString) || !normalizedDoi || !url) return false;
   const cachePath = doiResolvesCacheFile(session, normalizedDoi);
   if (fs.existsSync(cachePath)) {
