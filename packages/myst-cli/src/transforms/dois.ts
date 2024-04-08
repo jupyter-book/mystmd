@@ -5,7 +5,7 @@ import { getCitations } from 'citation-js-utils';
 import { doi } from 'doi-utils';
 import type { Link } from 'myst-spec';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, toText, RuleId, plural } from 'myst-common';
+import { fileWarn, toText, RuleId, plural, fileError } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { computeHash, tic } from 'myst-cli-utils';
 import type { Cite } from 'myst-spec-ext';
@@ -118,10 +118,23 @@ export async function getCitation(
     });
     return null;
   }
-  const renderer = await getCitations(bibtex);
-  const id = Object.keys(renderer)[0];
-  const render = renderer[id];
-  return { id, render };
+  try {
+    const renderer = await getCitations(bibtex);
+    const id = Object.keys(renderer)[0];
+    const render = renderer[id];
+    return { id, render };
+  } catch (error) {
+    fileError(
+      vfile,
+      `BibTeX from doi.org was malformed, please edit and add to your local references`,
+      {
+        node,
+        ruleId: RuleId.doiLinkValid,
+        note: `\nBibTeX from ${doiString}:\n\n${bibtex}\n`,
+      },
+    );
+    return null;
+  }
 }
 
 /**
