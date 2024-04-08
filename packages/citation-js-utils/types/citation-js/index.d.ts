@@ -38,13 +38,13 @@ declare module '@citation-js/core' {
   } & Record<string, any>;
 
   export class Cite {
-    constructor(input?: string | CSL);
+    constructor(input?: any);
 
-    static async(data: string | Cite): Promise<Cite>;
+    static async(data: any): Promise<Cite>;
 
-    set(data: string | Cite): this;
+    set(data: any): this;
 
-    get: (opts: OutputOptions) => string;
+    format: (format: string, options: Any) => string | object[];
 
     data: CSL[];
   }

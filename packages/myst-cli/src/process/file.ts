@@ -14,7 +14,7 @@ import { warnings, watch } from '../store/reducers.js';
 import type { PreRendererData, RendererData } from '../transforms/types.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
-import { loadCitations } from './citations.js';
+import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebook } from './notebook.js';
 import { selectors } from '../store/index.js';
@@ -104,7 +104,7 @@ export async function loadFile(
         break;
       }
       case '.bib': {
-        const renderer = await loadCitations(session, file);
+        const renderer = await loadBibTeXCitationRenderers(session, file);
         cache.$citationRenderers[file] = renderer;
         break;
       }
