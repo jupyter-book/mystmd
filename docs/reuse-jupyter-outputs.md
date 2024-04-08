@@ -1,7 +1,7 @@
 ---
 title: Embed and Reuse Jupyter Outputs
 subtitle: Embedding outputs in narrative articles
-short_title: Embed and Reuse Jupyter Outputs
+short_title: Embed & Reuse Jupyter Outputs
 description: Embed Jupyter Notebook outputs from any notebook into your website or article.
 thumbnail: thumbnails/reuse-jupyter-outputs.png
 ---
