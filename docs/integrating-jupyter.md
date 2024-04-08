@@ -1,6 +1,6 @@
 ---
 title: Integrate Jupyter-based Computation
-short_title: Live computation with Jupyter
+short_title: Live Computation with Jupyter
 description: MyST allows you to connect a website directly to a Jupyter Kernel, enabling interactive computation on your page.
 thumbnail: thumbnails/integrating-jupyter.png
 ---
