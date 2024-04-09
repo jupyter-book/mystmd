@@ -259,6 +259,7 @@ function applyComputedOutputsToNodes(
 }
 
 export type Options = {
+  basePath: string;
   cache: ICache<(IExpressionResult | IOutput[])[]>;
   sessionFactory: () => Promise<SessionManager | undefined>;
   frontmatter: PageFrontmatter;
@@ -309,7 +310,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
     else {
       let sessionConnection: Session.ISessionConnection | undefined;
       const sessionOpts = {
-        path: vfile.path,
+        path: path.relative(opts.basePath, vfile.path),
         type: 'notebook',
         name: path.basename(vfile.path),
         kernel: {

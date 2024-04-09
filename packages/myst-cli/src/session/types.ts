@@ -17,6 +17,7 @@ export type ISession = {
   log: Logger;
   reload(): ISession;
   clone(): ISession;
+  sourcePath(): string;
   buildPath(): string;
   sitePath(): string;
   contentPath(): string;

@@ -223,6 +223,7 @@ export async function transformMdast(
   if (execute) {
     const cachePath = path.join(session.buildPath(), 'execute');
     await kernelExecutionTransform(mdast, vfile, {
+      basePath: session.sourcePath(),
       cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
       sessionFactory: () => session.jupyterSessionManager(),
       frontmatter: frontmatter,
