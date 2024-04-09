@@ -8,6 +8,7 @@ import type { Code, InlineCode } from 'myst-spec';
 type Options = {
   lang?: string;
   transformPython?: boolean;
+  transformR?: boolean;
 };
 
 /**
@@ -49,6 +50,10 @@ export function codeTransform(mdast: GenericParent, file: VFile, opts?: Options)
     if (node.lang.toLowerCase().includes('python') && opts?.transformPython !== false) {
       // captures ipython3 etc.
       node.lang = 'python';
+    }
+    if (node.lang.toLowerCase() === 'r' && opts?.transformR !== false) {
+      // Ensures that this is lowercase
+      node.lang = 'r';
     }
   });
 }
