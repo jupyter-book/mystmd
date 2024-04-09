@@ -207,7 +207,7 @@ See more about reusing Jupyter outputs in figures, adding placeholders, and othe
 
 The following example embeds a figure from [](./interactive-notebooks.ipynb), and can be used in cross references [](#fig-altair-horsepower).
 
-```{figure} #altair-horsepower
+```{figure} #img:altair-horsepower
 :label: fig-altair-horsepower
 This figure has been included from [](./interactive-notebooks.ipynb) and can be referred to in cross-references through a different label.
 ```

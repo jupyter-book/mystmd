@@ -60,7 +60,7 @@ Any labeled Jupyter cell can be referred to using the standard [cross-reference]
 ```
 
 The cross-referenced cell will be shown in a hover-preview and link to the notebook cell directly.
-For example, [here we cross-reference a cell from the Jupyter Notebooks examples](#data-cars)
+For example, [here we cross-reference a cell from the Jupyter Notebooks examples](#tbl:data-cars)
 
 ## Embed a cell output
 
@@ -68,12 +68,12 @@ Once a cell is labeled, you can embed its output with the standard [syntax for e
 For example, the following code embeds a labeled cell defined in [](interactive-notebooks.ipynb):
 
 ```md
-![](#data-cars)
+![](#tbl:data-cars)
 ```
 
 It results in the following:
 
-![](#data-cars)
+![](#tbl:data-cars)
 
 ## Embed the entire cell with the `{embed}` directive
 
@@ -84,14 +84,14 @@ For example, to embed **both the cell input and output**, use syntax like:
 
 ````
 % Embed both the input and output
-```{embed} #data-cars
+```{embed} #tbl:data-cars
 :remove-output: false
 :remove-input: false
 ```
 ````
 
 % Embed both the input and output
-```{embed} #data-cars
+```{embed} #tbl:data-cars
 :remove-output: false
 :remove-input: false
 ```
@@ -111,7 +111,7 @@ Below we give the figure a new `name` as well, so that we can cross-reference it
 
 The following example embeds a figure from [](./interactive-notebooks.ipynb).
 
-```{figure} #altair-horsepower
+```{figure} #img:altair-horsepower
 This figure has been included from [](./interactive-notebooks.ipynb) and can be referred to in cross-references through a different label.
 ```
 
@@ -141,6 +141,34 @@ print('hello world')
 
 In this case, the placeholder will replace _any_ output from the cell in static exports; outputs will only show up in interactive environments.
 
+### Alternative text for accessibility
+
+Adding alternative text to images allows you to provide context for the image for readers with assistive technologies, or unreliable internet connections.
+By default, Jupyter does not support alternative text for image outputs, but you can use MyST to add alternative text in your images and figures.
+See [](figures.md) for more details.
+
+For example, the following embeds an image output with alternative text:
+
+````
+![Some alternative text](#img:mpl)
+````
+
+![Some alternative text](#img:mpl)
+
+And using the `{figure}` directive allows you to set one or more captions for your figures, which serve accessibility purposes as well.
+
+```{figure}
+
+![A matplotlib image of the cars data](#img:mpl)
+
+![An Altair visualization of teh cars data!](#img:altair-horsepower)
+```
+
+:::{note} Use `{figure}` for alt text with interactive visualizations
+Many interactive visualization libraries do not natively support alternative text, so we recommend using the `{figure}` directive to make interactive visualizations more accessible.
+:::
+
+
 ## Outputs as Tables
 
 You can wrap tabular outputs (e.g. Pandas DataFrames) with a `{table}` directive in order to assign a caption and include it with your figures.
@@ -155,7 +183,7 @@ For example:
 ````
 :::{table} This is my table
 :label: mytable
-![](#data-cars)
+![](#tbl:data-cars)
 :::
 ````
 
@@ -163,7 +191,7 @@ Results in:
 
 :::{table} This is my table
 :label: mytable
-![](#data-cars)
+![](#tbl:data-cars)
 :::
 
 ### Use the `{figure}` directive with `kind: table`
@@ -172,7 +200,7 @@ This defines a figure but allows the content to be a table.
 For example, the following syntax:
 
 ````
-:::{figure} #data-cars
+:::{figure} #tbl:data-cars
 :label: myothertable
 :kind: table
 This is my table caption!
@@ -181,7 +209,7 @@ This is my table caption!
 
 Results in:
 
-:::{figure} #data-cars
+:::{figure} #tbl:data-cars
 :label: myothertable
 :kind: table
 This is my table caption!

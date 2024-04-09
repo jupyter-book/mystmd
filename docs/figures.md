@@ -1,6 +1,6 @@
 ---
 title: Images, Figures and Videos
-short_title: Images & Videos
+short_title: Images, Figures, & Videos
 description: MyST Markdown allows you to create images and figures in your documents, including cross-referencing content throughout your pages.
 thumbnail: ./thumbnails/figures.png
 ---
