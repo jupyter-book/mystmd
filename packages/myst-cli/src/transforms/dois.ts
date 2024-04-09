@@ -59,7 +59,7 @@ export async function resolveDoiAsBibTeX(
     session.log.debug(`doi.org fetch failed for ${url}`);
     return undefined;
   }
-  let data = await response.text();
+  const data = await response.text();
   return parseBibTeX(data);
 }
 
@@ -87,7 +87,7 @@ export async function resolveDoiAsCSLJSON(
     session.log.debug(`doi.org fetch failed for ${url}`);
     return undefined;
   }
-  let data = await response.json();
+  const data = await response.json();
   // Return parse result of _array_ of CSL items
   return parseCSLJSON([data as object]);
 }
@@ -130,7 +130,7 @@ export async function resolveDoiOrg(
     try {
       data = await resolveDoiAsCSLJSON(session, url);
       session.log.debug(toc(`Fetched reference CSL-JSON for doi:${normalizedDoi} in %s`));
-    } catch (error) {
+    } catch (errorCSL) {
       fileError(
         vfile,
         `BibTeX and CSL-JSON from doi.org was malformed, please edit and add to your local references`,
@@ -213,7 +213,7 @@ export async function getCitation(
       {
         node,
         ruleId: RuleId.doiLinkValid,
-        note: `\Citation data from ${doiString}:\n\n${JSON.stringify(data)}\n`,
+        note: `Citation data from ${doiString}:\n\n${JSON.stringify(data)}\n`,
       },
     );
     return null;

@@ -8,7 +8,10 @@ import { castSession } from '../session/cache.js';
 import { selectors } from '../store/index.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 
-export async function loadBibTeXCitationRenderers(session: ISession, path: string): Promise<CitationRenderer> {
+export async function loadBibTeXCitationRenderers(
+  session: ISession,
+  path: string,
+): Promise<CitationRenderer> {
   const toc = tic();
   let data: string;
   if (isUrl(path)) {
@@ -23,7 +26,7 @@ export async function loadBibTeXCitationRenderers(session: ISession, path: strin
     session.log.debug(`Loading citations at "${path}"`);
     data = fs.readFileSync(path).toString();
   }
-  const csl = await parseBibTeX(data); 
+  const csl = await parseBibTeX(data);
   const renderer = await getCitationRenderers(csl);
   session.log.debug(toc(`Read ${plural('%s citations(s)', renderer)} from ${path} in %s.`));
   return renderer;
