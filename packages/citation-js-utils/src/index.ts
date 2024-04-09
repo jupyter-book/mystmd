@@ -1,5 +1,6 @@
 import type { OutputOptions } from '@citation-js/core';
 import { Cite } from '@citation-js/core';
+import { clean as cleanCSL } from '@citation-js/core/lib/plugins/input/csl.js';
 import sanitizeHtml from 'sanitize-html';
 
 import '@citation-js/plugin-bibtex';
@@ -175,7 +176,7 @@ export async function parseBibTeX(source: string): Promise<CSL[]> {
 }
 
 export async function parseCSLJSON(source: object[]): Promise<CSL[]> {
-  return (await Cite.async(source)).data;
+  return Promise.resolve(cleanCSL(source));
 }
 
 export async function getCitationRenderers(data: CSL[]): Promise<CitationRenderer> {

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { getCitationRenderers, parseBibTeX, CitationJSStyles, yearFromCitation, firstNonDoiUrl } from '../src';
+import {
+  getCitationRenderers,
+  parseBibTeX,
+  CitationJSStyles,
+  yearFromCitation,
+  firstNonDoiUrl,
+} from '../src';
 import {
   bibtex,
   doiInNote,
@@ -30,7 +36,7 @@ describe('Test reference rendering', () => {
   it.each([
     ['url', doiInURL],
     ['note', doiInNote],
-  ])('Extract the DOI from the %s', async (_, src) => { 
+  ])('Extract the DOI from the %s', async (_, src) => {
     const data = await parseBibTeX(src);
     const citations = await getCitationRenderers(data);
     expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_OTHER_FIELD);

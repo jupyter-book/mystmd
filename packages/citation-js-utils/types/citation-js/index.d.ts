@@ -2,6 +2,9 @@
 // https://fettblog.eu/typescript-react-extending-jsx-elements/
 declare module '@citation-js/plugin-bibtex' {}
 declare module '@citation-js/plugin-csl' {}
+declare module '@citation-js/core/lib/plugins/input/csl.js' {
+  export function clean(data: any): any {}
+}
 declare module '@citation-js/core' {
   export type OutputOptions = {
     format: 'string';
