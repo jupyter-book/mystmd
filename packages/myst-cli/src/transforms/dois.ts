@@ -42,7 +42,7 @@ function doiResolvesCacheFile(session: ISession, normalizedDoi: string) {
  * @param session - CLI session
  * @param url - doi.org DOI URL
  */
-export async function resolveDoiAsBibTeX(
+export async function resolveDOIAsBibTeX(
   session: ISession,
   url: string,
 ): Promise<CSL[] | undefined> {
@@ -70,7 +70,7 @@ export async function resolveDoiAsBibTeX(
  * @param url - doi.org DOI URL
  */
 
-export async function resolveDoiAsCSLJSON(
+export async function resolveDOIAsCSLJSON(
   session: ISession,
   url: string,
 ): Promise<CSL[] | undefined> {
@@ -122,13 +122,13 @@ export async function resolveDoiOrg(
 
   let data: CSL[] | undefined;
   try {
-    data = await resolveDoiAsBibTeX(session, url);
+    data = await resolveDOIAsBibTeX(session, url);
     session.log.debug(toc(`Fetched reference BibTeX for doi:${normalizedDoi} in %s`));
   } catch (error) {
     fileWarn(vfile, `BibTeX from doi.org was malformed, trying CSL-JSON`);
 
     try {
-      data = await resolveDoiAsCSLJSON(session, url);
+      data = await resolveDOIAsCSLJSON(session, url);
       session.log.debug(toc(`Fetched reference CSL-JSON for doi:${normalizedDoi} in %s`));
     } catch (errorCSL) {
       fileError(

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Session } from '../session';
-import { resolveDoiAsBibTeX, resolveDoiAsCSLJSON } from './dois';
+import { resolveDOIAsBibTeX, resolveDOIAsCSLJSON } from './dois';
 
 const PRIESTLEY_1972_CSL_JSON = [
   {
@@ -20,8 +20,8 @@ const PRIESTLEY_1972_CSL_JSON = [
   },
 ];
 describe.each([
-  { resolver: resolveDoiAsBibTeX, name: 'BibTeX' },
-  { resolver: resolveDoiAsCSLJSON, name: 'CSL-JSON' },
+  { resolver: resolveDOIAsBibTeX, name: 'BibTeX' },
+  { resolver: resolveDOIAsCSLJSON, name: 'CSL-JSON' },
 ])('DOI Resolvers for $name', ({ resolver, name }) => {
   it('short DOI resolves', async () => {
     const data = await resolver(new Session(), 'https://doi.org/cr3qwn');
