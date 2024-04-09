@@ -95,3 +95,9 @@ cases:
     outputs:
       - path: acronym/_build/out.tex
         content: outputs/acronym.tex
+  - title: Recursive includes resolve
+    cwd: include-recursive
+    command: myst build --typst
+    outputs:
+      - path: include-recursive/_build/out.typ
+        content: outputs/include-recursive.typ

@@ -82,7 +82,7 @@ export async function includeDirectiveTransform(tree: GenericParent, vfile: VFil
       }
       node.children = children as any;
       // Recurse!
-      // await includeDirectiveTransform(node as GenericParent, vfile, opts);
+      await includeDirectiveTransform(node as GenericParent, vfile, opts);
     }),
   );
 }
