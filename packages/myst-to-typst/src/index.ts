@@ -304,10 +304,10 @@ const handlers: Record<string, Handler> = {
     state.write(`)`);
   },
   embed(node, state) {
-    state.renderChildren(node);
+    state.renderChildren(node, 2);
   },
   include(node, state) {
-    state.renderChildren(node);
+    state.renderChildren(node, 2);
   },
   footnoteReference(node, state) {
     if (!node.identifier) return;
