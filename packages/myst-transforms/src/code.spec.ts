@@ -39,6 +39,22 @@ describe('Test codeTransform', () => {
       children: [{ type: 'code', lang: 'IPython3', value: 'y=mx+b' }],
     });
   });
+  test('r is transformed', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        { type: 'code', lang: 'R', value: 'country <- c("ENG", "ESP", "ITA", "GER", "FRA")' },
+      ],
+    };
+    const file = new VFile();
+    codeTransform(mdast, file, { transformPython: false });
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        { type: 'code', lang: 'r', value: 'country <- c("ENG", "ESP", "ITA", "GER", "FRA")' },
+      ],
+    });
+  });
   test('code block lang fills frontmatter', async () => {
     const mdast = { type: 'root', children: [{ type: 'code', value: 'y=mx+b' }] };
     const file = new VFile();
