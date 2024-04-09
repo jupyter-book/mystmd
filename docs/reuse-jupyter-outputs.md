@@ -75,6 +75,35 @@ It results in the following:
 
 ![](#tbl:data-cars)
 
+:::{tip} Define one output per cell
+Embedding works best when you generate a single output per cell.
+This allows you to attach a label to one object instead of multiple, and generally makes life easier.
+If you'd like a single cell to generate multiple outputs for embedding, save each of them to a variable, and then use subsequent cells to display them as outputs.
+For example:
+
+```{code-block} python
+:filename: Cell 1
+# Generate two matplotlib figures
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
+```
+
+```{code-block} python
+:filename: Cell 2
+#| label: fig:plot1
+# Display the figure so that its output is labeled with `fig:plot1`
+fig1
+```
+
+```{code-block} python
+:filename: Cell 3
+#| label: fig:plot2
+# Display the figure so that its output is labeled with `fig:plot2`
+fig2
+```
+
+:::
+
 ## Embed the entire cell with the `{embed}` directive
 
 If you use the MyST short-hand for embedding (`![](#embed)` syntax), then **only the cell outputs** will be embedded.
@@ -144,30 +173,29 @@ In this case, the placeholder will replace _any_ output from the cell in static 
 ### Alternative text for accessibility
 
 Adding alternative text to images allows you to provide context for the image for readers with assistive technologies, or unreliable internet connections.
-By default, Jupyter does not support alternative text for image outputs, but you can use MyST to add alternative text in your images and figures.
+By default, Jupyter does not support alternative text for image outputs, but you can use MyST to add alternative text with the `{figure}` directive.
 See [](figures.md) for more details.
 
-For example, the following embeds an image output with alternative text:
+
+Using the `{figure}` directive allows you to set one or more captions for your figures, which serve accessibility purposes as well.
+This works for both static outputs (like Matplotlib) as well as interactive ones (like Altair).
+For example, the following `{figure}` directive embeds two cell outputs with captions:
 
 ````
-![Some alternative text](#img:mpl)
+```{figure}
+
+![A matplotlib image of the cars data](#img:mpl)
+
+![An Altair visualization of the cars data!](#img:altair-horsepower)
+```
 ````
-
-![Some alternative text](#img:mpl)
-
-And using the `{figure}` directive allows you to set one or more captions for your figures, which serve accessibility purposes as well.
 
 ```{figure}
 
 ![A matplotlib image of the cars data](#img:mpl)
 
-![An Altair visualization of teh cars data!](#img:altair-horsepower)
+![An Altair visualization of the cars data!](#img:altair-horsepower)
 ```
-
-:::{note} Use `{figure}` for alt text with interactive visualizations
-Many interactive visualization libraries do not natively support alternative text, so we recommend using the `{figure}` directive to make interactive visualizations more accessible.
-:::
-
 
 ## Outputs as Tables
 
