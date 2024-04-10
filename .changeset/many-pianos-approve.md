@@ -1,5 +1,5 @@
 ---
-"citation-js-utils": major
+"citation-js-utils": minor
 "myst-to-jats": patch
 "myst-cli": patch
 ---
