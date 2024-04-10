@@ -184,7 +184,7 @@ function parseCitationStyle(style: string): string {
  *
  */
 export function parseBibTeX(source: string): CSL[] {
-  return (new Cite(source)).data;
+  return new Cite(source).data;
 }
 
 /**
