@@ -1,5 +1,13 @@
 # mystmd
 
+## 1.1.53
+
+### Patch Changes
+
+- d17f6806: Handle circular includes with nice errors and no infinite loops
+- d17f6806: Revive basic recursive include
+- 5c9338a: Add end-to-end tests for various DOIs
+
 ## 1.1.52
 
 ## 1.1.51
