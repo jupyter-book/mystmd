@@ -263,11 +263,12 @@ export async function transformLinkedDOIs(
         else return false;
       }
       doiRenderer[node.url] = cite;
-      renderer[cite.id] = cite.render;
+      const label = cite.render.getLabel();
+      renderer[label] = cite.render;
       const citeNode = node as unknown as Cite;
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
-      citeNode.label = cite.id;
+      citeNode.label = label;
       if (doi.validate(toText(citeNode.children))) {
         // If the link text is the DOI, update with a citation in a following pass
         citeNode.children = [];
@@ -282,8 +283,9 @@ export async function transformLinkedDOIs(
         else return false;
       }
       doiRenderer[node.label] = cite;
-      renderer[cite.id] = cite.render;
-      node.label = cite.id;
+      const label = cite.render.getLabel();
+      renderer[label] = cite.render;
+      node.label = label;
       return true;
     }),
   ]);

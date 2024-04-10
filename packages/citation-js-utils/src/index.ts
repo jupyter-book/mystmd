@@ -1,4 +1,3 @@
-import type { OutputOptions } from '@citation-js/core';
 import { Cite } from '@citation-js/core';
 import { clean as cleanCSL } from '@citation-js/core/lib/plugins/input/csl.js';
 import sanitizeHtml from 'sanitize-html';
@@ -59,12 +58,6 @@ export enum InlineCite {
   't' = 't',
 }
 
-const defaultOptions: Record<string, string> = {
-  lang: 'en-US',
-  type: 'html',
-  style: CitationJSStyles.apa,
-};
-
 export function yearFromCitation(data: CSL) {
   let year: number | string | undefined = data.issued?.['date-parts']?.[0]?.[0];
   if (year) return year;
@@ -122,6 +115,7 @@ export type CitationRenderer = Record<
     getDOI: () => string | undefined;
     getURL: () => string | undefined;
     cite: CSL;
+    getLabel: () => string;
     exportBibTeX: () => string;
   }
 >;
@@ -256,6 +250,12 @@ export async function getCitationRenderers(data: CSL[]): Promise<CitationRendere
             );
           },
           cite: c,
+          getLabel(): string {
+            const bibtexObjects = cite.set(c).format('bibtex', { format: 'object' }) as {
+              label: string;
+            }[];
+            return bibtexObjects[0]?.label;
+          },
           exportBibTeX(): string {
             return cite.set(c).format('bibtex', { format: 'text' }) as string;
           },
