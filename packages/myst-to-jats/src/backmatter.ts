@@ -1,7 +1,7 @@
-import type { CitationRenderer, CitationJson } from 'citation-js-utils';
+import type { CitationRenderer, CSL } from 'citation-js-utils';
 import type { Element, IJatsSerializer } from './types.js';
 
-export function citeToJatsRef(state: IJatsSerializer, key: string, data: CitationJson): Element {
+export function citeToJatsRef(state: IJatsSerializer, key: string, data: CSL): Element {
   const publicationType = !data.type || data.type === 'article-journal' ? 'journal' : data.type;
   const elements: Element[] = [];
   const authors: Element[] | undefined = data.author

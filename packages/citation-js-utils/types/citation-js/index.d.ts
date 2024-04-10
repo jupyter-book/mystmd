@@ -2,6 +2,9 @@
 // https://fettblog.eu/typescript-react-extending-jsx-elements/
 declare module '@citation-js/plugin-bibtex' {}
 declare module '@citation-js/plugin-csl' {}
+declare module '@citation-js/core/lib/plugins/input/csl.js' {
+  export function clean(data: any): any {}
+}
 declare module '@citation-js/core' {
   export type OutputOptions = {
     format: 'string';
@@ -38,13 +41,13 @@ declare module '@citation-js/core' {
   } & Record<string, any>;
 
   export class Cite {
-    constructor(input?: string | CSL);
+    constructor(input?: any);
 
-    static async(data: string | Cite): Promise<Cite>;
+    static async(data: any): Promise<Cite>;
 
-    set(data: string | Cite): this;
+    set(data: any): this;
 
-    get: (opts: OutputOptions) => string;
+    format: (format: string, options: any) => string | object[];
 
     data: CSL[];
   }

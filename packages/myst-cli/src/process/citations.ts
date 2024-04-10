@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import type { CitationRenderer } from 'citation-js-utils';
-import { getCitations } from 'citation-js-utils';
+import { getCitationRenderers, parseBibTeX } from 'citation-js-utils';
 import { tic, isUrl } from 'myst-cli-utils';
 import { RuleId, plural } from 'myst-common';
 import type { ISession, ISessionWithCache } from '../session/types.js';
@@ -8,7 +8,10 @@ import { castSession } from '../session/cache.js';
 import { selectors } from '../store/index.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 
-export async function loadCitations(session: ISession, path: string): Promise<CitationRenderer> {
+export async function loadBibTeXCitationRenderers(
+  session: ISession,
+  path: string,
+): Promise<CitationRenderer> {
   const toc = tic();
   let data: string;
   if (isUrl(path)) {
@@ -23,7 +26,8 @@ export async function loadCitations(session: ISession, path: string): Promise<Ci
     session.log.debug(`Loading citations at "${path}"`);
     data = fs.readFileSync(path).toString();
   }
-  const renderer = await getCitations(data);
+  const csl = parseBibTeX(data);
+  const renderer = await getCitationRenderers(csl);
   session.log.debug(toc(`Read ${plural('%s citations(s)', renderer)} from ${path} in %s.`));
   return renderer;
 }

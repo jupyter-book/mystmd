@@ -1,0 +1,54 @@
+% Created with jtex v.1.0.16
+\documentclass{article}
+\PassOptionsToPackage{short, nodayofweek}{datetime}
+
+\input{curvenote.def}
+
+
+
+% colors for hyperlinks
+\hypersetup{colorlinks=true, allcolors=blue}
+\hypersetup{
+pdftitle={\@title},
+pdfsubject={},
+pdfauthor={\@author},
+pdfkeywords={},
+addtopdfcreator={Written in Curvenote}
+}
+
+\usepackage{curvenote}
+
+\title{DOI tests}
+
+\newdate{articleDate}{10}{4}{2024}
+\date{\displaydate{articleDate}}
+
+\author{}
+
+\begin{document}
+
+\maketitle
+\keywords{}
+
+Bibtex citation with doi: \cite{Vogel2018systemic}
+
+Bibtex citation without doi: \cite{Meurer2020framework}
+
+Bibtex book citation: \cite{RN1}
+
+Normal DOI citation: \cite{Koch_2012}
+
+Nonexistent DOI citation (errors!): \href{https://doi.org/10.1111/j.1365-246X.2012.99999.x}{}
+
+DOI with with invalid BibTeX: \cite{EFSA2019Dietary}
+
+DOI with with invalid BibTeX as cite node: \cite{EFSA2019Dietary}
+
+DOI with some strange characters: \cite{Bartels_1997}
+
+Short DOI: \cite{PRIESTLEY_1972}
+
+\clearpage
+\bibliography{main.bib}
+
+\end{document}

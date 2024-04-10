@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
-import type { CitationRenderer } from 'citation-js-utils';
-import { getCitations } from 'citation-js-utils';
+import type { CitationRenderer, CSL } from 'citation-js-utils';
+import { getCitationRenderers, parseBibTeX, parseCSLJSON } from 'citation-js-utils';
 import { doi } from 'doi-utils';
 import type { Link } from 'myst-spec';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, toText, RuleId, plural, fileError } from 'myst-common';
+import { toText, RuleId, plural, fileError } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { computeHash, tic } from 'myst-cli-utils';
 import type { Cite } from 'myst-spec-ext';
@@ -13,8 +13,17 @@ import type { SingleCitationRenderer } from './types.js';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 
-function doiBibtexCacheFile(session: ISession, normalizedDoi: string) {
-  const filename = `doi-${computeHash(normalizedDoi)}.bib`;
+const CSL_JSON_MIMETYPE = 'application/vnd.citationstyles.csl+json';
+const BIBTEX_MIMETYPE = 'application/x-bibtex';
+
+/**
+ * Build a path to the cache-file for the given DOI
+ *
+ * @param session: CLI session
+ * @param normalizedDoi: normalized DOI of the form `prefix/suffix`
+ */
+function doiCSLJSONCacheFile(session: ISession, normalizedDoi: string) {
+  const filename = `doi-${computeHash(normalizedDoi)}.csl.json`;
   const cacheFolder = join(session.buildPath(), 'cache');
   if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
   return join(cacheFolder, filename);
@@ -28,44 +37,122 @@ function doiResolvesCacheFile(session: ISession, normalizedDoi: string) {
 }
 
 /**
- * Fetch bibtex entry for doi from doi.org using application/x-bibtex accept header
+ * Resolve the given doi.org DOI URL into its BibTeX metadata
+ *
+ * @param session - CLI session
+ * @param url - doi.org DOI URL
  */
-export async function getDoiOrgBibtex(
+export async function resolveDOIAsBibTeX(
   session: ISession,
-  doiString: string,
-): Promise<string | null> {
-  const normalizedDoi = doi.normalize(doiString);
-  const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
-  if (!doi.validate(doiString) || !normalizedDoi || !url) return null;
-  const cachePath = doiBibtexCacheFile(session, normalizedDoi);
-  if (fs.existsSync(cachePath)) {
-    const bibtex = fs.readFileSync(cachePath).toString();
-    session.log.debug(`Loaded cached reference bibtex for doi:${normalizedDoi}`);
-    return bibtex;
-  }
-  const toc = tic();
-  session.log.debug('Fetching DOI bibtex from doi.org');
+  url: string,
+): Promise<CSL[] | undefined> {
+  session.log.debug('Fetching DOI BibTeX from doi.org');
   const response = await session
     .fetch(url, {
-      headers: [['Accept', 'application/x-bibtex']],
+      headers: [['Accept', BIBTEX_MIMETYPE]],
     })
     .catch(() => {
       session.log.debug(`Request to ${url} failed.`);
-      return null;
+      return undefined;
     });
   if (!response || !response.ok) {
-    session.log.debug(`doi.org fetch failed for ${doiString}`);
-    return null;
+    session.log.debug(`doi.org fetch failed for ${url}`);
+    return undefined;
   }
-  const bibtex = await response.text();
-  session.log.debug(toc(`Fetched reference bibtex for doi:${normalizedDoi} in %s`));
-  session.log.debug(`Saving doi bibtex to cache ${cachePath}`);
-  fs.writeFileSync(cachePath, bibtex);
-  return bibtex;
+  const data = await response.text();
+  return parseBibTeX(data);
 }
 
 /**
- * Fetch doi from doi.org to see if it resolves
+ * Resolve the given doi.org DOI URL into its CSL-JSON metadata
+ *
+ * @param session - CLI session
+ * @param url - doi.org DOI URL
+ */
+
+export async function resolveDOIAsCSLJSON(
+  session: ISession,
+  url: string,
+): Promise<CSL[] | undefined> {
+  session.log.debug('Fetching DOI CSL JSON from doi.org');
+  const response = await session
+    .fetch(url, {
+      headers: [['Accept', CSL_JSON_MIMETYPE]],
+    })
+    .catch(() => {
+      session.log.debug(`Request to ${url} failed.`);
+      return undefined;
+    });
+  if (!response || !response.ok) {
+    session.log.debug(`doi.org fetch failed for ${url}`);
+    return undefined;
+  }
+  const data = await response.json();
+  // Return parse result of _array_ of CSL items
+  return parseCSLJSON([data as object]);
+}
+
+/**
+ * Fetch CSL-JSON formatted metadata for the given doi.org DOI
+ *
+ * @param session - CLI session
+ * @param doiString - DOI
+ * @param vfile
+ * @param node
+ */
+export async function resolveDoiOrg(
+  session: ISession,
+  doiString: string,
+): Promise<CSL[] | undefined> {
+  const normalizedDoi = doi.normalize(doiString);
+  const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
+  if (!doi.validate(doiString) || !normalizedDoi || !url) return undefined;
+
+  // Cache DOI resolution as CSL JSON (parsed)
+  const cachePath = doiCSLJSONCacheFile(session, normalizedDoi);
+
+  if (fs.existsSync(cachePath)) {
+    const cached = fs.readFileSync(cachePath).toString();
+    session.log.debug(`Loaded cached reference CSL-JSON for doi:${normalizedDoi}`);
+    return JSON.parse(cached);
+  }
+  const toc = tic();
+
+  let data: CSL[] | undefined;
+  try {
+    data = await resolveDOIAsBibTeX(session, url);
+    if (data) {
+      session.log.debug(toc(`Fetched reference BibTeX for doi:${normalizedDoi} in %s`));
+    } else {
+      session.log.debug(
+        `BibTeX not available from doi.org for doi:${normalizedDoi}, trying CSL-JSON`,
+      );
+    }
+  } catch (error) {
+    session.log.debug(
+      `BibTeX from doi.org was malformed for doi:${normalizedDoi}, trying CSL-JSON`,
+    );
+  }
+  if (!data) {
+    try {
+      data = await resolveDOIAsCSLJSON(session, url);
+      if (data) {
+        session.log.debug(toc(`Fetched reference CSL-JSON for doi:${normalizedDoi} in %s`));
+      } else {
+        session.log.debug(`CSL-JSON not available from doi.org for doi:${normalizedDoi}`);
+      }
+    } catch (error) {
+      session.log.debug(`CSL-JSON from doi.org was malformed for doi:${normalizedDoi}`);
+    }
+  }
+  if (!data) return undefined;
+  session.log.debug(`Saving DOI CSL-JSON to cache ${cachePath}`);
+  fs.writeFileSync(cachePath, JSON.stringify(data));
+  return data as unknown as CSL[];
+}
+
+/**
+ * Fetch DOI from doi.org to see if it resolves
  */
 export async function doiOrgResolves(session: ISession, doiString: string): Promise<boolean> {
   const normalizedDoi = doi.normalize(doiString);
@@ -99,19 +186,20 @@ export async function getCitation(
   node: GenericNode,
 ): Promise<SingleCitationRenderer | null> {
   if (!doi.validate(doiString)) return null;
-  const bibtex = await getDoiOrgBibtex(session, doiString);
-  if (!bibtex) {
+  const data = await resolveDoiOrg(session, doiString);
+  if (!data) {
     const resolves = await doiOrgResolves(session, doiString);
     const normalizedDoi = doi.normalize(doiString);
     let message: string;
     let note: string | undefined;
     if (resolves) {
-      message = `No bibtex available from doi.org for doi:${normalizedDoi}`;
-      note = `To resolve this error, visit ${doi.buildUrl(normalizedDoi)} and add citation info to .bib file`;
+      message = `Citation data from doi.org was not available or malformed for doi:${normalizedDoi}`;
+      note = `To resolve this error, visit ${doi.buildUrl(doiString)} and add citation info to local BibTeX file`;
     } else {
-      message = `Could not find DOI from link: ${doiString} as ${normalizedDoi}`;
+      message = `Could not find DOI "${doiString}" from doi.org as doi:${normalizedDoi}`;
+      note = 'Please check the DOI and, if correct, add citation info to local BibTeX file';
     }
-    fileWarn(vfile, message, {
+    fileError(vfile, message, {
       node,
       ruleId: RuleId.doiLinkValid,
       note,
@@ -119,18 +207,18 @@ export async function getCitation(
     return null;
   }
   try {
-    const renderer = await getCitations(bibtex);
+    const renderer = await getCitationRenderers(data);
     const id = Object.keys(renderer)[0];
     const render = renderer[id];
     return { id, render };
   } catch (error) {
     fileError(
       vfile,
-      `BibTeX from doi.org was malformed, please edit and add to your local references`,
+      `Citation data from doi.org was malformed, please edit and add to your local references`,
       {
         node,
         ruleId: RuleId.doiLinkValid,
-        note: `\nBibTeX from ${doiString}:\n\n${bibtex}\n`,
+        note: `Citation data from ${doiString}:\n\n${JSON.stringify(data)}\n`,
       },
     );
     return null;
@@ -175,11 +263,12 @@ export async function transformLinkedDOIs(
         else return false;
       }
       doiRenderer[node.url] = cite;
-      renderer[cite.id] = cite.render;
+      const label = cite.render.getLabel();
+      renderer[label] = cite.render;
       const citeNode = node as unknown as Cite;
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
-      citeNode.label = cite.id;
+      citeNode.label = label;
       if (doi.validate(toText(citeNode.children))) {
         // If the link text is the DOI, update with a citation in a following pass
         citeNode.children = [];
@@ -194,8 +283,9 @@ export async function transformLinkedDOIs(
         else return false;
       }
       doiRenderer[node.label] = cite;
-      renderer[cite.id] = cite.render;
-      node.label = cite.id;
+      const label = cite.render.getLabel();
+      renderer[label] = cite.render;
+      node.label = label;
       return true;
     }),
   ]);

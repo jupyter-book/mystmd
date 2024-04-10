@@ -1,5 +1,5 @@
-import type { OutputOptions } from '@citation-js/core';
 import { Cite } from '@citation-js/core';
+import { clean as cleanCSL } from '@citation-js/core/lib/plugins/input/csl.js';
 import sanitizeHtml from 'sanitize-html';
 
 import '@citation-js/plugin-bibtex';
@@ -8,10 +8,10 @@ import '@citation-js/plugin-csl';
 const DOI_IN_TEXT = /(10.\d{4,9}\/[-._;()/:A-Z0-9]*[A-Z0-9])/i;
 
 // This is duplicated in citation-js types, which are not exported
-export type CitationJson = {
+export type CSL = {
   type?: 'article-journal' | string;
   id: string;
-  author?: { given: string; family: string }[];
+  author?: { given: string; family: string; literal?: string }[];
   issued?: { 'date-parts'?: number[][]; literal?: string };
   publisher?: string;
   title?: string;
@@ -47,14 +47,6 @@ function cleanRef(citation: string) {
   return cleanHtml.replace(/^1\./g, '').replace(/&amp;/g, '&').trim();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const defaultOpts: OutputOptions = {
-  format: 'string',
-  type: 'json',
-  style: 'ris',
-  lang: 'en-US',
-};
-
 export enum CitationJSStyles {
   'apa' = 'citation-apa',
   'vancouver' = 'citation-vancouver',
@@ -66,14 +58,7 @@ export enum InlineCite {
   't' = 't',
 }
 
-const defaultString: OutputOptions = {
-  format: 'string',
-  lang: 'en-US',
-  type: 'html',
-  style: CitationJSStyles.apa,
-};
-
-export function yearFromCitation(data: CitationJson) {
+export function yearFromCitation(data: CSL) {
   let year: number | string | undefined = data.issued?.['date-parts']?.[0]?.[0];
   if (year) return year;
   year = data.issued?.['literal']?.match(/\b[12][0-9]{3}\b/)?.[0];
@@ -81,7 +66,7 @@ export function yearFromCitation(data: CitationJson) {
   return 'n.d.';
 }
 
-export function getInlineCitation(data: CitationJson, kind: InlineCite, opts?: InlineOptions) {
+export function getInlineCitation(data: CSL, kind: InlineCite, opts?: InlineOptions) {
   let authors = data.author;
   if (!authors || authors.length === 0) {
     authors = data.editor;
@@ -112,7 +97,7 @@ export function getInlineCitation(data: CitationJson, kind: InlineCite, opts?: I
   }
   if (authors.length > 2) {
     return [
-      { type: 'text', value: `${prefix}${authors[0].family} ` },
+      { type: 'text', value: `${prefix}${authors[0].family ?? authors[0].literal} ` },
       { type: 'emphasis', children: [{ type: 'text', value: 'et al.' }] },
       { type: 'text', value: `${yearPart}` },
     ];
@@ -129,7 +114,9 @@ export type CitationRenderer = Record<
     inline: (kind?: InlineCite, opts?: InlineOptions) => InlineNode[];
     getDOI: () => string | undefined;
     getURL: () => string | undefined;
-    cite: CitationJson;
+    cite: CSL;
+    getLabel: () => string;
+    exportBibTeX: () => string;
   }
 >;
 
@@ -171,12 +158,58 @@ export function firstNonDoiUrl(str?: string, doi?: string) {
   return matches.map((match) => match[0]).find((match) => !doi || !match.includes(doi));
 }
 
-export async function getCitations(bibtex: string): Promise<CitationRenderer> {
-  const cite = new Cite();
-  const p = await Cite.async(bibtex);
+/**
+ * Parse a citation style of the form `citation-<style>` into its `<style>`
+ *
+ * @param style: citation style string
+ */
+function parseCitationStyle(style: string): string {
+  const [styleType, styleFormat] = style.split('-');
+  if (styleType !== 'citation') {
+    throw new Error(`unexpected citation style: ${style}`);
+  }
+  return styleFormat;
+}
 
+/**
+ * Parse a BibTeX string into an array of CSL items
+ *
+ * @param source - BibTeX string
+ *
+ */
+export function parseBibTeX(source: string): CSL[] {
+  return new Cite(source).data;
+}
+
+/**
+ * Parse CSL-JSON into an array of "clean" CSL items
+ *
+ * @param source - array of unclean CSL items
+ */
+export function parseCSLJSON(source: object[]): CSL[] {
+  return cleanCSL(source);
+}
+
+/**
+ * Compatability shim for existing callers of getCitations
+ * Replaced by getCitationRenderers
+ *
+ * @param bibtex - BibTeX string
+ */
+export async function getCitations(bibtex: string): Promise<CitationRenderer> {
+  const csl = parseBibTeX(bibtex);
+  return await getCitationRenderers(csl);
+}
+
+/**
+ * Build renderers for the given array of CSL items
+ *
+ * @param data - array of CSL items
+ */
+export async function getCitationRenderers(data: CSL[]): Promise<CitationRenderer> {
+  const cite = new Cite();
   return Object.fromEntries(
-    p.data.map((c: any): [string, CitationRenderer[0]] => {
+    data.map((c): [string, CitationRenderer[0]] => {
       const matchDoi = c.URL?.match(DOI_IN_TEXT) ?? c.note?.match(DOI_IN_TEXT);
       if (!c.DOI && matchDoi) {
         c.DOI = matchDoi[0];
@@ -189,7 +222,13 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
           },
           render(style?: CitationJSStyles) {
             return replaceUrlsWithAnchorElement(
-              cleanRef(cite.set(c).get({ ...defaultString, style: style ?? CitationJSStyles.apa })),
+              cleanRef(
+                cite.set(c).format('bibliography', {
+                  template: parseCitationStyle(style ?? (CitationJSStyles.apa as string)),
+                  format: 'html',
+                  lang: 'en-US',
+                }) as string,
+              ),
               c.DOI,
             );
           },
@@ -197,9 +236,29 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
             return c.DOI || undefined;
           },
           getURL(): string | undefined {
-            return firstNonDoiUrl(cleanRef(cite.set(c).get(defaultString)), c.DOI) ?? doiUrl(c.DOI);
+            return (
+              firstNonDoiUrl(
+                cleanRef(
+                  cite.set(c).format('bibliography', {
+                    template: parseCitationStyle(CitationJSStyles.apa as string),
+                    format: 'html',
+                    lang: 'en-US',
+                  }) as string,
+                ),
+                c.DOI,
+              ) ?? doiUrl(c.DOI)
+            );
           },
           cite: c,
+          getLabel(): string {
+            const bibtexObjects = cite.set(c).format('bibtex', { format: 'object' }) as {
+              label: string;
+            }[];
+            return bibtexObjects[0]?.label;
+          },
+          exportBibTeX(): string {
+            return cite.set(c).format('bibtex', { format: 'text' }) as string;
+          },
         },
       ];
     }),

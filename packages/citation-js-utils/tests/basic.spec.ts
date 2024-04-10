@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { getCitations, CitationJSStyles, yearFromCitation, firstNonDoiUrl } from '../src';
+import {
+  getCitationRenderers,
+  parseBibTeX,
+  CitationJSStyles,
+  yearFromCitation,
+  firstNonDoiUrl,
+} from '../src';
 import {
   bibtex,
   doiInNote,
@@ -13,7 +19,8 @@ const key = 'Cockett2015SimPEG';
 
 describe('Test reference rendering', () => {
   it('APA', async () => {
-    const citations = await getCitations(bibtex);
+    const data = parseBibTeX(bibtex);
+    const citations = await getCitationRenderers(data);
     expect(Object.keys(citations).length).toBe(1);
     const cite = citations[key];
     expect(cite.render()).toEqual(TEST_APA_HTML);
@@ -21,7 +28,8 @@ describe('Test reference rendering', () => {
     expect(cite.getDOI()).toEqual('10.1016/j.cageo.2015.09.015');
   });
   it('Vancouver', async () => {
-    const citations = await getCitations(bibtex);
+    const data = parseBibTeX(bibtex);
+    const citations = await getCitationRenderers(data);
     const cite = citations[key];
     expect(cite.render(CitationJSStyles.vancouver)).toEqual(TEST_VANCOUVER_HTML);
   });
@@ -29,7 +37,8 @@ describe('Test reference rendering', () => {
     ['url', doiInURL],
     ['note', doiInNote],
   ])('Extract the DOI from the %s', async (_, src) => {
-    const citations = await getCitations(src);
+    const data = parseBibTeX(src);
+    const citations = await getCitationRenderers(data);
     expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_OTHER_FIELD);
   });
 });
