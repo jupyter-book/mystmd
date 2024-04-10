@@ -196,6 +196,17 @@ export async function parseCSLJSON(source: object[]): Promise<CSL[]> {
 }
 
 /**
+ * Compatability shim for existing callers of getCitations
+ * Replaced by getCitationRenderers
+ *
+ * @param bibtex - BibTeX string
+ */
+export async function getCitations(bibtex: string): Promise<CitationRenderer> {
+  const csl = await parseBibTeX(bibtex);
+  return await getCitationRenderers(csl);
+}
+
+/**
  * Build renderers for the given array of CSL items
  *
  * @param data - array of CSL items
