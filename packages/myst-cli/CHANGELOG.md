@@ -1,5 +1,28 @@
 # myst-cli
 
+## 1.1.53
+
+### Patch Changes
+
+- d17f6806: Support notebooks in include directive
+- 8ca2c518: Do not error on invalid citation bibtex
+- d17f6806: Support tex includes directly in myst processing
+- d17f6806: Handle circular includes with nice errors and no infinite loops
+- 5c9338a: Load citations from CSL and non-CSL
+- 377034df: Fix typo in downloads error message
+- 770c15f0: Support short DOIs and test them!
+- 1be2c741: Lowercase the `R` language to `r` in a transform
+- Updated dependencies [d17f6806]
+- Updated dependencies [d17f6806]
+- Updated dependencies [d17f6806]
+- Updated dependencies [5c9338a]
+- Updated dependencies [d17f6806]
+- Updated dependencies [1be2c741]
+  - myst-to-typst@0.0.14
+  - myst-transforms@1.3.5
+  - citation-js-utils@1.2.0
+  - myst-to-jats@1.0.25
+
 ## 1.1.52
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.0
+
+### Minor Changes
+
+- 5c9338a: Load citations from CSL and non-CSL
+
 ## 1.1.2
 
 ### Patch Changes

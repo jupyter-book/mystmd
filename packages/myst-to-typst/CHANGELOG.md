@@ -1,5 +1,11 @@
 # myst-to-typst
 
+## 0.0.14
+
+### Patch Changes
+
+- d17f6806: Add newlines after typst include/embed
+
 ## 0.0.13
 
 ### Patch Changes

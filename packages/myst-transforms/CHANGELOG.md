@@ -1,5 +1,14 @@
 # myst-transforms
 
+## 1.3.5
+
+### Patch Changes
+
+- d17f6806: Support tex includes directly in myst processing
+- d17f6806: Handle circular includes with nice errors and no infinite loops
+- d17f6806: Revive basic recursive include
+- 1be2c741: Lowercase the `R` language to `r` in a transform
+
 ## 1.3.4
 
 ### Patch Changes

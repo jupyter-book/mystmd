@@ -1,5 +1,18 @@
 # myst-to-jats
 
+## 1.0.25
+
+### Patch Changes
+
+- 5c9338a: Load citations from CSL and non-CSL
+- Updated dependencies [d17f6806]
+- Updated dependencies [d17f6806]
+- Updated dependencies [5c9338a]
+- Updated dependencies [d17f6806]
+- Updated dependencies [1be2c741]
+  - myst-transforms@1.3.5
+  - citation-js-utils@1.2.0
+
 ## 1.0.24
 
 ### Patch Changes
