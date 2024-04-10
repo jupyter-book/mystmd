@@ -181,9 +181,10 @@ function parseCitationStyle(style: string): string {
  * Parse a BibTeX string into an array of CSL items
  *
  * @param source - BibTeX string
+ *
  */
-export async function parseBibTeX(source: string): Promise<CSL[]> {
-  return (await Cite.async(source)).data;
+export function parseBibTeX(source: string): CSL[] {
+  return (new Cite(source)).data;
 }
 
 /**
@@ -191,8 +192,8 @@ export async function parseBibTeX(source: string): Promise<CSL[]> {
  *
  * @param source - array of unclean CSL items
  */
-export async function parseCSLJSON(source: object[]): Promise<CSL[]> {
-  return Promise.resolve(cleanCSL(source));
+export function parseCSLJSON(source: object[]): CSL[] {
+  return cleanCSL(source);
 }
 
 /**
@@ -202,7 +203,7 @@ export async function parseCSLJSON(source: object[]): Promise<CSL[]> {
  * @param bibtex - BibTeX string
  */
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
-  const csl = await parseBibTeX(bibtex);
+  const csl = parseBibTeX(bibtex);
   return await getCitationRenderers(csl);
 }
 
