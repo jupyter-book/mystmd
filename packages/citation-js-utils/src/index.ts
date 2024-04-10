@@ -163,6 +163,12 @@ export function firstNonDoiUrl(str?: string, doi?: string) {
   return matches.map((match) => match[0]).find((match) => !doi || !match.includes(doi));
 }
 
+
+/**
+ * Parse a citation style of the form `citation-<style>` into its `<style>`
+ *
+ * @param style: citation style string
+ */
 function parseCitationStyle(style: string): string {
   const [styleType, styleFormat] = style.split('-');
   if (styleType !== 'citation') {
@@ -171,14 +177,31 @@ function parseCitationStyle(style: string): string {
   return styleFormat;
 }
 
+
+/**
+ * Parse a BibTeX string into an array of CSL items
+ *
+ * @param source - BibTeX string
+ */
 export async function parseBibTeX(source: string): Promise<CSL[]> {
   return (await Cite.async(source)).data;
 }
 
+/**
+ * Parse CSL-JSON into an array of "clean" CSL items
+ *
+ * @param source - array of unclean CSL items
+ */
 export async function parseCSLJSON(source: object[]): Promise<CSL[]> {
   return Promise.resolve(cleanCSL(source));
 }
 
+
+/**
+ * Build renderers for the given array of CSL items
+ *
+ * @param data - array of CSL items
+ */
 export async function getCitationRenderers(data: CSL[]): Promise<CitationRenderer> {
   const cite = new Cite();
   return Object.fromEntries(
