@@ -8,24 +8,30 @@ import { parseMyst } from '../process/myst.js';
 import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
 
-export const makeFileLoader =
-  (session: ISession, vfile: VFile, baseFile: string) => (filename: string) => {
-    const dir = path.dirname(baseFile);
-    const fullFile = path.join(dir, filename);
-    if (!fs.existsSync(fullFile)) {
-      fileError(vfile, `Include Directive: Could not find "${fullFile}" in "${baseFile}"`, {
+export const resolveFile = (includeFile: string, sourceFile: string, vfile: VFile) => {
+  const fullFile = path.resolve(path.dirname(sourceFile), includeFile);
+  if (!fs.existsSync(fullFile)) {
+    fileError(
+      vfile,
+      `Include Directive: Could not find "${includeFile}" relative to "${sourceFile}"`,
+      {
         ruleId: RuleId.includeContentLoads,
-      });
-      return;
-    }
-    session.store.dispatch(
-      watch.actions.addLocalDependency({
-        path: baseFile,
-        dependency: fullFile,
-      }),
+      },
     );
-    return fs.readFileSync(fullFile).toString();
-  };
+    return;
+  }
+  return fullFile;
+};
+
+export const makeFileLoader = (session: ISession, baseFile: string) => (fullFile: string) => {
+  session.store.dispatch(
+    watch.actions.addLocalDependency({
+      path: baseFile,
+      dependency: fullFile,
+    }),
+  );
+  return fs.readFileSync(fullFile).toString();
+};
 
 export async function includeFilesTransform(
   session: ISession,
@@ -39,6 +45,11 @@ export async function includeFilesTransform(
     }
     return parseMyst(session, content, filename).children;
   };
-  const loadFile = makeFileLoader(session, vfile, baseFile);
-  await includeDirectiveTransform(tree, vfile, { loadFile, parseContent });
+  const loadFile = makeFileLoader(session, baseFile);
+  await includeDirectiveTransform(tree, vfile, {
+    resolveFile,
+    loadFile,
+    parseContent,
+    sourceFile: baseFile,
+  });
 }

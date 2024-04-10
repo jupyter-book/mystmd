@@ -101,3 +101,9 @@ cases:
     outputs:
       - path: include-recursive/_build/out.typ
         content: outputs/include-recursive.typ
+  - title: Circular includes resolve with errors
+    cwd: include-circular
+    command: myst build --typst
+    outputs:
+      - path: include-circular/_build/out.typ
+        content: outputs/include-circular.typ
