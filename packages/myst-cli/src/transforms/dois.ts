@@ -189,7 +189,7 @@ export async function getCitation(
     let message: string;
     let note: string | undefined;
     if (resolves) {
-      message = `No CSL-JSON available from doi.org for doi:${normalizedDoi}`;
+      message = `No citation data available from doi.org for doi:${normalizedDoi}`;
       note = `To resolve this error, visit ${doi.buildUrl(normalizedDoi)} and add citation info to .bib file`;
     } else {
       message = `Could not find DOI from link: ${doiString} as ${normalizedDoi}`;
