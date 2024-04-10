@@ -47,7 +47,7 @@ declare module '@citation-js/core' {
 
     set(data: any): this;
 
-    format: (format: string, options: Any) => string | object[];
+    format: (format: string, options: any) => string | object[];
 
     data: CSL[];
   }

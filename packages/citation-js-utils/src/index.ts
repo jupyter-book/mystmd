@@ -122,6 +122,7 @@ export type CitationRenderer = Record<
     getDOI: () => string | undefined;
     getURL: () => string | undefined;
     cite: CSL;
+    exportBibTeX: () => string;
   }
 >;
 
@@ -246,6 +247,9 @@ export async function getCitationRenderers(data: CSL[]): Promise<CitationRendere
             );
           },
           cite: c,
+	  exportBibTeX(): string {
+             return cite.set(c).format('bibtex', {format: 'text'}) as string;
+	  }
         },
       ];
     }),
