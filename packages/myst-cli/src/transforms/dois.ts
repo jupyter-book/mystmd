@@ -194,7 +194,7 @@ export async function getCitation(
     let note: string | undefined;
     if (resolves) {
       message = `Citation data from doi.org was not available or malformed for doi:${normalizedDoi}`;
-      note = `To resolve this error, visit ${doi.buildUrl(normalizedDoi)} and add citation info to local BibTeX file`;
+      note = `To resolve this error, visit ${doi.buildUrl(doiString)} and add citation info to local BibTeX file`;
     } else {
       message = `Could not find DOI "${doiString}" from doi.org as doi:${normalizedDoi}`;
       note = 'Please check the DOI and, if correct, add citation info to local BibTeX file';
