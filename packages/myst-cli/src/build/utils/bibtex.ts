@@ -5,7 +5,6 @@ import type { ISession } from '../../session/types.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import type { References } from 'myst-common';
 
-
 /**
  * Write new bibtex file from citation renderer data and reference order
  *

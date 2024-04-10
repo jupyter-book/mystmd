@@ -164,7 +164,6 @@ export function firstNonDoiUrl(str?: string, doi?: string) {
   return matches.map((match) => match[0]).find((match) => !doi || !match.includes(doi));
 }
 
-
 /**
  * Parse a citation style of the form `citation-<style>` into its `<style>`
  *
@@ -177,7 +176,6 @@ function parseCitationStyle(style: string): string {
   }
   return styleFormat;
 }
-
 
 /**
  * Parse a BibTeX string into an array of CSL items
@@ -196,7 +194,6 @@ export async function parseBibTeX(source: string): Promise<CSL[]> {
 export async function parseCSLJSON(source: object[]): Promise<CSL[]> {
   return Promise.resolve(cleanCSL(source));
 }
-
 
 /**
  * Build renderers for the given array of CSL items
@@ -247,9 +244,9 @@ export async function getCitationRenderers(data: CSL[]): Promise<CitationRendere
             );
           },
           cite: c,
-	  exportBibTeX(): string {
-             return cite.set(c).format('bibtex', {format: 'text'}) as string;
-	  }
+          exportBibTeX(): string {
+            return cite.set(c).format('bibtex', { format: 'text' }) as string;
+          },
         },
       ];
     }),
