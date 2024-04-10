@@ -5,7 +5,7 @@ import { getCitationRenderers, parseBibTeX, parseCSLJSON } from 'citation-js-uti
 import { doi } from 'doi-utils';
 import type { Link } from 'myst-spec';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, toText, RuleId, plural, fileError } from 'myst-common';
+import { toText, RuleId, plural, fileError } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { computeHash, tic } from 'myst-cli-utils';
 import type { Cite } from 'myst-spec-ext';
@@ -103,8 +103,6 @@ export async function resolveDOIAsCSLJSON(
 export async function resolveDoiOrg(
   session: ISession,
   doiString: string,
-  vfile: VFile,
-  node: GenericNode,
 ): Promise<CSL[] | undefined> {
   const normalizedDoi = doi.normalize(doiString);
   const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
@@ -123,25 +121,31 @@ export async function resolveDoiOrg(
   let data: CSL[] | undefined;
   try {
     data = await resolveDOIAsBibTeX(session, url);
-    session.log.debug(toc(`Fetched reference BibTeX for doi:${normalizedDoi} in %s`));
+    if (data) {
+      session.log.debug(toc(`Fetched reference BibTeX for doi:${normalizedDoi} in %s`));
+    } else {
+      session.log.debug(
+        `BibTeX not available from doi.org for doi:${normalizedDoi}, trying CSL-JSON`,
+      );
+    }
   } catch (error) {
-    fileWarn(vfile, `BibTeX from doi.org was malformed, trying CSL-JSON`);
-
+    session.log.debug(
+      `BibTeX from doi.org was malformed for doi:${normalizedDoi}, trying CSL-JSON`,
+    );
+  }
+  if (!data) {
     try {
       data = await resolveDOIAsCSLJSON(session, url);
-      session.log.debug(toc(`Fetched reference CSL-JSON for doi:${normalizedDoi} in %s`));
-    } catch (errorCSL) {
-      fileError(
-        vfile,
-        `BibTeX and CSL-JSON from doi.org was malformed, please edit and add to your local references`,
-        {
-          node,
-          ruleId: RuleId.doiLinkValid,
-        },
-      );
-      return undefined;
+      if (data) {
+        session.log.debug(toc(`Fetched reference CSL-JSON for doi:${normalizedDoi} in %s`));
+      } else {
+        session.log.debug(`CSL-JSON not available from doi.org for doi:${normalizedDoi}`);
+      }
+    } catch (error) {
+      session.log.debug(`CSL-JSON from doi.org was malformed for doi:${normalizedDoi}`);
     }
   }
+  if (!data) return undefined;
   session.log.debug(`Saving DOI CSL-JSON to cache ${cachePath}`);
   fs.writeFileSync(cachePath, JSON.stringify(data));
   return data as unknown as CSL[];
@@ -182,19 +186,20 @@ export async function getCitation(
   node: GenericNode,
 ): Promise<SingleCitationRenderer | null> {
   if (!doi.validate(doiString)) return null;
-  const data = await resolveDoiOrg(session, doiString, vfile, node);
+  const data = await resolveDoiOrg(session, doiString);
   if (!data) {
     const resolves = await doiOrgResolves(session, doiString);
     const normalizedDoi = doi.normalize(doiString);
     let message: string;
     let note: string | undefined;
     if (resolves) {
-      message = `No citation data available from doi.org for doi:${normalizedDoi}`;
-      note = `To resolve this error, visit ${doi.buildUrl(normalizedDoi)} and add citation info to .bib file`;
+      message = `Citation data from doi.org was not available or malformed for doi:${normalizedDoi}`;
+      note = `To resolve this error, visit ${doi.buildUrl(normalizedDoi)} and add citation info to local BibTeX file`;
     } else {
-      message = `Could not find DOI from link: ${doiString} as ${normalizedDoi}`;
+      message = `Could not find DOI "${doiString}" from doi.org as doi:${normalizedDoi}`;
+      note = 'Please check the DOI and, if correct, add citation info to local BibTeX file';
     }
-    fileWarn(vfile, message, {
+    fileError(vfile, message, {
       node,
       ruleId: RuleId.doiLinkValid,
       note,
