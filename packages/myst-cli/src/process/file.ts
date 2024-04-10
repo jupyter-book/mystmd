@@ -4,7 +4,6 @@ import { createHash } from 'node:crypto';
 import { tic } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
-import type { GenericParent } from 'myst-common';
 import { RuleId, toText } from 'myst-common';
 import { validatePageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -18,8 +17,6 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadCitations } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebook } from './notebook.js';
-import { includeDirectiveTransform } from 'myst-transforms';
-import { makeFileLoader } from '../transforms/include.js';
 import { selectors } from '../store/index.js';
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
@@ -116,13 +113,6 @@ export async function loadFile(
         const { sha256, useCache } = checkCache(cache, content, file);
         if (useCache) break;
         const tex = new TexParser(content, vfile);
-        await includeDirectiveTransform(tex.ast as GenericParent, vfile, {
-          loadFile: makeFileLoader(session, vfile, file),
-          parseContent: (filename, input) => {
-            const subTex = new TexParser(input, vfile);
-            return subTex.ast.children ?? [];
-          },
-        });
         const frontmatter = validatePageFrontmatter(
           {
             title: toText(tex.data.frontmatter.title as any),

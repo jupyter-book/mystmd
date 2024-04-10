@@ -7,12 +7,13 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 
 export type Options = {
-  loadFile: (
-    filename: string,
-    stack?: string[],
-  ) => Promise<string | undefined> | string | undefined;
+  loadFile: (filename: string) => Promise<string | undefined> | string | undefined;
   resolveFile: (includeFile: string, sourceFile: string, vfile: VFile) => string | undefined;
-  parseContent: (filename: string, content: string) => Promise<GenericNode[]> | GenericNode[];
+  parseContent: (
+    filename: string,
+    content: string,
+    vfile: VFile,
+  ) => Promise<GenericNode[]> | GenericNode[];
   sourceFile: string;
   stack?: string[];
 };
@@ -41,7 +42,7 @@ export async function includeDirectiveTransform(tree: GenericParent, vfile: VFil
         });
         return;
       }
-      const rawContent = await opts.loadFile(fullFile, opts.stack);
+      const rawContent = await opts.loadFile(fullFile);
       if (rawContent == null) return;
       const { content, startingLineNumber } = filterIncludedContent(vfile, node.filter, rawContent);
       let children: GenericNode[];
@@ -95,7 +96,7 @@ export async function includeDirectiveTransform(tree: GenericParent, vfile: VFil
           children = [container];
         }
       } else {
-        children = await opts.parseContent(fullFile, content);
+        children = await opts.parseContent(fullFile, content, vfile);
       }
       node.children = children as any;
       if (!node.children?.length) return;
