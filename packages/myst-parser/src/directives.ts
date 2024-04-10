@@ -15,10 +15,23 @@ type MystDirectiveNode = GenericNode & {
   name: string;
 };
 
+
+export type DirectiveContext = {};
+
+
+/**
+ * Apply directive `run()` methods to build directive ASTs.
+ *
+ * @param tree - raw MDAST containing mystDirectives
+ * @param specs - record mapping from names to directive implementations
+ * @param vfile
+ */
 export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfile: VFile) {
+  // Record mapping from alias-or-name to directive spec
   const specLookup: Record<string, DirectiveSpec> = {};
   specs.forEach((spec) => {
     const names = [spec.name];
+    // Wrap single-string `alias` fields as an array
     if (spec.alias) {
       names.push(...(typeof spec.alias === 'string' ? [spec.alias] : spec.alias));
     }
@@ -32,6 +45,7 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
       }
     });
   });
+  // Find all raw directive nodes
   const nodes = selectAll('mystDirective', tree) as MystDirectiveNode[];
   nodes.forEach((node) => {
     const { name } = node;
@@ -190,6 +204,6 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
     if (validate) {
       data = validate(data, vfile);
     }
-    node.children = run(data, vfile);
+    node.children = run(data, vfile, ctx);
   });
 }
