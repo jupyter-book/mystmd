@@ -108,7 +108,7 @@ For instructions on how to embed notebook content, see [](./reuse-jupyter-output
 ## The `{include}` directive
 
 If a portion of your content is in a separate file that is **not already included in your project** you can use the {myst:directive}`include` directive to parse and include that content.
-This directive is helpful for including content snippets, such as a table, equation, that you want to keep in a different file on disk, but present as if it were one document. In addition to Markdown, MyST will also parse `.tex` and `.html`.
+This directive is helpful for including content snippets, such as a table, equation, that you want to keep in a different file on disk, but present as if it were one document. In addition to Markdown, MyST will also parse `.ipynb`, `.tex`, and `.html`.
 
 :::{prf:example} Equation Bank
 :label: eg:equation-bank
