@@ -8,6 +8,7 @@ import { parseMyst } from '../process/myst.js';
 import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
 import { TexParser } from 'tex-to-myst';
+import { processNotebook } from '../process/notebook.js';
 
 /**
  * Return resolveFile function
@@ -56,13 +57,17 @@ export const makeFileLoader = (session: ISession, baseFile: string) => (fullFile
  * Handles html and tex files separately; all other files are treated as MyST md.
  */
 export const makeContentParser =
-  (session: ISession) => (filename: string, content: string, vfile: VFile) => {
+  (session: ISession) => async (filename: string, content: string, vfile: VFile) => {
     if (filename.toLowerCase().endsWith('.html')) {
       return [{ type: 'html', value: content }];
     }
     if (filename.toLowerCase().endsWith('.tex')) {
       const subTex = new TexParser(content, vfile);
       return subTex.ast.children ?? [];
+    }
+    if (filename.toLowerCase().endsWith('.ipynb')) {
+      const mdast = await processNotebook(session, filename, content);
+      return mdast.children;
     }
     return parseMyst(session, content, filename).children;
   };
