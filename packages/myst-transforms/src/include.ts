@@ -1,5 +1,5 @@
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, RuleId } from 'myst-common';
+import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Code, Container, Include } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { Caption } from 'myst-spec';
@@ -8,7 +8,14 @@ import type { VFile } from 'vfile';
 
 export type Options = {
   loadFile: (filename: string) => Promise<string | undefined> | string | undefined;
-  parseContent: (filename: string, content: string) => Promise<GenericNode[]> | GenericNode[];
+  resolveFile: (includeFile: string, sourceFile: string, vfile: VFile) => string | undefined;
+  parseContent: (
+    filename: string,
+    content: string,
+    vfile: VFile,
+  ) => Promise<GenericNode[]> | GenericNode[];
+  sourceFile: string;
+  stack?: string[];
 };
 
 /**
@@ -20,11 +27,22 @@ export type Options = {
 export async function includeDirectiveTransform(tree: GenericParent, vfile: VFile, opts: Options) {
   const includeNodes = selectAll('include', tree) as Include[];
   if (includeNodes.length === 0) return;
+  if (!opts?.stack) opts.stack = [opts.sourceFile];
   await Promise.all(
     includeNodes.map(async (node) => {
       // If the transform has already run, don't run it again!
       if (node.children && node.children.length > 0) return;
-      const rawContent = await opts.loadFile(node.file);
+      const fullFile = opts.resolveFile(node.file, opts.sourceFile, vfile);
+      if (!fullFile) return;
+      // If we encounter the same include file twice in a single stack, return
+      if (opts.stack?.includes(fullFile)) {
+        fileError(vfile, `Include Directive: "${fullFile}" depends on itself`, {
+          ruleId: RuleId.includeContentLoads,
+          note: [...opts.stack, fullFile].join(' > '),
+        });
+        return;
+      }
+      const rawContent = await opts.loadFile(fullFile);
       if (rawContent == null) return;
       const { content, startingLineNumber } = filterIncludedContent(vfile, node.filter, rawContent);
       let children: GenericNode[];
@@ -78,11 +96,16 @@ export async function includeDirectiveTransform(tree: GenericParent, vfile: VFil
           children = [container];
         }
       } else {
-        children = await opts.parseContent(node.file, content);
+        children = await opts.parseContent(fullFile, content, vfile);
       }
       node.children = children as any;
+      if (!node.children?.length) return;
       // Recurse!
-      // await includeDirectiveTransform(node as GenericParent, vfile, opts);
+      await includeDirectiveTransform(node as GenericParent, vfile, {
+        ...opts,
+        stack: [...(opts.stack ?? []), fullFile],
+        sourceFile: fullFile,
+      });
     }),
   );
 }

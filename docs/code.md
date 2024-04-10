@@ -86,11 +86,13 @@ project:
 ```
 ````
 
-## Including Files
+(docs:literalinclude)=
+
+## Including Code Files
 
 If your code is in a separate file you can use the {myst:directive}`literalinclude` directive (or the {myst:directive}`include` directive with the {myst:directive}`include.literal` flag).
 This directive is helpful for showing code snippets without duplicating your content.
-
+For parsing the file, see the documentation in [](#docs:include).
 For example, a `literalinclude` of a snippet of the `myst.yml` such as:
 
 ````markdown
@@ -109,16 +111,12 @@ creates a snippet that has matching line numbers, and starts at a line including
 :lineno-match:
 ```
 
-:::{note} Auto Reload
-If you are working with the auto-reload (e.g. `myst start`), currently you will need to save the file with the {myst:directive}`literalinclude` directive for the contents to update.code for the contents to update.
+:::{important} Paths are Relative
+The {myst:directive}`argument <include.arg>` of a `{literalinclude}` directive is the file path, which is relative to the file from which it was referenced.
 :::
 
-The argument of an include directive is the file path ({myst:directive}`docs <include.arg>`), which is relative to the file from which it was referenced.
-By default the file will be parsed using MyST, you can also set the file to be {myst:directive}`include.literal`, which will show as a code-block; this is the same as using the {myst:directive}`literalinclude` directive.
-
-If in {myst:directive}`include.literal` mode, the directive also accepts all of the options from the `code-block` (e.g. {myst:directive}`include.linenos`).
+In {myst:directive}`include.literal` mode, the include directive also accepts all of the options from the `code-block` (e.g. {myst:directive}`include.linenos`).
 To select a portion of the file to be shown using the {myst:directive}`include.start-at`/{myst:directive}`include.start-after` selectors with the {myst:directive}`include.end-before`/{myst:directive}`include.end-at`, which use a snippet of included text.
 
 Alternatively, you can explicitly select the lines (e.g. `1,3,5-10,20-`) or the {myst:directive}`include.start-line`/{myst:directive}`include.end-line` (which is zero based for compatibility with Sphinx).
-
 The include directive is based on [RST](https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment) and [Sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-literalinclude).

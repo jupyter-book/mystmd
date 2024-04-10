@@ -1,0 +1,14 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: c11009ec-caf7-445c-b498-403bfe2aa61f
+  keywords: []
+  authors: []
+  github: https://github.com/executablebooks/mystjs
+site:
+  template: book-theme
+  nav: []
+  actions:
+    - title: Learn More
+      url: https://mystmd.org/guide
+  domains: []
