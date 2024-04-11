@@ -15,11 +15,9 @@ type MystDirectiveNode = GenericNode & {
   name: string;
 };
 
-
 export type DirectiveContext = {
   parseMyST: (source: string) => GenericParent;
 };
-
 
 /**
  * Apply directive `run()` methods to build directive ASTs.
@@ -28,7 +26,12 @@ export type DirectiveContext = {
  * @param specs - record mapping from names to directive implementations
  * @param vfile
  */
-export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfile: VFile, ctx: DirectiveContext) {
+export function applyDirectives(
+  tree: GenericParent,
+  specs: DirectiveSpec[],
+  vfile: VFile,
+  ctx: DirectiveContext,
+) {
   // Record mapping from alias-or-name to directive spec
   const specLookup: Record<string, DirectiveSpec> = {};
   specs.forEach((spec) => {

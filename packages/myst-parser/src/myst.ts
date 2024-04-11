@@ -93,7 +93,9 @@ export function mystParse(content: string, opts?: Options) {
   const parsedOpts = parseOptions(opts);
   const tokenizer = createTokenizer(parsedOpts);
   const tree = tokensToMyst(content, tokenizer.parse(content, { vfile }), parsedOpts.mdast);
-  applyDirectives(tree, parsedOpts.directives, parsedOpts.vfile, { parseMyST: (source: string) => mystParse(source, opts) });
+  applyDirectives(tree, parsedOpts.directives, parsedOpts.vfile, {
+    parseMyST: (source: string) => mystParse(source, opts),
+  });
   applyRoles(tree, parsedOpts.roles, parsedOpts.vfile);
   return tree;
 }
