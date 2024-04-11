@@ -36,6 +36,7 @@ parts:
       - file: execute-notebooks
   - caption: Websites
     chapters:
+      - file: website-templates
       - file: table-of-contents
       # - file: themes-and-extensions
       - file: seo-and-social
@@ -44,7 +45,6 @@ parts:
       - file: analytics
       - file: website-downloads
       - file: deployment
-      - file: website-templates
       # - file: publishing
   - caption: Documents
     chapters:
