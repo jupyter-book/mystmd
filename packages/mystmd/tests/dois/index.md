@@ -1,6 +1,8 @@
 ---
 export:
-  - _build/out.tex
+  - output: _build/out.tex
+    template: ../templates/tex
+    format: tex
 ---
 
 # DOI tests

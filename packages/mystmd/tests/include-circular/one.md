@@ -1,7 +1,8 @@
 ---
 date: 9 April 2024
 export:
-  - _build/out.typ
+  - output: _build/out.typ
+    template: null
 ---
 
 # Page one

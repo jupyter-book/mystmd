@@ -109,7 +109,7 @@ cases:
         content: outputs/include-circular.typ
   - title: Strange DOIs resolve as expected
     cwd: dois
-    command: myst build --tex
+    command: myst build --tex --ci
     outputs:
       - path: dois/_build/out.tex
         content: outputs/dois.tex
