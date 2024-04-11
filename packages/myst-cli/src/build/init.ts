@@ -29,6 +29,7 @@ const SITE_CONFIG = `site:
   template: book-theme
   # title:
   # options:
+  #   favicon: favicon.ico
   #   logo: site_logo.png
   nav: []
   actions:

@@ -40,7 +40,7 @@ export async function currentSiteRoutes(
           };
         }),
         // Download other assets
-        ...['robots.txt', 'sitemap.xml', 'sitemap_style.xsl'].map((asset) => ({
+        ...['favicon.ico', 'robots.txt'].map((asset) => ({
           url: `${host}/${asset}`,
           path: asset,
         })),

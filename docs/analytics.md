@@ -14,24 +14,26 @@ These are set using template specific options in your site configuration using e
 
 ## Google Analytics
 
-Use the `site.analytics_google` configuration, with the contents being your **Measurement ID** (G-XXXXXX) or **Tracking ID** (UA-XXXXXX).
+Use the `site.options.analytics_google` configuration, with the contents being your **Measurement ID** (G-XXXXXX) or **Tracking ID** (UA-XXXXXX).
 
 ```yaml
 version: 1
 site:
-  analytics_google: UA-XXXXX # Measurement ID or Tracking ID
+  options:
+    analytics_google: UA-XXXXX # Measurement ID or Tracking ID
 ```
 
 See [Google Analytics docs](https://developers.google.com/analytics/devguides/collection/gtagjs) for more information on how to find this Measurement ID.
 
 ## Plausible
 
-Use the `site.analytics_plausible` configuration, with the contents being the **domain** you are tracking.
+Use the `site.options.analytics_plausible` configuration, with the contents being the **domain** you are tracking.
 
 ```yaml
 version: 1
 site:
-  analytics_plausible: mystmd.org # Domain(s) to track
+  options:
+    analytics_plausible: mystmd.org # Domain(s) to track
 ```
 
 See [Plausible docs](https://plausible.io/docs/plausible-script) for more information on how to find the domain. Note, you only copy in the contents of: `data-domain="COPY_THIS"`, which can be a comma-separated list for multiple domains.
