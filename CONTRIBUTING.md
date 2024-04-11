@@ -2,6 +2,12 @@
 
 This page contains pointers and links to help you contribute to this project.
 
+> [!TIP]
+> See [our comprehensive contributing guide](https://mystmd.org/guide/contributing) for more information about how to contribute to the project.
+> This page helps you get started, but that resource has much more information.
+
+<!-- MYST START -->
+
 ## Our team compass
 
 The [Executable Books Team Compass][compass] is a source of truth for our team structure and policy.

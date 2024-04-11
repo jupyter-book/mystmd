@@ -4,4 +4,5 @@ short_title: Contribution Guide
 ---
 
 ```{include} ../CONTRIBUTING.md
+:start-after: "<!-- MYST START -->"
 ```
