@@ -27,6 +27,7 @@ parts:
       - file: embed
       - file: dropdowns-cards-and-tabs
       - file: glossaries-and-terms
+      - file: writing-in-latex
   - caption: Executable Content
     chapters:
       - file: interactive-notebooks

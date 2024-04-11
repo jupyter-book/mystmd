@@ -28,7 +28,7 @@ import { CHEM_HANDLERS } from './chem.js';
 import { ALGORITHM_HANDLERS } from './algorithms.js';
 import { QUOTE_HANDLERS } from './quotes.js';
 
-const DEFAULT_HANDLERS: Record<string, Handler> = {
+export const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
   ...FRONTMATTER_HANDLERS,
   ...TEXT_MARKS_HANDLERS,

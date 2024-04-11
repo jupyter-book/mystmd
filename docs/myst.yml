@@ -47,6 +47,7 @@ project:
   plugins:
     - directives.mjs
     - unsplash.mjs
+    - latex.mjs
 site:
   title: MyST Markdown Guide
   domains:
