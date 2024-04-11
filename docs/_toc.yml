@@ -70,6 +70,7 @@ parts:
       - file: glossary
   - caption: Contribute
     chapters:
+      - file: contributing
       - file: contribute-templates
       - file: contribute-docs
       - file: contribute-build-locally
