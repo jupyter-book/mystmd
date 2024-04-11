@@ -9,7 +9,7 @@ import { imageDirective } from './image.js';
 import { includeDirective } from './include.js';
 import { tableDirective, listTableDirective } from './table.js';
 import { asideDirective } from './aside.js';
-import { glossaryDirective } from './glossary.js';
+import { glossaryDirective, legacyGlossaryDirective } from './glossary.js';
 import { mathDirective } from './math.js';
 import { mdastDirective } from './mdast.js';
 import { mermaidDirective } from './mermaid.js';
@@ -34,6 +34,7 @@ export const defaultDirectives = [
   listTableDirective,
   asideDirective,
   glossaryDirective,
+  legacyGlossaryDirective,
   mathDirective,
   mdastDirective,
   mermaidDirective,
@@ -48,6 +49,7 @@ export { codeDirective } from './code.js';
 export { dropdownDirective } from './dropdown.js';
 export { embedDirective } from './embed.js';
 export { figureDirective } from './figure.js';
+export { glossaryDirective, legacyGlossaryDirective } from './glossary.js';
 export { iframeDirective } from './iframe.js';
 export { imageDirective } from './image.js';
 export { includeDirective } from './include.js';
