@@ -1,2 +1,2 @@
 export * from './types.js';
-export { TexParser } from './parser.js';
+export { TexParser, DEFAULT_HANDLERS } from './parser.js';
