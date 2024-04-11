@@ -249,12 +249,12 @@ site:
 Doing this will keep the `_build` directory at the root level, but everything else outside of the `content` folder will be ignored. If you have a project in the same configuration file it can be accessed with `path: .`. Projects are "mounted" at the `slug:` (i.e. `/my-content/`) above.
 :::
 
-More Coming Soon™
+## Additional options
 
-- logos
-- table of contents ([](./table-of-contents.md))
-- actions
-- themes
+- Organizing a [Table of contents](./table-of-contents.md)
+- [Downloads](./website-downloads.md)
+- [Choosing a website template](./website-templates.md)
+- [Logos and favicons](#site-options)
 
 ---
 
