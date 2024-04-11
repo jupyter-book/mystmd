@@ -111,7 +111,7 @@ export const glossaryDirective: DirectiveSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
+  run(data: DirectiveData): GenericNode[] {
     return [
       {
         type: 'glossary',
