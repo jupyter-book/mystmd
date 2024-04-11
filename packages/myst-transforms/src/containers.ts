@@ -10,6 +10,7 @@ const SUBFIGURE_TYPES = [
   'block',
   'container',
   'image',
+  'mermaid',
   'iframe',
   'table',
   'code',
