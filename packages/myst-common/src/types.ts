@@ -84,6 +84,11 @@ export type RoleData = {
   body?: ParseTypes;
 };
 
+export type DirectiveContext = {
+  parseMyST: (source: string) => GenericParent
+};
+
+
 export type DirectiveSpec = {
   name: string;
   alias?: string[];
@@ -92,7 +97,7 @@ export type DirectiveSpec = {
   options?: Record<string, OptionDefinition>;
   body?: BodyDefinition;
   validate?: (data: DirectiveData, vfile: VFile) => DirectiveData;
-  run: (data: DirectiveData, vfile: VFile) => GenericNode[];
+  run: (data: DirectiveData, vfile: VFile, ctx: DirectiveContext) => GenericNode[];
 };
 
 export type RoleSpec = {

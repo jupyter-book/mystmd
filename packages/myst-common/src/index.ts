@@ -38,6 +38,7 @@ export type {
   DirectiveData,
   RoleData,
   DirectiveSpec,
+  DirectiveContext,
   RoleSpec,
   ParseTypes,
   MystPlugin,
