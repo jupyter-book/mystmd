@@ -8,9 +8,7 @@ export function pdfTexExportCommand(
   template?: MystTemplate,
 ): string {
   const templateYml = template?.getValidatedTemplateYml();
-  const engine = templateYml?.build?.engine ?? '-xelatex';
-  const baseCommand = `latexmk -f ${engine} -synctex=1 -interaction=batchmode -file-line-error -latexoption="-shell-escape" ${texFile}`;
-
+  const baseCommand = `tectonic -X compile --keep-intermediates --keep-logs ${texFile}`;
   return createCommand(baseCommand, logFile);
 }
 
