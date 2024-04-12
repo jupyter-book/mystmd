@@ -174,6 +174,76 @@ describe('extractPart', () => {
       ],
     });
   });
+  it('part aliases are respected as part', async () => {
+    const tree: GenericParent = {
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          children: [{ type: 'text', value: 'no part' }],
+        },
+        {
+          type: 'block' as any,
+          data: { part: 'Acknowledgements' },
+          children: [{ type: 'text', value: 'e between g and m' }],
+        },
+      ],
+    };
+    expect(extractPart(tree, 'acknowledgments')).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          data: { part: 'acknowledgments' },
+          children: [{ type: 'text', value: 'e between g and m' }],
+        },
+      ],
+    });
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          children: [{ type: 'text', value: 'no part' }],
+        },
+      ],
+    });
+  });
+  it('part aliases are respected as input', async () => {
+    const tree: GenericParent = {
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          children: [{ type: 'text', value: 'no part' }],
+        },
+        {
+          type: 'block' as any,
+          data: { part: 'Acknowledgments' },
+          children: [{ type: 'text', value: 'no e between g and m' }],
+        },
+      ],
+    };
+    expect(extractPart(tree, 'ack')).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          data: { part: 'acknowledgments' },
+          children: [{ type: 'text', value: 'no e between g and m' }],
+        },
+      ],
+    });
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          children: [{ type: 'text', value: 'no part' }],
+        },
+      ],
+    });
+  });
 });
 
 describe('extractImplicitPart', () => {

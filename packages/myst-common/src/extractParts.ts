@@ -3,13 +3,27 @@ import type { GenericNode, GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { copyNode, toText } from './utils.js';
+import { FRONTMATTER_ALIASES } from 'myst-frontmatter';
 
 function coercePart(part?: string | string[]): string[] {
   if (!part) {
     // Prevent an undefined, null or empty part comparison
     return [];
   }
-  return typeof part === 'string' ? [part.toLowerCase()] : part.map((s) => s.toLowerCase());
+  if (typeof part === 'string') return coercePart([part]);
+  const parts: string[] = [];
+  part
+    .map((p) => p.toLowerCase())
+    .forEach((p) => {
+      parts.push(p);
+      Object.entries(FRONTMATTER_ALIASES).forEach(([alias, value]) => {
+        if (p === alias || p === value) {
+          if (!parts.includes(value)) parts.unshift(value);
+          if (!parts.includes(alias)) parts.push(alias);
+        }
+      });
+    });
+  return parts;
 }
 
 /**
