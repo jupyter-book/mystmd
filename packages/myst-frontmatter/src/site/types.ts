@@ -37,6 +37,8 @@ export const FRONTMATTER_ALIASES = {
   part: 'parts',
   ack: 'acknowledgments',
   acknowledgements: 'acknowledgments',
+  acknowledgment: 'acknowledgments',
+  acknowledgement: 'acknowledgments',
   availability: 'data_availability',
   dataAvailability: 'data_availability',
   'data-availability': 'data_availability',
