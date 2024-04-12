@@ -183,7 +183,7 @@ export async function getCitation(
   session: ISession,
   vfile: VFile,
   doiString: string,
-  node: GenericNode,
+  node?: GenericNode,
 ): Promise<SingleCitationRenderer | null> {
   if (!doi.validate(doiString)) return null;
   const data = await resolveDoiOrg(session, doiString);

@@ -5,7 +5,6 @@ import {
   validateList,
   validateObjectKeys,
   validateString,
-  validateObject,
   validationError,
   validateBoolean,
 } from 'simple-validators';
@@ -57,7 +56,11 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   const partsOptions = incrementOptions('parts', opts);
   let parts: Record<string, any> | undefined;
   if (defined(value.parts)) {
-    parts = validateObject(value.parts, partsOptions);
+    parts = validateObjectKeys(
+      value.parts,
+      { optional: PAGE_KNOWN_PARTS, alias: FRONTMATTER_ALIASES },
+      { keepExtraKeys: true, suppressWarnings: true, ...partsOptions },
+    );
   }
   PAGE_KNOWN_PARTS.forEach((partKey) => {
     if (defined(value[partKey])) {
