@@ -11,10 +11,11 @@ import {
   validateString,
   validateList,
 } from 'simple-validators';
+import { validateErrorRuleList } from '../errorRules/validators.js';
 import type { ProjectConfig } from './types.js';
 
 const PROJECT_CONFIG_KEYS = {
-  optional: ['remote', 'index', 'exclude', 'plugins', ...PROJECT_FRONTMATTER_KEYS],
+  optional: ['remote', 'index', 'exclude', 'plugins', 'error_rules', ...PROJECT_FRONTMATTER_KEYS],
   alias: FRONTMATTER_ALIASES,
 };
 
@@ -44,6 +45,11 @@ function validateProjectConfigKeys(value: Record<string, any>, opts: ValidationO
         return validateString(file, incrementOptions(`plugins.${index}`, opts));
       },
     );
+  }
+
+  if (defined(value.error_rules)) {
+    const error_rules = validateErrorRuleList(value.error_rules, opts);
+    if (error_rules) output.error_rules = error_rules;
   }
   return output;
 }

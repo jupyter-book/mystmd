@@ -1,0 +1,23 @@
+title: Error Rules
+kind: config
+cases:
+  - title: error rules
+    raw:
+      error_rules:
+        - math-eqnarray-replaced
+    normalized:
+      error_rules:
+        - id: math-eqnarray-replaced
+  - title: error rules with params
+    raw:
+      error_rules:
+        - rule: a-rule
+          data:
+            - one
+            - two
+    normalized:
+      error_rules:
+        - id: a-rule
+          data:
+            - one
+            - two

@@ -52,3 +52,21 @@ beamer
 
     - `true`: Add `\begin{frame}` environment for each block, delimited by `+++`, and enable presentation outline with block metadata `+++ {"outline":true}`
     - `false` (default): No extra `\begin{frame}` environment will be used
+
+## Error Rules
+
+The `error_rules` list in the project configuration can be used to disable logging rules in the CLI:
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  error_rules:
+    - rule: math-eqnarray-replaced
+      severity: ignore
+    - rule: doi-check
+      severity: ignore
+      keys:
+        - bibtex_key
+```
+
+The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity will be adopted rather than the default log message severity.

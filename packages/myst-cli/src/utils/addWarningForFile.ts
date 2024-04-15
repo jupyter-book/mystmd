@@ -3,12 +3,13 @@ import type { VFileMessage } from 'vfile-message';
 import type { ISession } from '../session/types.js';
 import { warnings } from '../store/reducers.js';
 import type { WarningKind } from '../store/types.js';
+import { selectCurrentProjectConfig } from '../store/selectors.js';
 
 export function addWarningForFile(
   session: ISession,
   file: string | undefined | null,
   message: string,
-  kind: WarningKind = 'warn',
+  severity: WarningKind = 'warn',
   opts?: {
     note?: string | null;
     url?: string | null;
@@ -26,7 +27,18 @@ export function addWarningForFile(
   const url = opts?.url ? chalk.reset.dim(`\n   See also: ${opts.url}\n`) : '';
   const prefix = file ? `${file}${line}${column} ` : '';
   const formatted = `${message}${note}${url}`;
-  switch (kind) {
+  if (opts?.ruleId) {
+    const config = selectCurrentProjectConfig(session.store.getState());
+    const handler = config?.error_rules?.find((rule) => rule.id === opts.ruleId);
+    if (handler) {
+      if (handler.severity === 'ignore') {
+        session.log.debug(`${prefix}${formatted}`);
+        return;
+      }
+      severity = handler.severity as WarningKind;
+    }
+  }
+  switch (severity) {
     case 'info':
       session.log.info(`ℹ️  ${prefix}${formatted}`);
       break;
@@ -43,7 +55,7 @@ export function addWarningForFile(
       warnings.actions.addWarning({
         file,
         message,
-        kind,
+        kind: severity,
         url: opts?.url,
         note: opts?.note,
         position: opts?.position,
