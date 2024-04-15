@@ -78,6 +78,7 @@ casesList.forEach(({ title, cases }) => {
         file.path = path.join(__dirname, 'notebook.ipynb');
 
         await kernelExecutionTransform(before, file, {
+          basePath: __dirname,
           sessionFactory: async () => await sessionManagerFactory.load(),
           cache: noOpCache,
           frontmatter: {

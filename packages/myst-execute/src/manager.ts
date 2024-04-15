@@ -79,12 +79,20 @@ export async function launchJupyterServer(
   const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
 
   const reader = proc.stderr;
+
+  let timerID: ReturnType<typeof setTimeout> | undefined;
   const settings = await new Promise<JupyterServerSettings>((resolve, reject) => {
     // Fail after 20 seconds of nothing happening
-    const id = setTimeout(() => {
-      log.error(`🪐 ${chalk.redBright('Jupyter server did not respond')}\n   ${chalk.dim(url)}`);
+    timerID = setTimeout(() => {
+      log.error(`🪐 ${chalk.redBright('Jupyter server did not respond')}`);
       reject();
     }, 20_000);
+
+    // Fail because process exits
+    proc.on('exit', () => {
+      log.error(`🪐 ${chalk.redBright('Jupyter server did not start')}`);
+      reject();
+    });
 
     reader.on('data', (buf) => {
       const data = buf.toString();
@@ -97,9 +105,6 @@ export async function launchJupyterServer(
       // Pull out the match information
       const [, addr, token] = match;
 
-      // Cancel timeout error now
-      clearTimeout(id);
-
       // Resolve the promise
       resolve({
         baseUrl: addr,
@@ -108,7 +113,15 @@ export async function launchJupyterServer(
     });
   }).finally(
     // Don't keep listening to messages
-    () => reader.removeAllListeners('data'),
+    () => {
+      reader.removeAllListeners('data');
+      proc.removeAllListeners('exit');
+
+      // Cancel timeout error now
+      if (timerID !== undefined) {
+        clearTimeout(timerID);
+      }
+    },
   );
 
   // Inform log
