@@ -55,7 +55,7 @@ beamer
 
 ## Error Rules
 
-The `error_rules` list in the project configuration can be used to disable logging rules in the CLI:
+The `error_rules` list in the project configuration can be used to disable or modify logging rules in the CLI:
 
 ```{code-block} yaml
 :filename: myst.yml
@@ -63,10 +63,11 @@ project:
   error_rules:
     - rule: math-eqnarray-replaced
       severity: ignore
-    - rule: doi-check
+    - rule: link-resolves
       severity: ignore
       keys:
-        - bibtex_key
+        - /known-internal-link
+        - https://flaky-connection.com
 ```
 
-The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity will be adopted rather than the default log message severity.
+The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity will be adopted rather than the default log message severity. To find out the rule ID, run myst in debug mode to get the error (and optional key) printed to the console.

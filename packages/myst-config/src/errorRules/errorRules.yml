@@ -8,16 +8,27 @@ cases:
     normalized:
       error_rules:
         - id: math-eqnarray-replaced
+          severity: ignore
+  - title: error rules - incorrect severity
+    raw:
+      error_rules:
+        - rule: math-eqnarray-replaced
+          severity: nope
+    normalized:
+      error_rules: []
+    errors: 1
   - title: error rules with params
     raw:
       error_rules:
         - rule: a-rule
-          data:
+          keys:
             - one
             - two
     normalized:
       error_rules:
         - id: a-rule
-          data:
-            - one
-            - two
+          severity: ignore
+          key: one
+        - id: a-rule
+          severity: ignore
+          key: two

@@ -11,39 +11,40 @@ import type { ErrorRule } from './types.js';
 
 const ERROR_RULE_KEY_OBJECT = {
   required: ['id'],
-  optional: ['severity'],
+  optional: ['severity', 'keys'],
   alias: {
     rule: 'id',
+    key: 'keys',
   },
 };
 
-export function validateErrorRule(input: any, opts: ValidationOptions): ErrorRule | undefined {
+export function validateErrorRule(input: any, opts: ValidationOptions): ErrorRule[] | undefined {
   if (typeof input === 'string') {
     input = { id: input };
   }
   const value = validateObjectKeys(input, ERROR_RULE_KEY_OBJECT, {
     ...opts,
-    suppressWarnings: true,
-    keepExtraKeys: true,
   });
   if (value === undefined) return undefined;
   const id = validateString(value.id, incrementOptions('id', opts));
-  if (!id) return undefined;
-  const output: ErrorRule = { id };
-  if (defined(value.severity)) {
-    const choice = validateChoice(value.severity, {
-      ...incrementOptions('severity', opts),
-      choices: ['ignore', 'warn', 'error'],
-    }) as ErrorRule['severity'];
-    if (choice) output.severity = choice;
-  }
-  // Put the unknown fields back on the object
-  const knownFields = [...ERROR_RULE_KEY_OBJECT.required, ...ERROR_RULE_KEY_OBJECT.optional];
-  Object.entries(value).forEach(([key, entry]) => {
-    if (knownFields.includes(key)) return;
-    output[key] = entry;
-  });
-  return output;
+  const severity = validateChoice(value.severity || 'ignore', {
+    ...incrementOptions('severity', opts),
+    choices: ['ignore', 'warn', 'error'],
+  }) as ErrorRule['severity'];
+  if (!id || !severity) return undefined;
+  const output: ErrorRule = { id, severity };
+  if (!defined(value.keys)) return [output];
+  // We now have either a list of keys or a single key
+  // validate and unpack to a separate error rule
+  const keyList = validateList(
+    value.keys,
+    { ...incrementOptions('keys', opts), coerce: true },
+    (key, ind) => {
+      return validateString(key, incrementOptions(`keys.${ind}`, opts));
+    },
+  );
+  if (!keyList) return undefined;
+  return keyList.map((key) => ({ ...output, key }));
 }
 
 export function validateErrorRuleList(
@@ -59,5 +60,5 @@ export function validateErrorRuleList(
     },
   );
   if (!output) return undefined;
-  return output;
+  return output.flat();
 }

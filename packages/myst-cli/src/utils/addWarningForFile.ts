@@ -15,6 +15,8 @@ export function addWarningForFile(
     url?: string | null;
     position?: VFileMessage['position'];
     ruleId?: string | null;
+    /** This key can be combined with the ruleId to suppress a warning */
+    key?: string | null;
   },
 ) {
   const line = opts?.position?.start.line ? `:${opts?.position.start.line}` : '';
@@ -29,13 +31,18 @@ export function addWarningForFile(
   const formatted = `${message}${note}${url}`;
   if (opts?.ruleId) {
     const config = selectCurrentProjectConfig(session.store.getState());
-    const handler = config?.error_rules?.find((rule) => rule.id === opts.ruleId);
+    const handler = config?.error_rules?.find((rule) => {
+      if (rule.key) {
+        return rule.id === opts.ruleId && rule.key === opts.key;
+      }
+      return rule.id === opts.ruleId;
+    });
     if (handler) {
       if (handler.severity === 'ignore') {
         session.log.debug(`${prefix}${formatted}`);
         return;
       }
-      severity = handler.severity as WarningKind;
+      severity = (handler.severity as WarningKind) ?? severity;
     }
   }
   switch (severity) {
@@ -49,6 +56,11 @@ export function addWarningForFile(
     default:
       session.log.warn(`⚠️  ${prefix}${formatted}`);
       break;
+  }
+  if (opts?.ruleId) {
+    session.log.debug(
+      `To suppress this message, add rule: "${opts.ruleId}"${opts.key ? ` with key: "${opts.key}"` : ''} to "error_rules" in your project config`,
+    );
   }
   if (file) {
     session.store.dispatch(

@@ -256,7 +256,7 @@ For more on working locally see [](#start-a-local-jupyter-server).
 
 ```{danger} On securing a Jupyter server
 :class: dropdown
-If you intend to run a dedicate single user Jupyter server accessible over a network please carefully read and follow [the advice provided by the Jupyter server team here](https://jupyter-notebook.readthedocs.io/en/stable/public_server.html).
+If you intend to run a dedicate single user Jupyter server accessible over a network please carefully read and follow [the advice provided by the Jupyter server team here](https://jupyter-server.readthedocs.io/en/stable/operators/security.html).
 
 MyST Websites will work best, be safer and be more robust when backed by Jupyter services such as BinderHub or JupyterHub.
 ```

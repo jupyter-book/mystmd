@@ -415,9 +415,10 @@ export async function processSite(session: ISession, opts?: ProcessOptions): Pro
     if (hasWarnings[0] > 0) {
       const pluralE = hasWarnings[0] > 1 ? 's' : '';
       const pluralW = hasWarnings[1] > 1 ? 's' : '';
-      throw new Error(
+      session.log.error(
         `Site has ${hasWarnings[0]} error${pluralE} and ${hasWarnings[1]} warning${pluralW}, stopping build.`,
       );
+      process.exit(1);
     }
   }
   if (opts?.writeFiles ?? true) {
