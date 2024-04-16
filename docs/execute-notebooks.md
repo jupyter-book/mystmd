@@ -1,5 +1,5 @@
 ---
-title: Execute Notebooks during your build
+title: Execute Notebooks During Your Build
 description: MyST can execute notebooks using Jupyter Server, making it possible to build rich websites and documents from text-based notebooks.
 short_title: Execute Notebooks During Your Build
 thumbnail: thumbnails/execute-notebooks.png
