@@ -22,6 +22,7 @@ import { applyDirectives } from './directives.js';
 import { applyRoles } from './roles.js';
 import type { AllOptions } from './fromMarkdown.js';
 import type { GenericParent } from 'myst-common';
+import { visit } from 'unist-util-visit';
 
 type Options = Partial<AllOptions>;
 
@@ -94,7 +95,17 @@ export function mystParse(content: string, opts?: Options) {
   const tokenizer = createTokenizer(parsedOpts);
   const tree = tokensToMyst(content, tokenizer.parse(content, { vfile }), parsedOpts.mdast);
   applyDirectives(tree, parsedOpts.directives, parsedOpts.vfile, {
-    parseMyST: (source: string) => mystParse(source, opts),
+    parseMyST: (source: string, offset: number = 0) => {
+      const tree = mystParse(source, opts);
+      // Fix-up the node's (global) position offsets
+      visit(tree, (node) => {
+        if (node.position) {
+          node.position.start.line += offset;
+          node.position.end.line += offset;
+        }
+      });
+      return tree;
+    },
   });
   applyRoles(tree, parsedOpts.roles, parsedOpts.vfile);
   return tree;

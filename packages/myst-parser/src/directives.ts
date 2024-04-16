@@ -2,6 +2,7 @@ import type {
   GenericNode,
   DirectiveData,
   DirectiveSpec,
+  DirectiveContext,
   ParseTypes,
   GenericParent,
 } from 'myst-common';
@@ -13,12 +14,7 @@ import type { Directive } from 'myst-spec';
 
 type MystDirectiveNode = GenericNode & {
   name: string;
-};
-
-export type DirectiveContext = {
-  parseMyST: (source: string) => GenericParent;
-};
-
+}
 /**
  * Apply directive `run()` methods to build directive ASTs.
  *
@@ -209,6 +205,10 @@ export function applyDirectives(
     if (validate) {
       data = validate(data, vfile);
     }
-    node.children = run(data, vfile, ctx);
+    node.children = run(data, vfile, {
+      // Implement a parseMyST function that accepts _relative_ line numbers
+      parseMyST: (source: string, offset: number = 0) =>
+        ctx.parseMyST(source, offset + node.pos[0]),
+    });
   });
 }

@@ -85,7 +85,7 @@ export type RoleData = {
 };
 
 export type DirectiveContext = {
-  parseMyST: (source: string) => GenericParent;
+  parseMyST: (source: string, offset?: number) => GenericParent;
 };
 
 export type DirectiveSpec = {
