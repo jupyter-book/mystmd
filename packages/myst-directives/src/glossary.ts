@@ -4,9 +4,14 @@ import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
 import { liftChildren } from 'myst-common';
 
+type Line = {
+  content: string;
+  offset: number;
+};
+
 type LegacyGlossaryItem = {
-  termLines: string[];
-  definitionLines: string[];
+  termLines: Line[];
+  definitionLines: Line[];
 };
 
 export const legacyGlossaryDirective: DirectiveSpec = {
@@ -24,7 +29,8 @@ export const legacyGlossaryDirective: DirectiveSpec = {
     const entries: LegacyGlossaryItem[] = [];
 
     // Parse lines into separate entries
-    for (const line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
       // Is the line a comment?
       if (/^\.\.\s/.test(line) || !line.length) {
         continue;
@@ -41,13 +47,13 @@ export const legacyGlossaryDirective: DirectiveSpec = {
           // Close the current definition, open a new term
           entries.push({
             definitionLines: [],
-            termLines: [line],
+            termLines: [{ content: line, offset: i }],
           });
           inDefinition = false;
         }
         // Can we extend existing entry with an additional term?
         else if (entries.length) {
-          entries[entries.length - 1].termLines.push(line);
+          entries[entries.length - 1].termLines.push({ content: line, offset: i });
         }
       }
       // Open a definition
@@ -56,7 +62,10 @@ export const legacyGlossaryDirective: DirectiveSpec = {
         indentSize = line.length - line.replace(/^\s+/, '').length;
 
         if (entries.length) {
-          entries[entries.length - 1].definitionLines.push(line.slice(indentSize));
+          entries[entries.length - 1].definitionLines.push({
+            content: line.slice(indentSize),
+            offset: i,
+          });
         }
       }
     }
@@ -67,17 +76,17 @@ export const legacyGlossaryDirective: DirectiveSpec = {
     for (const entry of entries) {
       const { termLines, definitionLines } = entry;
 
-      const definitionBody = definitionLines.join('\n');
+      const definitionBody = definitionLines.map((line) => line.content).join('\n');
       const definitionDescription: DefinitionDescription = {
         type: 'definitionDescription',
-        children: ctx.parseMyST(definitionBody).children,
+        children: ctx.parseMyST(definitionBody, definitionLines[0]?.offset || 0).children,
       };
 
-      for (const termLine of termLines) {
-        const [term, ...classifiers] = termLine.split(/\s+:\s+/);
+      for (const {content, offset} of termLines) {
+        const [term, ...classifiers] = content.split(/\s+:\s+/);
         const definitionTerm: DefinitionTerm = {
           type: 'definitionTerm',
-          children: ctx.parseMyST(term).children,
+          children: ctx.parseMyST(term, offset).children,
         };
 
         definitionChildren.push(definitionTerm, definitionDescription);
