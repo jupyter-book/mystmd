@@ -1,5 +1,19 @@
 # myst-parser
 
+## 1.3.0
+
+### Minor Changes
+
+- 9271361: Add support for nested parsing via a context object
+
+### Patch Changes
+
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-common@1.2.0
+  - myst-roles@1.3.0
+  - myst-directives@1.3.0
+
 ## 1.2.3
 
 ### Patch Changes
