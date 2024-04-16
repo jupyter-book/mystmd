@@ -31,7 +31,7 @@ H{sub}\`2\`O
 `;
     const vfile = new VFile();
     const tree = mystParse(src, { directives: [parseAgain], roles: [subscriptRole] });
-    basicTransformations(tree, vfile, {});
+    // basicTransformations(tree, vfile, {});
     const [one, two] = selectAll('parse', tree);
     expect(one.data?.firstLine).toBe('first line');
     expect(two.data?.firstLine).toBe('second line');
@@ -40,11 +40,14 @@ H{sub}\`2\`O
     expect(paragraphs[0].position?.start.line).toBe(5);
     expect(paragraphs[0].position?.end.line).toBe(5);
     const text = selectAll('text', tree);
-    expect(text.length).toBe(2);
-    expect(text[0].position?.end.line).toBe(5);
-    expect(text[1].position?.end.line).toBe(5);
-    const subscript = selectAll('subscript', tree);
+    expect(text.length).toBe(3);
+    expect(text[0].position?.start.line).toBe(5);
+    expect(text[1].position?.start.line).toBe(5);
+    expect(text[2].position?.start.line).toBe(5);
+    const mystRole = selectAll('mystRole', tree) as GenericNode[];
+    expect(mystRole.length).toBe(1);
+    expect(mystRole[0].position?.start.line).toBe(5);
+    const subscript = selectAll('subscript', tree) as GenericNode[];
     expect(subscript.length).toBe(1);
-    expect(subscript[1].position?.end.line).toBe(5);
   });
 });

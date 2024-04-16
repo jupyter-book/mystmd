@@ -47,8 +47,9 @@ export function applyDirectives(
     });
   });
   // Find all raw directive nodes
-  const nodes = selectAll('mystDirective', tree) as MystDirectiveNode[];
+  const nodes = selectAll('mystDirective[processed=false]', tree) as MystDirectiveNode[];
   nodes.forEach((node) => {
+    delete node.processed; // Indicate that the directive has been processed
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {

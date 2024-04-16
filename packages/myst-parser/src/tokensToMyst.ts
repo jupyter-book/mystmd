@@ -380,6 +380,7 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
         options: t.meta?.options,
         value: t.content || undefined,
         tight: t.meta?.tight || undefined,
+        processed: false,
       };
     },
   },
@@ -418,6 +419,7 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       return {
         name: t.info,
         value: t.content,
+        processed: false,
       };
     },
   },
