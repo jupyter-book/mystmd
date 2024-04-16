@@ -2,7 +2,7 @@
 
 You can specify Jupyter code cells in your markdown, which allows you to execute computation using [MyST's notebook execution engine](./execute-notebooks.md).
 
-```{warning} This is a beta feature
+```{warning} This is an alpha feature
 Markdown-based code cells are still in the works, and missing key functionality.
 Their behavior is subject to change unpredictably!
 ```
