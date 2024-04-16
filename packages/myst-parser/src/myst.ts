@@ -95,7 +95,7 @@ export function mystParse(content: string, opts?: Options) {
   const tokenizer = createTokenizer(parsedOpts);
   const tree = tokensToMyst(content, tokenizer.parse(content, { vfile }), parsedOpts.mdast);
   applyDirectives(tree, parsedOpts.directives, parsedOpts.vfile, {
-    parseMyST: (source: string, offset: number = 0) => {
+    parseMyst: (source: string, offset: number = 0) => {
       const mdast = mystParse(source, opts);
       // Fix-up the node's (global) position offsets
       visit(mdast, (node) => {

@@ -206,9 +206,9 @@ export function applyDirectives(
       data = validate(data, vfile);
     }
     node.children = run(data, vfile, {
-      // Implement a parseMyST function that accepts _relative_ line numbers
-      parseMyST: (source: string, offset: number = 0) =>
-        ctx.parseMyST(source, offset + node.pos[0]),
+      // Implement a parseMyst function that accepts _relative_ line numbers
+      parseMyst: (source: string, offset: number = 0) =>
+        ctx.parseMyst(source, offset + node.pos[0]),
     });
   });
 }
