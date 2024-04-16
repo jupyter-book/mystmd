@@ -206,6 +206,7 @@ export async function checkLinksTransform(
         addWarningForFile(session, file, `Link for "${url}" did not resolve.${status}`, 'error', {
           position,
           ruleId: RuleId.linkResolves,
+          key: url,
         });
         return url as string;
       }),

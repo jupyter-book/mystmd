@@ -41,7 +41,7 @@ Below is a list of relevant repositories and a brief description of each.
 - [MyST Templates](https://github.com/myst-templates): Repositories that contain templates for rendering MyST documents into various outputs like LaTeX, JATS, Typst, and Docx.
 
 > [!NOTE]
-> There are many repositories with similar functionality in the `executablebooks/` organization. Many of these are based around the [Sphinx documentation ecosystem](https://sphinx-doc.org). For example, the [MyST-NB repository](https://github.com/executablebooks/myst-nb) is a Sphinx extension for Jupyter notebooks, and the [MyST Parser repository](https://github.com/executablebooks/myst-parser) is a MyST markdown parser for Sphinx.
+> There are many repositories with similar functionality in the `executablebooks/` organization. Many of these are based around the [Sphinx documentation ecosystem](https://www.sphinx-doc.org). For example, the [MyST-NB repository](https://github.com/executablebooks/myst-nb) is a Sphinx extension for Jupyter notebooks, and the [MyST Parser repository](https://github.com/executablebooks/myst-parser) is a MyST markdown parser for Sphinx.
 
 ## Contribution workflow
 
