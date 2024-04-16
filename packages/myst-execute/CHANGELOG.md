@@ -1,5 +1,14 @@
 # myst-execute
 
+## 0.0.5
+
+### Patch Changes
+
+- dbcef422: Define kernel path relative to server base-path
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-common@1.2.0
+
 ## 0.0.4
 
 ### Patch Changes

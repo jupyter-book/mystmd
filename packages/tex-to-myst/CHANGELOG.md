@@ -1,5 +1,16 @@
 # tex-to-myst
 
+## 1.0.26
+
+### Patch Changes
+
+- 54bb6522: Export latex default handlers
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-frontmatter@1.2.0
+  - myst-common@1.2.0
+  - myst-spec-ext@1.2.0
+
 ## 1.0.25
 
 ### Patch Changes

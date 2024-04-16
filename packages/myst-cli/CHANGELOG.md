@@ -1,5 +1,29 @@
 # myst-cli
 
+## 1.1.54
+
+### Patch Changes
+
+- 2c4e3057: Allow getCitation node to be optional
+- 80930b39: Add error_rules to turn off warnings and errors in the CLI.
+- 94468fac: Add favicon.ico to the list of static html exports
+- dbcef422: Define kernel path relative to server base-path
+- Updated dependencies [37a03c23]
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+- Updated dependencies [80930b39]
+- Updated dependencies [dbcef422]
+- Updated dependencies [54bb6522]
+  - myst-transforms@1.3.6
+  - myst-frontmatter@1.2.0
+  - myst-common@1.2.0
+  - myst-parser@1.3.0
+  - myst-config@1.2.0
+  - myst-execute@0.0.5
+  - tex-to-myst@1.0.26
+  - myst-spec-ext@1.2.0
+  - myst-to-tex@1.0.26
+
 ## 1.1.53
 
 ### Patch Changes

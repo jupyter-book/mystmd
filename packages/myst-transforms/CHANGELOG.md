@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.3.6
+
+### Patch Changes
+
+- 37a03c23: Allow mermaid as a valid figure child
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-frontmatter@1.2.0
+  - myst-common@1.2.0
+  - myst-spec-ext@1.2.0
+  - myst-to-html@1.3.0
+
 ## 1.3.5
 
 ### Patch Changes

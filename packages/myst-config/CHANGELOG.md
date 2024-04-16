@@ -1,5 +1,13 @@
 # myst-config
 
+## 1.2.0
+
+### Patch Changes
+
+- 80930b39: Add error_rules to turn off warnings and errors in the CLI.
+- Updated dependencies [2c4e3057]
+  - myst-frontmatter@1.2.0
+
 ## 1.1.35
 
 ### Patch Changes

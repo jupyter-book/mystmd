@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.2.0
+
+### Patch Changes
+
+- 2c4e3057: Respect part aliases in parts frontmatter and extractPart function
+
 ## 1.1.35
 
 ### Patch Changes
