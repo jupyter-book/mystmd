@@ -70,4 +70,4 @@ project:
         - https://flaky-connection.com
 ```
 
-The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity will be adopted rather than the default log message severity. To find out the rule ID, run myst in debug mode to get the error (and optional key) printed to the console.
+The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity listed will be adopted rather than the default log message severity. The default severity for rules included in the list is `ignore`, which means that simply listing the rule IDs as strings will ignore those rules. To discover the rule ID, run myst in debug mode to get the error (and optional key) printed to the console. For example, the above configuration updates will no longer warn on `math-eqnarray-replaced` and will also ignore the two links when running `myst build --check-links --strict` in continuous integration.
