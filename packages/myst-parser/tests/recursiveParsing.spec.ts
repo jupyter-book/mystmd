@@ -1,7 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { VFile } from 'vfile';
 import { mystParse } from '../src';
-import { basicTransformations } from 'myst-transforms';
 import { selectAll } from 'unist-util-select';
 import type { DirectiveSpec, GenericNode } from 'myst-common';
 import { subscriptRole } from 'myst-roles';
@@ -29,9 +27,7 @@ H{sub}\`2\`O
 :::
 ::::
 `;
-    const vfile = new VFile();
     const tree = mystParse(src, { directives: [parseAgain], roles: [subscriptRole] });
-    // basicTransformations(tree, vfile, {});
     const [one, two] = selectAll('parse', tree);
     expect(one.data?.firstLine).toBe('first line');
     expect(two.data?.firstLine).toBe('second line');
