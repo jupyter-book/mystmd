@@ -68,21 +68,32 @@ If Jupyter Server is installed and the `--execute` flag is passed to `myst start
 
 ## Manually launch a Jupyter server
 
-Advanced users may wish to connect to non-local Jupyter Servers, e.g. those running on a remote server. It is possible to instruct MyST to connect to a remote server by setting the `JUPYTER_BASE_URL` and `JUPYTER_TOKEN` environment variables, e.g.
+You can manually launch a Jupyter server and instruct MyST to use it for computation (rather than having MyST start its own Jupyter server).
+This gives you more control over the process that executes your content, including specifying Jupyter servers that exist on non-local hardware (e.g. running in the cloud).
+
+To manually specify a server, you must set two variables:
+
+- **`JUPYTER_BASE_URL`**: a URL where the server can be found. On a local machine, this is by default `http://localhost:8888`.
+- **`JUPYTER_TOKEN`**: the token that allows access to the Jupyter server.
+
+For example, the following code sets these variables, then starts a Jupyter server with them so that MyST will use them to execute code:
+
 ```bash
-# Set local environment variable
+# Set the port for our local Jupyter process
 port="8888"
 
-# Setup environment variables used by MyST
+# Define environment variables that will be used by MyST
+# We'll use the values of these variables in our Jupyter server as well.
 export JUPYTER_BASE_URL="http://localhost:${port}"
 export JUPYTER_TOKEN="my-jupyter-token"
 
-# Start server in the background
+# Start the Jupyter server re-using the variables above
 jupyter server --IdentityProvider.token="${JUPYTER_TOKEN}" --ServerApp.port="${port}" &
 
-# Run MyST
+# Run the MyST build
+# It will use the JUPYTER_* variables above to look for the server.
 myst build --execute
 
-# Stop server!
+# Stop the Jupyter server!
 kill %1
 ```
