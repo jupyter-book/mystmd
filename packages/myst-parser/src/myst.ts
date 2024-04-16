@@ -96,15 +96,15 @@ export function mystParse(content: string, opts?: Options) {
   const tree = tokensToMyst(content, tokenizer.parse(content, { vfile }), parsedOpts.mdast);
   applyDirectives(tree, parsedOpts.directives, parsedOpts.vfile, {
     parseMyST: (source: string, offset: number = 0) => {
-      const tree = mystParse(source, opts);
+      const mdast = mystParse(source, opts);
       // Fix-up the node's (global) position offsets
-      visit(tree, (node) => {
+      visit(mdast, (node) => {
         if (node.position) {
           node.position.start.line += offset;
           node.position.end.line += offset;
         }
       });
-      return tree;
+      return mdast;
     },
   });
   applyRoles(tree, parsedOpts.roles, parsedOpts.vfile);

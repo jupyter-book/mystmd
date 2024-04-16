@@ -14,7 +14,7 @@ import type { Directive } from 'myst-spec';
 
 type MystDirectiveNode = GenericNode & {
   name: string;
-}
+};
 /**
  * Apply directive `run()` methods to build directive ASTs.
  *
