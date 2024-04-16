@@ -2,6 +2,7 @@ import type {
   GenericNode,
   DirectiveData,
   DirectiveSpec,
+  DirectiveContext,
   ParseTypes,
   GenericParent,
 } from 'myst-common';
@@ -14,11 +15,24 @@ import type { Directive } from 'myst-spec';
 type MystDirectiveNode = GenericNode & {
   name: string;
 };
-
-export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfile: VFile) {
+/**
+ * Apply directive `run()` methods to build directive ASTs.
+ *
+ * @param tree - raw MDAST containing mystDirectives
+ * @param specs - record mapping from names to directive implementations
+ * @param vfile
+ */
+export function applyDirectives(
+  tree: GenericParent,
+  specs: DirectiveSpec[],
+  vfile: VFile,
+  ctx: DirectiveContext,
+) {
+  // Record mapping from alias-or-name to directive spec
   const specLookup: Record<string, DirectiveSpec> = {};
   specs.forEach((spec) => {
     const names = [spec.name];
+    // Wrap single-string `alias` fields as an array
     if (spec.alias) {
       names.push(...(typeof spec.alias === 'string' ? [spec.alias] : spec.alias));
     }
@@ -32,8 +46,10 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
       }
     });
   });
-  const nodes = selectAll('mystDirective', tree) as MystDirectiveNode[];
+  // Find all raw directive nodes
+  const nodes = selectAll('mystDirective[processed=false]', tree) as MystDirectiveNode[];
   nodes.forEach((node) => {
+    delete node.processed; // Indicate that the directive has been processed
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {
@@ -190,6 +206,10 @@ export function applyDirectives(tree: GenericParent, specs: DirectiveSpec[], vfi
     if (validate) {
       data = validate(data, vfile);
     }
-    node.children = run(data, vfile);
+    node.children = run(data, vfile, {
+      // Implement a parseMyst function that accepts _relative_ line numbers
+      parseMyst: (source: string, offset: number = 0) =>
+        ctx.parseMyst(source, offset + node.position!.start.line),
+    });
   });
 }

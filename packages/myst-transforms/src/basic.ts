@@ -15,7 +15,7 @@ import { removeUnicodeTransform } from './removeUnicode.js';
 import { containerChildrenTransform } from './containers.js';
 import { headingDepthTransform } from './headings.js';
 
-export function basicTransformations(tree: GenericParent, file: VFile, opts: Record<string, any>) {
+export function basicTransformations(tree: GenericParent, file: VFile, opts?: Record<string, any>) {
   // lifting roles and directives must happen before the mystTarget transformation
   liftMystDirectivesAndRolesTransform(tree);
   // Some specifics about the ordering are noted below
