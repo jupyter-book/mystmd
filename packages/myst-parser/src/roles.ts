@@ -82,8 +82,9 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
       }
     });
   });
-  const nodes = selectAll('mystRole', tree) as MystRoleNode[];
+  const nodes = selectAll('mystRole[processed=false]', tree) as MystRoleNode[];
   nodes.forEach((node) => {
+    delete node.processed; // Indicate that the role has been processed
     const { name } = node;
     const spec = specLookup[name];
     if (!spec) {

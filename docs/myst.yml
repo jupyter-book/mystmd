@@ -48,6 +48,17 @@ project:
     - directives.mjs
     - unsplash.mjs
     - latex.mjs
+  error_rules:
+    - rule: link-resolves
+      severity: ignore
+      keys:
+        - /robots.txt
+        - /sitemap.xml
+        - /jtex/template-yml
+        - /jtex
+        - /jtex/create-a-latex-template
+        - /jtex/create-a-beamer-template
+        - /jtex/contribute-a-template
 site:
   title: MyST Markdown Guide
   domains:

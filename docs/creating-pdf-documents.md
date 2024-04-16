@@ -35,7 +35,7 @@ exports:
 ---
 ```
 
-To build the exports, use the `myst build` command, which will work with your [project structure](./project-overview.md) if it exists and create a document in the output path that you specify.
+To build the exports, use the `myst build` command, which will work with your project structure if it exists and create a document in the output path that you specify.
 
 ```bash
 myst build my-document.md --pdf
@@ -54,7 +54,7 @@ The default PDF renderer uses $\LaTeX$ to create PDFs, which means that to work 
 As an alternative, for faster PDF builds, you may use [Typst](#rendering-pdfs-with-typst) instead.
 ```
 
-The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](myst:jtex) templating library, to convert to $\LaTeX$ the [`myst-to-tex`](myst:myst-to-tex) packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
+The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](myst:jtex) templating library, to convert to $\LaTeX$ the `myst-to-tex` packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
 
 ```{mermaid}
 flowchart LR

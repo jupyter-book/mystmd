@@ -1,5 +1,17 @@
 # myst-common
 
+## 1.2.0
+
+### Minor Changes
+
+- 9271361: Add support for nested parsing via a context object
+
+### Patch Changes
+
+- 2c4e3057: Respect part aliases in parts frontmatter and extractPart function
+- Updated dependencies [2c4e3057]
+  - myst-frontmatter@1.2.0
+
 ## 1.1.35
 
 ### Patch Changes

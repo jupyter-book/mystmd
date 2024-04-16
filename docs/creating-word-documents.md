@@ -29,7 +29,7 @@ exports:
 ---
 ```
 
-To build the exports, use the `myst build` command, which will work with your [project structure](./project-overview.md) if it exists and create a document in the output path that you specify.
+To build the exports, use the `myst build` command, which will work with your project structure if it exists and create a document in the output path that you specify.
 
 ```bash
 myst build my-document.md --docx
@@ -69,7 +69,7 @@ To fix equations in Word, use the equation toolbar to select `LaTeX` and from th
 
 ## Rendering Word with `myst-to-docx`
 
-The rendering process for word documents uses the [`myst-to-docx`](myst:myst-to-docx) package. The library works together with `mystmd` for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
+The rendering process for word documents uses the `myst-to-docx` package. The library works together with `mystmd` for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
 
 ```{mermaid}
 flowchart LR

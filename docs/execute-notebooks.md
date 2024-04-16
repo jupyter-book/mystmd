@@ -57,6 +57,7 @@ Jupyter Server is distributed as a Python package, which can be installed from P
 ```bash
 pip install jupyter-server
 ```
+
 Jupyter Server is only responsible for orchestrating execution of your code. To actually perform execution, you must also install a kernel. For Python, this might be `ipykernel`, e.g.
 
 ```bash
