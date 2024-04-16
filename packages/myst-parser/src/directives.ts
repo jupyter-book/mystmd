@@ -208,7 +208,7 @@ export function applyDirectives(
     node.children = run(data, vfile, {
       // Implement a parseMyst function that accepts _relative_ line numbers
       parseMyst: (source: string, offset: number = 0) =>
-        ctx.parseMyst(source, offset + node.pos[0]),
+        ctx.parseMyst(source, offset + node.position!.start.line),
     });
   });
 }
