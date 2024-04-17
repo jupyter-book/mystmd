@@ -23,6 +23,6 @@ build:
     # https://github.com/readthedocs/readthedocs.org/issues/11219
 #    - /usr/bin/rsync -a --mkpath docs/_build/ $READTHEDOCS_OUTPUT/
     - mkdir -p $READTHEDOCS_OUTPUT
-    - cp -a docs/_build/* $READTHEDOCS_OUTPUT/
+    - cp -a docs/_build/* $READTHEDOCS_OUTPUT
     # Copy robots.txt to avoid search indexing
-    - cp .github/robots.txt $READTHEDOCS_OUTPUT/robots.txt
+    - cp .github/robots.txt $READTHEDOCS_OUTPUT/html/robots.txt
