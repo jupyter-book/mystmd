@@ -1,0 +1,2 @@
+[build.command]
+    npm install -g mystmd; myst build --html --execute
