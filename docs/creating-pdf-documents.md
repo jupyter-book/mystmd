@@ -213,7 +213,7 @@ If you have a block or notebook cell that you do now want to render to your LaTe
 
 (multi-article-exports)=
 
-## Mulit-Article Exports
+## Multi-Article Exports
 
 Sometimes you may want to combine multiple MyST documents into a single export, for example a thesis or a book. MyST makes this possible with multi-article exports for PDFs built with either $\LaTeX$ or Typst.
 
