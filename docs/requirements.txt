@@ -1,5 +1,6 @@
 altair
 ipykernel
+jupyter
 pandas
 matplotlib
 numpy
