@@ -1,4 +1,10 @@
-import type { DirectiveSpec, DirectiveData, DirectiveContext, GenericNode } from 'myst-common';
+import type {
+  DirectiveSpec,
+  DirectiveData,
+  DirectiveContext,
+  GenericNode,
+  GenericParent,
+} from 'myst-common';
 import { fileError, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import { parse } from 'csv-parse/sync';
@@ -164,6 +170,34 @@ export const listTableDirective: DirectiveSpec = {
   },
 };
 
+function parseCSV(
+  data: string,
+  opts: DirectiveData['options'] | undefined,
+  ctx: DirectiveContext,
+): GenericParent[][] {
+  const delimiter = (opts?.delimiter ?? ',') as string;
+  const records = parse(data, {
+    delimiter,
+    ltrim: !opts?.keepspace,
+    escape: (opts?.escape ?? delimiter) as string,
+    quote: (opts?.quote ?? '"') as string,
+  });
+
+  return records.map((record: any, recordIndex: number) => {
+    return record.map((cell: string) => {
+      const rawResult = ctx.parseMyst(cell, recordIndex);
+      if (rawResult.type !== 'root') {
+        throw new Error(`Expected a root element from parsing MyST: ${cell}`);
+      }
+      const { children: rawCells } = rawResult;
+      if (!(rawCells.length === 1 && rawCells[0].type === 'paragraph')) {
+        throw new Error(`Expected a single paragraph node, encountered ${rawCells[0].type}`);
+      }
+      return rawCells[0];
+    });
+  });
+}
+
 export const csvTableDirective: DirectiveSpec = {
   name: 'csv-table',
   arg: {
@@ -174,6 +208,11 @@ export const csvTableDirective: DirectiveSpec = {
       type: String,
       alias: ['name'],
     },
+    header: {
+      type: String,
+      // nonnegative int
+    },
+
     'header-rows': {
       type: Number,
       // nonnegative int
@@ -207,36 +246,41 @@ export const csvTableDirective: DirectiveSpec = {
     required: true,
   },
   run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
-    const delimiter = (data.options?.delimiter ?? ',') as string;
-    const records = parse(data.body as string, {
-      delimiter,
-      ltrim: !data.options?.keepspace,
-      escape: (data.options?.escape ?? delimiter) as string,
-      quote: (data.options?.quote ?? '"') as string,
-    });
-
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
 
+    const rows: GenericParent[] = [];
+
+    if (data.options?.header !== undefined) {
+      const headerCells = parseCSV(data.options.header as string, data.options, ctx);
+      rows.push(
+        ...headerCells.map((parsedRow) => ({
+          type: 'tableRow',
+          children: parsedRow.map((parsedCell) => ({
+            type: 'tableCell',
+            header: true,
+            children: parsedCell.children,
+          })),
+        })),
+      );
+    }
+    const cells = parseCSV(data.body as string, data.options, ctx);
+
     let headerCount = (data.options?.['header-rows'] as number) || 0;
-    const rows = records.map((record: any, recordIndex: number) => {
-      const cells = record.map((cell: string) => {
-        const rawCells = ctx.parseMyst(cell, recordIndex);
-        if (!(rawCells.length === 1 && rawCells[0].type === 'paragraph')) {
-          throw new Error(`Expected a single paragraph node, encountered ${rawCells[0].type}`);
-        }
-        return {
-          type: 'tableCell',
-          header: headerCount > 0 ? true : undefined,
-          children: rawCells[0].children,
+    rows.push(
+      ...cells.map((parsedRow) => {
+        const row = {
+          type: 'tableRow',
+          children: parsedRow.map((parsedCell) => ({
+            type: 'tableCell',
+            header: headerCount > 0 ? true : undefined,
+            children: parsedCell.children,
+          })),
         };
-      });
-      headerCount -= 1;
-      // Parsing produes multiple nodes
-      return {
-        type: 'tableRow',
-        children: cells,
-      };
-    });
+
+        headerCount -= 1;
+        return row;
+      }),
+    );
     const table = {
       type: 'table',
       align: data.options?.align,
