@@ -8,11 +8,13 @@ build:
   os: ubuntu-lts-latest
   tools:
     nodejs: "20"
+    python: "3.11"
   commands:
-    # Install and build our documentation
+    # Install dependencies and build MyST so we're using `main`
     - npm install
     - npm run build
     - npm run --workspace packages/mystmd link
+    - pip install -r docs/requirements.txt
     - myst --version
     - cd docs && BASE_URL=${READTHEDOCS_CANONICAL_URL} myst build --html --execute
     # Move MyST outputs to the ReadTheDocs output folder for inclusion
