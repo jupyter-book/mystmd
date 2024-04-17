@@ -8,7 +8,7 @@ thumbnail: thumbnails/execute-notebooks.png
 :::{warning} MyST Execution is in Beta
 By default, execution is disabled and code outputs are only inserted if the notebook has already been executed (for text-based notebooks, there are no outputs).
 We are adding support for executing markdown notebooks and ipynb files, including inline execution.
-As we are adding this functionality we appreciate any feedback from the community on how it is working in your environments. Please add [issues](https://github.com/executablebooks/MyST/issues/new) or join [Discord](https://discord.MyST.org/) to give feedback.
+As we are adding this functionality we appreciate any feedback from the community on how it is working in your environments. Please add [issues](https://github.com/executablebooks/mystmd/issues/new) or join [Discord](https://discord.mystmd.org/) to give feedback.
 :::
 
 The MyST CLI can execute your notebooks and markdown files by passing the `--execute` flag to the `start` and `build` commands, i.e.:
