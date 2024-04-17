@@ -4,6 +4,8 @@
 # ref for docs: https://mystmd.org/guide/contribute-docs
 # ref for RTD config: https://docs.readthedocs.io/en/stable/config-file/v2.html
 version: 2
+conda:
+  environment: docs/environment.yml
 build:
   os: ubuntu-lts-latest
   tools:
@@ -14,7 +16,6 @@ build:
     - npm install
     - npm run build
     - npm run --workspace packages/mystmd link
-    - pip install -r docs/requirements.txt
     - myst --version
     - cd docs && BASE_URL=${READTHEDOCS_CANONICAL_URL} myst build --html --execute
     # Move MyST outputs to the ReadTheDocs output folder for inclusion

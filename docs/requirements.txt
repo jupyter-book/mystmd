@@ -1,4 +1,0 @@
-jupyter
-altair
-pandas
-matplotlib

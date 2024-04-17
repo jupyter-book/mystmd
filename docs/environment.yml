@@ -6,5 +6,6 @@ dependencies:
   - numpy
   - altair
   - matplotlib
+  - pandas
   - ipykernel
   - vega_datasets
