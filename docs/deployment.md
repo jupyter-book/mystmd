@@ -55,11 +55,11 @@ Deploy as a static site to GitHub pages using an action.
 :::
 
 :::{card} Curvenote
-:link: ./deployment-github-pages.md
+:link: ./deployment-curvenote.md
 Deploy to Curvenote as a dynamic site with a managed MyST theme.
 :::
 
 :::{card} Netlify
-:link: ./deployment-github-pages.md
+:link: ./deployment-netlify.md
 Deploy to Netlify as static HTML, and pull-request previews.
 :::
