@@ -53,7 +53,6 @@ export async function localArticleToPdf(
     return { ...exportOptions, ...templateOptions };
   });
   const results: ExportResults = { logFiles: [], tempFolders: [] };
-  console.log(pdfExportOptionsList);
   await resolveAndLogErrors(
     session,
     pdfExportOptionsList.map(async (exportOptions) => {

@@ -483,7 +483,6 @@ async function legacyCollectExportOptions(
     ...opts,
     projectPath,
   });
-  console.log(exportOptions);
   if (exportOptions.length > 0) return exportOptions;
   // Handle fallback if no exports are explicitly requested and no exports are found in files
   const implicitExports = resolveExportListFormats(session, sourceFile, formats, [
