@@ -1,3 +1,8 @@
 [build]
-  command = "npm install -g mystmd; cd docs; myst build --html --execute"
-  publish = "docs/_build/html/"
+  command = """
+  npm run build;
+  npm run --workspace packages/mystmd link;
+  cd docs;
+  myst build --html --execute
+  """
+  publish = "/docs/_build/html/"
