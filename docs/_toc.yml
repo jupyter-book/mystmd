@@ -46,6 +46,10 @@ parts:
       - file: analytics
       - file: website-downloads
       - file: deployment
+        sections:
+          - file: deployment-github-pages
+          - file: deployment-curvenote
+          - file: deployment-netlify
       # - file: publishing
   - caption: Documents
     chapters:
