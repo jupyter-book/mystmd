@@ -114,10 +114,12 @@ parts:
 
 ## Nesting of Files in URLs
 
-You can have any level of nesting in a file-system of your project, however, when it is displayed in the URL in `mystmd`, these nesting will be flattened to have a single “slug” that is contained in the project.
+MyST can have any level of nesting in a file-system of your project, however, when it is displayed in the URL in `mystmd`, these nesting will be flattened to have a single "slug" that is contained in the project.
 
 - `project/folder2/01_my_article.md` becomes `project/my-article`
 
 All internal links will automatically be updated, and there is a `file` property that is exported as metadata. Add `.json` to the end of any url in your site to see the full data of the page.
 
-If you want to have URL nesting, we suggest splitting your site up into different "projects", which are simply other `myst.yml` definitions and can all exist in a single Git repository, for example. Each project has its own metadata, and can for example define GitHub links, or any other [](./frontmatter.md) that will cascade to the various documents in that project.
+:::{note} URL Nesting
+URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/executablebooks/mystmd/issues/670).
+:::
