@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import type { ISession } from './session/types.js';
-import { selectCurrentProjectConfig } from './store/selectors.js';
+import { selectors } from './store/index.js';
 import { RuleId, plural, type MystPlugin } from 'myst-common';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 
@@ -10,19 +10,31 @@ import { addWarningForFile } from './utils/addWarningForFile.js';
  * @param session session with logging
  */
 export async function loadPlugins(session: ISession): Promise<MystPlugin> {
-  const config = selectCurrentProjectConfig(session.store.getState());
-
+  let configPlugins: string[] = [];
+  const state = session.store.getState();
+  const projConfig = selectors.selectCurrentProjectConfig(state);
+  if (projConfig?.plugins) configPlugins.push(...projConfig.plugins);
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
+  if (siteConfig?.projects) {
+    siteConfig.projects
+      .filter((project): project is { path: string } => !!project.path)
+      .forEach((project) => {
+        const siteProjConfig = selectors.selectLocalProjectConfig(state, project.path);
+        if (siteProjConfig?.plugins) configPlugins.push(...siteProjConfig.plugins);
+      });
+  }
+  configPlugins = [...new Set(configPlugins)];
   const plugins: MystPlugin = {
     directives: [],
     roles: [],
     transforms: [],
   };
-  if (!config?.plugins || config.plugins.length === 0) {
+  if (configPlugins.length === 0) {
     return plugins;
   }
-  session.log.debug(`Loading plugins: "${config?.plugins?.join('", "')}"`);
+  session.log.debug(`Loading plugins: "${configPlugins.join('", "')}"`);
   const modules = await Promise.all(
-    config?.plugins?.map(async (filename) => {
+    configPlugins.map(async (filename) => {
       if (!fs.statSync(filename).isFile || !filename.endsWith('.mjs')) {
         addWarningForFile(
           session,
