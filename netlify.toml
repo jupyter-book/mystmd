@@ -1,2 +1,2 @@
-[build.command]
-    npm install -g mystmd; myst build --html --execute
+[build]
+  command = npm install -g mystmd; myst build --html --execute
