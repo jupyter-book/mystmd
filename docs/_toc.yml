@@ -31,6 +31,7 @@ parts:
   - caption: Executable Content
     chapters:
       - file: interactive-notebooks
+      - file: notebooks-with-markdown
       - file: reuse-jupyter-outputs
       - file: integrating-jupyter
       - file: execute-notebooks

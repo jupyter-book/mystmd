@@ -1,14 +1,14 @@
 ---
-title: Execute Notebooks with Jupyter
+title: Execute Notebooks During Your Build
 description: MyST can execute notebooks using Jupyter Server, making it possible to build rich websites and documents from text-based notebooks.
-short_title: Executing Notebooks
+short_title: Execute Notebooks During Your Build
 thumbnail: thumbnails/execute-notebooks.png
 ---
 
-## Overview
-
 :::{warning} MyST Execution is in Beta
-We are adding support for executing markdown notebooks and ipynb files, including inline execution. As we are adding this functionality we appreciate any feedback from the community on how it is working in your environments. Please add [issues](https://github.com/executablebooks/mystmd/issues/new) or join [Discord](https://discord.mystmd.org/) to give feedback.
+By default, execution is disabled and code outputs are only inserted if the notebook has already been executed (for text-based notebooks, there are no outputs).
+We are adding support for executing markdown notebooks and ipynb files, including inline execution.
+As we are adding this functionality we appreciate any feedback from the community on how it is working in your environments. Please add [issues](https://github.com/executablebooks/mystmd/issues/new) or join [Discord](https://discord.mystmd.org/) to give feedback.
 :::
 
 The MyST CLI can execute your notebooks and markdown files by passing the `--execute` flag to the `start` and `build` commands, i.e.:
@@ -18,11 +18,41 @@ myst start --execute
 myst build --execute
 ```
 
-If the flag is passed, notebook cells and inline execution will be executed and the original notebook values ignored. By default, execution is disabled and will use the notebook outputs already saved in the notebook (for text-based notebooks, there are no outputs). The notebook outputs are cached based on the source to allow for speedy editing workflows of text without having to re-execute your notebooks.
+The following computational content will be executed:
 
-## Launching a Server
+- **Notebook cells** will be executed in the order they appeared in a notebook (ie, a file ending in `.ipynb`).
+- **`{code-block}` directives** will be executed similar to a code block cell. See [](./notebooks-with-markdown.md) for more information.
+- **Inline expressions with the `{eval}` role** can be used to insert the outputs of a computation in-line with other text.
 
-MyST performs execution of notebooks by communication with a Jupyter Server. Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.
+:::{note} Jupyter is required for execution
+In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
+:::
+
+## Cache execution outputs
+
+When MyST executes your notebook, it will store the outputs in a cache in a folder called `execute/` in your MyST build folder.
+On subsequent builds, MyST will re-use this cache rather than re-execute.
+
+If you change the computational content of a notebook or a markdown page (ie, code in a code cell, or in an inline expression), then this cache will be reset and the code will be re-executed at the next build.
+
+### Force execution by deleting the cache
+
+If you'd like to force re-execution of all the code in your MyST documents, use the following command:
+
+```bash
+myst clean --execute
+```
+
+Alternatively, you can manually delete the `execute/` folder in your build folder, e.g.:
+
+```bash
+rm -rf _build/execute
+```
+
+## How MyST executes your code
+
+MyST uses a [Jupyter Server](https://jupyter-server.readthedocs.io/) to execute your code.
+Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.
 
 ```bash
 pip install jupyter-server
@@ -36,33 +66,35 @@ pip install ipykernel
 
 If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find a healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
 
-:::{note}
-Advanced users may wish to connect to non-local Jupyter Servers, e.g. those running on a remote server. It is possible to instruct MyST to connect to a remote server by setting the `JUPYTER_BASE_URL` and `JUPYTER_TOKEN` environment variables, e.g.
+
+## Manually launch a Jupyter server
+
+You can manually launch a Jupyter server and instruct MyST to use it for computation (rather than having MyST start its own Jupyter server).
+This gives you more control over the process that executes your content, including specifying Jupyter servers that exist on non-local hardware (e.g. running in the cloud).
+
+To manually specify a server, you must set two variables:
+
+- **`JUPYTER_BASE_URL`**: a URL where the server can be found. On a local machine, this is by default `http://localhost:8888`.
+- **`JUPYTER_TOKEN`**: the token that allows access to the Jupyter server.
+
+For example, the following code sets these variables, then starts a Jupyter server with them so that MyST will use them to execute code:
 
 ```bash
-# Set local environment variable
+# Set the port for our local Jupyter process
 port="8888"
 
-# Setup environment variables used by MyST
+# Define environment variables that will be used by MyST
+# We'll use the values of these variables in our Jupyter server as well.
 export JUPYTER_BASE_URL="http://localhost:${port}"
 export JUPYTER_TOKEN="my-jupyter-token"
 
-# Start server in the background
+# Start the Jupyter server re-using the variables above
 jupyter server --IdentityProvider.token="${JUPYTER_TOKEN}" --ServerApp.port="${port}" &
 
-# Run MyST
+# Run the MyST build
+# It will use the JUPYTER_* variables above to look for the server.
 myst build --execute
 
-# Stop server!
+# Stop the Jupyter server!
 kill %1
-```
-
-:::
-
-## Caching Outputs
-
-By default MyST caches the execution of a notebook according to its executable content. In simple terms, this means that MyST avoids re-running a kernel over a notebook if the notebook's code and inline-expressions do not change. This may not always be correct; if the execution environment (e.g. installed Python packages) changes, you may wish to re-run the notebook. For now, you can clear the execution cache with
-
-```bash
-myst clean --execute
 ```
