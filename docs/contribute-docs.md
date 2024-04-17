@@ -69,3 +69,14 @@ Below is a brief description for how modifications in a theme are released for p
 2. **[dev facing]** if there were changes in `packages/*` we release the `@myst-theme/*` packages (changesets based ci step)
 3. **[dev facing]** we then run `make deploy-book` and `make deploy-article` which builds and bundles each theme, making commits to the https://github.com/myst-templates/book-theme and https://github.com/myst-templates/article-theme repos.
 4. **[user facing]** at that point those latest bundle commits will be what is pulled by `mystmd` clients - people who already have those downloaded need to `myst clean --all` (as we don't yet auto bump based on version changes, see [#854](https://github.com/executablebooks/mystmd/issues/854) for updates).
+
+## Deploy previews for pull requests
+
+We use [the Netlify service](https://netlify.app) to generate deploy previews of the `mystmd` documentation for all pull requests.
+These build only the `mystmd` guide (hosted at https://mystmd.org/guide), not the entire mystmd.org website.
+They're just used for convenience and review purposes.
+
+Configuration for our Netlify build exists in the [`netlify.toml` configuration file](https://docs.netlify.com/configure-builds/file-based-configuration/) in the root of the repository.
+
+Any team members can have `Developer` access to our shared Netlify account, and Steering Council members can have `Owner` access.
+If you'd like access, please ask a maintainer.

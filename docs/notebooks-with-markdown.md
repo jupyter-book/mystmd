@@ -53,12 +53,21 @@ For example, the following MyST Markdown would re-use the variable defined above
 The value of `hello` is {eval}`there`.
 ```
 
+This results in the following:
+
+> The value of `hello` is {eval}`there`.
+
 You can also modify the expression at the time of computation, for example:
 
 ```markdown
 The value of `hello` is {eval}`there + ", wow that's nifty!"`.
 ```
 
+This results in the following:
+
+> The value of `hello` is {eval}`there + ", wow that's nifty!"`.
+
 :::{seealso} Also works in JupyterLab
 See [](./quickstart-jupyter-lab-myst.md) for how these eval statements also work in JupyterLab.
 ![](#fig:eval-array)
+:::
