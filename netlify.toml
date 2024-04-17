@@ -1,2 +1,3 @@
 [build]
-  command = npm install -g mystmd; myst build --html --execute
+  base = "docs"
+  command = "npm install -g mystmd; myst build --html --execute"
