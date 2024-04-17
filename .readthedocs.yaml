@@ -1,16 +1,21 @@
 # ReadTheDocs configuration structure
-# ref: https://docs.readthedocs.io/en/stable/config-file/v2.html
+# This is *only meant for PR previews*.
+# Our live documentation is hosted via a Vercel site.
+# ref for docs: https://mystmd.org/guide/contribute-docs
+# ref for RTD config: https://docs.readthedocs.io/en/stable/config-file/v2.html
 version: 2
 build:
   os: ubuntu-lts-latest
   tools:
     nodejs: "20"
   commands:
+    # Install and build our documentation
     - npm install
     - npm run build
     - npm run --workspace packages/mystmd link
     - myst --version
     - cd docs && BASE_URL=${READTHEDOCS_CANONICAL_URL} myst build --html --execute
+    # Move MyST outputs to the ReadTheDocs output folder for inclusion
     # TODO: Switch to rsync
     # https://github.com/readthedocs/readthedocs.org/issues/11219
 #    - /usr/bin/rsync -a --mkpath docs/_build/ $READTHEDOCS_OUTPUT/
