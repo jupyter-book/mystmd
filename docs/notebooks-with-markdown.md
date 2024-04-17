@@ -36,9 +36,19 @@ For example, the following directive inserts a code cell into the page, and will
 
 ````markdown
 ```{code-cell} python
-print("hi")
+hello = "hello"
+there = "there"
+phrase = f"{hello}, {there}!"
+print(phrase)
 ```
 ````
+
+```{code-cell} python
+hello = "hello"
+there = "there"
+phrase = f"{hello}, {there}!"
+print(phrase)
+```
 
 (myst:inline-expressions)=
 
@@ -50,22 +60,22 @@ This allows you to quickly insert its output in a way that flows with the text a
 For example, the following MyST Markdown would re-use the variable defined above.
 
 ```markdown
-The value of `hello` is {eval}`there`.
+The phrase is: {eval}`phrase`.
 ```
 
 This results in the following:
 
-> The value of `hello` is {eval}`there`.
+> The phrase is: {eval}`phrase`.
 
 You can also modify the expression at the time of computation, for example:
 
 ```markdown
-The value of `hello` is {eval}`there + ", wow that's nifty!"`.
+The phrase manually computed is: {eval}`f"{hello}, {there} everybody!"`
 ```
 
 This results in the following:
 
-> The value of `hello` is {eval}`there + ", wow that's nifty!"`.
+> The phrase manually computed is: {eval}`f"{hello}, {there} everybody!"`
 
 :::{seealso} Also works in JupyterLab
 See [](./quickstart-jupyter-lab-myst.md) for how these eval statements also work in JupyterLab.
