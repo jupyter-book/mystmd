@@ -8,6 +8,7 @@ You can define two types of markdown-based computation:
 - [**in-line expressions**](#myst:inline-expressions): for content inline with surrounding text
 
 (myst:code-cell)=
+
 ## Code cells with the `{code-cell}` directive
 
 You can use the {myst:directive}`code-cell` directive to create block-level computational outputs in MyST Markdown.
@@ -40,6 +41,7 @@ print("hi")
 ````
 
 (myst:inline-expressions)=
+
 ## Inline expressions with the `{eval}` role
 
 You can use the `{eval}` role to evaluate code that is surrounded by text.
@@ -56,3 +58,7 @@ You can also modify the expression at the time of computation, for example:
 ```markdown
 The value of `hello` is {eval}`there + ", wow that's nifty!"`.
 ```
+
+:::{seealso} Also works in JupyterLab
+See [](./quickstart-jupyter-lab-myst.md) for how these eval statements also work in JupyterLab.
+![](#fig:eval-array)

@@ -105,6 +105,7 @@ These turn your markdown cells into places that you can quickly evaluate a simpl
 
 :::{figure} ./videos/eval-array.mp4
 :class: framed
+:label: fig:eval-array
 
 Use the `` {eval}`x` `` role to evaluate an expression, which can be text, an image, an equation, or even an `ipywidgets` slider.
 :::
