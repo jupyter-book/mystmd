@@ -42,9 +42,9 @@
     "commander": "^10.0.1",
     "glob": "^10.3.1",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^2.0.8",
-    "myst-common": "^1.1.27",
-    "myst-frontmatter": "^1.1.27",
+    "myst-cli-utils": "^2.0.9",
+    "myst-common": "^1.2.0",
+    "myst-frontmatter": "^1.2.0",
     "node-fetch": "^3.3.1",
     "pretty-hrtime": "^1.0.3",
     "simple-validators": "^1.0.4"
