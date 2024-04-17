@@ -1,0 +1,7 @@
+altair
+ipykernel
+jupyter
+pandas
+matplotlib
+numpy
+vega_datasets

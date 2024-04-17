@@ -1,0 +1,10 @@
+[build]
+  command = """
+  pip install -r docs/requirements.txt;
+  npm run build;
+  npm run --workspace packages/mystmd link;
+  cd docs;
+  myst build --html --execute
+  echo "User-agent: *\nDisallow: /" > _build/html/robots.txt
+  """
+  publish = "/docs/_build/html/"
