@@ -1,6 +1,6 @@
 [build]
   command = """
-  pip install docs/requirements.txt;
+  pip install -r docs/requirements.txt;
   npm run build;
   npm run --workspace packages/mystmd link;
   cd docs;
