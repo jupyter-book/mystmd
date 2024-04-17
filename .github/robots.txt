@@ -1,0 +1,5 @@
+# This should disallow all search index crawling of the documentation.
+# we are using RTD *only* for PR previews, and not for hosting the actual docs.
+# So this should be added to the HTML output within readthedocs.
+User-agent: *
+Disallow: /
