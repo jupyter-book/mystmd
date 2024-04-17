@@ -53,6 +53,8 @@ For example, the following MyST Markdown would re-use the variable defined above
 The value of `hello` is {eval}`there`.
 ```
 
+The value of `hello` is {eval}`there`.
+
 You can also modify the expression at the time of computation, for example:
 
 ```markdown
