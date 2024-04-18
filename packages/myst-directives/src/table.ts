@@ -257,7 +257,15 @@ export const csvTableDirective: DirectiveSpec = {
     const rows: GenericParent[] = [];
 
     if (data.options?.header !== undefined) {
-      const headerCells = parseCSV(data.options.header as string, data.options, ctx);
+      let headerCells: GenericParent[][] = [];
+      try {
+        headerCells = parseCSV(data.options.header as string, data.options, ctx);
+      } catch (error) {
+        fileError(vfile, 'csv-table directive header must be valid CSV-formatted MyST', {
+          node: select('mystDirectiveOption[name="tags"]', data.node) ?? data.node,
+          ruleId: RuleId.directiveOptionsCorrect,
+        });
+      }
       rows.push(
         ...headerCells.map((parsedRow) => ({
           type: 'tableRow',
@@ -269,11 +277,20 @@ export const csvTableDirective: DirectiveSpec = {
         })),
       );
     }
-    const cells = parseCSV(data.body as string, data.options, ctx);
+
+    let bodyCells: GenericParent[][] = [];
+    try {
+      bodyCells = parseCSV(data.body as string, data.options, ctx);
+    } catch (error) {
+      fileError(vfile, 'csv-table directive body must be valid CSV-formatted MyST', {
+        node: select('mystDirectiveBody', data.node) ?? data.node,
+        ruleId: RuleId.directiveBodyCorrect,
+      });
+    }
 
     let headerCount = (data.options?.['header-rows'] as number) || 0;
     rows.push(
-      ...cells.map((parsedRow) => {
+      ...bodyCells.map((parsedRow) => {
         const row = {
           type: 'tableRow',
           children: parsedRow.map((parsedCell) => ({
@@ -298,7 +315,7 @@ export const csvTableDirective: DirectiveSpec = {
       identifier: identifier,
       label: label,
       class: data.options?.class,
-      children: [...(data.arg as GenericNode[]), table],
+      children: [...((data.arg ?? []) as GenericNode[]), table],
     };
 
     return [container];
