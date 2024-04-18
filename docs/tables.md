@@ -36,6 +36,11 @@ You can use the {myst:directive}`table` directive to add a caption to a markdown
 :::
 ```
 
+```{note}
+You may have inline markdown in the table caption, however, if it includes backticks, you must use a [colon fence](#example-fence).
+```
+
+
 ## List Tables
 
 ````{myst}
@@ -52,10 +57,18 @@ You can use the {myst:directive}`table` directive to add a caption to a markdown
 ```
 ````
 
-```{note}
-You may have inline markdown in the table caption, however, if it includes backticks, you must use a [colon fence](#example-fence).
-```
+## CSV Tables
 
+````{myst}
+```{csv-table} This table title
+:header-rows: 1
+:label: example-table
+
+Training, Validation
+0,        5
+13720,    2744
+```
+````
 ## Notebook outputs as tables
 
 You can embed Jupyter Notebook outputs as tables.
