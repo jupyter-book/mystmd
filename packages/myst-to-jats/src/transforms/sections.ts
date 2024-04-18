@@ -1,5 +1,6 @@
 import type { Plugin } from 'unified';
-import type { Parent, Heading, Block } from 'myst-spec';
+import type { Parent, Heading } from 'myst-spec';
+import type { Block } from 'myst-spec-ext';
 import type { GenericParent } from 'myst-common';
 import { liftChildren, NotebookCell } from 'myst-common';
 import { remove } from 'unist-util-remove';
@@ -8,11 +9,11 @@ import type { Options } from '../types.js';
 
 export type Section = Omit<Heading, 'type'> & { type: 'section'; meta?: string };
 
-export function sectionAttrsFromBlock(node: { data?: Record<string, any>; identifier?: string }) {
+export function sectionAttrsFromBlock(node: { kind?: NotebookCell | string; identifier?: string }) {
   const output: { 'sec-type'?: string; id?: string } = {};
-  if (node.data) {
-    const blockType = node.data.type;
-    if (Object.values(NotebookCell).includes(blockType)) {
+  if (node.kind) {
+    const blockType = node.kind;
+    if (Object.values(NotebookCell).includes(blockType as NotebookCell)) {
       output['sec-type'] = blockType;
     }
   }

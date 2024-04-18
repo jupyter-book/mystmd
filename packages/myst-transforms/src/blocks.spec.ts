@@ -279,9 +279,10 @@ describe('Test blockToFigureTransform', () => {
       u(
         'block',
         {
+          kind: 'notebook-code',
           label: 'my-label',
           identifier: 'my-label',
-          data: { 'fig-cap': 'My caption', metadata: '', type: 'notebook-code' },
+          data: { 'fig-cap': 'My caption', metadata: '' },
           attribute: '',
         },
         [u('paragraph', [u('text', 'value')])],
@@ -293,7 +294,8 @@ describe('Test blockToFigureTransform', () => {
         u(
           'block',
           {
-            data: { metadata: '', type: 'notebook-code' },
+            kind: 'notebook-code',
+            data: { metadata: '' },
             attribute: '',
           },
           [

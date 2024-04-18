@@ -72,10 +72,6 @@ print("This will show output with no input!")
 
 and results in the following:
 
-% Note that this block break can be removed after this is fixed:
-% https://github.com/executablebooks/mystmd/issues/1134
-+++
-
 > ```{code-cell} python
 > :tags: remove-input
 > print("This will show output with no input!")

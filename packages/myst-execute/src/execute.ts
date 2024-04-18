@@ -278,10 +278,10 @@ export type Options = {
 export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile, opts: Options) {
   const log = opts.log ?? console;
   // Pull out code-like nodes
-  const executableNodes = selectAll(
-    'block:has(code[executable=true]):has(output),inlineExpression',
-    tree,
-  ) as (ICellBlock | InlineExpression)[];
+  const executableNodes = selectAll('block[kind=notebook-code],inlineExpression', tree) as (
+    | ICellBlock
+    | InlineExpression
+  )[];
 
   // Only do something if we have any nodes!
   if (executableNodes.length === 0) {

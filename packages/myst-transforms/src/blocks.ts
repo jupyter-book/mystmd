@@ -123,7 +123,7 @@ export function blockToFigureTransform(
         identifier: block.identifier,
         children,
       };
-      if (block.data?.type === NotebookCell.code) {
+      if (block.kind === NotebookCell.code) {
         container.noSubcontainers = true;
       }
       block.children = [container];

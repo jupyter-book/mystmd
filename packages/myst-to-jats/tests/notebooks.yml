@@ -4,9 +4,9 @@ cases:
       type: root
       children:
         - type: block
+          kind: notebook-code
           data:
             id: nb-cell-0
-            type: notebook-code
           identifier: nb-cell-0
           label: nb-cell-0
           html_id: nb-cell-0
@@ -29,9 +29,9 @@ cases:
                   hash: a
                   path: files/a.txt
         - type: block
+          kind: notebook-code
           data:
             id: nb-cell-1
-            type: notebook-code
           identifier: nb-cell-1
           label: nb-cell-1
           html_id: nb-cell-1
@@ -61,9 +61,9 @@ cases:
                       hash: b
                       path: files/b.html
         - type: block
+          kind: notebook-code
           data:
             id: nb-cell-2
-            type: notebook-code
           identifier: nb-cell-2
           label: nb-cell-2
           html_id: nb-cell-2
@@ -137,9 +137,9 @@ cases:
       type: root
       children:
         - type: block
+          kind: notebook-code
           data:
             id: nb-cell-0
-            type: notebook-code
           identifier: nb-cell-0
           label: nb-cell-0
           html_id: nb-cell-0
@@ -162,9 +162,9 @@ cases:
                   hash: a
                   path: files/a.txt
         - type: block
+          kind: notebook-content
           data:
             id: nb-cell-1
-            type: notebook-content
           identifier: nb-cell-1
           label: nb-cell-1
           html_id: nb-cell-1
@@ -236,9 +236,9 @@ cases:
       type: root
       children:
         - type: block
+          kind: notebook-code
           data:
             id: nb-cell-0
-            type: notebook-code
             fig-cap: my caption
           identifier: nb-cell-0
           label: nb-cell-0
@@ -299,9 +299,9 @@ cases:
       type: root
       children:
         - type: block
+          kind: notebook-code
           data:
             id: nb-cell-0
-            type: notebook-code
           identifier: nb-cell-0
           label: nb-cell-0
           html_id: nb-cell-0
@@ -332,9 +332,9 @@ cases:
                 - type: text
                   value: My abstract!
         - type: block
+          kind: notebook-content
           data:
             id: nb-cell-1
-            type: notebook-content
           identifier: nb-cell-1
           label: nb-cell-1
           html_id: nb-cell-1
