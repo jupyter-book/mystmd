@@ -93,6 +93,44 @@ export const CODE_DIRECTIVE_OPTIONS: DirectiveSpec['options'] = {
   // },
 };
 
+export function parseTags(input: any, vfile: VFile, node: GenericNode): string[] | undefined {
+  if (!input) return undefined;
+  if (typeof input === 'string' && input.startsWith('[') && input.endsWith(']')) {
+    try {
+      return parseTags(yaml.load(input) as string[], vfile, node);
+    } catch (error) {
+      fileError(vfile, 'Could not load tags for code-cell directive', {
+        node: select('mystDirectiveOption[name="tags"]', node) ?? node,
+        source: 'code-cell:tags',
+        ruleId: RuleId.directiveOptionsCorrect,
+      });
+      return undefined;
+    }
+  }
+  if (typeof input === 'string') {
+    const tags = input
+      .split(/[,\s]/)
+      .map((t) => t.trim())
+      .filter((t) => !!t);
+    return tags.length > 0 ? tags : undefined;
+  }
+  if (!Array.isArray(input)) return undefined;
+  // if the options are loaded directly as yaml (or in recursion)
+  const tags = input as unknown as string[];
+  if (tags && Array.isArray(tags) && tags.every((t) => typeof t === 'string')) {
+    if (tags.length > 0) {
+      return tags.map((t) => t.trim()).filter((t) => !!t);
+    }
+  } else if (tags) {
+    fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
+      node: select('mystDirectiveOption[name="tags"]', node) ?? node,
+      source: 'code-cell:tags',
+      ruleId: RuleId.directiveOptionsCorrect,
+    });
+    return undefined;
+  }
+}
+
 export const codeDirective: DirectiveSpec = {
   name: 'code',
   doc: 'A code-block environment with a language as the argument, and options for highlighting, showing line numbers, and an optional filename.',
@@ -159,6 +197,7 @@ export const codeCellDirective: DirectiveSpec = {
   options: {
     tags: {
       type: String,
+      alias: ['tag'],
     },
   },
   body: {
@@ -171,50 +210,21 @@ export const codeCellDirective: DirectiveSpec = {
       executable: true,
       value: (data.body ?? '') as string,
     };
-    let tags: string[] | undefined;
-    // TODO: this validation should be done in a different place
-    // For example, specifying that the attribute is YAML,
-    // and providing a custom validation on the option.
-    if (typeof data.options?.tags === 'string') {
-      try {
-        tags = yaml.load(data.options.tags) as string[];
-      } catch (error) {
-        fileError(vfile, 'Could not load tags for code-cell directive', {
-          node: select('mystDirectiveOption[name="tags"]', data.node) ?? data.node,
-          source: 'code-cell:tags',
-          ruleId: RuleId.directiveOptionsCorrect,
-        });
-      }
-    } else if (data.options?.tags && Array.isArray(data.options.tags)) {
-      // if the options are loaded directly as yaml
-      tags = data.options.tags as unknown as string[];
-    }
-    if (tags && Array.isArray(tags) && tags.every((t) => typeof t === 'string')) {
-      if (tags && tags.length > 0) {
-        code.data = { tags: tags.map((t) => t.trim()) };
-      }
-    } else if (tags) {
-      fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
-        node: select('mystDirectiveOption[name="tags"]', data.node) ?? data.node,
-        source: 'code-cell:tags',
-        ruleId: RuleId.directiveOptionsCorrect,
-      });
-    }
-
     const output = {
       type: 'output',
       id: nanoid(),
       data: [],
     };
-
-    const block = {
+    const block: GenericNode = {
       type: 'block',
-      meta: undefined, // do we need to attach metadata?
       children: [code, output],
       data: {
         type: 'notebook-code',
       },
     };
+
+    const tags = parseTags(data.options?.tags, vfile, data.node);
+    if (tags) block.data.tags = tags;
 
     return [block];
   },

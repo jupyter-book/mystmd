@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { getCodeBlockOptions } from './code.js';
+import { getCodeBlockOptions, parseTags } from './code.js';
 import { VFile } from 'vfile';
-import type { DirectiveData } from 'myst-common';
+import type { DirectiveData, GenericNode } from 'myst-common';
 
 function getCodeBlockOptionsWrap(options: DirectiveData['options'], vfile: VFile) {
   return getCodeBlockOptions({ name: '', options, node: {} as any }, vfile);
@@ -55,5 +55,24 @@ describe('Code block options', () => {
       startingLineNumber: 10,
     });
     expect(vfile.messages.length).toEqual(0);
+  });
+  test.each([
+    ['', undefined, 0],
+    ['a  ,   b', ['a', 'b'], 0],
+    ['  , a  ,   1', ['a', '1'], 0],
+    ['[a, b]', ['a', 'b'], 0],
+    ['[a, 1]', undefined, 1],
+    ['[a, true]', undefined, 1],
+    ['[a, yes]', ['a', 'yes'], 0],
+    ["[a, '1']", ['a', '1'], 0],
+    ['x', ['x'], 0],
+    [[' x '], ['x'], 0], // Trimmed
+    [[' x ,'], ['x ,'], 0], // Silly, but allowed if it is explicit
+    [[1], undefined, 1],
+  ])('parseTags(%s) -> %s', (input, output, numErrors) => {
+    const vfile = new VFile();
+    const tags = parseTags(input, vfile, {} as GenericNode);
+    expect(tags).toEqual(output);
+    expect(vfile.messages.length).toBe(numErrors);
   });
 });
