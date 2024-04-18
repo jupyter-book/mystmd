@@ -8,6 +8,7 @@ import type {
 import { fileError, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import { parse } from 'csv-parse/sync';
+import { select } from 'unist-util-select';
 
 export const tableDirective: DirectiveSpec = {
   name: 'table',
@@ -170,6 +171,13 @@ export const listTableDirective: DirectiveSpec = {
   },
 };
 
+/**
+ * Parse a CSV-table comprising of (inline) MyST Markdown
+ *
+ * @param data - CSV string
+ * @param opts - directive options
+ * @param ctx - directive evaluation context
+ */
 function parseCSV(
   data: string,
   opts: DirectiveData['options'] | undefined,
@@ -185,15 +193,13 @@ function parseCSV(
 
   return records.map((record: any, recordIndex: number) => {
     return record.map((cell: string) => {
-      const rawResult = ctx.parseMyst(cell, recordIndex);
-      if (rawResult.type !== 'root') {
-        throw new Error(`Expected a root element from parsing MyST: ${cell}`);
+      const mdast = ctx.parseMyst(cell, recordIndex);
+      const paragraph = select('*:root > paragraph:only-child', mdast);
+
+      if (paragraph === undefined) {
+        throw new Error(`Expected a root element containing a paragraph, found: ${cell}`);
       }
-      const { children: rawCells } = rawResult;
-      if (!(rawCells.length === 1 && rawCells[0].type === 'paragraph')) {
-        throw new Error(`Expected a single paragraph node, encountered ${rawCells[0].type}`);
-      }
-      return rawCells[0];
+      return paragraph;
     });
   });
 }
