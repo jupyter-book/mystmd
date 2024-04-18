@@ -7,6 +7,12 @@ You can define two types of markdown-based computation:
 - [**code cells**](#myst:code-cell): for block-level content
 - [**in-line expressions**](#myst:inline-expressions): for content inline with surrounding text
 
+```{code-cell} python
+:tag: hide-cell
+import matplotlib.pyplot as plt
+import numpy as np
+```
+
 (myst:code-cell)=
 
 ## Code cells with the `{code-cell}` directive
@@ -74,6 +80,25 @@ and results in the following:
 > :tags: remove-input
 > print("This will show output with no input!")
 > ```
+
+This can be particularly helpful for showing the output of a calculation or plot, which is reproducible in the source code, but not shown to the user.
+
+```{code-cell} python
+:tags: remove-input
+# Data for plotting
+t = np.arange(0.0, 2.0, 0.01)
+s = 1 + np.sin(2 * np.pi * t)
+
+fig, ax = plt.subplots()
+ax.plot(t, s)
+
+ax.set(xlabel='time (s)', ylabel='voltage (mV)',
+       title='Waves in Time')
+ax.grid()
+
+fig.savefig("test.png")
+plt.show()
+```
 
 For **multiple tags** you have two ways to provide them:
 

@@ -197,6 +197,10 @@ export const codeCellDirective: DirectiveSpec = {
     doc: 'Language for execution and display, for example `python`. It will default to the language of the notebook or containing markdown file.',
   },
   options: {
+    label: {
+      type: String,
+      alias: ['name'],
+    },
     tags: {
       type: String,
       alias: ['tag'],
@@ -208,6 +212,7 @@ export const codeCellDirective: DirectiveSpec = {
     doc: 'The code to be executed and displayed.',
   },
   run(data, vfile): GenericNode[] {
+    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const code: Code = {
       type: 'code',
       lang: data.arg as string,
@@ -221,6 +226,8 @@ export const codeCellDirective: DirectiveSpec = {
     };
     const block: GenericNode = {
       type: 'block',
+      label,
+      identifier,
       children: [code, output],
       data: {
         type: 'notebook-code',
