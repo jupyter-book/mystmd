@@ -50,6 +50,29 @@ phrase = f"{hello}, {there}!"
 print(phrase)
 ```
 
+### Add tags to `{code-cell}` directives
+
+You can add tags to the `{code-cell}` directive.
+They will be parsed and used in the same way that cell tag metadata is used in `.ipynb` files.
+
+For example, the following code defines a `remove-input` tag:
+
+````
+```{code-cell} python
+:tags: "remove-input"
+print("This will show output with no input!")
+```
+````
+
+and results in the following:
+
+> ```{code-cell} python
+> :tags: "remove-input"
+> print("This will show output with no input!")
+> ```
+
+See [](#(notebooks:cell-visibility) for more information.
+
 (myst:inline-expressions)=
 
 ## Inline expressions with the `{eval}` role
