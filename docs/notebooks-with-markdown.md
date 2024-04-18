@@ -71,7 +71,37 @@ and results in the following:
 > print("This will show output with no input!")
 > ```
 
+For **multiple tags** you have two ways to provide them:
+
+- If you specify argument options with `:`, tags will be parsed as a comma-separated string.
+  For example:
+
+  ````markdown
+  ```{code-cell} python
+  :tags: "tag1, tag2,tag3"
+  # Note that whitespace is removed from tags!
+  print("howdy!")
+  ```
+  ````
+- If you specify argument options with YAML, tags should be given as a YAML list.
+  For example:
+
+  ````markdown
+  ```{code-cell} python
+  ---
+  tags:
+  - tag1
+  - tag2
+  ---
+  print("howdy!")
+  ```
+  ````
+
+For more about how to specify directive options, see [](./syntax-overview.md).
+
+:::{seealso} Controlling cell visibility with tags
 See [](#notebooks:cell-visibility) for more information.
+:::
 
 (myst:inline-expressions)=
 
