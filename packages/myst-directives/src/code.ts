@@ -191,17 +191,21 @@ export const codeDirective: DirectiveSpec = {
 
 export const codeCellDirective: DirectiveSpec = {
   name: 'code-cell',
+  doc: 'An executable code cell',
   arg: {
     type: String,
+    doc: 'Language for execution and display, for example `python`. It will default to the language of the notebook or containing markdown file.',
   },
   options: {
     tags: {
       type: String,
       alias: ['tag'],
+      doc: 'A comma-separated list of tags to add to the cell, for example, `remove-input` or `hide-cell`.',
     },
   },
   body: {
     type: String,
+    doc: 'The code to be executed and displayed.',
   },
   run(data, vfile): GenericNode[] {
     const code: Code = {
