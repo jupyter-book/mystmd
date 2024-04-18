@@ -59,7 +59,7 @@ For example, the following code defines a `remove-input` tag:
 
 ````
 ```{code-cell} python
-:tags: "remove-input"
+:tags: remove-input
 print("This will show output with no input!")
 ```
 ````
@@ -67,7 +67,7 @@ print("This will show output with no input!")
 and results in the following:
 
 > ```{code-cell} python
-> :tags: "remove-input"
+> :tags: remove-input
 > print("This will show output with no input!")
 > ```
 
@@ -78,7 +78,7 @@ For **multiple tags** you have two ways to provide them:
 
   ````markdown
   ```{code-cell} python
-  :tags: "tag1, tag2,tag3"
+  :tags: tag1, tag2,tag3
   # Note that whitespace is removed from tags!
   print("howdy!")
   ```
