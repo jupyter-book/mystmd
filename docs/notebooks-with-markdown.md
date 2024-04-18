@@ -57,7 +57,7 @@ They will be parsed and used in the same way that cell tag metadata is used in `
 
 For example, the following code defines a `remove-input` tag:
 
-````
+````markdown
 ```{code-cell} python
 :tags: remove-input
 print("This will show output with no input!")
@@ -65,6 +65,10 @@ print("This will show output with no input!")
 ````
 
 and results in the following:
+
+% Note that this block break can be removed after this is fixed:
+% https://github.com/executablebooks/mystmd/issues/1134
++++
 
 > ```{code-cell} python
 > :tags: remove-input
@@ -83,6 +87,7 @@ For **multiple tags** you have two ways to provide them:
   print("howdy!")
   ```
   ````
+
 - If you specify argument options with YAML, tags should be given as a YAML list.
   For example:
 
