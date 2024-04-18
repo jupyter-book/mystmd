@@ -71,7 +71,7 @@ and results in the following:
 > print("This will show output with no input!")
 > ```
 
-See [](#(notebooks:cell-visibility) for more information.
+See [](#notebooks:cell-visibility) for more information.
 
 (myst:inline-expressions)=
 
