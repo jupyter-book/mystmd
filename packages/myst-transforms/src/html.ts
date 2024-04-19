@@ -95,6 +95,14 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     _brKeep(h: H, node: any) {
       return h(node, '_break');
     },
+    span(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'span', attrs, all(h, node));
+    },
+    div(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'div', attrs, all(h, node));
+    },
     a(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
       attrs.url = String(node.properties.href || '');

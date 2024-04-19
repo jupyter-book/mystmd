@@ -44,6 +44,7 @@ project:
     JSON: JavaScript Object Notation
     TLA: Three Letter Acronym
     OA: Open Access
+    CSV: comma-separated values
   plugins:
     - directives.mjs
     - unsplash.mjs

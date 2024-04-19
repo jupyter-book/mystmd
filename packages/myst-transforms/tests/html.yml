@@ -8,25 +8,31 @@ cases:
     after:
       type: root
       children:
-        - type: paragraph
+        - type: div
           children:
-            - type: text
-              value: '*some text*'
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*some text*'
   - title: style
     before:
       type: root
       children:
         - type: html
-          value: <div><p><em>some text</em></p></div>
+          value: '<div style="background: red"><p><em>some text</em></p></div>'
     after:
       type: root
       children:
-        - type: paragraph
+        - type: div
+          style:
+            background: red
           children:
-            - type: emphasis
+            - type: paragraph
               children:
-                - type: text
-                  value: some text
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: some text
   - title: image
     before:
       type: root
