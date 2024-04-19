@@ -19,6 +19,14 @@ cell 2
 To identify a [part of a document](./document-parts.md), like an abstract, use `+++ { "part": "abstract" }`, this will allow tools like the [](./creating-pdf-documents.md) to be created with the appropriate parts of information.
 ```
 
+### Page Breaks
+
+You may use `block` metadata to insert page breaks into your PDF or docx export with `+++ { "page-break": true }`. This will have no impact on your MyST site build nor other static exports that disregard "pages" (e.g. JATS).
+
+```{tip}
+You may also use `"new-page"` instead of `"page-break"`. This distinction only matters for $\LaTeX$ where `\newpage` and `\pagebreak` will be used, respectively.
+```
+
 ## Comments
 
 You may add comments by putting the `%` character at the beginning of a line. This will prevent the line from being shown in the output document.

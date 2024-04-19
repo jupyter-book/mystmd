@@ -209,7 +209,7 @@ Please consider [contributing your template](/jtex/contribute-a-template) to the
 
 ## Excluding Source
 
-If you have a block or notebook cell that you do now want to render to your LaTeX output, add the `no-tex` tag to the cell.
+If you have a block or notebook cell that you do not want to render to your $\LaTeX$ output, add the `no-tex` tag to the cell. Similarly, to exclude a cell from Typst, use `no-typst`. To exclude a cell from both formats, use `no-pdf`.
 
 (multi-article-exports)=
 
