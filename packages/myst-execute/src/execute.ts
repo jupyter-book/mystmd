@@ -5,7 +5,7 @@ import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
-import { fileError, fileWarn } from 'myst-common';
+import { NotebookCell, fileError, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
@@ -278,7 +278,7 @@ export type Options = {
 export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile, opts: Options) {
   const log = opts.log ?? console;
   // Pull out code-like nodes
-  const executableNodes = selectAll('block[kind=notebook-code],inlineExpression', tree) as (
+  const executableNodes = selectAll(`block[kind=${NotebookCell.code}],inlineExpression`, tree) as (
     | ICellBlock
     | InlineExpression
   )[];
