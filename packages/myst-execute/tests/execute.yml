@@ -23,7 +23,7 @@ cases:
           children:
             - type: code
               lang: python
-              value: print('abc')
+              value: this will break, but shouldn't be executed
             - type: block
               kind: notebook-code
               data:
@@ -50,7 +50,7 @@ cases:
           children:
             - type: code
               lang: python
-              value: print('abc')
+              value: this will break, but shouldn't be executed
             - type: block
               kind: notebook-code
               data:
