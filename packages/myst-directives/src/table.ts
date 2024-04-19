@@ -283,7 +283,7 @@ export const csvTableDirective: DirectiveSpec = {
         headerCells = parseCSV(data.options.header as string, ctx, data.options as ParseCsvOptions);
       } catch (error) {
         fileError(vfile, 'csv-table directive header must be valid CSV-formatted MyST', {
-          node: select('mystDirectiveOption[name="tags"]', data.node) ?? data.node,
+          node: select('mystDirectiveOption[name="header"]', data.node) ?? data.node,
           ruleId: RuleId.directiveOptionsCorrect,
         });
       }
