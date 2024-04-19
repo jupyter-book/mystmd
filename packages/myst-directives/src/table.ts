@@ -14,6 +14,7 @@ export const tableDirective: DirectiveSpec = {
   name: 'table',
   arg: {
     type: 'myst',
+    doc: 'An optional table caption',
   },
   options: {
     label: {
@@ -62,6 +63,7 @@ export const listTableDirective: DirectiveSpec = {
   name: 'list-table',
   arg: {
     type: 'myst',
+    doc: 'An optional table caption',
   },
   options: {
     label: {
@@ -171,6 +173,12 @@ export const listTableDirective: DirectiveSpec = {
   },
 };
 
+type ParseCsvOptions = {
+  delim?: 'tab' | 'space' | string;
+  keepspace?: boolean;
+  quote?: string;
+  escape: string;
+};
 /**
  * Parse a CSV-table comprising of (inline) MyST Markdown
  *
@@ -178,17 +186,13 @@ export const listTableDirective: DirectiveSpec = {
  * @param opts - directive options
  * @param ctx - directive evaluation context
  */
-function parseCSV(
-  data: string,
-  opts: DirectiveData['options'] | undefined,
-  ctx: DirectiveContext,
-): GenericParent[][] {
-  const delimiter = (opts?.delimiter ?? ',') as string;
+function parseCSV(data: string, ctx: DirectiveContext, opts?: ParseCsvOptions): GenericParent[][] {
+  const delimiter = opts?.delim ?? ',';
   const records = parse(data, {
-    delimiter,
+    delimiter: delimiter === 'tab' ? '\t' : delimiter === 'space' ? ' ' : delimiter,
     ltrim: !opts?.keepspace,
-    escape: (opts?.escape ?? delimiter) as string,
-    quote: (opts?.quote ?? '"') as string,
+    escape: opts?.escape ?? '"',
+    quote: opts?.quote ?? '"',
   });
 
   return records.map((record: any, recordIndex: number) => {
@@ -204,24 +208,36 @@ function parseCSV(
   });
 }
 
+// Documentation is from Docutils
+// License is public domain: https://docutils.sourceforge.io/COPYING.html
 export const csvTableDirective: DirectiveSpec = {
   name: 'csv-table',
+  doc: 'The "csv-table" directive is used to create a table from CSV (comma-separated values) data.',
   arg: {
     type: 'myst',
+    doc: 'An optional table caption',
   },
   options: {
     label: {
       type: String,
       alias: ['name'],
     },
+    // file: {
+    //   type: String,
+    //   doc: 'The local filesystem path to a CSV data file.',
+    //   alias: ['url'],
+    //  Add this to the description for the directive:
+    //  The data may be internal (an integral part of the document) or external (a separate file).
+    // },
     header: {
       type: String,
       // nonnegative int
+      doc: 'Supplemental data for the table header, added independently of and before any header-rows from the main CSV data. Must use the same CSV format as the main CSV data.',
     },
-
     'header-rows': {
       type: Number,
       // nonnegative int
+      doc: 'The number of rows of CSV data to use in the table header. Defaults to 0.',
     },
     class: {
       type: String,
@@ -236,19 +252,24 @@ export const csvTableDirective: DirectiveSpec = {
     },
     delim: {
       type: String,
-    },
-    escape: {
-      type: String,
+      doc: 'The character used to separate data fields. The special values "tab" and "space" are converted to the respective whitespace characters. Defaults to "," (comma)',
     },
     keepspace: {
       type: Boolean,
+      doc: 'Treat whitespace immediately following the delimiter as significant. The default is to ignore such whitespace.',
     },
     quote: {
       type: String,
+      doc: 'The character used to quote fields containing special characters, such as the delimiter, quotes, or new-line characters. Must be a single character, defaults to `"` (a double quote)\\\nFor example, `First cell, "These commas, for example, are escaped", Next cell`',
+    },
+    escape: {
+      type: String,
+      doc: 'A character used to escape the delimiter or quote characters from the CSV parser. Must be a single character, defaults to `"` (a double quote) default is a double quote\\\nFor example, `First cell, "These quotes"", for example, are escaped", Next cell`',
     },
   },
   body: {
     type: String,
+    doc: 'The CSV content',
     required: true,
   },
   run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
@@ -259,7 +280,7 @@ export const csvTableDirective: DirectiveSpec = {
     if (data.options?.header !== undefined) {
       let headerCells: GenericParent[][] = [];
       try {
-        headerCells = parseCSV(data.options.header as string, data.options, ctx);
+        headerCells = parseCSV(data.options.header as string, ctx, data.options as ParseCsvOptions);
       } catch (error) {
         fileError(vfile, 'csv-table directive header must be valid CSV-formatted MyST', {
           node: select('mystDirectiveOption[name="tags"]', data.node) ?? data.node,
@@ -280,7 +301,7 @@ export const csvTableDirective: DirectiveSpec = {
 
     let bodyCells: GenericParent[][] = [];
     try {
-      bodyCells = parseCSV(data.body as string, data.options, ctx);
+      bodyCells = parseCSV(data.body as string, ctx, data.options as ParseCsvOptions);
     } catch (error) {
       fileError(vfile, 'csv-table directive body must be valid CSV-formatted MyST', {
         node: select('mystDirectiveBody', data.node) ?? data.node,
