@@ -3,9 +3,12 @@ import type { Aside } from 'myst-spec-ext';
 import type { FlowContent, ListContent, PhrasingContent } from 'myst-spec';
 import { normalizeLabel } from 'myst-common';
 
-export const asideDirective: DirectiveSpec = {
-  name: 'aside',
-  alias: ['margin', 'sidebar'],
+export const topicDirective: DirectiveSpec = {
+  name: 'topic',
+  arg: {
+    type: 'myst',
+    doc: 'The title of the topic.',
+  },
   options: {
     label: {
       type: String,
@@ -23,12 +26,14 @@ export const asideDirective: DirectiveSpec = {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const aside: Aside = {
       type: 'aside',
-      kind:
-        data.name == 'aside' || data.name == 'margin' ? undefined : (data.name as Aside['kind']),
-      children: data.body as (FlowContent | ListContent | PhrasingContent)[],
+      kind: 'topic',
+      children: [
+        { type: 'paragraph', children: data.arg as GenericNode[] },
+        ...(data.body as GenericNode[]),
+      ] as (FlowContent | ListContent | PhrasingContent)[],
       class: data.options?.class as string | undefined,
       label,
-      identifier
+      identifier,
     };
     return [aside];
   },
