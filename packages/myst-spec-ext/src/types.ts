@@ -119,7 +119,7 @@ export type Admonition = SpecAdmonition & {
   icon?: boolean;
 };
 
-export type Block = SpecBlock & { visibility?: Visibility };
+export type Block = SpecBlock & { kind?: string; visibility?: Visibility };
 export type Code = SpecCode & {
   executable?: boolean;
   filename?: string;

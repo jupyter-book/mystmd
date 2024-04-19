@@ -1,4 +1,4 @@
-import { NotebookCell, RuleId, copyNode, fileWarn } from 'myst-common';
+import { NotebookCell, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
@@ -21,8 +21,8 @@ import type { IUserExpressionMetadata } from '../transforms/inlineExpressions.js
 import { findExpression, metadataSection } from '../transforms/inlineExpressions.js';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
-  const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
-  return { type: 'block', data: copyNode({ type, ...cell.metadata }), children };
+  const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
+  return { type: 'block', kind, data: JSON.parse(JSON.stringify(cell.metadata)), children };
 }
 
 /**

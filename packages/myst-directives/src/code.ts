@@ -3,7 +3,7 @@ import type { Code } from 'myst-spec-ext';
 import { nanoid } from 'nanoid';
 import yaml from 'js-yaml';
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
-import { fileError, fileWarn, normalizeLabel, RuleId } from 'myst-common';
+import { fileError, fileWarn, normalizeLabel, NotebookCell, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import { select } from 'unist-util-select';
 
@@ -226,12 +226,11 @@ export const codeCellDirective: DirectiveSpec = {
     };
     const block: GenericNode = {
       type: 'block',
+      kind: NotebookCell.code,
       label,
       identifier,
       children: [code, output],
-      data: {
-        type: 'notebook-code',
-      },
+      data: {},
     };
 
     const tags = parseTags(data.options?.tags, vfile, data.node);

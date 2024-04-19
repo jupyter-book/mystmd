@@ -602,9 +602,8 @@ cases:
       type: root
       children:
         - type: block
+          kind: notebook-content
           identifier: a
-          data:
-            type: notebook-content
           children:
             - type: heading
               depth: 1
@@ -612,9 +611,8 @@ cases:
                 - type: text
                   value: a section
         - type: block
+          kind: notebook-content
           identifier: a
-          data:
-            type: notebook-content
           children:
             - type: paragraph
               children:
@@ -626,9 +624,9 @@ cases:
       type: root
       children:
         - type: block
+          kind: notebook-code
           identifier: a
           data:
-            type: notebook-code
           children:
             - type: code
               lang: python
