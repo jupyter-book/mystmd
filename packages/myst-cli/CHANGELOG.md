@@ -1,5 +1,42 @@
 # myst-cli
 
+## 1.1.55
+
+### Patch Changes
+
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+- 76903a73: Add gridItem
+- 9b92af5f: Load plugins from all site projects
+- 882eb90d: Use READTHEDOCS_CANONICAL_URL as baseurl if defined
+- Updated dependencies [3b008cbb]
+- Updated dependencies [69457615]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [76903a73]
+- Updated dependencies [f656e572]
+- Updated dependencies [a3e3aa0c]
+- Updated dependencies [e0cd47e3]
+  - myst-transforms@1.3.7
+  - myst-spec-ext@1.3.0
+  - myst-execute@0.0.6
+  - myst-to-jats@1.0.26
+  - myst-ext-exercise@1.0.6
+  - myst-ext-reactive@1.0.6
+  - myst-ext-proof@1.0.9
+  - myst-templates@1.0.18
+  - myst-ext-card@1.0.6
+  - myst-ext-grid@1.0.6
+  - myst-ext-tabs@1.0.6
+  - myst-to-typst@0.0.15
+  - myst-to-docx@1.0.10
+  - myst-to-md@1.0.11
+  - jtex@1.0.17
+  - myst-common@1.3.0
+  - myst-to-tex@1.0.27
+  - myst-config@1.3.0
+  - myst-frontmatter@1.3.0
+  - tex-to-myst@1.0.27
+  - myst-parser@1.4.0
+
 ## 1.1.54
 
 ### Patch Changes

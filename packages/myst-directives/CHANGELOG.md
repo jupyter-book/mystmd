@@ -1,5 +1,24 @@
 # myst-directives
 
+## 1.4.0
+
+### Minor Changes
+
+- f656e572: Add topic directive
+- a3e3aa0c: Add the csv-table directive
+
+### Patch Changes
+
+- 3241933: Add div directive
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+- f13d451d: Correctly place tags in code-block
+- f13d451d: add label to code-cell
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+
 ## 1.3.0
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # myst-spec-ext
 
+## 1.3.0
+
+### Minor Changes
+
+- f656e572: Add topic directive
+
+### Patch Changes
+
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+
 ## 1.2.0
 
 ## 1.1.35

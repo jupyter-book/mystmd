@@ -1,5 +1,18 @@
 # myst-to-docx
 
+## 1.0.10
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- e0cd47e3: Support new-page/page-break tags in tex/typst/docx
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
 ## 1.0.9
 
 ### Patch Changes

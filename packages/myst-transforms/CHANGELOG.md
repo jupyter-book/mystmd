@@ -1,5 +1,19 @@
 # myst-transforms
 
+## 1.3.7
+
+### Patch Changes
+
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+- a3e3aa0c: Support span and div in html parser
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+  - myst-to-html@1.4.0
+
 ## 1.3.6
 
 ### Patch Changes

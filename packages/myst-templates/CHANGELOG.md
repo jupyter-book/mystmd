@@ -1,5 +1,14 @@
 # myst-templates
 
+## 1.0.18
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- Updated dependencies [e0cd47e3]
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
 ## 1.0.17
 
 ### Patch Changes
