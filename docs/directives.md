@@ -6,6 +6,9 @@ description: A full list of the directives included in MyST Markdown by default.
 :::{myst:directive} admonition
 :::
 
+:::{myst:directive} aside
+:::
+
 :::{myst:directive} bibliography
 :::
 
@@ -42,13 +45,7 @@ description: A full list of the directives included in MyST Markdown by default.
 :::{myst:directive} include
 :::
 
-:::{myst:directive} table
-:::
-
 :::{myst:directive} list-table
-:::
-
-:::{myst:directive} aside
 :::
 
 :::{myst:directive} math
@@ -64,4 +61,10 @@ description: A full list of the directives included in MyST Markdown by default.
 :::
 
 :::{myst:directive} output
+:::
+
+:::{myst:directive} table
+:::
+
+:::{myst:directive} topic
 :::
