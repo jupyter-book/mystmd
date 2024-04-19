@@ -344,3 +344,79 @@ cases:
               value: H₂O-CO₂
     latex: |-
       H\textsubscript{2}O-CO\textsubscript{2}
+  - title: block visibility removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          visibility: remove
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block no-tex tag removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - some-tag
+              - no-tex
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block no-tex metadata removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-tex: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block new-page metadata adds newpage
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            new-page: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      \newpage
+      H\textsubscript{2}O-CO\textsubscript{2}
+  - title: block page-break tag adds pagebreak
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - page-break
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      \pagebreak
+      H\textsubscript{2}O-CO\textsubscript{2}
+  - title: block new-page takes priority
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - page-break
+              - new-page
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      \newpage
+      H\textsubscript{2}O-CO\textsubscript{2}

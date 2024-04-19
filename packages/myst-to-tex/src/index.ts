@@ -2,7 +2,7 @@ import type { Root, Parent, Code, Abbreviation } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
-import { RuleId, fileError, toText } from 'myst-common';
+import { RuleId, fileError, toText, getMetadataTags } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
@@ -131,9 +131,10 @@ const handlers: Record<string, Handler> = {
     state.closeBlock(node);
   },
   block(node, state) {
+    const metadataTags = getMetadataTags(node);
     if (state.options.beamer) {
       // Metadata from block `+++ { "outline": true }` is put in data field.
-      if (node.data?.outline) {
+      if (metadataTags.includes('outline')) {
         // For beamer blocks that are outline, write the content as normal
         // This will hopefully just be section and subsection
         state.data.nextHeadingIsFrameTitle = false;
@@ -149,7 +150,12 @@ const handlers: Record<string, Handler> = {
       return;
     }
     if (node.visibility === 'remove') return;
-    if (node.data?.tags?.includes('no-tex')) return;
+    if (metadataTags.includes('no-tex')) return;
+    if (metadataTags.includes('new-page')) {
+      state.write('\\newpage\n');
+    } else if (metadataTags.includes('page-break')) {
+      state.write('\\pagebreak\n');
+    }
     state.renderChildren(node, false);
   },
   blockquote(node, state) {
