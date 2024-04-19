@@ -28,7 +28,7 @@ export const asideDirective: DirectiveSpec = {
       children: data.body as (FlowContent | ListContent | PhrasingContent)[],
       class: data.options?.class as string | undefined,
       label,
-      identifier
+      identifier,
     };
     return [aside];
   },
