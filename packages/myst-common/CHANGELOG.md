@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.3.0
+
+### Patch Changes
+
+- e0cd47e3: Support new-page/page-break tags in tex/typst/docx
+  - myst-frontmatter@1.3.0
+
 ## 1.2.0
 
 ### Minor Changes

@@ -1,5 +1,14 @@
 # myst-execute
 
+## 0.0.6
+
+### Patch Changes
+
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+- 69457615: Update dependencies
+- Updated dependencies [e0cd47e3]
+  - myst-common@1.3.0
+
 ## 0.0.5
 
 ### Patch Changes

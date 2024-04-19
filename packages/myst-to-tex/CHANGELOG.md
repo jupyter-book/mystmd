@@ -1,5 +1,20 @@
 # myst-to-tex
 
+## 1.0.27
+
+### Patch Changes
+
+- e0cd47e3: Support new-page/page-break tags in tex/typst/docx
+- e0cd47e3: Support no-pdf, no-typst alongside no-tex
+- Updated dependencies [3b008cbb]
+- Updated dependencies [69457615]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-ext-proof@1.0.9
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
 ## 1.0.26
 
 ### Patch Changes

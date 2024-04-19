@@ -1,5 +1,14 @@
 # myst-ext-grid
 
+## 1.0.6
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- 76903a73: Add gridItem
+- Updated dependencies [e0cd47e3]
+  - myst-common@1.3.0
+
 ## 1.0.5
 
 ### Patch Changes
