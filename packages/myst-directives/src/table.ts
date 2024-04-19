@@ -7,7 +7,7 @@ import type {
 } from 'myst-common';
 import { fileError, normalizeLabel, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
-import { parse } from 'csv-parse/sync';
+import { parse } from 'csv-parse/browser/esm/sync';
 import { select } from 'unist-util-select';
 
 export const tableDirective: DirectiveSpec = {

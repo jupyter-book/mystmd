@@ -66,6 +66,7 @@ The {myst:directive}`list-table` directive is used to create a table from data i
 The {myst:directive}`csv-table` directive is used to create a table from comma-separated values (CSV) data.
 Block markup and inline markup within cells is supported. Line ends are recognized within quoted cells.
 
+````{myst}
 ```{csv-table} Frozen Delights!
 :header: "Treat", "Quantity", "Description"
 
@@ -74,6 +75,7 @@ Block markup and inline markup within cells is supported. Line ends are recogniz
 it wouldn't be crunchy, now would it?"
 "Gannet Ripple", 1.99, "On a stick!"
 ```
+````
 
 ## <span style="background: -webkit-linear-gradient(20deg, #09009f, #E743D9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Complex Tables with Style</span>
 
