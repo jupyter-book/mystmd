@@ -284,8 +284,8 @@ cases:
       type: root
       children:
         - type: block
-          visibility: hidden
-          childre:
+          visibility: remove
+          children:
             - type: paragraph
               children:
                 - type: text
@@ -299,7 +299,7 @@ cases:
           data:
             tags:
               - 'no-typst'
-          childre:
+          children:
             - type: paragraph
               children:
                 - type: text
@@ -313,7 +313,7 @@ cases:
           data:
             tags:
               - 'no-tex'
-          childre:
+          children:
             - type: paragraph
               children:
                 - type: text
@@ -326,7 +326,7 @@ cases:
         - type: block
           data:
             no-pdf: true
-          childre:
+          children:
             - type: paragraph
               children:
                 - type: text
