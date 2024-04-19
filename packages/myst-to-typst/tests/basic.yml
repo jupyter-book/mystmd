@@ -279,3 +279,87 @@ cases:
             - type: text
               value: '*escaped symbols*'
     typst: '\*escaped symbols\*'
+  - title: block hidden
+    mdast:
+      type: root
+      children:
+        - type: block
+          visibility: remove
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
+  - title: block no-typst
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - 'no-typst'
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
+  - title: block no-tex
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - 'no-tex'
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: '\*escaped symbols\*'
+  - title: block no-pdf
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-pdf: true
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
+  - title: block page break
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - page-break
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: |-
+      #pagebreak(weak: true)
+      \*escaped symbols\*
+  - title: block new page
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            new-page: true
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: |-
+      #pagebreak(weak: true)
+      \*escaped symbols\*

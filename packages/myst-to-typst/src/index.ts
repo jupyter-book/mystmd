@@ -2,9 +2,8 @@ import type { Root, Parent, Code } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
-import { fileError, fileWarn, toText } from 'myst-common';
+import { fileError, fileWarn, toText, getMetadataTags } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
-// import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITypstSerializer, TypstResult, Options, StateData } from './types.js';
 import {
   getLatexImageWidth,
@@ -96,7 +95,13 @@ const handlers: Record<string, Handler> = {
     state.write('\n\n');
   },
   block(node, state) {
+    const metadataTags = getMetadataTags(node);
+    if (metadataTags.includes('no-typst')) return;
+    if (metadataTags.includes('no-pdf')) return;
     if (node.visibility === 'remove') return;
+    if (metadataTags.includes('page-break') || metadataTags.includes('new-page')) {
+      state.write('#pagebreak(weak: true)\n');
+    }
     state.renderChildren(node, 2);
   },
   blockquote(node, state) {

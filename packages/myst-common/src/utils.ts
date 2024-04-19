@@ -181,3 +181,14 @@ export function writeTexLabelledComment(title: string, commands: string[], comme
   const titleBlock = `${start}  ${title}  ${end}\n`;
   return `${titleBlock}${commands.join('\n')}\n`;
 }
+
+export function getMetadataTags(node: GenericNode) {
+  if (!node.data) return [];
+  const tags: string[] = node.data.tags ?? [];
+  Object.entries(node.data).forEach(([key, val]) => {
+    if (val === true || (typeof val === 'string' && val.toLowerCase() === 'true')) {
+      tags.push(key);
+    }
+  });
+  return tags.map((tag) => tag.toLowerCase());
+}
