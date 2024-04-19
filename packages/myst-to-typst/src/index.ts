@@ -95,8 +95,10 @@ const handlers: Record<string, Handler> = {
     state.write('\n\n');
   },
   block(node, state) {
-    if (node.visibility === 'remove') return;
     const metadataTags = getMetadataTags(node);
+    if (metadataTags.includes('no-typst')) return;
+    if (metadataTags.includes('no-pdf')) return;
+    if (node.visibility === 'remove') return;
     if (metadataTags.includes('page-break') || metadataTags.includes('new-page')) {
       state.write('#pagebreak(weak: true)\n');
     }

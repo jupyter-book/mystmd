@@ -151,6 +151,7 @@ const handlers: Record<string, Handler> = {
     }
     if (node.visibility === 'remove') return;
     if (metadataTags.includes('no-tex')) return;
+    if (metadataTags.includes('no-pdf')) return;
     if (metadataTags.includes('new-page')) {
       state.write('\\newpage\n');
     } else if (metadataTags.includes('page-break')) {

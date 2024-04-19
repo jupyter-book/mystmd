@@ -378,6 +378,29 @@ cases:
             - type: text
               value: H₂O-CO₂
     latex: ''
+  - title: block no-pdf metadata removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-pdf: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block no-typst metadata ignored
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-typst: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      H\textsubscript{2}O-CO\textsubscript{2}
   - title: block new-page metadata adds newpage
     mdast:
       type: root

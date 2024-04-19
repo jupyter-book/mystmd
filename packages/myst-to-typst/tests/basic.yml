@@ -291,6 +291,47 @@ cases:
                 - type: text
                   value: '*escaped symbols*'
     typst: ''
+  - title: block no-typst
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - 'no-typst'
+          childre:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
+  - title: block no-tex
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - 'no-tex'
+          childre:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: '\*escaped symbols\*'
+  - title: block no-pdf
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-pdf: true
+          childre:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
   - title: block page break
     mdast:
       type: root
