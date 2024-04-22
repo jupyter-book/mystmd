@@ -154,7 +154,8 @@ export class StaticFileTransformer implements LinkTransformer {
     const [linkFile, ...target] = linkFileWithTarget.split('#');
     const { url, title, dataUrl } =
       selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
-    if (url != null) {
+    // If the link is non-static, and can be resolved locally
+    if (url != null && !url.static) {
       // Replace relative file link with resolved site path
       // TODO: lookup the and resolve the hash as well
       link.url = [url, ...(target || [])].join('#');
