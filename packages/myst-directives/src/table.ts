@@ -198,12 +198,8 @@ function parseCSV(data: string, ctx: DirectiveContext, opts?: ParseCsvOptions): 
   return records.map((record: any, recordIndex: number) => {
     return record.map((cell: string) => {
       const mdast = ctx.parseMyst(cell, recordIndex);
-      const paragraph = select('*:root > paragraph:only-child', mdast);
-
-      if (paragraph === undefined) {
-        throw new Error(`Expected a root element containing a paragraph, found: ${cell}`);
-      }
-      return paragraph;
+      // May be null!
+      return select('*:root > paragraph:only-child', mdast);
     });
   });
 }
@@ -293,7 +289,7 @@ export const csvTableDirective: DirectiveSpec = {
           children: parsedRow.map((parsedCell) => ({
             type: 'tableCell',
             header: true,
-            children: parsedCell.children,
+            children: parsedCell?.children ?? [],
           })),
         })),
       );
@@ -317,7 +313,7 @@ export const csvTableDirective: DirectiveSpec = {
           children: parsedRow.map((parsedCell) => ({
             type: 'tableCell',
             header: headerCount > 0 ? true : undefined,
-            children: parsedCell.children,
+            children: parsedCell?.children ?? [],
           })),
         };
 
