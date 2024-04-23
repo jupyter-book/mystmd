@@ -77,7 +77,7 @@ and results in the following:
 > print("This will show output with no input!")
 > ```
 
-This can be particularly helpful for showing the output of a calculation or plot, which is reproducible in the source code, but not shown to the user.
+This can be particularly helpful for showing the output of a calculation or plot, which is reproducible in the {download}`source code <./notebooks-with-markdown.md>`, but not shown to the user like this `matplotlib` plot:
 
 ```{code-cell} python
 :tags: remove-input
