@@ -36,9 +36,9 @@ export type LocalArticleExportOptions = {
   renderer?: RendererFn;
 };
 
-// These "local article" export functions are not used across the MyST ecosystem.
-// However, they are still maintained as exports for external libraries.
-
+/**
+ * @deprecated Use localArticleExport function with resolved docx export options
+ */
 export async function localArticleToWord(
   session: ISession,
   file: string,
@@ -50,7 +50,7 @@ export async function localArticleToWord(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
+    await legacyCollectExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -70,6 +70,9 @@ export async function localArticleToWord(
   return results;
 }
 
+/**
+ * @deprecated Use localArticleExport function with resolved jats export options
+ */
 export async function localArticleToJats(
   session: ISession,
   file: string,
@@ -81,7 +84,7 @@ export async function localArticleToJats(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)
+    await legacyCollectExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -101,6 +104,9 @@ export async function localArticleToJats(
   return results;
 }
 
+/**
+ * @deprecated Use localArticleExport function with resolved md export options
+ */
 export async function localArticleToMd(
   session: ISession,
   file: string,
@@ -112,7 +118,7 @@ export async function localArticleToMd(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'md', [ExportFormats.md], projectPath, opts)
+    await legacyCollectExportOptions(session, file, 'md', [ExportFormats.md], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -129,6 +135,9 @@ export async function localArticleToMd(
   );
 }
 
+/**
+ * @deprecated Use localArticleExport function with resolved meca export options
+ */
 export async function localProjectToMeca(
   session: ISession,
   file: string,
@@ -140,7 +149,7 @@ export async function localProjectToMeca(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'zip', [ExportFormats.meca], projectPath, opts)
+    await legacyCollectExportOptions(session, file, 'zip', [ExportFormats.meca], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -160,6 +169,9 @@ export async function localProjectToMeca(
   return results;
 }
 
+/**
+ * @deprecated Use localArticleExport function with resolved pdf export options
+ */
 export async function localArticleToPdf(
   session: ISession,
   file: string,
@@ -170,7 +182,7 @@ export async function localArticleToPdf(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const pdfExportOptionsList = (
-    await collectTexExportOptions(
+    await legacyCollectExportOptions(
       session,
       file,
       'pdf',
@@ -226,6 +238,9 @@ export async function localArticleToPdf(
   return results;
 }
 
+/**
+ * @deprecated Use localArticleExport function with resolved tex export options
+ */
 export async function localArticleToTex(
   session: ISession,
   file: string,
@@ -237,7 +252,7 @@ export async function localArticleToTex(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
+    await legacyCollectExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -266,7 +281,7 @@ export async function localArticleToTex(
   return results;
 }
 
-export async function typstExportRunner(
+async function typstExportRunner(
   session: ISession,
   file: string,
   opts: LocalArticleExportOptions,
@@ -297,6 +312,9 @@ export async function typstExportRunner(
   return exportResults;
 }
 
+/**
+ * @deprecated Use localArticleExport function with resolved typst export options
+ */
 export async function localArticleToTypst(
   session: ISession,
   file: string,
@@ -308,7 +326,7 @@ export async function localArticleToTypst(
   if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'typ', [ExportFormats.typst], projectPath, opts)
+    await legacyCollectExportOptions(session, file, 'typ', [ExportFormats.typst], projectPath, opts)
   ).map((exportOptions) => {
     return { ...exportOptions, ...templateOptions };
   });
@@ -331,9 +349,6 @@ export async function localArticleToTypst(
   return results;
 }
 
-/**
- * Legacy exportOptions support to maintain exported functionality
- */
 async function legacyCollectExportOptions(
   session: ISession,
   sourceFile: string,
@@ -379,7 +394,3 @@ async function legacyCollectExportOptions(
   ]);
   return resolveExportListArticles(session, sourceFile, implicitExports, projectPath, opts);
 }
-
-export const collectTexExportOptions = legacyCollectExportOptions;
-export const collectBasicExportOptions = legacyCollectExportOptions;
-export const collectWordExportOptions = legacyCollectExportOptions;
