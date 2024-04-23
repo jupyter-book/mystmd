@@ -14,7 +14,7 @@ The MyST ToC format is defined in `types.ts`, from which a JSON schema definitio
 
 
 ## Example
-Example `myst.yml`
+Example `myst.yml` under the `toc:` key:
 ```yaml
 toc:
   - title: Main
