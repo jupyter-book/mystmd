@@ -7,7 +7,6 @@ import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import {
-  ExportFormats,
   FRONTMATTER_ALIASES,
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
@@ -18,15 +17,12 @@ import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
 import type { LatexResult, PreambleData } from 'myst-to-tex';
-import type { LinkTransformer } from 'myst-transforms';
 import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
 import { frontmatterValidationOpts } from '../../frontmatter.js';
 import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
@@ -35,10 +31,8 @@ import { getFileContent } from '../utils/getFileContent.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import type { ExportWithOutput, ExportOptions, ExportResults, ExportFnOptions } from '../types.js';
+import type { ExportWithOutput, ExportResults, ExportFnOptions } from '../types.js';
 import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
-import { collectTexExportOptions } from '../utils/collectExportOptions.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -379,46 +373,6 @@ export async function runTexZipExport(
   zip.addLocalFolder(texFolder);
   zip.writeZip(zipOutput);
   return { tempFolders: [texFolder] };
-}
-
-export async function localArticleToTex(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-): Promise<ExportResults> {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      let exportResults: ExportResults;
-      if (path.extname(exportOptions.output) === '.zip') {
-        exportResults = await runTexZipExport(session, file, exportOptions, {
-          projectPath,
-          clean: opts.clean,
-          extraLinkTransformers,
-        });
-      } else {
-        exportResults = await runTexExport(session, file, exportOptions, {
-          projectPath,
-          clean: opts.clean,
-          extraLinkTransformers,
-        });
-      }
-      results.tempFolders.push(...exportResults.tempFolders);
-    }),
-    opts.throwOnFailure,
-  );
-  return results;
 }
 
 function hasGlossary(mdast: GenericParent): boolean {
