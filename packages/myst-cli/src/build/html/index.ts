@@ -42,7 +42,7 @@ export async function currentSiteRoutes(
           };
         }),
         // Download other assets
-        ...['favicon.ico', 'robots.txt'].map((asset) => ({
+        ...['favicon.ico', 'robots.txt', 'myst-theme.css'].map((asset) => ({
           url: `${host}/${asset}`,
           path: asset,
         })),
@@ -135,6 +135,10 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   await Promise.all(
     routes.map(async (page) => {
       const resp = await session.fetch(page.url);
+      if (!resp.ok) {
+        session.log.error(`Error fetching ${page.url}`);
+        return;
+      }
       const content = await resp.text();
       writeFileToFolder(path.join(htmlDir, page.path), content);
     }),
