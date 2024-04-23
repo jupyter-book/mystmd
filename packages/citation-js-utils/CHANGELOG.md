@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.1
+
+### Patch Changes
+
+- f90882dc: Avoid repeated `https://doi.org/https://doi.org/...`
+
 ## 1.2.0
 
 ### Minor Changes

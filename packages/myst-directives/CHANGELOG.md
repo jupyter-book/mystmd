@@ -1,5 +1,11 @@
 # myst-directives
 
+## 1.4.2
+
+### Patch Changes
+
+- 59b523c4: Support empty cells in csv-table
+
 ## 1.4.1
 
 ### Patch Changes

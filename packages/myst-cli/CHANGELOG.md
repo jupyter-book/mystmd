@@ -1,5 +1,18 @@
 # myst-cli
 
+## 1.1.56
+
+### Patch Changes
+
+- 327ee1a: Move localArticle export functions to legacy file
+- 7ae68707: Bundle all static files
+- 327ee1a: Move shared cli interfaces to myst-cli
+- 327ee1a: Clarify options across build/process functions
+- Updated dependencies [f90882dc]
+  - citation-js-utils@1.2.1
+  - myst-parser@1.4.2
+  - myst-transforms@1.3.9
+
 ## 1.1.55
 
 ### Patch Changes
