@@ -15,11 +15,8 @@ export function parseTOC(toc: Record<string, unknown>): TOC {
   const ajv = new Ajv.default();
   const validate = ajv.compile(schema);
   if (!validate(toc)) {
-    throw new Error(
-      `The given contents do not form a valid TOC.`,
-    );
+    throw new Error(`The given contents do not form a valid TOC.`);
   }
 
   return toc as unknown as TOC;
 }
-

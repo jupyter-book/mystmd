@@ -2,7 +2,7 @@ export type ParentEntry = {
   children: Entry[];
   title: string;
   class?: string;
-}
+};
 
 /**
  * Entry with a path to a single document with or without the file extension
@@ -20,12 +20,9 @@ export type URLEntry = {
   title?: string;
 } & Partial<ParentEntry>;
 
-
-
 /**
  * Single TOC entry
  */
 export type Entry = FileEntry | URLEntry | ParentEntry;
-
 
 export type TOC = Entry[];

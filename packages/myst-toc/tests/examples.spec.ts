@@ -35,7 +35,6 @@ casesList.forEach(({ title, cases }) => {
       '%s',
       (_, { content, throws, output }) => {
         if (output) {
-
           const toc = parseTOC(content);
           expect(toc).toEqual(output);
         } else if (throws) {
