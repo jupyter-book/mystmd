@@ -43,10 +43,6 @@
     "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node14",
     "build": "npm-run-all -l clean copy:version -p build:cli build:esm"
   },
-  "engines": {
-    "node": ">=16",
-    "npm": ">=6"
-  },
   "devDependencies": {
     "chalk": "^5.2.0",
     "commander": "^10.0.1",
