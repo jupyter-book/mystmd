@@ -1,19 +1,23 @@
 import path from 'node:path';
 import chalk from 'chalk';
 import { EXT_TO_FORMAT, ExportFormats } from 'myst-frontmatter';
+import { findCurrentProjectAndLoad } from '../config.js';
 import { filterPages, loadProjectFromDisk } from '../project/load.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
-import { uniqueArray } from '../utils/uniqueArray.js';
-import { buildHtml } from './html/index.js';
-import { buildSite } from './site/prepare.js';
-import type { ExportWithFormat, ExportWithInputOutput } from './types.js';
-import { localArticleExport } from './utils/localArticleExport.js';
-import { collectExportOptions, resolveExportListArticles } from './utils/collectExportOptions.js';
 import { writeJsonLogs } from '../utils/logging.js';
-import { findCurrentProjectAndLoad } from '../config.js';
+import { uniqueArray } from '../utils/uniqueArray.js';
+import { buildSite } from './site/prepare.js';
+import type { StartOptions } from './site/start.js';
+import type { ExportWithFormat, ExportWithInputOutput } from './types.js';
+import type { RunExportOptions } from './utils/localArticleExport.js';
+import { localArticleExport } from './utils/localArticleExport.js';
+import type { CollectionOptions } from './utils/collectExportOptions.js';
+import { collectExportOptions, resolveExportListArticles } from './utils/collectExportOptions.js';
+import { buildHtml } from './html/index.js';
 
-export type BuildOpts = {
+type FormatBuildOpts = {
+  /** Options to decide what to build */
   site?: boolean;
   docx?: boolean;
   pdf?: boolean;
@@ -25,14 +29,10 @@ export type BuildOpts = {
   html?: boolean;
   all?: boolean;
   force?: boolean;
-  watch?: boolean;
   output?: string;
-  checkLinks?: boolean;
-  strict?: boolean;
-  ci?: boolean;
-  execute?: boolean;
-  maxSizeWebp?: number;
 };
+
+export type BuildOpts = FormatBuildOpts & CollectionOptions & RunExportOptions & StartOptions;
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
   const { docx, pdf, tex, typst, xml, md, meca } = opts;
@@ -52,7 +52,7 @@ export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
  * @param opts.all all exports requested with --all option
  * @param opts.explicit explicit input file was provided
  */
-export function getAllowedExportFormats(opts: BuildOpts & { explicit?: boolean }) {
+export function getAllowedExportFormats(opts: FormatBuildOpts & { explicit?: boolean }) {
   const { docx, pdf, tex, typst, xml, md, meca, all, explicit } = opts;
   const formats = [];
   const any = hasAnyExplicitExportFormat(opts);
@@ -74,7 +74,7 @@ export function getAllowedExportFormats(opts: BuildOpts & { explicit?: boolean }
 /**
  * Return requested formats from CLI options
  */
-export function getRequestedExportFormats(opts: BuildOpts) {
+export function getRequestedExportFormats(opts: FormatBuildOpts) {
   const { docx, pdf, tex, typst, xml, md, meca } = opts;
   const formats = [];
   if (docx) formats.push(ExportFormats.docx);
@@ -87,7 +87,7 @@ export function getRequestedExportFormats(opts: BuildOpts) {
   return formats;
 }
 
-export function exportSite(session: ISession, opts: BuildOpts) {
+export function exportSite(session: ISession, opts: FormatBuildOpts) {
   const { force, site, html, all } = opts;
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
   return site || html || all || (siteConfig && !force && !hasAnyExplicitExportFormat(opts));
@@ -158,7 +158,7 @@ export async function collectAllBuildExportOptions(
             session,
             [file],
             allowedFormats,
-            {},
+            opts,
           );
           // If requested exports were defined in file frontmatter, return those.
           if (fileExportOptionsList.length > 0) {
@@ -194,6 +194,7 @@ export async function collectAllBuildExportOptions(
             return [];
           }
           const exportOptions = await collectExportOptions(session, files, allowedFormats, {
+            ...opts,
             projectPath: projPath,
           });
           return exportOptions;
@@ -211,7 +212,7 @@ function extToKind(ext: string): string {
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { site, all, watch, ci } = opts;
+  const { site, all, watch } = opts;
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   // TODO: generalize and pull this out!
@@ -230,9 +231,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     if (!(site || performSiteBuild)) {
       // Print out the kinds that are filtered
       const kinds = Object.entries(opts)
-        .filter(
-          ([k, v]) => !['force', 'output', 'checkLinks', 'site', 'maxSizeWebp'].includes(k) && v,
-        )
+        .filter(([k, v]) => ['docx', 'pdf', 'tex', 'typst', 'xml', 'md', 'meca'].includes(k) && v)
         .map(([k]) => k);
       session.log.info(
         `📭 No file exports${
@@ -257,7 +256,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     }
   } else {
     session.log.info(`📬 Performing exports:\n   ${exportLogList.join('\n   ')}`);
-    await localArticleExport(session, exportOptionsList, { watch, ci });
+    await localArticleExport(session, exportOptionsList, opts);
   }
   if (performSiteBuild) {
     const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());

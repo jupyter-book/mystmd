@@ -19,9 +19,9 @@ import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import type {
   ExportWithOutput,
-  ExportOptions,
   ExportWithInputOutput,
   ExportWithFormat,
+  RendererFn,
 } from '../types.js';
 import { getExportListFromRawFrontmatter } from '../../frontmatter.js';
 import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
@@ -224,7 +224,7 @@ export function resolveArticles(
   return resolved;
 }
 
-const ALLOWED_EXTENSIONS: Record<ExportFormats, string[]> = {
+export const ALLOWED_EXTENSIONS: Record<ExportFormats, string[]> = {
   [ExportFormats.docx]: ['.doc', '.docx'],
   [ExportFormats.md]: ['.md'],
   [ExportFormats.meca]: ['.zip', '.meca'],
@@ -294,6 +294,12 @@ export function resolveOutput(
   return output;
 }
 
+export type CollectionOptions = {
+  projectPath?: string;
+  disableTemplate?: boolean;
+  renderer?: RendererFn;
+};
+
 /**
  * Pull export lists from files and resolve template values
  *
@@ -305,7 +311,7 @@ async function getExportListFromFile(
   session: ISession,
   sourceFile: string,
   projectPath: string | undefined,
-  opts: ExportOptions,
+  opts: CollectionOptions,
 ): Promise<Export[]> {
   const { disableTemplate } = opts;
   const rawFrontmatter = await getRawFrontmatterFromFile(session, sourceFile, projectPath);
@@ -326,7 +332,7 @@ async function getExportListFromFile(
  * @param formats desired output formats
  * @param exportList list of export objects from a file or defined explicitly
  */
-function resolveExportListFormats(
+export function resolveExportListFormats(
   session: ISession,
   sourceFile: string,
   formats: ExportFormats[],
@@ -353,7 +359,7 @@ export function resolveExportListArticles(
   sourceFile: string,
   exportList: ExportWithFormat[],
   projectPath: string | undefined,
-  opts: ExportOptions,
+  opts: CollectionOptions,
 ): ExportWithOutput[] {
   const { renderer } = opts;
   const vfile = new VFile();
@@ -407,7 +413,7 @@ export async function collectExportOptions(
   session: ISession,
   files: string[],
   formats: ExportFormats[],
-  opts: ExportOptions,
+  opts: CollectionOptions,
 ) {
   const { projectPath } = opts;
   const sourceFiles = [...files];

@@ -8,20 +8,33 @@ import { nanoid } from 'nanoid';
 import { join } from 'node:path';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
+import type { ProcessSiteOptions } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import version from '../../version.js';
 import { createServerLogger } from './logger.js';
-import type { Options } from './prepare.js';
 import { buildSite } from './prepare.js';
 import { installSiteTemplate, getMystTemplate } from './template.js';
 import { watchContent } from './watch.js';
 
 const DEFAULT_START_COMMAND = 'npm run start';
 
+type ServerOptions = {
+  serverPort?: number;
+};
+
+export type StartOptions = ProcessSiteOptions &
+  ServerOptions & {
+    buildStatic?: boolean;
+    headless?: boolean;
+    port?: number;
+    baseurl?: string;
+    keepHost?: boolean;
+  };
+
 /**
  * Creates a content server and a websocket that can reload and log messages to the client.
  */
-export async function startContentServer(session: ISession, opts?: { serverPort?: number }) {
+export async function startContentServer(session: ISession, opts?: ServerOptions) {
   const port = opts?.serverPort ?? (await getPort({ port: portNumbers(3100, 3200) }));
   const app = express();
   app.use(cors());
@@ -80,7 +93,7 @@ export async function startContentServer(session: ISession, opts?: { serverPort?
   return { port, reload, log, stop };
 }
 
-export function warnOnHostEnvironmentVariable(session: ISession, opts?: { keepHost?: boolean }) {
+export function warnOnHostEnvironmentVariable(session: ISession, opts?: StartOptions) {
   if (process.env.HOST && process.env.HOST !== 'localhost') {
     if (opts?.keepHost) {
       session.log.warn(
@@ -103,7 +116,7 @@ export type AppServer = {
 
 export async function startServer(
   session: ISession,
-  opts: Options & { buildStatic?: boolean; baseurl?: string },
+  opts: StartOptions,
 ): Promise<AppServer | undefined> {
   // Ensure we are on the latest version of the configs
   session.reload();
@@ -112,15 +125,8 @@ export async function startServer(
   if (!opts.headless) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session, opts);
-  const { extraLinkTransformers, extraTransforms, defaultTemplate, execute, maxSizeWebp } = opts;
   if (!opts.buildStatic) {
-    watchContent(session, server.reload, {
-      extraLinkTransformers,
-      extraTransforms,
-      defaultTemplate,
-      execute,
-      maxSizeWebp,
-    });
+    watchContent(session, server.reload, opts);
   }
   if (opts.headless) {
     const local = chalk.green(`http://localhost:${server.port}`);

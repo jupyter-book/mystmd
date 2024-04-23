@@ -2,15 +2,17 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { ISession } from '../../session/types.js';
+import type { SiteManifestOptions } from '../site/manifest.js';
 import { getSiteManifest } from '../site/manifest.js';
-import { getMystTemplate } from '../site/template.js';
+import type { StartOptions } from '../site/start.js';
 import { startServer } from '../site/start.js';
+import { getMystTemplate } from '../site/template.js';
 
 export async function currentSiteRoutes(
   session: ISession,
   host: string,
   baseurl: string | undefined,
-  opts?: { defaultTemplate?: string },
+  opts?: SiteManifestOptions,
 ) {
   const manifest = await getSiteManifest(session, opts);
   return (manifest.projects ?? [])
@@ -115,7 +117,7 @@ function get_baseurl(session: ISession): string | undefined {
  * @param session session with logging
  * @param opts configuration options
  */
-export async function buildHtml(session: ISession, opts: any) {
+export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getMystTemplate(session, opts);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
   const baseurl = get_baseurl(session);
