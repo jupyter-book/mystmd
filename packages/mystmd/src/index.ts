@@ -2,10 +2,10 @@
 import 'core-js/actual'; // This adds backwards compatible functionality for various CLIs
 import { Command } from 'commander';
 import version from './version.js';
-import { makeBuildCLI, makeBuildCommand } from './build.js';
-import { makeCleanCLI, makeCleanCommand } from './clean.js';
+import { makeBuildCLI } from './build.js';
+import { makeCleanCLI } from './clean.js';
 import { makeInitCLI, addDefaultCommand } from './init.js';
-import { makeStartCLI, makeStartCommand } from './site.js';
+import { makeStartCLI } from './site.js';
 import { makeTemplatesCLI } from './templates.js';
 
 const program = new Command();
@@ -19,5 +19,3 @@ program.version(`v${version}`, '-v, --version', 'Print the current version of my
 program.option('-d, --debug', 'Log out any errors to the console');
 addDefaultCommand(program);
 program.parse(process.argv);
-
-export { makeBuildCommand, makeCleanCommand, makeStartCommand };

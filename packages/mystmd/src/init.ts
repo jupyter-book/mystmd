@@ -1,10 +1,9 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { Session, init } from 'myst-cli';
+import { Session, init, makeSiteOption } from 'myst-cli';
 import { clirun } from './clirun.js';
 import {
   makeProjectOption,
-  makeSiteOption,
   makeWriteTocOption,
   makeGithubPagesOption,
   makeGithubCurvenoteOption,

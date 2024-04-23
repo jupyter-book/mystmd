@@ -14,15 +14,15 @@ import {
   TEMPLATE_YML,
 } from 'myst-templates';
 import type { ISession } from 'myst-cli';
-import { Session } from 'myst-cli';
 import {
+  Session,
   makeDocxOption,
   makeForceOption,
   makePdfOption,
   makeSiteOption,
   makeTexOption,
   makeTypstOption,
-} from './options.js';
+} from 'myst-cli';
 import { TemplateKind } from 'myst-common';
 
 type TemplateKinds = {
