@@ -39,7 +39,7 @@ export function makeTemplatesOption() {
   ).default(false);
 }
 
-export function makeCleanCLI(program: Command) {
+export function makeCleanCommand() {
   const command = new Command('clean')
     .description('Remove exports, temp files and installed templates')
     .argument('[files...]', 'list of files to clean corresponding outputs')
@@ -61,7 +61,11 @@ export function makeCleanCLI(program: Command) {
     .addOption(
       makeAllOption('Delete all exports, site content, templates, and temp files created by MyST'),
     )
-    .addOption(makeYesOption())
-    .action(clirun(Session, clean, program));
+    .addOption(makeYesOption());
+  return command;
+}
+
+export function makeCleanCLI(program: Command) {
+  const command = makeCleanCommand().action(clirun(Session, clean, program));
   return command;
 }

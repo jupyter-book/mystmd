@@ -10,7 +10,7 @@ import {
   makeMaxSizeWebpOption,
 } from './options.js';
 
-export function makeStartCLI(program: Command) {
+export function makeStartCommand() {
   const command = new Command('start')
     .description('Start the current project as a website')
     .addOption(makeExecuteOption('Execute Notebooks'))
@@ -18,7 +18,11 @@ export function makeStartCLI(program: Command) {
     .addOption(makeHeadlessOption())
     .addOption(makePortOption())
     .addOption(makeServerPortOption())
-    .addOption(makeMaxSizeWebpOption())
-    .action(clirun(Session, startServer, program));
+    .addOption(makeMaxSizeWebpOption());
+  return command;
+}
+
+export function makeStartCLI(program: Command) {
+  const command = makeStartCommand().action(clirun(Session, startServer, program));
   return command;
 }

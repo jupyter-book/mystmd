@@ -22,7 +22,7 @@ import {
   makeMaxSizeWebpOption,
 } from './options.js';
 
-export function makeBuildCLI(program: Command) {
+export function makeBuildCommand() {
   const command = new Command('build')
     .description('Build PDF, LaTeX, Word and website exports from MyST files')
     .argument('[files...]', 'list of files to export')
@@ -43,7 +43,11 @@ export function makeBuildCLI(program: Command) {
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())
     .addOption(makeCIOption())
-    .addOption(makeMaxSizeWebpOption())
-    .action(clirun(Session, build, program));
+    .addOption(makeMaxSizeWebpOption());
+  return command;
+}
+
+export function makeBuildCLI(program: Command) {
+  const command = makeBuildCommand().action(clirun(Session, build, program));
   return command;
 }
