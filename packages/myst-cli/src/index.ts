@@ -1,4 +1,5 @@
 export * from './build/index.js';
+export * from './cli/index.js';
 export * from './config.js';
 export * from './frontmatter.js';
 export * from './plugins.js';

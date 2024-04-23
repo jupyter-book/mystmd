@@ -1,19 +1,14 @@
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats, FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import { FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { writeMd } from 'myst-to-md';
-import type { LinkTransformer } from 'myst-transforms';
 import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
 import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
-import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
-import type { ExportWithOutput, ExportOptions, ExportFnOptions } from '../types.js';
+import type { ExportWithOutput, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { getFileContent } from '../utils/getFileContent.js';
 
@@ -52,32 +47,4 @@ export async function runMdExport(
   session.log.info(toc(`📑 Exported MD in %s, copying to ${output}`));
   writeFileToFolder(output, mdOut.result as string);
   return { tempFolders: [] };
-}
-
-export async function localArticleToMd(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-) {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'md', [ExportFormats.md], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      await runMdExport(session, file, exportOptions, {
-        projectPath,
-        clean: opts.clean,
-        extraLinkTransformers,
-      });
-    }),
-    opts.throwOnFailure,
-  );
 }

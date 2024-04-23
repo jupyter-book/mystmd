@@ -5,8 +5,9 @@ import type { LinkTransformer } from 'myst-transforms';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import type { RendererData } from '../transforms/types.js';
+import type { TransformFn } from '../process/mdast.js';
 
-type RendererFn = (
+export type RendererFn = (
   session: ISession,
   data: RendererData,
   doc: RendererDoc,
@@ -31,25 +32,11 @@ export type ExportWithInputOutput = ExportWithOutput & {
   $project?: string;
 };
 
-export type ExportOptions = {
-  filename?: string;
-  template?: string | null;
-  disableTemplate?: boolean;
-  templateOptions?: Record<string, any>;
-  clean?: boolean;
-  glossaries?: boolean;
-  zip?: boolean;
-  projectPath?: string;
-  watch?: boolean;
-  throwOnFailure?: boolean;
-  ci?: boolean;
-  renderer?: RendererFn;
-};
-
 export type ExportFnOptions = {
   projectPath?: string;
   clean?: boolean;
   extraLinkTransformers?: LinkTransformer[];
+  extraTransforms?: TransformFn[];
   ci?: boolean;
 };
 

@@ -11,3 +11,4 @@ export * from './html/index.js';
 export * from './meca/index.js';
 export * from './jats/index.js';
 export * from './typst.js';
+export * from './legacy.js';

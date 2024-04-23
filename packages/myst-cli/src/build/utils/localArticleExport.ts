@@ -6,7 +6,7 @@ import { loadProjectFromDisk } from '../../project/index.js';
 import type { ISession } from '../../session/index.js';
 import type {
   ExportFn,
-  ExportOptions,
+  ExportFnOptions,
   ExportResults,
   ExportWithInputOutput,
   ExportWithOutput,
@@ -22,13 +22,18 @@ import { runMecaExport } from '../meca/index.js';
 import { runMdExport } from '../md/index.js';
 import { selectors, watch as watchReducer } from '../../store/index.js';
 
+export type RunExportOptions = ExportFnOptions & {
+  watch?: boolean;
+  throwOnFailure?: boolean;
+};
+
 async function runExportAndWatch(
   watch: boolean,
   exportFn: ExportFn,
   session: ISession,
   $file: string,
   exportOptions: ExportWithOutput,
-  opts?: Options,
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   let results = await exportFn(session, $file, exportOptions, opts);
   if (watch) {
@@ -66,17 +71,12 @@ async function runExportAndWatch(
   return results;
 }
 
-type Options = Pick<
-  ExportOptions,
-  'clean' | 'projectPath' | 'throwOnFailure' | 'glossaries' | 'watch' | 'ci'
->;
-
 async function _localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Options,
+  opts: RunExportOptions,
 ) {
-  const { clean, projectPath, watch, ci } = opts;
+  const { projectPath, watch } = opts;
   const errors = await resolveAndLogErrors(
     session,
     exportOptionsList.map(async (exportOptionsWithFile) => {
@@ -134,9 +134,8 @@ async function _localArticleExport(
         };
       }
       await runExportAndWatch(!!watch, exportFn, sessionClone, $file, exportOptions, {
+        ...opts,
         projectPath: fileProjectPath,
-        clean,
-        ci,
       });
     }),
     opts.throwOnFailure,
@@ -147,7 +146,7 @@ async function _localArticleExport(
 export async function localArticleExport(
   session: ISession,
   exportOptionsList: ExportWithInputOutput[],
-  opts: Options,
+  opts: RunExportOptions,
 ) {
   // We must perform other exports before MECA, since MECA includes the others
   const errors = await _localArticleExport(

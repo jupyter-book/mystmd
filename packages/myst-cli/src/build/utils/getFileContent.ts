@@ -5,6 +5,7 @@ import type { LinkTransformer } from 'myst-transforms';
 import { combineProjectCitationRenderers } from '../../process/citations.js';
 import { loadFile, selectFile } from '../../process/file.js';
 import { loadIntersphinx } from '../../process/loadIntersphinx.js';
+import type { TransformFn } from '../../process/mdast.js';
 import { postProcessMdast, transformMdast } from '../../process/mdast.js';
 import { loadProject, selectPageReferenceStates } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
@@ -17,12 +18,14 @@ export async function getFileContent(
     projectPath,
     imageExtensions,
     extraLinkTransformers,
+    extraTransforms,
     titleDepths,
     preFrontmatters,
   }: {
     projectPath?: string;
     imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
+    extraTransforms?: TransformFn[];
     titleDepths?: number | (number | undefined)[];
     preFrontmatters?: Record<string, any> | (Record<string, any> | undefined)[];
   },
@@ -64,6 +67,7 @@ export async function getFileContent(
         minifyMaxCharacters: 0,
         index: project.index,
         titleDepth,
+        extraTransforms,
       });
     }),
   );

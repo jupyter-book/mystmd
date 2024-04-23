@@ -354,6 +354,10 @@ function resolveSiteAction(
   };
 }
 
+export type SiteManifestOptions = {
+  defaultTemplate?: string;
+};
+
 /**
  * Build site manifest from local redux state
  *
@@ -362,7 +366,7 @@ function resolveSiteAction(
  */
 export async function getSiteManifest(
   session: ISession,
-  opts?: { defaultTemplate?: string },
+  opts?: SiteManifestOptions,
 ): Promise<SiteManifest> {
   const state = session.store.getState() as RootState;
   const siteConfig = selectors.selectCurrentSiteConfig(state);

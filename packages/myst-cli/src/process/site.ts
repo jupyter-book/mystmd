@@ -9,6 +9,7 @@ import type { Node } from 'myst-spec';
 import type { LinkTransformer, ReferenceState } from 'myst-transforms';
 import { select } from 'unist-util-select';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
+import type { SiteManifestOptions } from '../build/site/manifest.js';
 import {
   getSiteManifest,
   resolvePageDownloads,
@@ -38,23 +39,27 @@ const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
 ];
 
-type ProcessOptions = {
+export type ProcessFileOptions = {
+  imageExtensions?: ImageExtensions[];
+  imageWriteFolder?: string;
+  imageAltOutputFolder?: string;
+  extraLinkTransformers?: LinkTransformer[];
+  extraTransforms?: TransformFn[];
+  /** Execute flag for notebooks */
+  execute?: boolean;
+  maxSizeWebp?: number;
+};
+
+export type ProcessProjectOptions = ProcessFileOptions & {
   watchMode?: boolean;
   writeToc?: boolean;
   writeFiles?: boolean;
-  strict?: boolean;
-  checkLinks?: boolean;
-  imageWriteFolder?: string;
-  imageAltOutputFolder?: string;
-  imageExtensions?: ImageExtensions[];
-  maxSizeWebp?: number;
-  extraLinkTransformers?: LinkTransformer[];
-  extraTransforms?: TransformFn[];
-  defaultTemplate?: string;
   reloadProject?: boolean;
-  /** Execute flag for notebooks */
-  execute?: boolean;
+  checkLinks?: boolean;
+  strict?: boolean;
 };
+
+export type ProcessSiteOptions = ProcessProjectOptions & SiteManifestOptions;
 
 /**
  * Trigger a file-changed notification, and clear the file from the cache
@@ -71,7 +76,7 @@ export function changeFile(session: ISession, path: string, eventType: string) {
   delete cache.$citationRenderers[path];
 }
 
-export async function writeSiteManifest(session: ISession, opts?: ProcessOptions) {
+export async function writeSiteManifest(session: ISession, opts?: SiteManifestOptions) {
   const configPath = join(session.sitePath(), 'config.json');
   session.log.debug('Writing site config.json');
   const siteManifest = await getSiteManifest(session, opts);
@@ -215,6 +220,9 @@ export async function fastProcessFile(
     pageSlug,
     projectPath,
     projectSlug,
+    imageExtensions,
+    imageWriteFolder,
+    imageAltOutputFolder,
     extraLinkTransformers,
     extraTransforms,
     defaultTemplate,
@@ -225,19 +233,15 @@ export async function fastProcessFile(
     pageSlug: string;
     projectPath: string;
     projectSlug?: string;
-    extraLinkTransformers?: LinkTransformer[];
-    extraTransforms?: TransformFn[];
-    defaultTemplate?: string;
-    execute?: boolean;
-    maxSizeWebp?: number;
-  },
+  } & ProcessFileOptions &
+    SiteManifestOptions,
 ) {
   const toc = tic();
   await loadFile(session, file, projectPath);
   const { project, pages } = await loadProject(session, projectPath);
   await transformMdast(session, {
     file,
-    imageExtensions: WEB_IMAGE_EXTENSIONS,
+    imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
     projectPath,
     projectSlug,
     pageSlug,
@@ -255,9 +259,9 @@ export async function fastProcessFile(
   const { mdast, frontmatter } = castSession(session).$getMdast(file)?.post ?? {};
   if (mdast && frontmatter) {
     await finalizeMdast(session, mdast, frontmatter, file, {
-      imageWriteFolder: session.publicPath(),
-      imageAltOutputFolder: '/',
-      imageExtensions: WEB_IMAGE_EXTENSIONS,
+      imageWriteFolder: imageWriteFolder ?? session.publicPath(),
+      imageAltOutputFolder: imageAltOutputFolder ?? '/',
+      imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
       optimizeWebp: true,
       processThumbnail: true,
       maxSizeWebp,
@@ -271,7 +275,7 @@ export async function fastProcessFile(
 export async function processProject(
   session: ISession,
   siteProject: Partial<SiteProject>,
-  opts?: ProcessOptions,
+  opts?: ProcessProjectOptions,
 ): Promise<LocalProject> {
   const toc = tic();
   const { log } = session;
@@ -280,12 +284,15 @@ export async function processProject(
     imageAltOutputFolder,
     imageExtensions,
     extraLinkTransformers,
+    extraTransforms,
     watchMode,
     writeToc,
     writeFiles = true,
     reloadProject,
     execute,
     maxSizeWebp,
+    checkLinks,
+    strict,
   } = opts || {};
   if (!siteProject.path) {
     const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
@@ -316,14 +323,14 @@ export async function processProject(
     pages.map((page) =>
       transformMdast(session, {
         file: page.file,
-        imageExtensions: usedImageExtensions,
         projectPath: project.path,
         projectSlug: siteProject.slug,
         pageSlug: page.slug,
+        imageExtensions: usedImageExtensions,
         watchMode,
-        extraTransforms: opts?.extraTransforms,
-        index: project.index,
         execute,
+        extraTransforms,
+        index: project.index,
       }),
     ),
   );
@@ -333,7 +340,7 @@ export async function processProject(
     pages.map((page) =>
       postProcessMdast(session, {
         file: page.file,
-        checkLinks: opts?.checkLinks || opts?.strict,
+        checkLinks: checkLinks || strict,
         pageReferenceStates,
         extraLinkTransformers,
       }),
@@ -369,7 +376,7 @@ export async function processProject(
   return project;
 }
 
-export async function processSite(session: ISession, opts?: ProcessOptions): Promise<boolean> {
+export async function processSite(session: ISession, opts?: ProcessSiteOptions): Promise<boolean> {
   try {
     reloadAllConfigsForCurrentSite(session);
   } catch (error) {

@@ -1,26 +1,20 @@
 import chokidar from 'chokidar';
+import chalk from 'chalk';
 import { join, extname, basename } from 'node:path';
 import type { SiteProject } from 'myst-config';
-import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
+import type { ProcessSiteOptions } from '../../process/site.js';
 import { changeFile, fastProcessFile, processSite } from '../../process/site.js';
-import type { TransformFn } from '../../process/mdast.js';
 import { selectors, watch } from '../../store/index.js';
 import { KNOWN_FAST_BUILDS } from '../../utils/resolveExtension.js';
-import chalk from 'chalk';
 
 // TODO: allow this to work from other paths
 
-type TransformOptions = {
-  extraLinkTransformers?: LinkTransformer[];
-  extraTransforms?: TransformFn[];
-  defaultTemplate?: string;
-  reloadProject?: boolean;
-  execute?: boolean;
-  maxSizeWebp?: number;
-};
-
-function watchConfigAndPublic(session: ISession, serverReload: () => void, opts: TransformOptions) {
+function watchConfigAndPublic(
+  session: ISession,
+  serverReload: () => void,
+  opts: ProcessSiteOptions,
+) {
   const watchFiles = ['public'];
   const siteConfigFile = selectors.selectCurrentSiteFile(session.store.getState());
   if (siteConfigFile) watchFiles.push(siteConfigFile);
@@ -56,7 +50,7 @@ async function processorFn(
   eventType: string,
   siteProject: SiteProject | null,
   serverReload: () => void,
-  opts: TransformOptions,
+  opts: ProcessSiteOptions,
 ) {
   if (file) {
     changeFile(session, file, eventType);
@@ -77,7 +71,7 @@ async function processorFn(
     } else {
       session.log.info('💥 Triggered full site rebuild');
     }
-    await processSite(session, { reloadProject, ...opts });
+    await processSite(session, { ...opts, reloadProject });
     serverReload();
     return;
   }
@@ -128,7 +122,7 @@ function watchProcessor(
   session: ISession,
   siteProject: SiteProject | null,
   serverReload: () => void,
-  opts: TransformOptions,
+  opts: ProcessSiteOptions,
 ) {
   return async (eventType: string, file: string) => {
     if (file.startsWith('_build') || file.startsWith('.') || file.includes('.ipynb_checkpoints')) {
@@ -147,15 +141,19 @@ function watchProcessor(
       // If reload(s) were requested during previous build, just reload everything once.
       session.store.dispatch(watch.actions.markReloadRequested(false));
       await processorFn(session, null, eventType, null, serverReload, {
-        reloadProject: true,
         ...opts,
+        reloadProject: true,
       });
     }
     session.store.dispatch(watch.actions.markReloading(false));
   };
 }
 
-export function watchContent(session: ISession, serverReload: () => void, opts: TransformOptions) {
+export function watchContent(
+  session: ISession,
+  serverReload: () => void,
+  opts: ProcessSiteOptions,
+) {
   const state = session.store.getState();
   const siteConfig = selectors.selectCurrentSiteConfig(state);
   if (!siteConfig?.projects) return;
