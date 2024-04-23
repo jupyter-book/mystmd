@@ -4,7 +4,6 @@ import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import {
-  ExportFormats,
   FRONTMATTER_ALIASES,
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
@@ -12,26 +11,21 @@ import {
 } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
-import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
 import { fileError, fileWarn, RuleId, TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
 import { frontmatterValidationOpts } from '../../frontmatter.js';
 import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
 import type { RendererData } from '../../transforms/types.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
-import type { ExportFnOptions, ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
+import type { ExportFnOptions, ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
-import { collectWordExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 import { createFooter } from './footers.js';
 import { createArticleTitle, createReferenceTitle } from './titles.js';
 
@@ -144,35 +138,4 @@ export async function runWordExport(
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
   session.log.info(toc(`📄 Exported DOCX in %s, copying to ${output}`));
   return { tempFolders: [imageWriteFolder] };
-}
-
-export async function localArticleToWord(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-): Promise<ExportResults> {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      const exportResult = await runWordExport(session, file, exportOptions, {
-        projectPath,
-        clean: opts.clean,
-        extraLinkTransformers,
-      });
-      results.tempFolders.push(...exportResult.tempFolders);
-    }),
-    opts.throwOnFailure,
-  );
-  return results;
 }

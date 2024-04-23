@@ -6,14 +6,11 @@ import mime from 'mime-types';
 import { copyFileMaintainPath, copyFileToFolder, isDirectory, tic } from 'myst-cli-utils';
 import { RuleId, fileError, fileWarn } from 'myst-common';
 import { ExportFormats } from 'myst-frontmatter';
-import type { LinkTransformer } from 'myst-transforms';
 import { selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
 import { createManifestXml, type ManifestItem } from 'meca';
-import { findCurrentProjectAndLoad } from '../../config.js';
 import { runJatsExport } from '../jats/single.js';
 import { loadFile } from '../../process/file.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import { writeTocFromProject } from '../../project/toToc.js';
 import type { LocalProjectPage } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
@@ -21,10 +18,9 @@ import { castSession } from '../../session/cache.js';
 import { selectors } from '../../store/index.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
-import type { ExportWithOutput, ExportOptions, ExportFnOptions, ExportResults } from '../types.js';
+import type { ExportWithOutput, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
-import { collectBasicExportOptions, collectExportOptions } from '../utils/collectExportOptions.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
+import { collectExportOptions } from '../utils/collectExportOptions.js';
 
 function mediaTypeFromFile(file: string) {
   const mediaType = mime.lookup(file);
@@ -355,35 +351,4 @@ export async function runMecaExport(
   logMessagesFromVFile(session, vfile);
   session.log.info(toc(`🤐 MECA output copied and zipped to ${output} in %s`));
   return { tempFolders: [] };
-}
-
-export async function localProjectToMeca(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-) {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'zip', [ExportFormats.meca], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      const exportResults = await runMecaExport(session, file, exportOptions, {
-        projectPath,
-        clean: opts.clean,
-        extraLinkTransformers,
-      });
-      results.tempFolders.push(...exportResults.tempFolders);
-    }),
-    opts.throwOnFailure,
-  );
-  return results;
 }

@@ -1,23 +1,18 @@
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats, FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
+import { FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { writeJats } from 'myst-to-jats';
-import type { LinkTransformer } from 'myst-transforms';
 import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
 import { combineCitationRenderers } from '../../process/citations.js';
 import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
-import type { ExportWithOutput, ExportOptions, ExportFnOptions, ExportResults } from '../types.js';
+import type { ExportWithOutput, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
-import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 /**
  * Build a MyST project as JATS XML
@@ -97,35 +92,4 @@ export async function runJatsExport(
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));
   writeFileToFolder(output, jats.result as string);
   return { tempFolders: [] };
-}
-
-export async function localArticleToJats(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-) {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      const exportResults = await runJatsExport(session, file, exportOptions, {
-        projectPath,
-        clean: opts.clean,
-        extraLinkTransformers,
-      });
-      results.tempFolders.push(...exportResults.tempFolders);
-    }),
-    opts.throwOnFailure,
-  );
-  return results;
 }

@@ -7,7 +7,6 @@ import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import {
-  ExportFormats,
   FRONTMATTER_ALIASES,
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
@@ -18,17 +17,14 @@ import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTypst from 'myst-to-typst';
 import type { TypstResult } from 'myst-to-typst';
-import type { LinkTransformer } from 'myst-transforms';
 import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { TypstTemplateImports } from 'jtex';
 import { VFile } from 'vfile';
 import { mergeTypstTemplateImports, renderTemplate, renderTypstImports } from 'jtex';
-import { findCurrentProjectAndLoad } from '../config.js';
 import { frontmatterValidationOpts } from '../frontmatter.js';
 import { finalizeMdast } from '../process/mdast.js';
-import { loadProjectFromDisk } from '../project/load.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
@@ -38,10 +34,8 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { createTempFolder } from '../utils/createTempFolder.js';
 import version from '../version.js';
 import { cleanOutput } from './utils/cleanOutput.js';
-import type { ExportWithOutput, ExportOptions, ExportResults, ExportFnOptions } from './types.js';
+import type { ExportWithOutput, ExportResults, ExportFnOptions } from './types.js';
 import { writeBibtexFromCitationRenderers } from './utils/bibtex.js';
-import { collectTexExportOptions } from './utils/collectExportOptions.js';
-import { resolveAndLogErrors } from './utils/resolveAndLogErrors.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TYPST_IMAGE_EXTENSIONS = [
@@ -417,69 +411,4 @@ export async function runTypstPdfExport(
   if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
   fs.copyFileSync(exportOptions.output.replace('.typ', '.pdf'), pdfOutput);
   return { tempFolders: [typFolder] };
-}
-
-export async function localArticleToTypst(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-): Promise<ExportResults> {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'typ', [ExportFormats.typst], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      const exportResults = await typstExportRunner(
-        session,
-        file,
-        opts,
-        exportOptions,
-        projectPath,
-        extraLinkTransformers,
-      );
-      results.tempFolders.push(...exportResults.tempFolders);
-    }),
-    opts.throwOnFailure,
-  );
-  return results;
-}
-
-export async function typstExportRunner(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  exportOptions: ExportWithOutput,
-  projectPath?: string,
-  extraLinkTransformers?: LinkTransformer[],
-): Promise<ExportResults> {
-  let exportResults: ExportResults;
-  if (path.extname(exportOptions.output) === '.zip') {
-    exportResults = await runTypstZipExport(session, file, exportOptions, {
-      projectPath,
-      clean: opts.clean,
-      extraLinkTransformers,
-    });
-  } else if (path.extname(exportOptions.output) === '.pdf') {
-    exportResults = await runTypstPdfExport(session, file, exportOptions, {
-      projectPath,
-      clean: opts.clean,
-      extraLinkTransformers,
-    });
-  } else {
-    exportResults = await runTypstExport(session, file, exportOptions, {
-      projectPath,
-      clean: opts.clean,
-      extraLinkTransformers,
-    });
-  }
-  return exportResults;
 }
