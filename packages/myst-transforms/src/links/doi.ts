@@ -4,7 +4,6 @@ import type { VFile } from 'vfile';
 import type { Link, LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty } from './utils.js';
 
-const DOI_ORG = 'https://doi.org/';
 const TRANSFORM_SOURCE = 'LinkTransform:DOITransformer';
 
 export class DOITransformer implements LinkTransformer {
@@ -21,8 +20,8 @@ export class DOITransformer implements LinkTransformer {
 
   transform(link: Link, file: VFile): boolean {
     const urlSource = link.urlSource || link.url;
-    const doiString = doi.normalize(urlSource);
-    if (!doiString) {
+    const doiUrl = doi.buildUrl(urlSource);
+    if (!doiUrl) {
       fileError(file, `DOI is not valid: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
@@ -30,8 +29,8 @@ export class DOITransformer implements LinkTransformer {
       });
       return false;
     }
-    link.url = `${DOI_ORG}${doiString}`;
-    link.data = { doi: doiString };
+    link.url = doiUrl;
+    link.data = { doi: doi.normalize(doiUrl) };
     link.internal = false;
     updateLinkTextIfEmpty(link, '');
     return true;

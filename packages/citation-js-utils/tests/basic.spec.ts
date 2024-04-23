@@ -40,6 +40,7 @@ describe('Test reference rendering', () => {
     const data = parseBibTeX(src);
     const citations = await getCitationRenderers(data);
     expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_OTHER_FIELD);
+    expect(citations['cury2020sparse'].getURL()).toBe(`https://doi.org/${TEST_DOI_IN_OTHER_FIELD}`);
   });
 });
 

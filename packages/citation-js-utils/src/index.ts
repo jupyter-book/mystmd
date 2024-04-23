@@ -1,4 +1,5 @@
 import { Cite } from '@citation-js/core';
+import { doi as doiUtils } from 'doi-utils';
 import { clean as cleanCSL } from '@citation-js/core/lib/plugins/input/csl.js';
 import sanitizeHtml from 'sanitize-html';
 
@@ -121,7 +122,7 @@ export type CitationRenderer = Record<
 >;
 
 function doiUrl(doi?: string) {
-  return doi ? `https://doi.org/${doi}` : undefined;
+  return doi ? doiUtils.buildUrl(doi) : undefined;
 }
 
 function wrapWithAnchorTag(url: string, text?: string) {
