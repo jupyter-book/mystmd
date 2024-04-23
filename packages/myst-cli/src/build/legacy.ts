@@ -36,8 +36,8 @@ export type LocalArticleExportOptions = {
   renderer?: RendererFn;
 };
 
-// These "local article" export functions are unused across the MyST ecosystem.
-// However, they are still maintained as exports external libraries.
+// These "local article" export functions are not used across the MyST ecosystem.
+// However, they are still maintained as exports for external libraries.
 
 export async function localArticleToWord(
   session: ISession,
