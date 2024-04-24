@@ -32,23 +32,25 @@ export function frontmatterValidationOpts(
   };
 }
 /**
- * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
+ * Get page frontmatter from mdast tree
  *
  * @param session
- * @param path - project path for loading project config/frontmatter
- * @param tree - mdast tree already loaded from 'file'
- * @param file - file source for mdast 'tree' - this is only used for logging; tree is not reloaded
- * @param removeNode - if true, mdast tree will be mutated to remove frontmatter once read
+ * @param tree - mdast tree already loaded
+ * @param vfile - vfile used for logging
+ * @param preFrontmatter - incoming frontmatter for the page that is not from the project or in the tree
+ * @param keepTitleNode - do not remove leading H1 even if it is lifted as title
  */
 export function getPageFrontmatter(
   session: ISession,
   tree: GenericParent,
   vfile: VFile,
   preFrontmatter?: Record<string, any>,
+  keepTitleNode?: boolean,
 ): { frontmatter: PageFrontmatter; identifiers: string[] } {
   const { frontmatter: rawPageFrontmatter, identifiers } = getFrontmatter(vfile, tree, {
     propagateTargets: true,
     preFrontmatter,
+    keepTitleNode,
   });
   unnestKernelSpec(rawPageFrontmatter);
   const pageFrontmatter = validatePageFrontmatter(

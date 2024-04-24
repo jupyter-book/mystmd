@@ -163,7 +163,7 @@ export async function transformMdast(
   // Import additional content from mdast or other files
   frontmatterPartsTransform(session, file, mdast, frontmatter);
   importMdastFromJson(session, file, mdast);
-  await includeFilesTransform(session, file, mdast, vfile);
+  await includeFilesTransform(session, file, mdast, frontmatter, vfile);
   rawDirectiveTransform(mdast, vfile);
   // This needs to come before basic transformations since it may add labels to blocks
   liftCodeMetadataToBlock(session, vfile, mdast);

@@ -20,6 +20,13 @@ type Options = {
    * is defined.
    */
   preFrontmatter?: Record<string, any>;
+  /**
+   * By default, if the page starts with an H1 heading and has no title in the
+   * frontmatter, the heading will become the title and be removed.
+   * If `keepTitleNode` is true, the heading will still become the title
+   * but the node will not be removed.
+   */
+  keepTitleNode?: boolean;
 };
 
 export function getFrontmatter(
@@ -70,7 +77,7 @@ export function getFrontmatter(
   if (nextNodeIsH1 && !titleNull) {
     const title = toText(nextNode.children);
     // Only remove the title if it is the same
-    if (frontmatter.title && frontmatter.title === title) {
+    if (frontmatter.title && frontmatter.title === title && !opts.keepTitleNode) {
       (nextNode as any).type = '__delete__';
       frontmatter.content_includes_title = false;
       // If this has a label add it to the page identifiers for reference resolution
