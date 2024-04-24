@@ -22,18 +22,21 @@ export type Options = {
  *
  * For now, this only includes math macros and abbreviations; all other
  * include frontmatter is ignored.
+ *
+ * If values are defined on both the page and the include file,
+ * values from the include file will take priority.
  */
 function updateFrontmatterFromInclude(
   frontmatter: PageFrontmatter,
   includeFrontmatter?: PageFrontmatter,
 ) {
   if (frontmatter.math || includeFrontmatter?.math) {
-    frontmatter.math = { ...includeFrontmatter?.math, ...frontmatter.math };
+    frontmatter.math = { ...frontmatter.math, ...includeFrontmatter?.math };
   }
   if (frontmatter.abbreviations || includeFrontmatter?.abbreviations) {
     frontmatter.abbreviations = {
-      ...includeFrontmatter?.abbreviations,
       ...frontmatter.abbreviations,
+      ...includeFrontmatter?.abbreviations,
     };
   }
 }
