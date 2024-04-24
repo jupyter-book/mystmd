@@ -32,13 +32,12 @@ export function frontmatterValidationOpts(
   };
 }
 /**
- * Get page frontmatter from mdast tree and fill in missing info from project frontmatter
+ * Get page frontmatter from mdast tree
  *
  * @param session
- * @param path - project path for loading project config/frontmatter
- * @param tree - mdast tree already loaded from 'file'
- * @param file - file source for mdast 'tree' - this is only used for logging; tree is not reloaded
- * @param removeNode - if true, mdast tree will be mutated to remove frontmatter once read
+ * @param tree - mdast tree already loaded
+ * @param vfile - vfile used for logging
+ * @param preFrontmatter - incoming frontmatter for the page that is not from the project or in the tree
  */
 export function getPageFrontmatter(
   session: ISession,
