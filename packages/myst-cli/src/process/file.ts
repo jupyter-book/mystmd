@@ -21,7 +21,7 @@ import { parseMyst } from './myst.js';
 import { processNotebook } from './notebook.js';
 import { selectors } from '../store/index.js';
 
-type LoadFileOptions = { preFrontmatter?: Record<string, any> };
+type LoadFileOptions = { preFrontmatter?: Record<string, any>; keepTitleNode?: boolean };
 
 export type LoadFileResult = {
   kind: SourceFileKind;
@@ -52,6 +52,7 @@ export function loadMdFile(
     mdast,
     vfile,
     opts?.preFrontmatter,
+    opts?.keepTitleNode,
   );
   return { kind: SourceFileKind.Article, mdast, frontmatter, identifiers };
 }
@@ -70,6 +71,7 @@ export async function loadNotebookFile(
     mdast,
     vfile,
     opts?.preFrontmatter,
+    opts?.keepTitleNode,
   );
   return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers };
 }

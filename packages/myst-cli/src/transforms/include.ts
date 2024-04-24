@@ -64,13 +64,14 @@ export const makeContentParser =
       const mdast = { type: 'root', children: [{ type: 'html', value: content }] };
       return { mdast, kind: SourceFileKind.Article };
     }
+    const opts = { keepTitleNode: true };
     if (filename.toLowerCase().endsWith('.tex')) {
-      return loadTexFile(session, content, file);
+      return loadTexFile(session, content, file, opts);
     }
     if (filename.toLowerCase().endsWith('.ipynb')) {
-      return loadNotebookFile(session, content, file);
+      return loadNotebookFile(session, content, file, opts);
     }
-    return loadMdFile(session, content, file);
+    return loadMdFile(session, content, file, opts);
   };
 
 export async function includeFilesTransform(
