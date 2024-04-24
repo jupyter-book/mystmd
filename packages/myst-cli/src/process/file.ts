@@ -4,7 +4,9 @@ import { createHash } from 'node:crypto';
 import { tic } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
+import type { GenericParent } from 'myst-common';
 import { RuleId, toText } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { validatePageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import { frontmatterValidationOpts, getPageFrontmatter } from '../frontmatter.js';
@@ -19,12 +21,83 @@ import { parseMyst } from './myst.js';
 import { processNotebook } from './notebook.js';
 import { selectors } from '../store/index.js';
 
+type LoadFileOptions = { preFrontmatter?: Record<string, any> };
+
+export type LoadFileResult = {
+  kind: SourceFileKind;
+  mdast: GenericParent;
+  frontmatter?: PageFrontmatter;
+  identifiers?: string[];
+};
+
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');
   cache.store.dispatch(watch.actions.markFileChanged({ path: file, sha256 }));
   const mdast = cache.$getMdast(file);
   const useCache = mdast?.pre && mdast.sha256 === sha256;
   return { useCache, sha256 };
+}
+
+export function loadMdFile(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+): LoadFileResult {
+  const vfile = new VFile();
+  vfile.path = file;
+  const mdast = parseMyst(session, content, file);
+  const { frontmatter, identifiers } = getPageFrontmatter(
+    session,
+    mdast,
+    vfile,
+    opts?.preFrontmatter,
+  );
+  return { kind: SourceFileKind.Article, mdast, frontmatter, identifiers };
+}
+
+export async function loadNotebookFile(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+): Promise<LoadFileResult> {
+  const vfile = new VFile();
+  vfile.path = file;
+  const mdast = await processNotebook(session, file, content);
+  const { frontmatter, identifiers } = getPageFrontmatter(
+    session,
+    mdast,
+    vfile,
+    opts?.preFrontmatter,
+  );
+  return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers };
+}
+
+export function loadTexFile(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+): LoadFileResult {
+  const vfile = new VFile();
+  vfile.path = file;
+  const tex = new TexParser(content, vfile);
+  const frontmatter = validatePageFrontmatter(
+    {
+      title: toText(tex.data.frontmatter.title as any),
+      short_title: toText(tex.data.frontmatter.short_title as any),
+      authors: tex.data.frontmatter.authors,
+      // TODO: affiliations: tex.data.frontmatter.affiliations,
+      keywords: tex.data.frontmatter.keywords,
+      math: tex.data.macros,
+      bibliography: tex.data.bibliography,
+      ...(opts?.preFrontmatter ?? {}),
+    },
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  return { kind: SourceFileKind.Article, mdast: tex.ast as GenericParent, frontmatter };
 }
 
 /**
@@ -48,8 +121,8 @@ export async function loadFile(
   session: ISession,
   file: string,
   projectPath?: string,
-  extension?: '.md' | '.ipynb' | '.bib',
-  opts?: { preFrontmatter?: Record<string, any> },
+  extension?: '.md' | '.ipynb' | '.tex' | '.bib',
+  opts?: LoadFileOptions,
 ): Promise<PreRendererData | undefined> {
   await session.loadPlugins();
   const toc = tic();
@@ -63,80 +136,32 @@ export async function loadFile(
   }
   // ensure forward slashes and not windows backslashes
   location = location.replaceAll('\\', '/');
-  const vfile = new VFile();
-  vfile.path = file;
 
   try {
+    const content = fs.readFileSync(file).toString();
+    const { sha256, useCache } = checkCache(cache, content, file);
+    if (useCache) {
+      session.log.debug(toc(`loadFile: ${file} already loaded.`));
+      return cache.$getMdast(file)?.pre;
+    }
     const ext = extension || path.extname(file).toLowerCase();
+    let loadResult: LoadFileResult | undefined;
     switch (ext) {
       case '.md': {
-        const content = fs.readFileSync(file).toString();
-        const { sha256, useCache } = checkCache(cache, content, file);
-        if (useCache) break;
-        const mdast = parseMyst(session, content, file);
-        const { frontmatter, identifiers } = getPageFrontmatter(
-          session,
-          mdast,
-          vfile,
-          opts?.preFrontmatter,
-        );
-        cache.$setMdast(file, {
-          sha256,
-          pre: { kind: SourceFileKind.Article, file, location, mdast, frontmatter, identifiers },
-        });
+        loadResult = loadMdFile(session, content, file, opts);
         break;
       }
       case '.ipynb': {
-        const content = fs.readFileSync(file).toString();
-        const { sha256, useCache } = checkCache(cache, content, file);
-        if (useCache) break;
-        const mdast = await processNotebook(cache, file, content);
-        const { frontmatter, identifiers } = getPageFrontmatter(
-          session,
-          mdast,
-          vfile,
-          opts?.preFrontmatter,
-        );
-        cache.$setMdast(file, {
-          sha256,
-          pre: { kind: SourceFileKind.Notebook, file, location, mdast, frontmatter, identifiers },
-        });
+        loadResult = await loadNotebookFile(session, content, file, opts);
+        break;
+      }
+      case '.tex': {
+        loadResult = loadTexFile(session, content, file, opts);
         break;
       }
       case '.bib': {
         const renderer = await loadBibTeXCitationRenderers(session, file);
         cache.$citationRenderers[file] = renderer;
-        break;
-      }
-      case '.tex': {
-        const content = fs.readFileSync(file).toString();
-        const { sha256, useCache } = checkCache(cache, content, file);
-        if (useCache) break;
-        const tex = new TexParser(content, vfile);
-        const frontmatter = validatePageFrontmatter(
-          {
-            title: toText(tex.data.frontmatter.title as any),
-            short_title: toText(tex.data.frontmatter.short_title as any),
-            authors: tex.data.frontmatter.authors,
-            // TODO: affiliations: tex.data.frontmatter.affiliations,
-            keywords: tex.data.frontmatter.keywords,
-            math: tex.data.macros,
-            bibliography: tex.data.bibliography,
-            ...(opts?.preFrontmatter ?? {}),
-          },
-          frontmatterValidationOpts(vfile),
-        );
-        logMessagesFromVFile(session, vfile);
-        cache.$setMdast(file, {
-          sha256,
-          pre: {
-            kind: SourceFileKind.Article,
-            file,
-            mdast: tex.ast as any,
-            location,
-            frontmatter,
-          },
-        });
         break;
       }
       default:
@@ -147,6 +172,12 @@ export async function loadFile(
           `"${file}": Please rerun the build with "-c" to ensure the built files are cleared.`,
         );
         success = false;
+    }
+    if (loadResult) {
+      cache.$setMdast(file, {
+        sha256,
+        pre: { file, location, ...loadResult },
+      });
     }
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
