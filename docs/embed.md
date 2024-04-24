@@ -56,7 +56,6 @@ For example, the following references the admonitions list in [](admonitions.md)
 
 ```
 
-
 ### The `![](#embed)` short-hand
 
 The embedding markdown shorthand lets you quickly embed content using the Markdown image syntax (see more about [images](./figures.md)).
@@ -152,6 +151,13 @@ By default the file will be parsed using MyST, you can also set the file to be {
 :class: dropdown
 If you are working with the auto-reload (e.g. `myst start`), the file dependencies are auto-reloaded.
 Circular dependencies are not allowed and MyST will issue a warning and not render the recursion.
+:::
+
+:::{tip} Math and abbreviation frontmatter from included files
+:class: dropdown
+When including a file that has frontmatter, only some of that frontmatter is used. For example, the `math` macros and `abbreviations` are brought up to the top level and will overwrite any macros or abbreviations that already exist.
+
+For LaTeX, the commands like `\newcommand` and `\renewcommand` are shared in the same way that math macros are shared for markdown files.
 :::
 
 ## `{embed}` vs. `{include}`
