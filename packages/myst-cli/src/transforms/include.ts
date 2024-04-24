@@ -2,13 +2,14 @@ import path from 'node:path';
 import fs from 'node:fs';
 import type { GenericParent } from 'myst-common';
 import { RuleId, fileError } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
+import { SourceFileKind } from 'myst-spec-ext';
 import { includeDirectiveTransform } from 'myst-transforms';
 import type { VFile } from 'vfile';
-import { parseMyst } from '../process/myst.js';
 import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
-import { TexParser } from 'tex-to-myst';
-import { processNotebook } from '../process/notebook.js';
+import type { LoadFileResult } from '../process/file.js';
+import { loadMdFile, loadNotebookFile, loadTexFile } from '../process/file.js';
 
 /**
  * Return resolveFile function
@@ -57,31 +58,32 @@ export const makeFileLoader = (session: ISession, baseFile: string) => (fullFile
  * Handles html and tex files separately; all other files are treated as MyST md.
  */
 export const makeContentParser =
-  (session: ISession) => async (filename: string, content: string, vfile: VFile) => {
+  (session: ISession, file: string) =>
+  async (filename: string, content: string): Promise<LoadFileResult> => {
     if (filename.toLowerCase().endsWith('.html')) {
-      return [{ type: 'html', value: content }];
+      const mdast = { type: 'root', children: [{ type: 'html', value: content }] };
+      return { mdast, kind: SourceFileKind.Article };
     }
     if (filename.toLowerCase().endsWith('.tex')) {
-      const subTex = new TexParser(content, vfile);
-      return subTex.ast.children ?? [];
+      return loadTexFile(session, content, file);
     }
     if (filename.toLowerCase().endsWith('.ipynb')) {
-      const mdast = await processNotebook(session, filename, content);
-      return mdast.children;
+      return loadNotebookFile(session, content, file);
     }
-    return parseMyst(session, content, filename).children;
+    return loadMdFile(session, content, file);
   };
 
 export async function includeFilesTransform(
   session: ISession,
   baseFile: string,
   tree: GenericParent,
+  frontmatter: PageFrontmatter,
   vfile: VFile,
 ) {
-  const parseContent = makeContentParser(session);
+  const parseContent = makeContentParser(session, baseFile);
   const loadFile = makeFileLoader(session, baseFile);
   const resolveFile = makeFileResolver(baseFile);
-  await includeDirectiveTransform(tree, vfile, {
+  await includeDirectiveTransform(tree, frontmatter, vfile, {
     resolveFile,
     loadFile,
     parseContent,
