@@ -137,6 +137,13 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       const attrs = addClassAndIdentifier(node);
       return attrs.label ? h(node, 'cite', attrs, all(h, node)) : all(h, node);
     },
+    details(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'details', attrs, all(h, node));
+    },
+    summary(h: H, node: any) {
+      return h(node, 'summary', all(h, node));
+    },
   },
 };
 
