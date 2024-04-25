@@ -443,3 +443,21 @@ cases:
     latex: |-
       \newpage
       H\textsubscript{2}O-CO\textsubscript{2}
+  - title: emphasis in a div / span
+    mdast:
+      type: root
+      children:
+        - type: div
+          children:
+            - type: text
+              value: 'Some % '
+            - type: span
+              children:
+                - type: text
+                  value: 'other '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    latex: |-
+      Some \% other \textit{markdown}

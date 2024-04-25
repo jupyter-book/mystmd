@@ -229,6 +229,12 @@ const handlers: Record<string, Handler> = {
   mystDirective(node, state) {
     state.renderChildren(node, false);
   },
+  div(node, state) {
+    state.renderChildren(node, false);
+  },
+  span(node, state) {
+    state.renderChildren(node, true);
+  },
   comment(node, state) {
     state.ensureNewLine();
     state.write(`% ${node.value?.split('\n').join('\n% ') ?? ''}`);

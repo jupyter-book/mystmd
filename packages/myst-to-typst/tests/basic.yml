@@ -363,3 +363,21 @@ cases:
     typst: |-
       #pagebreak(weak: true)
       \*escaped symbols\*
+  - title: emphasis in a div / span
+    mdast:
+      type: root
+      children:
+        - type: div
+          children:
+            - type: text
+              value: 'Some % '
+            - type: span
+              children:
+                - type: text
+                  value: 'other '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    typst: |-
+      Some % other _markdown_
