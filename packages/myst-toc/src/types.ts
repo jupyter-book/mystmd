@@ -3,11 +3,11 @@
  * Should be taken as a Partial<>
  */
 export type CommonEntry = {
-  title: string;
-  hidden: boolean;
-  numbering: string;
-  id: string;
-  part: string;
+  title?: string;
+  hidden?: boolean;
+  numbering?: string;
+  id?: string;
+  part?: string;
 };
 
 /**
@@ -17,32 +17,37 @@ export type ParentEntry = {
   children: Entry[];
   title: string;
   class?: string;
-} & Partial<Omit<CommonEntry, 'title'>>;
+} & CommonEntry;
 
 /**
  * Entry with a path to a single document with or without the file extension
  */
 export type FileEntry = {
   file: string;
-} & Partial<ParentEntry>;
+} & CommonEntry;
 
 /**
  * Entry with a URL to an external URL
  */
 export type URLEntry = {
   url: string;
-} & Partial<ParentEntry>;
+} & CommonEntry;
 
 /**
  * Entry representing several documents through a glob
  */
 export type PatternEntry = {
   pattern: string;
-} & Partial<CommonEntry>;
+} & CommonEntry;
 
 /**
- * Single TOC entry
+ * Entry representing a single document
  */
-export type Entry = FileEntry | URLEntry | PatternEntry | ParentEntry;
+export type DocumentEntry = FileEntry | URLEntry;
+
+/**
+ * All possible types of Entry
+ */
+export type Entry = DocumentEntry | (DocumentEntry & Omit<ParentEntry, 'title'>) | PatternEntry | ParentEntry;
 
 export type TOC = Entry[];
