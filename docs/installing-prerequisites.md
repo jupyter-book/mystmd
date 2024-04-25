@@ -14,7 +14,7 @@ MyST currently supports `node` v18, v20, and v22. Note that odd-numbered release
 
 Following any of the install methods below, verify your installation and ensure that `node` and `npm` are available on your system _PATH_ by opening a new terminal window or command line prompt and typing:
 
-```text
+```shell
 % node -v
 v18.16.1
 % npm -v
@@ -35,7 +35,7 @@ Download the installer package, and follow instructions to execute the installer
 
 🛠️ Use the following command can be used to lock down the version you are installing, adjust as necessary for the even-numbered version you are targeting:
 
-```python
+```shell
 (my-conda-env)% conda install -c conda-forge 'nodejs>=20,<21'
 (my-conda-env)% node -v
 v20.11.1
@@ -66,13 +66,13 @@ v20.11.1
 
 🛠️ Install `nodeenv`\:
 
-```python
+```shell
 % pip install nodeenv
 ```
 
 🛠️ Query available node versions:
 
-```python
+```shell
 % nodeenv --list
 % ... 20.11.1 ...
 ```
@@ -108,7 +108,7 @@ Read more about `nodeenv` in [their docs](https://ekalinin.github.io/nodeenv/).
 
 🛠️ Next, install an initial (default) version of `node`\:
 
-```python
+```shell
 % nvm install 20
 Downloading and installing node v20.11.1...
 ...
