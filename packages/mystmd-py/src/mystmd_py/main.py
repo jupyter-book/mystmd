@@ -27,7 +27,7 @@ def main():
         raise SystemExit(f"MyST could not determine the version of Node.js: {_version}")
 
     major_version = int(major_version_match[1])
-    if not (major_version in {18, 20} or major_version >= 22):
+    if not (major_version in {18, 20, 22} or major_version > 22):
         raise SystemExit(
             f"MyST requires node 18, 20, or 22+; you are running node {version[1:3]}.\n\n"
             "Please update to the latest LTS release, using your preferred package manager\n"
