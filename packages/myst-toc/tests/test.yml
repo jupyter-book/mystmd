@@ -7,36 +7,44 @@ cases:
     content:
       - file: foo.md 
         title: Foo!
+  - title: Single file with part passes
+    content:
+      - file: foo.md 
+        part: abstract
+  - title: Single file with hidden passes
+    content:
+      - file: foo.md 
+        hidden: true
+  - title: Single file with invalid hidden fails
+    content:
+      - file: foo.md 
+        hidden: "yes"
+    throws: 'The given contents do not form a valid TOC'
   - title: Single file with children passes
     content:
       - file: foo.md 
-        children:
-          - file: bar.md
-  - title: Single file with title and children passes
-    content:
-      - file: foo.md 
-        title: Foo
         children:
           - file: bar.md
 
   - title: Single URL passes
     content:
       - url: https://bar.com/foo.md 
-  - title: Single URL with title passes
-    content:
-      - url: https://bar.com/foo.md 
-        title: Foo!
   - title: Single URL with children passes
     content:
       - url: foo.md 
         children:
           - url: https://bar.com/foo.md
-  - title: Single URL with title and children passes
+
+  - title: Single pattern passes
     content:
-      - url: https://bar.com/foo.md 
-        title: Foo
+      - pattern: foo/*.md 
+  - title: Single pattern with children passes fails
+    content:
+      - pattern: foo/*.md 
         children:
-          - url: https://bar.com/bar.md
+          - url: https://bar.com/foo.md
+    throws: 'The given contents do not form a valid TOC'
+
 
   - title: Single parent passes
     content:
