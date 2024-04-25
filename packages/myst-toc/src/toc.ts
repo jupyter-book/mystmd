@@ -8,6 +8,7 @@ import _Ajv from 'ajv';
  * @param contents: raw TOC yaml
  */
 export function parseTOC(toc: Record<string, unknown>): TOC {
+  // eslint-disable-next-line
   // @ts-ignore
   const Ajv = _Ajv.default;
   const ajv = new Ajv();
