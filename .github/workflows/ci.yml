@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ['16', '18', '20']
+        node: ['18', '20', '22']
     name: Testing on node ${{ matrix.node }}
     steps:
       - name: Checkout Repo
