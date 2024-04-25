@@ -8,7 +8,7 @@ description: MyST Markdown is available through Node and npm, install the packag
 
 The MyST Markdown Command Line Interface (CLI) is available through [NodeJS](./installing-prerequisites.md) and the node package manager, `npm`. Node is used by Jupyter as well as many other Python packages so you may already have it installed on your _PATH_ and the following command may just work 🤞.
 
-🛠️ [Install NodeJS](./installing-prerequisites.md), either version 16, 18 or 20
+🛠️ [Install NodeJS](./installing-prerequisites.md), either version 18, 20, or 22
 
 ```{important} Installing Node
 

@@ -9,12 +9,12 @@ There are a number of ways to install `node` and you can choose one that is suit
 
 :::{important} Node Versions
 
-MyST currently supports `node` v16, v18 and v20. Note that odd-numbered releases of `node` are not long-lived and you should prefer even-numbered releases when installing (see [Node release schedule](https://nodejs.org/en/about/previous-releases)).
+MyST currently supports `node` v18, v20, and v22. Note that odd-numbered releases of `node` are not long-lived and you should prefer even-numbered releases when installing (see [Node release schedule](https://nodejs.org/en/about/previous-releases)).
 :::
 
 Following any of the install methods below, verify your installation and ensure that `node` and `npm` are available on your system _PATH_ by opening a new terminal window or command line prompt and typing:
 
-```text
+```shell
 % node -v
 v18.16.1
 % npm -v
@@ -35,18 +35,18 @@ Download the installer package, and follow instructions to execute the installer
 
 🛠️ Use the following command can be used to lock down the version you are installing, adjust as necessary for the even-numbered version you are targeting:
 
-```python
-(my-conda-env)% conda install -c conda-forge 'nodejs>=16,<17'
+```shell
+(my-conda-env)% conda install -c conda-forge 'nodejs>=20,<21'
 (my-conda-env)% node -v
-(my-conda-env)% v16.14.2
+v20.11.1
 (my-conda-env)% npm -v
-(my-conda-env)% v
+10.2.4
 ```
 
 💡 Alternatively, you can create a new `conda` environment directly as a `node` environment:
 
 ```shell
-% conda create -yn my-node-env 'nodejs>=16,<17'
+% conda create -yn my-node-env 'nodejs>=20,<21'
 % ....
 #
 # To activate this environment, use
@@ -66,26 +66,26 @@ Download the installer package, and follow instructions to execute the installer
 
 🛠️ Install `nodeenv`\:
 
-```python
+```shell
 % pip install nodeenv
 ```
 
 🛠️ Query available node versions:
 
-```python
+```shell
 % nodeenv --list
-% ... 16.15.0 ...
+% ... 20.11.1 ...
 ```
 
 🛠️ Create a new environment based on a specific `node` version, and activate it:
 
 ```shell
-% nodeenv -n 16.15.0 node_env
+% nodeenv -n 20.11.1 node_env
 % . node_env/bin/activate
 (node_env) % node -v
-(node_env) % v16.15.0
+v20.11.1
 (node_env) % npm -v
-(node_env) % v8.5.5
+10.2.4
 ```
 
 Read more about `nodeenv` in [their docs](https://ekalinin.github.io/nodeenv/).
@@ -108,11 +108,11 @@ Read more about `nodeenv` in [their docs](https://ekalinin.github.io/nodeenv/).
 
 🛠️ Next, install an initial (default) version of `node`\:
 
-```python
-% nvm install 18
-Downloading and installing node v18.18.2...
+```shell
+% nvm install 20
+Downloading and installing node v20.11.1...
 ...
-Now using node v18.18.2 (npm v9.8.1)
+Now using node v20.11.1 (npm v10.2.4)
 %
 ```
 
