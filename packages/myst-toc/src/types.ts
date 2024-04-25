@@ -8,6 +8,7 @@ export type CommonEntry = {
   numbering?: string;
   id?: string;
   part?: string;
+  class?: string;
 };
 
 /**
@@ -16,7 +17,6 @@ export type CommonEntry = {
 export type ParentEntry = {
   children: Entry[];
   title: string;
-  class?: string;
 } & CommonEntry;
 
 /**
