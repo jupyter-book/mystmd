@@ -36,6 +36,8 @@ export type StateData = {
   };
 };
 
+export type RenderChildrenOptions = { delim?: string; trimEnd?: boolean };
+
 export interface ITypstSerializer<D extends Record<string, any> = StateData> {
   file: VFile;
   data: D;
@@ -47,7 +49,7 @@ export interface ITypstSerializer<D extends Record<string, any> = StateData> {
   trimEnd: () => void;
   ensureNewLine: (trim?: boolean) => void;
   addNewLine: () => void;
-  renderChildren: (node: any, trailingNewLines?: number, delim?: string) => void;
+  renderChildren: (node: any, trailingNewLines?: number, opts?: RenderChildrenOptions) => void;
   renderInlineEnvironment: (node: any, env: string, opts?: { after?: string }) => void;
   renderEnvironment: (
     node: any,

@@ -4,7 +4,14 @@ import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
 import { fileError, fileWarn, toText, getMetadataTags } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
-import type { Handler, ITypstSerializer, TypstResult, Options, StateData } from './types.js';
+import type {
+  Handler,
+  ITypstSerializer,
+  TypstResult,
+  Options,
+  StateData,
+  RenderChildrenOptions,
+} from './types.js';
 import {
   getLatexImageWidth,
   hrefToLatexText,
@@ -297,7 +304,7 @@ const handlers: Record<string, Handler> = {
     state.write(next ? `#[@${id}]` : `@${id}`);
   },
   citeGroup(node, state) {
-    state.renderChildren(node, 0, ' ');
+    state.renderChildren(node, 0, { delim: ' ' });
   },
   cite(node, state) {
     const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(node.label);
@@ -341,6 +348,12 @@ const handlers: Record<string, Handler> = {
   //     );
   //   }
   // },
+  div(node, state) {
+    state.renderChildren(node, 1);
+  },
+  span(node, state) {
+    state.renderChildren(node, 0, { trimEnd: false });
+  },
 };
 
 class TypstSerializer implements ITypstSerializer {
@@ -396,7 +409,11 @@ class TypstSerializer implements ITypstSerializer {
     this.addNewLine();
   }
 
-  renderChildren(node: Partial<Parent>, trailingNewLines = 0, delim = '') {
+  renderChildren(
+    node: Partial<Parent>,
+    trailingNewLines = 0,
+    { delim = '', trimEnd = true }: RenderChildrenOptions = {},
+  ) {
     const numChildren = node.children?.length ?? 0;
     node.children?.forEach((child, index) => {
       if (!child) return;
@@ -411,7 +428,7 @@ class TypstSerializer implements ITypstSerializer {
       }
       if (delim && index + 1 < numChildren) this.write(delim);
     });
-    this.trimEnd();
+    if (trimEnd) this.trimEnd();
     for (let i = trailingNewLines; i--; ) this.addNewLine();
   }
 
