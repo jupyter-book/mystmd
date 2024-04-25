@@ -3,4 +3,4 @@
 "myst-to-tex": patch
 ---
 
-Support dvi/span in typst/tex
+Support `div` and `span` in typst and tex
