@@ -11,6 +11,10 @@ cases:
     content:
       - file: foo.md 
         part: abstract
+  - title: Single file with class passes
+    content:
+      - file: foo.md 
+        class: beta
   - title: Single file with hidden passes
     content:
       - file: foo.md 
@@ -49,12 +53,6 @@ cases:
   - title: Single parent passes
     content:
       - title: Foo
-        children:
-          - url: https://bar.com/bar.md
-  - title: Single parent with class passes
-    content:
-      - title: Foo
-        class: dropdown
         children:
           - url: https://bar.com/bar.md
   - title: Single parent without title fails
