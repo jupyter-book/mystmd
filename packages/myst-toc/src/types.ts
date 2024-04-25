@@ -48,6 +48,10 @@ export type DocumentEntry = FileEntry | URLEntry;
 /**
  * All possible types of Entry
  */
-export type Entry = DocumentEntry | (DocumentEntry & Omit<ParentEntry, 'title'>) | PatternEntry | ParentEntry;
+export type Entry =
+  | DocumentEntry
+  | (DocumentEntry & Omit<ParentEntry, 'title'>)
+  | PatternEntry
+  | ParentEntry;
 
 export type TOC = Entry[];
