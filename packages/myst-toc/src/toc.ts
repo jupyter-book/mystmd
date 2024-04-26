@@ -3,11 +3,11 @@ import schema from './schema.json';
 import _Ajv from 'ajv';
 
 /**
- * Parse a sphinx-external-toc table of contents
+ * validate a MyST table of contents
  *
- * @param contents: raw TOC yaml
+ * @param toc: structured TOC data
  */
-export function parseTOC(toc: Record<string, unknown>): TOC {
+export function validateTOC(toc: Record<string, unknown>): TOC {
   // eslint-disable-next-line
   // @ts-ignore
   const Ajv = _Ajv.default;

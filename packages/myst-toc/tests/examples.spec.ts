@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
-import { parseTOC } from '../src';
+import { validateTOC } from '../src';
 
 type TestCase = {
   title: string;
@@ -35,13 +35,13 @@ casesList.forEach(({ title, cases }) => {
       '%s',
       (_, { content, throws, output }) => {
         if (output) {
-          const toc = parseTOC(content);
+          const toc = validateTOC(content);
           expect(toc).toEqual(output);
         } else if (throws) {
           const pattern = new RegExp(throws);
-          expect(() => parseTOC(content)).toThrowError(pattern);
+          expect(() => validateTOC(content)).toThrowError(pattern);
         } else {
-          parseTOC(content);
+          validateTOC(content);
         }
       },
     );
