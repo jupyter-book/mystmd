@@ -1,5 +1,25 @@
 # myst-cli
 
+## 1.2.0
+
+### Minor Changes
+
+- 243adf62: Update NodeJS minimum version
+
+### Patch Changes
+
+- 8c00333a: Support myst-theme.css in the dynamic export.
+- 1734bffd: Included files remove frontmatter and update math/abbr
+- 9a30092f: Support details/summary in HTML
+- Updated dependencies [8851eca7]
+- Updated dependencies [1734bffd]
+- Updated dependencies [7efe77a0]
+- Updated dependencies [9a30092f]
+  - myst-to-typst@0.0.16
+  - myst-to-tex@1.0.28
+  - myst-transforms@1.3.10
+  - tex-to-myst@1.0.28
+
 ## 1.1.56
 
 ### Patch Changes
