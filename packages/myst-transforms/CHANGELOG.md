@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 1.3.10
+
+### Patch Changes
+
+- 1734bffd: Included files remove frontmatter and update math/abbr
+- 7efe77a0: Ensure include file frontmatter takes priority
+- 9a30092f: Support details/summary in HTML
+
 ## 1.3.9
 
 ### Patch Changes

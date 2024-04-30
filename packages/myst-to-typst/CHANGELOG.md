@@ -1,5 +1,11 @@
 # myst-to-typst
 
+## 0.0.16
+
+### Patch Changes
+
+- 8851eca7: Support `div` and `span` in typst and tex
+
 ## 0.0.15
 
 ### Patch Changes
