@@ -1,0 +1,69 @@
+title: Table of Contents
+cases:
+  - title: Single file passes
+    content:
+      - file: foo.md 
+  - title: Single file with title passes
+    content:
+      - file: foo.md 
+        title: Foo!
+  - title: Single file with part passes
+    content:
+      - file: foo.md 
+        part: abstract
+  - title: Single file with class passes
+    content:
+      - file: foo.md 
+        class: beta
+  - title: Single file with hidden passes
+    content:
+      - file: foo.md 
+        hidden: true
+  - title: Single file with invalid hidden fails
+    content:
+      - file: foo.md 
+        hidden: "yes"
+    throws: 'The given contents do not form a valid TOC'
+  - title: Single file with children passes
+    content:
+      - file: foo.md 
+        children:
+          - file: bar.md
+
+  - title: Single URL passes
+    content:
+      - url: https://bar.com/foo.md 
+  - title: Single URL with children passes
+    content:
+      - url: foo.md 
+        children:
+          - url: https://bar.com/foo.md
+
+  - title: Single pattern passes
+    content:
+      - pattern: foo/*.md 
+  - title: Single pattern with children passes fails
+    content:
+      - pattern: foo/*.md 
+        children:
+          - url: https://bar.com/foo.md
+    throws: 'The given contents do not form a valid TOC'
+
+
+  - title: Single parent passes
+    content:
+      - title: Foo
+        children:
+          - url: https://bar.com/bar.md
+  - title: Single parent without title fails
+    content:
+      - children:
+          - url: https://bar.com/bar.md
+    throws: 'The given contents do not form a valid TOC'
+
+
+  - title: Mix of URL and file types fails
+    content:
+      - file: foo.md
+        url: https://bar.com/foo.md
+    throws: 'The given contents do not form a valid TOC'
