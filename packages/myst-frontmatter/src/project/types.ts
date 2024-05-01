@@ -39,6 +39,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'requirements',
   'resources',
   'thebe',
+  'toc',
 ];
 
 export type ProjectAndPageFrontmatter = SiteFrontmatter & {
@@ -71,4 +72,5 @@ export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
   requirements?: string[];
   resources?: string[];
   thebe?: ExpandedThebeFrontmatter;
+  toc?: any[];
 };

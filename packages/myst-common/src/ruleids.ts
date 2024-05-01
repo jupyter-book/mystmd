@@ -38,6 +38,7 @@ export enum RuleId {
   roleBodyCorrect = 'role-body-correct',
   // Project structure rules
   tocContentsExist = 'toc-contents-exist',
+  encounteredLegacyTOC = 'encountered-legacy-toc',
   validTOCStructure = 'valid-toc-structure',
   validTOC = 'valid-toc',
   tocWritten = 'toc-written',

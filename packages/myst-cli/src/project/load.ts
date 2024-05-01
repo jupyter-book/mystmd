@@ -10,10 +10,10 @@ import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { getAllBibTexFilesOnPath } from '../utils/getAllBibtexFiles.js';
-import { validateTOC } from '../utils/toc.js';
+import { validateSphinxTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
-import { projectFromTOC } from './fromTOC.js';
 import { writeTOCFromProject } from './toTOC.js';
+import { projectFromTOC, projectFromSphinxTOC } from './fromTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
 
 /**
@@ -53,10 +53,13 @@ export async function loadProjectFromDisk(
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeTOC } = opts || {};
   const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
-  if (validateTOC(session, path)) {
-    newProject = projectFromTOC(session, path);
+  // Legacy validator
+  if (validateSphinxTOC(session, path)) {
+    newProject = projectFromSphinxTOC(session, path);
     if (writeTOC) session.log.warn('Not writing the table of contents, it already exists!');
     writeTOC = false;
+  } else if (projectConfig?.toc !== undefined) {
+    newProject = projectFromTOC(session, path, projectConfig.toc);
   } else {
     const project = selectors.selectLocalProject(session.store.getState(), path);
     if (!index && !project?.implicitIndex && project?.file) {
@@ -69,22 +72,7 @@ export async function loadProjectFromDisk(
     throw new Error(`Could not load project from ${path}`);
   }
   if (writeTOC) {
-    try {
-      session.log.info(
-        `📓 Writing '_toc.yml' file to ${path === '.' ? 'the current directory' : path}`,
-      );
-      writeTOCFromProject(newProject, path);
-      // Re-load from TOC just in case there are subtle differences with resulting project
-      newProject = projectFromTOC(session, path);
-    } catch {
-      addWarningForFile(
-        session,
-        projectConfigFile,
-        `Error writing '_toc.yml' file to ${path}`,
-        'error',
-        { ruleId: RuleId.tocWritten },
-      );
-    }
+    throw new Error('Not implemented');
   }
   const allBibFiles = getAllBibTexFilesOnPath(session, path);
   let bibliography: string[];

@@ -41,7 +41,19 @@ cases:
     outputs:
       - path: export-fm-override/_build/out.tex
         content: outputs/templated-tex.tex
-  - title: Multi-page tex export with default toc
+  - title: Multi-page tex export with legacy toc
+    cwd: multi-page-legacy-toc-tex
+    command: myst build --tex --ci
+    outputs:
+      - path: multi-page-legacy-toc-tex/_build/out.tex
+        content: outputs/multi-page-tex.tex
+      - path: multi-page-legacy-toc-tex/_build/out-one.tex
+        content: outputs/multi-page-tex-one.tex
+      - path: multi-page-legacy-toc-tex/_build/out-two.tex
+        content: outputs/multi-page-tex-two.tex
+      - path: multi-page-legacy-toc-tex/_build/out-three.tex
+        content: outputs/multi-page-tex-three.tex
+  - title: Multi-page tex export with toc
     cwd: multi-page-toc-tex
     command: myst build --tex --ci
     outputs:

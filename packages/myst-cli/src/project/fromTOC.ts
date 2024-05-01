@@ -1,9 +1,10 @@
 import fs from 'node:fs';
+import assert from 'node:assert';
 import { join, parse } from 'node:path';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import type { JupyterBookChapter } from '../utils/toc.js';
-import { readTOC, tocFile } from '../utils/toc.js';
+import { readSphinxTOC, tocFile } from '../utils/toc.js';
 import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtension.js';
 import { fileInfo } from '../utils/fileInfo.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
@@ -15,8 +16,83 @@ import type {
   LocalProject,
   PageSlugs,
 } from './types.js';
+import type { TOC, Entry, ParentEntry } from 'myst-toc';
+import { isFile, isPattern, isURL } from 'myst-toc';
 
-function pagesFromChapters(
+function pagesFromEntries(
+  session: ISession,
+  path: string,
+  entries: Entry[],
+  pages: (LocalProjectFolder | LocalProjectPage)[] = [],
+  level: PageLevels = 1,
+  pageSlugs: PageSlugs,
+): (LocalProjectFolder | LocalProjectPage)[] {
+  for (const entry of entries) {
+    if (isFile(entry)) {
+      const file = resolveExtension(join(path, entry.file));
+      if (file) {
+        const { slug } = fileInfo(file, pageSlugs);
+        pages.push({ file, level, slug });
+      } else {
+        addWarningForFile(session, path, `Referenced file not found: ${entry.file}`, 'error', {
+          ruleId: RuleId.tocContentsExist,
+        });
+      }
+    } else if (isPattern(entry)) {
+      throw new Error('Not implemented!');
+    } else if (isURL(entry)) {
+      throw new Error('Not implemented!');
+    } else {
+      // Parent Entry
+      pages.push({ level, title: entry.title });
+    }
+
+    // Do we have any children?
+    const parentEntry = entry as Partial<ParentEntry>;
+    if (parentEntry.children) {
+      pagesFromEntries(session, path, parentEntry.children, pages, nextLevel(level), pageSlugs);
+    }
+  }
+  return pages;
+}
+
+/**
+ * Build project structure from a MyST TOC
+ *
+ * Starting level may be provided; by default this is 1. Numbers up to
+ * 6 may be provided for pages to start at a lower level. Level may
+ * also be -1 or 0. In these cases, the first "part" level will be -1
+ * and the first "chapter" level will be 0; However, "sections"
+ * will never be level < 1.
+ */
+export function projectFromTOC(
+  session: ISession,
+  path: string,
+  toc: TOC,
+  level: PageLevels = 1,
+): Omit<LocalProject, 'bibliography'> {
+  const pageSlugs: PageSlugs = {};
+  const [root, ...entries] = toc;
+  assert(isFile(root));
+  const indexFile = resolveExtension(join(path, root.file));
+  if (!indexFile) {
+    throw Error(
+      `The table of contents could not find file "${
+        root.file
+      }" defined as the first (root) page. Please ensure that one of these files is defined:\n- ${VALID_FILE_EXTENSIONS.map(
+        (ext) => join(path, `${root.file}${ext}`),
+      ).join('\n- ')}\n`,
+    );
+  }
+  const { slug } = fileInfo(indexFile, pageSlugs);
+  const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
+  // Do not allow parts to have level < -1
+  if (level < -1) level = -1;
+  pagesFromEntries(session, path, entries, pages, level, pageSlugs);
+  return { path: path || '.', file: indexFile, index: slug, pages };
+}
+
+function pagesFromSphinxChapters(
   session: ISession,
   path: string,
   chapters: JupyterBookChapter[],
@@ -46,7 +122,7 @@ function pagesFromChapters(
       pages.push({ level, title: chapter.title });
     }
     if (chapter.sections) {
-      pagesFromChapters(session, path, chapter.sections, pages, nextLevel(level), pageSlugs);
+      pagesFromSphinxChapters(session, path, chapter.sections, pages, nextLevel(level), pageSlugs);
     }
   });
   return pages;
@@ -61,7 +137,7 @@ function pagesFromChapters(
  * and the first "chapter" level will be 0; However, "sections"
  * will never be level < 1.
  */
-export function projectFromTOC(
+export function projectFromSphinxTOC(
   session: ISession,
   path: string,
   level: PageLevels = 1,
@@ -71,7 +147,11 @@ export function projectFromTOC(
     throw new Error(`Could not find TOC "${filename}". Please create a '_toc.yml'.`);
   }
   const { dir, base } = parse(filename);
-  const toc = readTOC(session.log, { filename: base, path: dir });
+  const toc = readSphinxTOC(session.log, { filename: base, path: dir });
+
+  addWarningForFile(session, filename, `Encountered legacy TOC: ${filename}`, 'warn', {
+    ruleId: RuleId.encounteredLegacyTOC,
+  });
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(dir, toc.root));
   if (!indexFile) {
@@ -88,11 +168,11 @@ export function projectFromTOC(
   if (toc.sections) {
     // Do not allow sections to have level < 1
     if (level < 1) level = 1;
-    pagesFromChapters(session, path, toc.sections, pages, level, pageSlugs);
+    pagesFromSphinxChapters(session, path, toc.sections, pages, level, pageSlugs);
   } else if (toc.chapters) {
     // Do not allow chapters to have level < 0
     if (level < 0) level = 0;
-    pagesFromChapters(session, path, toc.chapters, pages, level, pageSlugs);
+    pagesFromSphinxChapters(session, path, toc.chapters, pages, level, pageSlugs);
   } else if (toc.parts) {
     // Do not allow parts to have level < -1
     if (level < -1) level = -1;
@@ -101,7 +181,7 @@ export function projectFromTOC(
         pages.push({ title: part.caption || `Part ${index + 1}`, level });
       }
       if (part.chapters) {
-        pagesFromChapters(session, path, part.chapters, pages, nextLevel(level), pageSlugs);
+        pagesFromSphinxChapters(session, path, part.chapters, pages, nextLevel(level), pageSlugs);
       }
     });
   }
@@ -109,16 +189,32 @@ export function projectFromTOC(
 }
 
 /**
- * Return only project pages/folders from a '_toc.yml' file
+ * Return only project pages/folders from a TOC
  *
  * The root file is converted into just another top-level page.
  */
 export function pagesFromTOC(
   session: ISession,
   path: string,
+  toc: TOC,
   level: PageLevels,
 ): (LocalProjectFolder | LocalProjectPage)[] {
-  const { file, index, pages } = projectFromTOC(session, path, nextLevel(level));
+  const { file, index, pages } = projectFromTOC(session, path, toc, nextLevel(level));
+  pages.unshift({ file, slug: index, level });
+  return pages;
+}
+
+/**
+ * Return only project pages/folders from a '_toc.yml' file
+ *
+ * The root file is converted into just another top-level page.
+ */
+export function pagesFromSphinxTOC(
+  session: ISession,
+  path: string,
+  level: PageLevels,
+): (LocalProjectFolder | LocalProjectPage)[] {
+  const { file, index, pages } = projectFromSphinxTOC(session, path, nextLevel(level));
   pages.unshift({ file, slug: index, level });
   return pages;
 }

@@ -394,16 +394,19 @@ cases:
     raw:
       exports:
         - format: pdf
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
     normalized:
       exports:
         - format: pdf
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
   - title: export toc and article errors
     raw:
       exports:
         - format: pdf
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
           article: a.md
     normalized:
       exports:
@@ -415,7 +418,8 @@ cases:
     raw:
       exports:
         - format: xml
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
           sub_article: a.md
     normalized:
       exports:

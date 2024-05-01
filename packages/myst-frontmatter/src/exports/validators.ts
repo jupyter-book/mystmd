@@ -15,6 +15,7 @@ import { PROJECT_FRONTMATTER_KEYS } from '../project/types.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
 import type { Export, ExportArticle } from './types.js';
 import { ExportFormats } from './types.js';
+import { validateTOC } from 'myst-toc';
 
 const EXPORT_KEY_OBJECT = {
   required: [],
@@ -260,7 +261,7 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       );
       validExport.toc = undefined;
     } else {
-      validExport.toc = validateString(value.toc, tocOpts);
+      validExport.toc = validateTOC(value.toc, tocOpts);
     }
   }
   return validExport;

@@ -11,8 +11,9 @@ import {
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
-import { validateTOC } from '../../utils/toc.js';
-import { projectFromTOC } from '../../project/fromTOC.js';
+import { validateSphinxTOC } from '../../utils/toc.js';
+import { projectFromTOC, projectFromSphinxTOC } from '../../project/fromTOC.js';
+
 import { loadProjectFromDisk } from '../../project/load.js';
 import type { LocalProject } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
@@ -66,6 +67,21 @@ export function resolveArticlesFromProject(
 function resolveArticlesFromTOC(
   session: ISession,
   exp: ExportWithFormat,
+  path: string,
+  vfile: VFile,
+): ResolvedArticles {
+  const allowLevelLessThanOne = [
+    ExportFormats.tex,
+    ExportFormats.pdf,
+    ExportFormats.pdftex,
+  ].includes(exp.format);
+  const proj = projectFromTOC(session, path, exp.toc!, allowLevelLessThanOne ? -1 : 1);
+  return resolveArticlesFromProject(exp, proj, vfile);
+}
+
+function resolveArticlesFromSphinxTOC(
+  session: ISession,
+  exp: ExportWithFormat,
   tocPath: string,
   vfile: VFile,
 ): ResolvedArticles {
@@ -74,7 +90,7 @@ function resolveArticlesFromTOC(
     ExportFormats.pdf,
     ExportFormats.pdftex,
   ].includes(exp.format);
-  const proj = projectFromTOC(session, tocPath, allowLevelLessThanOne ? -1 : 1);
+  const proj = projectFromSphinxTOC(session, tocPath, allowLevelLessThanOne ? -1 : 1);
   return resolveArticlesFromProject(exp, proj, vfile);
 }
 
@@ -159,10 +175,7 @@ export function resolveArticles(
   let resolved: ResolvedArticles = { articles, sub_articles };
   // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
   if (exp.toc && !resolved.articles && !resolved.sub_articles) {
-    const resolvedTOC = path.resolve(path.dirname(sourceFile), exp.toc);
-    if (validateTOC(session, resolvedTOC)) {
-      resolved = resolveArticlesFromTOC(session, exp, resolvedTOC, vfile);
-    }
+    resolved = resolveArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
   }
   // If no articles are specified, use the sourceFile for article
   if (!resolved.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
@@ -174,8 +187,8 @@ export function resolveArticles(
   }
   // If still no articles, try to use explicit or implicit project toc
   if (!resolved.articles && !resolved.sub_articles) {
-    if (validateTOC(session, projectPath ?? '.')) {
-      resolved = resolveArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
+    if (validateSphinxTOC(session, projectPath ?? '.')) {
+      resolved = resolveArticlesFromSphinxTOC(session, exp, projectPath ?? '.', vfile);
     } else {
       const cachedProject = selectors.selectLocalProject(
         session.store.getState(),

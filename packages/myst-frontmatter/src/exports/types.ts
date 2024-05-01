@@ -22,7 +22,7 @@ export type Export = {
   template?: string | null;
   output?: string;
   zip?: boolean;
-  toc?: string;
+  toc?: any[];
   articles?: ExportArticle[];
   /** sub_articles are only for jats xml export */
   sub_articles?: string[];

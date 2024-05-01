@@ -43,7 +43,7 @@ export const tocFile = (filename: string): string => {
 };
 
 // See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
-function upgradeOldJupyterBookTOC(oldTOC: any[]) {
+function upgradeOldSphinxTOC(oldTOC: any[]) {
   // TODO: numbering is ignored
   const [root, ...parts] = oldTOC;
   const toc: TOC = {
@@ -57,12 +57,12 @@ function upgradeOldJupyterBookTOC(oldTOC: any[]) {
   return toc;
 }
 
-export function readTOC(log: Logger, opts?: TOCOptions): TOC {
+export function readSphinxTOC(log: Logger, opts?: TOCOptions): TOC {
   const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
   const toc = yaml.load(fs.readFileSync(filename).toString()) as any;
   if (Array.isArray(toc)) {
     try {
-      const old = upgradeOldJupyterBookTOC(toc);
+      const old = upgradeOldSphinxTOC(toc);
       log.warn(
         `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
       );
@@ -84,12 +84,12 @@ export function readTOC(log: Logger, opts?: TOCOptions): TOC {
   return toc;
 }
 
-export function validateTOC(session: ISession, path: string): boolean {
+export function validateSphinxTOC(session: ISession, path: string): boolean {
   const filename = tocFile(path);
   const { dir, base } = parse(filename);
   if (!fs.existsSync(filename)) return false;
   try {
-    readTOC(silentLogger(), { filename: base, path: dir });
+    readSphinxTOC(silentLogger(), { filename: base, path: dir });
     return true;
   } catch (error) {
     const { message } = error as unknown as Error;

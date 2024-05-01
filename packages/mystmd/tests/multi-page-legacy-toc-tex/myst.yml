@@ -3,11 +3,6 @@ version: 1
 project:
   title: One Two Three!
   author: Franklin Koch
-  toc:
-    - file: zero.md
-    - file: one.md
-    - file: two.md
-    - file: three.md
   export:
     format: tex
     template: ../templates/tex

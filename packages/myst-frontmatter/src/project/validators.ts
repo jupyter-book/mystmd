@@ -11,6 +11,7 @@ import {
   validateString,
   validateUrl,
 } from 'simple-validators';
+import { validateTOC } from 'myst-toc';
 import { validateBiblio } from '../biblio/validators.js';
 import { validateDownloadsList } from '../downloads/validators.js';
 import { validateExportsList } from '../exports/validators.js';
@@ -164,6 +165,10 @@ export function validateProjectFrontmatterKeys(
     } else {
       delete output.thebe;
     }
+  }
+
+  if (defined(value.toc)) {
+    output.toc = validateTOC(value.toc, incrementOptions('toc', opts));
   }
 
   if (defined(value.requirements)) {
