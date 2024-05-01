@@ -151,8 +151,12 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
 
   // Copy all of the static assets
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
-  fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
+  fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
+  fs.copySync(
+    path.join(session.sitePath(), 'myst.xref.spec'),
+    path.join(htmlDir, 'myst.xref.spec'),
+  );
 
   // We need to go through and change all links to the right folder
   rewriteAssetsFolder(htmlDir, baseurl);

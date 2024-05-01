@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
-import type { SiteProject } from 'myst-config';
+import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
 import type { LinkTransformer, ReferenceState } from 'myst-transforms';
 import { select } from 'unist-util-select';
@@ -23,6 +23,7 @@ import { selectors } from '../store/index.js';
 import { watch } from '../store/reducers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
+import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
 import { loadIntersphinx } from './loadIntersphinx.js';
@@ -61,6 +62,20 @@ export type ProcessProjectOptions = ProcessFileOptions & {
 
 export type ProcessSiteOptions = ProcessProjectOptions & SiteManifestOptions;
 
+type MystXRef = {
+  identifier: string;
+  html_id?: string;
+  data: string;
+  url?: string;
+  implicit?: boolean;
+};
+
+type MystXRefs = {
+  version: '1';
+  myst: string;
+  references: MystXRef[];
+};
+
 /**
  * Trigger a file-changed notification, and clear the file from the cache
  *
@@ -97,20 +112,58 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
 }
 
 /**
- * Update an object inventory with references from the current session
+ * Write myst.xref.json file from collected page reference states
  *
  * @param session session with logging
- * @param inv intersphinx inventory to update
- * @param opts configuration options
+ * @param states page reference states
  */
-export async function addProjectReferencesToObjectsInv(
+export async function writeMystXRefJson(session: ISession, states: ReferenceState[]) {
+  const mystXRefs: MystXRefs = {
+    version: '1',
+    myst: version,
+    references: states
+      .filter((state): state is ReferenceState & { dataUrl: string } => !!state.dataUrl)
+      .map((state) => {
+        const { url, dataUrl: data } = state;
+        const pageRefs = state.identifiers.map((identifier) => {
+          return { identifier, url, data };
+        });
+        const targetRefs = Object.values(state.targets).map((target) => {
+          return {
+            identifier: target.node.identifier ?? target.node.html_id,
+            html_id: target.node.html_id,
+            url,
+            data,
+            implicit: (target.node as any).implicit,
+          };
+        });
+        return [...pageRefs, ...targetRefs];
+      })
+      .flat(),
+  };
+  const filename = join(session.sitePath(), 'myst.xref.json');
+  session.log.debug(`Writing myst.xref.json file: ${filename}`);
+  writeFileToFolder(filename, JSON.stringify(mystXRefs));
+}
+
+/**
+ * Write objects.inv file from collected page reference states
+ *
+ * @param session session with logging
+ * @param states page reference states
+ * @param siteConfig site configuration to pull project metadata
+ */
+export async function writeObjectsInv(
   session: ISession,
-  inv: Inventory,
-  opts: { projectPath: string },
+  states: ReferenceState[],
+  siteConfig: SiteConfig,
 ) {
-  const { pages } = await loadProject(session, opts.projectPath);
-  const pageReferenceStates = selectPageReferenceStates(session, pages, { suppressWarnings: true });
-  pageReferenceStates.forEach((state) => {
+  const inv = new Inventory({
+    project: siteConfig?.title,
+    // TODO: allow a version on the project?!
+    version: String((siteConfig as any)?.version),
+  });
+  states.forEach((state) => {
     inv.setEntry({
       type: Domains.stdDoc,
       name: (state.url as string).replace(/^\//, ''),
@@ -130,7 +183,9 @@ export async function addProjectReferencesToObjectsInv(
       });
     });
   });
-  return inv;
+  const filename = join(session.sitePath(), 'objects.inv');
+  session.log.debug(`Writing objects.inv file: ${filename}`);
+  inv.write(filename);
 }
 
 export async function loadProject(
@@ -472,22 +527,20 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
   }
   if (opts?.writeFiles ?? true) {
     await writeSiteManifest(session, opts);
-    // Write the objects.inv
-    const inv = new Inventory({
-      project: siteConfig?.title,
-      // TODO: allow a version on the project?!
-      version: String((siteConfig as any)?.version ?? '1'),
-    });
+    const states: ReferenceState[] = [];
     await Promise.all(
       siteConfig.projects.map(async (project) => {
         if (!project.path) return;
-        await addProjectReferencesToObjectsInv(session, inv, {
-          projectPath: project.path,
-        });
+        const { pages } = await loadProject(session, project.path);
+        states.push(
+          ...selectPageReferenceStates(session, pages, {
+            suppressWarnings: true,
+          }),
+        );
       }),
     );
-    const filename = join(session.sitePath(), 'objects.inv');
-    inv.write(filename);
+    await writeObjectsInv(session, states, siteConfig);
+    await writeMystXRefJson(session, states);
   }
   return true;
 }
