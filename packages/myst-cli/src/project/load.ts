@@ -12,8 +12,8 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { getAllBibTexFilesOnPath } from '../utils/getAllBibtexFiles.js';
 import { validateTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
-import { projectFromToc } from './fromToc.js';
-import { writeTocFromProject } from './toToc.js';
+import { projectFromTOC } from './fromTOC.js';
+import { writeTOCFromProject } from './toTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
 
 /**
@@ -31,7 +31,7 @@ import type { LocalProject, LocalProjectPage } from './types.js';
 export async function loadProjectFromDisk(
   session: ISession,
   path?: string,
-  opts?: { index?: string; writeToc?: boolean; warnOnNoConfig?: boolean; reloadProject?: boolean },
+  opts?: { index?: string; writeTOC?: boolean; warnOnNoConfig?: boolean; reloadProject?: boolean },
 ): Promise<LocalProject> {
   path = path || resolve('.');
   if (!opts?.reloadProject) {
@@ -50,12 +50,12 @@ export async function loadProjectFromDisk(
     );
   }
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
-  let { index, writeToc } = opts || {};
+  let { index, writeTOC } = opts || {};
   const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
   if (validateTOC(session, path)) {
-    newProject = projectFromToc(session, path);
-    if (writeToc) session.log.warn('Not writing the table of contents, it already exists!');
-    writeToc = false;
+    newProject = projectFromTOC(session, path);
+    if (writeTOC) session.log.warn('Not writing the table of contents, it already exists!');
+    writeTOC = false;
   } else {
     const project = selectors.selectLocalProject(session.store.getState(), path);
     if (!index && !project?.implicitIndex && project?.file) {
@@ -67,14 +67,14 @@ export async function loadProjectFromDisk(
   if (!newProject) {
     throw new Error(`Could not load project from ${path}`);
   }
-  if (writeToc) {
+  if (writeTOC) {
     try {
       session.log.info(
         `📓 Writing '_toc.yml' file to ${path === '.' ? 'the current directory' : path}`,
       );
-      writeTocFromProject(newProject, path);
+      writeTOCFromProject(newProject, path);
       // Re-load from TOC just in case there are subtle differences with resulting project
-      newProject = projectFromToc(session, path);
+      newProject = projectFromTOC(session, path);
     } catch {
       addWarningForFile(
         session,

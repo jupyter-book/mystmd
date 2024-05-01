@@ -41,7 +41,7 @@ const SITE_CONFIG = `site:
 export type InitOptions = {
   project?: boolean;
   site?: boolean;
-  writeToc?: boolean;
+  writeTOC?: boolean;
   ghPages?: boolean;
   ghCurvenote?: boolean;
 };
@@ -61,12 +61,12 @@ Learn more about this CLI and MyST Markdown at: ${chalk.bold('https://mystmd.org
 `;
 
 export async function init(session: ISession, opts: InitOptions) {
-  const { project, site, writeToc, ghPages, ghCurvenote } = opts;
+  const { project, site, writeTOC, ghPages, ghCurvenote } = opts;
 
   if (ghPages) return githubPagesAction(session);
   if (ghCurvenote) return githubCurvenoteAction(session);
 
-  if (!project && !site && !writeToc) {
+  if (!project && !site && !writeTOC) {
     session.log.info(WELCOME());
   }
   loadConfig(session, '.');
@@ -118,12 +118,12 @@ export async function init(session: ISession, opts: InitOptions) {
     );
     fs.writeFileSync(configFile, configData);
   }
-  if (writeToc) {
+  if (writeTOC) {
     loadConfig(session, '.');
-    await loadProjectFromDisk(session, '.', { writeToc });
+    await loadProjectFromDisk(session, '.', { writeTOC });
   }
   // If we have any options, this command is complete!
-  if (writeToc || project || site) return;
+  if (writeTOC || project || site) return;
   session.log.info(''); // New line
   const promptStart = await inquirer.prompt([
     {

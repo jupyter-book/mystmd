@@ -52,7 +52,7 @@ export type ProcessFileOptions = {
 
 export type ProcessProjectOptions = ProcessFileOptions & {
   watchMode?: boolean;
-  writeToc?: boolean;
+  writeTOC?: boolean;
   writeFiles?: boolean;
   reloadProject?: boolean;
   checkLinks?: boolean;
@@ -136,7 +136,7 @@ export async function addProjectReferencesToObjectsInv(
 export async function loadProject(
   session: ISession,
   projectPath: string,
-  opts?: { writeToc?: boolean; reloadProject?: boolean },
+  opts?: { writeTOC?: boolean; reloadProject?: boolean },
 ) {
   const project = await loadProjectFromDisk(session, projectPath, {
     warnOnNoConfig: true,
@@ -286,7 +286,7 @@ export async function processProject(
     extraLinkTransformers,
     extraTransforms,
     watchMode,
-    writeToc,
+    writeTOC,
     writeFiles = true,
     reloadProject,
     execute,
@@ -301,7 +301,7 @@ export async function processProject(
     throw Error('Unable to process project');
   }
   const { project, pages } = await loadProject(session, siteProject.path, {
-    writeToc: writeFiles && writeToc,
+    writeTOC: writeFiles && writeTOC,
     reloadProject,
   });
   if (!watchMode) {

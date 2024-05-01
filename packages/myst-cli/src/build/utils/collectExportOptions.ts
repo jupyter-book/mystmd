@@ -12,7 +12,7 @@ import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 import { validateTOC } from '../../utils/toc.js';
-import { projectFromToc } from '../../project/fromToc.js';
+import { projectFromTOC } from '../../project/fromTOC.js';
 import { loadProjectFromDisk } from '../../project/load.js';
 import type { LocalProject } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
@@ -74,7 +74,7 @@ function resolveArticlesFromTOC(
     ExportFormats.pdf,
     ExportFormats.pdftex,
   ].includes(exp.format);
-  const proj = projectFromToc(session, tocPath, allowLevelLessThanOne ? -1 : 1);
+  const proj = projectFromTOC(session, tocPath, allowLevelLessThanOne ? -1 : 1);
   return resolveArticlesFromProject(exp, proj, vfile);
 }
 
@@ -159,9 +159,9 @@ export function resolveArticles(
   let resolved: ResolvedArticles = { articles, sub_articles };
   // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
   if (exp.toc && !resolved.articles && !resolved.sub_articles) {
-    const resolvedToc = path.resolve(path.dirname(sourceFile), exp.toc);
-    if (validateTOC(session, resolvedToc)) {
-      resolved = resolveArticlesFromTOC(session, exp, resolvedToc, vfile);
+    const resolvedTOC = path.resolve(path.dirname(sourceFile), exp.toc);
+    if (validateTOC(session, resolvedTOC)) {
+      resolved = resolveArticlesFromTOC(session, exp, resolvedTOC, vfile);
     }
   }
   // If no articles are specified, use the sourceFile for article

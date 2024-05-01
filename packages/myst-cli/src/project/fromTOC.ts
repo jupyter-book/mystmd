@@ -61,7 +61,7 @@ function pagesFromChapters(
  * and the first "chapter" level will be 0; However, "sections"
  * will never be level < 1.
  */
-export function projectFromToc(
+export function projectFromTOC(
   session: ISession,
   path: string,
   level: PageLevels = 1,
@@ -113,12 +113,12 @@ export function projectFromToc(
  *
  * The root file is converted into just another top-level page.
  */
-export function pagesFromToc(
+export function pagesFromTOC(
   session: ISession,
   path: string,
   level: PageLevels,
 ): (LocalProjectFolder | LocalProjectPage)[] {
-  const { file, index, pages } = projectFromToc(session, path, nextLevel(level));
+  const { file, index, pages } = projectFromTOC(session, path, nextLevel(level));
   pages.unshift({ file, slug: index, level });
   return pages;
 }

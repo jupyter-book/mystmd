@@ -10,7 +10,7 @@ import { addWarningForFile } from './addWarningForFile.js';
 export const TOC_FORMAT = 'jb-book';
 export const TOC_FORMAT_ARTICLE = 'jb-article';
 
-export type TocOptions = {
+export type TOCOptions = {
   path?: string;
   filename?: string;
   ci?: boolean;
@@ -43,9 +43,9 @@ export const tocFile = (filename: string): string => {
 };
 
 // See https://executablebooks.org/en/latest/blog/2021-06-18-update-toc/
-function upgradeOldJupyterBookToc(oldToc: any[]) {
+function upgradeOldJupyterBookTOC(oldTOC: any[]) {
   // TODO: numbering is ignored
-  const [root, ...parts] = oldToc;
+  const [root, ...parts] = oldTOC;
   const toc: TOC = {
     root: root.file,
     format: TOC_FORMAT,
@@ -57,12 +57,12 @@ function upgradeOldJupyterBookToc(oldToc: any[]) {
   return toc;
 }
 
-export function readTOC(log: Logger, opts?: TocOptions): TOC {
+export function readTOC(log: Logger, opts?: TOCOptions): TOC {
   const filename = join(opts?.path || '.', opts?.filename || '_toc.yml');
   const toc = yaml.load(fs.readFileSync(filename).toString()) as any;
   if (Array.isArray(toc)) {
     try {
-      const old = upgradeOldJupyterBookToc(toc);
+      const old = upgradeOldJupyterBookTOC(toc);
       log.warn(
         `${filename} is out of date: see https://executablebooks.org/en/latest/blog/2021-06-18-update-toc`,
       );
@@ -98,7 +98,7 @@ export function validateTOC(session: ISession, path: string): boolean {
       filename,
       `Table of Contents (ToC) file did not pass validation:\n - ${message}\n - An implicit ToC will be used instead\n`,
       'error',
-      { ruleId: RuleId.validTocStructure },
+      { ruleId: RuleId.validTOCStructure },
     );
     return false;
   }

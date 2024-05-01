@@ -11,7 +11,7 @@ import { VFile } from 'vfile';
 import { createManifestXml, type ManifestItem } from 'meca';
 import { runJatsExport } from '../jats/single.js';
 import { loadFile } from '../../process/file.js';
-import { writeTocFromProject } from '../../project/toToc.js';
+import { writeTOCFromProject } from '../../project/toTOC.js';
 import type { LocalProjectPage } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
 import { castSession } from '../../session/cache.js';
@@ -294,7 +294,7 @@ export async function runMecaExport(
     if (fs.existsSync(path.join(projectPath, '_toc.yml'))) {
       copyFileToFolder(session, path.join(projectPath, '_toc.yml'), bundle, fileCopyErrorLogFn);
     } else {
-      writeTocFromProject(project, bundle);
+      writeTOCFromProject(project, bundle);
     }
     addManifestItem(manifestItems, 'article-source', mecaFolder, path.join(bundle, '_toc.yml'));
     // Write all source markdown/ipynb/etc files
