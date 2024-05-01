@@ -109,7 +109,7 @@ export async function addProjectReferencesToObjectsInv(
   opts: { projectPath: string },
 ) {
   const { pages } = await loadProject(session, opts.projectPath);
-  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  const pageReferenceStates = selectPageReferenceStates(session, pages, { suppressWarnings: true });
   pageReferenceStates.forEach((state) => {
     inv.setEntry({
       type: Domains.stdDoc,
@@ -147,7 +147,48 @@ export async function loadProject(
   return { project, pages };
 }
 
-export function selectPageReferenceStates(session: ISession, pages: { file: string }[]) {
+/**
+ * Warn for duplicate identifiers across pages in a project
+ *
+ * Ignores implicit references.
+ */
+function warnOnDuplicateIdentifiers(session: ISession, states: ReferenceState[]) {
+  const collisions: Record<string, string[]> = {};
+  states.forEach((state) => {
+    state.getIdentifiers().forEach((identifier) => {
+      const target = state.getTarget(identifier);
+      if ((target?.node as any)?.implicit) return;
+      collisions[identifier] ??= [];
+      collisions[identifier].push(state.filePath);
+    });
+  });
+  console.log(collisions);
+  Object.entries(collisions).forEach(([identifier, files]) => {
+    if (files.length <= 1) return;
+    addWarningForFile(
+      session,
+      files[0],
+      `Duplicate identifier in project "${identifier}"`,
+      'warn',
+      {
+        note: `In files: ${files.join(', ')}`,
+        ruleId: RuleId.identifierIsUnique,
+      },
+    );
+  });
+}
+
+/**
+ * Return list of ReferenceStates corresponding to list of pages
+ *
+ * Unless `opts.suppressWarnings` is true, this will log a warning when
+ * multiple identifiers are encountered across pages.
+ */
+export function selectPageReferenceStates(
+  session: ISession,
+  pages: { file: string }[],
+  opts?: { suppressWarnings?: boolean },
+) {
   const cache = castSession(session);
   const pageReferenceStates: ReferenceState[] = pages
     .map((page) => {
@@ -162,6 +203,7 @@ export function selectPageReferenceStates(session: ISession, pages: { file: stri
       return undefined;
     })
     .filter((state): state is ReferenceState => !!state);
+  if (!opts?.suppressWarnings) warnOnDuplicateIdentifiers(session, pageReferenceStates);
   return pageReferenceStates;
 }
 

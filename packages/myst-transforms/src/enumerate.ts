@@ -299,6 +299,7 @@ export interface IReferenceStateResolver {
   getTarget: (identifier?: string, page?: string) => Target | undefined;
   getFileTarget: (identifier?: string) => ReferenceState | undefined;
   resolveReferenceContent: (node: ResolvableCrossReference) => void;
+  getIdentifiers: () => string[];
 }
 
 export class ReferenceState implements IReferenceStateResolver {
@@ -362,15 +363,11 @@ export class ReferenceState implements IReferenceStateResolver {
     if (this.targets[node.identifier] || this.identifiers.includes(node.identifier)) {
       if (!this.vfile) return;
       if ((node as any).implicit) return; // Do not warn on implicit headings
-      fileWarn(
-        this.vfile,
-        `Duplicate identifier "${node.identifier}" for node of type ${node.type}`,
-        {
-          node,
-          source: TRANSFORM_NAME,
-          ruleId: RuleId.identifierIsUnique,
-        },
-      );
+      fileWarn(this.vfile, `Duplicate identifier in file "${node.identifier}"`, {
+        node,
+        source: TRANSFORM_NAME,
+        ruleId: RuleId.identifierIsUnique,
+      });
       return;
     }
     this.targets[node.identifier] = {
@@ -427,6 +424,10 @@ export class ReferenceState implements IReferenceStateResolver {
     }
     node.enumerator = enumerator;
     return enumerator;
+  }
+
+  getIdentifiers() {
+    return [...this.identifiers, ...Object.keys(this.targets)];
   }
 
   getTarget(identifier?: string): Target | undefined {
@@ -520,7 +521,6 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
     this.states = states;
     this.filePath = filePath;
     this.vfile = vfile;
-    // warn on target collision across states?
   }
 
   resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
@@ -530,6 +530,10 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
       return !!state.getTarget(identifier) || !!state.getFileTarget(identifier);
     });
     return pageXRefs;
+  }
+
+  getIdentifiers() {
+    return this.states.map((state) => state.getIdentifiers()).flat();
   }
 
   getTarget(identifier?: string, page?: string): Target | undefined {
