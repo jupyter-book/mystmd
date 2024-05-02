@@ -3,6 +3,7 @@ import type { Download } from '../downloads/types.js';
 import type { Export } from '../exports/types.js';
 import type { Licenses } from '../licenses/types.js';
 import type { Numbering } from '../numbering/types.js';
+import type { ExternalReferences } from '../references/types.js';
 import type { ProjectSettings } from '../settings/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
 import { SITE_FRONTMATTER_KEYS } from '../site/types.js';
@@ -67,8 +68,8 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
 
 export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
   id?: string;
-  /** Intersphinx and cross-project references */
-  references?: Record<string, { url: string }>;
+  /** Intersphinx and MyST cross-project references */
+  references?: ExternalReferences;
   requirements?: string[];
   resources?: string[];
   thebe?: ExpandedThebeFrontmatter;

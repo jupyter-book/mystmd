@@ -16,6 +16,7 @@ import { validateDownloadsList } from '../downloads/validators.js';
 import { validateExportsList } from '../exports/validators.js';
 import { validateLicenses } from '../licenses/validators.js';
 import { validateNumbering } from '../numbering/validators.js';
+import { validateExternalReferences } from '../references/validators.js';
 import { validateSiteFrontmatterKeys } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateDoi } from '../utils/validators.js';
@@ -153,19 +154,10 @@ export function validateProjectFrontmatterKeys(
     output.id = validateString(value.id, incrementOptions('id', opts));
   }
   if (defined(value.references)) {
-    const referencesOpts = incrementOptions('references', opts);
-    const references = validateObject(value.references, referencesOpts);
-    if (references) {
-      output.references = Object.fromEntries(
-        Object.keys(references)
-          .map((key) => {
-            const url = validateUrl(references[key], incrementOptions(key, referencesOpts));
-            if (!url) return undefined;
-            return [key, { url }];
-          })
-          .filter((exists) => !!exists) as [string, { url: string }][],
-      );
-    }
+    output.references = validateExternalReferences(
+      value.references,
+      incrementOptions('references', opts),
+    );
   }
 
   if (defined(value.thebe)) {
