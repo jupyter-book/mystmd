@@ -3,8 +3,8 @@ import type { VFile } from 'vfile';
 import type {
   Link,
   LinkTransformer,
-  MystXRef,
-  MystXRefs,
+  MystXref,
+  MystXrefs,
   ResolvedExternalReference,
 } from './types.js';
 
@@ -32,14 +32,14 @@ export function removeMystPrefix(uri: string, vfile?: VFile, link?: Link, source
 export class MystTransformer implements LinkTransformer {
   protocol = 'myst';
 
-  mystXRefsList: { key: string; url: string; value: MystXRefs }[];
+  mystXrefsList: { key: string; url: string; value: MystXrefs }[];
 
   constructor(references: ResolvedExternalReference[]) {
-    this.mystXRefsList = references
-      .filter((ref): ref is ResolvedExternalReference & { value?: MystXRefs } => {
+    this.mystXrefsList = references
+      .filter((ref): ref is ResolvedExternalReference & { value?: MystXrefs } => {
         return ref.kind === 'myst';
       })
-      .filter((ref): ref is ResolvedExternalReference & { value: MystXRefs } => {
+      .filter((ref): ref is ResolvedExternalReference & { value: MystXrefs } => {
         return !!ref.value;
       });
   }
@@ -47,7 +47,7 @@ export class MystTransformer implements LinkTransformer {
   test(uri?: string): boolean {
     if (!uri) return false;
     const normalizedUri = removeMystPrefix(uri);
-    return !!this.mystXRefsList.find((m) => m.key && normalizedUri.startsWith(`${m.key}:`));
+    return !!this.mystXrefsList.find((m) => m.key && normalizedUri.startsWith(`${m.key}:`));
   }
 
   transform(link: Link, file: VFile): boolean {
@@ -66,8 +66,8 @@ export class MystTransformer implements LinkTransformer {
     const pathname = url.pathname.replace(/^\//, '');
     const hash = url.hash?.replace(/^#/, '');
     const protocol = url.protocol?.replace(/:$/, '');
-    const mystXRefs = this.mystXRefsList.find((m) => m.key === protocol);
-    if (!mystXRefs || !mystXRefs.value) {
+    const mystXrefs = this.mystXrefsList.find((m) => m.key === protocol);
+    if (!mystXrefs || !mystXrefs.value) {
       fileError(file, `Unknown project "${protocol}" for link: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
@@ -75,22 +75,22 @@ export class MystTransformer implements LinkTransformer {
       });
       return false;
     }
-    let match: MystXRef | undefined;
+    let match: MystXref | undefined;
     if (pathname && hash) {
       // Path and identifier explicitly provided
-      match = mystXRefs.value.references.find((ref) => {
+      match = mystXrefs.value.references.find((ref) => {
         if (ref.url.replace(/^\//, '') !== pathname) return false;
         return ref.identifier === hash || ref.html_id === hash;
       });
     } else if (hash) {
       // Only identifier provided - do not match implicit references
-      match = mystXRefs.value.references.find((ref) => {
+      match = mystXrefs.value.references.find((ref) => {
         if (ref.implicit) return false;
         return ref.identifier === hash || ref.html_id === hash;
       });
     } else if (pathname) {
       // Only path provided - only match pages
-      match = mystXRefs.value.references.find((ref) => {
+      match = mystXrefs.value.references.find((ref) => {
         if (ref.kind !== 'page') return false;
         return ref.url.replace(/^\//, '') === pathname || ref.identifier === pathname;
       });
@@ -99,7 +99,7 @@ export class MystTransformer implements LinkTransformer {
     if (!match) {
       fileError(
         file,
-        `"${urlSource}" not found in MyST project ${mystXRefs.key} (${mystXRefs.url})`,
+        `"${urlSource}" not found in MyST project ${mystXrefs.key} (${mystXrefs.url})`,
         {
           node: link,
           source: TRANSFORM_SOURCE,
@@ -109,8 +109,8 @@ export class MystTransformer implements LinkTransformer {
       return false;
     }
     link.internal = false;
-    link.url = `${mystXRefs.url}${match.url}${match.html_id ? '#' : ''}${match.html_id ?? ''}`;
-    link.dataUrl = `${mystXRefs.url}${match.data}`;
+    link.url = `${mystXrefs.url}${match.url}${match.html_id ? '#' : ''}${match.html_id ?? ''}`;
+    link.dataUrl = `${mystXrefs.url}${match.data}`;
     if (hash) {
       // Upgrade links with hashes to cross-references
       (link as any).type = 'crossReference';
