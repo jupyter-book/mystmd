@@ -3,7 +3,7 @@ import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
-import { RuleId, toText, plural } from 'myst-common';
+import { RuleId, toText, plural, normalizeLabel } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
 import type { LinkTransformer, MystXrefs, ReferenceState } from 'myst-transforms';
@@ -21,6 +21,7 @@ import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { watch } from '../store/reducers.js';
+import { selectFileInfo } from '../store/selectors.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
 import version from '../version.js';
@@ -103,7 +104,11 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
  * @param session session with logging
  * @param states page reference states
  */
-export async function writeMystXrefJson(session: ISession, states: ReferenceState[]) {
+export async function writeMystXrefJson(
+  session: ISession,
+  states: ReferenceState[],
+  indexIds: Record<string, string>,
+) {
   const mystXrefs: MystXrefs = {
     version: '1',
     myst: version,
@@ -114,12 +119,11 @@ export async function writeMystXrefJson(session: ISession, states: ReferenceStat
       .map((state) => {
         const { url, dataUrl } = state;
         const data = `/content${dataUrl}`;
-        const pageRefs = [
-          { identifier: url.replace(/^\//, ''), kind: 'page', data, url },
-          ...state.identifiers.map((identifier) => {
-            return { identifier, kind: 'page', data, url };
-          }),
-        ];
+        const pageIds = [url.replace(/^\//, ''), ...state.identifiers];
+        if (indexIds[url]) pageIds.unshift(indexIds[url]);
+        const pageRefs = pageIds.map((identifier) => {
+          return { identifier, kind: 'page', data, url };
+        });
         const targetRefs = Object.values(state.targets).map((target) => {
           return {
             identifier: target.node.identifier ?? target.node.html_id,
@@ -520,10 +524,19 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
   if (opts?.writeFiles ?? true) {
     await writeSiteManifest(session, opts);
     const states: ReferenceState[] = [];
+    const indexIds: Record<string, string> = {};
     await Promise.all(
       siteConfig.projects.map(async (project) => {
         if (!project.path) return;
         const { pages } = await loadProject(session, project.path);
+        if (pages.length) {
+          // Respect 'label' from project frontmatter as allowed cross-reference id
+          const storeState = session.store.getState();
+          const { label } = selectors.selectLocalProjectConfig(storeState, project.path) ?? {};
+          const { identifier } = normalizeLabel(label) ?? {};
+          const { url } = selectFileInfo(storeState, pages[0].file);
+          if (identifier && url) indexIds[url] = identifier;
+        }
         states.push(
           ...selectPageReferenceStates(session, pages, {
             suppressWarnings: true,
@@ -532,7 +545,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
       }),
     );
     await writeObjectsInv(session, states, siteConfig);
-    await writeMystXrefJson(session, states);
+    await writeMystXrefJson(session, states, indexIds);
   }
   return true;
 }

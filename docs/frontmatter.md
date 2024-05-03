@@ -73,8 +73,8 @@ The following table lists the available frontmatter fields, a brief description 
 * - `short_title`
   - a string (max 40 chars, see [](#titles))
   - page & project
-* - `name`
-  - a string (max 500 chars)
+* - `label`
+  - a string (max 500 chars) to identify the page/project in cross-references
   - page & project
 * - `description`
   - a string (max 500 chars)

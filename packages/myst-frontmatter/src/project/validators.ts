@@ -33,8 +33,8 @@ export function validateProjectAndPageFrontmatterKeys(
   if (defined(value.date)) {
     output.date = validateDate(value.date, incrementOptions('date', opts));
   }
-  if (defined(value.name)) {
-    output.name = validateString(value.name, incrementOptions('name', opts));
+  if (defined(value.label)) {
+    output.label = validateString(value.label, incrementOptions('label', opts));
   }
   if (defined(value.doi)) {
     output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
@@ -197,7 +197,7 @@ export function validateProjectFrontmatter(input: any, opts: ValidationOptions) 
   const value =
     validateObjectKeys(
       input,
-      { optional: PROJECT_FRONTMATTER_KEYS, alias: FRONTMATTER_ALIASES },
+      { optional: PROJECT_FRONTMATTER_KEYS, alias: { ...FRONTMATTER_ALIASES, name: 'label' } },
       opts,
     ) || {};
   return validateProjectFrontmatterKeys(value, opts);
