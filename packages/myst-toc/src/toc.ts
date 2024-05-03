@@ -1,50 +1,63 @@
-import type { TOC, Entry, FileEntry, URLEntry, PatternEntry, ParentEntry } from './types.js';
+import type {
+  TOC,
+  Entry,
+  FileEntry,
+  FileParentEntry,
+  URLEntry,
+  URLParentEntry,
+  PatternEntry,
+  ParentEntry,
+  CommonEntry,
+} from './types.js';
 
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
   validateBoolean,
-  validateEnum,
   validateList,
-  validateNumber,
   validateObjectKeys,
+  validateObject,
   validateString,
   validationError,
 } from 'simple-validators';
 
 const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'part', 'class'];
 
-function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): Entry {
+function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): CommonEntry {
+  const output: CommonEntry = {};
   if (defined(entry.title)) {
-    entry.title = validateString(entry.title, incrementOptions('title', opts));
+    output.title = validateString(entry.title, incrementOptions('title', opts));
   }
 
   if (defined(entry.hidden)) {
-    entry.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
+    output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
   }
 
   if (defined(entry.numbering)) {
-    entry.numbering = validateString(entry.numbering, incrementOptions('numbering', opts));
+    output.numbering = validateString(entry.numbering, incrementOptions('numbering', opts));
   }
 
   if (defined(entry.id)) {
-    entry.id = validateString(entry.id, incrementOptions('id', opts));
+    output.id = validateString(entry.id, incrementOptions('id', opts));
   }
 
   if (defined(entry.part)) {
-    entry.part = validateString(entry.part, incrementOptions('part', opts));
+    output.part = validateString(entry.part, incrementOptions('part', opts));
   }
 
   if (defined(entry.class)) {
-    entry.class = validateString(entry.class, incrementOptions('class', opts));
+    output.class = validateString(entry.class, incrementOptions('class', opts));
   }
 
-  return entry as Entry;
+  return output;
 }
 
-export function validateFileEntry(entry: any, opts: ValidationOptions): FileEntry | undefined {
-  let outputEntry = validateObjectKeys(
+export function validateFileEntry(
+  entry: any,
+  opts: ValidationOptions,
+): FileEntry | FileParentEntry | undefined {
+  const intermediate = validateObjectKeys(
     entry,
     {
       required: ['file'],
@@ -52,30 +65,35 @@ export function validateFileEntry(entry: any, opts: ValidationOptions): FileEntr
     },
     opts,
   );
-  if (!outputEntry) {
+  if (!intermediate) {
     return undefined;
   }
 
-  outputEntry.file = validateString(outputEntry.file, incrementOptions('file', opts));
-if (!outputEntry.file) return undefined
-  outputEntry = validateCommonEntry(outputEntry, opts);
-  if (!outputEntry) {
+  const file = validateString(intermediate.file, incrementOptions('file', opts));
+  if (!file) {
     return undefined;
   }
 
+  const commonEntry = validateCommonEntry(intermediate, opts);
+
+  let output: FileEntry | FileParentEntry = { file, ...commonEntry };
   if (defined(entry.children)) {
-    outputEntry.children = validateList(
-      outputEntry.children,
+    const children = validateList(
+      intermediate.children,
       incrementOptions('children', opts),
       (item, ind) => validateEntry(item, incrementOptions(`children.${ind}`, opts)),
     );
+    output = { children, ...output };
   }
 
-  return outputEntry as FileEntry;
+  return output;
 }
 
-export function validateURLEntry(entry: any, opts: ValidationOptions): URLEntry | undefined {
-  let outputEntry = validateObjectKeys(
+export function validateURLEntry(
+  entry: any,
+  opts: ValidationOptions,
+): URLEntry | URLParentEntry | undefined {
+  const intermediate = validateObjectKeys(
     entry,
     {
       required: ['url'],
@@ -83,33 +101,35 @@ export function validateURLEntry(entry: any, opts: ValidationOptions): URLEntry 
     },
     opts,
   );
-  if (!outputEntry) {
+  if (!intermediate) {
     return undefined;
   }
 
-  outputEntry.url = validateString(outputEntry.url, incrementOptions('url', opts));
-
-  outputEntry = validateCommonEntry(outputEntry, opts);
-  if (!outputEntry) {
+  const url = validateString(intermediate.url, incrementOptions('url', opts));
+  if (!url) {
     return undefined;
   }
 
+  const commonEntry = validateCommonEntry(intermediate, opts);
+
+  let output: URLEntry | URLParentEntry = { url, ...commonEntry };
   if (defined(entry.children)) {
-    outputEntry.children = validateList(
-      outputEntry.children,
+    const children = validateList(
+      intermediate.children,
       incrementOptions('children', opts),
       (item, ind) => validateEntry(item, incrementOptions(`children.${ind}`, opts)),
     );
+    output = { children, ...output };
   }
 
-  return outputEntry as URLEntry;
+  return output;
 }
 
 export function validatePatternEntry(
   entry: any,
   opts: ValidationOptions,
 ): PatternEntry | undefined {
-  let outputEntry = validateObjectKeys(
+  const intermediate = validateObjectKeys(
     entry,
     {
       required: ['pattern'],
@@ -117,30 +137,21 @@ export function validatePatternEntry(
     },
     opts,
   );
-  if (!outputEntry) {
+  if (!intermediate) {
     return undefined;
   }
 
-  outputEntry.pattern = validateString(outputEntry.pattern, incrementOptions('pattern', opts));
-
-  outputEntry = validateCommonEntry(outputEntry, opts);
-  if (!outputEntry) {
+  const pattern = validateString(intermediate.pattern, incrementOptions('pattern', opts));
+  if (!pattern) {
     return undefined;
   }
 
-  if (defined(entry.children)) {
-    outputEntry.children = validateList(
-      outputEntry.children,
-      incrementOptions('children', opts),
-      (item, ind) => validateEntry(item, incrementOptions(`children.${ind}`, opts)),
-    );
-  }
-
-  return outputEntry as PatternEntry;
+  const commonEntry = validateCommonEntry(intermediate, opts);
+  return { pattern, ...commonEntry };
 }
 
 export function validateParentEntry(entry: any, opts: ValidationOptions): ParentEntry | undefined {
-  let outputEntry = validateObjectKeys(
+  const intermediate = validateObjectKeys(
     entry,
     {
       required: ['title', 'children'],
@@ -148,34 +159,47 @@ export function validateParentEntry(entry: any, opts: ValidationOptions): Parent
     },
     opts,
   );
-  if (!outputEntry) {
+  if (!intermediate) {
     return undefined;
   }
 
-  outputEntry.title = validateString(outputEntry.title, incrementOptions('title', opts));
-  outputEntry.children = validateList(
-    outputEntry.children,
+  const title = validateString(intermediate.title, incrementOptions('title', opts));
+  if (!title) {
+    return undefined;
+  }
+
+  const children = validateList(
+    intermediate.children,
     incrementOptions('children', opts),
     (item, ind) => validateEntry(item, incrementOptions(`children.${ind}`, opts)),
   );
 
-  outputEntry = validateCommonEntry(outputEntry, opts);
-  if (!outputEntry) {
+  if (!children) {
     return undefined;
   }
 
-  return outputEntry as ParentEntry;
+  const commonEntry = validateCommonEntry(intermediate, opts);
+
+  return {
+    children,
+    title,
+    ...commonEntry,
+  };
 }
 
 export function validateEntry(entry: any, opts: ValidationOptions): Entry | undefined {
-  if (defined(entry.file)) {
-    return validateFileEntry(entry, opts);
-  } else if (defined(entry.url)) {
-    return validateURLEntry(entry, opts);
-  } else if (defined(entry.pattern)) {
-    return validatePatternEntry(entry, opts);
-  } else if (defined(entry.title)) {
-    return validateParentEntry(entry, opts);
+  const intermediate = validateObject(entry, opts);
+  if (!intermediate) {
+    return undefined;
+  }
+  if (defined(intermediate.file)) {
+    return validateFileEntry(intermediate, opts);
+  } else if (defined(intermediate.url)) {
+    return validateURLEntry(intermediate, opts);
+  } else if (defined(intermediate.pattern)) {
+    return validatePatternEntry(intermediate, opts);
+  } else if (defined(intermediate.title)) {
+    return validateParentEntry(intermediate, opts);
   } else {
     return validationError("expected an entry with 'file', 'url', 'pattern', or 'title'", opts);
   }
