@@ -18,6 +18,7 @@ import {
   keysTransform,
   linksTransform,
   MystTransformer,
+  SphinxTransformer,
   WikiTransformer,
   GithubTransformer,
   RRIDTransformer,
@@ -196,7 +197,8 @@ export async function transformMdast(
     new GithubTransformer(),
     new RRIDTransformer(),
     new DOITransformer(), // This also is picked up in the next transform
-    new MystTransformer(intersphinx),
+    new MystTransformer(Object.values(cache.$externalReferences)),
+    new SphinxTransformer(Object.values(cache.$externalReferences)),
   ];
   linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
 
