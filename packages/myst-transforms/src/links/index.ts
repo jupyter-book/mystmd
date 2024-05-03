@@ -13,3 +13,4 @@ export type {
   ResolvedExternalReference,
 } from './types.js';
 export { updateLinkTextIfEmpty } from './utils.js';
+export { checkLinkTextTransform } from './check.js';

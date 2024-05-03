@@ -38,7 +38,7 @@ export class SphinxTransformer implements LinkTransformer {
       fileError(file, `Could not parse url for "${urlSource}"`, {
         node: link,
         source: TRANSFORM_SOURCE,
-        ruleId: RuleId.mystLinkValid,
+        ruleId: RuleId.sphinxLinkValid,
       });
       return false;
     }
@@ -48,7 +48,7 @@ export class SphinxTransformer implements LinkTransformer {
       fileError(file, `Unknown project "${url.protocol}" for link: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
-        ruleId: RuleId.mystLinkValid,
+        ruleId: RuleId.sphinxLinkValid,
       });
       return false;
     }
@@ -64,7 +64,7 @@ export class SphinxTransformer implements LinkTransformer {
       fileError(file, `"${urlSource}" not found in intersphinx ${project.id} (${project.path})`, {
         node: link,
         source: TRANSFORM_SOURCE,
-        ruleId: RuleId.mystLinkValid,
+        ruleId: RuleId.sphinxLinkValid,
       });
       return false;
     }

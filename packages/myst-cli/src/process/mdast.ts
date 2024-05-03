@@ -28,6 +28,7 @@ import {
   abbreviationPlugin,
   reconstructHtmlPlugin,
   inlineMathSimplificationPlugin,
+  checkLinkTextTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -322,10 +323,11 @@ export async function postProcessMdast(
 
   // Ensure there are keys on every node after post processing
   keysTransform(mdast);
+  checkLinkTextTransform(mdast, vfile);
   logMessagesFromVFile(session, fileState.vfile);
   logMessagesFromVFile(session, vfile);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
-  if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);
+  if (checkLinks) await checkLinksTransform(session, file, mdast);
 }
 
 export async function finalizeMdast(
