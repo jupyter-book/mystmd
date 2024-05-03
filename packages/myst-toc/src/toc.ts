@@ -57,7 +57,7 @@ export function validateFileEntry(entry: any, opts: ValidationOptions): FileEntr
   }
 
   outputEntry.file = validateString(outputEntry.file, incrementOptions('file', opts));
-
+if (!outputEntry.file) return undefined
   outputEntry = validateCommonEntry(outputEntry, opts);
   if (!outputEntry) {
     return undefined;
