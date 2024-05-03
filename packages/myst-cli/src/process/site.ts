@@ -108,18 +108,22 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
     version: '1',
     myst: version,
     references: states
-      .filter((state): state is ReferenceState & { dataUrl: string } => !!state.dataUrl)
+      .filter((state): state is ReferenceState & { url: string; dataUrl: string } => {
+        return !!state.url && !!state.dataUrl;
+      })
       .map((state) => {
-        const { url, dataUrl: data } = state;
+        const { url, dataUrl } = state;
+        const data = `/content${dataUrl}`;
         const pageRefs = state.identifiers.map((identifier) => {
-          return { identifier, url, data };
+          return { identifier, kind: 'page', data, url };
         });
         const targetRefs = Object.values(state.targets).map((target) => {
           return {
             identifier: target.node.identifier ?? target.node.html_id,
             html_id: target.node.html_id,
-            url,
+            kind: target.kind,
             data,
+            url,
             implicit: (target.node as any).implicit,
           };
         });
@@ -203,7 +207,6 @@ function warnOnDuplicateIdentifiers(session: ISession, states: ReferenceState[])
       collisions[identifier].push(state.filePath);
     });
   });
-  console.log(collisions);
   Object.entries(collisions).forEach(([identifier, files]) => {
     if (files.length <= 1) return;
     addWarningForFile(
