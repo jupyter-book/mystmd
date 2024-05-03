@@ -88,11 +88,11 @@ export class MystTransformer implements LinkTransformer {
         if (ref.implicit) return false;
         return ref.identifier === hash || ref.html_id === hash;
       });
-    } else if (pathname) {
-      // Only path provided - only match pages
+    } else {
+      // Nothing pathname is provided - only match pages
+      // Note: pathname may be an empty string; this matches the root page
       match = mystXrefs.value.references.find((ref) => {
-        if (ref.kind !== 'page') return false;
-        return ref.url.replace(/^\//, '') === pathname || ref.identifier === pathname;
+        return ref.kind === 'page' && ref.identifier === pathname;
       });
     }
     // handle case of pathname and no hash - just link to page
@@ -109,7 +109,7 @@ export class MystTransformer implements LinkTransformer {
       return false;
     }
     link.internal = false;
-    link.url = `${mystXrefs.url}${match.url}${match.html_id ? '#' : ''}${match.html_id ?? ''}`;
+    link.url = `${mystXrefs.url}${match.url}`;
     link.dataUrl = `${mystXrefs.url}${match.data}`;
     if (hash) {
       // Upgrade links with hashes to cross-references

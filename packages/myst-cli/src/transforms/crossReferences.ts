@@ -66,8 +66,8 @@ export async function transformMystXrefs(
           return;
         }
         addChildrenFromTargetNode(node as any, target as any, frontmatter.numbering, vfile);
-        number += 1;
       }
+      number += 1;
     }),
   ]);
   const denominator = number === nodes.length ? '' : `/${nodes.length}`;
