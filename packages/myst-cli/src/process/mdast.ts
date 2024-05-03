@@ -63,6 +63,7 @@ import {
   transformImagesToDisk,
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
+  transformMystXrefs,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -201,7 +202,7 @@ export async function transformMdast(
     new SphinxTransformer(Object.values(cache.$externalReferences)),
   ];
   linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
-
+  await transformMystXrefs(session, vfile, mdast, frontmatter);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(
     session,
