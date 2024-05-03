@@ -5,16 +5,10 @@ import {
   validateObjectKeys,
   validateString,
   validateUrl,
-  validationError,
   validationWarning,
   type ValidationOptions,
 } from 'simple-validators';
-import {
-  KNOWN_REFERENCE_KINDS,
-  RESERVED_REFERENCE_KEYS,
-  type ExternalReference,
-  type ExternalReferences,
-} from './types.js';
+import { KNOWN_REFERENCE_KINDS, type ExternalReference, type ExternalReferences } from './types.js';
 
 function validateExternalReference(
   input: any,
@@ -52,12 +46,11 @@ export function validateExternalReferences(
   const output = Object.fromEntries(
     Object.entries(value)
       .map(([key, ref]) => {
-        if (RESERVED_REFERENCE_KEYS.includes(key)) {
-          return validationError(`Cannot use reserved reference key "${key}"`, opts);
-        }
+        const outputKey = validateString(key, { ...opts, regex: 'a-zA-Z1-9_-' });
+        if (!outputKey) return undefined;
         const outputRef = validateExternalReference(ref, incrementOptions(key, opts));
         if (!outputRef) return undefined;
-        return [key, outputRef];
+        return [outputKey, outputRef];
       })
       .filter((exists): exists is [string, ExternalReference] => !!exists),
   );
