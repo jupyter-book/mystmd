@@ -67,7 +67,6 @@ import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
-import { loadIntersphinx } from './loadIntersphinx.js';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
@@ -192,7 +191,6 @@ export async function transformMdast(
   propagateBlockDataToCode(session, vfile, mdast);
 
   // Run the link transformations that can be done without knowledge of other files
-  const intersphinx = projectPath ? await loadIntersphinx(session, { projectPath }) : [];
   const transformers = [
     new WikiTransformer(),
     new GithubTransformer(),

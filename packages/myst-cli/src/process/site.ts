@@ -6,7 +6,7 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
-import type { LinkTransformer, ReferenceState } from 'myst-transforms';
+import type { LinkTransformer, MystXRefs, ReferenceState } from 'myst-transforms';
 import { select } from 'unist-util-select';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
 import type { SiteManifestOptions } from '../build/site/manifest.js';
@@ -26,7 +26,7 @@ import { ImageExtensions } from '../utils/resolveExtension.js';
 import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
-import { loadIntersphinx } from './loadIntersphinx.js';
+import { loadReferences } from './loadReferences.js';
 import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 
@@ -61,20 +61,6 @@ export type ProcessProjectOptions = ProcessFileOptions & {
 };
 
 export type ProcessSiteOptions = ProcessProjectOptions & SiteManifestOptions;
-
-type MystXRef = {
-  identifier: string;
-  html_id?: string;
-  data: string;
-  url?: string;
-  implicit?: boolean;
-};
-
-type MystXRefs = {
-  version: '1';
-  myst: string;
-  references: MystXRef[];
-};
 
 /**
  * Trigger a file-changed notification, and clear the file from the cache
@@ -408,7 +394,7 @@ export async function processProject(
       // Load all content (.md and .ipynb)
       ...pages.map((page) => loadFile(session, page.file, siteProject.path, undefined)),
       // Load up all the intersphinx references
-      loadIntersphinx(session, { projectPath: siteProject.path }) as Promise<any>,
+      loadReferences(session, { projectPath: siteProject.path }),
     ]);
   }
   // Consolidate all citations onto single project citation renderer

@@ -4,7 +4,7 @@ import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
 import { combineProjectCitationRenderers } from '../../process/citations.js';
 import { loadFile, selectFile } from '../../process/file.js';
-import { loadIntersphinx } from '../../process/loadIntersphinx.js';
+import { loadReferences } from '../../process/loadReferences.js';
 import type { TransformFn } from '../../process/mdast.js';
 import { postProcessMdast, transformMdast } from '../../process/mdast.js';
 import { loadProject, selectPageReferenceStates } from '../../process/site.js';
@@ -50,7 +50,7 @@ export async function getFileContent(
       });
     }),
     // Load up all the intersphinx references
-    loadIntersphinx(session, { projectPath }) as Promise<any>,
+    loadReferences(session, { projectPath }),
   ]);
   // Consolidate all citations onto single project citation renderer
   combineProjectCitationRenderers(session, projectPath);
