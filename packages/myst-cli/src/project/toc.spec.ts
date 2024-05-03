@@ -2,8 +2,8 @@ import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { projectFromPath } from './fromPath';
-import { pagesFromToc, projectFromToc } from './fromToc';
-import { tocFromProject } from './toToc';
+import { pagesFromTOC, projectFromTOC } from './fromTOC';
+import { tocFromProject } from './toTOC';
 import { findProjectsOnPath } from './load';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
@@ -636,7 +636,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(pagesFromToc(session, '.', 1)).toEqual([
+    expect(pagesFromTOC(session, '.', 1)).toEqual([
       { slug: 'index', file: 'index.md', level: 1 },
       { slug: 'a', file: 'a.md', level: 2 },
       { title: 'Sections', level: 2 },
@@ -652,7 +652,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(projectFromToc(session, '.', 1)).toEqual({
+    expect(projectFromTOC(session, '.', 1)).toEqual({
       index: 'index',
       file: 'index.md',
       path: '.',
@@ -672,7 +672,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(projectFromToc(session, '.', 0)).toEqual({
+    expect(projectFromTOC(session, '.', 0)).toEqual({
       index: 'index',
       file: 'index.md',
       path: '.',
@@ -692,7 +692,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(projectFromToc(session, '.', -1)).toEqual({
+    expect(projectFromTOC(session, '.', -1)).toEqual({
       index: 'index',
       file: 'index.md',
       path: '.',
@@ -714,7 +714,7 @@ describe('pagesFromToc', () => {
       'd.md': '',
       'e.md': '',
     });
-    expect(pagesFromToc(session, '.', 1)).toEqual([
+    expect(pagesFromTOC(session, '.', 1)).toEqual([
       { slug: 'index', file: 'index.md', level: 1 },
       { slug: 'a', file: 'a.md', level: 2 },
       { title: 'Sections', level: 2 },

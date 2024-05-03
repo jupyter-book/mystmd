@@ -4,7 +4,7 @@ import { Session, init, makeSiteOption } from 'myst-cli';
 import { clirun } from './clirun.js';
 import {
   makeProjectOption,
-  makeWriteTocOption,
+  makeWriteTOCOption,
   makeGithubPagesOption,
   makeGithubCurvenoteOption,
 } from './options.js';
@@ -14,7 +14,7 @@ export function makeInitCLI(program: Command) {
     .description('Initialize a MyST project in the current directory')
     .addOption(makeProjectOption('Initialize config for MyST project content'))
     .addOption(makeSiteOption('Initialize config for MyST site'))
-    .addOption(makeWriteTocOption())
+    .addOption(makeWriteTOCOption())
     .addOption(makeGithubPagesOption())
     .addOption(makeGithubCurvenoteOption())
     .action(clirun(Session, init, program));

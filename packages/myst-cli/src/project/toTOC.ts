@@ -80,7 +80,7 @@ export function tocFromProject(project: PartialLocalProject, path = '.') {
   return toc;
 }
 
-export function writeTocFromProject(project: PartialLocalProject, path: string) {
+export function writeTOCFromProject(project: PartialLocalProject, path: string) {
   const filename = join(path, '_toc.yml');
   const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project, path))}`;
   fs.writeFileSync(filename, content);

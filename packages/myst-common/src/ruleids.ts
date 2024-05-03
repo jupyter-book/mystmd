@@ -38,8 +38,8 @@ export enum RuleId {
   roleBodyCorrect = 'role-body-correct',
   // Project structure rules
   tocContentsExist = 'toc-contents-exist',
-  validTocStructure = 'valid-toc-structure',
-  validToc = 'valid-toc',
+  validTOCStructure = 'valid-toc-structure',
+  validTOC = 'valid-toc',
   tocWritten = 'toc-written',
   // Image rules
   imageDownloads = 'image-downloads',

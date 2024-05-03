@@ -10,7 +10,7 @@ import { fileInfo } from '../utils/fileInfo.js';
 import { nextLevel } from '../utils/nextLevel.js';
 import { VALID_FILE_EXTENSIONS, isValidFile } from '../utils/resolveExtension.js';
 import { shouldIgnoreFile } from '../utils/shouldIgnoreFile.js';
-import { pagesFromToc } from './fromToc.js';
+import { pagesFromTOC } from './fromTOC.js';
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -60,7 +60,7 @@ function projectPagesFromPath(
   if (contents.includes(join(path, '_toc.yml'))) {
     const prevLevel = (level < 2 ? 1 : level - 1) as PageLevels;
     try {
-      return pagesFromToc(session, path, prevLevel);
+      return pagesFromTOC(session, path, prevLevel);
     } catch {
       if (!suppressWarnings) {
         addWarningForFile(
@@ -68,7 +68,7 @@ function projectPagesFromPath(
           join(path, '_toc.yml'),
           `Invalid table of contents ignored`,
           'warn',
-          { ruleId: RuleId.validToc },
+          { ruleId: RuleId.validTOC },
         );
       }
     }
