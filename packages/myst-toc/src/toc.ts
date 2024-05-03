@@ -15,7 +15,7 @@ import {
 
 const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'part', 'class'];
 
-function validateCommonEntry(entry: any, opts: ValidationOptions): Entry | undefined {
+function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): Entry {
   if (defined(entry.title)) {
     entry.title = validateString(entry.title, incrementOptions('title', opts));
   }
