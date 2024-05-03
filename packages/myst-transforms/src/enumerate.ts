@@ -461,46 +461,62 @@ export class ReferenceState implements IReferenceStateResolver {
     }
     // Put the kind on the node so we can use that later
     node.kind = target.kind;
-    const noNodeChildren = !node.children?.length;
-    if (target.kind === TargetKind.heading) {
-      const numberHeading = shouldEnumerate(target.node, TargetKind.heading, this.numbering);
-      const template = getReferenceTemplate(target, this.numbering, numberHeading, true);
-      fillReferenceEnumerators(
-        this.vfile,
-        node,
-        template,
-        target.node,
-        copyNode(target.node as Heading).children as PhrasingContent[],
-      );
-    } else {
-      // By default look into the caption or admonition title if it exists
-      const caption =
-        select('caption', target.node) ||
-        select('admonitionTitle', target.node) ||
-        select('definitionTerm', target.node);
-      // Ensure we are getting the first paragraph
-      const captionParagraph = (
-        caption ? select('paragraph', caption) ?? caption : caption
-      ) as Paragraph | null;
-      const title = captionParagraph
-        ? (copyNode(captionParagraph)?.children as PhrasingContent[])
-        : undefined;
-      if (title && node.kind === ReferenceKind.ref && noNodeChildren) {
-        node.children = title as any;
-      }
-      const template = getReferenceTemplate(
-        target,
-        this.numbering,
-        !!target.node.enumerator,
-        !!title,
-      );
-      fillReferenceEnumerators(this.vfile, node, template, target.node, title);
-    }
-    node.resolved = true;
-    // The identifier may have changed in the lookup, but unlikely
-    node.identifier = target.node.identifier;
-    node.html_id = target.node.html_id;
+    addChildrenFromTargetNode(node, target.node, this.numbering, this.vfile);
   }
+}
+
+export function addChildrenFromTargetNode(
+  node: ResolvableCrossReference,
+  targetNode: TargetNodes,
+  numbering?: Numbering,
+  vfile?: VFile,
+) {
+  numbering = fillNumbering(numbering, DEFAULT_NUMBERING);
+  const kind = kindFromNode(targetNode);
+  const noNodeChildren = !node.children?.length;
+  if (kind === TargetKind.heading) {
+    const numberHeading = shouldEnumerate(targetNode, TargetKind.heading, numbering);
+    const template = getReferenceTemplate(
+      { node: targetNode, kind },
+      numbering,
+      numberHeading,
+      true,
+    );
+    fillReferenceEnumerators(
+      vfile,
+      node,
+      template,
+      targetNode,
+      copyNode(targetNode as Heading).children as PhrasingContent[],
+    );
+  } else {
+    // By default look into the caption or admonition title if it exists
+    const caption =
+      select('caption', targetNode) ||
+      select('admonitionTitle', targetNode) ||
+      select('definitionTerm', targetNode);
+    // Ensure we are getting the first paragraph
+    const captionParagraph = (
+      caption ? select('paragraph', caption) ?? caption : caption
+    ) as Paragraph | null;
+    const title = captionParagraph
+      ? (copyNode(captionParagraph)?.children as PhrasingContent[])
+      : undefined;
+    if (title && node.kind === ReferenceKind.ref && noNodeChildren) {
+      node.children = title as any;
+    }
+    const template = getReferenceTemplate(
+      { node: targetNode, kind },
+      numbering,
+      !!targetNode.enumerator,
+      !!title,
+    );
+    fillReferenceEnumerators(vfile, node, template, targetNode, title);
+  }
+  node.resolved = true;
+  // The identifier may have changed in the lookup, but unlikely
+  node.identifier = targetNode.identifier;
+  node.html_id = targetNode.html_id;
 }
 
 function warnNodeTargetNotFound(node: ResolvableCrossReference, vfile?: VFile) {
@@ -765,6 +781,8 @@ export const resolveCrossReferencesTransform = (
   opts: StateResolverOptions,
 ) => {
   visit(tree, 'crossReference', (node: CrossReference) => {
+    // If protocol is set, this came from a LinkTransformer and will not be touched here
+    if ((node as any).protocol) return;
     opts.state.resolveReferenceContent(node);
   });
 };
