@@ -18,19 +18,70 @@ MyST supports referencing rich content in a growing number of formats, including
 [](./cross-references.md) for referencing content in your project and [](./citations.md) to cite scholarly work and create bibliographies.
 ```
 
+(myst-xref)=
 ## Referencing external MyST projects
 
 When using the HTML renderer for MyST, an API is provided for the deployed site.
-This provides pre-parsed, structured content as an AST that can be included and rendered in a tooltip.
+This provides pre-parsed, structured content as an AST that can be included in other projects and rendered in a tooltip.
 
 ```{tip}
 Try adding `.json` at the end of the URL on this page. The data is structured and provides authors, license information,
 as well as the full content in a parsed form that can be used for an inline reference on external pages.
 ```
 
-```{note}
-Currently cross-project links aren't fully implemented, check back soon!
+In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below loads cross references from these MyST docs; these paths, and all other MyST projects, allow this by exposing a `myst.xref.json` file.
+
+(myst-xref-config)=
+
+```yaml
+references:
+  myst-guide: https://mystmd.org/guide
+  jtex: https://mystmd.org/jtex
 ```
+
+When you specify these in your project configuration, MyST will load the remote `myst.xref.json` file,
+and provide access to all of the pages and available reference targets in that project. This `json` file will be cached to disk locally in the `_build` folder, eliminating duplicate web requests on subsequent builds. If the target documentation updates and you must reload the remote references, you may delete the cache with `myst clean --cache`.
+
+````{important}
+# MyST Cross Reference Examples
+
+```{list-table}
+:header-rows: 1
+* - MyST Syntax
+  - Rendered
+* - `[](xref:myst-guide)`
+    : A reference to the first page of the MyST Guide.
+  - [](xref:myst-guide)
+* - `[](xref:myst-guide#frontmatter-before)`
+    : A reference to a labeled figure in the MyST Guide.
+  - [](xref:myst-guide#frontmatter-before)
+* - `<xref:jtex/template-rules#syntax>`
+    : Alternate link syntax that references a heading on a specific page of the jtex documentation.
+  - <xref:jtex/template-rules#syntax>
+```
+````
+
+To reference content in the linked MyST project, use the `xref:` protocol in a link followed by the `project` key (from `references`), the url path and the target.
+For example, `<xref:jtex/template-rules#syntax>` renders to:\
+"<xref:jtex/template-rules#syntax>"\
+and is made of a `protocol`, `project`, `path` and `target`.
+
+protocol
+: The protocol for this type of link is `xref:`, and is what selects for cross-project referencing.
+
+project
+: the `project` key above is "jtex" which is defined in your local [project configuration](#myst-xref-config) above.
+
+path
+: the `path` is everything that follows the project before the `#`. It corresponds directly to the URL path in the MyST site. In the example above, path is "/template-rules"
+: Path is optional in most cases; the `target` can be resolved against the entire project without the path. An exception to this is headings without an explicit label in the source markdown - these will require path.
+
+target
+: The target is everything that follows the `#` and is a named reference in the project. In the example above it is "syntax".
+: Target is also optional - if not provided, the cross reference will simply link to a page in the external MyST project. However, without the target, there will not be a rendered tooltip.
+: When creating a cross reference, you can determine `path` and `target` by simply navigating to your target content in the external MyST project and copying the path and fragment from the URL.
+
+If no link text is provided, e.g. `[](xref:...)`, text will be generated from the external project at build-time. You may of course override this behavior by providing you own text, `[text](xref:...)`.
 
 (intersphinx)=
 
@@ -38,7 +89,7 @@ Currently cross-project links aren't fully implemented, check back soon!
 
 MyST can integrate directly with other Sphinx documentation, which is used in many Python projects including the [standard library](https://docs.python.org/).
 
-In your project configuration, include the `references` object with named links out to the Sphinx or MyST documentation that you will reference in the project. For example, in the demonstration below we will load the Python 3.7 documentation and JupyterBook docs, both of which use sphinx and expose cross references through an `objects.inv` file.
+Same as [MyST cross references](#myst-xref), use the `references` object to list Sphinx projects. For example, in the demonstration below we will load the Python 3.7 documentation and JupyterBook docs, both of which use sphinx and expose cross references through an `objects.inv` file.
 
 (intersphinx-config)=
 
@@ -48,8 +99,11 @@ references:
   jupyterbook: https://jupyterbook.org/en/stable/
 ```
 
-When you specify these in your project configuration, MyST will load the remote `objects.inv` file,
-and provide access to all of the references in that project. This `inv` file will be cached to disk locally in the `_build` folder, eliminating duplicate web requests on subsequent builds. If the target documentation updates and you must reload the remote references, you may delete the cache with `myst clean --cache`.
+```{tip}
+In your `references` object, you may freely mix MyST and Sphinx projects. MyST will decipher which to use, based on the presence of `myst.xref.json` or `objects.inv` files at the specified URL.
+```
+
+The behavior of these entries is identical to MyST cross references: the remote `objects.inv` file, which contains all available project references, is downloaded and cached in the `_build` folder.
 
 ````{important}
 # Intersphinx Examples
@@ -58,37 +112,35 @@ and provide access to all of the references in that project. This `inv` file wil
 :header-rows: 1
 * - MyST Syntax
   - Rendered
-* - `[](myst:python#zipapp-specifying-the-interpreter)`
+* - `[](xref:python#zipapp-specifying-the-interpreter)`
     : A reference to the reference documentation in Python.
-  - [](myst:python#zipapp-specifying-the-interpreter)
-* - `[](myst:jupyterbook#content:references)`
+  - [](xref:python#zipapp-specifying-the-interpreter)
+* - `[](xref:jupyterbook#content:references)`
     : A reference to the JupyterBook documentation, that brings you directly to the reference,
       as well as fills in the label text.
-  - [](myst:jupyterbook#content:references)
-* - `<myst:#library/abc>`
+  - [](xref:jupyterbook#content:references)
+* - `<xref:#library/abc>`
     : A simplified link that will resolve to the first external inventory that satisfies the target.
-  - <myst:#library/abc>
+  - <xref:#library/abc>
 ```
 ````
 
-To reference a function, class or label in the linked documentation, use the `myst:` protocol in a link followed by the `project` key and the target.
-For example, `<myst:python#library/abc>` renders to:\
-"<myst:python#library/abc>"\
+To reference a function, class or label in the linked documentation, use the `xref:` protocol in a link followed by the `project` key and the target.
+For example, `<xref:python#library/abc>` renders to:\
+"<xref:python#library/abc>"\
 and is made of a `protocol`, `project` and `target`.
 
 protocol
-: The protocol for this type of link is `myst:`, and is what selects for cross-project referencing.
+: The protocol for this type of link is `xref:`, and is what selects for cross-project referencing.
 
 project
 : the `project` key above is "python" which is defined in your local [project configuration](#intersphinx-config) above.
-: The project is optional, however, we recommend that you include it to both efficiently look up the reference as well as be explicit as to what project you are referring to.
-: If the project is not included, all projects will be searched for the reference in the order given in the `intersphinx` configuration.
 
 target
 : The target is everything that follows the `#` and is a named reference in the project.
 : In the example above it is "library/abc".
 
-As with any link, the text can be overridden using markdown link syntax `[text](myst:...)`.
+As with any link, the text can be overridden using markdown link syntax `[text](xref:...)`.
 
 ````{tip}
 :class: dropdown
@@ -111,7 +163,7 @@ std:doc Abstract Base Classes for Containers (library/collections.abc)
   https://docs.python.org/3.7/library/collections.abc.html
 ```
 
-Use the target in the parenthesis, which would be `myst:python#library/abc` above.
+Use the target in the parenthesis, which would be `xref:python#library/abc` above.
 ````
 
 ## Wikipedia Links
