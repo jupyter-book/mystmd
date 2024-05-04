@@ -38,6 +38,9 @@ export const USE_PROJECT_FALLBACK = [
 
 export function validatePageFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: PageFrontmatter = validateProjectAndPageFrontmatterKeys(value, opts);
+  if (defined(value.label)) {
+    output.label = validateString(value.label, incrementOptions('label', opts));
+  }
   if (defined(value.kernelspec)) {
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
   }
@@ -103,7 +106,7 @@ export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
   const value =
     validateObjectKeys(
       input,
-      { optional: PAGE_FRONTMATTER_KEYS, alias: FRONTMATTER_ALIASES },
+      { optional: PAGE_FRONTMATTER_KEYS, alias: { ...FRONTMATTER_ALIASES, name: 'label' } },
       opts,
     ) || {};
   return validatePageFrontmatterKeys(value, opts);

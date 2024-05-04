@@ -73,9 +73,6 @@ The following table lists the available frontmatter fields, a brief description 
 * - `short_title`
   - a string (max 40 chars, see [](#titles))
   - page & project
-* - `label`
-  - a string (max 500 chars) to identify the page/project in cross-references
-  - page & project
 * - `description`
   - a string (max 500 chars)
   - page & project
@@ -85,6 +82,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `downloads`
   - a download object, see [](./website-downloads.md)
   - page & project
+* - `label`
+  - a string (max 500 chars) to identify the page in cross-references
+  - page only
 * - `tags`
   - a list of strings
   - page only

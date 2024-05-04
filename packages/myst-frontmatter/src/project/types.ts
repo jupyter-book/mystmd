@@ -11,7 +11,6 @@ import type { ExpandedThebeFrontmatter } from '../thebe/types.js';
 
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
-  'label',
   'doi',
   'arxiv',
   'open_access',
@@ -44,7 +43,6 @@ export const PROJECT_FRONTMATTER_KEYS = [
 
 export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   date?: string;
-  label?: string;
   doi?: string;
   arxiv?: string;
   open_access?: boolean;

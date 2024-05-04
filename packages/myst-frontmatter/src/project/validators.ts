@@ -33,9 +33,6 @@ export function validateProjectAndPageFrontmatterKeys(
   if (defined(value.date)) {
     output.date = validateDate(value.date, incrementOptions('date', opts));
   }
-  if (defined(value.label)) {
-    output.label = validateString(value.label, incrementOptions('label', opts));
-  }
   if (defined(value.doi)) {
     output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
   }
