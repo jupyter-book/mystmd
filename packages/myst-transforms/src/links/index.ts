@@ -8,8 +8,8 @@ export { GithubTransformer } from './github.js';
 export type {
   LinkTransformer,
   Link,
-  MystXref,
-  MystXrefs,
+  MystXRef,
+  MystXRefs,
   ResolvedExternalReference,
 } from './types.js';
 export { updateLinkTextIfEmpty } from './utils.js';

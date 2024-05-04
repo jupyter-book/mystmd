@@ -6,7 +6,7 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
-import type { LinkTransformer, MystXrefs, ReferenceState } from 'myst-transforms';
+import type { LinkTransformer, MystXRefs, ReferenceState } from 'myst-transforms';
 import { select } from 'unist-util-select';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
 import type { SiteManifestOptions } from '../build/site/manifest.js';
@@ -103,8 +103,8 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
  * @param session session with logging
  * @param states page reference states
  */
-export async function writeMystXrefJson(session: ISession, states: ReferenceState[]) {
-  const mystXrefs: MystXrefs = {
+export async function writeMystXRefJson(session: ISession, states: ReferenceState[]) {
+  const mystXRefs: MystXRefs = {
     version: '1',
     myst: version,
     references: states
@@ -134,7 +134,7 @@ export async function writeMystXrefJson(session: ISession, states: ReferenceStat
   };
   const filename = join(session.sitePath(), 'myst.xref.json');
   session.log.debug(`Writing myst.xref.json file: ${filename}`);
-  writeFileToFolder(filename, JSON.stringify(mystXrefs));
+  writeFileToFolder(filename, JSON.stringify(mystXRefs));
 }
 
 /**
@@ -530,7 +530,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
       }),
     );
     await writeObjectsInv(session, states, siteConfig);
-    await writeMystXrefJson(session, states);
+    await writeMystXRefJson(session, states);
   }
   return true;
 }

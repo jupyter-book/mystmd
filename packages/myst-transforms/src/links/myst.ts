@@ -3,8 +3,8 @@ import type { VFile } from 'vfile';
 import type {
   Link,
   LinkTransformer,
-  MystXref,
-  MystXrefs,
+  MystXRef,
+  MystXRefs,
   ResolvedExternalReference,
 } from './types.js';
 
@@ -29,14 +29,14 @@ export function removeMystPrefix(uri: string, vfile?: VFile, link?: Link, source
 export class MystTransformer implements LinkTransformer {
   protocol = 'xref:myst';
 
-  mystXrefsList: { key: string; url: string; value: MystXrefs }[];
+  mystXRefsList: { key: string; url: string; value: MystXRefs }[];
 
   constructor(references: ResolvedExternalReference[]) {
-    this.mystXrefsList = references
-      .filter((ref): ref is ResolvedExternalReference & { value?: MystXrefs } => {
+    this.mystXRefsList = references
+      .filter((ref): ref is ResolvedExternalReference & { value?: MystXRefs } => {
         return ref.kind === 'myst';
       })
-      .filter((ref): ref is ResolvedExternalReference & { value: MystXrefs } => {
+      .filter((ref): ref is ResolvedExternalReference & { value: MystXRefs } => {
         return !!ref.value;
       });
   }
@@ -44,7 +44,7 @@ export class MystTransformer implements LinkTransformer {
   test(uri?: string): boolean {
     if (!uri) return false;
     const normalizedUri = removeMystPrefix(uri);
-    return !!this.mystXrefsList.find((m) => m.key && normalizedUri.startsWith(`xref:${m.key}`));
+    return !!this.mystXRefsList.find((m) => m.key && normalizedUri.startsWith(`xref:${m.key}`));
   }
 
   transform(link: Link, file: VFile): boolean {
@@ -66,8 +66,8 @@ export class MystTransformer implements LinkTransformer {
     // Page includes leading slash
     const page = url.pathname.slice(key.length);
     const identifier = url.hash?.replace(/^#/, '');
-    const mystXrefs = this.mystXrefsList.find((m) => m.key === key);
-    if (!mystXrefs || !mystXrefs.value) {
+    const mystXRefs = this.mystXRefsList.find((m) => m.key === key);
+    if (!mystXRefs || !mystXRefs.value) {
       fileError(file, `Unknown project "${key}" for link: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
@@ -75,9 +75,9 @@ export class MystTransformer implements LinkTransformer {
       });
       return false;
     }
-    let match: MystXref | undefined;
+    let match: MystXRef | undefined;
     if (identifier) {
-      match = mystXrefs.value.references.find((ref) => {
+      match = mystXRefs.value.references.find((ref) => {
         // If page is explicitly provided, it must match url
         if (page && ref.url !== page) return false;
         // If page is not provided, implicit links are ignored
@@ -86,7 +86,7 @@ export class MystTransformer implements LinkTransformer {
       });
     } else {
       // If no identifier, only match page urls. No page matches root path
-      match = mystXrefs.value.references.find((ref) => {
+      match = mystXRefs.value.references.find((ref) => {
         if (ref.kind !== 'page') return false;
         if (!page && ref.url === '/') return true;
         return ref.url === page;
@@ -95,7 +95,7 @@ export class MystTransformer implements LinkTransformer {
     if (!match) {
       fileError(
         file,
-        `"${urlSource}" not found in MyST project ${mystXrefs.key} (${mystXrefs.url})`,
+        `"${urlSource}" not found in MyST project ${mystXRefs.key} (${mystXRefs.url})`,
         {
           node: link,
           source: TRANSFORM_SOURCE,
@@ -105,8 +105,8 @@ export class MystTransformer implements LinkTransformer {
       return false;
     }
     link.internal = false;
-    link.url = `${mystXrefs.url}${match.url}`;
-    link.dataUrl = `${mystXrefs.url}${match.data}`;
+    link.url = `${mystXRefs.url}${match.url}`;
+    link.dataUrl = `${mystXRefs.url}${match.data}`;
     if (match.kind !== 'page') {
       // Upgrade links to cross-references with identifiers
       (link as any).type = 'crossReference';

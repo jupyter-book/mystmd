@@ -102,7 +102,7 @@ export const TEST_REFERENCES: ResolvedExternalReference[] = [
 describe('Test MystTransformer', () => {
   test('transform loads correctly', async () => {
     const t = new MystTransformer(TEST_REFERENCES);
-    expect(t.mystXrefsList.length).toEqual(1);
+    expect(t.mystXRefsList.length).toEqual(1);
   });
   test('valid link test passes', async () => {
     const t = new MystTransformer(TEST_REFERENCES);

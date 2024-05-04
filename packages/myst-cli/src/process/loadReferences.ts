@@ -5,7 +5,7 @@ import { Inventory } from 'intersphinx';
 import { tic, isUrl, computeHash, writeFileToFolder } from 'myst-cli-utils';
 import { RuleId, fileError } from 'myst-common';
 import type { ExternalReference } from 'myst-frontmatter';
-import type { MystXrefs, ResolvedExternalReference } from 'myst-transforms';
+import type { MystXRefs, ResolvedExternalReference } from 'myst-transforms';
 import { VFile } from 'vfile';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
@@ -35,7 +35,7 @@ async function preloadReference(session: ISession, key: string, reference: Exter
   const intersphinxCachePath = inventoryCacheFile(session, 'intersphinx', key, reference.url);
   if ((!ref.kind || ref.kind === 'myst') && fs.existsSync(mystCachePath)) {
     const toc = tic();
-    const xrefs: MystXrefs = JSON.parse(fs.readFileSync(mystCachePath).toString());
+    const xrefs: MystXRefs = JSON.parse(fs.readFileSync(mystCachePath).toString());
     session.log.debug(`Loading cached inventory file for ${reference.url}: ${mystCachePath}`);
     session.log.info(
       toc(`🏫 Read ${xrefs.references.length} references links for "${key}" in %s.`),
@@ -73,23 +73,23 @@ async function loadReference(
     return reference;
   }
   if (!reference.kind || reference.kind === 'myst') {
-    const mystXrefsUrl = `${reference.url}/myst.xref.json`;
-    session.log.debug(`Attempting to load MyST xref file: ${mystXrefsUrl}`);
+    const mystXRefsUrl = `${reference.url}/myst.xref.json`;
+    session.log.debug(`Attempting to load MyST xref file: ${mystXRefsUrl}`);
     const toc = tic();
-    const mystXrefsResp = await fetch(mystXrefsUrl);
-    if (mystXrefsResp.status === 200) {
+    const mystXRefsResp = await fetch(mystXRefsUrl);
+    if (mystXRefsResp.status === 200) {
       reference.kind = 'myst';
-      const mystXrefs = (await mystXrefsResp.json()) as MystXrefs;
-      reference.value = mystXrefs;
+      const mystXRefs = (await mystXRefsResp.json()) as MystXRefs;
+      reference.value = mystXRefs;
       const cachePath = inventoryCacheFile(session, 'myst', reference.key, reference.url);
       session.log.debug(`Saving remote myst xref file to cache ${reference.url}: ${cachePath}`);
-      writeFileToFolder(cachePath, JSON.stringify(mystXrefs));
+      writeFileToFolder(cachePath, JSON.stringify(mystXRefs));
       session.log.info(
-        toc(`🏫 Read ${mystXrefs.references.length} references for "${reference.key}" in %s.`),
+        toc(`🏫 Read ${mystXRefs.references.length} references for "${reference.key}" in %s.`),
       );
       return reference;
     } else if (reference.kind === 'myst') {
-      fileError(vfile, `Problem fetching references entry: ${reference.key} (${mystXrefsUrl})`, {
+      fileError(vfile, `Problem fetching references entry: ${reference.key} (${mystXRefsUrl})`, {
         ruleId: RuleId.intersphinxReferencesResolve,
       });
       return;

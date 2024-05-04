@@ -11,7 +11,7 @@ import type { RendererData } from './types.js';
 /**
  * Load external MyST project data to update link text for MyST xrefs
  */
-export async function transformMystXrefs(
+export async function transformMystXRefs(
   session: ISession,
   vfile: VFile,
   mdast: GenericParent,

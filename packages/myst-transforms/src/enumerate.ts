@@ -541,11 +541,11 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
 
   resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
     if (!identifier) return undefined;
-    const pageXrefs = this.states.find((state) => {
+    const pageXRefs = this.states.find((state) => {
       if (page && page !== state.filePath) return false;
       return !!state.getTarget(identifier) || !!state.getFileTarget(identifier);
     });
-    return pageXrefs;
+    return pageXRefs;
   }
 
   getIdentifiers() {
@@ -553,8 +553,8 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
   }
 
   getTarget(identifier?: string, page?: string): Target | undefined {
-    const pageXrefs = this.resolveStateProvider(identifier, page);
-    return pageXrefs?.getTarget(identifier);
+    const pageXRefs = this.resolveStateProvider(identifier, page);
+    return pageXRefs?.getTarget(identifier);
   }
 
   getFileTarget(identifier?: string): ReferenceState | undefined {
@@ -563,16 +563,16 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
   }
 
   resolveReferenceContent(node: ResolvableCrossReference) {
-    const pageXrefs = this.resolveStateProvider(node.identifier);
-    if (!pageXrefs) {
+    const pageXRefs = this.resolveStateProvider(node.identifier);
+    if (!pageXRefs) {
       warnNodeTargetNotFound(node, this.vfile);
       return;
     }
-    pageXrefs?.resolveReferenceContent(node);
-    if (node.resolved && pageXrefs?.filePath !== this.filePath) {
+    pageXRefs?.resolveReferenceContent(node);
+    if (node.resolved && pageXRefs?.filePath !== this.filePath) {
       node.remote = true;
-      node.url = pageXrefs.url || undefined;
-      node.dataUrl = pageXrefs.dataUrl || undefined;
+      node.url = pageXRefs.url || undefined;
+      node.dataUrl = pageXRefs.dataUrl || undefined;
     }
   }
 }

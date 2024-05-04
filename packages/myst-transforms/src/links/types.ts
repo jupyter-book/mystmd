@@ -20,10 +20,10 @@ export interface LinkTransformer {
 
 export type ResolvedExternalReference = ExternalReference & {
   key: string;
-  value?: Inventory | MystXrefs;
+  value?: Inventory | MystXRefs;
 };
 
-export type MystXref = {
+export type MystXRef = {
   identifier: string;
   html_id?: string;
   kind: string;
@@ -32,8 +32,8 @@ export type MystXref = {
   implicit?: boolean;
 };
 
-export type MystXrefs = {
+export type MystXRefs = {
   version: '1';
   myst: string;
-  references: MystXref[];
+  references: MystXRef[];
 };
