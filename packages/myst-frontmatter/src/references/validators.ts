@@ -46,7 +46,7 @@ export function validateExternalReferences(
   const output = Object.fromEntries(
     Object.entries(value)
       .map(([key, ref]) => {
-        const outputKey = validateString(key, { ...opts, regex: 'a-zA-Z1-9_-' });
+        const outputKey = validateString(key, { ...opts, regex: '^[a-zA-Z0-9_-]*$' });
         if (!outputKey) return undefined;
         const outputRef = validateExternalReference(ref, incrementOptions(key, opts));
         if (!outputRef) return undefined;

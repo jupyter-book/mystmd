@@ -94,10 +94,10 @@ cases:
       references: https://mystmd.org
     normalized: {}
     errors: 1
-  - title: reserved key errors
+  - title: complex key errors
     raw:
       references:
-        http:
+        http/path:
           url: https://mystmd.org
           kind: myst
     normalized: {}
