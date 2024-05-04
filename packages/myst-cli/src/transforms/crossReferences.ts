@@ -21,7 +21,7 @@ export async function transformMystXrefs(
   const nodes = selectAll('link,crossReference', mdast)
     .filter((node: GenericNode) => {
       // Only handle MyST xrefs
-      return node.protocol === 'myst' && node.dataUrl;
+      return node.protocol === 'xref:myst' && node.dataUrl;
     })
     .filter((node: GenericNode) => {
       // Only update link text if not already present

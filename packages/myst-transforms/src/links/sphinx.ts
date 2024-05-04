@@ -8,7 +8,7 @@ import { removeMystPrefix } from './myst.js';
 const TRANSFORM_SOURCE = 'LinkTransform:SphinxTransformer';
 
 export class SphinxTransformer implements LinkTransformer {
-  protocol = 'sphinx';
+  protocol = 'xref:sphinx';
 
   intersphinx: Inventory[];
 
@@ -26,7 +26,7 @@ export class SphinxTransformer implements LinkTransformer {
   test(uri?: string): boolean {
     if (!uri) return false;
     const normalizedUri = removeMystPrefix(uri);
-    return !!this.intersphinx.find((i) => i.id && normalizedUri.startsWith(`${i.id}:`));
+    return !!this.intersphinx.find((i) => i.id && normalizedUri.startsWith(`xref:${i.id}`));
   }
 
   transform(link: Link, file: VFile): boolean {
@@ -42,21 +42,25 @@ export class SphinxTransformer implements LinkTransformer {
       });
       return false;
     }
+    // Link format looks like <xref:id#target>
+    // This key to matches frontmatter.references key
+    const id = url.pathname;
+    // Page includes leading slash
     const target = url.hash?.replace(/^#/, '') ?? '';
-    const project = this.intersphinx.find((i) => i.id === url.protocol);
+    const project = this.intersphinx.find((i) => i.id === id);
     if (!project || !project.path) {
-      fileError(file, `Unknown project "${url.protocol}" for link: ${urlSource}`, {
+      fileError(file, `Unknown project "${id}" for link: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
         ruleId: RuleId.sphinxLinkValid,
       });
       return false;
     }
-    if (!url.hash) {
+    if (!target) {
       link.internal = false;
       link.url = project.path;
       updateLinkTextIfEmpty(link, project.id || '(see documentation)');
-      return false;
+      return true;
     }
     // TODO: add query params in here to pick the domain
     const entry = project.getEntry({ name: target });

@@ -12,10 +12,7 @@ const TRANSFORM_SOURCE = 'LinkTransform:MystTransformer';
 
 export function removeMystPrefix(uri: string, vfile?: VFile, link?: Link, source?: string) {
   if (uri.startsWith('myst:')) {
-    let normalized = uri.slice(5);
-    if (normalized.includes('#') && !normalized.includes(':')) {
-      normalized = normalized.replace('#', ':#');
-    }
+    const normalized = uri.replace(/^myst/, 'xref');
     if (vfile) {
       fileWarn(vfile, `"myst:" prefix is deprecated for external reference "${uri}"`, {
         note: `Use "${normalized}" instead.`,
@@ -30,7 +27,7 @@ export function removeMystPrefix(uri: string, vfile?: VFile, link?: Link, source
 }
 
 export class MystTransformer implements LinkTransformer {
-  protocol = 'myst';
+  protocol = 'xref:myst';
 
   mystXrefsList: { key: string; url: string; value: MystXrefs }[];
 
@@ -47,7 +44,7 @@ export class MystTransformer implements LinkTransformer {
   test(uri?: string): boolean {
     if (!uri) return false;
     const normalizedUri = removeMystPrefix(uri);
-    return !!this.mystXrefsList.find((m) => m.key && normalizedUri.startsWith(`${m.key}:`));
+    return !!this.mystXrefsList.find((m) => m.key && normalizedUri.startsWith(`xref:${m.key}`));
   }
 
   transform(link: Link, file: VFile): boolean {
@@ -63,12 +60,15 @@ export class MystTransformer implements LinkTransformer {
       });
       return false;
     }
-    const pathname = url.pathname.replace(/^\//, '');
-    const hash = url.hash?.replace(/^#/, '');
-    const protocol = url.protocol?.replace(/:$/, '');
-    const mystXrefs = this.mystXrefsList.find((m) => m.key === protocol);
+    // Link format looks like <xref:key/page#identifier>
+    // This key to matches frontmatter.references key
+    const key = url.pathname.split('/')[0];
+    // Page includes leading slash
+    const page = url.pathname.slice(key.length);
+    const identifier = url.hash?.replace(/^#/, '');
+    const mystXrefs = this.mystXrefsList.find((m) => m.key === key);
     if (!mystXrefs || !mystXrefs.value) {
-      fileError(file, `Unknown project "${protocol}" for link: ${urlSource}`, {
+      fileError(file, `Unknown project "${key}" for link: ${urlSource}`, {
         node: link,
         source: TRANSFORM_SOURCE,
         ruleId: RuleId.mystLinkValid,
@@ -76,26 +76,22 @@ export class MystTransformer implements LinkTransformer {
       return false;
     }
     let match: MystXref | undefined;
-    if (pathname && hash) {
-      // Path and identifier explicitly provided
+    if (identifier) {
       match = mystXrefs.value.references.find((ref) => {
-        if (ref.url.replace(/^\//, '') !== pathname) return false;
-        return ref.identifier === hash || ref.html_id === hash;
-      });
-    } else if (hash) {
-      // Only identifier provided - do not match implicit references
-      match = mystXrefs.value.references.find((ref) => {
-        if (ref.implicit) return false;
-        return ref.identifier === hash || ref.html_id === hash;
+        // If page is explicitly provided, it must match url
+        if (page && ref.url !== page) return false;
+        // If page is not provided, implicit links are ignored
+        if (!page && ref.implicit) return false;
+        return ref.identifier === identifier || ref.html_id === identifier;
       });
     } else {
-      // Nothing pathname is provided - only match pages
-      // Note: pathname may be an empty string; this matches the root page
+      // If no identifier, only match page urls. No page matches root path
       match = mystXrefs.value.references.find((ref) => {
-        return ref.kind === 'page' && ref.identifier === pathname;
+        if (ref.kind !== 'page') return false;
+        if (!page && ref.url === '/') return true;
+        return ref.url === page;
       });
     }
-    // handle case of pathname and no hash - just link to page
     if (!match) {
       fileError(
         file,
@@ -111,12 +107,13 @@ export class MystTransformer implements LinkTransformer {
     link.internal = false;
     link.url = `${mystXrefs.url}${match.url}`;
     link.dataUrl = `${mystXrefs.url}${match.data}`;
-    if (hash) {
-      // Upgrade links with hashes to cross-references
+    if (match.kind !== 'page') {
+      // Upgrade links to cross-references with identifiers
       (link as any).type = 'crossReference';
       (link as any).remote = true;
-      (link as any).identifier = hash;
-      (link as any).label = hash;
+      (link as any).identifier = match.identifier;
+      (link as any).label = match.identifier;
+      (link as any).html_id = match.html_id;
     }
     return true;
   }
