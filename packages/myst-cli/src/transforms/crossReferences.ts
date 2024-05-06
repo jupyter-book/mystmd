@@ -1,5 +1,5 @@
 import type { VFile } from 'vfile';
-import { select, selectAll } from 'unist-util-select';
+import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, fileWarn, plural } from 'myst-common';
 import { tic } from 'myst-cli-utils';
@@ -55,7 +55,15 @@ export async function transformMystXRefs(
         // Page references without specific node identifier
         node.children = [{ type: 'text', value: data.frontmatter?.title ?? data.slug ?? '' }];
       } else {
-        const target = select(`[identifier=${node.identifier}]`, data.mdast) as GenericNode;
+        const targets = selectAll(`[identifier=${node.identifier}]`, data.mdast) as GenericNode[];
+        // Ignore nodes with `identifier` that are not actually the target.
+        // TODO: migrate `identifier` on these node types to `target`
+        const target = targets.find((t) => {
+          return !['crossReference', 'cite', 'footnoteDefinition', 'footnoteReference'].includes(
+            t.type,
+          );
+        });
+
         if (!target) {
           fileWarn(
             vfile,
