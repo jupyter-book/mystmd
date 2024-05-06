@@ -25,9 +25,10 @@ MyST supports referencing rich content in a growing number of formats, including
 When using the HTML renderer for MyST, an API is provided for the deployed site.
 This provides pre-parsed, structured content as an AST that can be included in other projects and rendered in a tooltip.
 
-```{tip}
-Try adding `.json` at the end of the URL on this page. The data is structured and provides authors, license information,
+```{tip} Add `.json` to the end of a MyST URL to see its data 
+All MyST pages come with a structured data representation that provides authors, license information,
 as well as the full content in a parsed form that can be used for an inline reference on external pages.
+Try adding `.json` at the end of the URL on this page.
 ```
 
 In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below loads cross references from these MyST docs; these paths, and all other MyST projects, allow this by exposing a [`myst.xref.json`](#myst-xref-json) file.
