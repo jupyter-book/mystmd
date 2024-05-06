@@ -25,13 +25,13 @@ MyST supports referencing rich content in a growing number of formats, including
 When using the HTML renderer for MyST, an API is provided for the deployed site.
 This provides pre-parsed, structured content as an AST that can be included in other projects and rendered in a tooltip.
 
-```{tip} Add `.json` to the end of a MyST URL to see its data 
+:::{tip} Add `.json` to the end of a MyST URL to see its data
 All MyST pages come with a structured data representation that provides authors, license information,
 as well as the full content in a parsed form that can be used for an inline reference on external pages.
 Try adding `.json` at the end of the URL on this page.
-```
+:::
 
-In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below loads cross references from these MyST docs; these paths, and all other MyST projects, allow this by exposing a [`myst.xref.json`](#myst-xref-json) file.
+In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below shows how you would load cross-references that are pulled from the MyST Specification documentation.
 
 (myst-xref-config)=
 
@@ -40,8 +40,9 @@ references:
   spec: https://mystmd.org/spec
 ```
 
-When you specify these in your project configuration, MyST will load the remote [`myst.xref.json`](#myst-xref-json) file,
-and provide access to all of the pages and available reference targets in that project. This `json` file will be cached to disk locally in the `_build` folder, eliminating duplicate web requests on subsequent builds. If the target documentation updates and you must reload the remote references, you may delete the cache with `myst clean --cache`.
+When you specify these in your project configuration, MyST will load the cross-references and provide access to all of the pages and reference targets in that project.
+References are cached to disk locally in the `_build` folder, eliminating duplicate web requests on subsequent builds.
+To delete the cache and manually re-load the references, run `myst clean --cache`.
 
 ````{important}
 # MyST Cross Reference Examples
@@ -82,7 +83,14 @@ target
 : Target is also optional - if not provided, the cross reference will simply link to a page in the external MyST project. However, without the target, there will not be a rendered tooltip.
 : When creating a cross reference, you can determine `path` and `target` by simply navigating to your target content in the external MyST project and copying the path and fragment from the URL.
 
-If no link text is provided, e.g. `[](xref:...)`, text will be generated from the external project at build-time. You may of course override this behavior by providing you own text, `[text](xref:...)`.
+If no link text is provided, e.g. `[](xref:...)`, text will be generated from the external project at build-time. You may override this behavior by providing you own text, `[text](xref:...)`.
+
+:::{tip} References are stored in a [`myst.xref.json`](myst-xref-json) file
+:class: dropdown
+All MyST sites published to the web expose a [`myst.xref.json`](#myst-xref-json) file that contains all of the cross-references information about a MyST site.
+This file is what MyST pulls when you point to an external MyST site for cross-referencing.
+It is also a machine-readable record that can be used for analyzing the cross-referencing behavior of MyST projects.
+:::
 
 (intersphinx)=
 
