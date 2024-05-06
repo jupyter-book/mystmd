@@ -19,6 +19,7 @@ MyST supports referencing rich content in a growing number of formats, including
 ```
 
 (myst-xref)=
+
 ## Referencing external MyST projects
 
 When using the HTML renderer for MyST, an API is provided for the deployed site.
@@ -29,17 +30,16 @@ Try adding `.json` at the end of the URL on this page. The data is structured an
 as well as the full content in a parsed form that can be used for an inline reference on external pages.
 ```
 
-In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below loads cross references from these MyST docs; these paths, and all other MyST projects, allow this by exposing a `myst.xref.json` file.
+In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below loads cross references from these MyST docs; these paths, and all other MyST projects, allow this by exposing a [`myst.xref.json`](#myst-xref-json) file.
 
 (myst-xref-config)=
 
 ```yaml
 references:
-  myst-guide: https://mystmd.org/guide
-  jtex: https://mystmd.org/jtex
+  spec: https://mystmd.org/spec
 ```
 
-When you specify these in your project configuration, MyST will load the remote `myst.xref.json` file,
+When you specify these in your project configuration, MyST will load the remote [`myst.xref.json`](#myst-xref-json) file,
 and provide access to all of the pages and available reference targets in that project. This `json` file will be cached to disk locally in the `_build` folder, eliminating duplicate web requests on subsequent builds. If the target documentation updates and you must reload the remote references, you may delete the cache with `myst clean --cache`.
 
 ````{important}
@@ -49,32 +49,32 @@ and provide access to all of the pages and available reference targets in that p
 :header-rows: 1
 * - MyST Syntax
   - Rendered
-* - `[](xref:myst-guide)`
-    : A reference to the first page of the MyST Guide.
-  - [](xref:myst-guide)
-* - `[](xref:myst-guide#frontmatter-before)`
-    : A reference to a labeled figure in the MyST Guide.
-  - [](xref:myst-guide#frontmatter-before)
-* - `<xref:jtex/template-rules#syntax>`
-    : Alternate link syntax that references a heading on a specific page of the jtex documentation.
-  - <xref:jtex/template-rules#syntax>
+* - `[](xref:spec)`
+    : A reference to the first page of the MyST Spec.
+  - [](xref:spec)
+* - `[](xref:spec#paragraph)`
+    : A reference to the node "paragraph" target in the MyST Spec.
+  - [](xref:spec#paragraph)
+* - `<xref:spec/tables#example>`
+    : Alternate link syntax that references a heading on a specific page of the spec documentation.
+  - <xref:spec/tables#example>
 ```
 ````
 
 To reference content in the linked MyST project, use the `xref:` protocol in a link followed by the `project` key (from `references`), the url path and the target.
-For example, `<xref:jtex/template-rules#syntax>` renders to:\
-"<xref:jtex/template-rules#syntax>"\
+For example, `<xref:spec/tables#example>` renders to:\
+"<xref:spec/tables#example>"\
 and is made of a `protocol`, `project`, `path` and `target`.
 
 protocol
 : The protocol for this type of link is `xref:`, and is what selects for cross-project referencing.
 
 project
-: the `project` key above is "jtex" which is defined in your local [project configuration](#myst-xref-config) above.
+: the `project` key above is "spec" which is defined in your local [project configuration](#myst-xref-config) above.
 
 path
-: the `path` is everything that follows the project before the `#`. It corresponds directly to the URL path in the MyST site. In the example above, path is "/template-rules"
-: Path is optional in most cases; the `target` can be resolved against the entire project without the path. An exception to this is headings without an explicit label in the source markdown - these will require path.
+: the `path` is everything that follows the project before the `#`. It corresponds directly to the URL path in the MyST site. In the example above, path is `/tables`.
+: Path is **optional** in most cases; the `target` can be resolved against the entire project without the path. An exception to this is headings without an explicit label in the source markdown — these will require path. Note that these references may not be intended to be persistent by the source author, so use caution in linking to them!
 
 target
 : The target is everything that follows the `#` and is a named reference in the project. In the example above it is "syntax".
@@ -119,9 +119,6 @@ The behavior of these entries is identical to MyST cross references: the remote 
     : A reference to the JupyterBook documentation, that brings you directly to the reference,
       as well as fills in the label text.
   - [](xref:jupyterbook#content:references)
-* - `<xref:#library/abc>`
-    : A simplified link that will resolve to the first external inventory that satisfies the target.
-  - <xref:#library/abc>
 ```
 ````
 

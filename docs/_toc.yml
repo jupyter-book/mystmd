@@ -73,6 +73,7 @@ parts:
       - file: document-parts
       - file: settings
       - file: glossary
+      - file: xref
   - caption: Contribute
     chapters:
       - file: contributing
