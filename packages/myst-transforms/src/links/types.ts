@@ -24,7 +24,7 @@ export type ResolvedExternalReference = ExternalReference & {
 };
 
 export type MystXRef = {
-  identifier: string;
+  identifier?: string;
   html_id?: string;
   kind: string;
   data: string;
