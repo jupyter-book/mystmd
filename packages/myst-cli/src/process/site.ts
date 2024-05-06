@@ -114,21 +114,22 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
       .map((state) => {
         const { url, dataUrl } = state;
         const data = `/content${dataUrl}`;
-        const pageIds = [url.replace(/^\//, ''), ...state.identifiers];
-        const pageRefs = pageIds.map((identifier) => {
+        const pageRef = { kind: 'page', data, url };
+        const pageIdRefs = state.identifiers.map((identifier) => {
           return { identifier, kind: 'page', data, url };
         });
         const targetRefs = Object.values(state.targets).map((target) => {
+          const { identifier, html_id } = target.node ?? {};
           return {
-            identifier: target.node.identifier ?? target.node.html_id,
-            html_id: target.node.html_id,
+            identifier,
+            html_id: html_id !== identifier ? html_id : undefined,
             kind: target.kind,
             data,
             url,
             implicit: (target.node as any).implicit,
           };
         });
-        return [...pageRefs, ...targetRefs];
+        return [pageRef, ...pageIdRefs, ...targetRefs];
       })
       .flat(),
   };

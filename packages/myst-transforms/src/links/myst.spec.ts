@@ -35,14 +35,12 @@ export const TEST_REFERENCES: ResolvedExternalReference[] = [
         },
         {
           identifier: 'implicit-heading',
-          html_id: 'implicit-heading',
           kind: 'heading',
           data: '/my-heading.json',
           url: '/my-heading',
           implicit: true,
         },
         {
-          identifier: '',
           kind: 'page',
           data: '/index.json',
           url: '/',
@@ -55,11 +53,15 @@ export const TEST_REFERENCES: ResolvedExternalReference[] = [
         },
         {
           identifier: 'implicit-root-heading',
-          html_id: 'implicit-root-heading',
           kind: 'heading',
           data: '/index.json',
           url: '/',
           implicit: true,
+        },
+        {
+          kind: 'page',
+          data: '/my-page.json',
+          url: '/my-page',
         },
         {
           identifier: 'my-page-id',
@@ -321,6 +323,5 @@ describe('Test MystTransformer', () => {
     expect((link as any).remote).toBe(true);
     expect((link as any).identifier).toEqual('implicit-root-heading');
     expect((link as any).label).toEqual('implicit-root-heading');
-    expect((link as any).html_id).toEqual('implicit-root-heading');
   });
 });
