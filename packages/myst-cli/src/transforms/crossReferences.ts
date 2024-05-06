@@ -24,8 +24,10 @@ export async function transformMystXRefs(
       return node.protocol === 'xref:myst' && node.dataUrl;
     })
     .filter((node: GenericNode) => {
-      // Only update link text if not already present
-      return !node.children?.length;
+      // If no link text, load the target to compute children
+      if (!node.children?.length) return true;
+      // If `identifier` is present, we may need to update existing children (e.g. enumerator)
+      return !!node.identifier;
     });
   if (nodes.length === 0) return;
   session.log.debug(`Updating link text for ${plural('%s external MyST reference(s)', nodes)}`);
