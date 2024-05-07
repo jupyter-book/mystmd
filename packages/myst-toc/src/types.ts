@@ -27,11 +27,23 @@ export type FileEntry = {
 } & CommonEntry;
 
 /**
- * Entry with a URL to an external URL
+ * Entry with a path to a single document with or without the file extension,
+ * and an array of children
+ */
+export type FileParentEntry = FileEntry & Omit<ParentEntry, 'title'>;
+
+/**
+ * Entry with a url to an external resource
  */
 export type URLEntry = {
   url: string;
 } & CommonEntry;
+
+/**
+ * Entry with a url to an external resource,
+ * and an array of children
+ */
+export type URLParentEntry = URLEntry & Omit<ParentEntry, 'title'>;
 
 /**
  * Entry representing several documents through a glob
@@ -41,16 +53,13 @@ export type PatternEntry = {
 } & CommonEntry;
 
 /**
- * Entry representing a single document
- */
-export type DocumentEntry = FileEntry | URLEntry;
-
-/**
  * All possible types of Entry
  */
 export type Entry =
-  | DocumentEntry
-  | (DocumentEntry & Omit<ParentEntry, 'title'>)
+  | FileEntry
+  | URLEntry
+  | FileParentEntry
+  | URLParentEntry
   | PatternEntry
   | ParentEntry;
 
