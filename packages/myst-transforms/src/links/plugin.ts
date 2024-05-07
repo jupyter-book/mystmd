@@ -40,11 +40,13 @@ function formatLinkText(link: Link) {
 export function linksTransform(mdast: GenericParent, file: VFile, opts: Options): void {
   const linkNodes = selectAll(opts.selector ?? 'link,card', mdast) as Link[];
   linkNodes.forEach((link) => {
-    formatLinkText(link);
     if (!link.urlSource) link.urlSource = link.url;
     const transform = opts.transformers.find((t) => t.test(link.urlSource));
-    if (!transform) return;
-    const result = transform.transform(link, file);
+    const result = transform?.transform(link, file);
+    // The link transform may compare the text
+    // Formatting adds no-width spaces to some URLs
+    formatLinkText(link);
+    if (!transform || result === undefined) return;
     if (result) {
       delete link.error;
       if (transform.protocol) {
