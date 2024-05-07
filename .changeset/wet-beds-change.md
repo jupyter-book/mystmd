@@ -1,6 +1,6 @@
 ---
 "myst-common": minor
-"myst-cli": minor
+"myst-cli": patch
 "mystmd": patch
 ---
 
