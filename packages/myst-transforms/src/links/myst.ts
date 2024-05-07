@@ -105,6 +105,14 @@ export class MystTransformer implements LinkTransformer {
       );
       return false;
     }
+    // If text is the same as raw xref, remove it and allow text to fill in later.
+    if (
+      link.children?.length === 1 &&
+      link.children[0].type === 'text' &&
+      link.children[0].value === link.urlSource
+    ) {
+      link.children = [];
+    }
     link.internal = false;
     link.url = `${mystXRefs.url}${match.url}`;
     link.dataUrl = `${mystXRefs.url}${match.data}`;
