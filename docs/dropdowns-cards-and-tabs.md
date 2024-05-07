@@ -41,7 +41,7 @@ Card content
 ```
 ````
 
-You can also add a `link` argument to the card, which will allow you to make the entire card clickable:
+You can also add a `link` option to the card, which will allow you to make the entire card clickable:
 
 ````{myst}
 
