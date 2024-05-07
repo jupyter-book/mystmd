@@ -22,9 +22,10 @@ export async function currentSiteRoutes(
       // If this gets from the index, then the site will trigger the wrong render path
       // And then hydration does not match
       const siteIndex = baseurl ? `/${proj.index}` : '';
+      const pages = proj.pages.filter((page) => !!page.slug);
       return [
         { url: `${host}${projSlug}${siteIndex}`, path: path.join(proj.slug ?? '', 'index.html') },
-        ...proj.pages.map((page) => {
+        ...pages.map((page) => {
           return {
             url: `${host}${projSlug}/${page.slug}`,
             path: path.join(proj.slug ?? '', `${page.slug}.html`),
@@ -35,7 +36,7 @@ export async function currentSiteRoutes(
           url: `${host}${projSlug}/${proj.index}.json`,
           path: path.join(proj.slug ?? '', `${proj.index}.json`),
         },
-        ...proj.pages.map((page) => {
+        ...pages.map((page) => {
           return {
             url: `${host}${projSlug}/${page.slug}.json`,
             path: path.join(proj.slug ?? '', `${page.slug}.json`),
@@ -154,8 +155,8 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
   fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
   fs.copySync(
-    path.join(session.sitePath(), 'myst.xref.spec'),
-    path.join(htmlDir, 'myst.xref.spec'),
+    path.join(session.sitePath(), 'myst.xref.json'),
+    path.join(htmlDir, 'myst.xref.json'),
   );
 
   // We need to go through and change all links to the right folder

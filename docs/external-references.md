@@ -25,7 +25,7 @@ MyST supports referencing rich content in a growing number of formats, including
 When using the HTML renderer for MyST, an API is provided for the deployed site.
 This provides pre-parsed, structured content as an AST that can be included in other projects and rendered in a tooltip.
 
-:::{tip} Add `.json` to the end of a MyST URL to see its data
+:::{tip} Add `.json` to any MyST URL to access the structured data
 All MyST pages come with a structured data representation that provides authors, license information,
 as well as the full content in a parsed form that can be used for an inline reference on external pages.
 Try adding `.json` at the end of the URL on this page.
