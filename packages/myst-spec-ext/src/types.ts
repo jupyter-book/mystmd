@@ -256,5 +256,6 @@ export type Aside = Node & {
 
 export type CrossReference = SpecCrossReference & {
   remote?: boolean;
+  remoteBaseUrl?: string;
   html_id?: string;
 };

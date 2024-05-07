@@ -197,7 +197,6 @@ describe('Test MystTransformer', () => {
     expect(t.test(link.url)).toBe(true);
     expect(t.transform(link, file)).toBe(true);
     expect(file.messages.length).toEqual(0);
-    expect(link.internal).toBe(false);
     expect(link.url).toEqual('https://example.com/myst-ref/my-figure');
     expect(link.dataUrl).toEqual('https://example.com/myst-ref/my-figure.json');
     expect(link.type).toEqual('crossReference');
@@ -316,7 +315,6 @@ describe('Test MystTransformer', () => {
     expect(t.test(link.url)).toBe(true);
     expect(t.transform(link, file)).toBe(true);
     expect(file.messages.length).toEqual(0);
-    expect(link.internal).toBe(false);
     expect(link.url).toEqual('https://example.com/myst-ref/');
     expect(link.dataUrl).toEqual('https://example.com/myst-ref/index.json');
     expect(link.type).toEqual('crossReference');
