@@ -67,7 +67,7 @@ export function resolveArticlesFromProject(
 function resolveArticlesFromTOC(
   session: ISession,
   exp: ExportWithFormat,
-  path: string,
+  projectPath: string,
   vfile: VFile,
 ): ResolvedArticles {
   const allowLevelLessThanOne = [
@@ -75,7 +75,7 @@ function resolveArticlesFromTOC(
     ExportFormats.pdf,
     ExportFormats.pdftex,
   ].includes(exp.format);
-  const proj = projectFromTOC(session, path, exp.toc!, allowLevelLessThanOne ? -1 : 1);
+  const proj = projectFromTOC(session, projectPath, exp.toc!, allowLevelLessThanOne ? -1 : 1);
   return resolveArticlesFromProject(exp, proj, vfile);
 }
 
