@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.4.0
+
+### Patch Changes
+
+- ab863c8a: Alias name/label in prjoect/page frontmatter and respect as identifiers
+- ab863c8a: Improve frontmatter reference validation
+
 ## 1.3.0
 
 ## 1.2.0

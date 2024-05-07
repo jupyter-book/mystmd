@@ -1,5 +1,18 @@
 # myst-common
 
+## 1.4.0
+
+### Minor Changes
+
+- 7a04910f: Rename Toc to TOC
+
+### Patch Changes
+
+- ab863c8a: Add check for empty link text
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+  - myst-frontmatter@1.4.0
+
 ## 1.3.0
 
 ### Patch Changes

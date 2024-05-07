@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.4.0
+
+### Patch Changes
+
+- ab863c8a: Add CrossReference
+
 ## 1.3.0
 
 ### Minor Changes

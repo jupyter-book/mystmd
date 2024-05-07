@@ -1,5 +1,23 @@
 # myst-transforms
 
+## 1.3.11
+
+### Patch Changes
+
+- ab863c8a: Change loadIntersphinx -> loadReferences and include MyST xrefs
+- ab863c8a: Split out function for getting link text from target node
+- ab863c8a: Warn on duplicate identifiers across project pages
+- ab863c8a: Add check for empty link text
+- ab863c8a: Add link transform for myst xrefs
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [7a04910f]
+  - myst-frontmatter@1.4.0
+  - myst-spec-ext@1.4.0
+  - myst-common@1.4.0
+
 ## 1.3.10
 
 ### Patch Changes
