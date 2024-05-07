@@ -8,7 +8,9 @@ export function makeWriteTOCOption() {
   return new Option(
     '--write-toc',
     'Generate editable _toc.yml file for project if it does not exist',
-  ).default(false);
+  )
+    .default(false)
+    .implies({ writeTOC: true });
 }
 
 export function makeGithubPagesOption() {
