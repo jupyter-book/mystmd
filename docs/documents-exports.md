@@ -27,7 +27,7 @@ Below are supported export types and links to documentation for further reading:
 ```
 
 ```{seealso} The MyST templating engine drives document exports
-You can also explore the [MyST templating](myst:jtex) documentation for a deeper dive into defining templates.
+You can also explore the [MyST templating](xref:jtex) documentation for a deeper dive into defining templates.
 ```
 
 ## Building Exports

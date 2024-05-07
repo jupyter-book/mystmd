@@ -98,7 +98,7 @@ The following table lists the available frontmatter fields, a brief description 
   - a valid date formatted string
   - page can override project
 * - `authors`
-  - a list of author objects, see [](#authors)
+  - a list of author objects, see [](#frontmatter:authors)
   - page can override project
 * - `reviewers`
   - a list of author objects or string ids, see [](#other-contributors)
@@ -125,7 +125,7 @@ The following table lists the available frontmatter fields, a brief description 
   - a string
   - page can override project
 * - `funding`
-  - a funding object, see [](#funding)
+  - a funding object, see [](#frontmatter:funding)
   - page can override project
 * - `github`
   - a valid GitHub URL or `owner/reponame`
@@ -245,7 +245,7 @@ banner: banner.png
 Example of a banner in a site using the `article-theme`.
 :::
 
-(authors)=
+(frontmatter:authors)=
 
 ## Authors
 
@@ -341,7 +341,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 
 ### Reviewers, Editors, Funding Recipients
 
-Other contributors besides authors may be listed elsewhere in the frontmatter. These include `reviewers`, `editors`, and [funding](#funding) award `investigators` and `recipients`. For all of these fields, you may use a full [author object](#authors), or you may use the string `id` from an existing author object defined elsewhere in your frontmatter.
+Other contributors besides authors may be listed elsewhere in the frontmatter. These include `reviewers`, `editors`, and [funding](#frontmatter:funding) award `investigators` and `recipients`. For all of these fields, you may use a full [author object](#frontmatter:authors), or you may use the string `id` from an existing author object defined elsewhere in your frontmatter.
 
 (affiliations)=
 
@@ -622,6 +622,8 @@ String values for licenses should be a valid “Identifier” string from the [S
 ```
 
 By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition.
+
+(frontmatter:funding)=
 
 ## Funding
 

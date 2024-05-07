@@ -85,7 +85,7 @@ target
 
 If no link text is provided, e.g. `[](xref:...)`, text will be generated from the external project at build-time. You may override this behavior by providing you own text, `[text](xref:...)`.
 
-:::{tip} References are stored in a [`myst.xref.json`](myst-xref-json) file
+:::{tip} References are stored in a [`myst.xref.json`](#myst-xref-json) file
 :class: dropdown
 All MyST sites published to the web expose a [`myst.xref.json`](#myst-xref-json) file that contains all of the cross-references information about a MyST site.
 This file is what MyST pulls when you point to an external MyST site for cross-referencing.
