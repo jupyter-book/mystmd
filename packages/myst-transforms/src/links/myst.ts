@@ -7,6 +7,7 @@ import type {
   MystXRefs,
   ResolvedExternalReference,
 } from './types.js';
+import type { CrossReference } from 'myst-spec-ext';
 
 const TRANSFORM_SOURCE = 'LinkTransform:MystTransformer';
 
@@ -107,13 +108,16 @@ export class MystTransformer implements LinkTransformer {
     link.internal = false;
     link.url = `${mystXRefs.url}${match.url}`;
     link.dataUrl = `${mystXRefs.url}${match.data}`;
-    if (match.kind !== 'page') {
+    if (match.kind === 'page') {
+      link.protocol = 'file';
+    } else {
+      const xref = link as unknown as CrossReference;
       // Upgrade links to cross-references with identifiers
-      (link as any).type = 'crossReference';
-      (link as any).remote = true;
-      (link as any).identifier = match.identifier;
-      (link as any).label = match.identifier;
-      (link as any).html_id = match.html_id;
+      xref.type = 'crossReference';
+      xref.remote = true;
+      xref.identifier = match.identifier;
+      xref.label = match.identifier;
+      xref.html_id = match.html_id;
     }
     return true;
   }
