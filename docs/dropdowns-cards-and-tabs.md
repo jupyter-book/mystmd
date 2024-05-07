@@ -41,13 +41,16 @@ Card content
 ```
 ````
 
-You can also add a `link` argument to the card, which will allow you to make the entire card clickable.
+You can also add a `link` argument to the card, which will allow you to make the entire card clickable:
+
+````{myst}
 
 :::{card} Clickable Card
 :link: https://mystmd.org
 
 The entire card can be clicked to navigate to `mystmd.org`.
 :::
+````
 
 ````{note} Compatibility with Sphinx design
 :class: dropdown
@@ -87,6 +90,9 @@ Note that, card headers and footers are optional. If you don’t include ^^^ or 
 
     footer _(optional, markdown)_
     : Styled content at the bottom of the card
+
+    link _(optional, string)_
+    : If given, clicking the card will direct you to the URL given here.
 
 ### Grids
 
