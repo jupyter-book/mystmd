@@ -1,5 +1,33 @@
 # myst-cli
 
+## 1.2.1
+
+### Patch Changes
+
+- ab863c8a: Change loadIntersphinx -> loadReferences and include MyST xrefs
+- ab863c8a: Alias name/label in prjoect/page frontmatter and respect as identifiers
+- ab863c8a: Write myst.xref.json file to site
+- ab863c8a: Fill enumerator strings for external project xrefs
+- ab863c8a: Add transform to add link text from myst xrefs
+- ab863c8a: Warn on duplicate identifiers across project pages
+- ab863c8a: Add check for empty link text
+- ab863c8a: Do not build pages that do not exist for static html export
+- 7a04910f: Rename Toc to TOC
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [7a04910f]
+  - myst-transforms@1.3.11
+  - myst-frontmatter@1.4.0
+  - myst-spec-ext@1.4.0
+  - myst-common@1.4.0
+  - myst-config@1.4.0
+
 ## 1.2.0
 
 ### Minor Changes
