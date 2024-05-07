@@ -63,10 +63,12 @@ export enum RuleId {
   intersphinxReferencesResolve = 'intersphinx-references-resolve',
   // Link rules
   mystLinkValid = 'myst-link-valid',
+  sphinxLinkValid = 'sphinx-link-valid',
   rridLinkValid = 'rrid-link-valid',
   wikipediaLinkValid = 'wikipedia-link-valid',
   doiLinkValid = 'doi-link-valid',
   linkResolves = 'link-resolves',
+  linkTextExists = 'link-text-exists',
   // Notebook rules
   notebookAttachmentsResolve = 'notebook-attachments-resolve',
   notebookOutputCopied = 'notebook-output-copied',

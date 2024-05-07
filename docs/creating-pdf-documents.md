@@ -54,7 +54,7 @@ The default PDF renderer uses $\LaTeX$ to create PDFs, which means that to work 
 As an alternative, for faster PDF builds, you may use [Typst](#rendering-pdfs-with-typst) instead.
 ```
 
-The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](myst:jtex) templating library, to convert to $\LaTeX$ the `myst-to-tex` packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
+The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](xref:jtex) templating library, to convert to $\LaTeX$ the `myst-to-tex` packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
 
 ```{mermaid}
 flowchart LR
@@ -95,7 +95,7 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 MyST also provides an option to build PDFs with [Typst](https://typst.app). Typst is a markup-based typesetting language. Compared to $\LaTeX$, syntax is streamlined and consistent, and compile time is significantly faster. To render Typst PDFs locally, you must install the [Typst CLI](https://github.com/typst/typst).
 
-To add Typst to your export targets, add `format: typst` and select a Typst template. These templates use the same [MyST templating library](myst:jtex) as $\LaTeX$ templates to support document [frontmatter](./frontmatter.md).
+To add Typst to your export targets, add `format: typst` and select a Typst template. These templates use the same [MyST templating library](xref:jtex) as $\LaTeX$ templates to support document [frontmatter](./frontmatter.md).
 
 ```{code-block} yaml
 :filename: article.md
@@ -167,7 +167,7 @@ abstract: |
 
 ### Template `options`
 
-Template authors should choose to use [standard frontmatter](./frontmatter.md) properties where possible, however, all templates can also expose custom options through their [](/jtex/template-yml). Include options for the build in the exports list. For example, to turn on `line_numbers` in the template, add the option to the dictionary.
+Template authors should choose to use [standard frontmatter](./frontmatter.md) properties where possible, however, all templates can also expose custom options through their [](xref:jtex#template-yml). Include options for the build in the exports list. For example, to turn on `line_numbers` in the template, add the option to the dictionary.
 
 ```{code-block} yaml
 :linenos:

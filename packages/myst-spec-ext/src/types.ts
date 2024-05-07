@@ -17,6 +17,7 @@ import type {
   InlineMath as SpecInlineMath,
   Math as SpecMath,
   Node,
+  CrossReference as SpecCrossReference,
 } from 'myst-spec';
 
 type Visibility = 'show' | 'hide' | 'remove';
@@ -251,4 +252,9 @@ export type Aside = Node & {
   identifier?: string;
   label?: string;
   class?: Image['class'];
+};
+
+export type CrossReference = SpecCrossReference & {
+  remote?: boolean;
+  html_id?: string;
 };

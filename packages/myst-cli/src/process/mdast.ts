@@ -18,6 +18,7 @@ import {
   keysTransform,
   linksTransform,
   MystTransformer,
+  SphinxTransformer,
   WikiTransformer,
   GithubTransformer,
   RRIDTransformer,
@@ -27,6 +28,7 @@ import {
   abbreviationPlugin,
   reconstructHtmlPlugin,
   inlineMathSimplificationPlugin,
+  checkLinkTextTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -62,12 +64,12 @@ import {
   transformImagesToDisk,
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
+  transformMystXRefs,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
-import { loadIntersphinx } from './loadIntersphinx.js';
 import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
@@ -192,16 +194,16 @@ export async function transformMdast(
   propagateBlockDataToCode(session, vfile, mdast);
 
   // Run the link transformations that can be done without knowledge of other files
-  const intersphinx = projectPath ? await loadIntersphinx(session, { projectPath }) : [];
   const transformers = [
     new WikiTransformer(),
     new GithubTransformer(),
     new RRIDTransformer(),
     new DOITransformer(), // This also is picked up in the next transform
-    new MystTransformer(intersphinx),
+    new MystTransformer(Object.values(cache.$externalReferences)),
+    new SphinxTransformer(Object.values(cache.$externalReferences)),
   ];
   linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
-
+  await transformMystXRefs(session, vfile, mdast, frontmatter);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(
     session,
@@ -321,10 +323,11 @@ export async function postProcessMdast(
 
   // Ensure there are keys on every node after post processing
   keysTransform(mdast);
+  checkLinkTextTransform(mdast, vfile);
   logMessagesFromVFile(session, fileState.vfile);
   logMessagesFromVFile(session, vfile);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
-  if (checkLinks) await checkLinksTransform(session, file, mdastPost.mdast);
+  if (checkLinks) await checkLinksTransform(session, file, mdast);
 }
 
 export async function finalizeMdast(

@@ -8,7 +8,7 @@ import {
   validatePageFrontmatter,
 } from 'myst-frontmatter';
 import type { GenericParent } from 'myst-common';
-import { fileError, fileWarn, RuleId } from 'myst-common';
+import { fileError, fileWarn, normalizeLabel, RuleId } from 'myst-common';
 import type { ValidationOptions } from 'simple-validators';
 import { VFile } from 'vfile';
 import type { ISession } from './session/types.js';
@@ -57,6 +57,10 @@ export function getPageFrontmatter(
     rawPageFrontmatter,
     frontmatterValidationOpts(vfile),
   );
+  if (pageFrontmatter.label) {
+    const { identifier } = normalizeLabel(pageFrontmatter.label) ?? {};
+    if (identifier) identifiers.push(identifier);
+  }
   logMessagesFromVFile(session, vfile);
   return { frontmatter: pageFrontmatter, identifiers };
 }

@@ -50,6 +50,7 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
   app.use('/content', express.static(session.contentPath()));
   app.use('/config.json', express.static(join(session.sitePath(), 'config.json')));
   app.use('/objects.inv', express.static(join(session.sitePath(), 'objects.inv')));
+  app.use('/myst.xref.json', express.static(join(session.sitePath(), 'myst.xref.json')));
   const server = app.listen(port, () => {
     session.log.debug(`Content server listening on port ${port}`);
   });

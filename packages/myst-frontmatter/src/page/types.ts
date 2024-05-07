@@ -16,6 +16,7 @@ export const PAGE_KNOWN_PARTS = [
 export const PAGE_FRONTMATTER_KEYS = [
   ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
   // These keys only exist on the page
+  'label',
   'kernelspec',
   'jupytext',
   'tags',
@@ -25,6 +26,7 @@ export const PAGE_FRONTMATTER_KEYS = [
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
+  label?: string;
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];
