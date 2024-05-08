@@ -1,5 +1,5 @@
 ---
-title: Background
+title: History and background
 description: High-level discussion of the MyST Markdown ecosystem, history of mystmd, other implementations like JupyterBook and Sphinx, and explains past decisions.
 ---
 

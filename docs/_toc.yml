@@ -63,6 +63,7 @@ parts:
   - caption: Reference
     chapters:
       - file: background
+      - file: guiding-principles
       - file: installing
       - file: installing-prerequisites
       - file: commonmark
