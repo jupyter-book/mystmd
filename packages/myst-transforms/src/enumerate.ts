@@ -17,7 +17,7 @@ import {
   TargetKind,
   RuleId,
 } from 'myst-common';
-import type { Link } from './links/types.js';
+import type { Link, LinkTransformer } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
 import { fillNumbering, type Numbering } from 'myst-frontmatter';
 
@@ -120,6 +120,7 @@ export type StateOptions = {
 
 export type StateResolverOptions = {
   state: IReferenceStateResolver;
+  transformers?: LinkTransformer[];
 };
 
 const UNKNOWN_REFERENCE_ENUMERATOR = '??';
@@ -739,24 +740,35 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateResolve
     const cite = node as Cite;
     if (!cite.error) return;
     const reference = normalizeLabel(cite.label);
-    const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference?.identifier);
-    const fileTarget = opts.state.getFileTarget(reference?.identifier);
-    if (!(target || fileTarget) || !reference) {
-      if (!opts.state.vfile) return;
-      fileWarn(opts.state.vfile, `Could not link citation with label "${cite.label}".`, {
-        node,
-        source: TRANSFORM_NAME,
-        ruleId: RuleId.referenceTargetResolves,
-      });
+    if (reference) {
+      const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference.identifier);
+      const fileTarget = opts.state.getFileTarget(reference.identifier);
+      if (target || fileTarget) {
+        // Change the cite into a cross-reference!
+        const xref = cite as unknown as CrossReference;
+        xref.type = 'crossReference';
+        xref.identifier = reference.identifier;
+        xref.label = reference.label;
+        delete cite.error;
+        if (target) implicitTargetWarning(target, node, opts);
+        return;
+      }
+    }
+    const transformer = opts.transformers?.find((t) => t.test(cite.label));
+    if (transformer) {
+      // Change the cite into a link for LinkTransformer to handle later
+      const link = cite as unknown as Link;
+      link.type = 'link';
+      link.url = cite.label;
+      delete cite.error;
       return;
     }
-    // Change the cite into a cross-reference!
-    const xref = cite as unknown as CrossReference;
-    xref.type = 'crossReference';
-    xref.identifier = reference.identifier;
-    xref.label = reference.label;
-    delete cite.error;
-    if (target) implicitTargetWarning(target, node, opts);
+    if (!opts.state.vfile) return;
+    fileWarn(opts.state.vfile, `Could not link citation with label "${cite.label}".`, {
+      node,
+      source: TRANSFORM_NAME,
+      ruleId: RuleId.referenceTargetResolves,
+    });
   });
 };
 

@@ -193,17 +193,6 @@ export async function transformMdast(
   // This needs to come after basic transformations since meta tags are added there
   propagateBlockDataToCode(session, vfile, mdast);
 
-  // Run the link transformations that can be done without knowledge of other files
-  const transformers = [
-    new WikiTransformer(),
-    new GithubTransformer(),
-    new RRIDTransformer(),
-    new DOITransformer(), // This also is picked up in the next transform
-    new MystTransformer(Object.values(cache.$externalReferences)),
-    new SphinxTransformer(Object.values(cache.$externalReferences)),
-  ];
-  linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
-  await transformMystXRefs(session, vfile, mdast, frontmatter);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(
     session,
@@ -298,7 +287,7 @@ export async function postProcessMdast(
   if (!mdastPost) return;
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
-  const { mdast, dependencies } = mdastPost;
+  const { mdast, dependencies, frontmatter } = mdastPost;
   const fileState = cache.$internalReferences[file];
   const state = pageReferenceStates
     ? new MultiPageReferenceResolver(pageReferenceStates, file, vfile)
@@ -306,14 +295,21 @@ export async function postProcessMdast(
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
     ...(extraLinkTransformers || []),
+    new WikiTransformer(),
+    new GithubTransformer(),
+    new RRIDTransformer(),
+    new DOITransformer(), // This also is picked up in the next transform
+    new MystTransformer(Object.values(cache.$externalReferences)),
+    new SphinxTransformer(Object.values(cache.$externalReferences)),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
+  resolveReferencesTransform(mdast, state.vfile as VFile, { state, transformers });
   linksTransform(mdast, state.vfile as VFile, {
     transformers,
     selector: LINKS_SELECTOR,
   });
-  resolveReferencesTransform(mdast, state.vfile as VFile, { state });
-  embedTransform(session, mdast, file, dependencies, state);
+  await transformMystXRefs(session, vfile, mdast, frontmatter);
+  await embedTransform(session, mdast, file, dependencies, state);
   const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'project') return;
