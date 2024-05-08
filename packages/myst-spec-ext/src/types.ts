@@ -18,6 +18,7 @@ import type {
   Math as SpecMath,
   Node,
   CrossReference as SpecCrossReference,
+  Link as SpecLink,
 } from 'myst-spec';
 
 type Visibility = 'show' | 'hide' | 'remove';
@@ -255,7 +256,15 @@ export type Aside = Node & {
 };
 
 export type CrossReference = SpecCrossReference & {
+  urlSource?: string;
   remote?: boolean;
+  url?: string;
+  dataUrl?: string;
   remoteBaseUrl?: string;
   html_id?: string;
+};
+
+export type Link = SpecLink & {
+  urlSource?: string;
+  dataUrl?: string;
 };
