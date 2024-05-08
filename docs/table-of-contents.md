@@ -1,12 +1,12 @@
 ---
 title: Table of Contents
-description: The Table of Contents is the left-hand navigation for your site, it can be auto-generated or can be explicitly defined in a _toc.yml.
+description: The Table of Contents is the left-hand navigation for your site, it can be auto-generated or can be explicitly defined in `myst.yml`.
 thumbnail: thumbnails/table-of-contents.png
 ---
 
 +++
 
-The Table of Contents is the left-hand navigation for your site. It can either be auto-generated, following some simple heuristics described below, or can be explicitly defined in a `_toc.yml` using the `jb-book` format.
+The  is the left-hand navigation for your site. It can either be auto-generated, following some simple heuristics described below, or can be explicitly defined in the `toc` attribute of [the project frontmatter](frontmatter.md#in-a-myst-yml-file).
 
 ## Generating a Table of Contents
 
@@ -22,7 +22,7 @@ This will create a `_toc.yml` in the current directory, you can read more about 
 
 ## Auto-generating a Table of Contents
 
-When there is no `_toc.yml` defined an implicit table of contents is defined by the file system structure. All markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
+When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
 
 The ordering of the table of contents will sort alphabetically as well as order by number, ensuring that, for example, `chapter10` comes after `chapter9`.
 
@@ -53,9 +53,6 @@ The “root” of a site is the page displayed when someone browses to the index
 7. `main.ipynb`
 8. The first `.ipynb` file found alphabetically
 
-```{note}
-All of these can be over-ridden by choosing an explicit `_toc.yml`, when that is present it will be used.
-```
 
 ### Excluding Files
 
@@ -80,37 +77,95 @@ Note that when these files are excluded, they can still be specifically referenc
 
 (toc-format)=
 
-## Defining a `_toc.yml` using Jupyter Book’s format
+## Defining a Table of Contents
 
-The `_toc.yml` can be defined for a site, and uses the format describe by Jupyter Book, the documentation for the format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html). Briefly, it defines a `format` as `jb-book` and can list a number of `chapters` with files. The file paths are relative to your `_toc.yml` file and can optionally include the extension.
+The  MyST TOC comprises of a simple tree structure, built from `file`s, `url`s, `pattern`s, and `children`. For example, a simple TOC consisting of files:
+:::{code} yaml
+:filename: myst.yml
 
-```yaml
-format: jb-book
-root: index
-chapters:
-  - file: path/to/chapter1
-  - file: path/to/chapter2
-```
+version: 1
+project:
+  toc:
+    - file: root.md
+    - file: first-child.md
+    - file: second-child.md
+:::
+URLs and glob-patterns can also be defined:
+:::{code} yaml
+:filename: myst.yml
 
-For larger books, you can group the content into `parts`. Each `part` has a `caption` and a list of `chapters` files can define children using a list of `sections`.
+version: 1
+project:
+  toc:
+    - file: root.md
+    - pattern: '*-child.md'
+    - url: 'https://google.com'
+:::
+The files matched by `pattern` will be expanded as a series of `file` entries, i.e.:
+:::{code} yaml
+:filename: myst.yml
+:linenos:
+:emphasize-lines: 5,6
 
-```yaml
-format: jb-book
-root: index
-parts:
-  - caption: Name of Part 1
-    chapters:
-      - file: path/to/part1/chapter1
-      - file: path/to/part1/chapter2
-        sections:
-          - file: path/to/part1/chapter2/section1
-  - caption: Name of Part 2
-    chapters:
-      - file: path/to/part2/chapter1
-      - file: path/to/part2/chapter2
-```
+version: 1
+project:
+  toc:
+    - file: root.md
+    - file: first-child.md
+    - file: second-child.md
+    - url: https://google.com
+:::
 
-+++
+For larger books, you can group the content using the `children` key, which can be defined for both `url` and `file` entries:
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - file: part-1.md
+      children:
+        - file: part-1-first-child.md
+        - file: part-1-second-child.md
+    - file: part-2.md
+      children:
+        - file: part-2-first-child.md
+        - file: part-2-second-child.md
+:::
+
+It is also possible to group entries together without a root file or URL; an entry comprising only of an array of `children` can be defined _if_ a `title` is also given:
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - title: Part 1
+      children:
+        - file: part-1-first-child.md
+        - file: part-1-second-child.md
+    - title: Part 2
+      children:
+        - file: part-2-first-child.md
+        - file: part-2-second-child.md
+:::
+
+## Defining Exported Parts
+A MyST document [can be split into several "parts"](document-parts.md#known-frontmatter-parts) that correspond to distinct components. Each TOC entry can be given a `part` key that corresponds to one of these recognized parts, e.g.
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - file: abstract.md
+      part: abstract
+    - file: acknowledgements.md
+      part: acknowledgements
+:::
 
 ## Nesting of Files in URLs
 
