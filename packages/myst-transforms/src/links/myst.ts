@@ -113,16 +113,17 @@ export class MystTransformer implements LinkTransformer {
     ) {
       link.children = [];
     }
-    link.internal = false;
     link.url = `${mystXRefs.url}${match.url}`;
     link.dataUrl = `${mystXRefs.url}${match.data}`;
     if (match.kind === 'page') {
-      link.protocol = 'file';
+      // TODO: We should move this to be a cross-reference as well with kind "page"
+      link.internal = false;
     } else {
       const xref = link as unknown as CrossReference;
       // Upgrade links to cross-references with identifiers
       xref.type = 'crossReference';
       xref.remote = true;
+      xref.remoteBaseUrl = mystXRefs.url;
       xref.identifier = match.identifier;
       xref.label = match.identifier;
       xref.html_id = match.html_id;

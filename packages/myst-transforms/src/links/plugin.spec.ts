@@ -36,7 +36,6 @@ describe('Link Plugin Transformer', () => {
     };
     linksTransform({ type: 'root', children: [link] }, file, { transformers: [t] });
     expect(file.messages.length).toEqual(0);
-    expect(link.internal).toBe(false);
     expect(link.url).toEqual('https://example.com/myst-ref/my-figure');
     expect(link.dataUrl).toEqual('https://example.com/myst-ref/my-figure.json');
     expect(link.type).toEqual('crossReference');
