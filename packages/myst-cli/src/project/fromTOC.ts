@@ -18,6 +18,8 @@ import type {
 } from './types.js';
 import type { TOC, Entry, ParentEntry } from 'myst-toc';
 import { isFile, isPattern, isURL } from 'myst-toc';
+import { globSync } from 'glob';
+import { isDirectory } from 'myst-cli-utils';
 
 function pagesFromEntries(
   session: ISession,
@@ -29,8 +31,9 @@ function pagesFromEntries(
 ): (LocalProjectFolder | LocalProjectPage)[] {
   for (const entry of entries) {
     if (isFile(entry)) {
-      const file = resolveExtension(join(path, entry.file));
-      if (file) {
+      const file = join(path, entry.file);
+
+      if (fs.existsSync(file) && !isDirectory(file)) {
         const { slug } = fileInfo(file, pageSlugs);
         pages.push({ file, level, slug });
       } else {
@@ -39,7 +42,19 @@ function pagesFromEntries(
         });
       }
     } else if (isPattern(entry)) {
-      throw new Error('Not implemented!');
+      const { pattern, ...rest } = entry;
+      const matches = globSync(pattern, { cwd: path });
+      matches.forEach((filePath) => {
+        const file = join(path, filePath);
+        if (fs.existsSync(file) && !isDirectory(file)) {
+          const { slug } = fileInfo(file, pageSlugs);
+          pages.push({ file, level, slug });
+        } else {
+          addWarningForFile(session, path, `Referenced file not found: ${filePath}`, 'error', {
+            ruleId: RuleId.tocContentsExist,
+          });
+        }
+      });
     } else if (isURL(entry)) {
       throw new Error('Not implemented!');
     } else {
