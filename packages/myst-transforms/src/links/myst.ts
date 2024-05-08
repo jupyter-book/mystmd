@@ -113,10 +113,10 @@ export class MystTransformer implements LinkTransformer {
     ) {
       link.children = [];
     }
-    link.url = `${mystXRefs.url}${match.url}`;
-    link.dataUrl = `${mystXRefs.url}${match.data}`;
     if (match.kind === 'page') {
       // TODO: We should move this to be a cross-reference as well with kind "page"
+      link.url = `${mystXRefs.url}${match.url}`;
+      link.dataUrl = `${mystXRefs.url}${match.data}`;
       link.internal = false;
     } else {
       const xref = link as unknown as CrossReference;
@@ -124,6 +124,8 @@ export class MystTransformer implements LinkTransformer {
       xref.type = 'crossReference';
       xref.remote = true;
       xref.remoteBaseUrl = mystXRefs.url;
+      xref.url = match.url;
+      xref.dataUrl = match.data;
       xref.identifier = match.identifier;
       xref.label = match.identifier;
       xref.html_id = match.html_id;

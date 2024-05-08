@@ -1,76 +1,140 @@
 import { filter } from 'unist-util-filter';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import type { IReferenceStateResolver, MultiPageReferenceResolver } from 'myst-transforms';
+import { VFile } from 'vfile';
+import {
+  MystTransformer,
+  isTargetIdentifierNode,
+  type IReferenceStateResolver,
+  type MultiPageReferenceResolver,
+} from 'myst-transforms';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { copyNode, liftChildren, normalizeLabel } from 'myst-common';
-import type { Dependency, Embed, Container } from 'myst-spec-ext';
+import type { Dependency, Embed, Container, CrossReference, Link } from 'myst-spec-ext';
 import { selectFile } from '../process/file.js';
 import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
+import { castSession } from '../session/cache.js';
+import { fetchMystLinkData, fetchMystXRefData, nodeFromMystXRefData } from './crossReferences.js';
+import type { RendererData } from './types.js';
+
+function mutateEmbedNode(node: Embed, targetNode?: GenericNode | null) {
+  if (targetNode && node['remove-output']) {
+    targetNode = filter(targetNode, (n: GenericNode) => {
+      return n.type !== 'output' && n.data?.type !== 'output';
+    });
+  }
+  if (targetNode && node['remove-input']) {
+    targetNode = filter(targetNode, (n: GenericNode) => {
+      return n.type !== 'code' || n.data?.type === 'output';
+    });
+  }
+  selectAll('[identifier],[label],[html_id]', targetNode).forEach((idNode: GenericNode) => {
+    // Non-target nodes may keep these properties
+    if (!isTargetIdentifierNode(idNode)) return;
+    delete idNode.identifier;
+    delete idNode.label;
+    delete idNode.html_id;
+  });
+  if (!targetNode) {
+    node.children = [];
+  } else if (targetNode.type === 'block') {
+    // Do not nest a single block inside an embed
+    node.children = targetNode.children as any[];
+  } else {
+    node.children = [targetNode as any];
+  }
+}
 
 /**
  * This is the {embed} directive, that embeds nodes from elsewhere in a page.
  */
-export function embedTransform(
+export async function embedTransform(
   session: ISession,
   mdast: GenericParent,
   file: string,
   dependencies: Dependency[],
   state: IReferenceStateResolver,
 ) {
+  const mystTransformer = new MystTransformer(
+    Object.values(castSession(session).$externalReferences),
+  );
   const embedNodes = selectAll('embed', mdast) as Embed[];
-  embedNodes.forEach((node) => {
-    const normalized = normalizeLabel(node.source?.label);
-    if (!normalized) return;
-    const target = state.getTarget(normalized.identifier);
-    if (!target) return;
-    let newNode = copyNode(target.node as any) as GenericNode | null;
-    if (newNode && node['remove-output']) {
-      newNode = filter(newNode, (n: GenericNode) => {
-        return n.type !== 'output' && n.data?.type !== 'output';
-      });
-    }
-    if (newNode && node['remove-input']) {
-      newNode = filter(newNode, (n: GenericNode) => {
-        return n.type !== 'code' || n.data?.type === 'output';
-      });
-    }
-    selectAll('[identifier],[label],[html_id]', newNode).forEach((idNode: GenericNode) => {
-      delete idNode.identifier;
-      delete idNode.label;
-      delete idNode.html_id;
-    });
-    if (!newNode) {
-      node.children = [];
-    } else if (newNode.type === 'block') {
-      // Do not nest a single block inside an embed
-      node.children = newNode.children as any[];
-    } else {
-      node.children = [newNode as any];
-    }
-    const multiState = state as MultiPageReferenceResolver;
-    if (!multiState.states) return;
-    const { url, filePath } = multiState.resolveStateProvider(normalized.identifier) ?? {};
-    if (!url) return;
-    const source: Dependency = { url, label: node.source?.label };
-    if (filePath) {
-      session.store.dispatch(
-        watch.actions.addLocalDependency({
-          path: file,
-          dependency: filePath,
-        }),
-      );
-      const { kind, slug, frontmatter, location } = selectFile(session, filePath) ?? {};
-      if (kind) source.kind = kind;
-      if (slug) source.slug = slug;
-      if (location) source.location = location;
-      if (frontmatter?.title) source.title = frontmatter.title;
-      if (frontmatter?.short_title) source.short_title = frontmatter.short_title;
-    }
-    node.source = source;
-    if (!dependencies.map((dep) => dep.url).includes(url)) dependencies.push(source);
-  });
+  await Promise.all(
+    embedNodes.map(async (node) => {
+      const label = node.source?.label;
+      if (!label) return;
+      if (mystTransformer.test(label)) {
+        const referenceLink: Link = {
+          type: 'link',
+          url: label,
+          urlSource: label,
+          children: [],
+        };
+        const vfile = state.vfile ?? new VFile();
+        const transformed = mystTransformer.transform(referenceLink, vfile);
+        const referenceXRef = referenceLink as any as CrossReference;
+        if (transformed) {
+          let data: RendererData | undefined;
+          let targetNode: GenericNode | undefined;
+          if (referenceXRef.identifier) {
+            data = await fetchMystXRefData(referenceXRef, vfile);
+            if (!data) return;
+            targetNode = nodeFromMystXRefData(referenceXRef, data, vfile);
+          } else {
+            data = await fetchMystLinkData(referenceLink, vfile);
+            if (!data) return;
+            targetNode = { type: 'block', children: data.mdast.children };
+          }
+          (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
+            if (targetXRef.remoteBaseUrl) return;
+            targetXRef.remoteBaseUrl = referenceXRef.remoteBaseUrl;
+            if (!targetXRef.remote) {
+              targetXRef.url = referenceXRef.url;
+              targetXRef.dataUrl = referenceXRef.dataUrl;
+            }
+          });
+          mutateEmbedNode(node, targetNode);
+          // Remote dependency, not added as local dependency
+          const source: Dependency = {
+            url: `${referenceXRef.remoteBaseUrl ?? ''}${referenceXRef.url}`,
+            label,
+          };
+          if (data.kind) source.kind = data.kind;
+          if (data.frontmatter?.title) source.title = data.frontmatter.title;
+          if (data.frontmatter?.short_title) source.short_title = data.frontmatter.short_title;
+          node.source = source;
+        }
+        return;
+      }
+      const normalized = normalizeLabel(label);
+      if (!normalized) return;
+      const target = state.getTarget(normalized.identifier);
+      if (!target) return;
+      mutateEmbedNode(node, copyNode(target.node as any) as GenericNode | null);
+      const multiState = state as MultiPageReferenceResolver;
+      if (!multiState.states) return;
+      const { url, filePath } = multiState.resolveStateProvider(normalized.identifier) ?? {};
+      if (!url) return;
+      const source: Dependency = { url, label };
+      if (filePath) {
+        session.store.dispatch(
+          watch.actions.addLocalDependency({
+            path: file,
+            dependency: filePath,
+          }),
+        );
+        const { kind, slug, frontmatter, location } = selectFile(session, filePath) ?? {};
+        if (kind) source.kind = kind;
+        if (slug) source.slug = slug;
+        if (location) source.location = location;
+        if (frontmatter?.title) source.title = frontmatter.title;
+        if (frontmatter?.short_title) source.short_title = frontmatter.short_title;
+      }
+      node.source = source;
+      if (!dependencies.map((dep) => dep.url).includes(url)) dependencies.push(source);
+    }),
+  );
   // If a figure contains a single embed node, move the source info to the figure and lift
   // the embed children, eliminating the embed node.
   const containerNodes = selectAll('container', mdast) as Container[];
