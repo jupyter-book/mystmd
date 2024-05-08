@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
+import type { Response } from 'node-fetch';
 import fetch from 'node-fetch';
 import { Inventory } from 'intersphinx';
 import { tic, isUrl, computeHash, writeFileToFolder } from 'myst-cli-utils';
@@ -76,10 +77,15 @@ async function loadReference(
     const mystXRefsUrl = `${reference.url}/myst.xref.json`;
     session.log.debug(`Attempting to load MyST xref file: ${mystXRefsUrl}`);
     const toc = tic();
-    const mystXRefsResp = await fetch(mystXRefsUrl);
-    if (mystXRefsResp.status === 200) {
+    let mystXRefsResp: Response | undefined;
+    try {
+      mystXRefsResp = await fetch(mystXRefsUrl);
+    } catch {
+      session.log.debug(`Request to ${mystXRefsUrl} failed`);
+    }
+    if (mystXRefsResp?.status === 200) {
       reference.kind = 'myst';
-      const mystXRefs = (await mystXRefsResp.json()) as MystXRefs;
+      const mystXRefs = (await mystXRefsResp?.json()) as MystXRefs;
       reference.value = mystXRefs;
       const cachePath = inventoryCacheFile(session, 'myst', reference.key, reference.url);
       session.log.debug(`Saving remote myst xref file to cache ${reference.url}: ${cachePath}`);
@@ -112,7 +118,7 @@ async function loadReference(
       } else {
         session.log.debug(`Unable to load reference "${reference.key}" as intersphinx`);
       }
-      return null;
+      return;
     }
     const cachePath = inventoryCacheFile(session, 'intersphinx', inventory.id, inventory.path);
     if (!fs.existsSync(cachePath) && isUrl(inventory.path)) {
@@ -122,7 +128,11 @@ async function loadReference(
     session.log.info(
       toc(`🏫 Read ${inventory.numEntries} references for "${inventory.id}" in %s.`),
     );
+    return reference;
   }
+  fileError(vfile, `Unable to resolve references: ${reference.key} (${reference.url})`, {
+    ruleId: RuleId.intersphinxReferencesResolve,
+  });
 }
 
 /**
