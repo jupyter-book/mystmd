@@ -63,6 +63,7 @@ export { headingDepthPlugin, headingDepthTransform } from './headings.js';
 export type { IReferenceStateResolver, ReferenceKind } from './enumerate.js';
 export {
   addChildrenFromTargetNode,
+  isTargetIdentifierNode,
   enumerateTargetsTransform,
   enumerateTargetsPlugin,
   resolveReferencesTransform,

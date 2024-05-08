@@ -103,7 +103,6 @@ type TargetNodes = (Container | Math | MathGroup | Heading) & {
   subcontainer?: boolean;
   parentEnumerator?: string;
 };
-type IdentifierNodes = { type: string; identifier: string };
 
 type Target = {
   node: TargetNodes;
@@ -292,6 +291,22 @@ export function initializeTargetCounts(
   return targetCounts;
 }
 
+/**
+ * Determine if node with `identifier` should be considered a target
+ *
+ * TODO: `identifier` on these non-target should be updated to `target`
+ * Doing so will make this function obsolete
+ *
+ * This function only returns false if node `type` equals one of:
+ * crossReferences, citations, footnoteDefinition, and footnoteReference.
+ *
+ * It not actually check if the node has `identifier`.
+ */
+export function isTargetIdentifierNode(node: { type: string }) {
+  const nonTargetTypes = ['crossReference', 'cite', 'footnoteDefinition', 'footnoteReference'];
+  return !nonTargetTypes.includes(node.type);
+}
+
 export interface IReferenceStateResolver {
   vfile?: VFile;
   /**
@@ -340,18 +355,7 @@ export class ReferenceState implements IReferenceStateResolver {
   }
 
   addTarget(node: TargetNodes) {
-    const possibleIncorrectNode = node as IdentifierNodes;
-    if (
-      possibleIncorrectNode.type === 'crossReference' ||
-      possibleIncorrectNode.type === 'cite' ||
-      possibleIncorrectNode.type === 'footnoteDefinition' ||
-      possibleIncorrectNode.type === 'footnoteReference'
-    ) {
-      // Explicitly filter out crossReferences, citations, and footnoteDefinition
-      // These are not targets, but do have an "identifier" property
-      // Footnotes are resolved differently
-      return;
-    }
+    if (!isTargetIdentifierNode(node)) return;
     const kind = kindFromNode(node);
     const numberNode = shouldEnumerate(node, kind, this.numbering);
     if (numberNode && !node.enumerator) {
