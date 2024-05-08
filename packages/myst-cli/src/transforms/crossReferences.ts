@@ -3,44 +3,63 @@ import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, fileWarn, plural } from 'myst-common';
 import { tic } from 'myst-cli-utils';
-import { addChildrenFromTargetNode } from 'myst-transforms';
+import { addChildrenFromTargetNode, isTargetIdentifierNode } from 'myst-transforms';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import type { CrossReference, Link } from 'myst-spec-ext';
 import type { ISession } from '../session/types.js';
 import type { RendererData } from './types.js';
 
-export async function fetchMystXRefData(dataUrl: string, label: string, vfile: VFile) {
-  try {
-    const resp = await fetch(dataUrl);
-    if (resp.ok) {
-      const data: RendererData = await resp.json();
-      return data;
+async function fetchMystData(
+  dataUrl: string | undefined,
+  urlSource: string | undefined,
+  vfile: VFile,
+) {
+  let note: string;
+  if (dataUrl) {
+    try {
+      const resp = await fetch(dataUrl);
+      if (resp.ok) {
+        const data: RendererData = await resp.json();
+        return data;
+      }
+    } catch {
+      // data is unset
     }
-  } catch {
-    // data is unset
+    note = 'Could not load data from external project';
+  } else {
+    note = 'Data source URL unavailable';
   }
-  fileWarn(vfile, `Unable to resolve link text from external MyST reference: ${label}`, {
-    ruleId: RuleId.mystLinkValid,
-    note: 'Could not load data from external project',
-  });
+  fileWarn(
+    vfile,
+    `Unable to resolve link text from external MyST reference: ${urlSource ?? dataUrl ?? ''}`,
+    {
+      ruleId: RuleId.mystLinkValid,
+      note,
+    },
+  );
   return;
 }
 
-export function nodeFromMystXRefData(
-  identifier: string,
-  data: RendererData,
-  label: string,
-  vfile: VFile,
-) {
-  const targets = selectAll(`[identifier=${identifier}]`, data.mdast) as GenericNode[];
+export async function fetchMystLinkData(node: Link, vfile: VFile) {
+  return fetchMystData(node.dataUrl, node.urlSource, vfile);
+}
+
+export async function fetchMystXRefData(node: CrossReference, vfile: VFile) {
+  let dataUrl: string | undefined;
+  if (node.remoteBaseUrl && node.dataUrl) {
+    dataUrl = `${node.remoteBaseUrl}${node.dataUrl}`;
+  }
+  return fetchMystData(dataUrl, node.urlSource, vfile);
+}
+
+export function nodeFromMystXRefData(node: CrossReference, data: RendererData, vfile: VFile) {
+  const targets = selectAll(`[identifier=${node.identifier}]`, data.mdast) as GenericNode[];
   // Ignore nodes with `identifier` that are not actually the target.
-  // TODO: migrate `identifier` on these node types to `target`
-  const target = targets.find((t) => {
-    return !['crossReference', 'cite', 'footnoteDefinition', 'footnoteReference'].includes(t.type);
-  });
+  const target = targets.find((t) => isTargetIdentifierNode(t));
   if (!target) {
-    fileWarn(vfile, `Unable to resolve link text from external MyST reference: ${label}`, {
+    fileWarn(vfile, `Unable to resolve link text from external MyST reference: ${node.urlSource}`, {
       ruleId: RuleId.mystLinkValid,
-      note: `Could not locate identifier ${identifier} in page content`,
+      note: `Could not locate identifier ${node.identifier} in page content`,
     });
     return;
   }
@@ -73,13 +92,15 @@ export async function transformMystXRefs(
   let number = 0;
   await Promise.all([
     ...nodes.map(async (node: GenericNode) => {
-      const data = await fetchMystXRefData(node.dataUrl, node.urlSource, vfile);
-      if (!data) return;
       if (!node.identifier) {
         // Page references without specific node identifier
+        const data = await fetchMystLinkData(node as Link, vfile);
+        if (!data) return;
         node.children = [{ type: 'text', value: data.frontmatter?.title ?? data.slug ?? '' }];
       } else {
-        const target = nodeFromMystXRefData(node.identifier, data, node.urlSource, vfile);
+        const data = await fetchMystXRefData(node as CrossReference, vfile);
+        if (!data) return;
+        const target = nodeFromMystXRefData(node as CrossReference, data, vfile);
         addChildrenFromTargetNode(node as any, target as any, frontmatter.numbering, vfile);
       }
       number += 1;
