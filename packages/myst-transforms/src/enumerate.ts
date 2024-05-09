@@ -798,9 +798,18 @@ export const resolveCrossReferencesTransform = (
 ) => {
   visit(tree, 'crossReference', (node: CrossReference) => {
     // If protocol is set, this came from a LinkTransformer and will not be touched here
-    if ((node as any).protocol) return;
+    const { protocol } = node as any;
+    if (protocol && protocol !== 'file') return;
     opts.state.resolveReferenceContent(node);
   });
+};
+
+export const resolveLinksAndCitationsTransform = (
+  tree: GenericParent,
+  opts: StateResolverOptions,
+) => {
+  resolveReferenceLinksTransform(tree, opts);
+  resolveUnlinkedCitations(tree, opts);
 };
 
 export const resolveReferencesTransform = (
@@ -808,8 +817,6 @@ export const resolveReferencesTransform = (
   file: VFile,
   opts: StateResolverOptions,
 ) => {
-  resolveReferenceLinksTransform(tree, opts);
-  resolveUnlinkedCitations(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
   addContainerCaptionNumbersTransform(tree, file, opts);
   unnestCrossReferencesTransform(tree);
@@ -820,5 +827,6 @@ export const resolveReferencesPlugin: Plugin<
   GenericParent,
   GenericParent
 > = (opts) => (tree, file) => {
+  resolveLinksAndCitationsTransform(tree, opts);
   resolveReferencesTransform(tree, file, opts);
 };

@@ -66,6 +66,7 @@ export {
   isTargetIdentifierNode,
   enumerateTargetsTransform,
   enumerateTargetsPlugin,
+  resolveLinksAndCitationsTransform,
   resolveReferencesTransform,
   resolveReferencesPlugin,
   ReferenceState,

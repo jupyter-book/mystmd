@@ -11,6 +11,7 @@ import {
   footnotesPlugin,
   ReferenceState,
   MultiPageReferenceResolver,
+  resolveLinksAndCitationsTransform,
   resolveReferencesTransform,
   mathPlugin,
   codePlugin,
@@ -303,11 +304,12 @@ export async function postProcessMdast(
     new SphinxTransformer(Object.values(cache.$externalReferences)),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
-  resolveReferencesTransform(mdast, state.vfile as VFile, { state, transformers });
+  resolveLinksAndCitationsTransform(mdast, { state, transformers });
   linksTransform(mdast, state.vfile as VFile, {
     transformers,
     selector: LINKS_SELECTOR,
   });
+  resolveReferencesTransform(mdast, state.vfile as VFile, { state, transformers });
   await transformMystXRefs(session, vfile, mdast, frontmatter);
   await embedTransform(session, mdast, file, dependencies, state);
   const pipe = unified();

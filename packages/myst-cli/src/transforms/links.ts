@@ -5,8 +5,9 @@ import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
-import { RuleId, fileError, plural } from 'myst-common';
+import { RuleId, fileError, normalizeLabel, plural } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, tic, writeFileToFolder } from 'myst-cli-utils';
+import { CrossReference } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -151,16 +152,28 @@ export class StaticFileTransformer implements LinkTransformer {
       // Not raising a warning here, this should be caught in the test above
       return false;
     }
-    const [linkFile, ...target] = linkFileWithTarget.split('#');
+    const [linkFile] = linkFileWithTarget.split('#');
+    const target = linkFileWithTarget.slice(linkFile.length + 1);
+    const reference = normalizeLabel(target);
     const { url, title, dataUrl } =
       selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
     // If the link is non-static, and can be resolved locally
     if (url != null && link.static !== true) {
-      // Replace relative file link with resolved site path
-      // TODO: lookup the and resolve the hash as well
-      link.url = [url, ...(target || [])].join('#');
-      link.internal = true;
-      if (dataUrl) link.dataUrl = dataUrl;
+      if (reference) {
+        // Change the link into a cross-reference!
+        const xref = link as unknown as CrossReference;
+        xref.type = 'crossReference';
+        xref.identifier = reference.identifier;
+        xref.label = reference.label;
+        xref.url = url;
+        xref.remote = true;
+        return true;
+      } else {
+        // Replace relative file link with resolved site path
+        link.url = [url, ...(target || [])].join('#');
+        link.internal = true;
+        if (dataUrl) link.dataUrl = dataUrl;
+      }
     } else {
       // Copy relative file to static folder and replace with absolute link
       const copiedFile = hashAndCopyStaticFile(
