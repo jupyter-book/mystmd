@@ -201,7 +201,7 @@ If you'd like an image to display for static exports (like PDFs), use the asteri
 
 For example, if you had the following two files:
 
-```
+```text
 myvideo.mp4  <-- A video of something
 myvideo.png <-- A frame of the video as an image
 ```
