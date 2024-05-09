@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import assert from 'node:assert';
 import { join, parse } from 'node:path';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
@@ -88,7 +87,9 @@ export function projectFromTOC(
 ): Omit<LocalProject, 'bibliography'> {
   const pageSlugs: PageSlugs = {};
   const [root, ...entries] = toc;
-  assert(isFile(root));
+  if (!isFile(root)) {
+    throw new Error(`First TOC item should be a file`);
+  }
   const indexFile = resolveExtension(join(path, root.file));
   if (!indexFile) {
     throw Error(
