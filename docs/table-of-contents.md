@@ -16,7 +16,7 @@ By default the table of contents is left implicit, and follows rules laid out in
 myst init --write-toc
 ```
 
-This will create a `_toc.yml` in the current directory, you can read more about the [table of contents format](#toc-format) below.
+This will create (or update) a `toc` entry in `myst.yml`. You can read more about the [table of contents format](#toc-format) below.
 
 +++
 
