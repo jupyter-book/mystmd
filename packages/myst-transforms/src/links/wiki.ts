@@ -86,6 +86,7 @@ export class WikiTransformer implements LinkTransformer {
       .replace(/(?:^_)|(?:_$)/g, '');
     link.url = `${result.wiki}wiki/${page}`;
     link.data = {
+      ...link.data,
       page: page,
       wiki: result.wiki,
       lang: result.lang,

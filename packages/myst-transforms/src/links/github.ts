@@ -113,7 +113,7 @@ export class GithubTransformer implements LinkTransformer {
       return false;
     }
     const [defaultText, data] = parsed;
-    link.data = data;
+    link.data = { ...link.data, ...data };
     link.internal = false;
     updateLinkTextIfEmpty(link, defaultText);
     return true;

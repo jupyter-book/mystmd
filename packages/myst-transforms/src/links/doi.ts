@@ -30,7 +30,7 @@ export class DOITransformer implements LinkTransformer {
       return false;
     }
     link.url = doiUrl;
-    link.data = { doi: doi.normalize(doiUrl) };
+    link.data = { ...link.data, doi: doi.normalize(doiUrl) };
     link.internal = false;
     updateLinkTextIfEmpty(link, '');
     return true;
