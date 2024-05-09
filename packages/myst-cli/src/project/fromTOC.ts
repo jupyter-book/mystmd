@@ -41,7 +41,7 @@ function pagesFromEntries(
         });
       }
     } else if (isPattern(entry)) {
-      const { pattern, ...rest } = entry;
+      const { pattern } = entry;
       const matches = globSync(pattern, { cwd: path });
       matches.forEach((filePath) => {
         const file = join(path, filePath);

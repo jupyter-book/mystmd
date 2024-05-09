@@ -15,7 +15,7 @@ import { validateSphinxTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
 import { projectFromTOC, projectFromSphinxTOC } from './fromTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
-import { writeTOCToConfigFile } from './toTOC.js'; 
+import { writeTOCToConfigFile } from './toTOC.js';
 /**
  * Load project structure from disk
  *

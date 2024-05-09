@@ -26,11 +26,6 @@ function tocFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: st
     } else {
       nextPages = pages.slice(index + 1);
     }
-    let entry: Entry;
-    let children: Entry[] | undefined = [];
-    if (nextPages.length) {
-      children = tocFromPages(nextPages, path);
-    }
     if ('file' in pages[index]) {
       const page = pages[index] as LocalProjectPage;
 
