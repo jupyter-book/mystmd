@@ -7,7 +7,7 @@ import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
 import { RuleId, fileError, normalizeLabel, plural } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, tic, writeFileToFolder } from 'myst-cli-utils';
-import { CrossReference } from 'myst-spec-ext';
+import type { CrossReference } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -100,18 +100,13 @@ export type LinkLookup = Record<string, LinkInfo>;
  * @param file File where link is defined
  * @param sitePath Root path of site / session; from here all relative paths in the store are defined
  */
-export function fileFromRelativePath(
-  pathFromLink: string,
-  file?: string,
-  sitePath?: string,
-): string | undefined {
+export function fileFromRelativePath(pathFromLink: string, file?: string): string | undefined {
   let target: string[];
   [pathFromLink, ...target] = pathFromLink.split('#');
   // The URL is encoded (e.g. %20 --> space)
   pathFromLink = decodeURIComponent(pathFromLink);
-  if (!sitePath) sitePath = '.';
   if (file) {
-    pathFromLink = path.relative(sitePath, path.resolve(path.dirname(file), pathFromLink));
+    pathFromLink = path.resolve(path.dirname(file), pathFromLink);
   }
   if (fs.existsSync(pathFromLink) && fs.lstatSync(pathFromLink).isDirectory()) {
     // This should only return true for files
@@ -159,6 +154,7 @@ export class StaticFileTransformer implements LinkTransformer {
       selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
     // If the link is non-static, and can be resolved locally
     if (url != null && link.static !== true) {
+      if (dataUrl) link.dataUrl = dataUrl;
       if (reference) {
         // Change the link into a cross-reference!
         const xref = link as unknown as CrossReference;
@@ -172,7 +168,6 @@ export class StaticFileTransformer implements LinkTransformer {
         // Replace relative file link with resolved site path
         link.url = [url, ...(target || [])].join('#');
         link.internal = true;
-        if (dataUrl) link.dataUrl = dataUrl;
       }
     } else {
       // Copy relative file to static folder and replace with absolute link

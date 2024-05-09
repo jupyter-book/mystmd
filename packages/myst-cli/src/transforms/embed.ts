@@ -16,6 +16,7 @@ import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
 import { castSession } from '../session/cache.js';
 import { fetchMystLinkData, fetchMystXRefData, nodeFromMystXRefData } from './crossReferences.js';
+import { fileFromRelativePath } from './links.js';
 import type { RendererData } from './types.js';
 
 function mutateEmbedNode(node: Embed, targetNode?: GenericNode | null) {
@@ -107,14 +108,22 @@ export async function embedTransform(
         }
         return;
       }
-      const normalized = normalizeLabel(label);
-      if (!normalized) return;
-      const target = state.getTarget(normalized.identifier);
+      let hash = label;
+      let linkFile: string | undefined;
+      if (label.includes('#')) {
+        const linkFileWithTarget = fileFromRelativePath(label, file);
+        if (!linkFileWithTarget) return;
+        linkFile = linkFileWithTarget.split('#')[0];
+        hash = linkFileWithTarget.slice(linkFile.length + 1);
+      }
+      const { identifier } = normalizeLabel(hash) ?? {};
+      if (!identifier) return;
+      const target = state.getTarget(identifier, linkFile);
       if (!target) return;
       mutateEmbedNode(node, copyNode(target.node as any) as GenericNode | null);
       const multiState = state as MultiPageReferenceResolver;
       if (!multiState.states) return;
-      const { url, filePath } = multiState.resolveStateProvider(normalized.identifier) ?? {};
+      const { url, filePath } = multiState.resolveStateProvider(identifier, linkFile) ?? {};
       if (!url) return;
       const source: Dependency = { url, label };
       if (filePath) {
