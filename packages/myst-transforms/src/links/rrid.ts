@@ -42,7 +42,7 @@ export class RRIDTransformer implements LinkTransformer {
       return false;
     }
     link.url = `${RESOLVER}${rrid}`;
-    link.data = { rrid };
+    link.data = { ...link.data, rrid };
     link.internal = false;
     updateLinkTextIfEmpty(link, rrid);
     return true;
