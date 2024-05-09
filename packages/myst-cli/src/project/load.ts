@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+
 import { join, resolve } from 'node:path';
 import { isDirectory, isUrl } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
@@ -12,10 +13,9 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { getAllBibTexFilesOnPath } from '../utils/getAllBibtexFiles.js';
 import { validateSphinxTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
-import { writeTOCFromProject } from './toTOC.js';
 import { projectFromTOC, projectFromSphinxTOC } from './fromTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
-
+import { writeTOCToConfigFile } from './toTOC.js'; 
 /**
  * Load project structure from disk
  *
@@ -72,7 +72,7 @@ export async function loadProjectFromDisk(
     throw new Error(`Could not load project from ${path}`);
   }
   if (writeTOC) {
-    throw new Error('Not implemented');
+    writeTOCToConfigFile(newProject, file, file);
   }
   const allBibFiles = getAllBibTexFilesOnPath(session, path);
   let bibliography: string[];

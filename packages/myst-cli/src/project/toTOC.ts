@@ -1,35 +1,16 @@
 import fs from 'node:fs';
+
+import type { PageLevels, LocalProject, LocalProjectFolder, LocalProjectPage } from './types.js';
+import { findYAMLSection, yamlLineIndent } from './utils.js';
+import type { Entry } from 'myst-toc';
 import yaml from 'js-yaml';
-import { join, relative } from 'node:path';
-import { removeExtension } from '../utils/removeExtension.js';
-import type { JupyterBookChapter, TOC } from '../utils/toc.js';
-import type { PageLevels, LocalProjectFolder, LocalProjectPage, LocalProject } from './types.js';
+import { relative, parse } from 'node:path';
 
 function getRelativeDocumentLink(file: string, path: string) {
-  if (path === '.') return removeExtension(file);
-  return removeExtension(relative(path, file));
+  if (path === '.') return file;
+  return relative(path, file);
 }
-
-const GENERATED_TOC_HEADER = `# Table of Contents
-#
-# Myst will respect:
-# 1. New pages
-#      - file: relative/path/to/page
-# 2. New sections without an associated page
-#      - title: Folder Title
-#        sections: ...
-# 3. New sections with an associated page
-#      - file: relative/path/to/page
-#        sections: ...
-#
-# Note: Titles defined on pages here are not recognized.
-#
-# This spec is based on the JupyterBook table of contents.
-# Learn more at https://jupyterbook.org/customize/toc.html
-
-`;
-
-function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string) {
+function tocFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string): any {
   const levels = pages.map((page) => page.level);
   const currentLevel = Math.min(...levels) as PageLevels;
   const currentLevelIndices = levels.reduce((inds: number[], val: PageLevels, i: number) => {
@@ -38,50 +19,117 @@ function chaptersFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pat
     }
     return inds;
   }, []);
-  const chapters: JupyterBookChapter[] = currentLevelIndices.map((index, i) => {
+  return currentLevelIndices.map((index: number, i: number): Entry => {
     let nextPages: (LocalProjectFolder | LocalProjectPage)[];
     if (currentLevelIndices[i + 1]) {
       nextPages = pages.slice(index + 1, currentLevelIndices[i + 1]);
     } else {
       nextPages = pages.slice(index + 1);
     }
-    const chapter: JupyterBookChapter = {};
+    let entry: Entry;
+    let children: Entry[] | undefined = [];
+    if (nextPages.length) {
+      children = tocFromPages(nextPages, path);
+    }
     if ('file' in pages[index]) {
       const page = pages[index] as LocalProjectPage;
-      chapter.file = getRelativeDocumentLink(page.file, path);
+
+      if (nextPages.length) {
+        return {
+          file: getRelativeDocumentLink(page.file, path),
+          children: tocFromPages(nextPages, path),
+        };
+      } else {
+        return {
+          file: getRelativeDocumentLink(page.file, path),
+        };
+      }
     } else if ('title' in pages[index]) {
       const page = pages[index] as LocalProjectFolder;
-      chapter.title = page.title;
+      return { title: page.title, children: tocFromPages(nextPages, path) };
+    } else {
+      return undefined as unknown as Entry; // This is never hit
     }
-    if (nextPages.length) {
-      chapter.sections = chaptersFromPages(nextPages, path);
-    }
-    return chapter;
   });
-  return chapters;
 }
 
-type PartialLocalProject = Pick<LocalProject, 'file' | 'pages'>;
+const DEFAULT_INDENT = 2;
 
-/**
- * Create a jupyterbook toc structure from project pages
- *
- * Output consists of a top-level chapter with files/sections
- * based on project structure. Sections headings may be either
- * associated with a `file` (results in clickable in page)
- * or just a `title` (results in unclickable in heading)
- */
-export function tocFromProject(project: PartialLocalProject, path = '.') {
-  const toc: TOC = {
-    format: 'jb-book',
-    root: getRelativeDocumentLink(project.file, path),
-    chapters: chaptersFromPages(project.pages, path),
-  };
-  return toc;
-}
+export async function writeTOCToConfigFile(
+  project: Omit<LocalProject, 'bibliography'>,
+  srcPath: string,
+  dstPath: string,
+) {
+  // Read the existing configuration file
+  let lines: string[];
+  if (fs.existsSync(srcPath)) {
+    lines = fs.readFileSync(srcPath, 'utf8').split(/\r\n|\r|\n/);
+  } else {
+    lines = [];
+  }
 
-export function writeTOCFromProject(project: PartialLocalProject, path: string) {
-  const filename = join(path, '_toc.yml');
-  const content = `${GENERATED_TOC_HEADER}${yaml.dump(tocFromProject(project, path))}`;
-  fs.writeFileSync(filename, content);
+  // Identify the first non-empty line's indentation
+  const indent = lines.map(yamlLineIndent).find((item) => item !== undefined) ?? 0;
+
+  // Find `project` section
+  let projectInfo = findYAMLSection('project', indent, lines);
+
+  // Or, create an empty project section
+  if (!projectInfo) {
+    const prefix = ' '.repeat(indent);
+    lines.push(`${prefix}project:`);
+    projectInfo = { start: lines.length, stop: lines.length, indent: indent + DEFAULT_INDENT };
+  }
+
+  // Identify the child indentation of the project section
+  const projectIndent = projectInfo.indent ?? indent + DEFAULT_INDENT;
+
+  // Find `toc` section
+  let tocInfo = findYAMLSection('toc', projectIndent, lines, projectInfo.start);
+
+  // Or create an empty toc section
+  if (!tocInfo) {
+    const prefix = ' '.repeat(projectIndent);
+    lines.splice(projectInfo.stop, 0, `${prefix}toc:`);
+
+    // Append project info
+    tocInfo = {
+      start: projectInfo.stop + 1,
+      stop: projectInfo.stop + 1,
+      indent: projectIndent + DEFAULT_INDENT,
+    };
+  }
+
+  // Determine indentation of section
+  const tocIndent = tocInfo.indent ?? projectIndent + DEFAULT_INDENT;
+  const tocPrefix = ' '.repeat(tocIndent);
+
+  // Build the new `toc` section
+  const { dir } = parse(srcPath);
+  const toc = [
+    { file: getRelativeDocumentLink(project.file, dir) },
+    ...tocFromPages(project.pages, dir),
+  ];
+  const tocLines = [
+    `${tocPrefix}# Auto-generated by \`myst init --write-toc\``,
+    ...yaml
+      .dump(toc)
+      .split(/\r\n|\r|\n/)
+      .map((line) => `${tocPrefix}${line}`),
+  ];
+  // Splice these `toc` lines into the proper location
+  lines.splice(tocInfo.start, tocInfo.stop - tocInfo.start, ...tocLines);
+
+  // Write the new configuration
+  const newConfigContent = lines.join('\n');
+
+  // Ensure the hand-rolled YAML is valid
+  try {
+    yaml.load(newConfigContent);
+  } catch (err) {
+    throw new Error(
+      `Invalid YAML was generated when attempting to write the table-of-contents to ${dstPath}`,
+    );
+  }
+  fs.writeFileSync(dstPath, newConfigContent);
 }
