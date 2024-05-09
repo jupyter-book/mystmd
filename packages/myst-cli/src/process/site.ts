@@ -31,13 +31,13 @@ import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 
 const WEB_IMAGE_EXTENSIONS = [
+  ImageExtensions.mp4,
   ImageExtensions.webp,
   ImageExtensions.svg,
   ImageExtensions.gif,
   ImageExtensions.png,
   ImageExtensions.jpg,
   ImageExtensions.jpeg,
-  ImageExtensions.mp4,
 ];
 
 export type ProcessFileOptions = {
