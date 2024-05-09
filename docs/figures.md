@@ -162,6 +162,7 @@ The image transforms and optimizations requires you to have the following packag
 
 :::
 
+(figures:multiple-images)=
 ### Multiple Images
 
 If you have manually converted your images or have different images for different formats, use an asterisk (`*`) as the extension. All images matching the provided pattern will be found and the best image out of the available candidates will be used for the export:
@@ -194,11 +195,24 @@ An embedded video with a caption!
 
 These videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
 
-:::{note} Videos are not currently transformed
-:class: dropdown
-The videos are not currently converted to static images when you export to PDF or Word.
-If you want to help out with this feature, please get in touch!
-:::
+### Use an image in place of a video for static exports
+
+If you'd like an image to display for static exports (like PDFs), use the asterisk (`*`) wildcard matching described in [](#figures:multiple-images).
+
+For example, if you had the following two files:
+
+```
+myvideo.mp4  <-- A video of something
+myvideo.png <-- A frame of the video as an image
+```
+
+Then you could link them both with:
+
+```md
+![](myvideo.*)
+```
+
+When you build an HTML output, the video will be used, and when you build a PDF output, the image will be used.
 
 ## YouTube Videos
 
