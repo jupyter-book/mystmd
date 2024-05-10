@@ -97,7 +97,7 @@ More Coming Soon™
 
 ## Inline Expressions
 
-JupyterLab MyST allows you to create and evaluate inline expressions using the `{eval}` role.
+JupyterLab MyST allows you to create and evaluate inline expressions using the {myst:role}`eval` role.
 These turn your markdown cells into places that you can quickly evaluate a simple expression, such as:
 
 - The value of the variable `x`: `` {eval}`x` ``

@@ -1,5 +1,5 @@
 ---
-title: Callouts
+title: Callouts & Admonitions
 description: Callout blocks or admonitions, like "notes" or "hints" are outlined or shaded areas of a document to bring attention to particular information.
 thumbnail: ./thumbnails/admonitions.png
 ---
@@ -134,7 +134,7 @@ GitHub markdown transforms blockquotes that start with a bold `Note` or text wit
 ::::{tip} Compatibility with Pandoc & Quarto
 :class: dropdown
 In Quarto/Pandoc markdown admonitions are styled with special classes like `{.callout-note}` or `{.callout-tip}`).
-If you are using JupyterBook or Sphinx documentation, use an `{admonition}` directive with the specific class, for example:
+If you are using JupyterBook or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 
 ```{myst}
 ::: {.callout-tip}
@@ -149,7 +149,7 @@ This is an example of a callout with a caption.
 :class: dropdown
 In Sphinx, all named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**.
 If you place content on the first line it will instead be prepended to the admonition body.
-If you are using JupyterBook or Sphinx documentation, use an `{admonition}` directive with the specific class, for example:
+If you are using JupyterBook or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 
 ```{myst}
 :::{admonition} The Title

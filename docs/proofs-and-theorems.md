@@ -14,7 +14,7 @@ The implementation and documentation for proofs, theorems, etc. is based on [Sph
 
 Changes to the original extension include being able to click on the proof label (e.g. "Theorem 1"), and having a link to that proof anchor. We have also updated the styles from both Sphinx and JupyterBook to be more distinct from admonitions.
 
-You can also reference proofs with any cross-reference syntax (including the `{prf:ref}` role). We recommend the markdown link syntax.
+You can also reference proofs with any cross-reference syntax (including the {myst:role}`prf:ref` role). We recommend the markdown link syntax.
 :::
 
 Here is an example of a `{prf:theorem}` with a custom title:
@@ -63,7 +63,7 @@ The following options for proof directives are supported:
 
 - `label`: text
 
-  A unique identifier for your theorem that you can use to reference it with a Markdown link or the `{prf:ref}` role. Cannot contain spaces or special characters.
+  A unique identifier for your theorem that you can use to reference it with a Markdown link or the {myst:role}`prf:ref` role. Cannot contain spaces or special characters.
 
 - `class`: text
 

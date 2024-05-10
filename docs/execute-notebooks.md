@@ -21,8 +21,8 @@ myst build --execute
 The following computational content will be executed:
 
 - **Notebook cells** will be executed in the order they appeared in a notebook (ie, a file ending in `.ipynb`).
-- **`{code-block}` directives** will be executed similar to a code block cell. See [](./notebooks-with-markdown.md) for more information.
-- **Inline expressions with the `{eval}` role** can be used to insert the outputs of a computation in-line with other text.
+- **{myst:directive}`code-block` directives** will be executed similar to a code block cell. See [](./notebooks-with-markdown.md) for more information.
+- **Inline expressions with the {myst:role}`eval` role** can be used to insert the outputs of a computation in-line with other text.
 
 :::{note} Jupyter is required for execution
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)

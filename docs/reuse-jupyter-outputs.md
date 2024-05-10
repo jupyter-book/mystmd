@@ -104,7 +104,7 @@ fig2
 
 :::
 
-## Embed the entire cell with the `{embed}` directive
+## Embed the entire cell with the {myst:directive}`embed` directive
 
 If you use the MyST short-hand for embedding (`![](#embed)` syntax), then **only the cell outputs** will be embedded.
 If you'd like more control over the display of inputs and outputs, use the {myst:directive}`embed` directive.
@@ -127,7 +127,7 @@ For example, to embed **both the cell input and output**, use syntax like:
 
 ## Outputs as Figures
 
-The labeled output can also be used in the `{figure}` directive, where you can then add a caption.
+The labeled output can also be used in the {myst:directive}`figure` directive, where you can then add a caption.
 Below we give the figure a new `name` as well, so that we can cross-reference it directly.
 
 ```markdown
@@ -173,13 +173,13 @@ In this case, the placeholder will replace _any_ output from the cell in static 
 ### Alternative text for accessibility
 
 Adding alternative text to images allows you to provide context for the image for readers with assistive technologies, or unreliable internet connections.
-By default, Jupyter does not support alternative text for image outputs, but you can use MyST to add alternative text with the `{figure}` directive.
+By default, Jupyter does not support alternative text for image outputs, but you can use MyST to add alternative text with the {myst:directive}`figure` directive.
 See [](figures.md) for more details.
 
 
-Using the `{figure}` directive allows you to set one or more captions for your figures, which serve accessibility purposes as well.
+Using the {myst:directive}`figure` directive allows you to set one or more captions for your figures, which serve accessibility purposes as well.
 This works for both static outputs (like Matplotlib) as well as interactive ones (like Altair).
-For example, the following `{figure}` directive embeds two cell outputs with captions:
+For example, the following {myst:directive}`figure` directive embeds two cell outputs with captions:
 
 ````
 ```{figure}
@@ -199,12 +199,12 @@ For example, the following `{figure}` directive embeds two cell outputs with cap
 
 ## Outputs as Tables
 
-You can wrap tabular outputs (e.g. Pandas DataFrames) with a `{table}` directive in order to assign a caption and include it with your figures.
+You can wrap tabular outputs (e.g. Pandas DataFrames) with a {myst:directive}`table` directive in order to assign a caption and include it with your figures.
 There are two ways to do this:
 
-### The `{table}` directive
+### The {myst:directive}`table` directive
 
-You can use a `{table}` directive and **embed** the notebook output inside the directive body.
+You can use a {myst:directive}`table` directive and **embed** the notebook output inside the directive body.
 
 For example:
 
@@ -222,7 +222,7 @@ Results in:
 ![](#tbl:data-cars)
 :::
 
-### Use the `{figure}` directive with `kind: table`
+### Use the {myst:directive}`figure` directive with `kind: table`
 
 This defines a figure but allows the content to be a table.
 For example, the following syntax:

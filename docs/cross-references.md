@@ -106,13 +106,13 @@ Below we describe the most commonly-used ones.
 (ref-role)=
 
 ref
-: The `{ref}` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label, for example, `` {ref}`reference-target` ``
+: The {myst:role}`ref` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label, for example, `` {ref}`reference-target` ``
 : You can also choose the reference text directly (not taking from the title or caption) by using, `` {ref}`your text here <reference-target>` ``.
 
 (numref-role)=
 
 numref
-: The `{numref}` role is exactly the same as the above `{ref}` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, ``{numref}`Custom Table %s text <my-table-ref>`.`` will become `Custom Table 3 text`.
+: The {myst:role}`numref` role is exactly the same as the above {myst:role}`ref` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, ``{numref}`Custom Table %s text <my-table-ref>`.`` will become `Custom Table 3 text`.
 
 (eq-role)=
 
@@ -177,7 +177,7 @@ You can use this syntax to also reference [Section/Header targets](#targeting-he
 
 ### Header Targets
 
-To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and `{ref}` roles. This is helpful if you want to quickly insert links to other parts of your book. Referencing a heading will show the heading and the subsequent two pieces of content[^3], unless a header is encountered.
+To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and {myst:role}`ref` roles. This is helpful if you want to quickly insert links to other parts of your book. Referencing a heading will show the heading and the subsequent two pieces of content[^3], unless a header is encountered.
 
 [^3]: The content could be a single paragraph, a figure, table or list. It can also be fully interactive content, with cross-references to other content, allowing you to nest and follow references easily!
 
@@ -239,7 +239,7 @@ numbering:
 
 ### Equations Targets
 
-To reference equations, use the `{eq}` role. It will automatically insert the number of the equation. Note that you cannot modify the text of equation links.
+To reference equations, use the {myst:role}`eq` role. It will automatically insert the number of the equation. Note that you cannot modify the text of equation links.
 
 (example-equation-targets)=
 
@@ -301,7 +301,7 @@ This figure has been included from [](./interactive-notebooks.ipynb) and can be 
 
 ### Label Anything
 
-It is possible to label any document node by adding `(my-label)=` before any other block of content. These can be referenced using the `{ref}` role, but by default will not be enumerated, so you cannot use `%s` or `{number}` in the content.
+It is possible to label any document node by adding `(my-label)=` before any other block of content. These can be referenced using the {myst:role}`ref` role, but by default will not be enumerated, so you cannot use `%s` or `{number}` in the content.
 
 ```{myst}
 (my-paragraph)=

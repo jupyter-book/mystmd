@@ -15,7 +15,7 @@ import numpy as np
 
 (myst:code-cell)=
 
-## Code cells with the `{code-cell}` directive
+## Code cells with the {myst:directive}`code-cell` directive
 
 You can use the {myst:directive}`code-cell` directive to create block-level computational outputs in MyST Markdown.
 
@@ -24,7 +24,7 @@ Markdown-based code cells are still in the works, and missing key functionality.
 Their behavior is subject to change unpredictably!
 ```
 
-`{code-cell}` directives have the following form:
+{myst:directive}`code-cell` directives have the following form:
 
 ````
 ```{code-cell} LANGUAGE
@@ -56,9 +56,9 @@ phrase = f"{hello}, {there}!"
 print(phrase)
 ```
 
-### Add tags to `{code-cell}` directives
+### Add tags to {myst:directive}`code-cell` directives
 
-You can add tags to the `{code-cell}` directive.
+You can add tags to the {myst:directive}`code-cell` directive.
 They will be parsed and used in the same way that cell tag metadata is used in `.ipynb` files.
 
 For example, the following code defines a `remove-input` tag:
@@ -131,9 +131,9 @@ See [](#notebooks:cell-visibility) for more information.
 
 (myst:inline-expressions)=
 
-## Inline expressions with the `{eval}` role
+## Inline expressions with the {myst:role}`eval` role
 
-You can use the `{eval}` role to evaluate code that is surrounded by text.
+You can use the {myst:role}`eval` role to evaluate code that is surrounded by text.
 This allows you to quickly insert its output in a way that flows with the text around it.
 
 For example, the following MyST Markdown would re-use the variable defined above.
