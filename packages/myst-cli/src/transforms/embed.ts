@@ -86,7 +86,10 @@ export async function embedTransform(
           if (referenceXRef.identifier) {
             data = await fetchMystXRefData(session, referenceXRef, vfile);
             if (!data) return;
-            targetNodes = nodesFromMystXRefData(data, referenceXRef.identifier, label, vfile);
+            targetNodes = nodesFromMystXRefData(data, referenceXRef.identifier, vfile, {
+              urlSource: label,
+              // TODO: maxNodes - settable via embed directive
+            });
           } else {
             data = await fetchMystLinkData(session, referenceLink, vfile);
             if (!data) return;

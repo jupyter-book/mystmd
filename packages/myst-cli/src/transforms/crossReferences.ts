@@ -69,12 +69,15 @@ export async function fetchMystXRefData(session: ISession, node: CrossReference,
 export function nodesFromMystXRefData(
   data: RendererData,
   identifier: string,
-  urlSource: string | undefined,
   vfile: VFile,
+  opts?: {
+    maxNodes?: number;
+    urlSource?: string;
+  },
 ) {
-  const targetNodes = selectMdastNodes(data.mdast, identifier).nodes;
+  const targetNodes = selectMdastNodes(data.mdast, identifier, opts?.maxNodes).nodes;
   if (!targetNodes?.length) {
-    fileWarn(vfile, `Unable to resolve content from external MyST reference: ${urlSource}`, {
+    fileWarn(vfile, `Unable to resolve content from external MyST reference: ${opts?.urlSource}`, {
       ruleId: RuleId.mystLinkValid,
       note: `Could not locate identifier ${identifier} in page content`,
     });
@@ -117,7 +120,10 @@ export async function transformMystXRefs(
       } else {
         const data = await fetchMystXRefData(session, node as CrossReference, vfile);
         if (!data) return;
-        const target = nodesFromMystXRefData(data, node.identifier, node.urlSource, vfile);
+        const target = nodesFromMystXRefData(data, node.identifier, vfile, {
+          urlSource: node.urlSource,
+          maxNodes: 1,
+        });
         addChildrenFromTargetNode(node as any, target as any, frontmatter.numbering, vfile);
       }
       number += 1;
