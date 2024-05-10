@@ -131,7 +131,7 @@ export function toText(content?: Node[] | Node | null): string {
 }
 
 export function copyNode<T extends Node | Node[]>(node: T): T {
-  return JSON.parse(JSON.stringify(node));
+  return structuredClone(node);
 }
 
 export function mergeTextNodes(node: GenericNode): GenericNode {
