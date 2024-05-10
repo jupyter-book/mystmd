@@ -129,6 +129,8 @@ async function loadReference(
       }
       return;
     }
+    reference.kind = 'intersphinx';
+    reference.value = inventory;
     if (inventory.id && inventory.path && isUrl(inventory.path)) {
       const intersphinxPath = cachePath(
         session,
