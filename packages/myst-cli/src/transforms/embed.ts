@@ -3,6 +3,7 @@ import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import {
   MystTransformer,
+  SphinxTransformer,
   type IReferenceStateResolver,
   type MultiPageReferenceResolver,
 } from 'myst-transforms';
@@ -62,9 +63,8 @@ export async function embedTransform(
   dependencies: Dependency[],
   state: IReferenceStateResolver,
 ) {
-  const mystTransformer = new MystTransformer(
-    Object.values(castSession(session).$externalReferences),
-  );
+  const references = Object.values(castSession(session).$externalReferences);
+  const mystTransformer = new MystTransformer(references);
   const embedNodes = selectAll('embed', mdast) as Embed[];
   await Promise.all(
     embedNodes.map(async (node) => {
@@ -76,10 +76,14 @@ export async function embedTransform(
       }
       if (label.startsWith('xref:') || label.startsWith('myst:')) {
         if (!mystTransformer.test(label)) {
-          fileError(vfile, `Cannot embed "${label}"`, {
-            node,
-            note: 'The target must be a MyST project and be included in your project references.\nEmbed does not work with intersphinx.',
-          });
+          let note: string;
+          const sphinxTransformer = new SphinxTransformer(references);
+          if (sphinxTransformer.test(label)) {
+            note = 'Embed target must be a MyST project, not intersphinx.';
+          } else {
+            note = 'Embed target must be a MyST project and included in your project references.';
+          }
+          fileError(vfile, `Cannot embed "${label}"`, { node, note });
           return;
         }
         const referenceLink: Link = {
