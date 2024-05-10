@@ -65,6 +65,7 @@ export {
   addChildrenFromTargetNode,
   enumerateTargetsTransform,
   enumerateTargetsPlugin,
+  resolveLinksAndCitationsTransform,
   resolveReferencesTransform,
   resolveReferencesPlugin,
   ReferenceState,

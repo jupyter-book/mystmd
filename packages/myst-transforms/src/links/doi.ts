@@ -1,7 +1,8 @@
 import { RuleId, fileError } from 'myst-common';
 import { doi } from 'doi-utils';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types.js';
+import type { Link } from 'myst-spec-ext';
+import type { LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty } from './utils.js';
 
 const TRANSFORM_SOURCE = 'LinkTransform:DOITransformer';

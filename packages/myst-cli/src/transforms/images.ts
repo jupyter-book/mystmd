@@ -166,9 +166,9 @@ export function transformImagesToEmbed(mdast: GenericParent) {
   const images = selectAll('image', mdast) as GenericNode[];
   images.forEach((image) => {
     // If image URL starts with #, replace this node with embed node
-    if (image.url.startsWith('#')) {
+    if (image.url.startsWith('xref:') || image.url.startsWith('#')) {
       image.type = 'embed';
-      image.source = { label: image.url.substring(1) };
+      image.source = { label: image.url.startsWith('xref:') ? image.url : image.url.substring(1) };
       image['remove-input'] = image['remove-input'] ?? true;
       delete image.url;
       return;

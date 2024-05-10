@@ -1,16 +1,7 @@
 import type { VFile } from 'vfile';
-import type { Link as SpecLink } from 'myst-spec';
 import type { ExternalReference } from 'myst-frontmatter';
+import type { Link } from 'myst-spec-ext';
 import type { Inventory } from 'intersphinx';
-
-export type Link = SpecLink & {
-  urlSource?: string;
-  internal?: boolean;
-  error?: true;
-  static?: true;
-  protocol?: string;
-  dataUrl?: string;
-};
 
 export interface LinkTransformer {
   protocol?: string;

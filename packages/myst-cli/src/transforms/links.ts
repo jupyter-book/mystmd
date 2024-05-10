@@ -4,9 +4,10 @@ import pLimit from 'p-limit';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
-import type { LinkTransformer, Link } from 'myst-transforms';
-import { RuleId, fileError, plural } from 'myst-common';
-import { computeHash, hashAndCopyStaticFile, tic, writeFileToFolder } from 'myst-cli-utils';
+import type { LinkTransformer } from 'myst-transforms';
+import { RuleId, fileError, normalizeLabel, plural } from 'myst-common';
+import { computeHash, hashAndCopyStaticFile, tic } from 'myst-cli-utils';
+import type { CrossReference, Link } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -14,6 +15,9 @@ import { links } from '../store/reducers.js';
 import type { ExternalLinkResult } from '../store/types.js';
 import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { loadFromCache, writeToCache } from '../session/cache.js';
+
+const LINK_MAX_AGE = 30; // in days
 
 // These limit access from command line tools by default
 const skippedDomains = [
@@ -24,21 +28,8 @@ const skippedDomains = [
   'en.wikipedia.org',
 ];
 
-function checkLinkCacheFile(session: ISession, url: string) {
-  const filename = `checkLink-${computeHash(url)}.json`;
-  return path.join(session.buildPath(), 'cache', filename);
-}
-
-function writeLinkCache(session: ISession, link: ExternalLinkResult) {
-  session.log.debug(`Writing successful link check to cache file for "${link.url}"`);
-  writeFileToFolder(checkLinkCacheFile(session, link.url), JSON.stringify(link, null, 2));
-}
-
-function loadLinkCache(session: ISession, url: string) {
-  const cacheFile = checkLinkCacheFile(session, url);
-  if (!fs.existsSync(cacheFile)) return;
-  session.log.debug(`Using cached success for "${url}"`);
-  return JSON.parse(fs.readFileSync(cacheFile).toString());
+function checkLinkCacheFilename(url: string) {
+  return `checkLink-${computeHash(url)}.json`;
 }
 
 export async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
@@ -62,13 +53,16 @@ export async function checkLink(session: ISession, url: string): Promise<Externa
       return link;
     }
     session.log.debug(`Checking that "${url}" exists`);
-    const linkCache = loadLinkCache(session, url);
-    const resp = linkCache ?? (await session.fetch(url, { headers: EXT_REQUEST_HEADERS }));
+    const filename = checkLinkCacheFilename(url);
+    const linkCache = loadFromCache(session, filename, { maxAge: LINK_MAX_AGE });
+    const resp = linkCache
+      ? JSON.parse(linkCache)
+      : await session.fetch(url, { headers: EXT_REQUEST_HEADERS });
     link.ok = resp.ok;
     link.status = resp.status;
     link.statusText = resp.statusText;
     if (link.ok && !linkCache) {
-      writeLinkCache(session, link);
+      writeToCache(session, filename, JSON.stringify(link));
     }
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
@@ -99,18 +93,13 @@ export type LinkLookup = Record<string, LinkInfo>;
  * @param file File where link is defined
  * @param sitePath Root path of site / session; from here all relative paths in the store are defined
  */
-export function fileFromRelativePath(
-  pathFromLink: string,
-  file?: string,
-  sitePath?: string,
-): string | undefined {
+export function fileFromRelativePath(pathFromLink: string, file?: string): string | undefined {
   let target: string[];
   [pathFromLink, ...target] = pathFromLink.split('#');
   // The URL is encoded (e.g. %20 --> space)
   pathFromLink = decodeURIComponent(pathFromLink);
-  if (!sitePath) sitePath = '.';
   if (file) {
-    pathFromLink = path.relative(sitePath, path.resolve(path.dirname(file), pathFromLink));
+    pathFromLink = path.resolve(path.dirname(file), pathFromLink);
   }
   if (fs.existsSync(pathFromLink) && fs.lstatSync(pathFromLink).isDirectory()) {
     // This should only return true for files
@@ -151,16 +140,28 @@ export class StaticFileTransformer implements LinkTransformer {
       // Not raising a warning here, this should be caught in the test above
       return false;
     }
-    const [linkFile, ...target] = linkFileWithTarget.split('#');
+    const [linkFile] = linkFileWithTarget.split('#');
+    const target = linkFileWithTarget.slice(linkFile.length + 1);
+    const reference = normalizeLabel(target);
     const { url, title, dataUrl } =
       selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
     // If the link is non-static, and can be resolved locally
     if (url != null && link.static !== true) {
-      // Replace relative file link with resolved site path
-      // TODO: lookup the and resolve the hash as well
-      link.url = [url, ...(target || [])].join('#');
-      link.internal = true;
       if (dataUrl) link.dataUrl = dataUrl;
+      if (reference) {
+        // Change the link into a cross-reference!
+        const xref = link as unknown as CrossReference;
+        xref.type = 'crossReference';
+        xref.identifier = reference.identifier;
+        xref.label = reference.label;
+        xref.url = url;
+        xref.remote = true;
+        return true;
+      } else {
+        // Replace relative file link with resolved site path
+        link.url = [url, ...(target || [])].join('#');
+        link.internal = true;
+      }
     } else {
       // Copy relative file to static folder and replace with absolute link
       const copiedFile = hashAndCopyStaticFile(

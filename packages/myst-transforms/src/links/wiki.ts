@@ -1,6 +1,7 @@
 import { RuleId, fileError, fileWarn } from 'myst-common';
+import type { Link } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types.js';
+import type { LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
 
 const DEFAULT_LANGUAGE = 'en';

@@ -16,6 +16,7 @@ export async function loadBibTeXCitationRenderers(
   let data: string;
   if (isUrl(path)) {
     session.log.debug(`Fetching citations at "${path}"`);
+    // No caching - citations from URL will likely change simultaneously with authoring
     const res = await session.fetch(path);
     if (!res.ok) {
       throw new Error(`Error fetching citations from "${path}": ${res.status} ${res.statusText}`);

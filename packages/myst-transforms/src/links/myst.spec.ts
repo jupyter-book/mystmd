@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { VFile } from 'vfile';
-import type { Link, ResolvedExternalReference } from './types';
+import type { Link } from 'myst-spec-ext';
+import type { ResolvedExternalReference } from './types';
 import { MystTransformer } from './myst';
 
 export const TEST_REFERENCES: ResolvedExternalReference[] = [
@@ -197,9 +198,10 @@ describe('Test MystTransformer', () => {
     expect(t.test(link.url)).toBe(true);
     expect(t.transform(link, file)).toBe(true);
     expect(file.messages.length).toEqual(0);
-    expect(link.url).toEqual('https://example.com/myst-ref/my-figure');
-    expect(link.dataUrl).toEqual('https://example.com/myst-ref/my-figure.json');
+    expect(link.url).toEqual('/my-figure');
+    expect(link.dataUrl).toEqual('/my-figure.json');
     expect(link.type).toEqual('crossReference');
+    expect((link as any).remoteBaseUrl).toEqual('https://example.com/myst-ref');
     expect((link as any).remote).toBe(true);
     expect((link as any).identifier).toEqual('explicit_figure');
     expect((link as any).label).toEqual('explicit_figure');
@@ -315,9 +317,10 @@ describe('Test MystTransformer', () => {
     expect(t.test(link.url)).toBe(true);
     expect(t.transform(link, file)).toBe(true);
     expect(file.messages.length).toEqual(0);
-    expect(link.url).toEqual('https://example.com/myst-ref/');
-    expect(link.dataUrl).toEqual('https://example.com/myst-ref/index.json');
+    expect(link.url).toEqual('/');
+    expect(link.dataUrl).toEqual('/index.json');
     expect(link.type).toEqual('crossReference');
+    expect((link as any).remoteBaseUrl).toEqual('https://example.com/myst-ref');
     expect((link as any).remote).toBe(true);
     expect((link as any).identifier).toEqual('implicit-root-heading');
     expect((link as any).label).toEqual('implicit-root-heading');

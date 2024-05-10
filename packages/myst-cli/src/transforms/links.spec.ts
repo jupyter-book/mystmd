@@ -45,16 +45,18 @@ describe('fileFromRelativePath', () => {
   });
   it('file in path', async () => {
     memfs.vol.fromJSON({ 'folder/readme.md': '', 'folder/readme.ipynb': '' });
-    expect(fileFromRelativePath('readme', 'folder/readme.ipynb')).toEqual('folder/readme.md');
+    expect(fileFromRelativePath('readme', 'folder/readme.ipynb')).toMatch(/folder\/readme.md$/);
   });
   it('file up a directory', async () => {
     memfs.vol.fromJSON({ 'readme.md': '', 'folder/readme.md': '', 'folder/readme.ipynb': '' });
-    expect(fileFromRelativePath('../readme', 'folder/readme.ipynb')).toEqual('readme.md');
+    const file = fileFromRelativePath('../readme', 'folder/readme.ipynb');
+    expect(file).toMatch(/\/readme.md$/);
+    expect(file).not.toMatch(/folder\/readme.md$/);
   });
   it('hash passed through', async () => {
     memfs.vol.fromJSON({ 'readme.md': '', 'folder/readme.md': '', 'folder/readme.ipynb': '' });
-    expect(fileFromRelativePath('../readme#target#etc', 'folder/readme.ipynb')).toEqual(
-      'readme.md#target#etc',
+    expect(fileFromRelativePath('../readme#target#etc', 'folder/readme.ipynb')).toMatch(
+      /\/readme.md#target#etc$/,
     );
   });
 });

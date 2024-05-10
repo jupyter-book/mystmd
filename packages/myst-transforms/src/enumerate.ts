@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
-import type { VFile } from 'vfile';
+import { VFile } from 'vfile';
 import type { CrossReference, Heading, Paragraph } from 'myst-spec';
-import type { Cite, Container, Math, MathGroup } from 'myst-spec-ext';
+import type { Cite, Container, Math, MathGroup, Link } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -16,8 +16,9 @@ import {
   liftChildren,
   TargetKind,
   RuleId,
+  isTargetIdentifierNode,
 } from 'myst-common';
-import type { Link } from './links/types.js';
+import type { LinkTransformer } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
 import { fillNumbering, type Numbering } from 'myst-frontmatter';
 
@@ -57,7 +58,10 @@ function getDefaultNumberedReferenceTemplate(kind: TargetKind | string) {
   return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)} %s`;
 }
 
-function getDefaultNamedReferenceTemplate(kind: TargetKind | string, hasTitle: boolean) {
+function getDefaultNamedReferenceTemplate(
+  kind: TargetKind | string = 'unknown',
+  hasTitle: boolean,
+) {
   const domain = kind.includes(':') ? kind.split(':')[1] : kind;
   const name = `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)}`;
   switch (kind) {
@@ -103,7 +107,6 @@ type TargetNodes = (Container | Math | MathGroup | Heading) & {
   subcontainer?: boolean;
   parentEnumerator?: string;
 };
-type IdentifierNodes = { type: string; identifier: string };
 
 type Target = {
   node: TargetNodes;
@@ -120,6 +123,7 @@ export type StateOptions = {
 
 export type StateResolverOptions = {
   state: IReferenceStateResolver;
+  transformers?: LinkTransformer[];
 };
 
 const UNKNOWN_REFERENCE_ENUMERATOR = '??';
@@ -292,18 +296,19 @@ export function initializeTargetCounts(
 }
 
 export interface IReferenceStateResolver {
-  vfile?: VFile;
+  vfile: VFile;
   /**
    * If the page is provided, it will only look at that page.
    */
   getTarget: (identifier?: string, page?: string) => Target | undefined;
   getFileTarget: (identifier?: string) => ReferenceState | undefined;
-  resolveReferenceContent: (node: ResolvableCrossReference) => void;
   getIdentifiers: () => string[];
+  resolveReferenceContent: (node: ResolvableCrossReference) => void;
+  resolveStateProvider: (identifier?: string, page?: string) => ReferenceState | undefined;
 }
 
 export class ReferenceState implements IReferenceStateResolver {
-  vfile?: VFile;
+  vfile: VFile;
   filePath: string;
   url?: string;
   title?: string;
@@ -323,7 +328,7 @@ export class ReferenceState implements IReferenceStateResolver {
       targetCounts?: TargetCounts;
       numbering?: Numbering;
       identifiers?: string[];
-      vfile?: VFile;
+      vfile: VFile;
     },
   ) {
     this.numbering = fillNumbering(opts?.numbering, DEFAULT_NUMBERING);
@@ -331,7 +336,7 @@ export class ReferenceState implements IReferenceStateResolver {
     this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts);
     this.identifiers = opts?.identifiers ?? [];
     this.targets = {};
-    this.vfile = opts?.vfile;
+    this.vfile = opts?.vfile ?? new VFile();
     this.filePath = filePath;
     this.url = opts?.url;
     this.dataUrl = opts?.dataUrl;
@@ -339,18 +344,7 @@ export class ReferenceState implements IReferenceStateResolver {
   }
 
   addTarget(node: TargetNodes) {
-    const possibleIncorrectNode = node as IdentifierNodes;
-    if (
-      possibleIncorrectNode.type === 'crossReference' ||
-      possibleIncorrectNode.type === 'cite' ||
-      possibleIncorrectNode.type === 'footnoteDefinition' ||
-      possibleIncorrectNode.type === 'footnoteReference'
-    ) {
-      // Explicitly filter out crossReferences, citations, and footnoteDefinition
-      // These are not targets, but do have an "identifier" property
-      // Footnotes are resolved differently
-      return;
-    }
+    if (!isTargetIdentifierNode(node)) return;
     const kind = kindFromNode(node);
     const numberNode = shouldEnumerate(node, kind, this.numbering);
     if (numberNode && !node.enumerator) {
@@ -424,6 +418,11 @@ export class ReferenceState implements IReferenceStateResolver {
     }
     node.enumerator = enumerator;
     return enumerator;
+  }
+
+  resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
+    if (!identifier || !page || page !== this.filePath) return;
+    if (this.getTarget(identifier) || this.getFileTarget(identifier)) return this;
   }
 
   getIdentifiers() {
@@ -531,9 +530,9 @@ function warnNodeTargetNotFound(node: ResolvableCrossReference, vfile?: VFile) {
 export class MultiPageReferenceResolver implements IReferenceStateResolver {
   states: ReferenceState[];
   filePath: string; // Path of the current file we are resolving references against
-  vfile?: VFile; // VFile for reporting errors/warnings
+  vfile: VFile; // VFile for reporting errors/warnings
 
-  constructor(states: ReferenceState[], filePath: string, vfile?: VFile) {
+  constructor(states: ReferenceState[], filePath: string, vfile = new VFile()) {
     this.states = states;
     this.filePath = filePath;
     this.vfile = vfile;
@@ -541,11 +540,11 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
 
   resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
     if (!identifier) return undefined;
-    const pageXRefs = this.states.find((state) => {
+    const resolvedState = this.states.find((state) => {
       if (page && page !== state.filePath) return false;
       return !!state.getTarget(identifier) || !!state.getFileTarget(identifier);
     });
-    return pageXRefs;
+    return resolvedState;
   }
 
   getIdentifiers() {
@@ -553,8 +552,8 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
   }
 
   getTarget(identifier?: string, page?: string): Target | undefined {
-    const pageXRefs = this.resolveStateProvider(identifier, page);
-    return pageXRefs?.getTarget(identifier);
+    const state = this.resolveStateProvider(identifier, page);
+    return state?.getTarget(identifier);
   }
 
   getFileTarget(identifier?: string): ReferenceState | undefined {
@@ -563,16 +562,16 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
   }
 
   resolveReferenceContent(node: ResolvableCrossReference) {
-    const pageXRefs = this.resolveStateProvider(node.identifier);
-    if (!pageXRefs) {
+    const state = this.resolveStateProvider(node.identifier);
+    if (!state) {
       warnNodeTargetNotFound(node, this.vfile);
       return;
     }
-    pageXRefs?.resolveReferenceContent(node);
-    if (node.resolved && pageXRefs?.filePath !== this.filePath) {
+    state?.resolveReferenceContent(node);
+    if (node.resolved && state?.filePath !== this.filePath) {
       node.remote = true;
-      node.url = pageXRefs.url || undefined;
-      node.dataUrl = pageXRefs.dataUrl || undefined;
+      node.url = state.url || undefined;
+      node.dataUrl = state.dataUrl || undefined;
     }
   }
 }
@@ -739,24 +738,35 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateResolve
     const cite = node as Cite;
     if (!cite.error) return;
     const reference = normalizeLabel(cite.label);
-    const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference?.identifier);
-    const fileTarget = opts.state.getFileTarget(reference?.identifier);
-    if (!(target || fileTarget) || !reference) {
-      if (!opts.state.vfile) return;
-      fileWarn(opts.state.vfile, `Could not link citation with label "${cite.label}".`, {
-        node,
-        source: TRANSFORM_NAME,
-        ruleId: RuleId.referenceTargetResolves,
-      });
+    if (reference) {
+      const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference.identifier);
+      const fileTarget = opts.state.getFileTarget(reference.identifier);
+      if (target || fileTarget) {
+        // Change the cite into a cross-reference!
+        const xref = cite as unknown as CrossReference;
+        xref.type = 'crossReference';
+        xref.identifier = reference.identifier;
+        xref.label = reference.label;
+        delete cite.error;
+        if (target) implicitTargetWarning(target, node, opts);
+        return;
+      }
+    }
+    const transformer = opts.transformers?.find((t) => t.test(cite.label));
+    if (transformer) {
+      // Change the cite into a link for LinkTransformer to handle later
+      const link = cite as unknown as Link;
+      link.type = 'link';
+      link.url = cite.label;
+      delete cite.error;
       return;
     }
-    // Change the cite into a cross-reference!
-    const xref = cite as unknown as CrossReference;
-    xref.type = 'crossReference';
-    xref.identifier = reference.identifier;
-    xref.label = reference.label;
-    delete cite.error;
-    if (target) implicitTargetWarning(target, node, opts);
+    if (!opts.state.vfile) return;
+    fileWarn(opts.state.vfile, `Could not link citation with label "${cite.label}".`, {
+      node,
+      source: TRANSFORM_NAME,
+      ruleId: RuleId.referenceTargetResolves,
+    });
   });
 };
 
@@ -782,9 +792,18 @@ export const resolveCrossReferencesTransform = (
 ) => {
   visit(tree, 'crossReference', (node: CrossReference) => {
     // If protocol is set, this came from a LinkTransformer and will not be touched here
-    if ((node as any).protocol) return;
+    const { protocol } = node as any;
+    if (protocol && protocol !== 'file') return;
     opts.state.resolveReferenceContent(node);
   });
+};
+
+export const resolveLinksAndCitationsTransform = (
+  tree: GenericParent,
+  opts: StateResolverOptions,
+) => {
+  resolveReferenceLinksTransform(tree, opts);
+  resolveUnlinkedCitations(tree, opts);
 };
 
 export const resolveReferencesTransform = (
@@ -792,8 +811,6 @@ export const resolveReferencesTransform = (
   file: VFile,
   opts: StateResolverOptions,
 ) => {
-  resolveReferenceLinksTransform(tree, opts);
-  resolveUnlinkedCitations(tree, opts);
   resolveCrossReferencesTransform(tree, opts);
   addContainerCaptionNumbersTransform(tree, file, opts);
   unnestCrossReferencesTransform(tree);
@@ -804,5 +821,6 @@ export const resolveReferencesPlugin: Plugin<
   GenericParent,
   GenericParent
 > = (opts) => (tree, file) => {
+  resolveLinksAndCitationsTransform(tree, opts);
   resolveReferencesTransform(tree, file, opts);
 };

@@ -17,6 +17,7 @@ export {
 export { plural } from './plural.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
 export { RuleId } from './ruleids.js';
+export { isTargetIdentifierNode, selectMdastNodes } from './selectNodes.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
 export {
   AdmonitionKind,

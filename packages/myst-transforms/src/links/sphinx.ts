@@ -1,7 +1,8 @@
 import { fileError, RuleId } from 'myst-common';
+import type { Link } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import type { Inventory } from 'intersphinx';
-import type { Link, LinkTransformer, ResolvedExternalReference } from './types.js';
+import type { LinkTransformer, ResolvedExternalReference } from './types.js';
 import { updateLinkTextIfEmpty } from './utils.js';
 import { removeMystPrefix } from './myst.js';
 

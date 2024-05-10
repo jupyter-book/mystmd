@@ -18,6 +18,7 @@ import type {
   Math as SpecMath,
   Node,
   CrossReference as SpecCrossReference,
+  Link as SpecLink,
 } from 'myst-spec';
 
 type Visibility = 'show' | 'hide' | 'remove';
@@ -182,6 +183,7 @@ export type Dependency = {
   short_title?: string;
   label?: string;
   location?: string;
+  remoteBaseUrl?: string;
 };
 
 export type Embed = {
@@ -255,7 +257,19 @@ export type Aside = Node & {
 };
 
 export type CrossReference = SpecCrossReference & {
+  urlSource?: string;
   remote?: boolean;
+  url?: string;
+  dataUrl?: string;
   remoteBaseUrl?: string;
   html_id?: string;
+};
+
+export type Link = SpecLink & {
+  urlSource?: string;
+  dataUrl?: string;
+  internal?: boolean;
+  static?: true;
+  protocol?: string;
+  error?: true;
 };
