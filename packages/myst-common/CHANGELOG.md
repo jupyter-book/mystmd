@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.4.2
+
+### Patch Changes
+
+- 9e311c38: Switch to structuredClone
+  - myst-frontmatter@1.4.2
+
 ## 1.4.1
 
 ### Patch Changes
