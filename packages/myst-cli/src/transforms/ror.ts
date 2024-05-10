@@ -5,7 +5,7 @@ import { selectAll } from 'unist-util-select';
 import { computeHash, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
-import { loadFromCache, writeToCache } from '../index.js';
+import { loadFromCache, writeToCache } from '../session/cache.js';
 
 const ROR_MAX_AGE = 30; // in days
 
