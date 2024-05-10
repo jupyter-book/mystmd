@@ -27,23 +27,23 @@ function rorFromCacheFile(session: ISession, ror: string) {
 }
 
 /**
- * Resolve the given doi.org DOI URL into its CSL-JSON metadata
+ * Resolve the given ror.org ID into JSON data about the organization
  *
  * @param session - CLI session
- * @param url - doi.org DOI URL
+ * @param ror - ror.org ID
  */
 export async function resolveRORAsJSON(
   session: ISession,
   ror: string,
 ): Promise<RORResponse | undefined> {
   const url = `https://api.ror.org/organizations/${ror}`;
-  session.log.debug('Fetching ROR JSON from ror.org');
+  session.log.debug(`Fetching ROR JSON from ${url}`);
   const response = await session.fetch(url).catch(() => {
     session.log.debug(`Request to ${url} failed.`);
     return undefined;
   });
   if (!response || !response.ok) {
-    session.log.debug(`ror.org fetch failed for ${url}`);
+    session.log.debug(`ROR fetch failed for ${url}`);
     return undefined;
   }
   const data = (await response.json()) as RORResponse;
@@ -51,12 +51,12 @@ export async function resolveRORAsJSON(
 }
 
 /**
- * Fetch CSL-JSON formatted metadata for the given doi.org DOI
+ * Fetch organization data for the given ROR ID in JSON
  *
  * @param session - CLI session
- * @param doiString - DOI
  * @param vfile
  * @param node
+ * @param ror - ror ID (does not include the https://ror.org)
  */
 export async function resolveROR(
   session: ISession,
@@ -66,12 +66,12 @@ export async function resolveROR(
 ): Promise<RORResponse | undefined> {
   if (!ror) return undefined;
 
-  // Cache DOI resolution as CSL JSON (parsed)
+  // Cache ROR resolution as JSON
   const cachePath = rorFromCacheFile(session, ror);
 
   if (fs.existsSync(cachePath)) {
     const cached = fs.readFileSync(cachePath).toString();
-    session.log.debug(`Loaded cached ROR response for ROR:${ror}`);
+    session.log.debug(`Loaded cached ROR response for https://ror.org/${ror}`);
     return JSON.parse(cached);
   }
   const toc = tic();
@@ -81,9 +81,9 @@ export async function resolveROR(
     if (data) {
       session.log.debug(toc(`Fetched ROR JSON for ror:${ror} in %s`));
     } else {
-      fileError(vfile, `Could not find ROR "${ror}" from ror.org as doi:${ror}`, {
+      fileError(vfile, `Could not find ROR "${ror}" from https://ror.org/${ror}`, {
         node,
-        ruleId: RuleId.doiLinkValid,
+        ruleId: RuleId.rorLinkValid,
         note: `Please check the ROR is correct and has a page at https://ror.org/${ror}`,
       });
       session.log.debug(`JSON not available from ror.org for ror:${ror}`);
@@ -120,14 +120,14 @@ export async function transformLinkedRORs(
       const rorData = await resolveROR(session, vfile, node, ror);
       console.log(rorData);
       if (rorData && toText(node.children) === ror) {
-        // If the link text is the DOI, update with a citation in a following pass
+        // If the link text is the ROR, update with a organization name
         node.children = [{ type: 'text', value: rorData.name }];
       }
       return true;
     }),
   ]);
   if (number > 0) {
-    session.log.info(toc(`🪄  Linked ${plural('%s DOI(s)', number)} in %s for ${path}`));
+    session.log.info(toc(`🪄  Linked ${plural('%s ROR(s)', number)} in %s for ${path}`));
   }
   return;
 }
