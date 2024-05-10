@@ -66,18 +66,21 @@ export async function fetchMystXRefData(session: ISession, node: CrossReference,
   return fetchMystData(session, dataUrl, node.urlSource, vfile);
 }
 
-export function nodeFromMystXRefData(node: CrossReference, data: RendererData, vfile: VFile) {
-  const targets = selectAll(`[identifier=${node.identifier}]`, data.mdast) as GenericNode[];
-  // Ignore nodes with `identifier` that are not actually the target.
-  const target = targets.find((t) => isTargetIdentifierNode(t));
-  if (!target) {
-    fileWarn(vfile, `Unable to resolve link text from external MyST reference: ${node.urlSource}`, {
+export function nodesFromMystXRefData(
+  data: RendererData,
+  identifier: string,
+  urlSource: string | undefined,
+  vfile: VFile,
+) {
+  const targetNodes = selectMdastNodes(data.mdast, identifier).nodes;
+  if (!targetNodes?.length) {
+    fileWarn(vfile, `Unable to resolve content from external MyST reference: ${urlSource}`, {
       ruleId: RuleId.mystLinkValid,
-      note: `Could not locate identifier ${node.identifier} in page content`,
+      note: `Could not locate identifier ${identifier} in page content`,
     });
     return;
   }
-  return target;
+  return targetNodes;
 }
 
 /**
@@ -114,7 +117,7 @@ export async function transformMystXRefs(
       } else {
         const data = await fetchMystXRefData(session, node as CrossReference, vfile);
         if (!data) return;
-        const target = nodeFromMystXRefData(node as CrossReference, data, vfile);
+        const target = nodesFromMystXRefData(data, node.identifier, node.urlSource, vfile);
         addChildrenFromTargetNode(node as any, target as any, frontmatter.numbering, vfile);
       }
       number += 1;

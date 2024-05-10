@@ -20,7 +20,7 @@ import { selectFile } from '../process/file.js';
 import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
 import { castSession } from '../session/cache.js';
-import { fetchMystLinkData, fetchMystXRefData, nodeFromMystXRefData } from './crossReferences.js';
+import { fetchMystLinkData, fetchMystXRefData, nodesFromMystXRefData } from './crossReferences.js';
 import { fileFromRelativePath } from './links.js';
 import type { RendererData } from './types.js';
 
@@ -82,16 +82,17 @@ export async function embedTransform(
         const referenceXRef = referenceLink as any as CrossReference;
         if (transformed) {
           let data: RendererData | undefined;
-          let targetNode: GenericNode | undefined;
+          let targetNodes: GenericNode[] | undefined;
           if (referenceXRef.identifier) {
             data = await fetchMystXRefData(session, referenceXRef, vfile);
             if (!data) return;
-            targetNode = nodeFromMystXRefData(referenceXRef, data, vfile);
+            targetNodes = nodesFromMystXRefData(data, referenceXRef.identifier, label, vfile);
           } else {
             data = await fetchMystLinkData(session, referenceLink, vfile);
             if (!data) return;
-            targetNode = { type: 'block', children: data.mdast.children };
+            targetNodes = data.mdast.children;
           }
+          const targetNode = { type: 'block', children: targetNodes };
           (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
             if (targetXRef.remoteBaseUrl) return;
             targetXRef.remoteBaseUrl = referenceXRef.remoteBaseUrl;
@@ -138,9 +139,20 @@ export async function embedTransform(
       }
       const { identifier } = normalizeLabel(hash) ?? {};
       if (!identifier) return;
-      const target = state.getTarget(identifier, linkFile);
-      if (!target) return;
-      mutateEmbedNode(node, copyNode(target.node as any) as GenericNode | null);
+      const stateProvider = state.resolveStateProvider(identifier, linkFile);
+      if (!stateProvider) return;
+      const cache = castSession(session);
+      const pageMdast = cache.$getMdast(stateProvider.filePath)?.post?.mdast;
+      if (!pageMdast) return;
+      let targetNodes: GenericNode[];
+      if (stateProvider.getFileTarget(identifier)) {
+        targetNodes = pageMdast.children;
+      } else {
+        targetNodes = selectMdastNodes(pageMdast, identifier).nodes;
+      }
+      if (!targetNodes?.length) return;
+      const target = { type: 'block', children: copyNode(targetNodes) };
+      mutateEmbedNode(node, target);
       const multiState = state as MultiPageReferenceResolver;
       if (!multiState.states) return;
       const { url, filePath } = multiState.resolveStateProvider(identifier, linkFile) ?? {};
