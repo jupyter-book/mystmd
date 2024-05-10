@@ -4,8 +4,7 @@ subtitle: Link to equations, figures, tables, and so much more!
 description: Create numbered cross-references to labeled content (e.g. a figure, document, or table) and automatically generates links with hover previews.
 thumbnail: ./thumbnails/cross-references.png
 numbering:
-  heading_1: true
-  heading_2: true
+  headings: true
 ---
 
 % Based loosely on https://jupyterbook.org/content/references.html
@@ -13,11 +12,10 @@ numbering:
 References refer to labeled content (e.g. a figure, document or table) and automatically generates links and extra information, like numbering. This page covers the basics of setting up references to content and shows examples for sections, figures, tables and equations.
 
 ```{seealso}
-See [](./external-references.md) to connect your <wiki:documents> to external [linked](wiki:Hyperlink) content like <wiki:Wikipedia>, which allow for [hover](wiki:Hovercraft)-references with external content.
+See [](./external-references.md) to connect your <wiki:documents> to external [linked](wiki:Hyperlink) content like <wiki:Wikipedia>, or other MyST projects. These cross-references allow for [hover](wiki:Hovercraft)-references to external content.
 
 See [](./citations.md) to cite scholarly work and create bibliographies.
 ```
-
 
 ## Reference syntax
 
@@ -63,6 +61,9 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
 * - `[](./_toc.yml)`
     : Link to static files that will be included in your built website. Similar to the [{download}](#download-role) role.
   - [](./_toc.yml)
+* - `[Admonition](xref:spec#admonition)`
+    : External hover-references to MyST or Sphinx projects. See [](./external-references.md).
+  - [Admonition](xref:spec#admonition)
 ```
 
 % TODO: absolute links
@@ -80,7 +81,7 @@ For example, the following text:
 
 ```md
 Other ways to reference are @link-references and the @ref-role role.
-``` 
+```
 
 Results in:
 
@@ -94,9 +95,10 @@ If it is an image or a section header, it will map on to the {myst:role}`{ref} <
 :::
 
 (reference:roles)=
+
 ### Reference using MyST roles
 
-Roles are a more explicit way of defining references that provide more configurability at the cost of requiring more complexity to write.
+Roles are a more explicit way of defining references that provide more configuration at the cost of requiring more complexity to write.
 There several roles that define various kinds of references in MyST.
 In many cases, the short-hand syntax described above are aliases for these roles.
 Below we describe the most commonly-used ones.
@@ -137,26 +139,24 @@ Thus, a good rule of thumb is the following:
 1. If you're happy with the default behavior of references, use `@target` syntax.
 2. If you only wish to modify the displayed text, use `[My text](#target)` syntax.
 3. If you wish to use more complex configurability, use the role syntax (`{ref}`, `{cite}`, etc).
+
 :::
 
 ## Targets and labels for referencing
 
-The thing you wish to reference is called a **target**.
+The content you wish to reference is called a **target**, and to be targeted that content must have a **label**.
 For example, in this reference syntax:
 
 ```md
-[](#my-label)
+[](#my-targets-label)
 ```
 
-The text `my-label` is a target.
-
-There are many ways that you can attach targets to pieces of content, and the sections below describe the most common approaches.
+The text `my-targets-label` is the label for the target.
+There are many ways that you can label a target, and the sections below describe the most common approaches.
 
 ### Directive Targets
 
 Targets are custom anchors that you can refer to elsewhere, for example, a figure, section, table, program, or proof. To be referenced, they must have a `label`/`identifier` pair [in the AST](xref:spec#association). These can be created by setting the `label` option in many directives. For example, to label and reference a figure, use the following syntax:
-
-% TODO: fix equation label redundancy here would nice to be able to simplify the onboarding (just use label, same as tex and ast)
 
 ````{myst}
 ```{figure} https://source.unsplash.com/random/500x200/?mountain
