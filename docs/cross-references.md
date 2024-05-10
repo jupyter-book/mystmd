@@ -18,26 +18,6 @@ See [](./external-references.md) to connect your <wiki:documents> to external [l
 See [](./citations.md) to cite scholarly work and create bibliographies.
 ```
 
-## Directive Targets
-
-Targets are custom anchors that you can refer to elsewhere, for example, a figure, section, table, program, or proof. To be referenced, they must have a `label`/`identifier` pair [in the AST](xref:spec#association). These can be created by setting the `label` option in many directives. For example, to label and reference a figure, use the following syntax:
-
-% TODO: fix equation label redundancy here would nice to be able to simplify the onboarding (just use label, same as tex and ast)
-
-````{myst}
-```{figure} https://source.unsplash.com/random/500x200/?mountain
-:label: my-fig
-:align: center
-
-My **bold** mountain 🏔🚠.
-```
-
-Check out [](#my-fig)!!
-````
-
-```{tip} Using Markdown Links 🔗
-You can use this syntax to also reference [Section/Header targets](#targeting-headers) as well as [label equations](#targeting-equations) when using [dollar math](#dollar-math) or [AMS math](#ams-environments).
-```
 
 ## Reference syntax
 
@@ -114,14 +94,80 @@ Results in:
 
 ### Reference using MyST roles
 
-It is also possible to use specific roles to reference content, including ([ref](#ref-role), [numref](#numref-role), [eq](#eq-role) or [doc](#doc-role)), depending on your use-case.
+:::{warning} Coming from Sphinx?
+The following sections are to support users who are coming from using Sphinx as a parsing engine, which has many different ways to reference and label content.
 
-These roles are supported to have compatibility with Sphinx. However, it is recommended to use markdown link syntax for referencing content, as it is more portable, is more concise, and has improved features such as inline formatting in the text links.
+These ways of referencing content are not recommended, as they have certain drawbacks and are not consistent.
+
+See [{name}](#link-references) for ways to use markdown link, `[](#target)` syntax to reference your content.
 :::
+
+There several roles that define various kinds of references in MyST.
+In many cases, the short-hand syntax described above are aliases for these roles.
+
+(ref-role)=
+
+ref
+: The `{ref}` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label, for example, `` {ref}`reference-target` ``
+: You can also choose the reference text directly (not taking from the title or caption) by using, `` {ref}`your text here <reference-target>` ``.
+
+(numref-role)=
+
+numref
+: The `{numref}` role is exactly the same as the above `{ref}` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, ``{numref}`Custom Table %s text <my-table-ref>`.`` will become `Custom Table 3 text`.
+
+(eq-role)=
+
+eq
+: The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](#my-equation)` as there is no text content to fill in a title or caption.
+
+(doc-role)=
+
+doc
+: The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is equivalent to `[](./my-file.md)`.
+
+(download-role)=
+
+download
+: The `` {download}`./my-file.zip` `` syntax creates a download to a document, which is equivalent to `[](./my-file.zip)`.
+
+## Targets and labels for referencing
+
+The thing you wish to reference is called a **target**.
+For example, in this reference syntax:
+
+```md
+[](#my-label)
+```
+
+The text `my-label` is a target.
+
+There are many ways that you can attach targets to pieces of content, and the sections below describe the most common approaches.
+
+### Directive Targets
+
+Targets are custom anchors that you can refer to elsewhere, for example, a figure, section, table, program, or proof. To be referenced, they must have a `label`/`identifier` pair [in the AST](xref:spec#association). These can be created by setting the `label` option in many directives. For example, to label and reference a figure, use the following syntax:
+
+% TODO: fix equation label redundancy here would nice to be able to simplify the onboarding (just use label, same as tex and ast)
+
+````{myst}
+```{figure} https://source.unsplash.com/random/500x200/?mountain
+:label: my-fig
+:align: center
+
+My **bold** mountain 🏔🚠.
+```
+
+Check out [](#my-fig)!!
+````
+
+```{tip} Using Markdown Links 🔗
+You can use this syntax to also reference [Section/Header targets](#targeting-headers) as well as [label equations](#targeting-equations) when using [dollar math](#dollar-math) or [AMS math](#ams-environments).
+```
 
 (targeting-headers)=
 
-## Header Targets
+### Header Targets
 
 To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and `{ref}` roles. This is helpful if you want to quickly insert links to other parts of your book. Referencing a heading will show the heading and the subsequent two pieces of content[^3], unless a header is encountered.
 
@@ -154,7 +200,7 @@ These will show up, for example, as `Section 1` and `Section 2.1`. To turn on al
 
 (header-numbering)=
 
-## Header Numbering
+#### Header Numbering
 
 By default section numbering for headers is turned off with numbering for figure and table numbering enabled.
 To turn on `numbering` for headers, you can can change the frontmatter in the document or project. See [](#numbering) for more details on the numbering object.
@@ -183,7 +229,7 @@ numbering:
 
 (targeting-equations)=
 
-## Equations Targets
+### Equations Targets
 
 To reference equations, use the `{eq}` role. It will automatically insert the number of the equation. Note that you cannot modify the text of equation links.
 
@@ -203,7 +249,7 @@ See [](#my-math-label) for an equation!
 
 (targeting-cells)=
 
-## Notebook Cell Targets
+### Notebook Cell Targets
 
 You can label notebook cells using a comment at the top of the cell, using a `#| label:` syntax, or have this added directly in the notebook metadata for the cell.
 
@@ -245,7 +291,7 @@ This figure has been included from [](./interactive-notebooks.ipynb) and can be 
 
 (label-anything)=
 
-## Label Anything
+### Label Anything
 
 It is possible to label any document node by adding `(my-label)=` before any other block of content. These can be referenced using the `{ref}` role, but by default will not be enumerated, so you cannot use `%s` or `{number}` in the content.
 
@@ -259,42 +305,6 @@ This is just a paragraph!
 
 Please see [this paragraph](#my-paragraph) and [these points](#my-points).
 ```
-
-## Referencing using Roles
-
-:::{warning} Coming from Sphinx?
-The following sections are to support users who are coming from using Sphinx as a parsing engine, which has many different ways to reference and label content.
-
-These ways of referencing content are not recommended, as they have certain drawbacks and are not consistent.
-
-See [{name}](#link-references) for ways to use markdown link, `[](#target)` syntax to reference your content.
-:::
-
-(ref-role)=
-
-ref
-: The `{ref}` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label, for example, `` {ref}`reference-target` ``
-: You can also choose the reference text directly (not taking from the title or caption) by using, `` {ref}`your text here <reference-target>` ``.
-
-(numref-role)=
-
-numref
-: The `{numref}` role is exactly the same as the above `{ref}` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, ``{numref}`Custom Table %s text <my-table-ref>`.`` will become `Custom Table 3 text`.
-
-(eq-role)=
-
-eq
-: The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](#my-equation)` as there is no text content to fill in a title or caption.
-
-(doc-role)=
-
-doc
-: The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is equivalent to `[](./my-file.md)`.
-
-(download-role)=
-
-download
-: The `` {download}`./my-file.zip` `` syntax creates a download to a document, which is equivalent to `[](./my-file.zip)`.
 
 (numbering)=
 
