@@ -20,7 +20,7 @@ MyST supports referencing rich content in a growing number of formats, including
 
 (myst-xref)=
 
-## Referencing external MyST projects
+## External MyST projects
 
 When using the HTML renderer for MyST, an API is provided for the deployed site.
 This provides pre-parsed, structured content as an AST that can be included in other projects and rendered in a tooltip.
@@ -96,11 +96,12 @@ It is also a machine-readable record that can be used for analyzing the cross-re
 
 (intersphinx)=
 
-## Referencing external Sphinx documentation
+## Sphinx documentation
 
 MyST can integrate directly with other Sphinx documentation, which is used in many Python projects including the [standard library](https://docs.python.org/).
+This re-uses the reference specification defined by [the intersphinx plugin for Sphinx](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html).
 
-Same as [MyST cross references](#myst-xref), use the `references` object to list Sphinx projects. For example, in the demonstration below we will load the Python 3.7 documentation and JupyterBook docs, both of which use sphinx and expose cross references through an `objects.inv` file.
+Similar to [MyST cross references](#myst-xref), use the `references` object to list Sphinx projects. For example, in the demonstration below we will load the Python 3.7 documentation and JupyterBook docs, both of which use sphinx and expose cross references through an `objects.inv` file.
 
 (intersphinx-config)=
 
@@ -117,7 +118,7 @@ In your `references` object, you may freely mix MyST and Sphinx projects. MyST w
 The behavior of these entries is identical to MyST cross references: the remote `objects.inv` file, which contains all available project references, is downloaded and cached in the `_build` folder.
 
 ````{important}
-# Intersphinx Examples
+# Sphinx Examples
 
 ```{list-table}
 :header-rows: 1
@@ -152,7 +153,7 @@ As with any link, the text can be overridden using markdown link syntax `[text](
 
 ````{tip}
 :class: dropdown
-# How to find the intersphinx target?
+# How to find the Sphinx target?
 
 The HTML IDs that are part of the documentation are not always the targets that are used in the documentation. The easiest way to find the target to use is to look at the source documentation in RST or MyST.
 
