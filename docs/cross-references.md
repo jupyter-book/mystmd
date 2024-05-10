@@ -39,14 +39,14 @@ Check out [](#my-fig)!!
 You can use this syntax to also reference [Section/Header targets](#targeting-headers) as well as [label equations](#targeting-equations) when using [dollar math](#dollar-math) or [AMS math](#ams-environments).
 ```
 
-## Referencing syntax
+## Reference syntax
 
 There are several ways that you can define cross-references with MyST.
 Below are the major ones.
 
 (link-references)=
 
-### Referencing using Links
+### Reference using Links
 
 Cross-referencing content is accomplished with markdown link syntax (`[text](#target)`) where `#target` is the target label[^1], like the figure, equation or section header that you are referencing. If you leave the text empty, MyST will fill in the link with the title, caption, document name, or equation number as appropriate (e.g. "Figure 1" or "Section 1.3.7"). If you do supply text, you can control what is displayed in the reference, as well as have access to placing the name and enumerator of the target, using `{name}` and `{number}`, respectively[^2].
 
@@ -87,7 +87,11 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
 
 % TODO: absolute links
 
-### Referencing using a shorthand `@` syntax
+### Reference using a shorthand `@` syntax
+
+:::{warning} Experimental
+Referencing short-hand with `@` is experimental and its behavior may change.
+:::
 
 You can reference targets with a short-hand using the `@` symbol, like so:
 
@@ -108,7 +112,7 @@ Results in:
 
 > Other ways to reference are @link-references and the @ref-role role.
 
-### Referencing using MyST roles
+### Reference using MyST roles
 
 It is also possible to use specific roles to reference content, including ([ref](#ref-role), [numref](#numref-role), [eq](#eq-role) or [doc](#doc-role)), depending on your use-case.
 
