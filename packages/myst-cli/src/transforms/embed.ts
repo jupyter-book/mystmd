@@ -1,7 +1,6 @@
 import { filter } from 'unist-util-filter';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import { VFile } from 'vfile';
 import {
   MystTransformer,
   type IReferenceStateResolver,
@@ -12,6 +11,7 @@ import {
   copyNode,
   liftChildren,
   normalizeLabel,
+  fileError,
   isTargetIdentifierNode,
   selectMdastNodes,
 } from 'myst-common';
@@ -68,16 +68,26 @@ export async function embedTransform(
   const embedNodes = selectAll('embed', mdast) as Embed[];
   await Promise.all(
     embedNodes.map(async (node) => {
+      const vfile = state.vfile;
       const label = node.source?.label;
-      if (!label) return;
-      if (mystTransformer.test(label)) {
+      if (!label) {
+        fileError(vfile, 'Embed node does not have a label', { node });
+        return;
+      }
+      if (label.startsWith('xref:') || label.startsWith('myst:')) {
+        if (!mystTransformer.test(label)) {
+          fileError(vfile, `Cannot embed "${label}"`, {
+            node,
+            note: 'The target must be a MyST project and be included in your project references.\nEmbed does not work with intersphinx.',
+          });
+          return;
+        }
         const referenceLink: Link = {
           type: 'link',
           url: label,
           urlSource: label,
           children: [],
         };
-        const vfile = state.vfile ?? new VFile();
         const transformed = mystTransformer.transform(referenceLink, vfile);
         const referenceXRef = referenceLink as any as CrossReference;
         if (transformed) {
@@ -142,7 +152,10 @@ export async function embedTransform(
         hash = linkFileWithTarget.slice(linkFile.length + 1);
       }
       const { identifier } = normalizeLabel(hash) ?? {};
-      if (!identifier) return;
+      if (!identifier) {
+        fileError(vfile, 'Embed node does not have label', { node });
+        return;
+      }
       const stateProvider = state.resolveStateProvider(identifier, linkFile);
       if (!stateProvider) return;
       const cache = castSession(session);
@@ -154,7 +167,10 @@ export async function embedTransform(
       } else {
         targetNodes = selectMdastNodes(pageMdast, identifier).nodes;
       }
-      if (!targetNodes?.length) return;
+      if (!targetNodes?.length) {
+        fileError(vfile, `Embed target for "${label}" not found`, { node });
+        return;
+      }
       const target = { type: 'block', children: copyNode(targetNodes) };
       mutateEmbedNode(node, target);
       const multiState = state as MultiPageReferenceResolver;

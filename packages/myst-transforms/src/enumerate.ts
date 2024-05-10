@@ -1,5 +1,5 @@
 import type { Plugin } from 'unified';
-import type { VFile } from 'vfile';
+import { VFile } from 'vfile';
 import type { CrossReference, Heading, Paragraph } from 'myst-spec';
 import type { Cite, Container, Math, MathGroup, Link } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
@@ -58,7 +58,10 @@ function getDefaultNumberedReferenceTemplate(kind: TargetKind | string) {
   return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)} %s`;
 }
 
-function getDefaultNamedReferenceTemplate(kind: TargetKind | string, hasTitle: boolean) {
+function getDefaultNamedReferenceTemplate(
+  kind: TargetKind | string = 'unknown',
+  hasTitle: boolean,
+) {
   const domain = kind.includes(':') ? kind.split(':')[1] : kind;
   const name = `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)}`;
   switch (kind) {
@@ -293,7 +296,7 @@ export function initializeTargetCounts(
 }
 
 export interface IReferenceStateResolver {
-  vfile?: VFile;
+  vfile: VFile;
   /**
    * If the page is provided, it will only look at that page.
    */
@@ -305,7 +308,7 @@ export interface IReferenceStateResolver {
 }
 
 export class ReferenceState implements IReferenceStateResolver {
-  vfile?: VFile;
+  vfile: VFile;
   filePath: string;
   url?: string;
   title?: string;
@@ -325,7 +328,7 @@ export class ReferenceState implements IReferenceStateResolver {
       targetCounts?: TargetCounts;
       numbering?: Numbering;
       identifiers?: string[];
-      vfile?: VFile;
+      vfile: VFile;
     },
   ) {
     this.numbering = fillNumbering(opts?.numbering, DEFAULT_NUMBERING);
@@ -333,7 +336,7 @@ export class ReferenceState implements IReferenceStateResolver {
     this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts);
     this.identifiers = opts?.identifiers ?? [];
     this.targets = {};
-    this.vfile = opts?.vfile;
+    this.vfile = opts?.vfile ?? new VFile();
     this.filePath = filePath;
     this.url = opts?.url;
     this.dataUrl = opts?.dataUrl;
@@ -527,9 +530,9 @@ function warnNodeTargetNotFound(node: ResolvableCrossReference, vfile?: VFile) {
 export class MultiPageReferenceResolver implements IReferenceStateResolver {
   states: ReferenceState[];
   filePath: string; // Path of the current file we are resolving references against
-  vfile?: VFile; // VFile for reporting errors/warnings
+  vfile: VFile; // VFile for reporting errors/warnings
 
-  constructor(states: ReferenceState[], filePath: string, vfile?: VFile) {
+  constructor(states: ReferenceState[], filePath: string, vfile = new VFile()) {
     this.states = states;
     this.filePath = filePath;
     this.vfile = vfile;
