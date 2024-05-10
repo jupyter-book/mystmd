@@ -13,20 +13,20 @@ Try changing `tip` to `warning`!
 :::
 ```
 
-In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like `{note}` or `{danger}`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon using the {myst:directive}`admonition.class` option. There are ten kinds[^docutils-admonitions] of admonitions available:
+In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon using the {myst:directive}`admonition.class` option. There are ten kinds[^docutils-admonitions] of admonitions available:
 
 ```{list-table} Named admonitions that can be used as directives
 :label: admonitions-list
-* - 🔵 `note`
-  - 🟠 `attention`
-* - 🔵 `important`
-  - 🟠 `caution`
-* - 🟢 `hint`
-  - 🟠 `warning`
-* - 🟢 `seealso`
-  - 🔴 `danger`
-* - 🟢 `tip`
-  - 🔴 `error`
+* - 🔵 {myst:directive}`note`
+  - 🟠 {myst:directive}`attention`
+* - 🔵 {myst:directive}`important`
+  - 🟠 {myst:directive}`caution`
+* - 🟢 {myst:directive}`hint`
+  - 🟠 {myst:directive}`warning`
+* - 🟢 {myst:directive}`seealso`
+  - 🔴 {myst:directive}`danger`
+* - 🟢 {myst:directive}`tip`
+  - 🔴 {myst:directive}`error`
 ```
 
 [^docutils-admonitions]: These admonitions are the same as those used in [docutils](https://docutils.sourceforge.io/docs/ref/rst/directives.html#specific-admonitions) and Sphinx.
