@@ -120,11 +120,13 @@ export async function transformMystXRefs(
       } else {
         const data = await fetchMystXRefData(session, node as CrossReference, vfile);
         if (!data) return;
-        const target = nodesFromMystXRefData(data, node.identifier, vfile, {
+        const targets = nodesFromMystXRefData(data, node.identifier, vfile, {
           urlSource: node.urlSource,
           maxNodes: 1,
         });
-        addChildrenFromTargetNode(node as any, target as any, frontmatter.numbering, vfile);
+        if (targets?.length) {
+          addChildrenFromTargetNode(node as any, targets[0] as any, frontmatter.numbering, vfile);
+        }
       }
       number += 1;
     }),
