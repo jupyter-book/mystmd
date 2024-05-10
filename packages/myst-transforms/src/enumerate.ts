@@ -299,8 +299,9 @@ export interface IReferenceStateResolver {
    */
   getTarget: (identifier?: string, page?: string) => Target | undefined;
   getFileTarget: (identifier?: string) => ReferenceState | undefined;
-  resolveReferenceContent: (node: ResolvableCrossReference) => void;
   getIdentifiers: () => string[];
+  resolveReferenceContent: (node: ResolvableCrossReference) => void;
+  resolveStateProvider: (identifier?: string, page?: string) => ReferenceState | undefined;
 }
 
 export class ReferenceState implements IReferenceStateResolver {
@@ -414,6 +415,11 @@ export class ReferenceState implements IReferenceStateResolver {
     }
     node.enumerator = enumerator;
     return enumerator;
+  }
+
+  resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
+    if (!identifier || !page || page !== this.filePath) return;
+    if (this.getTarget(identifier) || this.getFileTarget(identifier)) return this;
   }
 
   getIdentifiers() {
@@ -531,11 +537,11 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
 
   resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
     if (!identifier) return undefined;
-    const pageXRefs = this.states.find((state) => {
+    const resolvedState = this.states.find((state) => {
       if (page && page !== state.filePath) return false;
       return !!state.getTarget(identifier) || !!state.getFileTarget(identifier);
     });
-    return pageXRefs;
+    return resolvedState;
   }
 
   getIdentifiers() {
@@ -543,8 +549,8 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
   }
 
   getTarget(identifier?: string, page?: string): Target | undefined {
-    const pageXRefs = this.resolveStateProvider(identifier, page);
-    return pageXRefs?.getTarget(identifier);
+    const state = this.resolveStateProvider(identifier, page);
+    return state?.getTarget(identifier);
   }
 
   getFileTarget(identifier?: string): ReferenceState | undefined {
@@ -553,16 +559,16 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
   }
 
   resolveReferenceContent(node: ResolvableCrossReference) {
-    const pageXRefs = this.resolveStateProvider(node.identifier);
-    if (!pageXRefs) {
+    const state = this.resolveStateProvider(node.identifier);
+    if (!state) {
       warnNodeTargetNotFound(node, this.vfile);
       return;
     }
-    pageXRefs?.resolveReferenceContent(node);
-    if (node.resolved && pageXRefs?.filePath !== this.filePath) {
+    state?.resolveReferenceContent(node);
+    if (node.resolved && state?.filePath !== this.filePath) {
       node.remote = true;
-      node.url = pageXRefs.url || undefined;
-      node.dataUrl = pageXRefs.dataUrl || undefined;
+      node.url = state.url || undefined;
+      node.dataUrl = state.dataUrl || undefined;
     }
   }
 }
