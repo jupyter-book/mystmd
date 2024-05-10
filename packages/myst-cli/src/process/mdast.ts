@@ -307,11 +307,11 @@ export async function postProcessMdast(
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
   resolveLinksAndCitationsTransform(mdast, { state, transformers });
-  await transformLinkedRORs(session, vfile, mdast, file);
   linksTransform(mdast, state.vfile as VFile, {
     transformers,
     selector: LINKS_SELECTOR,
   });
+  await transformLinkedRORs(session, vfile, mdast, file);
   resolveReferencesTransform(mdast, state.vfile as VFile, { state, transformers });
   await transformMystXRefs(session, vfile, mdast, frontmatter);
   await embedTransform(session, mdast, file, dependencies, state);

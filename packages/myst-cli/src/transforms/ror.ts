@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import { join } from 'node:path';
 import type { Link } from 'myst-spec';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, plural, fileError, toText } from 'myst-common';
@@ -7,6 +5,9 @@ import { selectAll } from 'unist-util-select';
 import { computeHash, tic } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
+import { loadFromCache, writeToCache } from '../session/cache.js';
+
+const ROR_MAX_AGE = 30; // in days
 
 type RORResponse = {
   id: string;
@@ -19,11 +20,8 @@ type RORResponse = {
  * @param session: CLI session
  * @param ror: normalized ROR ID
  */
-function rorFromCacheFile(session: ISession, ror: string) {
-  const filename = `ror-${computeHash(ror)}.json`;
-  const cacheFolder = join(session.buildPath(), 'cache');
-  if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
-  return join(cacheFolder, filename);
+function rorCacheFilename(ror: string) {
+  return `ror-${computeHash(ror)}.json`;
 }
 
 /**
@@ -67,13 +65,10 @@ export async function resolveROR(
   if (!ror) return undefined;
 
   // Cache ROR resolution as JSON
-  const cachePath = rorFromCacheFile(session, ror);
+  const filename = rorCacheFilename(ror);
 
-  if (fs.existsSync(cachePath)) {
-    const cached = fs.readFileSync(cachePath).toString();
-    session.log.debug(`Loaded cached ROR response for https://ror.org/${ror}`);
-    return JSON.parse(cached);
-  }
+  const cached = loadFromCache(session, filename, { maxAge: ROR_MAX_AGE });
+  if (cached) return JSON.parse(cached);
   const toc = tic();
   let data;
   try {
@@ -93,8 +88,7 @@ export async function resolveROR(
   }
 
   if (!data) return undefined;
-  session.log.debug(`Saving ROR JSON to cache ${cachePath}`);
-  fs.writeFileSync(cachePath, JSON.stringify(data));
+  writeToCache(session, filename, JSON.stringify(data));
   return data as unknown as RORResponse;
 }
 
@@ -118,7 +112,6 @@ export async function transformLinkedRORs(
       if (!ror) return;
       number += 1;
       const rorData = await resolveROR(session, vfile, node, ror);
-      console.log(rorData);
       if (rorData && toText(node.children) === ror) {
         // If the link text is the ROR, update with a organization name
         node.children = [{ type: 'text', value: rorData.name }];
