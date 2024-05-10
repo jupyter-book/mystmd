@@ -79,11 +79,11 @@ export async function embedTransform(
           let data: RendererData | undefined;
           let targetNode: GenericNode | undefined;
           if (referenceXRef.identifier) {
-            data = await fetchMystXRefData(referenceXRef, vfile);
+            data = await fetchMystXRefData(session, referenceXRef, vfile);
             if (!data) return;
             targetNode = nodeFromMystXRefData(referenceXRef, data, vfile);
           } else {
-            data = await fetchMystLinkData(referenceLink, vfile);
+            data = await fetchMystLinkData(session, referenceLink, vfile);
             if (!data) return;
             targetNode = { type: 'block', children: data.mdast.children };
           }
