@@ -56,6 +56,8 @@ For example, the following references the admonitions list in [](admonitions.md)
 
 ```
 
+(embed-image-short-hand)=
+
 ### The `![](#embed)` short-hand
 
 The embedding markdown shorthand lets you quickly embed content using the Markdown image syntax (see more about [images](./figures.md)).
@@ -169,3 +171,20 @@ The {myst:directive}`include` directive is very similar to {myst:directive}`embe
 
 `{embed}`
 : Pulls any labelled MyST content or outputs already parsed in your project.
+
+## Embedding from External Projects
+
+Similar to [cross-project links](#myst-xref), which allow you to hover over a link and see the content on a different MyST site, you can also embed content from an external site. First, add `references` to your `myst.yml`:
+
+:::{embed} #myst-xref-config
+:::
+
+You can then refer to content in these sites with either the [short hand](#embed-image-short-hand), `![](xref:spec#admonition)`, or explicit embed directive `:::{embed} xref:spec#admonition`.
+
+:::{prf:example} Embedding from the MyST Spec
+
+The following content is embedded from `![](xref:spec#admonition)`:
+
+[](xref:spec#admonition)
+
+:::

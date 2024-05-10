@@ -33,11 +33,13 @@ Try adding `.json` at the end of the URL on this page.
 
 In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below shows how you would load cross-references that are pulled from the MyST Specification documentation.
 
-(myst-xref-config)=
-
-```yaml
-references:
-  spec: https://mystmd.org/spec
+```{code-block} yaml
+:label: myst-xref-config
+:filename: myst.yml
+:caption: Add `references` to your project configuration in your `myst.yml`, MyST will then provide access to all of content on those pages in links and embeds.
+project:
+  references:
+    spec: https://mystmd.org/spec
 ```
 
 When you specify these in your project configuration, MyST will load the cross-references and provide access to all of the pages and reference targets in that project.
