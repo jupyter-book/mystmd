@@ -185,6 +185,6 @@ You can then refer to content in these sites with either the [short hand](#embed
 
 The following content is embedded from `![](xref:spec#admonition)`:
 
-[](xref:spec#admonition)
+![](xref:spec#admonition)
 
 :::
