@@ -102,6 +102,7 @@ export async function embedTransform(
             if (!targetXRef.remote) {
               targetXRef.url = referenceXRef.url;
               targetXRef.dataUrl = referenceXRef.dataUrl;
+              targetXRef.remote = true;
             }
           });
           (selectAll('link', targetNode) as Link[]).forEach((targetLink) => {
