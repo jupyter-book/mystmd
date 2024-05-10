@@ -1,5 +1,5 @@
 import type { Text } from 'myst-spec';
-import type { Link } from './types.js';
+import type { Link } from 'myst-spec-ext';
 
 export function withoutHttp(url: string) {
   return url?.replace(/https?:\/\//, '');

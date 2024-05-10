@@ -1,8 +1,9 @@
 import type { Plugin } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types.js';
 import type { GenericParent } from 'myst-common';
+import type { Link } from 'myst-spec-ext';
+import type { LinkTransformer } from './types.js';
 
 type Options = {
   transformers: LinkTransformer[];

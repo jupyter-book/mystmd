@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { VFile } from 'vfile';
-import type { Link, ResolvedExternalReference } from './types';
+import type { Link } from 'myst-spec-ext';
+import type { ResolvedExternalReference } from './types';
 import { MystTransformer } from './myst';
 import { linksTransform } from './plugin';
 
@@ -36,9 +37,10 @@ describe('Link Plugin Transformer', () => {
     };
     linksTransform({ type: 'root', children: [link] }, file, { transformers: [t] });
     expect(file.messages.length).toEqual(0);
-    expect(link.url).toEqual('https://example.com/myst-ref/my-figure');
-    expect(link.dataUrl).toEqual('https://example.com/myst-ref/my-figure.json');
+    expect(link.url).toEqual('/my-figure');
+    expect(link.dataUrl).toEqual('/my-figure.json');
     expect(link.type).toEqual('crossReference');
+    expect((link as any).remoteBaseUrl).toEqual('https://example.com/myst-ref');
     expect((link as any).remote).toBe(true);
     expect((link as any).identifier).toEqual('explicit-figure');
     expect((link as any).label).toEqual('explicit-figure');

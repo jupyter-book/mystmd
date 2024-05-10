@@ -1,13 +1,7 @@
 import { fileWarn, fileError, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
-import type {
-  Link,
-  LinkTransformer,
-  MystXRef,
-  MystXRefs,
-  ResolvedExternalReference,
-} from './types.js';
-import type { CrossReference } from 'myst-spec-ext';
+import type { Link, CrossReference } from 'myst-spec-ext';
+import type { LinkTransformer, MystXRef, MystXRefs, ResolvedExternalReference } from './types.js';
 
 const TRANSFORM_SOURCE = 'LinkTransform:MystTransformer';
 

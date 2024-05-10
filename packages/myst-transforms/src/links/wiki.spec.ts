@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { VFile } from 'vfile';
-import type { Link } from './types';
+import type { Link } from 'myst-spec-ext';
 import { WikiTransformer } from './wiki';
 
 describe('Test WikiTransformer', () => {

@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { CrossReference, Heading, Paragraph } from 'myst-spec';
-import type { Cite, Container, Math, MathGroup } from 'myst-spec-ext';
+import type { Cite, Container, Math, MathGroup, Link } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -17,7 +17,7 @@ import {
   TargetKind,
   RuleId,
 } from 'myst-common';
-import type { Link, LinkTransformer } from './links/types.js';
+import type { LinkTransformer } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
 import { fillNumbering, type Numbering } from 'myst-frontmatter';
 

@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { VFile } from 'vfile';
-import type { Link, ResolvedExternalReference } from './types';
+import type { Link } from 'myst-spec-ext';
+import type { ResolvedExternalReference } from './types';
 import { SphinxTransformer } from './sphinx';
 
 export const TEST_REFERENCES: ResolvedExternalReference[] = [

@@ -269,4 +269,7 @@ export type Link = SpecLink & {
   urlSource?: string;
   dataUrl?: string;
   internal?: boolean;
+  static?: true;
+  protocol?: string;
+  error?: true;
 };
