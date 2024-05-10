@@ -18,13 +18,13 @@ parts:
       - file: code
       - file: cross-references
       - file: external-references
+      - file: embed
       - file: citations
       - file: proofs-and-theorems
       - file: exercises
       - file: blocks
       - file: diagrams
       - file: asides
-      - file: embed
       - file: dropdowns-cards-and-tabs
       - file: glossaries-and-terms
       - file: writing-in-latex

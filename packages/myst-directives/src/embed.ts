@@ -13,9 +13,11 @@ export const embedDirective: DirectiveSpec = {
   options: {
     'remove-input': {
       type: Boolean,
+      doc: 'If embedding a Jupyter Notebook cell, remove the input of the cell.',
     },
     'remove-output': {
       type: Boolean,
+      doc: 'If embedding a Jupyter Notebook cell, remove the output of the cell.',
     },
   },
   run(data: DirectiveData): Embed[] {
