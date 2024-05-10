@@ -1,5 +1,20 @@
 # myst-cli
 
+## 1.2.3
+
+### Patch Changes
+
+- 9e311c38: Switch to structuredClone
+- b86d6216: Fix ROR linking and transform ordering bug
+- 25f4d83: Fix bug where intersphinx xrefs do not resolve on first load
+- Updated dependencies [9e311c38]
+  - myst-common@1.4.2
+  - myst-transforms@1.3.13
+  - myst-config@1.4.2
+  - myst-frontmatter@1.4.2
+  - myst-spec-ext@1.4.2
+  - myst-parser@1.4.3
+
 ## 1.2.2
 
 ### Patch Changes

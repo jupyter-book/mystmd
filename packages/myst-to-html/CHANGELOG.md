@@ -1,5 +1,13 @@
 # myst-to-html
 
+## 1.4.3
+
+### Patch Changes
+
+- 9e311c38: Switch to structuredClone
+- Updated dependencies [9e311c38]
+  - myst-common@1.4.2
+
 ## 1.4.2
 
 ## 1.4.1
