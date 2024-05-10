@@ -1,5 +1,3 @@
-import fs from 'node:fs';
-import { join } from 'node:path';
 import type { CitationRenderer, CSL } from 'citation-js-utils';
 import { getCitationRenderers, parseBibTeX, parseCSLJSON } from 'citation-js-utils';
 import { doi } from 'doi-utils';
@@ -12,28 +10,23 @@ import type { Cite } from 'myst-spec-ext';
 import type { SingleCitationRenderer } from './types.js';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
+import { loadFromCache, writeToCache } from '../session/cache.js';
 
 const CSL_JSON_MIMETYPE = 'application/vnd.citationstyles.csl+json';
 const BIBTEX_MIMETYPE = 'application/x-bibtex';
 
 /**
- * Build a path to the cache-file for the given DOI
+ * Build a filename for the cache-file for the given DOI
  *
  * @param session: CLI session
  * @param normalizedDoi: normalized DOI of the form `prefix/suffix`
  */
-function doiCSLJSONCacheFile(session: ISession, normalizedDoi: string) {
-  const filename = `doi-${computeHash(normalizedDoi)}.csl.json`;
-  const cacheFolder = join(session.buildPath(), 'cache');
-  if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
-  return join(cacheFolder, filename);
+function doiCSLJSONCacheFilename(normalizedDoi: string) {
+  return `doi-${computeHash(normalizedDoi)}.csl.json`;
 }
 
-function doiResolvesCacheFile(session: ISession, normalizedDoi: string) {
-  const filename = `doi-${computeHash(normalizedDoi)}.txt`;
-  const cacheFolder = join(session.buildPath(), 'cache');
-  if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
-  return join(cacheFolder, filename);
+function doiResolvesCacheFilename(normalizedDoi: string) {
+  return `doi-${computeHash(normalizedDoi)}.txt`;
 }
 
 /**
@@ -107,12 +100,11 @@ export async function resolveDoiOrg(
   const normalizedDoi = doi.normalize(doiString);
   const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
   if (!doi.validate(doiString) || !normalizedDoi || !url) return undefined;
+  const filename = doiCSLJSONCacheFilename(normalizedDoi);
 
   // Cache DOI resolution as CSL JSON (parsed)
-  const cachePath = doiCSLJSONCacheFile(session, normalizedDoi);
-
-  if (fs.existsSync(cachePath)) {
-    const cached = fs.readFileSync(cachePath).toString();
+  const cached = loadFromCache(session, filename);
+  if (cached) {
     session.log.debug(`Loaded cached reference CSL-JSON for doi:${normalizedDoi}`);
     return JSON.parse(cached);
   }
@@ -146,8 +138,8 @@ export async function resolveDoiOrg(
     }
   }
   if (!data) return undefined;
-  session.log.debug(`Saving DOI CSL-JSON to cache ${cachePath}`);
-  fs.writeFileSync(cachePath, JSON.stringify(data));
+  session.log.debug(`Saving DOI CSL-JSON to cache ${filename}`);
+  writeToCache(session, filename, JSON.stringify(data));
   return data as unknown as CSL[];
 }
 
@@ -158,8 +150,9 @@ export async function doiOrgResolves(session: ISession, doiString: string): Prom
   const normalizedDoi = doi.normalize(doiString);
   const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
   if (!doi.validate(doiString) || !normalizedDoi || !url) return false;
-  const cachePath = doiResolvesCacheFile(session, normalizedDoi);
-  if (fs.existsSync(cachePath)) {
+  const filename = doiResolvesCacheFilename(normalizedDoi);
+  const cached = loadFromCache(session, filename);
+  if (cached) {
     session.log.debug(`Loaded cached resolution result for doi:${normalizedDoi}`);
     return true;
   }
@@ -174,8 +167,8 @@ export async function doiOrgResolves(session: ISession, doiString: string): Prom
     return false;
   }
   session.log.debug(toc(`Resolved doi existence for doi:${normalizedDoi} in %s`));
-  session.log.debug(`Saving resolution result to cache ${cachePath}`);
-  fs.writeFileSync(cachePath, 'ok');
+  session.log.debug(`Saving resolution result to cache ${filename}`);
+  writeToCache(session, filename, 'ok');
   return true;
 }
 

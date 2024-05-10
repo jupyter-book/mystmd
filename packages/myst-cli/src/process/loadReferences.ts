@@ -1,29 +1,26 @@
 import fs from 'node:fs';
-import { join } from 'node:path';
 import type { Response } from 'node-fetch';
-import fetch from 'node-fetch';
 import { Inventory } from 'intersphinx';
-import { tic, isUrl, computeHash, writeFileToFolder } from 'myst-cli-utils';
+import { tic, isUrl, computeHash } from 'myst-cli-utils';
 import { RuleId, fileError } from 'myst-common';
 import type { ExternalReference } from 'myst-frontmatter';
 import type { MystXRefs, ResolvedExternalReference } from 'myst-transforms';
 import { VFile } from 'vfile';
-import { castSession } from '../session/cache.js';
+import {
+  cachePath,
+  castSession,
+  checkCache,
+  loadFromCache,
+  writeToCache,
+} from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
+import { XREF_MAX_AGE } from '../transforms/crossReferences.js';
 
-function inventoryCacheFile(
-  session: ISession,
-  refKind: 'intersphinx' | 'myst',
-  id?: string,
-  path?: string,
-) {
+function inventoryCacheFilename(refKind: 'intersphinx' | 'myst', id: string, path: string) {
   const hashcontent = `${id}${path}`;
   const ext = refKind === 'intersphinx' ? 'inv' : 'json';
-  const filename = `${refKind}-${computeHash(hashcontent)}.${ext}`;
-  const cacheFolder = join(session.buildPath(), 'cache');
-  if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder, { recursive: true });
-  return join(cacheFolder, filename);
+  return `${refKind}-refs-${computeHash(hashcontent)}.${ext}`;
 }
 
 async function preloadReference(session: ISession, key: string, reference: ExternalReference) {
@@ -32,24 +29,30 @@ async function preloadReference(session: ISession, key: string, reference: Exter
     url: reference.url,
     kind: reference.kind,
   };
-  const mystCachePath = inventoryCacheFile(session, 'myst', key, reference.url);
-  const intersphinxCachePath = inventoryCacheFile(session, 'intersphinx', key, reference.url);
-  if ((!ref.kind || ref.kind === 'myst') && fs.existsSync(mystCachePath)) {
-    const toc = tic();
-    const xrefs: MystXRefs = JSON.parse(fs.readFileSync(mystCachePath).toString());
-    session.log.debug(`Loading cached inventory file for ${reference.url}: ${mystCachePath}`);
+  const toc = tic();
+  const mystXRefFilename = inventoryCacheFilename('myst', key, reference.url);
+  const mystXRefData = loadFromCache(session, mystXRefFilename, {
+    maxAge: XREF_MAX_AGE,
+  });
+  const intersphinxFilename = inventoryCacheFilename('intersphinx', key, reference.url);
+  if ((!ref.kind || ref.kind === 'myst') && !!mystXRefData) {
+    session.log.debug(`Loading cached inventory file for ${reference.url}: ${mystXRefFilename}`);
+    const xrefs = JSON.parse(mystXRefData);
     session.log.info(
       toc(`🏫 Read ${xrefs.references.length} references links for "${key}" in %s.`),
     );
     ref.kind = 'myst';
     ref.value = xrefs;
-  } else if ((!ref.kind || ref.kind === 'intersphinx') && fs.existsSync(intersphinxCachePath)) {
+  } else if (
+    (!ref.kind || ref.kind === 'intersphinx') &&
+    checkCache(session, intersphinxFilename, { maxAge: XREF_MAX_AGE })
+  ) {
     const inventory = new Inventory({ id: key, path: reference.url });
-    const localInventory = new Inventory({ id: key, path: intersphinxCachePath });
-    session.log.debug(
-      `Loading cached inventory file for ${reference.url}: ${intersphinxCachePath}`,
-    );
-    const toc = tic();
+    const localInventory = new Inventory({
+      id: key,
+      path: cachePath(session, intersphinxFilename),
+    });
+    session.log.debug(`Loading cached inventory file for ${reference.url}: ${intersphinxFilename}`);
     await localInventory.load();
     inventory.project = localInventory.project;
     inventory.version = localInventory.version;
@@ -79,17 +82,20 @@ async function loadReference(
     const toc = tic();
     let mystXRefsResp: Response | undefined;
     try {
-      mystXRefsResp = await fetch(mystXRefsUrl);
+      mystXRefsResp = await session.fetch(mystXRefsUrl);
     } catch {
       session.log.debug(`Request to ${mystXRefsUrl} failed`);
     }
     if (mystXRefsResp?.status === 200) {
       reference.kind = 'myst';
       const mystXRefs = (await mystXRefsResp?.json()) as MystXRefs;
+      session.log.debug(`Saving remote myst xref file to cache: ${reference.url}`);
+      writeToCache(
+        session,
+        inventoryCacheFilename('myst', reference.key, reference.url),
+        JSON.stringify(mystXRefs),
+      );
       reference.value = mystXRefs;
-      const cachePath = inventoryCacheFile(session, 'myst', reference.key, reference.url);
-      session.log.debug(`Saving remote myst xref file to cache ${reference.url}: ${cachePath}`);
-      writeFileToFolder(cachePath, JSON.stringify(mystXRefs));
       session.log.info(
         toc(`🏫 Read ${mystXRefs.references.length} references for "${reference.key}" in %s.`),
       );
@@ -120,10 +126,15 @@ async function loadReference(
       }
       return;
     }
-    const cachePath = inventoryCacheFile(session, 'intersphinx', inventory.id, inventory.path);
-    if (!fs.existsSync(cachePath) && isUrl(inventory.path)) {
-      session.log.debug(`Saving remote inventory file to cache ${inventory.path}: ${cachePath}`);
-      inventory.write(cachePath);
+    if (inventory.id && inventory.path && isUrl(inventory.path)) {
+      const intersphinxPath = cachePath(
+        session,
+        inventoryCacheFilename('intersphinx', inventory.id, inventory.path),
+      );
+      if (!fs.existsSync(intersphinxPath)) {
+        session.log.debug(`Saving remote inventory file to cache: ${inventory.path}`);
+        inventory.write(intersphinxPath);
+      }
     }
     session.log.info(
       toc(`🏫 Read ${inventory.numEntries} references for "${inventory.id}" in %s.`),

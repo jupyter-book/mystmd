@@ -6,7 +6,7 @@ import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
 import type { LinkTransformer, Link } from 'myst-transforms';
 import { RuleId, fileError, normalizeLabel, plural } from 'myst-common';
-import { computeHash, hashAndCopyStaticFile, tic, writeFileToFolder } from 'myst-cli-utils';
+import { computeHash, hashAndCopyStaticFile, tic } from 'myst-cli-utils';
 import type { CrossReference } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
@@ -15,6 +15,9 @@ import { links } from '../store/reducers.js';
 import type { ExternalLinkResult } from '../store/types.js';
 import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { loadFromCache, writeToCache } from '../session/cache.js';
+
+const LINK_MAX_AGE = 30; // in days
 
 // These limit access from command line tools by default
 const skippedDomains = [
@@ -25,21 +28,8 @@ const skippedDomains = [
   'en.wikipedia.org',
 ];
 
-function checkLinkCacheFile(session: ISession, url: string) {
-  const filename = `checkLink-${computeHash(url)}.json`;
-  return path.join(session.buildPath(), 'cache', filename);
-}
-
-function writeLinkCache(session: ISession, link: ExternalLinkResult) {
-  session.log.debug(`Writing successful link check to cache file for "${link.url}"`);
-  writeFileToFolder(checkLinkCacheFile(session, link.url), JSON.stringify(link, null, 2));
-}
-
-function loadLinkCache(session: ISession, url: string) {
-  const cacheFile = checkLinkCacheFile(session, url);
-  if (!fs.existsSync(cacheFile)) return;
-  session.log.debug(`Using cached success for "${url}"`);
-  return JSON.parse(fs.readFileSync(cacheFile).toString());
+function checkLinkCacheFilename(url: string) {
+  return `checkLink-${computeHash(url)}.json`;
 }
 
 export async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
@@ -63,13 +53,16 @@ export async function checkLink(session: ISession, url: string): Promise<Externa
       return link;
     }
     session.log.debug(`Checking that "${url}" exists`);
-    const linkCache = loadLinkCache(session, url);
-    const resp = linkCache ?? (await session.fetch(url, { headers: EXT_REQUEST_HEADERS }));
+    const filename = checkLinkCacheFilename(url);
+    const linkCache = loadFromCache(session, filename, { maxAge: LINK_MAX_AGE });
+    const resp = linkCache
+      ? JSON.parse(linkCache)
+      : await session.fetch(url, { headers: EXT_REQUEST_HEADERS });
     link.ok = resp.ok;
     link.status = resp.status;
     link.statusText = resp.statusText;
     if (link.ok && !linkCache) {
-      writeLinkCache(session, link);
+      writeToCache(session, filename, JSON.stringify(link));
     }
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
