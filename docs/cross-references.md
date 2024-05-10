@@ -69,17 +69,11 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
 
 ### Reference using a shorthand `@` syntax
 
-:::{warning} Experimental
-Referencing short-hand with `@` is experimental and its behavior may change.
-:::
-
 You can reference targets with a short-hand using the `@` symbol, like so:
 
 ```
 @target
 ```
-
-Note that there is no `#` ahead of the target, like there is with markdown link references.
 
 This cuts down on the amount of markdown that is needed to create the reference.
 For example, the following text:
@@ -92,18 +86,20 @@ Results in:
 
 > Other ways to reference are @link-references and the @ref-role role.
 
-### Reference using MyST roles
+:::{note} This is a short-hand for several types of references
+The `@` short-hand syntax for referencing maps on to many different types of [referencing roles](#reference:roles), depending on the target that you are referencing.
 
-:::{warning} Coming from Sphinx?
-The following sections are to support users who are coming from using Sphinx as a parsing engine, which has many different ways to reference and label content.
-
-These ways of referencing content are not recommended, as they have certain drawbacks and are not consistent.
-
-See [{name}](#link-references) for ways to use markdown link, `[](#target)` syntax to reference your content.
+For example, if `@target` is a bibliography entry, it will map onto the {myst:role}`{cite} <cite>` role.
+If it is an image or a section header, it will map on to the {myst:role}`{ref} <ref>` role.
 :::
 
+(reference:roles)=
+### Reference using MyST roles
+
+Roles are a more explicit way of defining references that provide more configurability at the cost of requiring more complexity to write.
 There several roles that define various kinds of references in MyST.
 In many cases, the short-hand syntax described above are aliases for these roles.
+Below we describe the most commonly-used ones.
 
 (ref-role)=
 
@@ -130,6 +126,18 @@ doc
 
 download
 : The `` {download}`./my-file.zip` `` syntax creates a download to a document, which is equivalent to `[](./my-file.zip)`.
+
+:::{tip} When to use roles vs. short-hand
+
+Short-hand syntax is provided for a quick and clean way to reference content with MyST if you are happy with default behavior.
+However, some roles provide additional configurability that allow you to change their behavior.
+
+Thus, a good rule of thumb is the following:
+
+1. If you're happy with the default behavior of references, use `@target` syntax.
+2. If you only wish to modify the displayed text, use `[My text](#target)` syntax.
+3. If you wish to use more complex configurability, use the role syntax (`{ref}`, `{cite}`, etc).
+:::
 
 ## Targets and labels for referencing
 
