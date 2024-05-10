@@ -95,13 +95,28 @@ export async function embedTransform(
               targetXRef.dataUrl = referenceXRef.dataUrl;
             }
           });
+          (selectAll('link', targetNode) as Link[]).forEach((targetLink) => {
+            if (!targetLink.internal) return;
+            targetLink.internal = false;
+            targetLink.url = `${referenceXRef.remoteBaseUrl}${targetLink.url}`;
+            if (targetLink.dataUrl) {
+              targetLink.dataUrl = `${referenceXRef.remoteBaseUrl}${targetLink.dataUrl}`;
+            }
+          });
+          (selectAll('[source]', targetNode) as { source?: Dependency }[]).forEach((target) => {
+            if (!target.source) return;
+            target.source.remoteBaseUrl = referenceXRef.remoteBaseUrl;
+          });
           mutateEmbedNode(node, targetNode);
           // Remote dependency, not added as local dependency
           const source: Dependency = {
-            url: `${referenceXRef.remoteBaseUrl ?? ''}${referenceXRef.url}`,
+            url: referenceXRef.url,
+            remoteBaseUrl: referenceXRef.remoteBaseUrl,
             label,
           };
           if (data.kind) source.kind = data.kind;
+          if (data.slug) source.slug = data.slug;
+          if (data.location) source.location = data.location;
           if (data.frontmatter?.title) source.title = data.frontmatter.title;
           if (data.frontmatter?.short_title) source.short_title = data.frontmatter.short_title;
           node.source = source;

@@ -183,6 +183,7 @@ export type Dependency = {
   short_title?: string;
   label?: string;
   location?: string;
+  remoteBaseUrl?: string;
 };
 
 export type Embed = {
@@ -267,4 +268,5 @@ export type CrossReference = SpecCrossReference & {
 export type Link = SpecLink & {
   urlSource?: string;
   dataUrl?: string;
+  internal?: boolean;
 };
