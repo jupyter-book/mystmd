@@ -2,6 +2,7 @@ export * from './citations.js';
 export * from './code.js';
 export * from './crossReferences.js';
 export * from './dois.js';
+export * from './ror.js';
 export * from './embed.js';
 export * from './images.js';
 export * from './include.js';

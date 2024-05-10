@@ -22,6 +22,7 @@ import {
   WikiTransformer,
   GithubTransformer,
   RRIDTransformer,
+  RORTransformer,
   DOITransformer,
   joinGatesPlugin,
   glossaryPlugin,
@@ -48,6 +49,7 @@ import {
   transformCitations,
   transformImageFormats,
   transformLinkedDOIs,
+  transformLinkedRORs,
   transformOutputsToCache,
   transformRenderInlineExpressions,
   transformThumbnail,
@@ -198,12 +200,14 @@ export async function transformMdast(
     new WikiTransformer(),
     new GithubTransformer(),
     new RRIDTransformer(),
+    new RORTransformer(),
     new DOITransformer(), // This also is picked up in the next transform
     new MystTransformer(Object.values(cache.$externalReferences)),
     new SphinxTransformer(Object.values(cache.$externalReferences)),
   ];
   linksTransform(mdast, vfile, { transformers, selector: LINKS_SELECTOR });
   await transformMystXRefs(session, vfile, mdast, frontmatter);
+  await transformLinkedRORs(session, vfile, mdast, file);
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(
     session,
