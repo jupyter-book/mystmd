@@ -1,9 +1,9 @@
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { RuleId, fileWarn, plural } from 'myst-common';
+import { RuleId, fileWarn, plural, selectMdastNodes } from 'myst-common';
 import { computeHash, tic } from 'myst-cli-utils';
-import { addChildrenFromTargetNode, isTargetIdentifierNode } from 'myst-transforms';
+import { addChildrenFromTargetNode } from 'myst-transforms';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { CrossReference, Link } from 'myst-spec-ext';
 import type { ISession } from '../session/types.js';

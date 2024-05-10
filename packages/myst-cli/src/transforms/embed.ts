@@ -4,12 +4,17 @@ import { selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
 import {
   MystTransformer,
-  isTargetIdentifierNode,
   type IReferenceStateResolver,
   type MultiPageReferenceResolver,
 } from 'myst-transforms';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { copyNode, liftChildren, normalizeLabel } from 'myst-common';
+import {
+  copyNode,
+  liftChildren,
+  normalizeLabel,
+  isTargetIdentifierNode,
+  selectMdastNodes,
+} from 'myst-common';
 import type { Dependency, Embed, Container, CrossReference, Link } from 'myst-spec-ext';
 import { selectFile } from '../process/file.js';
 import type { ISession } from '../session/types.js';

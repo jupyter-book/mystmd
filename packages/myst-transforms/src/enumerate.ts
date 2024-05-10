@@ -16,6 +16,7 @@ import {
   liftChildren,
   TargetKind,
   RuleId,
+  isTargetIdentifierNode,
 } from 'myst-common';
 import type { LinkTransformer } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
@@ -289,22 +290,6 @@ export function initializeTargetCounts(
     }
   });
   return targetCounts;
-}
-
-/**
- * Determine if node with `identifier` should be considered a target
- *
- * TODO: `identifier` on these non-target should be updated to `target`
- * Doing so will make this function obsolete
- *
- * This function only returns false if node `type` equals one of:
- * crossReferences, citations, footnoteDefinition, and footnoteReference.
- *
- * It not actually check if the node has `identifier`.
- */
-export function isTargetIdentifierNode(node: { type: string }) {
-  const nonTargetTypes = ['crossReference', 'cite', 'footnoteDefinition', 'footnoteReference'];
-  return !nonTargetTypes.includes(node.type);
 }
 
 export interface IReferenceStateResolver {
