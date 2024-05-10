@@ -1,5 +1,35 @@
 # myst-cli
 
+## 1.2.2
+
+### Patch Changes
+
+- 61c7291: Consume improved node selection utils for embed content
+- 61c7291: Add caching to external myst data loading
+- 61c7291: Support cite-style syntax for myst xrefs
+- 61c7291: Support file#id style labels on embed node
+- 4661c479: Support for bioRxiv URLs
+- 61c7291: Links with file and target resolve as cross-references
+- 61c7291: Update embed transform to allow myst project cross-references
+- 61c7291: Move target node selection utils to myst-common
+- 1e24a9f7: Add ROR link resolvers
+- 61c7291: Centralize caching logic and add max-age
+- 99adfdcd: Change priority of mp4 to prefer video over images if both are available
+- Updated dependencies [61c7291]
+- Updated dependencies [da9ca5b2]
+- Updated dependencies [9bd9ec83]
+- Updated dependencies [61c7291]
+- Updated dependencies [7c6f45c4]
+- Updated dependencies [61c7291]
+- Updated dependencies [61c7291]
+- Updated dependencies [61c7291]
+- Updated dependencies [1e24a9f7]
+  - myst-spec-ext@1.4.1
+  - myst-transforms@1.3.12
+  - myst-common@1.4.1
+  - myst-config@1.4.1
+  - myst-frontmatter@1.4.1
+
 ## 1.2.1
 
 ### Patch Changes
