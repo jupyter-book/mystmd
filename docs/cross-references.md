@@ -90,8 +90,8 @@ Results in:
 :::{note} This is a short-hand for several types of references
 The `@` short-hand syntax for referencing maps on to many different types of [referencing roles](#reference:roles), depending on the target that you are referencing.
 
-For example, if `@target` is a bibliography entry, it will map onto the {myst:role}`{cite} <cite>` role.
-If it is an image or a section header, it will map on to the {myst:role}`{ref} <ref>` role.
+For example, if `@target` is a bibliography entry, it will map onto the {myst:role}`cite` role.
+If it is an image or a section header, it will map on to the {myst:role}`ref` role.
 :::
 
 (reference:roles)=
