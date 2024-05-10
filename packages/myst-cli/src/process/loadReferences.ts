@@ -16,11 +16,12 @@ import {
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { XREF_MAX_AGE } from '../transforms/crossReferences.js';
+import { dirname } from 'node:path';
 
 function inventoryCacheFilename(refKind: 'intersphinx' | 'myst', id: string, path: string) {
   const hashcontent = `${id}${path}`;
   const ext = refKind === 'intersphinx' ? 'inv' : 'json';
-  return `${refKind}-refs-${computeHash(hashcontent)}.${ext}`;
+  return `xrefs-${refKind}-${computeHash(hashcontent)}.${ext}`;
 }
 
 async function preloadReference(session: ISession, key: string, reference: ExternalReference) {
@@ -39,7 +40,7 @@ async function preloadReference(session: ISession, key: string, reference: Exter
     session.log.debug(`Loading cached inventory file for ${reference.url}: ${mystXRefFilename}`);
     const xrefs = JSON.parse(mystXRefData);
     session.log.info(
-      toc(`🏫 Read ${xrefs.references.length} references links for "${key}" in %s.`),
+      toc(`🏫 Read ${xrefs.references.length} myst references for "${key}" in %s (cached).`),
     );
     ref.kind = 'myst';
     ref.value = xrefs;
@@ -58,7 +59,9 @@ async function preloadReference(session: ISession, key: string, reference: Exter
     inventory.version = localInventory.version;
     inventory.data = localInventory.data;
     inventory._loaded = true;
-    session.log.info(toc(`🏫 Read ${inventory.numEntries} references links for "${key}" in %s.`));
+    session.log.info(
+      toc(`🏫 Read ${inventory.numEntries} intersphinx references for "${key}" in %s (cached).`),
+    );
     ref.kind = 'intersphinx';
     ref.value = inventory;
   }
@@ -97,7 +100,7 @@ async function loadReference(
       );
       reference.value = mystXRefs;
       session.log.info(
-        toc(`🏫 Read ${mystXRefs.references.length} references for "${reference.key}" in %s.`),
+        toc(`🏫 Read ${mystXRefs.references.length} myst references for "${reference.key}" in %s.`),
       );
       return reference;
     } else if (reference.kind === 'myst') {
@@ -133,11 +136,12 @@ async function loadReference(
       );
       if (!fs.existsSync(intersphinxPath)) {
         session.log.debug(`Saving remote inventory file to cache: ${inventory.path}`);
+        fs.mkdirSync(dirname(intersphinxPath), { recursive: true });
         inventory.write(intersphinxPath);
       }
     }
     session.log.info(
-      toc(`🏫 Read ${inventory.numEntries} references for "${inventory.id}" in %s.`),
+      toc(`🏫 Read ${inventory.numEntries} intersphinx references for "${inventory.id}" in %s.`),
     );
     return reference;
   }

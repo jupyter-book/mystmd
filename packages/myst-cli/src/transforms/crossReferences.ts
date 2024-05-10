@@ -10,7 +10,7 @@ import type { ISession } from '../session/types.js';
 import { loadFromCache, writeToCache } from '../session/cache.js';
 import type { RendererData } from './types.js';
 
-export const XREF_MAX_AGE = 0.001; // in days
+export const XREF_MAX_AGE = 1; // in days
 
 function mystDataFilename(dataUrl: string) {
   return `myst-${computeHash(dataUrl)}.json`;
