@@ -142,8 +142,7 @@ export async function transformMdast(
   log.debug(`Processing "${file}"`);
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
-  // Use structuredClone in future (available in node 17)
-  const mdast = JSON.parse(JSON.stringify(mdastPre)) as GenericParent;
+  const mdast = structuredClone(mdastPre);
   const frontmatter = processPageFrontmatter(
     session,
     preFrontmatter ?? {},
