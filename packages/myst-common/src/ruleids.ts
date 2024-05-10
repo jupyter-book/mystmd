@@ -65,6 +65,7 @@ export enum RuleId {
   mystLinkValid = 'myst-link-valid',
   sphinxLinkValid = 'sphinx-link-valid',
   rridLinkValid = 'rrid-link-valid',
+  rorLinkValid = 'ror-link-valid',
   wikipediaLinkValid = 'wikipedia-link-valid',
   doiLinkValid = 'doi-link-valid',
   linkResolves = 'link-resolves',

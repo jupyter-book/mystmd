@@ -299,3 +299,14 @@ Click on one of the RRIDs below to see additional metadata!
   - <rrid:SCR_014212>
 ```
 ````
+
+## Research Organization Registry
+
+The Research Organization Registry (ROR) is a global, community-led registry of open persistent identifiers for research organizations. You can add these to your MyST frontmatter or use the links directly in your documents.
+
+To create an ROR link, use the `ror:` protocol followed by the identifier, for example:
+
+- `[](ror:03rmrcq20)` becomes [](ror:03rmrcq20)
+- `<ror:03rmrcq20>` becomes <ror:03rmrcq20>
+
+You may also use a URL similar to `https://ror.org/03rmrcq20`. To find your organization use the search provided at [ror.org](https://ror.org)

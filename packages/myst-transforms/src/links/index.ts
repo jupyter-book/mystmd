@@ -3,6 +3,7 @@ export { MystTransformer } from './myst.js';
 export { SphinxTransformer } from './sphinx.js';
 export { WikiTransformer } from './wiki.js';
 export { RRIDTransformer } from './rrid.js';
+export { RORTransformer } from './ror.js';
 export { DOITransformer } from './doi.js';
 export { GithubTransformer } from './github.js';
 export type {
