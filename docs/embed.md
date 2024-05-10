@@ -128,7 +128,7 @@ You can then refer to content in these sites in two ways:
 2. The {myst:directive}`Embed directive <embed>`:
 
    ```md
-   :::{embed} xref:spec#admonition`
+   :::{embed} xref:spec#admonition
    :::
    ```
 
