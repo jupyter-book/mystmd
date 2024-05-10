@@ -1,5 +1,25 @@
 # myst-transforms
 
+## 1.3.12
+
+### Patch Changes
+
+- da9ca5b2: Add remote base URL for the external links to help with recursion!
+- 9bd9ec83: Replace xref text when using angle brackets
+- 61c7291: Support cite-style syntax for myst xrefs
+- 7c6f45c4: Enable existing `node.data` to flow through transforms, allowing upstream user data to be preserved and available in the AST.
+- 61c7291: Links with file and target resolve as cross-references
+- 61c7291: Update embed transform to allow myst project cross-references
+- 61c7291: Move target node selection utils to myst-common
+- 1e24a9f7: Add ROR link resolvers
+- Updated dependencies [61c7291]
+- Updated dependencies [da9ca5b2]
+- Updated dependencies [61c7291]
+- Updated dependencies [1e24a9f7]
+  - myst-spec-ext@1.4.1
+  - myst-common@1.4.1
+  - myst-frontmatter@1.4.1
+
 ## 1.3.11
 
 ### Patch Changes

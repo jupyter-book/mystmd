@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.4.1
+
+### Patch Changes
+
+- 61c7291: Move target node selection utils to myst-common
+- 1e24a9f7: Add ROR link resolvers
+  - myst-frontmatter@1.4.1
+
 ## 1.4.0
 
 ### Minor Changes

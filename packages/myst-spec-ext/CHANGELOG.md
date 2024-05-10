@@ -1,5 +1,12 @@
 # myst-spec-ext
 
+## 1.4.1
+
+### Patch Changes
+
+- 61c7291: Add Link to myst-spec-ext, update crossReference
+- da9ca5b2: Add remote base URL for the external links to help with recursion!
+
 ## 1.4.0
 
 ### Patch Changes
