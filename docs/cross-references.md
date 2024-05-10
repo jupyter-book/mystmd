@@ -71,7 +71,7 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
 
 You can reference targets with a short-hand using the `@` symbol, like so:
 
-```
+```markdown
 @target
 ```
 
