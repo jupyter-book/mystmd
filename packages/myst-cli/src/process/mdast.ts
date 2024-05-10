@@ -23,6 +23,7 @@ import {
   WikiTransformer,
   GithubTransformer,
   RRIDTransformer,
+  RORTransformer,
   DOITransformer,
   joinGatesPlugin,
   glossaryPlugin,
@@ -49,6 +50,7 @@ import {
   transformCitations,
   transformImageFormats,
   transformLinkedDOIs,
+  transformLinkedRORs,
   transformOutputsToCache,
   transformRenderInlineExpressions,
   transformThumbnail,
@@ -299,12 +301,14 @@ export async function postProcessMdast(
     new WikiTransformer(),
     new GithubTransformer(),
     new RRIDTransformer(),
+    new RORTransformer(),
     new DOITransformer(), // This also is picked up in the next transform
     new MystTransformer(Object.values(cache.$externalReferences)),
     new SphinxTransformer(Object.values(cache.$externalReferences)),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
   resolveLinksAndCitationsTransform(mdast, { state, transformers });
+  await transformLinkedRORs(session, vfile, mdast, file);
   linksTransform(mdast, state.vfile as VFile, {
     transformers,
     selector: LINKS_SELECTOR,

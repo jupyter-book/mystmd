@@ -12,6 +12,7 @@ import {
   WikiTransformer,
   GithubTransformer,
   RRIDTransformer,
+  RORTransformer,
   DOITransformer,
   MystTransformer,
 } from 'myst-transforms';
@@ -23,6 +24,7 @@ const transformers = [
   new WikiTransformer(),
   new GithubTransformer(),
   new RRIDTransformer(),
+  new RORTransformer(),
   new DOITransformer(),
   new MystTransformer(intersphinx),
 ];
@@ -37,6 +39,9 @@ linksTransform(mdast, vfile, { transformers });
 
 `RRIDTransformer`
 : The RRID transformer picks up on RRIDs and allows these to be previewed.
+
+`RORTransformer`
+: The ROR transformer picks up on RORs and allows these to be previewed.
 
 `DOITransformer`
 : The DOI transformer can validate DOIs (using `doi-utils`) and provides interactive previews of citation information.
