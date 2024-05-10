@@ -68,7 +68,7 @@ You can also set the start number using the {myst:directive}`code.lineno-start` 
 ```{tip} Docutils and Sphinx Compatibility
 :class: dropdown
 
-For full compatibility with Sphinx we suggest using `{code-block}` directive, which is an alias of the {myst:directive}`code` directive. The MyST implementation supports both the Sphinx [`{code-block} directive`](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) as well as the `docutils` [{code} directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#code) implementation, which only supports the `number-lines` option.
+For full compatibility with Sphinx we suggest using {myst:directive}`code-block` directive, which is an alias of the {myst:directive}`code` directive. The MyST implementation supports both the Sphinx [`{code-block} directive`](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) as well as the `docutils` [{code} directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#code) implementation, which only supports the `number-lines` option.
 
 You can use either `code` or `code-block` directive documented above or even a normal markdown code block.
 All implementations in MyST are resolved to the same `code` type in the abstract syntax tree.
@@ -112,7 +112,7 @@ creates a snippet that has matching line numbers, and starts at a line including
 ```
 
 :::{important} Paths are Relative
-The {myst:directive}`argument <include.arg>` of a `{literalinclude}` directive is the file path, which is relative to the file from which it was referenced.
+The {myst:directive}`argument <include.arg>` of a {myst:directive}`literalinclude` directive is the file path, which is relative to the file from which it was referenced.
 :::
 
 In {myst:directive}`include.literal` mode, the include directive also accepts all of the options from the `code-block` (e.g. {myst:directive}`include.linenos`).

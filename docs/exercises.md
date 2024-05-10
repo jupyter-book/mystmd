@@ -14,7 +14,7 @@ The implementation and documentation for exercises and solutions is based on [Sp
 
 Changes to the original extension include being able to click on the exercise label (e.g. "Exercise 1"), and having a link to that exercise anchor. We have also updated the styles from both Sphinx and JupyterBook to be more distinct from admonitions.
 
-You can also reference exercises with any cross-reference syntax (including the `{ref}` and `{numref}` roles). We recommend the markdown link syntax.
+You can also reference exercises with any cross-reference syntax (including the {myst:role}`ref` and {myst:role}`numref` roles). We recommend the markdown link syntax.
 :::
 
 ## Exercise Directive
@@ -57,7 +57,7 @@ The following options for exercise and solution directives are supported:
 
 - `label`: text
 
-  A unique identifier for your exercise that you can use to reference it with a Markdown link or `{ref}` and `{numref}` roles. Cannot contain spaces or special characters.
+  A unique identifier for your exercise that you can use to reference it with a Markdown link or {myst:role}`ref` and {myst:role}`numref` roles. Cannot contain spaces or special characters.
 
 - `class`: text
 
@@ -141,9 +141,9 @@ You can refer to an exercise using the standard link syntax:
 :::{tip} Compatibility with Sphinx Exercise
 :class: dropdown
 
-You can also refer to an exercise using the `{ref}` role like `` {ref}`my-exercise` ``, which will display the title of the exercise directive. In the event that directive does not have a title, the title will be the default "Exercise" or "Exercise {number}" like so: {ref}`my-exercise`.
+You can also refer to an exercise using the {myst:role}`ref` role like `` {ref}`my-exercise` ``, which will display the title of the exercise directive. In the event that directive does not have a title, the title will be the default "Exercise" or "Exercise {number}" like so: {ref}`my-exercise`.
 
-Enumerable directives can also be referenced through the `numref` role like `` {numref}`my-exercise` ``, which will display the number of the exercise directive. Referencing the above directive will display {numref}`my-exercise`. In this case it displays the same result as the `{ref}` role as `exerise` notes are (by default) enumerated.
+Enumerable directives can also be referenced through the {myst:role}`numref` role like `` {numref}`my-exercise` ``, which will display the number of the exercise directive. Referencing the above directive will display {numref}`my-exercise`. In this case it displays the same result as the {myst:role}`ref` role as `exercise` notes are (by default) enumerated.
 
 Furthermore, `numref` can take in three additional placeholders for more customized titles:
 
@@ -160,7 +160,7 @@ For example,\
 
 ### Referencing Solutions
 
-You can refer to a solution directly as well using a Markdown link or using the `{ref}` role like: `` {ref}`my-solution` `` the output of which depends on the attributes of the linked directive. If the linked directive is enumerable, the role will replace the solution reference with the linked directive type and its appropriate number like so: {ref}`my-solution`.
+You can refer to a solution directly as well using a Markdown link or using the {myst:role}`ref` role like: `` {ref}`my-solution` `` the output of which depends on the attributes of the linked directive. If the linked directive is enumerable, the role will replace the solution reference with the linked directive type and its appropriate number like so: {ref}`my-solution`.
 
 In the event that the directive being referenced is unenumerable, the reference will display its title: {ref}`nfactorial-solution`.
 

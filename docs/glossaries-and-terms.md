@@ -3,7 +3,7 @@ title: Glossaries, Terms and Abbreviations
 short_title: Glossaries & Terms
 ---
 
-To add a glossary to your content, add the `{glossary}` directive with the content as [definition lists](#definition-lists).
+To add a glossary to your content, add the {myst:directive}`glossary` directive with the content as [definition lists](#definition-lists).
 
 ```{myst}
 :::{glossary}
@@ -36,7 +36,7 @@ A second term
 
 ## Referencing a Term
 
-To reference a term in a glossary use the `{term}` role:
+To reference a term in a glossary use the {myst:role}`term` role:
 
 - `` {term}`MyST` `` produces {term}`MyST`
 - `` {term}`MyST Markdown <MyST>` `` produces {term}`MyST Markdown <MyST>`

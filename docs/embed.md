@@ -27,9 +27,9 @@ Here's a cool figure.
 
 (docs:embed)=
 
-## The `{embed}` directive
+## The {myst:directive}`embed` directive
 
-The `{embed}` directive allows you to insert snippets of content at the time a page is rendered.
+The {myst:directive}`embed` directive allows you to insert snippets of content at the time a page is rendered.
 
 See {myst:directive}`the {embed} directive documentation <embed>` for details about all the arguments you can give to `{embed}`.
 
@@ -144,7 +144,7 @@ The following content is embedded from `![](xref:spec#admonition)`:
 
 (docs:include)=
 
-## The `{include}` directive
+## The {myst:directive}`include` directive
 
 If a portion of your content is in a separate file that is **not already included in your project** you can use the {myst:directive}`include` directive to parse and include that content.
 This directive is helpful for including content snippets, such as a table, equation, that you want to keep in a different file on disk, but present as if it were one document. In addition to Markdown, MyST will also parse `.ipynb`, `.tex`, and `.html`.

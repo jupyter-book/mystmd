@@ -46,7 +46,7 @@ See [](./typography.md) to learn in depth about all typographical elements. The 
 
 Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using a "fence" (either [back-ticks or colons](#example-fence)) and the name of the directive enclosed in braces (`{name}`).
 
-For example, try editing the following `{figure}` directive, you can center the figure with an `:align: center` option or change the `colons` for `backticks`.
+For example, try editing the following {myst:directive}`figure` directive, you can center the figure with an `:align: center` option or change the `colons` for `backticks`.
 
 ```{myst}
 

@@ -1,5 +1,5 @@
 ---
-title: Callouts
+title: Callouts & Admonitions
 description: Callout blocks or admonitions, like "notes" or "hints" are outlined or shaded areas of a document to bring attention to particular information.
 thumbnail: ./thumbnails/admonitions.png
 ---
@@ -13,20 +13,20 @@ Try changing `tip` to `warning`!
 :::
 ```
 
-In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like `{note}` or `{danger}`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon using the {myst:directive}`admonition.class` option. There are ten kinds[^docutils-admonitions] of admonitions available:
+In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon using the {myst:directive}`admonition.class` option. There are ten kinds[^docutils-admonitions] of admonitions available:
 
 ```{list-table} Named admonitions that can be used as directives
 :label: admonitions-list
-* - 🔵 `note`
-  - 🟠 `attention`
-* - 🔵 `important`
-  - 🟠 `caution`
-* - 🟢 `hint`
-  - 🟠 `warning`
-* - 🟢 `seealso`
-  - 🔴 `danger`
-* - 🟢 `tip`
-  - 🔴 `error`
+* - 🔵 {myst:directive}`note`
+  - 🟠 {myst:directive}`attention`
+* - 🔵 {myst:directive}`important`
+  - 🟠 {myst:directive}`caution`
+* - 🟢 {myst:directive}`hint`
+  - 🟠 {myst:directive}`warning`
+* - 🟢 {myst:directive}`seealso`
+  - 🔴 {myst:directive}`danger`
+* - 🟢 {myst:directive}`tip`
+  - 🔴 {myst:directive}`error`
 ```
 
 [^docutils-admonitions]: These admonitions are the same as those used in [docutils](https://docutils.sourceforge.io/docs/ref/rst/directives.html#specific-admonitions) and Sphinx.
@@ -134,7 +134,7 @@ GitHub markdown transforms blockquotes that start with a bold `Note` or text wit
 ::::{tip} Compatibility with Pandoc & Quarto
 :class: dropdown
 In Quarto/Pandoc markdown admonitions are styled with special classes like `{.callout-note}` or `{.callout-tip}`).
-If you are using JupyterBook or Sphinx documentation, use an `{admonition}` directive with the specific class, for example:
+If you are using JupyterBook or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 
 ```{myst}
 ::: {.callout-tip}
@@ -149,7 +149,7 @@ This is an example of a callout with a caption.
 :class: dropdown
 In Sphinx, all named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**.
 If you place content on the first line it will instead be prepended to the admonition body.
-If you are using JupyterBook or Sphinx documentation, use an `{admonition}` directive with the specific class, for example:
+If you are using JupyterBook or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 
 ```{myst}
 :::{admonition} The Title

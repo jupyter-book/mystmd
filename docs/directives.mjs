@@ -182,8 +182,12 @@ const mystDirectiveRole = {
     const identifier = opt
       ? `directive-${directive?.name ?? name}-${opt}`
       : `directive-${directive?.name ?? name}`;
+    var textToDisplay = modified?.trim() || name;
+    if (opt) {
+      textToDisplay = `${textToDisplay}.${opt}`;
+    }
     return [
-      u('crossReference', { identifier }, [u('inlineCode', modified?.trim() || opt || name)]),
+      u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)]),
     ];
   },
 };
@@ -206,8 +210,12 @@ const mystRoleRole = {
     const [name, opt] = label?.split('.') ?? [];
     const role = defaultRoles.find((d) => d.name === name || d.alias?.includes(name));
     const identifier = opt ? `role-${role?.name ?? name}-${opt}` : `role-${role?.name ?? name}`;
+    var textToDisplay = modified?.trim() || name;
+    if (opt) {
+      textToDisplay = `${textToDisplay}.${opt}`;
+    }
     return [
-      u('crossReference', { identifier }, [u('inlineCode', modified?.trim() || opt || name)]),
+      u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)]),
     ];
   },
 };
