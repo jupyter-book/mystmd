@@ -294,6 +294,7 @@ export async function postProcessMdast(
   const state = pageReferenceStates
     ? new MultiPageReferenceResolver(pageReferenceStates, file, vfile)
     : fileState;
+  const externalReferences = Object.values(cache.$externalReferences);
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
     ...(extraLinkTransformers || []),
@@ -302,8 +303,8 @@ export async function postProcessMdast(
     new RRIDTransformer(),
     new RORTransformer(),
     new DOITransformer(), // This also is picked up in the next transform
-    new MystTransformer(Object.values(cache.$externalReferences)),
-    new SphinxTransformer(Object.values(cache.$externalReferences)),
+    new MystTransformer(externalReferences),
+    new SphinxTransformer(externalReferences),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
   resolveLinksAndCitationsTransform(mdast, { state, transformers });
@@ -324,7 +325,7 @@ export async function postProcessMdast(
 
   // Ensure there are keys on every node after post processing
   keysTransform(mdast);
-  checkLinkTextTransform(mdast, vfile);
+  checkLinkTextTransform(mdast, externalReferences, vfile);
   logMessagesFromVFile(session, fileState.vfile);
   logMessagesFromVFile(session, vfile);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
