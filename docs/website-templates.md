@@ -68,10 +68,7 @@ from IPython.display import display, Markdown, HTML
 import pandas as pd
 
 # URL of the remote YAML file
-urls = ["https://github.com/executablebooks/myst-theme/raw/main/themes/book/template.yml",
-        "https://github.com/executablebooks/myst-theme/raw/main/themes/article/template.yml"
-       ]
-for url in urls:
+def display_options(url):
     # Send a GET request to download the YAML file
     response = requests.get(url)
     
@@ -80,10 +77,29 @@ for url in urls:
         # Parse the YAML content into a Python dictionary
         data = yaml.safe_load(response.text)
         df = pd.DataFrame(data["options"])
-
-        display(Markdown(f"{data['title']}"))
-        display(HTML(df[["id", "description", "type"]].to_html(index=False)))
-        
+        df = df.rename(columns={"id": "name"})
+        display(HTML(df[["name", "description", "type"]].to_html(index=False)))
     else:
         print(f"Failed to fetch YAML file: {response.status_code}")
 ```
+
+### Book theme
+
+
+```{code-cell} python
+:tags: remove-input
+url = "https://github.com/executablebooks/myst-theme/raw/main/themes/book/template.yml"
+display_options(url)
+```
+
+[Source file](https://github.com/executablebooks/myst-theme/raw/main/themes/book/template.yml)
+
+### Article theme
+
+```{code-cell} python
+:tags: remove-input
+url = "https://github.com/executablebooks/myst-theme/raw/main/themes/article/template.yml"
+display_options(url)
+```
+
+[Source file](https://github.com/executablebooks/myst-theme/raw/main/themes/article/template.yml)
