@@ -50,6 +50,7 @@ To delete the cache and manually re-load the references, run `myst clean --cache
 # MyST Cross Reference Examples
 
 ```{list-table}
+:label: tbl:syntax-xref
 :header-rows: 1
 * - MyST Syntax
   - Rendered
