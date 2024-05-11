@@ -45,6 +45,7 @@ The frontmatter that is displayed at the top of the article is the contents of y
 ## Site Options
 
 There are a number of common options between the site templates. These should be placed in the `site.options` in your `myst.yml`.
+For example:
 
 ```{code-block} yaml
 :filename: myst.yml
@@ -54,21 +55,32 @@ site:
     logo: my-site-logo.svg
 ```
 
-```{list-table} Site Options
-:header-rows: 1
-:label: tbl:site-options
-* - option
-  - description
-* - `favicon`
-  - a file - Local path to favicon image
-* - `logo`
-  - a file - Local path to logo image
-* - `logo_dark`
-  - a file - Local path to logo image to be used in dark mode only
-* - `logo_text`
-  - a string - Short text to display next to logo at the top of all pages
-* - `analytics_google`
-  - a string - Google analytics key, see [](./analytics.md)
-* - `analytics_plausible`
-  - a string - Plausible analytics key, see [](./analytics.md)
+Below is a table of options for each theme.
+
+```{code-cell} python
+:tags: remove-input
+import requests
+import yaml
+from IPython.display import display, Markdown, HTML
+import pandas as pd
+
+# URL of the remote YAML file
+urls = ["https://github.com/executablebooks/myst-theme/raw/main/themes/book/template.yml",
+        "https://github.com/executablebooks/myst-theme/raw/main/themes/article/template.yml"
+       ]
+for url in urls:
+    # Send a GET request to download the YAML file
+    response = requests.get(url)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the YAML content into a Python dictionary
+        data = yaml.safe_load(response.text)
+        df = pd.DataFrame(data["options"])
+
+        display(Markdown(f"{data['title']}"))
+        display(HTML(df[["id", "description", "type"]].to_html(index=False)))
+        
+    else:
+        print(f"Failed to fetch YAML file: {response.status_code}")
 ```
