@@ -57,6 +57,9 @@ site:
 
 Below is a table of options for each theme.
 
+% TODO: Parse the output as markdown when this is resolved:
+%       ref: https://github.com/executablebooks/mystmd/issues/1026
+% TODO: Figure out how to attach a label to each of these tables.
 ```{code-cell} python
 :tags: remove-input
 import requests
