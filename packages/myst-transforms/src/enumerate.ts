@@ -514,8 +514,8 @@ export function addChildrenFromTargetNode(
   }
   node.resolved = true;
   // The identifier may have changed in the lookup, but unlikely
-  node.identifier = targetNode.identifier;
-  node.html_id = targetNode.html_id;
+  node.identifier = targetNode.identifier ?? node.identifier;
+  node.html_id = targetNode.html_id ?? node.html_id;
 }
 
 function warnNodeTargetNotFound(node: ResolvableCrossReference, vfile?: VFile) {
