@@ -5,7 +5,3 @@ pandas
 matplotlib
 numpy
 vega_datasets
-
-# For parsing YAML
-pyyaml
-requests

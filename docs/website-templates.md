@@ -114,46 +114,14 @@ Below is a table of options for each theme bundled with MyST.
 % TODO: Parse the output as markdown when this is resolved:
 %       ref: https://github.com/executablebooks/mystmd/issues/1026
 % TODO: Figure out how to attach a label to each of these tables.
-```{code-cell} python
-:tags: remove-input
-import requests
-import yaml
-from IPython.display import display, Markdown, HTML
-import pandas as pd
 
-# URL of the remote YAML file
-def display_options(url):
-    # Send a GET request to download the YAML file
-    response = requests.get(url)
-    
-    # Check if the request was successful
-    if response.status_code == 200:
-        # Parse the YAML content into a Python dictionary
-        data = yaml.safe_load(response.text)
-        df = pd.DataFrame(data["options"])
-        df = df.rename(columns={"id": "name"})
-        display(HTML(df[["name", "description", "type"]].to_html(index=False)))
-    else:
-        print(f"Failed to fetch YAML file: {response.status_code}")
+
+```{myst:template} book-theme
+:heading-depth: 3
 ```
 
-### Book theme
 
-
-```{code-cell} python
-:tags: remove-input
-url = "https://github.com/executablebooks/myst-theme/raw/main/themes/book/template.yml"
-display_options(url)
+```{myst:template} article-theme
+:heading-depth: 3
 ```
 
-[Source file](https://github.com/executablebooks/myst-theme/raw/main/themes/book/template.yml)
-
-### Article theme
-
-```{code-cell} python
-:tags: remove-input
-url = "https://github.com/executablebooks/myst-theme/raw/main/themes/article/template.yml"
-display_options(url)
-```
-
-[Source file](https://github.com/executablebooks/myst-theme/raw/main/themes/article/template.yml)
