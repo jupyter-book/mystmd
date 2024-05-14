@@ -41,16 +41,6 @@ const mystTemplate = {
 
 let _promise = undefined;
 
-/**
- * @param {import('myst-common').OptionDefinition} option
- */
-function type2string(option) {
-  if (option.type === 'string' || option.type === String) return 'string';
-  if (option.type === 'number' || option.type === Number) return 'number';
-  if (option.type === 'boolean' || option.type === Boolean) return 'boolean';
-  if (option.type === 'parsed' || option.type === 'myst') return 'parsed';
-  return '';
-}
 
 function slugify(id) {
   return id.replaceAll('/', '-');
