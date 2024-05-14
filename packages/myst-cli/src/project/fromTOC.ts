@@ -16,7 +16,7 @@ import type {
   PageSlugs,
 } from './types.js';
 import type { TOC, Entry, ParentEntry } from 'myst-toc';
-import { isFile, isPattern, isURL } from 'myst-toc';
+import { isFile, isPattern } from 'myst-toc';
 import { globSync } from 'glob';
 import { isDirectory } from 'myst-cli-utils';
 
@@ -54,11 +54,9 @@ function pagesFromEntries(
           });
         }
       });
-    } else if (isURL(entry)) {
-      throw new Error('Not implemented!');
     } else {
       // Parent Entry
-      pages.push({ level, title: entry.title });
+      pages.push({ level, title: entry.title! });
     }
 
     // Do we have any children?

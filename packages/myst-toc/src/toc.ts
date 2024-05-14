@@ -3,8 +3,6 @@ import type {
   Entry,
   FileEntry,
   FileParentEntry,
-  URLEntry,
-  URLParentEntry,
   PatternEntry,
   ParentEntry,
   CommonEntry,
@@ -89,42 +87,6 @@ export function validateFileEntry(
   return output;
 }
 
-export function validateURLEntry(
-  entry: any,
-  opts: ValidationOptions,
-): URLEntry | URLParentEntry | undefined {
-  const intermediate = validateObjectKeys(
-    entry,
-    {
-      required: ['url'],
-      optional: [...COMMON_ENTRY_KEYS, 'children'],
-    },
-    opts,
-  );
-  if (!intermediate) {
-    return undefined;
-  }
-
-  const url = validateString(intermediate.url, incrementOptions('url', opts));
-  if (!url) {
-    return undefined;
-  }
-
-  const commonEntry = validateCommonEntry(intermediate, opts);
-
-  let output: URLEntry | URLParentEntry = { url, ...commonEntry };
-  if (defined(entry.children)) {
-    const children = validateList(
-      intermediate.children,
-      incrementOptions('children', opts),
-      (item, ind) => validateEntry(item, incrementOptions(`children.${ind}`, opts)),
-    );
-    output = { children, ...output };
-  }
-
-  return output;
-}
-
 export function validatePatternEntry(
   entry: any,
   opts: ValidationOptions,
@@ -194,14 +156,12 @@ export function validateEntry(entry: any, opts: ValidationOptions): Entry | unde
   }
   if (defined(intermediate.file)) {
     return validateFileEntry(intermediate, opts);
-  } else if (defined(intermediate.url)) {
-    return validateURLEntry(intermediate, opts);
   } else if (defined(intermediate.pattern)) {
     return validatePatternEntry(intermediate, opts);
   } else if (defined(intermediate.title)) {
     return validateParentEntry(intermediate, opts);
   } else {
-    return validationError("expected an entry with 'file', 'url', 'pattern', or 'title'", opts);
+    return validationError("expected an entry with 'file', 'pattern', or 'title'", opts);
   }
 }
 
