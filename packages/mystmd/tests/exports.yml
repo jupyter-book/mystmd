@@ -65,6 +65,9 @@ cases:
         content: outputs/multi-page-tex-two-chapters.tex
       - path: multi-page-toc-tex/_build/out-three.tex
         content: outputs/multi-page-tex-three-chapters.tex
+        content: outputs/multi-page-tex-three.tex
+      - path: multi-page-toc-tex/_build/out-single.tex
+        content: outputs/multi-page-tex-single.tex
   - title: Multi-page tex export with explicit articles
     cwd: multi-page-articles-tex
     command: myst build --tex --ci

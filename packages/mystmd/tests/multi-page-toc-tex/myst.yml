@@ -8,7 +8,12 @@ project:
     - file: one.md
     - file: two.md
     - file: three.md
-  export:
-    format: tex
-    template: ../templates/tex
-    output: _build/out.tex
+  exports:
+    - format: tex
+      template: ../templates/tex
+      output: _build/out.tex
+    - format: tex
+      template: ../template/tex
+      output: _build/out-single.tex
+      toc:
+        - one.md
