@@ -46,9 +46,17 @@ describe.concurrent(
         // Expect correct output
         outputs.forEach((output) => {
           expect(fs.existsSync(resolve(output.path))).toBeTruthy();
-          expect(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' })).toEqual(
-            fs.readFileSync(resolve(output.content), { encoding: 'utf-8' }),
-          );
+          if (path.extname(output.content) === '.json') {
+            expect(
+              JSON.parse(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' })),
+            ).toMatchObject(
+              JSON.parse(fs.readFileSync(resolve(output.content), { encoding: 'utf-8' })),
+            );
+          } else {
+            expect(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' })).toEqual(
+              fs.readFileSync(resolve(output.content), { encoding: 'utf-8' }),
+            );
+          }
         });
       },
     );

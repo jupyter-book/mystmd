@@ -1,0 +1,567 @@
+{
+  "kind": "Article",
+  "sha256": "cefe343ffc7d00c2c2c4cfcd9f0d0612621d4343a3544ca819567f0b5a96e1b4",
+  "slug": "index",
+  "location": "/index.md",
+  "dependencies": [
+    {
+      "url": "/targets",
+      "label": "section-with-xref",
+      "kind": "Article",
+      "slug": "targets",
+      "location": "/targets.md",
+      "title": "Targets"
+    }
+  ],
+  "frontmatter": {
+    "title": "XRef Content",
+    "content_includes_title": false,
+    "github": "https://github.com/executablebooks/mystjs",
+    "keywords": [],
+    "exports": [{ "format": "md", "filename": "index.md" }]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 3, "column": 1 }, "end": { "line": 3, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "link not xref: ",
+                "position": {
+                  "start": { "line": 3, "column": 1 },
+                  "end": { "line": 3, "column": 1 }
+                }
+              },
+              {
+                "type": "link",
+                "url": "https://mystmd.org",
+                "position": {
+                  "start": { "line": 3, "column": 1 },
+                  "end": { "line": 3, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "MyST",
+                    "position": {
+                      "start": { "line": 3, "column": 1 },
+                      "end": { "line": 3, "column": 1 }
+                    }
+                  }
+                ],
+                "urlSource": "https://mystmd.org"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": { "start": { "line": 5, "column": 1 }, "end": { "line": 5, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "From this project",
+                "position": {
+                  "start": { "line": 5, "column": 1 },
+                  "end": { "line": 5, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "from-this-project",
+            "label": "From this project",
+            "html_id": "from-this-project",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 7, "column": 1 }, "end": { "line": 7, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "other page: ",
+                "position": {
+                  "start": { "line": 7, "column": 1 },
+                  "end": { "line": 7, "column": 1 }
+                }
+              },
+              {
+                "type": "link",
+                "position": {
+                  "start": { "line": 7, "column": 1 },
+                  "end": { "line": 7, "column": 1 }
+                },
+                "children": [{ "type": "text", "value": "Targets" }],
+                "identifier": "page-fm-label",
+                "label": "page-fm-label",
+                "url": "/targets",
+                "internal": true,
+                "dataUrl": "/targets.json"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 9, "column": 1 }, "end": { "line": 9, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "also other page: ",
+                "position": {
+                  "start": { "line": 9, "column": 1 },
+                  "end": { "line": 9, "column": 1 }
+                }
+              },
+              {
+                "type": "link",
+                "identifier": "page-title-label",
+                "label": "page-title-label",
+                "kind": "narrative",
+                "position": {
+                  "start": { "line": 9, "column": 18 },
+                  "end": { "line": 9, "column": 35 }
+                },
+                "url": "/targets",
+                "internal": true,
+                "dataUrl": "/targets.json",
+                "children": [{ "type": "text", "value": "Targets" }]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 11, "column": 1 },
+              "end": { "line": 11, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "implicit heading: ",
+                "position": {
+                  "start": { "line": 11, "column": 1 },
+                  "end": { "line": 11, "column": 1 }
+                }
+              },
+              {
+                "type": "crossReference",
+                "position": {
+                  "start": { "line": 11, "column": 1 },
+                  "end": { "line": 11, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Implicit Heading",
+                    "position": {
+                      "start": { "line": 8, "column": 1 },
+                      "end": { "line": 8, "column": 1 }
+                    }
+                  }
+                ],
+                "identifier": "implicit-heading",
+                "label": "implicit-heading",
+                "kind": "heading",
+                "template": "{name}",
+                "resolved": true,
+                "html_id": "implicit-heading",
+                "remote": true,
+                "url": "/targets",
+                "dataUrl": "/targets.json"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 13, "column": 1 },
+              "end": { "line": 13, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "explicit heading: ",
+                "position": {
+                  "start": { "line": 13, "column": 1 },
+                  "end": { "line": 13, "column": 1 }
+                }
+              },
+              {
+                "type": "crossReference",
+                "position": {
+                  "start": { "line": 13, "column": 1 },
+                  "end": { "line": 13, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Here’s lorem ipsum again",
+                    "position": {
+                      "start": { "line": 13, "column": 1 },
+                      "end": { "line": 13, "column": 1 }
+                    }
+                  }
+                ],
+                "identifier": "explicit-heading",
+                "label": "explicit-heading",
+                "kind": "heading",
+                "template": "{name}",
+                "resolved": true,
+                "html_id": "explicit-heading",
+                "remote": true,
+                "url": "/targets",
+                "dataUrl": "/targets.json"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 15, "column": 1 },
+              "end": { "line": 15, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "figure: ",
+                "position": {
+                  "start": { "line": 15, "column": 1 },
+                  "end": { "line": 15, "column": 1 }
+                }
+              },
+              {
+                "type": "crossReference",
+                "position": {
+                  "start": { "line": 15, "column": 1 },
+                  "end": { "line": 15, "column": 1 }
+                },
+                "children": [
+                  { "type": "text", "value": "Figure " },
+                  { "type": "text", "value": "1" }
+                ],
+                "identifier": "my-fig",
+                "label": "my-fig",
+                "kind": "figure",
+                "template": "Figure %s",
+                "enumerator": "1",
+                "resolved": true,
+                "html_id": "my-fig",
+                "remote": true,
+                "url": "/targets",
+                "dataUrl": "/targets.json"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 17, "column": 1 },
+              "end": { "line": 17, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Embedded section with xref ⬇️",
+                "position": {
+                  "start": { "line": 17, "column": 1 },
+                  "end": { "line": 17, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "embed",
+            "source": {
+              "url": "/targets",
+              "label": "section-with-xref",
+              "kind": "Article",
+              "slug": "targets",
+              "location": "/targets.md",
+              "title": "Targets"
+            },
+            "children": [
+              {
+                "type": "heading",
+                "depth": 2,
+                "position": {
+                  "start": { "line": 26, "column": 1 },
+                  "end": { "line": 26, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Local xref",
+                    "position": {
+                      "start": { "line": 26, "column": 1 },
+                      "end": { "line": 26, "column": 1 }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "position": {
+                  "start": { "line": 28, "column": 1 },
+                  "end": { "line": 28, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "See: ",
+                    "position": {
+                      "start": { "line": 28, "column": 1 },
+                      "end": { "line": 28, "column": 1 }
+                    }
+                  },
+                  {
+                    "type": "crossReference",
+                    "position": {
+                      "start": { "line": 28, "column": 1 },
+                      "end": { "line": 28, "column": 1 }
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Here’s lorem ipsum again",
+                        "position": {
+                          "start": { "line": 13, "column": 1 },
+                          "end": { "line": 13, "column": 1 }
+                        }
+                      }
+                    ],
+                    "identifier": "explicit-heading",
+                    "label": "explicit-heading",
+                    "kind": "heading",
+                    "template": "{name}",
+                    "resolved": true,
+                    "html_id": "explicit-heading",
+                    "url": "/targets",
+                    "dataUrl": "/targets.json",
+                    "remote": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 22, "column": 1 },
+              "end": { "line": 22, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "From external project",
+                "position": {
+                  "start": { "line": 22, "column": 1 },
+                  "end": { "line": 22, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "from-external-project",
+            "label": "From external project",
+            "html_id": "from-external-project",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 24, "column": 1 },
+              "end": { "line": 24, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "xref to intersphinx: ",
+                "position": {
+                  "start": { "line": 24, "column": 1 },
+                  "end": { "line": 24, "column": 1 }
+                }
+              },
+              {
+                "type": "link",
+                "url": "https://docs.python.org/3.7/library/abc.html",
+                "position": {
+                  "start": { "line": 24, "column": 1 },
+                  "end": { "line": 24, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Python ABC",
+                    "position": {
+                      "start": { "line": 24, "column": 1 },
+                      "end": { "line": 24, "column": 1 }
+                    }
+                  }
+                ],
+                "urlSource": "xref:python#library/abc",
+                "internal": false,
+                "protocol": "xref:sphinx"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 26, "column": 1 },
+              "end": { "line": 26, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "xref to myst: ",
+                "position": {
+                  "start": { "line": 26, "column": 1 },
+                  "end": { "line": 26, "column": 1 }
+                }
+              },
+              {
+                "type": "crossReference",
+                "url": "/myst-schema",
+                "position": {
+                  "start": { "line": 26, "column": 1 },
+                  "end": { "line": 26, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Admonition",
+                    "position": {
+                      "start": { "line": 187, "column": 1 },
+                      "end": { "line": 187, "column": 1 }
+                    }
+                  }
+                ],
+                "urlSource": "xref:spec#admonition",
+                "remote": true,
+                "remoteBaseUrl": "https://mystmd.org/spec",
+                "dataUrl": "/myst-schema.json",
+                "identifier": "admonition",
+                "label": "admonition",
+                "html_id": "admonition",
+                "protocol": "xref:myst",
+                "template": "{name}",
+                "resolved": true
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 28, "column": 1 },
+              "end": { "line": 28, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "implicit xref to myst: ",
+                "position": {
+                  "start": { "line": 28, "column": 1 },
+                  "end": { "line": 28, "column": 1 }
+                }
+              },
+              {
+                "type": "crossReference",
+                "identifier": "example",
+                "label": "example",
+                "kind": "narrative",
+                "position": {
+                  "start": { "line": 28, "column": 24 },
+                  "end": { "line": 28, "column": 49 }
+                },
+                "url": "/tables",
+                "urlSource": "xref:spec/tables#example",
+                "remote": true,
+                "remoteBaseUrl": "https://mystmd.org/spec",
+                "dataUrl": "/tables.json",
+                "html_id": "example",
+                "protocol": "xref:myst",
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Example",
+                    "position": {
+                      "start": { "line": 9, "column": 1 },
+                      "end": { "line": 9, "column": 1 }
+                    }
+                  }
+                ],
+                "template": "{name}",
+                "resolved": true
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 30, "column": 1 },
+              "end": { "line": 30, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "xref to page: ",
+                "position": {
+                  "start": { "line": 30, "column": 1 },
+                  "end": { "line": 30, "column": 1 }
+                }
+              },
+              {
+                "type": "link",
+                "url": "https://mystmd.org/spec/tables",
+                "position": {
+                  "start": { "line": 30, "column": 1 },
+                  "end": { "line": 30, "column": 1 }
+                },
+                "children": [{ "type": "text", "value": "Tables" }],
+                "urlSource": "xref:spec/tables",
+                "dataUrl": "https://mystmd.org/spec/tables.json",
+                "internal": false,
+                "protocol": "xref:myst"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 32, "column": 1 },
+              "end": { "line": 32, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "xref to project: ",
+                "position": {
+                  "start": { "line": 32, "column": 1 },
+                  "end": { "line": 32, "column": 1 }
+                }
+              },
+              {
+                "type": "link",
+                "url": "https://mystmd.org/spec/",
+                "position": {
+                  "start": { "line": 32, "column": 1 },
+                  "end": { "line": 32, "column": 1 }
+                },
+                "children": [{ "type": "text", "value": "MyST Specification" }],
+                "urlSource": "xref:spec",
+                "dataUrl": "https://mystmd.org/spec/index.json",
+                "internal": false,
+                "protocol": "xref:myst"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

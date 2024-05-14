@@ -1,0 +1,35 @@
+{
+  "options": {},
+  "myst": "1.2.3",
+  "nav": [],
+  "actions": [
+    { "title": "Learn More", "url": "https://mystmd.org/guide", "internal": false, "static": false }
+  ],
+  "projects": [
+    {
+      "github": "https://github.com/executablebooks/mystjs",
+      "keywords": [],
+      "id": "150e302b-37a9-40ab-86f4-d4a735915a60",
+      "references": {
+        "python": { "url": "https://docs.python.org/3.7" },
+        "spec": { "url": "https://mystmd.org/spec" }
+      },
+      "exports": [],
+      "bibliography": [],
+      "title": "XRef Content",
+      "index": "index",
+      "pages": [
+        {
+          "slug": "targets",
+          "title": "Targets",
+          "description": "",
+          "date": "",
+          "banner": "",
+          "bannerOptimized": "",
+          "tags": [],
+          "level": 1
+        }
+      ]
+    }
+  ]
+}

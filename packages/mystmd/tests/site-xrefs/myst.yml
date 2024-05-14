@@ -1,0 +1,24 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  id: 150e302b-37a9-40ab-86f4-d4a735915a60
+  # title:
+  # description:
+  keywords: []
+  authors: []
+  github: https://github.com/executablebooks/mystjs
+  # bibliography: []
+  references:
+    python: https://docs.python.org/3.7/
+    spec: https://mystmd.org/spec/
+site:
+  template: ../templates/site/myst/book-theme
+  # title:
+  # options:
+  #   favicon: favicon.ico
+  #   logo: site_logo.png
+  nav: []
+  actions:
+    - title: Learn More
+      url: https://mystmd.org/guide
+  domains: []

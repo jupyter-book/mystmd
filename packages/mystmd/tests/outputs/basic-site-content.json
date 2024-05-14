@@ -1,0 +1,62 @@
+{
+  "kind": "Article",
+  "sha256": "594cca9411739845dfd5f7de1f2588a692f5a0f08eb46f1e089ce34ea46e4279",
+  "slug": "index",
+  "location": "/index.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Basic Test",
+    "github": "https://github.com/executablebooks/mystjs",
+    "keywords": [],
+    "exports": [
+      {
+        "format": "md",
+        "filename": "index.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": { "start": { "line": 5, "column": 1 }, "end": { "line": 5, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "Lorem Ipsum",
+                "position": {
+                  "start": { "line": 5, "column": 1 },
+                  "end": { "line": 5, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "lorem-ipsum",
+            "label": "Lorem Ipsum",
+            "html_id": "lorem-ipsum",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 7, "column": 1 }, "end": { "line": 7, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "position": {
+                  "start": { "line": 7, "column": 1 },
+                  "end": { "line": 7, "column": 1 }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}
