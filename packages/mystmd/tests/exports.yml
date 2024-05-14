@@ -120,7 +120,7 @@ cases:
     command: myst build
     outputs:
       - path: basic-site/_build/site/content/index.json
-        # Keys are removed from this output file
+        # Keys and file hashes are removed from this output file
         content: outputs/basic-site-content.json
       - path: basic-site/_build/site/config.json
         content: outputs/basic-site-config.json

@@ -10,13 +10,10 @@
     "content_includes_title": false,
     "github": "https://github.com/executablebooks/mystjs",
     "keywords": [],
-    "thumbnail": "/image-45d659e5a468ef3e6a8baed69c98c8b7.png",
-    "thumbnailOptimized": "/image-45d659e5a468ef3e6a8baed69c98c8b7.webp",
     "exports": [
       {
         "format": "md",
-        "filename": "targets.md",
-        "url": "/targets-cd454d05991a1cdd8618d58b7f931e04.md"
+        "filename": "targets.md"
       }
     ]
   },
