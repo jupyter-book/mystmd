@@ -1,0 +1,63 @@
+jtex: v1
+title: Book Theme
+description: Simple site for displaying multiple articles and notebooks with a table of contents.
+version: 1.0.0
+license: MIT
+source: https://github.com/executablebooks/myst-book-theme
+thumbnail: ./thumbnail.png
+authors:
+  - name: Rowan Cockett
+    website: https://curvenote.com
+    affiliations:
+      - Curvenote
+tags:
+  - book
+options:
+  - type: boolean
+    id: hide_toc
+    description: Hide the table of contents
+  - type: boolean
+    id: hide_footer_links
+    description: Hide the previous/next links in the footer
+  - type: boolean
+    id: hide_outline
+    description: Hide the document outline on all pages
+  - type: number
+    id: outline_maxdepth
+    description: The maximum depth to show on the document outline, for example, `2` would show only two depths of headings (e.g. `<H1>` and `<H2>`).
+    min: 1
+    max: 6
+    integer: true
+  - type: string
+    id: twitter
+    description: Twitter handle related to the site
+  - type: file
+    id: favicon
+    description: Local path to favicon image
+  - type: file
+    id: logo
+    description: Local path to logo image
+  - type: file
+    id: logo_dark
+    description: Local path to logo image for dark mode
+  - type: string
+    id: logo_text
+    description: Short text to display next to logo at the top of all pages
+  - type: string
+    id: analytics_google
+    description: Google analytics key
+  - type: string
+    id: analytics_plausible
+    description: Plausible analytics key
+  - type: boolean
+    id: numbered_references
+    description: Show references as numbered, rather than in APA-style. Only applies to parenthetical citations.
+build:
+  install: npm install
+  start: npm run start
+files:
+  - server.js
+  - package.json
+  - package-lock.json
+  - public/**/*
+  - build/**/*

@@ -115,3 +115,26 @@ cases:
         content: outputs/dois.tex
       - path: dois/_build/main.bib
         content: outputs/dois.bib
+  - title: Basic site build
+    cwd: basic-site
+    command: myst build
+    outputs:
+      - path: basic-site/_build/site/content/index.json
+        # Keys are removed from this output file
+        content: outputs/basic-site-content.json
+      - path: basic-site/_build/site/config.json
+        content: outputs/basic-site-config.json
+      - path: basic-site/_build/site/myst.xref.json
+        content: outputs/basic-site-myst.xref.json
+  - title: XRef site build
+    cwd: site-xrefs
+    command: myst build
+    outputs:
+      - path: site-xrefs/_build/site/content/index.json
+        content: outputs/site-xrefs-index.json
+      - path: site-xrefs/_build/site/content/targets.json
+        content: outputs/site-xrefs-targets.json
+      - path: site-xrefs/_build/site/config.json
+        content: outputs/site-xrefs-config.json
+      - path: site-xrefs/_build/site/myst.xref.json
+        content: outputs/site-xrefs-myst.xref.json
