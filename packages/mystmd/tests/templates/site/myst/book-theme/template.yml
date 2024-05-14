@@ -55,9 +55,3 @@ options:
 build:
   install: npm install
   start: npm run start
-files:
-  - server.js
-  - package.json
-  - package-lock.json
-  - public/**/*
-  - build/**/*
