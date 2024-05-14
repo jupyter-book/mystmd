@@ -25,7 +25,11 @@ import { fetchMystLinkData, fetchMystXRefData, nodesFromMystXRefData } from './c
 import { fileFromRelativePath } from './links.js';
 import type { RendererData } from './types.js';
 
-function mutateEmbedNode(node: Embed, targetNode?: GenericNode | null) {
+function mutateEmbedNode(
+  node: Embed,
+  targetNode?: GenericNode | null,
+  opts?: { url?: string; dataUrl?: string },
+) {
   if (targetNode && node['remove-output']) {
     targetNode = filter(targetNode, (n: GenericNode) => {
       return n.type !== 'output' && n.data?.type !== 'output';
@@ -42,6 +46,13 @@ function mutateEmbedNode(node: Embed, targetNode?: GenericNode | null) {
     delete idNode.identifier;
     delete idNode.label;
     delete idNode.html_id;
+  });
+  (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
+    if (!targetXRef.remote) {
+      targetXRef.url = opts?.url;
+      targetXRef.dataUrl = opts?.dataUrl;
+      targetXRef.remote = true;
+    }
   });
   if (!targetNode) {
     node.children = [];
@@ -111,13 +122,10 @@ export async function embedTransform(
           }
           const targetNode = { type: 'block', children: targetNodes };
           (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
+            // If target xref already has remoteBaseUrl, it can be unchanged in the embedded context
             if (targetXRef.remoteBaseUrl) return;
+            // Otherwise, the remoteBaseUrl is added from the embed context
             targetXRef.remoteBaseUrl = referenceXRef.remoteBaseUrl;
-            if (!targetXRef.remote) {
-              targetXRef.url = referenceXRef.url;
-              targetXRef.dataUrl = referenceXRef.dataUrl;
-              targetXRef.remote = true;
-            }
           });
           (selectAll('link', targetNode) as Link[]).forEach((targetLink) => {
             if (!targetLink.internal) return;
@@ -131,7 +139,7 @@ export async function embedTransform(
             if (!target.source) return;
             target.source.remoteBaseUrl = referenceXRef.remoteBaseUrl;
           });
-          mutateEmbedNode(node, targetNode);
+          mutateEmbedNode(node, targetNode, referenceXRef);
           // Remote dependency, not added as local dependency
           const source: Dependency = {
             url: referenceXRef.url,
@@ -176,10 +184,13 @@ export async function embedTransform(
         return;
       }
       const target = { type: 'block', children: copyNode(targetNodes) };
-      mutateEmbedNode(node, target);
-      const multiState = state as MultiPageReferenceResolver;
-      if (!multiState.states) return;
-      const { url, filePath } = multiState.resolveStateProvider(identifier, linkFile) ?? {};
+      if (!(state as MultiPageReferenceResolver).states) {
+        // Single page case - we do not need to update urls/dependencies
+        mutateEmbedNode(node, target);
+        return;
+      }
+      const { url, dataUrl, filePath } = stateProvider;
+      mutateEmbedNode(node, target, { url, dataUrl });
       if (!url) return;
       const source: Dependency = { url, label };
       if (filePath) {
