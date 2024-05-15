@@ -33,6 +33,19 @@ export type FileEntry = {
 export type FileParentEntry = FileEntry & Omit<ParentEntry, 'title'>;
 
 /**
+ * Entry with a url to an external resource
+ */
+export type URLEntry = {
+  url: string;
+} & CommonEntry;
+
+/**
+ * Entry with a url to an external resource,
+ * and an array of children
+ */
+export type URLParentEntry = URLEntry & Omit<ParentEntry, 'title'>;
+
+/**
  * Entry representing several documents through a glob
  */
 export type PatternEntry = {
@@ -44,7 +57,9 @@ export type PatternEntry = {
  */
 export type Entry =
   | FileEntry
+  | URLEntry
   | FileParentEntry
+  | URLParentEntry
   | PatternEntry
   | ParentEntry;
 
