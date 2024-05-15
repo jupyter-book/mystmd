@@ -3,6 +3,7 @@ import {
   defined,
   incrementOptions,
   validateBoolean,
+  validateChoice,
   validateEnum,
   validateList,
   validateNumber,
@@ -28,6 +29,7 @@ const EXPORT_KEY_OBJECT = {
     'name',
     'renderer',
     'articles',
+    'top_level',
     'sub_articles',
   ],
   alias: {
@@ -237,6 +239,12 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     } else {
       validExport.articles = undefined;
     }
+  }
+  if (defined(value.top_level)) {
+    validExport.top_level = validateChoice(value.top_level || 'sections', {
+      ...incrementOptions('top_level', opts),
+      choices: ['parts', 'chapters', 'sections'],
+    }) as Export['top_level'];
   }
   if (defined(value.sub_articles)) {
     if (validExport.format !== ExportFormats.xml) {

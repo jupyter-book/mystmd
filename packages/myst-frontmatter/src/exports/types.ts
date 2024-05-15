@@ -24,6 +24,7 @@ export type Export = {
   zip?: boolean;
   toc?: any[];
   articles?: ExportArticle[];
+  top_level?: 'parts' | 'chapters' | 'sections';
   /** sub_articles are only for jats xml export */
   sub_articles?: string[];
   /** MECA: to, from later */
