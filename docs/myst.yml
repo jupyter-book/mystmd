@@ -49,6 +49,7 @@ project:
     - directives.mjs
     - unsplash.mjs
     - latex.mjs
+    - templates.mjs
   error_rules:
     - rule: link-resolves
       severity: ignore

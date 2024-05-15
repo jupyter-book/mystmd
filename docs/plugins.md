@@ -78,3 +78,37 @@ You can now use the directive, for example:
 If you change the source code you will have to stop and re-start the server to see the results.
 
 The types are defined in `myst-common` ([npm](https://www.npmjs.com/package/myst-common), [github](https://github.com/executablebooks/mystmd/tree/main/packages/myst-common)) with the [`DirectiveSpec`](https://github.com/executablebooks/mystmd/blob/9965925030c3fab6f34c20d11eeee7ffdafa73df/packages/myst-common/src/types.ts#L68-L77) and [`RoleSpec`](https://github.com/executablebooks/mystmd/blob/9965925030c3fab6f34c20d11eeee7ffdafa73df/packages/myst-common/src/types.ts#L79-L85) being the main types to implement.
+
+## Examples of plugins
+
+The documentation you're reading now defines several of its own plugins to extend MyST functionality.
+These are all registered in the documentation's [myst.yml configuration](myst.yml) with syntax like below:
+
+
+```{literalinclude} myst.yml
+:start-at: plugins
+:end-before: error_rules
+```
+
+Each plugin is defined as a `.mjs` file in the same folder as the documentation's MyST content.
+Below is the contents of each file for reference.
+
+::::{dropdown} Plugin: Latex rendering
+```{literalinclude} latex.mjs
+```
+::::
+
+::::{dropdown} Plugin: Display an image
+```{literalinclude} unsplash.mjs
+```
+::::
+
+::::{dropdown} Plugin: Custom directive for documenting roles and directives
+```{literalinclude} directives.mjs
+```
+::::
+
+::::{dropdown} Plugin: Render web template options as a table
+```{literalinclude} templates.mjs
+```
+::::
