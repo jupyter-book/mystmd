@@ -94,12 +94,17 @@ site:
     - title: Second button text
       url: https://mystmd.org/guide
 ```
+
 (site-options)=
 
 ## Site Options
 
-There are a number of common options between the site templates. These should be placed in the `site.options` in your `myst.yml`.
+Site options allow you to configure a theme's behavior.[^opts]
+These should be placed in the `site.options` in your `myst.yml`.
 For example:
+
+[^opts]: They are generally unique to the theme (and thus in a dediated `site.options` key rather than a top-level option in `site`).
+
 
 ```{code-block} yaml
 :filename: myst.yml
@@ -111,11 +116,6 @@ site:
 
 Below is a table of options for each theme bundled with MyST.
 
-% TODO: Parse the output as markdown when this is resolved:
-%       ref: https://github.com/executablebooks/mystmd/issues/1026
-% TODO: Figure out how to attach a label to each of these tables.
-
-
 ```{myst:template} book-theme
 :heading-depth: 3
 ```
@@ -125,3 +125,14 @@ Below is a table of options for each theme bundled with MyST.
 :heading-depth: 3
 ```
 
+## Other top-level site configuration
+
+There are some other top-level site configuration options not documented here.
+You can find them in the following two files.
+
+% TODO: Add proper documentation for these
+%   ref: https://github.com/executablebooks/mystmd/issues/1211
+https://github.com/executablebooks/mystmd/blob/8e7ac4ae05d833140181ed69aa1e354face7caa0/packages/myst-frontmatter/src/site/types.ts#L57-L83
+
+
+https://github.com/executablebooks/mystmd/blob/main/packages/myst-config/src/site/types.ts?rgh-link-date=2024-05-15T06%3A31%3A26Z#L26-L33
