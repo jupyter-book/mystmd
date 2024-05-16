@@ -41,18 +41,9 @@ export function configFromPath(session: ISession, path: string) {
 }
 
 /**
- * Load site/project config from local path to redux store
- *
- * Errors if config file does not exist or if config file exists but is invalid.
+ * Load config yaml file and throw error if it fails
  */
-export function loadConfig(session: ISession, path: string) {
-  const file = configFromPath(session, path);
-  if (!file) {
-    session.log.debug(`No config loaded from path: ${path}`);
-    return;
-  }
-  const vfile = new VFile();
-  vfile.path = file;
+function loadConfigYaml(file: string) {
   if (!fs.existsSync(file)) throw Error(`Cannot find config file: ${file}`);
   let rawConf: Record<string, any>;
   try {
@@ -61,22 +52,38 @@ export function loadConfig(session: ISession, path: string) {
     const suffix = (err as Error).message ? `\n\n${(err as Error).message}` : '';
     throw Error(`Unable to read config file ${file} as YAML${suffix}`);
   }
-  const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
-  if (existingConf && JSON.stringify(rawConf) === JSON.stringify(existingConf.raw)) {
-    return existingConf.validated;
-  }
-  const opts: ValidationOptions = {
-    file,
-    property: 'config',
+  return rawConf;
+}
+
+/**
+ * Helper function to generate basic validation options
+ */
+function configValidationOpts(vfile: VFile, property: string, ruleId: RuleId): ValidationOptions {
+  return {
+    file: vfile.path,
+    property,
     messages: {},
     errorLogFn: (message: string) => {
-      fileError(vfile, message, { ruleId: RuleId.validConfigStructure });
+      fileError(vfile, message, { ruleId });
     },
     warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: RuleId.validConfigStructure });
+      fileWarn(vfile, message, { ruleId });
     },
   };
-  const conf = validateObject(yaml.load(fs.readFileSync(file, 'utf-8')), opts);
+}
+
+/**
+ * Load and validate a file as yaml config file
+ *
+ * Returns validated site and project configs.
+ *
+ * Throws errors config file is malformed or invalid.
+ */
+function getValidatedConfigsFromFile(session: ISession, file: string) {
+  const vfile = new VFile();
+  vfile.path = file;
+  const opts = configValidationOpts(vfile, 'config', RuleId.validConfigStructure);
+  const conf = validateObject(loadConfigYaml(file), opts);
   if (conf) {
     const filteredConf = validateKeys(
       conf,
@@ -120,24 +127,49 @@ export function loadConfig(session: ISession, path: string) {
     const { logoText, ...rest } = conf.site;
     conf.site = { logo_text: logoText, ...rest };
   }
-  session.store.dispatch(
-    config.actions.receiveRawConfig({ path, file, raw: rawConf, validated: conf }),
-  );
-  const { site, project } = conf ?? {};
-  if (site) {
-    validateSiteConfigAndSave(session, path, vfile, site);
+  const { site: rawSite, project: rawProject } = conf ?? {};
+  const path = dirname(file);
+  let site: SiteConfig | undefined;
+  let project: ProjectConfig | undefined;
+  if (rawSite) {
+    site = validateSiteConfigAndThrow(session, path, vfile, rawSite);
     session.log.debug(`Loaded site config from ${file}`);
   } else {
     session.log.debug(`No site config in ${file}`);
   }
-  if (project) {
-    validateProjectConfigAndSave(session, path, vfile, project);
+  if (rawProject) {
+    project = validateProjectConfigAndThrow(session, path, vfile, rawProject);
     session.log.debug(`Loaded project config from ${file}`);
   } else {
     session.log.debug(`No project config defined in ${file}`);
   }
   logMessagesFromVFile(session, vfile);
-  return conf;
+  return { site, project };
+}
+
+/**
+ * Load site/project config from local path to redux store
+ *
+ * Errors if config file does not exist or if config file exists but is invalid.
+ */
+export function loadConfig(session: ISession, path: string) {
+  const file = configFromPath(session, path);
+  if (!file) {
+    session.log.debug(`No config loaded from path: ${path}`);
+    return;
+  }
+  const rawConf = loadConfigYaml(file);
+  const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
+  if (existingConf && JSON.stringify(rawConf) === JSON.stringify(existingConf.raw)) {
+    return existingConf.validated;
+  }
+  const { site, project } = getValidatedConfigsFromFile(session, file);
+  session.store.dispatch(
+    config.actions.receiveRawConfig({ path, file, raw: rawConf, validated: { site, project } }),
+  );
+  if (site) saveSiteConfig(session, path, site);
+  if (project) saveProjectConfig(session, path, project);
+  return { site, project };
 }
 
 export function resolveToAbsolute(
@@ -241,56 +273,48 @@ function resolveProjectConfigPaths(
   return { ...projectConfig, ...resolvedFields };
 }
 
-function validateSiteConfigAndSave(
+function validateSiteConfigAndThrow(
   session: ISession,
   path: string,
   vfile: VFile,
-  rawSiteConfig: Record<string, any>,
+  rawSite: Record<string, any>,
 ) {
-  let siteConfig = validateSiteConfig(rawSiteConfig, {
-    file: vfile.path,
-    property: 'site',
-    messages: {},
-    errorLogFn: (message: string) => {
-      fileError(vfile, message, { ruleId: RuleId.validSiteConfig });
-    },
-    warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: RuleId.validSiteConfig });
-    },
-  });
+  const site = validateSiteConfig(
+    rawSite,
+    configValidationOpts(vfile, 'config.site', RuleId.validSiteConfig),
+  );
   logMessagesFromVFile(session, vfile);
-  if (!siteConfig) {
+  if (!site) {
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
-  siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToAbsolute);
-  session.store.dispatch(config.actions.receiveSiteConfig({ path, ...siteConfig }));
+  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute);
 }
 
-function validateProjectConfigAndSave(
+function saveSiteConfig(session: ISession, path: string, site: SiteConfig) {
+  session.store.dispatch(config.actions.receiveSiteConfig({ path, ...site }));
+}
+
+function validateProjectConfigAndThrow(
   session: ISession,
   path: string,
   vfile: VFile,
-  rawProjectConfig: Record<string, any>,
+  rawProject: Record<string, any>,
 ) {
-  let projectConfig = validateProjectConfig(rawProjectConfig, {
-    file: vfile.path,
-    property: 'project',
-    messages: {},
-    errorLogFn: (message: string) => {
-      fileError(vfile, message, { ruleId: RuleId.validProjectConfig });
-    },
-    warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: RuleId.validProjectConfig });
-    },
-  });
+  const project = validateProjectConfig(
+    rawProject,
+    configValidationOpts(vfile, 'config.project', RuleId.validProjectConfig),
+  );
   logMessagesFromVFile(session, vfile);
-  if (!projectConfig) {
+  if (!project) {
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
-  projectConfig = resolveProjectConfigPaths(session, path, projectConfig, resolveToAbsolute);
-  session.store.dispatch(config.actions.receiveProjectConfig({ path, ...projectConfig }));
+  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute);
+}
+
+function saveProjectConfig(session: ISession, path: string, project: ProjectConfig) {
+  session.store.dispatch(config.actions.receiveProjectConfig({ path, ...project }));
 }
 
 /**
@@ -317,13 +341,21 @@ export function writeConfigs(
   // Get site config to save
   const vfile = new VFile();
   vfile.path = file;
-  if (siteConfig) validateSiteConfigAndSave(session, path, vfile, siteConfig);
+  if (siteConfig) {
+    saveSiteConfig(session, path, validateSiteConfigAndThrow(session, path, vfile, siteConfig));
+  }
   siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
   if (siteConfig) {
     siteConfig = resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative);
   }
   // Get project config to save
-  if (projectConfig) validateProjectConfigAndSave(session, path, vfile, projectConfig);
+  if (projectConfig) {
+    saveProjectConfig(
+      session,
+      path,
+      validateProjectConfigAndThrow(session, path, vfile, projectConfig),
+    );
+  }
   projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   if (projectConfig) {
     projectConfig = prepareToWrite(projectConfig);
