@@ -5,6 +5,7 @@ import { writeFileToFolder } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
+import { fillProjectFrontmatter } from 'myst-frontmatter';
 import type { ValidationOptions } from 'simple-validators';
 import {
   incrementOptions,
@@ -12,6 +13,7 @@ import {
   validationError,
   validateList,
   validateString,
+  fillMissingKeys,
 } from 'simple-validators';
 import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
@@ -79,6 +81,13 @@ function configValidationOpts(vfile: VFile, property: string, ruleId: RuleId): V
 }
 
 /**
+ * Function to add filler keys to base if the keys are not defined in base
+ */
+function fillSiteConfig(base: SiteConfig, filler: SiteConfig) {
+  return fillMissingKeys(base, filler, Object.keys(filler));
+}
+
+/**
  * Load and validate a file as yaml config file
  *
  * Returns validated site and project configs.
@@ -134,27 +143,47 @@ function getValidatedConfigsFromFile(session: ISession, file: string) {
     const { logoText, ...rest } = conf.site;
     conf.site = { logo_text: logoText, ...rest };
   }
-  const extend = validateList(
-    conf.extend,
-    { coerce: true, ...incrementOptions('extend', opts) },
-    (item, index) => {
-      const relativeFile = validateString(item, incrementOptions(`extend.${index}`, opts));
-      if (!relativeFile) return relativeFile;
-      return resolveToAbsolute(session, dirname(file), relativeFile);
-    },
-  );
-  const { site: rawSite, project: rawProject } = conf ?? {};
-  const path = dirname(file);
   let site: SiteConfig | undefined;
   let project: ProjectConfig | undefined;
+  const projectOpts = configValidationOpts(vfile, 'config.project', RuleId.validProjectConfig);
+  if (conf.extend) {
+    const extend = validateList(
+      conf.extend,
+      { coerce: true, ...incrementOptions('extend', opts) },
+      (item, index) => {
+        const relativeFile = validateString(item, incrementOptions(`extend.${index}`, opts));
+        if (!relativeFile) return relativeFile;
+        return resolveToAbsolute(session, dirname(file), relativeFile);
+      },
+    );
+    extend?.forEach((extFile) => {
+      const { site: extSite, project: extProject } = getValidatedConfigsFromFile(session, extFile);
+      if (extSite) {
+        site = site ? fillSiteConfig(extSite, site) : extSite;
+      }
+      if (extProject) {
+        project = project ? fillProjectFrontmatter(extProject, project, projectOpts) : extProject;
+      }
+    });
+  }
+  const { site: rawSite, project: rawProject } = conf ?? {};
+  const path = dirname(file);
   if (rawSite) {
-    site = validateSiteConfigAndThrow(session, path, vfile, rawSite);
+    site = fillSiteConfig(validateSiteConfigAndThrow(session, path, vfile, rawSite), site ?? {});
+  }
+  if (site) {
     session.log.debug(`Loaded site config from ${file}`);
   } else {
     session.log.debug(`No site config in ${file}`);
   }
   if (rawProject) {
-    project = validateProjectConfigAndThrow(session, path, vfile, rawProject);
+    project = fillProjectFrontmatter(
+      validateProjectConfigAndThrow(session, path, vfile, rawProject),
+      project ?? {},
+      projectOpts,
+    );
+  }
+  if (project) {
     session.log.debug(`Loaded project config from ${file}`);
   } else {
     session.log.debug(`No project config defined in ${file}`);
@@ -294,7 +323,7 @@ function validateSiteConfigAndThrow(
   path: string,
   vfile: VFile,
   rawSite: Record<string, any>,
-) {
+): SiteConfig {
   const site = validateSiteConfig(
     rawSite,
     configValidationOpts(vfile, 'config.site', RuleId.validSiteConfig),
@@ -316,7 +345,7 @@ function validateProjectConfigAndThrow(
   path: string,
   vfile: VFile,
   rawProject: Record<string, any>,
-) {
+): ProjectConfig {
   const project = validateProjectConfig(
     rawProject,
     configValidationOpts(vfile, 'config.project', RuleId.validProjectConfig),

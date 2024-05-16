@@ -19,39 +19,48 @@ export function fillPageFrontmatter(
   pageFrontmatter: PageFrontmatter,
   projectFrontmatter: ProjectFrontmatter,
   opts: ValidationOptions,
-) {
-  const frontmatter = fillMissingKeys(pageFrontmatter, projectFrontmatter, USE_PROJECT_FALLBACK);
+): PageFrontmatter {
+  return fillProjectFrontmatter(pageFrontmatter, projectFrontmatter, opts, USE_PROJECT_FALLBACK);
+}
 
-  if (pageFrontmatter.numbering || projectFrontmatter.numbering) {
-    frontmatter.numbering = fillNumbering(pageFrontmatter.numbering, projectFrontmatter.numbering);
+export function fillProjectFrontmatter(
+  base: ProjectFrontmatter,
+  filler: ProjectFrontmatter,
+  opts: ValidationOptions,
+  keys?: string[],
+) {
+  const frontmatter = fillMissingKeys(base, filler, keys ?? Object.keys(filler));
+
+  if (filler.numbering || base.numbering) {
+    frontmatter.numbering = fillNumbering(base.numbering, filler.numbering);
   }
 
   // Combine all math macros defined on page and project
-  if (projectFrontmatter.math || pageFrontmatter.math) {
-    frontmatter.math = { ...(projectFrontmatter.math ?? {}), ...(pageFrontmatter.math ?? {}) };
+  if (filler.math || base.math) {
+    frontmatter.math = { ...(filler.math ?? {}), ...(base.math ?? {}) };
   }
 
   // Combine all abbreviation defined on page and project
-  if (projectFrontmatter.abbreviations || pageFrontmatter.abbreviations) {
+  if (filler.abbreviations || base.abbreviations) {
     frontmatter.abbreviations = {
-      ...(projectFrontmatter.abbreviations ?? {}),
-      ...(pageFrontmatter.abbreviations ?? {}),
+      ...(filler.abbreviations ?? {}),
+      ...(base.abbreviations ?? {}),
     };
   }
 
   // Combine all options defined on page and project
-  if (projectFrontmatter.options || pageFrontmatter.options) {
+  if (filler.options || base.options) {
     frontmatter.options = {
-      ...(projectFrontmatter.options ?? {}),
-      ...(pageFrontmatter.options ?? {}),
+      ...(filler.options ?? {}),
+      ...(base.options ?? {}),
     };
   }
 
   // Combine all settings defined on page and project
-  if (projectFrontmatter.settings || pageFrontmatter.settings) {
+  if (filler.settings || base.settings) {
     frontmatter.settings = {
-      ...(projectFrontmatter.settings ?? {}),
-      ...(pageFrontmatter.settings ?? {}),
+      ...(filler.settings ?? {}),
+      ...(base.settings ?? {}),
     };
   }
 
@@ -83,10 +92,10 @@ export function fillPageFrontmatter(
   if (frontmatter.authors?.length || contributorIds.size) {
     // Gather all people from page/project authors/contributors
     const people = [
-      ...(pageFrontmatter.authors ?? []),
-      ...(projectFrontmatter.authors ?? []),
-      ...(pageFrontmatter.contributors ?? []),
-      ...(projectFrontmatter.contributors ?? []),
+      ...(base.authors ?? []),
+      ...(filler.authors ?? []),
+      ...(base.contributors ?? []),
+      ...(filler.contributors ?? []),
     ];
     const peopleLookup: Record<string, Contributor> = {};
     people.forEach((auth) => {
@@ -126,10 +135,7 @@ export function fillPageFrontmatter(
   });
 
   if (affiliationIds.size) {
-    const affiliations = [
-      ...(pageFrontmatter.affiliations ?? []),
-      ...(projectFrontmatter.affiliations ?? []),
-    ];
+    const affiliations = [...(base.affiliations ?? []), ...(filler.affiliations ?? [])];
     const affiliationLookup: Record<string, Affiliation> = {};
     affiliations.forEach((aff) => {
       if (!aff.id || isStashPlaceholder(aff)) return;
