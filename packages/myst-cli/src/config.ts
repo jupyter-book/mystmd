@@ -6,7 +6,13 @@ import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
 import type { ValidationOptions } from 'simple-validators';
-import { incrementOptions, validateKeys, validateObject, validationError } from 'simple-validators';
+import {
+  incrementOptions,
+  validateObjectKeys,
+  validationError,
+  validateList,
+  validateString,
+} from 'simple-validators';
 import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
 import type { ISession } from './session/types.js';
@@ -83,19 +89,20 @@ function getValidatedConfigsFromFile(session: ISession, file: string) {
   const vfile = new VFile();
   vfile.path = file;
   const opts = configValidationOpts(vfile, 'config', RuleId.validConfigStructure);
-  const conf = validateObject(loadConfigYaml(file), opts);
-  if (conf) {
-    const filteredConf = validateKeys(
-      conf,
-      { required: ['version'], optional: ['site', 'project'] },
-      opts,
+  const conf = validateObjectKeys(
+    loadConfigYaml(file),
+    {
+      required: ['version'],
+      optional: ['site', 'project', 'extend'],
+      alias: { extends: 'extend' },
+    },
+    opts,
+  );
+  if (conf && conf.version !== VERSION) {
+    validationError(
+      `"${conf.version}" does not match ${VERSION}`,
+      incrementOptions('version', opts),
     );
-    if (filteredConf && filteredConf.version !== VERSION) {
-      validationError(
-        `"${filteredConf.version}" does not match ${VERSION}`,
-        incrementOptions('version', opts),
-      );
-    }
   }
   logMessagesFromVFile(session, vfile);
   if (!conf || opts.messages.errors) {
@@ -127,6 +134,15 @@ function getValidatedConfigsFromFile(session: ISession, file: string) {
     const { logoText, ...rest } = conf.site;
     conf.site = { logo_text: logoText, ...rest };
   }
+  const extend = validateList(
+    conf.extend,
+    { coerce: true, ...incrementOptions('extend', opts) },
+    (item, index) => {
+      const relativeFile = validateString(item, incrementOptions(`extend.${index}`, opts));
+      if (!relativeFile) return relativeFile;
+      return resolveToAbsolute(session, dirname(file), relativeFile);
+    },
+  );
   const { site: rawSite, project: rawProject } = conf ?? {};
   const path = dirname(file);
   let site: SiteConfig | undefined;
