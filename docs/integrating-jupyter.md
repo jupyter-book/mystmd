@@ -18,7 +18,7 @@ This allows you to do some amazing things with your MyST website like:
 Integrated Jupyter Computation is hot off the press and currently limited to pages that represent complete Jupyter notebooks.
 We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/executablebooks/mystmd/issues).
 
-Being able to connect a jupyter-based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings that are still work in progress.
+Being able to connect a Jupyter-based figure or output in any website page to a kernel is still work in progress - but expected very soon. The remainder of the docs below are forward looking, watch for the 🚧 icons on headings that are still work in progress.
 ```
 
 ## Quick setup options
@@ -35,7 +35,7 @@ site:
   title: My Computational Website
 ```
 
-When the field `jupyter: true` is set, MyST will try to determine where to connect to automatically by looking at the `github` field if you supplied one. Otherwise it will use the demo repository at `https://github.com/executablebooks/thebe-binder-base` along with [mybinder.org](https://mybinder.org) to start a juptyer environment.
+When the field `jupyter: true` is set, MyST will try to determine where to connect to automatically by looking at the `github` field if you supplied one. Otherwise it will use the demo repository at `https://github.com/executablebooks/thebe-binder-base` along with [mybinder.org](https://mybinder.org) to start a Jupyter environment.
 
 The intention here is to allow minimal setup to enable a few key use cases. To go beyond or override these, you can provide various options in the `jupyter` field which are documented below.
 
@@ -247,7 +247,7 @@ Both `url` and `token` must be provided to enable a server connection.
   - The base url of the Jupyter server you want to connect to
   - `http://localhost:8888`
 * - `token`
-  - The secret token string required by your jupyter server
+  - The secret token string required by your Jupyter server
 ```
 
 This allows you to connect to local servers on a different port, or across a private network and provide specific tokens to establish the connection, it is also useful in cases where this information is provided dynamically (for example after a JupyterHub server has been provisioned).
