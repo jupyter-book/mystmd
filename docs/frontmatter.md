@@ -54,6 +54,25 @@ project:
   open_access: true
 ```
 
+(composing-myst-yml)=
+:::{note} Composing multiple `.yml` files
+
+You may separate your frontmatter into multiple, composable files. To reference other files from your main `myst.yml` file, use the `extends` key with relative path(s) to the other configuration files:
+
+```yaml
+version: 1
+site: ...
+project: ...
+extends:
+  - ../macros.yml
+  - ../funding.yml
+```
+
+Each of these files listed under `extends` must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional files listed under `extends`.
+
+Composing files together this way allows you to have a single source of truth for project frontmatter that may be reused across multiple projects, for example math macros or funding information.
+:::
+
 +++
 
 ## Available frontmatter fields
