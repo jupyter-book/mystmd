@@ -16,8 +16,10 @@ function watchConfigAndPublic(
   opts: ProcessSiteOptions,
 ) {
   const watchFiles = ['public'];
-  const siteConfigFile = selectors.selectCurrentSiteFile(session.store.getState());
+  const state = session.store.getState();
+  const siteConfigFile = selectors.selectCurrentSiteFile(state);
   if (siteConfigFile) watchFiles.push(siteConfigFile);
+  watchFiles.push(...selectors.selectConfigExtensions(state));
   return chokidar
     .watch(watchFiles, {
       ignoreInitial: true,
@@ -37,6 +39,7 @@ function triggerProjectReload(
   const projectConfigFile = projectPath
     ? selectors.selectLocalConfigFile(state, projectPath)
     : selectors.selectCurrentProjectFile(state);
+  if (selectors.selectConfigExtensions(state).includes(file)) return true;
   if (file === projectConfigFile || basename(file) === '_toc.yml') return true;
   // Reload project if file is added or remvoed
   if (['add', 'unlink'].includes(eventType)) return true;
@@ -64,8 +67,11 @@ async function processorFn(
     !KNOWN_FAST_BUILDS.has(extname(file)) ||
     ['add', 'unlink'].includes(eventType)
   ) {
-    let reloadProject = false;
-    if (file && triggerProjectReload(session, file, eventType, siteProject?.path)) {
+    let reloadProject = opts?.reloadProject ?? false;
+    if (
+      reloadProject ||
+      (file && triggerProjectReload(session, file, eventType, siteProject?.path))
+    ) {
       session.log.info('💥 Triggered full project load and site rebuild');
       reloadProject = true;
     } else {

@@ -94,9 +94,16 @@ function fillSiteConfig(base: SiteConfig, filler: SiteConfig) {
  *
  * Throws errors config file is malformed or invalid.
  */
-function getValidatedConfigsFromFile(session: ISession, file: string) {
-  const vfile = new VFile();
-  vfile.path = file;
+function getValidatedConfigsFromFile(
+  session: ISession,
+  file: string,
+  vfile?: VFile,
+  stack?: string[],
+) {
+  if (!vfile) {
+    vfile = new VFile();
+    vfile.path = file;
+  }
   const opts = configValidationOpts(vfile, 'config', RuleId.validConfigStructure);
   const conf = validateObjectKeys(
     loadConfigYaml(file),
@@ -146,8 +153,9 @@ function getValidatedConfigsFromFile(session: ISession, file: string) {
   let site: SiteConfig | undefined;
   let project: ProjectConfig | undefined;
   const projectOpts = configValidationOpts(vfile, 'config.project', RuleId.validProjectConfig);
+  let extend: string[] | undefined;
   if (conf.extend) {
-    const extend = validateList(
+    extend = validateList(
       conf.extend,
       { coerce: true, ...incrementOptions('extend', opts) },
       (item, index) => {
@@ -156,8 +164,22 @@ function getValidatedConfigsFromFile(session: ISession, file: string) {
         return resolveToAbsolute(session, dirname(file), relativeFile);
       },
     );
+    stack = [...(stack ?? []), file];
     extend?.forEach((extFile) => {
-      const { site: extSite, project: extProject } = getValidatedConfigsFromFile(session, extFile);
+      if (stack?.includes(extFile)) {
+        fileError(vfile, 'Circular dependency encountered during "config.extend" resolution', {
+          ruleId: RuleId.validConfigStructure,
+          note: [...stack, extFile].map((f) => resolveToRelative(session, '.', f)).join(' > '),
+        });
+        return;
+      }
+      const { site: extSite, project: extProject } = getValidatedConfigsFromFile(
+        session,
+        extFile,
+        vfile,
+        stack,
+      );
+      session.store.dispatch(config.actions.receiveConfigExtension({ file: extFile }));
       if (extSite) {
         site = site ? fillSiteConfig(extSite, site) : extSite;
       }
@@ -189,7 +211,7 @@ function getValidatedConfigsFromFile(session: ISession, file: string) {
     session.log.debug(`No project config defined in ${file}`);
   }
   logMessagesFromVFile(session, vfile);
-  return { site, project };
+  return { site, project, extend };
 }
 
 /**
@@ -197,24 +219,32 @@ function getValidatedConfigsFromFile(session: ISession, file: string) {
  *
  * Errors if config file does not exist or if config file exists but is invalid.
  */
-export function loadConfig(session: ISession, path: string) {
+export function loadConfig(session: ISession, path: string, opts?: { reloadProject?: boolean }) {
   const file = configFromPath(session, path);
   if (!file) {
     session.log.debug(`No config loaded from path: ${path}`);
     return;
   }
   const rawConf = loadConfigYaml(file);
-  const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
-  if (existingConf && JSON.stringify(rawConf) === JSON.stringify(existingConf.raw)) {
-    return existingConf.validated;
+  if (!opts?.reloadProject) {
+    const existingConf = selectors.selectLocalRawConfig(session.store.getState(), path);
+    if (existingConf && JSON.stringify(rawConf) === JSON.stringify(existingConf.raw)) {
+      return existingConf.validated;
+    }
   }
-  const { site, project } = getValidatedConfigsFromFile(session, file);
+  const { site, project, extend } = getValidatedConfigsFromFile(session, file);
+  const validated = { ...rawConf, site, project, extend };
   session.store.dispatch(
-    config.actions.receiveRawConfig({ path, file, raw: rawConf, validated: { site, project } }),
+    config.actions.receiveRawConfig({
+      path,
+      file,
+      raw: rawConf,
+      validated,
+    }),
   );
   if (site) saveSiteConfig(session, path, site);
   if (project) saveProjectConfig(session, path, project);
-  return { site, project };
+  return validated;
 }
 
 export function resolveToAbsolute(
@@ -412,8 +442,7 @@ export function writeConfigs(
     return;
   }
   // Get raw config to override
-  const rawConfig = loadConfig(session, path);
-  const validatedRawConfig = rawConfig?.validated ?? emptyConfig();
+  const validatedRawConfig = loadConfig(session, path) ?? emptyConfig();
   let logContent: string;
   if (siteConfig && projectConfig) {
     logContent = 'site and project configs';

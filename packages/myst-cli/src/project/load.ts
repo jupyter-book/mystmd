@@ -38,6 +38,7 @@ export async function loadProjectFromDisk(
     const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
     if (cachedProject) return cachedProject;
   }
+  loadConfig(session, path, opts);
   const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
   const file = join(path, session.configFiles[0]);
   if (!projectConfig && opts?.warnOnNoConfig) {
