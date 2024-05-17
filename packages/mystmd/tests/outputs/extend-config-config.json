@@ -1,0 +1,34 @@
+{
+  "options": {},
+  "nav": [],
+  "actions": [
+    { "title": "Learn More", "url": "https://mystmd.org/guide", "internal": false, "static": false }
+  ],
+  "projects": [
+    {
+      "license": {
+        "content": {
+          "id": "CC-BY-4.0",
+          "name": "Creative Commons Attribution 4.0 International",
+          "free": true,
+          "CC": true,
+          "url": "https://creativecommons.org/licenses/by/4.0/"
+        }
+      },
+      "math": {
+        "a": "defined-in-project-a",
+        "c": "defined-in-project-b",
+        "d": "defined-in-project-c",
+        "b": "defined-in-project-a"
+      },
+      "title": "MyST Config Extend Test",
+      "authors": [{ "id": "John Doe", "name": "John Doe" }],
+      "keywords": ["my-kw"],
+      "id": "7c806d98-0093-41ae-9889-dea2b9019064",
+      "exports": [],
+      "bibliography": [],
+      "index": "index",
+      "pages": []
+    }
+  ]
+}

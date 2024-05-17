@@ -1,0 +1,60 @@
+{
+  "kind": "Article",
+  "sha256": "b956ef955e38d755ee949dded619a8cbcd7dfbe7e33d368ab867a1aab49992ee",
+  "slug": "index",
+  "location": "/index.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Testing Config",
+    "content_includes_title": false,
+    "authors": [{ "id": "John Doe", "name": "John Doe" }],
+    "license": {
+      "content": {
+        "id": "CC-BY-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "free": true,
+        "CC": true,
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      }
+    },
+    "keywords": ["my-kw"],
+    "math": {
+      "a": "defined-in-project-a",
+      "c": "defined-in-project-b",
+      "d": "defined-in-project-c",
+      "b": "defined-in-project-a"
+    },
+    "exports": [
+      {
+        "format": "md",
+        "filename": "index.md",
+        "url": "/index-552a182d983b86e4781eb9df6c156089.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 3, "column": 1 }, "end": { "line": 3, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "position": {
+                  "start": { "line": 3, "column": 1 },
+                  "end": { "line": 3, "column": 1 }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

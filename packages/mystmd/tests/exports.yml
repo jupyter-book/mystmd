@@ -144,3 +144,11 @@ cases:
     outputs:
       - path: notebook-fig-embed/_build/site/content/index.json
         content: notebook-fig-embed/outputs/index.json
+  - title: Extend config test
+    cwd: extend-config/proj-a
+    command: myst build
+    outputs:
+      - path: extend-config/proj-a/_build/site/content/index.json
+        content: outputs/extend-config-index.json
+      - path: extend-config/proj-a/_build/site/config.json
+        content: outputs/extend-config-config.json
