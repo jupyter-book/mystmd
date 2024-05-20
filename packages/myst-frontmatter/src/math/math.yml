@@ -17,16 +17,16 @@ cases:
       math:
         a:
           macro: b
-  - title: Macro with name/description passes
+  - title: Macro with title/description passes
     raw:
       math:
         a:
           macro: b
-          name: my macro
+          title: my macro
           description: turns a into b
     normalized:
       math:
         a:
           macro: b
-          name: my macro
+          title: my macro
           description: turns a into b

@@ -1,5 +1,5 @@
 export type MathMacro = {
-  name?: string;
+  title?: string;
   description?: string;
   macro: string;
 };

@@ -14,15 +14,15 @@ export function validateMathMacro(input: any, opts: ValidationOptions) {
   }
   const value = validateObjectKeys(
     input,
-    { required: ['macro'], optional: ['name', 'description'] },
+    { required: ['macro'], optional: ['title', 'description'] },
     opts,
   );
   if (!value) return;
   const macro = validateString(value.macro, incrementOptions('macro', opts));
   if (!macro) return;
   const output: MathMacro = { macro };
-  if (defined(value.name)) {
-    output.name = validateString(value.name, incrementOptions('name', opts));
+  if (defined(value.title)) {
+    output.title = validateString(value.title, incrementOptions('title', opts));
   }
   if (defined(value.description)) {
     output.description = validateString(value.description, incrementOptions('description', opts));
