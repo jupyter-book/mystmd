@@ -24,6 +24,7 @@ import { PROJECT_FRONTMATTER_KEYS } from './types.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
+import { validateMathMacroObject } from '../math/validators.js';
 
 export function validateProjectAndPageFrontmatterKeys(
   value: Record<string, any>,
@@ -80,15 +81,7 @@ export function validateProjectAndPageFrontmatterKeys(
     output.numbering = validateNumbering(value.numbering, incrementOptions('numbering', opts));
   }
   if (defined(value.math)) {
-    const mathOpts = incrementOptions('math', opts);
-    const math = validateObject(value.math, mathOpts);
-    if (math) {
-      const stringKeys = Object.keys(math).filter((key) => {
-        // Filter on non-string values
-        return validateString(math[key], incrementOptions(key, mathOpts));
-      });
-      output.math = filterKeys(math, stringKeys);
-    }
+    output.math = validateMathMacroObject(value.math, incrementOptions('math', opts));
   }
   if (defined(value.abbreviations)) {
     const abbreviationsOpts = incrementOptions('abbreviations', opts);

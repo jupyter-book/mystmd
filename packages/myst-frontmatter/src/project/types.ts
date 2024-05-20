@@ -2,6 +2,7 @@ import type { Biblio } from '../biblio/types.js';
 import type { Download } from '../downloads/types.js';
 import type { Export } from '../exports/types.js';
 import type { Licenses } from '../licenses/types.js';
+import type { MathMacro } from '../math/types.js';
 import type { Numbering } from '../numbering/types.js';
 import type { ExternalReferences } from '../references/types.js';
 import type { ProjectSettings } from '../settings/types.js';
@@ -56,7 +57,7 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   oxa?: string;
   numbering?: Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
-  math?: Record<string, string>;
+  math?: Record<string, MathMacro>;
   /** Abbreviations used throughout the project */
   abbreviations?: Record<string, string>;
   exports?: Export[];

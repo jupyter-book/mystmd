@@ -226,10 +226,11 @@ export function validateDate(input: any, opts: ValidationOptions) {
 }
 
 /**
- * Validates value is an object
+ * Validates value is an object with string keys
  */
 export function validateObject(input: any, opts: ValidationOptions) {
   if (typeof input !== 'object') return validationError(`must be object`, opts);
+  if (Array.isArray(input)) return validationError(`must be object, not array`, opts);
   return input as Record<string, any>;
 }
 

@@ -269,6 +269,10 @@ describe('validateObject', () => {
     expect(validateObject('a', opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
+  it('list object errors', () => {
+    expect(validateObject(['a', 'b'], opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
 });
 
 describe('validateKeys', () => {

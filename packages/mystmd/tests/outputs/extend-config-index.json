@@ -19,10 +19,10 @@
     },
     "keywords": ["my-kw"],
     "math": {
-      "a": "defined-in-project-a",
-      "c": "defined-in-project-b",
-      "d": "defined-in-project-c",
-      "b": "defined-on-page"
+      "a": { "macro": "defined-in-project-a" },
+      "c": { "macro": "defined-in-project-b" },
+      "d": { "macro": "defined-in-project-c" },
+      "b": { "macro": "defined-on-page" }
     },
     "exports": [
       {
