@@ -1,6 +1,6 @@
 {
   "kind": "Article",
-  "sha256": "b956ef955e38d755ee949dded619a8cbcd7dfbe7e33d368ab867a1aab49992ee",
+  "sha256": "1303d3b24843b9c9a7a3df04f2b8625a9e690eae98dee1f87ee870d6db6986af",
   "slug": "index",
   "location": "/index.md",
   "dependencies": [],
@@ -22,13 +22,12 @@
       "a": "defined-in-project-a",
       "c": "defined-in-project-b",
       "d": "defined-in-project-c",
-      "b": "defined-in-project-a"
+      "b": "defined-on-page"
     },
     "exports": [
       {
         "format": "md",
-        "filename": "index.md",
-        "url": "/index-552a182d983b86e4781eb9df6c156089.md"
+        "filename": "index.md"
       }
     ]
   },
@@ -40,14 +39,14 @@
         "children": [
           {
             "type": "paragraph",
-            "position": { "start": { "line": 3, "column": 1 }, "end": { "line": 3, "column": 1 } },
+            "position": { "start": { "line": 8, "column": 1 }, "end": { "line": 8, "column": 1 } },
             "children": [
               {
                 "type": "text",
                 "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
                 "position": {
-                  "start": { "line": 3, "column": 1 },
-                  "end": { "line": 3, "column": 1 }
+                  "start": { "line": 8, "column": 1 },
+                  "end": { "line": 8, "column": 1 }
                 }
               }
             ]
