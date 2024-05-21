@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
 import type { LocalProject, LocalProjectPage } from '../project/types.js';
 import type { RootState } from './reducers.js';
-import type { BuildWarning, ExternalLinkResult } from './types.js';
+import type { BuildWarning, ExternalLinkResult, ValidatedRawConfig } from './types.js';
 
 function mutableCopy(obj?: Record<string, any>) {
   if (!obj) return;
@@ -65,8 +65,12 @@ export function selectLocalConfigFile(state: RootState, path: string): string | 
 export function selectLocalRawConfig(
   state: RootState,
   path: string,
-): { raw: Record<string, any>; validated: Record<string, any> } | undefined {
+): { raw: Record<string, any>; validated: ValidatedRawConfig } | undefined {
   return mutableCopy(state.local.config.rawConfigs[resolve(path)]);
+}
+
+export function selectConfigExtensions(state: RootState): string[] {
+  return [...(state.local.config.configExtensions ?? [])];
 }
 
 export function selectReloadingState(state: RootState) {

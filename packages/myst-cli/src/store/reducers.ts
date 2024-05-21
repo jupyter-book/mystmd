@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
 import { combineReducers } from 'redux';
-import type { BuildWarning, ExternalLinkResult } from './types.js';
+import type { BuildWarning, ExternalLinkResult, ValidatedRawConfig } from './types.js';
 import type { LocalProject } from '../project/types.js';
 
 export const projects = createSlice({
@@ -38,10 +38,11 @@ export const config = createSlice({
   } as {
     currentProjectPath: string | undefined;
     currentSitePath: string | undefined;
-    rawConfigs: Record<string, { raw: Record<string, any>; validated: Record<string, any> }>;
+    rawConfigs: Record<string, { raw: Record<string, any>; validated: ValidatedRawConfig }>;
     projects: Record<string, ProjectConfig>;
     sites: Record<string, Record<string, any>>;
     filenames: Record<string, string>;
+    configExtensions?: string[];
   },
   reducers: {
     receiveCurrentProjectPath(state, action: PayloadAction<{ path: string }>) {
@@ -54,7 +55,7 @@ export const config = createSlice({
       state,
       action: PayloadAction<{
         raw: Record<string, any>;
-        validated: Record<string, any>;
+        validated: ValidatedRawConfig;
         path: string;
         file: string;
       }>,
@@ -70,6 +71,10 @@ export const config = createSlice({
     receiveProjectConfig(state, action: PayloadAction<ProjectConfig & { path: string }>) {
       const { path, ...payload } = action.payload;
       state.projects[resolve(path)] = payload;
+    },
+    receiveConfigExtension(state, action: PayloadAction<{ file: string }>) {
+      state.configExtensions ??= [];
+      state.configExtensions.push(action.payload.file);
     },
   },
 });

@@ -1,6 +1,5 @@
 {
   "options": {},
-  "myst": "1.2.3",
   "nav": [],
   "actions": [
     { "title": "Learn More", "url": "https://mystmd.org/guide", "internal": false, "static": false }

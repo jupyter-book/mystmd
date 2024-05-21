@@ -18,3 +18,9 @@ export type BuildWarning = {
   position?: VFileMessage['position'];
   ruleId?: string | null;
 };
+
+export type ValidatedRawConfig = {
+  site?: Record<string, any>;
+  project?: Record<string, any>;
+  extend?: string[];
+};

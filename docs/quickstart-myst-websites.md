@@ -246,7 +246,7 @@ site:
   ...
 ```
 
-Doing this will keep the `_build` directory at the root level, but everything else outside of the `content` folder will be ignored. If you have a project in the same configuration file it can be accessed with `path: .`. Projects are "mounted" at the `slug:` (i.e. `/my-content/`) above.
+Doing this will keep the `_build` directory at the root level, but everything else outside of the `content` folder will be ignored. If you have a project in the same configuration file it can be accessed with `path: .`. Projects are "mounted" at the `slug:` (e.g. `/my-content/` above).
 :::
 
 ## Additional options
