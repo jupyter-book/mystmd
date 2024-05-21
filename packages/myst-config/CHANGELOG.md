@@ -1,5 +1,13 @@
 # myst-config
 
+## 1.4.3
+
+### Patch Changes
+
+- f4d5231: Add extend key to top-level config
+- Updated dependencies [f4d5231]
+  - myst-frontmatter@1.4.3
+
 ## 1.4.2
 
 ### Patch Changes
