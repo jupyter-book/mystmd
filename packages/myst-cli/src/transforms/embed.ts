@@ -64,6 +64,11 @@ function mutateEmbedNode(
   }
 }
 
+function targetsToTarget(targets: GenericNode[]): GenericNode {
+  if (targets.length === 1) return copyNode(targets[0]);
+  return { type: 'block', children: copyNode(targets) };
+}
+
 /**
  * This is the {embed} directive, that embeds nodes from elsewhere in a page.
  */
@@ -120,7 +125,8 @@ export async function embedTransform(
             if (!data) return;
             targetNodes = data.mdast.children;
           }
-          const targetNode = { type: 'block', children: targetNodes };
+          if (!targetNodes?.length) return;
+          const targetNode = targetsToTarget(targetNodes);
           (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
             // If target xref already has remoteBaseUrl, it can be unchanged in the embedded context
             if (targetXRef.remoteBaseUrl) return;
@@ -183,7 +189,7 @@ export async function embedTransform(
         fileError(vfile, `Embed target for "${label}" not found`, { node });
         return;
       }
-      const target = { type: 'block', children: copyNode(targetNodes) };
+      const target = targetsToTarget(targetNodes);
       if (!(state as MultiPageReferenceResolver).states) {
         // Single page case - we do not need to update urls/dependencies
         mutateEmbedNode(node, target);
