@@ -1,0 +1,318 @@
+{
+  "kind": "Article",
+  "sha256": "f55f0890d64d1ed20bdaa8e6af9c0a50fb3bb729e4a11c0e9c89dc4f5fca2ccb",
+  "slug": "index",
+  "location": "/index.md",
+  "dependencies": [
+    {
+      "url": "/plot",
+      "label": "my-plot",
+      "kind": "Notebook",
+      "slug": "plot",
+      "location": "/plot.ipynb"
+    }
+  ],
+  "frontmatter": {
+    "title": "Plots In Markdown",
+    "content_includes_title": false,
+    "github": "https://github.com/executablebooks/mystjs",
+    "keywords": [],
+    "exports": [
+      {
+        "format": "md",
+        "filename": "index.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": { "start": { "line": 3, "column": 1 }, "end": { "line": 3, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "Figure directive - local",
+                "position": {
+                  "start": { "line": 3, "column": 1 },
+                  "end": { "line": 3, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "figure-directive-local",
+            "label": "Figure directive - local",
+            "html_id": "figure-directive-local",
+            "implicit": true
+          },
+          {
+            "type": "container",
+            "kind": "figure",
+            "children": [
+              {
+                "type": "output",
+                "data": [
+                  {
+                    "output_type": "execute_result",
+                    "execution_count": 2,
+                    "metadata": {},
+                    "data": {
+                      "text/html": {
+                        "content_type": "text/html",
+                        "hash": "a16fcedcd26437c820ccfc05d1f48a57",
+                        "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
+                      },
+                      "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "caption",
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "position": {
+                      "start": { "line": 7, "column": 1 },
+                      "end": { "line": 7, "column": 1 }
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "My Caption",
+                        "position": {
+                          "start": { "line": 7, "column": 1 },
+                          "end": { "line": 7, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "enumerator": "1",
+            "source": {
+              "url": "/plot",
+              "label": "my-plot",
+              "kind": "Notebook",
+              "slug": "plot",
+              "location": "/plot.ipynb"
+            }
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 10, "column": 1 },
+              "end": { "line": 10, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Embed directive - local",
+                "position": {
+                  "start": { "line": 10, "column": 1 },
+                  "end": { "line": 10, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "embed-directive-local",
+            "label": "Embed directive - local",
+            "html_id": "embed-directive-local",
+            "implicit": true
+          },
+          {
+            "type": "embed",
+            "source": {
+              "url": "/plot",
+              "label": "my-plot",
+              "kind": "Notebook",
+              "slug": "plot",
+              "location": "/plot.ipynb"
+            },
+            "children": [
+              {
+                "type": "code",
+                "lang": "python",
+                "executable": true,
+                "value": "points",
+                "enumerator": "1"
+              },
+              {
+                "type": "output",
+                "data": [
+                  {
+                    "output_type": "execute_result",
+                    "execution_count": 2,
+                    "metadata": {},
+                    "data": {
+                      "text/html": {
+                        "content_type": "text/html",
+                        "hash": "a16fcedcd26437c820ccfc05d1f48a57",
+                        "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
+                      },
+                      "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 15, "column": 1 },
+              "end": { "line": 15, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Figure directive - external",
+                "position": {
+                  "start": { "line": 15, "column": 1 },
+                  "end": { "line": 15, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "figure-directive-external",
+            "label": "Figure directive - external",
+            "html_id": "figure-directive-external",
+            "implicit": true
+          },
+          {
+            "type": "container",
+            "kind": "figure",
+            "children": [
+              {
+                "type": "output",
+                "data": [
+                  {
+                    "output_type": "execute_result",
+                    "execution_count": 2,
+                    "metadata": {},
+                    "data": {
+                      "text/html": {
+                        "content_type": "text/html",
+                        "hash": "b7397eaae9b8b69ecb0927a44a1599c1",
+                        "path": "https://cdn.curvenote.com/018f6819-7b0e-75f4-95e9-960474722f3e/public/b7397eaae9b8b69ecb0927a44a1599c1.html"
+                      },
+                      "text/plain": {
+                        "content": "alt.VConcatChart(...)",
+                        "content_type": "text/plain"
+                      }
+                    }
+                  }
+                ],
+                "visibility": "show"
+              },
+              {
+                "type": "caption",
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "position": {
+                      "start": { "line": 19, "column": 1 },
+                      "end": { "line": 19, "column": 1 }
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "My Caption",
+                        "position": {
+                          "start": { "line": 19, "column": 1 },
+                          "end": { "line": 19, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "enumerator": "2",
+            "source": {
+              "url": "/interactive-notebooks",
+              "remoteBaseUrl": "https://mystmd.org/guide",
+              "label": "xref:guide#img:altair-horsepower",
+              "kind": "Notebook",
+              "slug": "interactive-notebooks",
+              "location": "/interactive-notebooks.ipynb",
+              "title": "Interactive Notebooks with MyST"
+            }
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 22, "column": 1 },
+              "end": { "line": 22, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Embed directive - external",
+                "position": {
+                  "start": { "line": 22, "column": 1 },
+                  "end": { "line": 22, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "embed-directive-external",
+            "label": "Embed directive - external",
+            "html_id": "embed-directive-external",
+            "implicit": true
+          },
+          {
+            "type": "embed",
+            "source": {
+              "url": "/interactive-notebooks",
+              "remoteBaseUrl": "https://mystmd.org/guide",
+              "label": "xref:guide#img:altair-horsepower",
+              "kind": "Notebook",
+              "slug": "interactive-notebooks",
+              "location": "/interactive-notebooks.ipynb",
+              "title": "Interactive Notebooks with MyST"
+            },
+            "children": [
+              {
+                "type": "code",
+                "lang": "python",
+                "executable": true,
+                "value": "points & bars",
+                "enumerator": "1",
+                "visibility": "show"
+              },
+              {
+                "type": "output",
+                "data": [
+                  {
+                    "output_type": "execute_result",
+                    "execution_count": 2,
+                    "metadata": {},
+                    "data": {
+                      "text/html": {
+                        "content_type": "text/html",
+                        "hash": "b7397eaae9b8b69ecb0927a44a1599c1",
+                        "path": "https://cdn.curvenote.com/018f6819-7b0e-75f4-95e9-960474722f3e/public/b7397eaae9b8b69ecb0927a44a1599c1.html"
+                      },
+                      "text/plain": {
+                        "content": "alt.VConcatChart(...)",
+                        "content_type": "text/plain"
+                      }
+                    }
+                  }
+                ],
+                "visibility": "show"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}
