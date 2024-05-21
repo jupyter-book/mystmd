@@ -17,7 +17,6 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
     },
   ],
   affiliations: [{ id: 'univb', name: 'University B' }],
-  name: 'example.md',
   doi: '10.1000/abcd/efg012',
   arxiv: 'https://arxiv.org/example',
   open_access: true,
@@ -52,7 +51,6 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   ],
   affiliations: [{ id: 'univa', name: 'University A' }],
   date: '14 Dec 2021',
-  name: 'example.md',
   doi: '10.1000/abcd/efg012',
   arxiv: 'https://arxiv.org/example',
   open_access: true,
@@ -100,7 +98,6 @@ describe('fillPageFrontmatter', () => {
     const result = { ...TEST_PROJECT_FRONTMATTER };
     delete result.title;
     delete result.description;
-    delete result.name;
     delete result.oxa;
     delete result.exports;
     delete result.requirements;
