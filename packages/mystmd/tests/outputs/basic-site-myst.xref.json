@@ -1,1 +1,13 @@
-{"version":"1","myst":"1.2.3","references":[{"kind":"page","data":"/content/index.json","url":"/"},{"identifier":"lorem-ipsum","kind":"heading","data":"/content/index.json","url":"/","implicit":true}]}
+{
+  "version": "1",
+  "references": [
+    { "kind": "page", "data": "/content/index.json", "url": "/" },
+    {
+      "identifier": "lorem-ipsum",
+      "kind": "heading",
+      "data": "/content/index.json",
+      "url": "/",
+      "implicit": true
+    }
+  ]
+}
