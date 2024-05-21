@@ -1,5 +1,16 @@
 # myst-transforms
 
+## 1.3.14
+
+### Patch Changes
+
+- dfbcb62d: Fix broken term xrefs by no removing identifier on xref node
+- e82914e2: Better error messages for empty link text
+- Updated dependencies [f4d5231]
+  - myst-frontmatter@1.4.3
+  - myst-common@1.4.3
+  - myst-spec-ext@1.4.3
+
 ## 1.3.13
 
 ### Patch Changes

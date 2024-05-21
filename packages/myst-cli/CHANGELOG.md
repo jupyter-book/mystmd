@@ -1,5 +1,27 @@
 # myst-cli
 
+## 1.2.4
+
+### Patch Changes
+
+- 8e7ac4ae: Fix cross references for same-site, different-page embeds
+- e82914e2: More specific error for invalid xref embed
+- f4d5231: Support circular deps and live reloading for extending config
+- f4d5231: Load and fill frontmatter from extend config key
+- f4d5231: Add extend key to top-level config
+- f4d5231: Refactor config loading to separate validation from saving
+- e82914e2: Better error messages for empty link text
+- 72a127c3: Fix embed mdast structure for executable content
+- Updated dependencies [f4d5231]
+- Updated dependencies [f4d5231]
+- Updated dependencies [dfbcb62d]
+- Updated dependencies [e82914e2]
+  - myst-frontmatter@1.4.3
+  - myst-config@1.4.3
+  - myst-transforms@1.3.14
+  - myst-common@1.4.3
+  - myst-spec-ext@1.4.3
+
 ## 1.2.3
 
 ### Patch Changes

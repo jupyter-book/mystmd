@@ -1,5 +1,12 @@
 # mystmd
 
+## 1.2.4
+
+### Patch Changes
+
+- 8e7ac4ae: Add site build test cases to end2end tests
+- 72a127c3: Fix embed mdast structure for executable content
+
 ## 1.2.3
 
 ## 1.2.2

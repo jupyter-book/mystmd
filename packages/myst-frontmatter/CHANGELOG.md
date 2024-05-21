@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.4.3
+
+### Patch Changes
+
+- f4d5231: Load and fill frontmatter from extend config key
+
 ## 1.4.2
 
 ## 1.4.1
