@@ -119,3 +119,15 @@ test('Single parent entry without title', () => {
   ]);
   expect(opts.messages.warnings).toBeUndefined();
 });
+
+test('invalid toc entry', () => {
+  const input = ['invalid'];
+  validateTOC(input, opts);
+  expect(opts.messages.errors).toStrictEqual([
+    {
+      message: "'0' must be object (at test)",
+      property: '0',
+    },
+  ]);
+  expect(opts.messages.warnings).toBeUndefined();
+});

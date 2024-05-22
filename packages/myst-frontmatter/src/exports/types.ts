@@ -1,3 +1,5 @@
+import type { TOC } from 'myst-toc';
+
 export enum ExportFormats {
   pdf = 'pdf',
   tex = 'tex',
@@ -22,7 +24,7 @@ export type Export = {
   template?: string | null;
   output?: string;
   zip?: boolean;
-  toc?: any[];
+  toc?: TOC;
   articles?: ExportArticle[];
   top_level?: 'parts' | 'chapters' | 'sections';
   /** sub_articles are only for jats xml export */

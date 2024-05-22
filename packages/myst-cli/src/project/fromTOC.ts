@@ -87,6 +87,9 @@ export function projectFromTOC(
 ): Omit<LocalProject, 'bibliography'> {
   const pageSlugs: PageSlugs = {};
   const [root, ...entries] = toc;
+  if (!root) {
+    throw new Error('Project TOC must have at least one item');
+  }
   if (!isFile(root)) {
     throw new Error(`First TOC item should be a file`);
   }

@@ -213,5 +213,5 @@ export function validateEntry(entry: any, opts: ValidationOptions): Entry | unde
 export function validateTOC(toc: any, opts: ValidationOptions): TOC | undefined {
   return validateList(toc, opts, (item, ind) =>
     validateEntry(item, incrementOptions(`${ind}`, opts)),
-  ) as unknown as TOC | undefined;
+  );
 }

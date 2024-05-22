@@ -16,4 +16,4 @@ project:
       template: ../template/tex
       output: _build/out-single.tex
       toc:
-        - one.md
+        - file: one.md

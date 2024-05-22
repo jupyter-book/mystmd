@@ -427,6 +427,17 @@ cases:
           sub_articles:
             - a.md
     errors: 1
+  - title: export with invalid toc errors
+    raw:
+      exports:
+        - format: pdf
+          toc:
+            - foo.md
+    normalized:
+      exports:
+        - format: pdf
+          toc: []
+    errors: 1
   - title: zip passes
     raw:
       exports:
