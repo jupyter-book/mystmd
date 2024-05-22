@@ -168,8 +168,9 @@ export function projectFromSphinxTOC(
   const { dir, base } = parse(filename);
   const toc = readSphinxTOC(session.log, { filename: base, path: dir });
 
-  addWarningForFile(session, filename, `Encountered legacy TOC: ${filename}`, 'warn', {
+  addWarningForFile(session, filename, `Encountered legacy jupyterbook TOC: ${filename}`, 'warn', {
     ruleId: RuleId.encounteredLegacyTOC,
+    note: 'To upgrade to a MyST TOC, try running `myst init --write-toc`',
   });
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(dir, toc.root));

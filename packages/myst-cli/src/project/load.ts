@@ -53,13 +53,13 @@ export async function loadProjectFromDisk(
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeTOC } = opts || {};
   const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
-  // Legacy validator
-  if (validateSphinxTOC(session, path)) {
-    newProject = projectFromSphinxTOC(session, path);
+  if (projectConfig?.toc !== undefined) {
+    newProject = projectFromTOC(session, path, projectConfig.toc);
     if (writeTOC) session.log.warn('Not writing the table of contents, it already exists!');
     writeTOC = false;
-  } else if (projectConfig?.toc !== undefined) {
-    newProject = projectFromTOC(session, path, projectConfig.toc);
+  } else if (validateSphinxTOC(session, path)) {
+    // Legacy validator
+    newProject = projectFromSphinxTOC(session, path);
   } else {
     const project = selectors.selectLocalProject(session.store.getState(), path);
     if (!index && !project?.implicitIndex && project?.file) {
