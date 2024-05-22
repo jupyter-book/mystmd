@@ -37,7 +37,7 @@
     "orcid": "^1.0.0",
     "simple-validators": "^1.0.4",
     "spdx-correct": "^3.2.0",
-    "myst-toc": "^0.0.0"
+    "myst-toc": "^0.1.0"
   },
   "devDependencies": {
     "@types/spdx-correct": "^3.1.0",
