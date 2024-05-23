@@ -186,11 +186,11 @@ export function resolveArticles(
   const { articles, sub_articles } = exp;
   projectPath = projectPath ?? '.';
   let resolved: ResolvedArticles = { articles, sub_articles };
-  let expTopLevelIgnored = true;
+  let warnAboutExpTopLevel = !!exp.top_level;
   // First, respect explicit toc or toc file. If articles/sub_articles are already defined, toc is ignored.
   if (!resolved.articles && !resolved.sub_articles) {
     if (exp.toc) {
-      expTopLevelIgnored = false;
+      warnAboutExpTopLevel = false;
       resolved = resolveArticlesFromTOC(session, exp, exp.toc, projectPath, vfile);
     } else if (exp.tocFile && validateSphinxTOC(session, exp.tocFile)) {
       resolved = resolveArticlesFromSphinxTOC(session, exp, exp.tocFile, vfile);
@@ -209,7 +209,7 @@ export function resolveArticles(
     const state = session.store.getState();
     const projectConfig = selectors.selectLocalProjectConfig(state, projectPath);
     if (projectConfig?.toc) {
-      expTopLevelIgnored = false;
+      warnAboutExpTopLevel = false;
       resolved = resolveArticlesFromTOC(session, exp, projectConfig.toc, projectPath, vfile);
     } else if (validateSphinxTOC(session, projectPath)) {
       // If the only explicit toc is in a _toc.yml file
@@ -221,7 +221,7 @@ export function resolveArticles(
       }
     }
   }
-  if (expTopLevelIgnored) {
+  if (warnAboutExpTopLevel) {
     fileWarn(
       vfile,
       `top_level may only be used if toc is defined in your export or project config`,
