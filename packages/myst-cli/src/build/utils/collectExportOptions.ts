@@ -174,9 +174,13 @@ export function resolveArticles(
   const { articles, sub_articles } = exp;
   projectPath = projectPath ?? '.';
   let resolved: ResolvedArticles = { articles, sub_articles };
-  // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
-  if (exp.toc && !resolved.articles && !resolved.sub_articles) {
-    resolved = resolveArticlesFromTOC(session, exp, projectPath, vfile);
+  // First, respect explicit toc or toc file. If articles/sub_articles are already defined, toc is ignored.
+  if (!resolved.articles && !resolved.sub_articles) {
+    if (exp.toc) {
+      resolved = resolveArticlesFromTOC(session, exp, projectPath, vfile);
+    } else if (exp.tocFile && validateSphinxTOC(session, exp.tocFile)) {
+      resolved = resolveArticlesFromSphinxTOC(session, exp, exp.tocFile, vfile);
+    }
   }
   // If no articles are specified, use the sourceFile for article
   if (!resolved.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {

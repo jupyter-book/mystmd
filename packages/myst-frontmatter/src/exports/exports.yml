@@ -401,12 +401,33 @@ cases:
         - format: pdf
           toc:
             - file: foo.md
+  - title: export toc as string coerces to tocFile
+    raw:
+      exports:
+        - format: pdf
+          toc: _toc.yml
+    normalized:
+      exports:
+        - format: pdf
+          tocFile: _toc.yml
   - title: export toc and article errors
     raw:
       exports:
         - format: pdf
           toc:
             - file: foo.md
+          article: a.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+    errors: 1
+  - title: export toc file and article errors
+    raw:
+      exports:
+        - format: pdf
+          toc: _toc.yml
           article: a.md
     normalized:
       exports:

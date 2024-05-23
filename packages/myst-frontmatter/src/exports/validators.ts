@@ -264,9 +264,13 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     const tocOpts = incrementOptions('toc', opts);
     if (validExport.articles || validExport.sub_articles) {
       validationError(
-        'export cannot define both toc file and articles/sub_articles; ignoring toc',
+        'export cannot define both toc and articles/sub_articles; ignoring toc',
         tocOpts,
       );
+      validExport.toc = undefined;
+    } else if (typeof value.toc === 'string') {
+      // Support legacy behavior of providing a jupyterbook toc file as export.toc
+      validExport.tocFile = value.toc;
       validExport.toc = undefined;
     } else {
       validExport.toc = validateTOC(value.toc, tocOpts);

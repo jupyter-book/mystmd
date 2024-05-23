@@ -30,4 +30,6 @@ export type Export = {
   /** sub_articles are only for jats xml export */
   sub_articles?: string[];
   /** MECA: to, from later */
+  /** tocFile is not set by user; it will be set instead of `toc` when user provides a string for `toc`*/
+  tocFile?: string;
 } & Record<string, any>;
