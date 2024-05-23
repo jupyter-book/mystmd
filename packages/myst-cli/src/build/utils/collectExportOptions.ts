@@ -172,10 +172,11 @@ export function resolveArticles(
   projectPath?: string,
 ) {
   const { articles, sub_articles } = exp;
+  projectPath = projectPath ?? '.';
   let resolved: ResolvedArticles = { articles, sub_articles };
   // First, respect explicit toc. If articles/sub_articles are already defined, toc is ignored.
   if (exp.toc && !resolved.articles && !resolved.sub_articles) {
-    resolved = resolveArticlesFromTOC(session, exp, projectPath ?? '.', vfile);
+    resolved = resolveArticlesFromTOC(session, exp, projectPath, vfile);
   }
   // If no articles are specified, use the sourceFile for article
   if (!resolved.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
@@ -187,13 +188,13 @@ export function resolveArticles(
   }
   // If still no articles, try to use explicit or implicit project toc
   if (!resolved.articles && !resolved.sub_articles) {
-    if (validateSphinxTOC(session, projectPath ?? '.')) {
-      resolved = resolveArticlesFromSphinxTOC(session, exp, projectPath ?? '.', vfile);
+    const state = session.store.getState();
+    const projectConfig = selectors.selectLocalProjectConfig(state, projectPath);
+    if (!projectConfig?.toc && validateSphinxTOC(session, projectPath)) {
+      // If the only explicit toc is in a _toc.yml file
+      resolved = resolveArticlesFromSphinxTOC(session, exp, projectPath, vfile);
     } else {
-      const cachedProject = selectors.selectLocalProject(
-        session.store.getState(),
-        projectPath ?? '.',
-      );
+      const cachedProject = selectors.selectLocalProject(state, projectPath);
       if (cachedProject) {
         resolved = resolveArticlesFromProject(exp, cachedProject, vfile);
       }
