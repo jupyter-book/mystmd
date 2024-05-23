@@ -1,0 +1,10 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: One Two Three! Six? Five?
+  author: Franklin Koch
+  exports:
+    - format: tex
+      template: ../templates/tex
+      output: _build/out.tex
+      top_level: chapters

@@ -131,6 +131,16 @@ cases:
         content: outputs/multi-page-tex-two-chapters.tex
       - path: multi-page-override-tex/_build/out-three.tex
         content: outputs/multi-page-tex-three-chapters.tex
+  - title: Nested toc file is respected
+    cwd: nested-toc-file
+    command: myst build --tex --ci
+    outputs:
+      - path: nested-toc-file/_build/out.tex
+        content: nested-toc-file/.outputs/out.tex
+      - path: nested-toc-file/_build/out-six.tex
+        content: nested-toc-file/.outputs/out-six.tex
+      - path: nested-toc-file/_build/out-five.tex
+        content: nested-toc-file/.outputs/out-five.tex
   - title: Notebook exports to tex; frontmatter from first cell only
     cwd: notebook-with-fm
     command: myst build --tex --ci
