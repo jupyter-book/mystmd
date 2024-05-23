@@ -48,23 +48,43 @@ cases:
       - path: multi-page-toc-tex/_build/out.tex
         content: outputs/multi-page-tex.tex
       - path: multi-page-toc-tex/_build/out-one.tex
-        content: outputs/multi-page-tex-one.tex
+        content: outputs/multi-page-tex-one-chapters.tex
       - path: multi-page-toc-tex/_build/out-two.tex
-        content: outputs/multi-page-tex-two.tex
+        content: outputs/multi-page-tex-two-chapters.tex
       - path: multi-page-toc-tex/_build/out-three.tex
-        content: outputs/multi-page-tex-three.tex
+        content: outputs/multi-page-tex-three-chapters.tex
   - title: Multi-page tex export with explicit articles
     cwd: multi-page-articles-tex
     command: myst build --tex --ci
     outputs:
-      - path: multi-page-articles-tex/_build/out.tex
-        content: outputs/multi-page-tex.tex
-      - path: multi-page-articles-tex/_build/out-one.tex
-        content: outputs/multi-page-tex-one.tex
-      - path: multi-page-articles-tex/_build/out-two.tex
-        content: outputs/multi-page-tex-two.tex
-      - path: multi-page-articles-tex/_build/out-three.tex
-        content: outputs/multi-page-tex-three.tex
+      - path: multi-page-articles-tex/_build/out-chapters.tex
+        content: outputs/multi-page-tex-chapters.tex
+      - path: multi-page-articles-tex/_build/out-chapters-one.tex
+        content: outputs/multi-page-tex-one-chapters.tex
+      - path: multi-page-articles-tex/_build/out-chapters-two.tex
+        content: outputs/multi-page-tex-two-chapters.tex
+      - path: multi-page-articles-tex/_build/out-chapters-three.tex
+        content: outputs/multi-page-tex-three-chapters.tex
+      - path: multi-page-articles-tex/_build/out-sections-one.tex
+        content: outputs/multi-page-tex-one-sections.tex
+      - path: multi-page-articles-tex/_build/out-sections-two.tex
+        content: outputs/multi-page-tex-two-sections.tex
+      - path: multi-page-articles-tex/_build/out-sections-three.tex
+        content: outputs/multi-page-tex-three-sections.tex
+      - path: multi-page-articles-tex/_build/out-implicit-one.tex
+        content: outputs/multi-page-tex-one-sections.tex
+      - path: multi-page-articles-tex/_build/out-implicit-two.tex
+        content: outputs/multi-page-tex-two-sections.tex
+      - path: multi-page-articles-tex/_build/out-implicit-three.tex
+        content: outputs/multi-page-tex-three-sections.tex
+      - path: multi-page-articles-tex/_build/out-part.tex
+        content: outputs/multi-page-tex-part.tex
+      - path: multi-page-articles-tex/_build/out-part-one.tex
+        content: outputs/multi-page-tex-one-chapters.tex
+      - path: multi-page-articles-tex/_build/out-part-two.tex
+        content: outputs/multi-page-tex-two-sections.tex
+      - path: multi-page-articles-tex/_build/out-part-three.tex
+        content: outputs/multi-page-tex-three-sections.tex
   - title: Multi-page tex export frontmatter overrides
     cwd: multi-page-override-tex
     command: myst build --tex --ci
@@ -72,11 +92,11 @@ cases:
       - path: multi-page-override-tex/_build/out.tex
         content: outputs/multi-page-tex.tex
       - path: multi-page-override-tex/_build/out-one.tex
-        content: outputs/multi-page-tex-one.tex
+        content: outputs/multi-page-tex-one-chapters.tex
       - path: multi-page-override-tex/_build/out-two.tex
-        content: outputs/multi-page-tex-two.tex
+        content: outputs/multi-page-tex-two-chapters.tex
       - path: multi-page-override-tex/_build/out-three.tex
-        content: outputs/multi-page-tex-three.tex
+        content: outputs/multi-page-tex-three-chapters.tex
   - title: Notebook exports to tex; frontmatter from first cell only
     cwd: notebook-with-fm
     command: myst build --tex --ci
