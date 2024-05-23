@@ -8,6 +8,7 @@ import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtensi
 import { fileInfo } from '../utils/fileInfo.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { nextLevel } from '../utils/nextLevel.js';
+import { selectors } from '../store/index.js';
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -28,6 +29,7 @@ function pagesFromEntries(
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
 ): (LocalProjectFolder | LocalProjectPage)[] {
+  const configFile = selectors.selectLocalConfigFile(session.store.getState(), path);
   for (const entry of entries) {
     if (isFile(entry)) {
       const file = join(path, entry.file);
@@ -36,9 +38,15 @@ function pagesFromEntries(
         const { slug } = fileInfo(file, pageSlugs);
         pages.push({ file, level, slug });
       } else {
-        addWarningForFile(session, path, `Referenced file not found: ${entry.file}`, 'error', {
-          ruleId: RuleId.tocContentsExist,
-        });
+        addWarningForFile(
+          session,
+          configFile,
+          `Referenced file not found: ${entry.file}`,
+          'error',
+          {
+            ruleId: RuleId.tocContentsExist,
+          },
+        );
       }
     } else if (isPattern(entry)) {
       const { pattern } = entry;
@@ -49,13 +57,27 @@ function pagesFromEntries(
           const { slug } = fileInfo(file, pageSlugs);
           pages.push({ file, level, slug });
         } else {
-          addWarningForFile(session, path, `Referenced file not found: ${filePath}`, 'error', {
-            ruleId: RuleId.tocContentsExist,
-          });
+          addWarningForFile(
+            session,
+            configFile,
+            `Referenced file not found: ${filePath}`,
+            'error',
+            {
+              ruleId: RuleId.tocContentsExist,
+            },
+          );
         }
       });
     } else if (isURL(entry)) {
-      throw new Error('Not implemented!');
+      addWarningForFile(
+        session,
+        configFile,
+        `URLs in table of contents are not supported: ${entry.url}`,
+        'error',
+        {
+          ruleId: RuleId.tocContentsExist,
+        },
+      );
     } else {
       // Parent Entry
       pages.push({ level, title: entry.title });
@@ -91,7 +113,7 @@ export function projectFromTOC(
     throw new Error('Project TOC must have at least one item');
   }
   if (!isFile(root)) {
-    throw new Error(`First TOC item should be a file`);
+    throw new Error(`First TOC item must be a file`);
   }
   const indexFile = resolveExtension(join(path, root.file));
   if (!indexFile) {
@@ -168,10 +190,6 @@ export function projectFromSphinxTOC(
   const { dir, base } = parse(filename);
   const toc = readSphinxTOC(session.log, { filename: base, path: dir });
 
-  addWarningForFile(session, filename, `Encountered legacy jupyterbook TOC: ${filename}`, 'warn', {
-    ruleId: RuleId.encounteredLegacyTOC,
-    note: 'To upgrade to a MyST TOC, try running `myst init --write-toc`',
-  });
   const pageSlugs: PageSlugs = {};
   const indexFile = resolveExtension(join(dir, toc.root));
   if (!indexFile) {
