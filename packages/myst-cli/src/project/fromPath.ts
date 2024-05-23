@@ -60,6 +60,8 @@ function projectPagesFromPath(
   if (contents.includes(join(path, '_toc.yml'))) {
     const prevLevel = (level < 2 ? 1 : level - 1) as PageLevels;
     try {
+      // TODO: We don't yet have a way to do nested tocs with new-style toc
+      session.log.debug(`Respecting legacy TOC in subdirectory: ${join(path, '_toc.yml')}`);
       return pagesFromSphinxTOC(session, path, prevLevel);
     } catch {
       if (!suppressWarnings) {
