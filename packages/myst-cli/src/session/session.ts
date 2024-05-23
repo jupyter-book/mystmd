@@ -204,10 +204,16 @@ export class Session implements ISession {
   }
 
   private async createJupyterSessionManager(): Promise<SessionManager | undefined> {
+    const projectConfig = selectors.selectCurrentProjectConfig(this.store.getState());
     try {
       let partialServerSettings: JupyterServerSettings | undefined;
-      // Load from environment
-      if (process.env.JUPYTER_BASE_URL !== undefined) {
+      const configServer = projectConfig?.thebe?.server;
+      if (configServer !== undefined) {
+        partialServerSettings = {
+          baseUrl: configServer.url,
+          token: configServer.token,
+        };
+      } else if (process.env.JUPYTER_BASE_URL !== undefined) {
         partialServerSettings = {
           baseUrl: process.env.JUPYTER_BASE_URL,
           token: process.env.JUPYTER_TOKEN,
