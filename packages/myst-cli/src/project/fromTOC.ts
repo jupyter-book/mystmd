@@ -31,12 +31,15 @@ function pagesFromEntries(
 ): (LocalProjectFolder | LocalProjectPage)[] {
   const configFile = selectors.selectLocalConfigFile(session.store.getState(), path);
   for (const entry of entries) {
+    let entryLevel = level;
     if (isFile(entry)) {
+      // Level must be "chapter" or "section" for files
+      entryLevel = level < 0 ? 0 : level;
       const file = join(path, entry.file);
 
       if (fs.existsSync(file) && !isDirectory(file)) {
         const { slug } = fileInfo(file, pageSlugs);
-        pages.push({ file, level, slug });
+        pages.push({ file, level: entryLevel, slug });
       } else {
         addWarningForFile(
           session,
@@ -49,13 +52,16 @@ function pagesFromEntries(
         );
       }
     } else if (isPattern(entry)) {
+      entryLevel = level < 0 ? 0 : level;
       const { pattern } = entry;
       const matches = globSync(pattern, { cwd: path });
       matches.forEach((filePath) => {
         const file = join(path, filePath);
-        if (fs.existsSync(file) && !isDirectory(file)) {
-          const { slug } = fileInfo(file, pageSlugs);
-          pages.push({ file, level, slug });
+        if (fs.existsSync(file)) {
+          if (!isDirectory(file)) {
+            const { slug } = fileInfo(file, pageSlugs);
+            pages.push({ file, level: entryLevel, slug });
+          }
         } else {
           addWarningForFile(
             session,
@@ -79,14 +85,22 @@ function pagesFromEntries(
         },
       );
     } else {
-      // Parent Entry
-      pages.push({ level, title: entry.title });
+      // Parent Entry - may be a "part" with level -1
+      entryLevel = level < -1 ? -1 : level;
+      pages.push({ level: entryLevel, title: entry.title });
     }
 
     // Do we have any children?
     const parentEntry = entry as Partial<ParentEntry>;
     if (parentEntry.children) {
-      pagesFromEntries(session, path, parentEntry.children, pages, nextLevel(level), pageSlugs);
+      pagesFromEntries(
+        session,
+        path,
+        parentEntry.children,
+        pages,
+        nextLevel(entryLevel),
+        pageSlugs,
+      );
     }
   }
   return pages;
@@ -127,8 +141,6 @@ export function projectFromTOC(
   }
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
-  // Do not allow parts to have level < -1
-  if (level < -1) level = -1;
   pagesFromEntries(session, path, entries, pages, level, pageSlugs);
   return { path: path || '.', file: indexFile, index: slug, pages };
 }

@@ -8,6 +8,7 @@ import {
   MULTI_ARTICLE_EXPORT_FORMATS,
   singleArticleWithFile,
 } from 'myst-frontmatter';
+import type { TOC } from 'myst-toc';
 import { VFile } from 'vfile';
 import { findCurrentProjectAndLoad } from '../../config.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
@@ -15,7 +16,7 @@ import { validateSphinxTOC } from '../../utils/toc.js';
 import { projectFromTOC, projectFromSphinxTOC } from '../../project/fromTOC.js';
 
 import { loadProjectFromDisk } from '../../project/load.js';
-import type { LocalProject } from '../../project/types.js';
+import type { LocalProject, PageLevels } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import type {
@@ -67,6 +68,7 @@ export function resolveArticlesFromProject(
 function resolveArticlesFromTOC(
   session: ISession,
   exp: ExportWithFormat,
+  toc: TOC,
   projectPath: string,
   vfile: VFile,
 ): ResolvedArticles {
@@ -75,7 +77,17 @@ function resolveArticlesFromTOC(
     ExportFormats.pdf,
     ExportFormats.pdftex,
   ].includes(exp.format);
-  const proj = projectFromTOC(session, projectPath, exp.toc!, allowLevelLessThanOne ? -1 : 1);
+  let level: PageLevels = 1;
+  if (!allowLevelLessThanOne && exp.top_level && exp.top_level !== 'sections') {
+    fileWarn(vfile, `top_level cannot be specified for export of format '${exp.format}'`, {
+      ruleId: RuleId.validFrontmatterExportList,
+    });
+  } else if (exp.top_level === 'parts') {
+    level = -1;
+  } else if (exp.top_level === 'chapters') {
+    level = 0;
+  }
+  const proj = projectFromTOC(session, projectPath, toc, level);
   return resolveArticlesFromProject(exp, proj, vfile);
 }
 
@@ -174,10 +186,12 @@ export function resolveArticles(
   const { articles, sub_articles } = exp;
   projectPath = projectPath ?? '.';
   let resolved: ResolvedArticles = { articles, sub_articles };
+  let expTopLevelIgnored = true;
   // First, respect explicit toc or toc file. If articles/sub_articles are already defined, toc is ignored.
   if (!resolved.articles && !resolved.sub_articles) {
     if (exp.toc) {
-      resolved = resolveArticlesFromTOC(session, exp, projectPath, vfile);
+      expTopLevelIgnored = false;
+      resolved = resolveArticlesFromTOC(session, exp, exp.toc, projectPath, vfile);
     } else if (exp.tocFile && validateSphinxTOC(session, exp.tocFile)) {
       resolved = resolveArticlesFromSphinxTOC(session, exp, exp.tocFile, vfile);
     }
@@ -194,7 +208,10 @@ export function resolveArticles(
   if (!resolved.articles && !resolved.sub_articles) {
     const state = session.store.getState();
     const projectConfig = selectors.selectLocalProjectConfig(state, projectPath);
-    if (!projectConfig?.toc && validateSphinxTOC(session, projectPath)) {
+    if (projectConfig?.toc) {
+      expTopLevelIgnored = false;
+      resolved = resolveArticlesFromTOC(session, exp, projectConfig.toc, projectPath, vfile);
+    } else if (validateSphinxTOC(session, projectPath)) {
       // If the only explicit toc is in a _toc.yml file
       resolved = resolveArticlesFromSphinxTOC(session, exp, projectPath, vfile);
     } else {
@@ -203,6 +220,15 @@ export function resolveArticles(
         resolved = resolveArticlesFromProject(exp, cachedProject, vfile);
       }
     }
+  }
+  if (expTopLevelIgnored) {
+    fileWarn(
+      vfile,
+      `top_level may only be used if toc is defined in your export or project config`,
+      {
+        ruleId: RuleId.validFrontmatterExportList,
+      },
+    );
   }
   if (!resolved.articles?.length && exp.format !== ExportFormats.meca) {
     fileError(vfile, `Unable to resolve any 'articles' to export`, {

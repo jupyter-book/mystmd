@@ -11,9 +11,17 @@ project:
   exports:
     - format: tex
       template: ../templates/tex
-      output: _build/out.tex
+      output: _build/out-chapters.tex
+      top_level: chapters
     - format: tex
-      template: ../template/tex
+      template: ../templates/tex
+      output: _build/out-sections.tex
+      top_level: sections
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-implicit.tex
+    - format: tex
+      template: ../templates/tex
       output: _build/out-single.tex
       toc:
         - file: one.md
