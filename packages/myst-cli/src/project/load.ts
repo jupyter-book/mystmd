@@ -11,7 +11,7 @@ import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { getAllBibTexFilesOnPath } from '../utils/getAllBibtexFiles.js';
-import { validateSphinxTOC } from '../utils/toc.js';
+import { tocFile, validateSphinxTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
 import { projectFromTOC, projectFromSphinxTOC } from './fromTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
@@ -39,12 +39,14 @@ export async function loadProjectFromDisk(
     if (cachedProject) return cachedProject;
   }
   loadConfig(session, path, opts);
-  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
-  const file = join(path, session.configFiles[0]);
+  const state = session.store.getState();
+  const projectConfig = selectors.selectLocalProjectConfig(state, path);
+  const projectConfigFile =
+    selectors.selectLocalConfigFile(state, path) ?? join(path, session.configFiles[0]);
   if (!projectConfig && opts?.warnOnNoConfig) {
     addWarningForFile(
       session,
-      file,
+      projectConfigFile,
       `Loading project from path with no config file: ${path}\nConsider running "myst init --project" in that directory`,
       'warn',
       { ruleId: RuleId.projectConfigExists },
@@ -52,16 +54,31 @@ export async function loadProjectFromDisk(
   }
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeTOC } = opts || {};
-  const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
+  let legacyToc = false;
   if (projectConfig?.toc !== undefined) {
     newProject = projectFromTOC(session, path, projectConfig.toc);
     if (writeTOC) session.log.warn('Not writing the table of contents, it already exists!');
     writeTOC = false;
   } else if (validateSphinxTOC(session, path)) {
     // Legacy validator
+    legacyToc = true;
+    if (!writeTOC) {
+      // Do not warn if user is explicitly upgrading toc
+      const filename = tocFile(path);
+      addWarningForFile(
+        session,
+        filename,
+        `Encountered legacy jupyterbook TOC: ${filename}`,
+        'warn',
+        {
+          ruleId: RuleId.encounteredLegacyTOC,
+          note: 'To upgrade to a MyST TOC, try running `myst init --write-toc`',
+        },
+      );
+    }
     newProject = projectFromSphinxTOC(session, path);
   } else {
-    const project = selectors.selectLocalProject(session.store.getState(), path);
+    const project = selectors.selectLocalProject(state, path);
     if (!index && !project?.implicitIndex && project?.file) {
       // If there is no new index, keep the original unless it was implicit previously
       index = project.file;
@@ -72,7 +89,11 @@ export async function loadProjectFromDisk(
     throw new Error(`Could not load project from ${path}`);
   }
   if (writeTOC) {
-    writeTOCToConfigFile(newProject, file, file);
+    if (legacyToc) {
+      session.log.info(`⬆️ Upgrading legacy jupyterbook TOC to MyST: ${tocFile(path)}`);
+    }
+    session.log.info(`💾 Writing new TOC to: ${projectConfigFile}`);
+    writeTOCToConfigFile(newProject, projectConfigFile, projectConfigFile);
   }
   const allBibFiles = getAllBibTexFilesOnPath(session, path);
   let bibliography: string[];
