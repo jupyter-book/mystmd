@@ -4,13 +4,40 @@ project:
   title: One Two Three!
   author: Franklin Koch
   export:
-    format: tex
-    template: ../templates/tex
-    output: _build/out.tex
-    articles:
-      - file: one.md
-        level: 0
-      - file: two.md
-        level: 0
-      - file: three.md
-        level: 0
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-chapters.tex
+      articles:
+        - file: one.md
+          level: 0
+        - file: two.md
+          level: 0
+        - file: three.md
+          level: 0
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-sections.tex
+      articles:
+        - file: one.md
+          level: 1
+        - file: two.md
+          level: 1
+        - file: three.md
+          level: 1
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-implicit.tex
+      articles:
+        - file: one.md
+        - file: two.md
+        - file: three.md
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-part.tex
+      articles:
+        - title: My Part
+          level: -1
+        - file: one.md
+          level: 0
+        - file: two.md
+        - file: three.md
