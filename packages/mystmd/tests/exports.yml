@@ -79,6 +79,14 @@ cases:
         content: outputs/multi-page-tex-three-sections.tex
       - path: multi-page-toc-tex/_build/out-single.tex
         content: outputs/multi-page-tex-single.tex
+  - title: Multi-page tex export with parts
+    cwd: multi-page-tex-parts
+    command: myst build --tex --ci
+    outputs:
+      - path: multi-page-tex-parts/_build/out-with-part.tex
+        content: multi-page-tex-parts/outputs/out-with-part.tex
+      - path: multi-page-tex-parts/_build/out-without-part.tex
+        content: multi-page-tex-parts/outputs/out-without-part.tex
   - title: Multi-page tex export with explicit articles
     cwd: multi-page-articles-tex
     command: myst build --tex --ci
