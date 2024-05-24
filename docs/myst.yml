@@ -127,7 +127,7 @@ project:
     - title: Reference
       children:
         - file: background.md
-        - file: guiding-principles
+        - file: guiding-principles.md
         - file: installing.md
         - file: installing-prerequisites.md
         - file: commonmark.md
