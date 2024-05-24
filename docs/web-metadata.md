@@ -1,16 +1,49 @@
 ---
-title: Exposing Project Information
+title: Exposing MyST and Document Metadata
 ---
+
+When you build websites with MyST, there are two special kinds of metadata that get bundled with your MyST site.
+Each is explained below.
+
+## Page document metadata as `.json`
+
+All webpages built with MyST come bundled with a `.json` representation of their content.
+This is a machine-readable version of the page that contains all of the metadata and page structure defined by [the MyST specification](xref:spec).
+
+You can access the MyST `.json` representation of a page by adding `.json` to the page name.
+
+For example, the URL of this page is:
+
+```
+https://mystmd.org/guide/web-metadata
+```
+
+and you can access its JSON representation at the following URL:
+
+```
+https://mystmd.org/guide/web-metadata.json
+```
+
 
 (myst-xref-json)=
 
-## `myst.xref.json`
+## MyST cross-reference data with `myst.xref.json`
 
-When you create a MyST project, the references that you make can be automatically linked and exposed to be referenced by other projects using [](./external-references.md). This must be served at `myst.xref.json` at the project root, and provides a list of reference links in JSON.
+When you create a MyST project on the web, all references in your MyST site are listed in a file that can be referenced by other projects using [](./external-references.md). This allows for programmatic reading of all MyST identifiers in a project (e.g. unique labels and the URL to which each resolves).
+
+This is served in a file called `myst.xref.json` at the website root, and provides a list of reference links in JSON.
+For example, the cross-references file for the MyST Guide is at this location:
+
+```
+https://mystmd.org/guide/myst.xref.json
+```
+
+Below is an example structure of this file:
 
 (myst-xref-json-example)=
 
-```json
+```{code-block} json
+:filename: myst.xref.json
 {
   "version": "1",
   "myst": "1.2.0",

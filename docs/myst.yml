@@ -102,6 +102,7 @@ project:
       children:
         - file: website-templates.md
         - file: table-of-contents.md
+        - file: web-metadata.md
         # - file: themes-and-extensions.md
         - file: seo-and-social.md
         - file: accessibility-and-performance.md
@@ -137,7 +138,6 @@ project:
         - file: document-parts.md
         - file: settings.md
         - file: glossary.md
-        - file: xref.md
     - title: Contribute
       children:
         - file: contributing.md
