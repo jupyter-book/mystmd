@@ -10,6 +10,7 @@ import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { ResolvedExternalReference } from './types.js';
 
+
 export function checkLinkTextTransform(
   mdast: GenericParent,
   externalReferences: ResolvedExternalReference[],
@@ -18,7 +19,7 @@ export function checkLinkTextTransform(
   const linkNodes = selectAll('link,linkBlock,card', mdast) as GenericNode[];
   const xrefNodes = selectAll('crossReference', mdast) as GenericNode[];
   linkNodes.forEach((node) => {
-    if (node.url.startsWith('xref:') || node.url.startsWith('myst:')) {
+    if (node.url && (node.url.startsWith('xref:') || node.url.startsWith('myst:'))) {
       const key = node.url.slice(5).split('/')[0].split('#')[0];
       if (externalReferences.map((ref) => ref.key).includes(key)) {
         // If this link has an existing reference key but did not resolve, another error was already raised
