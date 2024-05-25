@@ -19,6 +19,7 @@ export function clirun(
     const opts = program.opts() as SessionOpts;
     const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info, process.cwd());
     const session = new sessionClass({ logger });
+    await session.reload();
     const versions = await getNodeVersion(session);
     logVersions(session, versions);
     const versionsInstalled = await checkNodeVersion(session);

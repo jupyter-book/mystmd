@@ -82,9 +82,11 @@ async function _localArticleExport(
     exportOptionsList.map(async (exportOptionsWithFile) => {
       const { $file, $project, ...exportOptions } = exportOptionsWithFile;
       const { format, output } = exportOptions;
-      const sessionClone = session.clone();
+      const sessionClone = await session.clone();
       const fileProjectPath =
-        projectPath ?? $project ?? findCurrentProjectAndLoad(sessionClone, path.dirname($file));
+        projectPath ??
+        $project ??
+        (await findCurrentProjectAndLoad(sessionClone, path.dirname($file)));
 
       if (fileProjectPath) {
         await loadProjectFromDisk(sessionClone, fileProjectPath);

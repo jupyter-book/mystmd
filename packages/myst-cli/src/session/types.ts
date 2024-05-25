@@ -14,8 +14,8 @@ export type ISession = {
   configFiles: string[];
   store: Store<RootState>;
   log: Logger;
-  reload(): ISession;
-  clone(): ISession;
+  reload(): Promise<ISession>;
+  clone(): Promise<ISession>;
   sourcePath(): string;
   buildPath(): string;
   sitePath(): string;

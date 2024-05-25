@@ -211,25 +211,27 @@ async function resolveTemplateFileOptions(
   options: Record<string, any>,
 ) {
   const resolvedOptions = { ...options };
-  mystTemplate.getValidatedTemplateYml().options?.forEach((option) => {
-    if (option.type === TemplateOptionType.file && options[option.id]) {
-      const configPath = selectors.selectCurrentSitePath(session.store.getState());
-      const absPath = configPath
-        ? resolveToAbsolute(session, configPath, options[option.id])
-        : options[option.id];
-      const fileHash = hashAndCopyStaticFile(
-        session,
-        absPath,
-        session.publicPath(),
-        (m: string) => {
-          addWarningForFile(session, options[option.id], m, 'error', {
-            ruleId: RuleId.templateFileCopied,
-          });
-        },
-      );
-      resolvedOptions[option.id] = `/${fileHash}`;
-    }
-  });
+  await Promise.all(
+    (mystTemplate.getValidatedTemplateYml().options ?? []).map(async (option) => {
+      if (option.type === TemplateOptionType.file && options[option.id]) {
+        const configPath = selectors.selectCurrentSitePath(session.store.getState());
+        const absPath = configPath
+          ? await resolveToAbsolute(session, configPath, options[option.id])
+          : options[option.id];
+        const fileHash = hashAndCopyStaticFile(
+          session,
+          absPath,
+          session.publicPath(),
+          (m: string) => {
+            addWarningForFile(session, options[option.id], m, 'error', {
+              ruleId: RuleId.templateFileCopied,
+            });
+          },
+        );
+        resolvedOptions[option.id] = `/${fileHash}`;
+      }
+    }),
+  );
   return resolvedOptions;
 }
 

@@ -126,7 +126,10 @@ export async function collectAllBuildExportOptions(
     throw new Error(`When specifying output, you can only request one format`);
   }
   let exportOptionsList: ExportWithInputOutput[];
-  const projectPath = findCurrentProjectAndLoad(session, files[0] ? path.dirname(files[0]) : '.');
+  const projectPath = await findCurrentProjectAndLoad(
+    session,
+    files[0] ? path.dirname(files[0]) : '.',
+  );
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   if (output) {
     session.log.debug(`Exporting formats: "${requestedFormats.join('", "')}"`);

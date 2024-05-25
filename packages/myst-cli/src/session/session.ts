@@ -91,7 +91,6 @@ export class Session implements ISession {
     const proxyUrl = process.env.HTTPS_PROXY;
     if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
     this.store = createStore(rootReducer);
-    this.reload();
     // Allow the latest version to be loaded
     latestVersion('mystmd')
       .then((latest) => {
@@ -113,11 +112,11 @@ export class Session implements ISession {
     this._shownUpgrade = true;
   }
 
-  reload() {
-    findCurrentProjectAndLoad(this, '.');
-    findCurrentSiteAndLoad(this, '.');
+  async reload() {
+    await findCurrentProjectAndLoad(this, '.');
+    await findCurrentSiteAndLoad(this, '.');
     if (selectors.selectCurrentSitePath(this.store.getState())) {
-      reloadAllConfigsForCurrentSite(this);
+      await reloadAllConfigsForCurrentSite(this);
     }
     return this;
   }
@@ -172,8 +171,9 @@ export class Session implements ISession {
 
   _clones: ISession[] = [];
 
-  clone(): Session {
+  async clone() {
     const cloneSession = new Session({ logger: this.log });
+    await cloneSession.reload();
     // TODO: clean this up through better state handling
     cloneSession._jupyterSessionManagerPromise = this._jupyterSessionManagerPromise;
     this._clones.push(cloneSession);
