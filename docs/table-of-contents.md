@@ -125,7 +125,7 @@ project:
 
 ## Define document parts for exports
 
-A MyST document [can be split into several "parts"](document-parts.md#known-frontmatter-parts) that correspond to distinct components (e.g. "abtract" or "acknowledgements"). Each TOC entry can be given a `part` key that corresponds to one of these recognized parts, e.g.
+A MyST document [can be split into several "parts"](document-parts.md#known-frontmatter-parts) that correspond to distinct components (e.g. "abstract" or "acknowledgements"). Each TOC entry can be given a `part` key that corresponds to one of these recognized parts, e.g.
 
 :::{code} yaml
 :filename: myst.yml
