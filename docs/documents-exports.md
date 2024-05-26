@@ -56,3 +56,10 @@ The following table shows the available properties for each export. You must def
 ```{seealso} Exposing Exports as Downloads
 You can also include exported documents as downloads in your site, see [](./website-downloads.md).
 ```
+
+## Split your document across multiple content files
+
+When writing longer documents like manuscripts, it's common to write your document in multiple parts and then stitch them together into a single narrative.
+You can accomplish this in MyST with the {myst:directive}`include` directive.
+
+See [](#docs:include) for more information.

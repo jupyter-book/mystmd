@@ -146,8 +146,11 @@ The following content is embedded from `![](xref:spec#admonition)`:
 
 ## The {myst:directive}`include` directive
 
-If a portion of your content is in a separate file that is **not already included in your project** you can use the {myst:directive}`include` directive to parse and include that content.
-This directive is helpful for including content snippets, such as a table, equation, that you want to keep in a different file on disk, but present as if it were one document. In addition to Markdown, MyST will also parse `.ipynb`, `.tex`, and `.html`.
+You can include multiple files into your MyST document as if they were all written in the same file.
+This allows you to store content in separate files, and then weave them together at build time.
+To do so, use the {myst:directive}`include` directive.
+
+This is also helpful for including content snippets, such as a table or an equation, that you want to keep in a different file on disk, but present as if it were one document. In addition to Markdown, MyST will also parse `.ipynb`, `.tex`, and `.html`.
 
 See {myst:directive}`the {include} directive documentation <include>` for details about all the arguments you can give to `{include}`.
 
