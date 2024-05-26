@@ -41,7 +41,6 @@
   },
   "devDependencies": {
     "@types/spdx-correct": "^3.1.0",
-    "@vitest/coverage-v8": "^1.6.0",
     "glob": "^10.3.1",
     "js-yaml": "^4.1.0",
     "moment": "^2.29.4"
