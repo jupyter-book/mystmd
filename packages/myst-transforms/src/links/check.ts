@@ -10,7 +10,6 @@ import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { ResolvedExternalReference } from './types.js';
 
-
 export function checkLinkTextTransform(
   mdast: GenericParent,
   externalReferences: ResolvedExternalReference[],
