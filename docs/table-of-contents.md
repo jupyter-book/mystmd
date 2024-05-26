@@ -200,7 +200,7 @@ Note that when these files are excluded, they can still be specifically referenc
 
 If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information. For example:
 
-- `project/folder2/01_my_article.md` becomes `project/my-article`
+- `folder1/folder2/01_my_article.md` becomes `/my-article`
 
 All internal links will automatically be updated, and there is a `file` property that is exported as metadata in your site.
 See [](xref.md) for more details on how cross-references are stored.
