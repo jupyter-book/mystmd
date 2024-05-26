@@ -129,8 +129,12 @@ export async function writeTOCToConfigFile(
   try {
     yaml.load(newConfigContent);
   } catch (err) {
+    const errorMessage = lines.map((line) => `    ${line}`).join('\n');
     throw new Error(
-      `Invalid YAML was generated when attempting to write the table-of-contents to ${dstPath}`,
+      `Invalid YAML was generated when attempting to write the table-of-contents to ${dstPath}.
+This should not happenm please file a bug report at https://github.com/executablebooks/mystmd.
+The invalid TOC contents are as follows:
+${errorMessage}`,
     );
   }
   fs.writeFileSync(dstPath, newConfigContent);
