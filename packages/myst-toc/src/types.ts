@@ -4,11 +4,10 @@
  */
 export type CommonEntry = {
   title?: string;
-  hidden?: boolean;
-  numbering?: string;
-  id?: string;
-  part?: string;
-  class?: string;
+  // hidden?: boolean;
+  // numbering?: string;
+  // id?: string;
+  // class?: string;
 };
 
 /**
