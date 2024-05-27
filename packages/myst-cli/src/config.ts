@@ -286,7 +286,7 @@ export async function resolveToAbsolute(
     relativePath = cachePath(session, cacheFilename);
   }
   try {
-    const absPath = resolve(join(basePath, relativePath));
+    const absPath = resolve(basePath, relativePath);
     if (!checkExists || fs.existsSync(absPath)) {
       return absPath;
     }
