@@ -166,7 +166,9 @@ async function getValidatedConfigsFromFile(
           },
         ) ?? []
       ).map(async (extendFile) => {
-        const resolvedFile = await resolveToAbsolute(session, dirname(file), extendFile);
+        const resolvedFile = await resolveToAbsolute(session, dirname(file), extendFile, {
+          allowRemote: true,
+        });
         return resolvedFile;
       }),
     );
@@ -266,10 +268,13 @@ export async function resolveToAbsolute(
   session: ISession,
   basePath: string,
   relativePath: string,
-  checkExists = true,
+  opts?: {
+    allowNotExist?: boolean;
+    allowRemote?: boolean;
+  },
 ) {
   let message: string | undefined;
-  if (isUrl(relativePath)) {
+  if (opts?.allowRemote && isUrl(relativePath)) {
     const cacheFilename = `config-item-${computeHash(relativePath)}${extname(relativePath)}`;
     if (!loadFromCache(session, cacheFilename, { maxAge: 30 })) {
       try {
@@ -287,7 +292,7 @@ export async function resolveToAbsolute(
   }
   try {
     const absPath = resolve(basePath, relativePath);
-    if (!checkExists || fs.existsSync(absPath)) {
+    if (opts?.allowNotExist || fs.existsSync(absPath)) {
       return absPath;
     }
     message = message ?? `Does not exist as local path: ${absPath}`;
@@ -302,11 +307,13 @@ function resolveToRelative(
   session: ISession,
   basePath: string,
   absPath: string,
-  checkExists = true,
+  opts?: {
+    allowNotExist?: boolean;
+  },
 ) {
   let message: string;
   try {
-    if (!checkExists || fs.existsSync(absPath)) {
+    if (opts?.allowNotExist || fs.existsSync(absPath)) {
       // If it is the same path, use a '.'
       return relative(basePath, absPath) || '.';
     }
@@ -326,7 +333,10 @@ async function resolveSiteConfigPaths(
     session: ISession,
     basePath: string,
     path: string,
-    checkExists?: boolean,
+    opts?: {
+      allowNotExist?: boolean;
+      allowRemote?: boolean;
+    },
   ) => string | Promise<string>,
 ) {
   const resolvedFields: SiteConfig = {};
@@ -354,7 +364,10 @@ async function resolveProjectConfigPaths(
     session: ISession,
     basePath: string,
     path: string,
-    checkExists?: boolean,
+    opts?: {
+      allowNotExist?: boolean;
+      allowRemote?: boolean;
+    },
   ) => string | Promise<string>,
 ) {
   const resolvedFields: ProjectConfig = {};
