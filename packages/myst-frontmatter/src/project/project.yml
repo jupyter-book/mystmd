@@ -88,7 +88,8 @@ cases:
       biblio: {}
       oxa: ''
       math:
-        a: b
+        a:
+          macro: b
       keywords:
         - example
         - test
@@ -143,7 +144,8 @@ cases:
         b: 0
     normalized:
       math:
-        a: valid
+        a:
+          macro: valid
     errors: 1
   - title: bibliography string coerces
     raw:

@@ -1,5 +1,11 @@
 # simple-validators
 
+## 1.0.5
+
+### Patch Changes
+
+- 65ade89: Validate object no longer allows arrays
+
 ## 1.0.4
 
 ### Patch Changes

@@ -15,6 +15,8 @@ export type TypstResult = {
 
 export type MathPlugins = Required<PageFrontmatter>['math'];
 
+export type SimplifiedMathPlugins = Record<string, string>;
+
 export type Options = {
   handlers?: Record<string, Handler>;
   math?: MathPlugins;
@@ -29,7 +31,7 @@ export type StateData = {
   nextCaptionNumbered?: boolean;
   nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;
-  mathPlugins: Required<PageFrontmatter>['math'];
+  mathPlugins: SimplifiedMathPlugins;
   macros: Set<string>;
   list?: {
     env: string[];

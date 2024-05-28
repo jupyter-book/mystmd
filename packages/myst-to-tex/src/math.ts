@@ -1,4 +1,4 @@
-import type { Handler, ITexSerializer } from './types.js';
+import type { Handler, ITexSerializer, SimplifiedMathPlugins } from './types.js';
 
 // Top level environments in amsmath version 2.1 (and eqnarray), see:
 // http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf
@@ -33,11 +33,9 @@ function isAmsmathEnvironment(value: string): boolean {
 function addMacrosToState(value: string, state: ITexSerializer) {
   if (!state.options.math) return;
   Object.entries(state.options.math).forEach(([k, v]) => {
-    if (value.includes(k)) state.data.mathPlugins[k] = v;
+    if (value.includes(k)) state.data.mathPlugins[k] = v.macro;
   });
 }
-
-type MathPlugins = ITexSerializer['data']['mathPlugins'];
 
 /**
  * Add any required recursive commands found, for example,
@@ -53,14 +51,14 @@ type MathPlugins = ITexSerializer['data']['mathPlugins'];
 export function withRecursiveCommands(
   state: ITexSerializer,
   plugins = state.data.mathPlugins,
-): MathPlugins {
+): SimplifiedMathPlugins {
   if (!state.options.math) return plugins;
   const pluginsList = Object.entries(plugins);
-  const addedPlugins: MathPlugins = {};
+  const addedPlugins: SimplifiedMathPlugins = {};
   Object.entries(state.options.math).forEach(([k, v]) => {
     if (plugins[k]) return;
     pluginsList.forEach(([, value]) => {
-      if (value.includes(k)) addedPlugins[k] = v;
+      if (value.includes(k)) addedPlugins[k] = v.macro;
     });
   });
   const newPlugins = { ...addedPlugins, ...plugins };

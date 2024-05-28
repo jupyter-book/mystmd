@@ -19,7 +19,7 @@ import {
   stringToTypstMath,
   stringToTypstText,
 } from './utils.js';
-import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
+import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
 import type { Admonition, FootnoteDefinition } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
@@ -366,7 +366,9 @@ class TypstSerializer implements ITypstSerializer {
   constructor(file: VFile, tree: Root, opts?: Options) {
     file.result = '';
     this.file = file;
-    this.options = opts ?? {};
+    const { math, ...otherOpts } = opts ?? {};
+    this.options = { ...otherOpts };
+    if (math) this.options.math = resolveRecursiveCommands(math);
     this.data = { mathPlugins: {}, macros: new Set() };
     this.handlers = opts?.handlers ?? handlers;
     this.footnotes = Object.fromEntries(
@@ -451,7 +453,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     const tex = (file.result as string).trim();
     const result: TypstResult = {
       macros: [...state.data.macros],
-      commands: withRecursiveCommands(state),
+      commands: state.data.mathPlugins,
       value: tex,
     };
     file.result = result;

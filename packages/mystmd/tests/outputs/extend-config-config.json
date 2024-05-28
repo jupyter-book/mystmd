@@ -16,10 +16,10 @@
         }
       },
       "math": {
-        "a": "defined-in-project-a",
-        "c": "defined-in-project-b",
-        "d": "defined-in-project-c",
-        "b": "defined-in-project-a"
+        "a": { "macro": "defined-in-project-a" },
+        "c": { "macro": "defined-in-project-b" },
+        "d": { "macro": "defined-in-project-c" },
+        "b": { "macro": "defined-in-project-a" }
       },
       "title": "MyST Config Extend Test",
       "authors": [{ "id": "John Doe", "name": "John Doe" }],

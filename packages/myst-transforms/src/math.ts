@@ -6,12 +6,13 @@ import type { Math } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { RuleId, copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { unnestTransform } from './unnest.js';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
 
 type Options = {
-  macros?: Record<string, string>;
+  macros?: Required<PageFrontmatter>['math'];
   mathML?: boolean;
 };
 
@@ -19,7 +20,7 @@ const replacements = {
   ' ': ' ',
 };
 
-const buildInMacros = {
+const builtInMacros = {
   '\\mbox': '\\text{#1}', // mbox is not supported in KaTeX, this is an OK fallback
 };
 
@@ -125,11 +126,17 @@ function removeWarnings(result: RenderResult, predicate: (warning: string) => bo
 function tryRender(file: VFile, node: Node, value: string, opts?: Options): RenderResult {
   const displayMode = node.type === 'math';
   const warnings: string[] = [];
+  let simplifiedMacros: Record<string, string> = {};
+  if (opts?.macros) {
+    simplifiedMacros = Object.fromEntries(
+      Object.entries(opts.macros).map(([k, v]) => [k, v.macro]),
+    );
+  }
   try {
     const html = katex.renderToString(value, {
       displayMode,
       output: opts?.mathML ? 'mathml' : undefined,
-      macros: { ...buildInMacros, ...opts?.macros },
+      macros: { ...builtInMacros, ...simplifiedMacros },
       strict: (f: string, m: string) => {
         warnings.push(`${f}, ${m}`);
       },

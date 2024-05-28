@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.2.5
+
+### Patch Changes
+
+- 65ade89: Consume new math structure
+
 ## 1.2.4
 
 ### Patch Changes

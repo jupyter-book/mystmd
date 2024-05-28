@@ -216,3 +216,17 @@ cases:
         content: outputs/extend-config-index.json
       - path: extend-config/proj-a/_build/site/config.json
         content: outputs/extend-config-config.json
+  - title: Math macros
+    cwd: math-macros
+    command: myst build --all --ci
+    outputs:
+      - path: math-macros/_build/exports/index.typ
+        content: math-macros/outputs/index.typ
+      - path: math-macros/_build/exports/index.tex
+        content: math-macros/outputs/index.tex
+      - path: math-macros/_build/exports/index.xml
+        content: math-macros/outputs/index.xml
+      - path: math-macros/_build/site/content/index.json
+        content: math-macros/outputs/index.json
+      - path: math-macros/_build/site/config.json
+        content: math-macros/outputs/config.json
