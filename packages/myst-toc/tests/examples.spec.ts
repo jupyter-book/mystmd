@@ -23,9 +23,6 @@ describe.each([
   ['pattern', 'main*.md'],
 ])('Single %s entry', (entryName, entryValue) => {
   test.each([
-    ['class', 'foo'],
-    ['part', 'bar'],
-    ['hidden', true],
     ['title', 'document'],
   ])('with %s passes', (name, value) => {
     const entry = {};
@@ -39,9 +36,6 @@ describe.each([
   });
 
   test.each([
-    ['class', 1000, 'string'],
-    ['part', 1000, 'string'],
-    ['hidden', 'yes', 'boolean'],
     ['title', 1000, 'string'],
   ])('with invalid type for %s fails', (name, value, type) => {
     const input = [{ file: 'foo.md' }];
