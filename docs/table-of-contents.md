@@ -81,6 +81,7 @@ project:
     - file: root.md
     - file: first-child.md
     - file: second-child.md
+
 :::
 ::::
 :::::
@@ -125,7 +126,6 @@ project:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
 :::
-
 
 ## Implicit Table of Contents from filenames
 
@@ -189,7 +189,7 @@ If a file is nested under a folder within your MyST project, for web-based expor
 - `folder1/folder2/01_my_article.md` becomes `/my-article`
 
 All internal links will automatically be updated, and there is a `file` property that is exported as metadata in your site.
-See [](xref.md) for more details on how cross-references are stored.
+See [](website-metadata.md) for more details on how cross-references are stored.
 
 :::{note} URL Nesting
 URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/executablebooks/mystmd/issues/670).
