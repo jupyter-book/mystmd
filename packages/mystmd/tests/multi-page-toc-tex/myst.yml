@@ -3,7 +3,25 @@ version: 1
 project:
   title: One Two Three!
   author: Franklin Koch
-  export:
-    format: tex
-    template: ../templates/tex
-    output: _build/out.tex
+  toc:
+    - file: zero.md
+    - file: one.md
+    - file: two.md
+    - file: three.md
+  exports:
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-chapters.tex
+      top_level: chapters
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-sections.tex
+      top_level: sections
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-implicit.tex
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-single.tex
+      toc:
+        - file: one.md

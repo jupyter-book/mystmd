@@ -142,14 +142,18 @@ function watchProcessor(
     }
     session.store.dispatch(watch.actions.markReloading(true));
     session.log.debug(`File modified: "${file}" (${eventType})`);
-    await processorFn(session, file, eventType, siteProject, serverReload, opts);
-    while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
-      // If reload(s) were requested during previous build, just reload everything once.
-      session.store.dispatch(watch.actions.markReloadRequested(false));
-      await processorFn(session, null, eventType, null, serverReload, {
-        ...opts,
-        reloadProject: true,
-      });
+    try {
+      await processorFn(session, file, eventType, siteProject, serverReload, opts);
+      while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
+        // If reload(s) were requested during previous build, just reload everything once.
+        session.store.dispatch(watch.actions.markReloadRequested(false));
+        await processorFn(session, null, eventType, null, serverReload, {
+          ...opts,
+          reloadProject: true,
+        });
+      }
+    } catch (err: any) {
+      session.log.error(`Error during reload${err.message ? `:\n${err.message}` : ''}`);
     }
     session.store.dispatch(watch.actions.markReloading(false));
   };

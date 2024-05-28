@@ -14,7 +14,6 @@ import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
-  validateBoolean,
   validateList,
   validateObjectKeys,
   validateObject,
@@ -22,7 +21,8 @@ import {
   validationError,
 } from 'simple-validators';
 
-const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'part', 'class'];
+const COMMON_ENTRY_KEYS = ['title'];
+// const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'class'];
 
 function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): CommonEntry {
   const output: CommonEntry = {};
@@ -30,25 +30,21 @@ function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions
     output.title = validateString(entry.title, incrementOptions('title', opts));
   }
 
-  if (defined(entry.hidden)) {
-    output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
-  }
+  // if (defined(entry.hidden)) {
+  //   output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
+  // }
 
-  if (defined(entry.numbering)) {
-    output.numbering = validateString(entry.numbering, incrementOptions('numbering', opts));
-  }
+  // if (defined(entry.numbering)) {
+  //   output.numbering = validateString(entry.numbering, incrementOptions('numbering', opts));
+  // }
 
-  if (defined(entry.id)) {
-    output.id = validateString(entry.id, incrementOptions('id', opts));
-  }
+  // if (defined(entry.id)) {
+  //   output.id = validateString(entry.id, incrementOptions('id', opts));
+  // }
 
-  if (defined(entry.part)) {
-    output.part = validateString(entry.part, incrementOptions('part', opts));
-  }
-
-  if (defined(entry.class)) {
-    output.class = validateString(entry.class, incrementOptions('class', opts));
-  }
+  // if (defined(entry.class)) {
+  //   output.class = validateString(entry.class, incrementOptions('class', opts));
+  // }
 
   return output;
 }
@@ -213,5 +209,5 @@ export function validateEntry(entry: any, opts: ValidationOptions): Entry | unde
 export function validateTOC(toc: any, opts: ValidationOptions): TOC | undefined {
   return validateList(toc, opts, (item, ind) =>
     validateEntry(item, incrementOptions(`${ind}`, opts)),
-  ) as unknown as TOC | undefined;
+  );
 }

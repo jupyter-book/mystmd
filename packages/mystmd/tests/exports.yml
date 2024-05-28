@@ -41,18 +41,52 @@ cases:
     outputs:
       - path: export-fm-override/_build/out.tex
         content: outputs/templated-tex.tex
-  - title: Multi-page tex export with default toc
+  - title: Multi-page tex export with legacy toc
+    cwd: multi-page-legacy-toc-tex
+    command: myst build --tex --ci
+    outputs:
+      - path: multi-page-legacy-toc-tex/_build/out.tex
+        content: outputs/multi-page-tex.tex
+      - path: multi-page-legacy-toc-tex/_build/out-one.tex
+        content: outputs/multi-page-tex-one-chapters.tex
+      - path: multi-page-legacy-toc-tex/_build/out-two.tex
+        content: outputs/multi-page-tex-two-chapters.tex
+      - path: multi-page-legacy-toc-tex/_build/out-three.tex
+        content: outputs/multi-page-tex-three-chapters.tex
+  - title: Multi-page tex export with toc
     cwd: multi-page-toc-tex
     command: myst build --tex --ci
     outputs:
-      - path: multi-page-toc-tex/_build/out.tex
-        content: outputs/multi-page-tex.tex
-      - path: multi-page-toc-tex/_build/out-one.tex
+      - path: multi-page-toc-tex/_build/out-chapters.tex
+        content: outputs/multi-page-tex-chapters.tex
+      - path: multi-page-toc-tex/_build/out-chapters-one.tex
         content: outputs/multi-page-tex-one-chapters.tex
-      - path: multi-page-toc-tex/_build/out-two.tex
+      - path: multi-page-toc-tex/_build/out-chapters-two.tex
         content: outputs/multi-page-tex-two-chapters.tex
-      - path: multi-page-toc-tex/_build/out-three.tex
+      - path: multi-page-toc-tex/_build/out-chapters-three.tex
         content: outputs/multi-page-tex-three-chapters.tex
+      - path: multi-page-toc-tex/_build/out-sections-one.tex
+        content: outputs/multi-page-tex-one-sections.tex
+      - path: multi-page-toc-tex/_build/out-sections-two.tex
+        content: outputs/multi-page-tex-two-sections.tex
+      - path: multi-page-toc-tex/_build/out-sections-three.tex
+        content: outputs/multi-page-tex-three-sections.tex
+      - path: multi-page-toc-tex/_build/out-implicit-one.tex
+        content: outputs/multi-page-tex-one-sections.tex
+      - path: multi-page-toc-tex/_build/out-implicit-two.tex
+        content: outputs/multi-page-tex-two-sections.tex
+      - path: multi-page-toc-tex/_build/out-implicit-three.tex
+        content: outputs/multi-page-tex-three-sections.tex
+      - path: multi-page-toc-tex/_build/out-single.tex
+        content: outputs/multi-page-tex-single.tex
+  - title: Multi-page tex export with parts
+    cwd: multi-page-tex-parts
+    command: myst build --tex --ci
+    outputs:
+      - path: multi-page-tex-parts/_build/out-with-part.tex
+        content: multi-page-tex-parts/outputs/out-with-part.tex
+      - path: multi-page-tex-parts/_build/out-without-part.tex
+        content: multi-page-tex-parts/outputs/out-without-part.tex
   - title: Multi-page tex export with explicit articles
     cwd: multi-page-articles-tex
     command: myst build --tex --ci
@@ -97,6 +131,16 @@ cases:
         content: outputs/multi-page-tex-two-chapters.tex
       - path: multi-page-override-tex/_build/out-three.tex
         content: outputs/multi-page-tex-three-chapters.tex
+  - title: Nested toc file is respected
+    cwd: nested-toc-file
+    command: myst build --tex --ci
+    outputs:
+      - path: nested-toc-file/_build/out.tex
+        content: nested-toc-file/.outputs/out.tex
+      - path: nested-toc-file/_build/out-six.tex
+        content: nested-toc-file/.outputs/out-six.tex
+      - path: nested-toc-file/_build/out-five.tex
+        content: nested-toc-file/.outputs/out-five.tex
   - title: Notebook exports to tex; frontmatter from first cell only
     cwd: notebook-with-fm
     command: myst build --tex --ci

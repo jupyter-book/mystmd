@@ -23,9 +23,6 @@ describe.each([
   ['pattern', 'main*.md'],
 ])('Single %s entry', (entryName, entryValue) => {
   test.each([
-    ['class', 'foo'],
-    ['part', 'bar'],
-    ['hidden', true],
     ['title', 'document'],
   ])('with %s passes', (name, value) => {
     const entry = {};
@@ -39,9 +36,6 @@ describe.each([
   });
 
   test.each([
-    ['class', 1000, 'string'],
-    ['part', 1000, 'string'],
-    ['hidden', 'yes', 'boolean'],
     ['title', 1000, 'string'],
   ])('with invalid type for %s fails', (name, value, type) => {
     const input = [{ file: 'foo.md' }];
@@ -114,6 +108,18 @@ test('Single parent entry without title', () => {
   expect(opts.messages.errors).toStrictEqual([
     {
       message: "'0' expected an entry with 'file', 'url', 'pattern', or 'title' (at test)",
+      property: '0',
+    },
+  ]);
+  expect(opts.messages.warnings).toBeUndefined();
+});
+
+test('invalid toc entry', () => {
+  const input = ['invalid'];
+  validateTOC(input, opts);
+  expect(opts.messages.errors).toStrictEqual([
+    {
+      message: "'0' must be object (at test)",
       property: '0',
     },
   ]);

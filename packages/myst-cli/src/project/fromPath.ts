@@ -10,7 +10,7 @@ import { fileInfo } from '../utils/fileInfo.js';
 import { nextLevel } from '../utils/nextLevel.js';
 import { VALID_FILE_EXTENSIONS, isValidFile } from '../utils/resolveExtension.js';
 import { shouldIgnoreFile } from '../utils/shouldIgnoreFile.js';
-import { pagesFromTOC } from './fromTOC.js';
+import { pagesFromSphinxTOC } from './fromTOC.js';
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -60,7 +60,9 @@ function projectPagesFromPath(
   if (contents.includes(join(path, '_toc.yml'))) {
     const prevLevel = (level < 2 ? 1 : level - 1) as PageLevels;
     try {
-      return pagesFromTOC(session, path, prevLevel);
+      // TODO: We don't yet have a way to do nested tocs with new-style toc
+      session.log.debug(`Respecting legacy TOC in subdirectory: ${join(path, '_toc.yml')}`);
+      return pagesFromSphinxTOC(session, path, prevLevel);
     } catch {
       if (!suppressWarnings) {
         addWarningForFile(

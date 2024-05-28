@@ -45,6 +45,7 @@ project:
     TLA: Three Letter Acronym
     OA: Open Access
     CSV: comma-separated values
+    TOC: table of contents  
   plugins:
     - directives.mjs
     - unsplash.mjs
@@ -61,6 +62,90 @@ project:
         - /jtex/create-a-latex-template
         - /jtex/create-a-beamer-template
         - /jtex/contribute-a-template
+  toc:
+    - file: index
+    - title: Quickstart Tutorials
+      children:
+        - file: quickstart.md
+        - file: quickstart-myst-websites.md
+        - file: quickstart-myst-documents.md
+        - file: quickstart-myst-markdown.md
+        - file: quickstart-jupyter-lab-myst.md
+    - title: Authoring
+      children:
+        - file: typography.md
+        - file: admonitions.md
+        - file: figures.md
+        - file: math.md
+        - file: tables.md
+        - file: code.md
+        - file: cross-references.md
+        - file: external-references.md
+        - file: embed.md
+        - file: citations.md
+        - file: proofs-and-theorems.md
+        - file: exercises.md
+        - file: blocks.md
+        - file: diagrams.md
+        - file: asides.md
+        - file: dropdowns-cards-and-tabs.md
+        - file: glossaries-and-terms.md
+        - file: writing-in-latex.md
+    - title: Executable Content
+      children:
+        - file: interactive-notebooks.ipynb
+        - file: notebooks-with-markdown.md
+        - file: reuse-jupyter-outputs.md
+        - file: integrating-jupyter.md
+        - file: execute-notebooks.md
+    - title: Websites
+      children:
+        - file: website-templates.md
+        - file: table-of-contents.md
+        # - file: themes-and-extensions.md
+        - file: seo-and-social.md
+        - file: accessibility-and-performance.md
+        # - file: search.md
+        - file: analytics.md
+        - file: website-downloads.md
+        - file: deployment.md
+          children:
+            - file: deployment-github-pages.md
+            - file: deployment-curvenote.md
+            - file: deployment-netlify.md
+        # - file: publishing.md
+    - title: Documents
+      children:
+        - file: documents-exports.md
+        - file: creating-pdf-documents.md
+        - file: creating-word-documents.md
+        - file: creating-jats-xml.md
+    - title: Extensions
+      children:
+        - file: plugins.md
+    - title: Reference
+      children:
+        - file: background.md
+        - file: guiding-principles.md
+        - file: installing.md
+        - file: installing-prerequisites.md
+        - file: commonmark.md
+        - file: syntax-overview.md
+        - file: directives.md
+        - file: roles.md
+        - file: frontmatter.md
+        - file: document-parts.md
+        - file: settings.md
+        - file: glossary.md
+        - file: xref.md
+    - title: Contribute
+      children:
+        - file: contributing.md
+        - file: contribute-templates.md
+        - file: contribute-docs.md
+        - file: contribute-build-locally.md
+        - file: contribute-add-feature.md
+
 site:
   title: MyST Markdown Guide
   domains:

@@ -1,0 +1,9 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: One Two Three!
+  author: Franklin Koch
+  export:
+    format: tex
+    template: ../templates/tex
+    output: _build/out.tex

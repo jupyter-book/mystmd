@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+
 import { join, resolve } from 'node:path';
 import { isDirectory, isUrl } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
@@ -10,12 +11,11 @@ import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { getAllBibTexFilesOnPath } from '../utils/getAllBibtexFiles.js';
-import { validateTOC } from '../utils/toc.js';
+import { tocFile, validateSphinxTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
-import { projectFromTOC } from './fromTOC.js';
-import { writeTOCFromProject } from './toTOC.js';
+import { projectFromTOC, projectFromSphinxTOC } from './fromTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
-
+import { writeTOCToConfigFile } from './toTOC.js';
 /**
  * Load project structure from disk
  *
@@ -39,12 +39,14 @@ export async function loadProjectFromDisk(
     if (cachedProject) return cachedProject;
   }
   loadConfig(session, path, opts);
-  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
-  const file = join(path, session.configFiles[0]);
+  const state = session.store.getState();
+  const projectConfig = selectors.selectLocalProjectConfig(state, path);
+  const projectConfigFile =
+    selectors.selectLocalConfigFile(state, path) ?? join(path, session.configFiles[0]);
   if (!projectConfig && opts?.warnOnNoConfig) {
     addWarningForFile(
       session,
-      file,
+      projectConfigFile,
       `Loading project from path with no config file: ${path}\nConsider running "myst init --project" in that directory`,
       'warn',
       { ruleId: RuleId.projectConfigExists },
@@ -52,13 +54,45 @@ export async function loadProjectFromDisk(
   }
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeTOC } = opts || {};
-  const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
-  if (validateTOC(session, path)) {
-    newProject = projectFromTOC(session, path);
+  let legacyToc = false;
+  const sphinxTOCFile = validateSphinxTOC(session, path) ? tocFile(path) : undefined;
+  if (projectConfig?.toc !== undefined) {
+    newProject = projectFromTOC(session, path, projectConfig.toc);
+    if (sphinxTOCFile) {
+      addWarningForFile(
+        session,
+        sphinxTOCFile,
+        `Ignoring legacy jupyterbook TOC in favor of myst.yml TOC: ${sphinxTOCFile}`,
+        'warn',
+        {
+          ruleId: RuleId.encounteredLegacyTOC,
+        },
+      );
+    }
     if (writeTOC) session.log.warn('Not writing the table of contents, it already exists!');
     writeTOC = false;
+  } else if (sphinxTOCFile) {
+    // Legacy validator
+    legacyToc = true;
+    if (!writeTOC) {
+      // Do not warn if user is explicitly upgrading toc
+      // TODO: Add this back as a warning rather than debug as we surface this feature more
+      session.log.debug(`Encountered legacy jupyterbook TOC: ${sphinxTOCFile}`);
+      session.log.debug('To upgrade to a MyST TOC, try running `myst init --write-toc`');
+      // addWarningForFile(
+      //   session,
+      //   filename,
+      //   `Encountered legacy jupyterbook TOC: ${sphinxTOCFile}`,
+      //   'warn',
+      //   {
+      //     ruleId: RuleId.encounteredLegacyTOC,
+      //     note: 'To upgrade to a MyST TOC, try running `myst init --write-toc`',
+      //   },
+      // );
+    }
+    newProject = projectFromSphinxTOC(session, path);
   } else {
-    const project = selectors.selectLocalProject(session.store.getState(), path);
+    const project = selectors.selectLocalProject(state, path);
     if (!index && !project?.implicitIndex && project?.file) {
       // If there is no new index, keep the original unless it was implicit previously
       index = project.file;
@@ -69,22 +103,11 @@ export async function loadProjectFromDisk(
     throw new Error(`Could not load project from ${path}`);
   }
   if (writeTOC) {
-    try {
-      session.log.info(
-        `📓 Writing '_toc.yml' file to ${path === '.' ? 'the current directory' : path}`,
-      );
-      writeTOCFromProject(newProject, path);
-      // Re-load from TOC just in case there are subtle differences with resulting project
-      newProject = projectFromTOC(session, path);
-    } catch {
-      addWarningForFile(
-        session,
-        projectConfigFile,
-        `Error writing '_toc.yml' file to ${path}`,
-        'error',
-        { ruleId: RuleId.tocWritten },
-      );
+    if (legacyToc) {
+      session.log.info(`⬆️ Upgrading legacy jupyterbook TOC to MyST: ${tocFile(path)}`);
     }
+    session.log.info(`💾 Writing new TOC to: ${projectConfigFile}`);
+    writeTOCToConfigFile(newProject, projectConfigFile, projectConfigFile);
   }
   const allBibFiles = getAllBibTexFilesOnPath(session, path);
   let bibliography: string[];

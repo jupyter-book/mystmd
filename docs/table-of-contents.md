@@ -1,28 +1,135 @@
 ---
 title: Table of Contents
-description: The Table of Contents is the left-hand navigation for your site, it can be auto-generated or can be explicitly defined in a _toc.yml.
+description: The Table of Contents is the left-hand navigation for your site, it can be auto-generated or can be explicitly defined in `myst.yml`.
 thumbnail: thumbnails/table-of-contents.png
 ---
 
-+++
+The Table of Contents defines the structure of your MyST project. For website exports, it defines the left-hand navigation for your site.
+It is defined in the `toc` attribute of [the project frontmatter](frontmatter.md#in-a-myst-yml-file).
 
-The Table of Contents is the left-hand navigation for your site. It can either be auto-generated, following some simple heuristics described below, or can be explicitly defined in a `_toc.yml` using the `jb-book` format.
-
-## Generating a Table of Contents
-
-By default the table of contents is left implicit, and follows rules laid out in the next section. To make this table of contents _explicit_, you can call:
+To automatically add a `toc` section to your `myst.yml` file using filenames to define ordering, use the following command:
 
 ```shell
 myst init --write-toc
 ```
 
-This will create a `_toc.yml` in the current directory, you can read more about the [table of contents format](#toc-format) below.
-
 +++
 
-## Auto-generating a Table of Contents
+(toc-format)=
 
-When there is no `_toc.yml` defined an implicit table of contents is defined by the file system structure. All markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
+## Structure the Table of Contents
+
+The  MyST TOC comprises a simple tree structure, built from `file`s, `url`s, `pattern`s, and `children`. For example, a simple TOC consisting of files:
+
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - file: first-child.md
+    - file: second-child.md
+:::
+
+### URL entries
+
+URLs can be defined in the TOC. These URLs are links to external references within your table of contents. URLs are ignored in non-web exports.
+
+:::{warning}
+Currently these URLs are also ignored in MyST sites. Support will be added in a future release.
+:::
+
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - url: 'https://google.com'
+:::
+
+### Glob pattern matching
+
+You can specify glob-like patterns in the TOC with the `pattern` key.
+The files matched by `pattern` will be expanded as a series of `file` entries.
+
+For example, with a folder with `root.md`, `first-child.md`, `second-child.md`, the following two `toc` entries are equivalent:
+
+:::::{grid} 1 2 2 2
+::::{card} Pattern-matching
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - pattern: '*-child.md'
+:::
+::::
+::::{card} No pattern-matching
+:::{code} yaml
+:filename: myst.yml
+:linenos:
+:emphasize-lines: 5,6
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - file: first-child.md
+    - file: second-child.md
+:::
+::::
+:::::
+
+### Nesting pages and dropdowns
+
+For larger projects, you can group the content using the `children` key, which can be defined for both `url` and `file` entries:
+
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - file: part-1.md
+      children:
+        - file: part-1-first-child.md
+        - file: part-1-second-child.md
+    - file: part-2.md
+      children:
+        - file: part-2-first-child.md
+        - file: part-2-second-child.md
+:::
+
+You can nest children under a `title` without specifying a parent `file`.
+This will create a dropdown of pages in the Table of Contents.
+
+:::{code} yaml
+:filename: myst.yml
+
+version: 1
+project:
+  toc:
+    - file: root.md
+    - title: Part 1
+      children:
+        - file: part-1-first-child.md
+        - file: part-1-second-child.md
+    - title: Part 2
+      children:
+        - file: part-2-first-child.md
+        - file: part-2-second-child.md
+:::
+
+
+## Implicit Table of Contents from filenames
+
+When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
 
 The ordering of the table of contents will sort alphabetically as well as order by number, ensuring that, for example, `chapter10` comes after `chapter9`.
 
@@ -53,9 +160,6 @@ The “root” of a site is the page displayed when someone browses to the index
 7. `main.ipynb`
 8. The first `.ipynb` file found alphabetically
 
-```{note}
-All of these can be over-ridden by choosing an explicit `_toc.yml`, when that is present it will be used.
-```
 
 ### Excluding Files
 
@@ -78,11 +182,31 @@ project:
 
 Note that when these files are excluded, they can still be specifically referenced by other files in your project (e.g. in an {myst:directive}`include directives <include>` or as a download), however, a change in those files will not trigger a build. An alternative in this case is to generate a table of contents (see [](./table-of-contents.md)). By default hidden folders (those starting with `.`, like `.git`), `_build` and `node_modules` are excluded.
 
-(toc-format)=
+## Nested files will have flattened URLs
 
+If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information. For example:
+
+- `folder1/folder2/01_my_article.md` becomes `/my-article`
+
+All internal links will automatically be updated, and there is a `file` property that is exported as metadata in your site.
+See [](xref.md) for more details on how cross-references are stored.
+
+:::{note} URL Nesting
+URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/executablebooks/mystmd/issues/670).
+:::
+
+:::{note} Compatibility with JupyterBook
+:class: dropdown
+
+(toc-format-legacy)=
 ## Defining a `_toc.yml` using Jupyter Book’s format
 
-The `_toc.yml` can be defined for a site, and uses the format describe by Jupyter Book, the documentation for the format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html). Briefly, it defines a `format` as `jb-book` and can list a number of `chapters` with files. The file paths are relative to your `_toc.yml` file and can optionally include the extension.
+:::{warning}
+Support for `_toc.yml` exists only for compatability reasons, and will be removed in future. 
+New users should use `myst.yml` instead.
+:::
+
+Site table of contents may be defined with a `_toc.yml` file, following the Jupyter Book format. The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html). Briefly, it defines a `format` as `jb-book` and can list a number of `chapters` with files. The file paths are relative to your `_toc.yml` file and can optionally include the extension.
 
 ```yaml
 format: jb-book
@@ -109,17 +233,4 @@ parts:
       - file: path/to/part2/chapter1
       - file: path/to/part2/chapter2
 ```
-
-+++
-
-## Nesting of Files in URLs
-
-MyST can have any level of nesting in a file-system of your project, however, when it is displayed in the URL in `mystmd`, these nesting will be flattened to have a single "slug" that is contained in the project.
-
-- `project/folder2/01_my_article.md` becomes `project/my-article`
-
-All internal links will automatically be updated, and there is a `file` property that is exported as metadata. Add `.json` to the end of any url in your site to see the full data of the page.
-
-:::{note} URL Nesting
-URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/executablebooks/mystmd/issues/670).
 :::

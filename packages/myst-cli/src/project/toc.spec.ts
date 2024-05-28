@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { projectFromPath } from './fromPath';
-import { pagesFromTOC, projectFromTOC } from './fromTOC';
+import { pagesFromSphinxTOC, projectFromSphinxTOC } from './fromTOC';
 import { tocFromProject } from './toTOC';
 import { findProjectsOnPath } from './load';
 
@@ -384,11 +384,7 @@ describe('tocFromProject', () => {
         file: 'readme.md',
         pages: [],
       }),
-    ).toEqual({
-      format: 'jb-book',
-      root: 'readme',
-      chapters: [],
-    });
+    ).toEqual([{ file: 'readme.md' }]);
   });
   it('root and one page', async () => {
     expect(
@@ -402,15 +398,12 @@ describe('tocFromProject', () => {
           },
         ],
       }),
-    ).toEqual({
-      format: 'jb-book',
-      root: 'readme',
-      chapters: [
-        {
-          file: 'a',
-        },
-      ],
-    });
+    ).toEqual([
+      { file: 'readme.md' },
+      {
+        file: 'a.md',
+      },
+    ]);
   });
   it('root and pages with different levels', async () => {
     expect(
@@ -434,23 +427,20 @@ describe('tocFromProject', () => {
           },
         ],
       }),
-    ).toEqual({
-      format: 'jb-book',
-      root: 'readme',
-      chapters: [
-        {
-          file: 'a',
-          sections: [
-            {
-              file: 'b',
-            },
-          ],
-        },
-        {
-          file: 'c',
-        },
-      ],
-    });
+    ).toEqual([
+      { file: 'readme.md' },
+      {
+        file: 'a.md',
+        children: [
+          {
+            file: 'b.md',
+          },
+        ],
+      },
+      {
+        file: 'c.md',
+      },
+    ]);
   });
   it('root page with relative path', async () => {
     expect(
@@ -467,15 +457,7 @@ describe('tocFromProject', () => {
         },
         'path', // This is the relative path we are calling this from!
       ),
-    ).toEqual({
-      format: 'jb-book',
-      root: 'readme',
-      chapters: [
-        {
-          file: 'a',
-        },
-      ],
-    });
+    ).toEqual([{ file: 'readme.md' }, { file: 'a.md' }]);
   });
   it('root and folder and page', async () => {
     expect(
@@ -493,20 +475,17 @@ describe('tocFromProject', () => {
           },
         ],
       }),
-    ).toEqual({
-      format: 'jb-book',
-      root: 'readme',
-      chapters: [
-        {
-          title: 'folder',
-          sections: [
-            {
-              file: 'b',
-            },
-          ],
-        },
-      ],
-    });
+    ).toEqual([
+      { file: 'readme.md' },
+      {
+        title: 'folder',
+        children: [
+          {
+            file: 'b.md',
+          },
+        ],
+      },
+    ]);
   });
   it('root and nested folders', async () => {
     expect(
@@ -542,41 +521,37 @@ describe('tocFromProject', () => {
           },
         ],
       }),
-    ).toEqual({
-      format: 'jb-book',
-      root: 'readme',
-      chapters: [
-        {
-          title: 'folder',
-          sections: [
-            {
-              title: 'folder',
-              sections: [
-                {
-                  title: 'folder',
-                  sections: [
-                    {
-                      file: 'a',
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              file: 'b',
-              sections: [
-                {
-                  file: 'c',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
+    ).toEqual([
+      { file: 'readme.md' },
+      {
+        title: 'folder',
+        children: [
+          {
+            title: 'folder',
+            children: [
+              {
+                title: 'folder',
+                children: [
+                  {
+                    file: 'a.md',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            file: 'b.md',
+            children: [
+              {
+                file: 'c.md',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
   });
 });
-
 const SITE_CONFIG = `
 version: 1
 site:
@@ -627,7 +602,7 @@ chapters:
       - file: c
 `;
 
-describe('pagesFromToc', () => {
+describe('pagesFromSphinxTOC', () => {
   it('pages from toc', async () => {
     memfs.vol.fromJSON({
       '_toc.yml': TOC_FILE,
@@ -636,7 +611,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(pagesFromTOC(session, '.', 1)).toEqual([
+    expect(pagesFromSphinxTOC(session, '.', 1)).toEqual([
       { slug: 'index', file: 'index.md', level: 1 },
       { slug: 'a', file: 'a.md', level: 2 },
       { title: 'Sections', level: 2 },
@@ -652,7 +627,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(projectFromTOC(session, '.', 1)).toEqual({
+    expect(projectFromSphinxTOC(session, '.', 1)).toEqual({
       index: 'index',
       file: 'index.md',
       path: '.',
@@ -672,7 +647,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(projectFromTOC(session, '.', 0)).toEqual({
+    expect(projectFromSphinxTOC(session, '.', 0)).toEqual({
       index: 'index',
       file: 'index.md',
       path: '.',
@@ -692,7 +667,7 @@ describe('pagesFromToc', () => {
       'b.md': '',
       'c.md': '',
     });
-    expect(projectFromTOC(session, '.', -1)).toEqual({
+    expect(projectFromSphinxTOC(session, '.', -1)).toEqual({
       index: 'index',
       file: 'index.md',
       path: '.',
@@ -714,7 +689,7 @@ describe('pagesFromToc', () => {
       'd.md': '',
       'e.md': '',
     });
-    expect(pagesFromTOC(session, '.', 1)).toEqual([
+    expect(pagesFromSphinxTOC(session, '.', 1)).toEqual([
       { slug: 'index', file: 'index.md', level: 1 },
       { slug: 'a', file: 'a.md', level: 2 },
       { title: 'Sections', level: 2 },

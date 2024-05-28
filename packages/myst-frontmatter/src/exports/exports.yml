@@ -394,16 +394,40 @@ cases:
     raw:
       exports:
         - format: pdf
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
     normalized:
       exports:
         - format: pdf
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
+  - title: export toc as string coerces to tocFile
+    raw:
+      exports:
+        - format: pdf
+          toc: _toc.yml
+    normalized:
+      exports:
+        - format: pdf
+          tocFile: _toc.yml
   - title: export toc and article errors
     raw:
       exports:
         - format: pdf
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
+          article: a.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+    errors: 1
+  - title: export toc file and article errors
+    raw:
+      exports:
+        - format: pdf
+          toc: _toc.yml
           article: a.md
     normalized:
       exports:
@@ -415,13 +439,25 @@ cases:
     raw:
       exports:
         - format: xml
-          toc: my/path/_toc.yml
+          toc:
+            - file: foo.md
           sub_article: a.md
     normalized:
       exports:
         - format: xml
           sub_articles:
             - a.md
+    errors: 1
+  - title: export with invalid toc errors
+    raw:
+      exports:
+        - format: pdf
+          toc:
+            - foo.md
+    normalized:
+      exports:
+        - format: pdf
+          toc: []
     errors: 1
   - title: zip passes
     raw:
