@@ -8,18 +8,26 @@ import mystToTex from '../src';
 describe('myst-to-tex math', () => {
   it('includes recursive commands', () => {
     const tree = u('root', [u('paragraph', [u('inlineMath', { value: '\\aRecursion' })])]);
-    const plugins = { '\\aNrm': 'a', '\\aMat': '[\\mathrm{\\aNrm}]', '\\aRecursion': '\\aMat' };
+    const plugins = {
+      '\\aNrm': { macro: 'a' },
+      '\\aMat': { macro: '[\\mathrm{\\aNrm}]' },
+      '\\aRecursion': { macro: '\\aMat' },
+    };
     const pipe = unified().use(mystToTex, {
       references: {},
       math: {
         ...plugins,
-        '\\somethingElse': '\\blah',
+        '\\somethingElse': { macro: '\\blah' },
       },
     });
     pipe.runSync(tree as any);
     const file = pipe.stringify(tree as any);
     expect((file.result as LatexResult).value).toEqual('$\\aRecursion$');
-    expect((file.result as LatexResult).commands).toEqual(plugins);
+    expect((file.result as LatexResult).commands).toEqual({
+      '\\aNrm': 'a',
+      '\\aMat': '[\\mathrm{\\aNrm}]',
+      '\\aRecursion': '\\aMat',
+    });
   });
   it.each([
     [false, 'start\n\n\\begin{equation}\nAx=b\n\\end{equation}\n\nend'],

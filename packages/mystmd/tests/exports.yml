@@ -174,7 +174,7 @@ cases:
         content: outputs/extend-config-config.json
   - title: Math macros
     cwd: math-macros
-    command: myst build --all
+    command: myst build --all --ci
     outputs:
       - path: math-macros/_build/exports/index.typ
         content: math-macros/outputs/index.typ

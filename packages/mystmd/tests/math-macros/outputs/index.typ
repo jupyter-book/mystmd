@@ -1,4 +1,3 @@
-// Created with jtex v.1.0.17
 #import "lapreprint.typ": *
 #show: template.with(
   title: "Testing Math Plugins",
@@ -12,8 +11,8 @@
   ),
   date: datetime(
     year: 2024,
-    month: 5,
-    day: 20,
+    month: 1,
+    day: 1,
   ),
   keywords: (),
   authors: (
@@ -31,8 +30,6 @@
 #let five = $x = x$
 #let six = $d = d$
 #let seven = $d = d = d$
-
-/* Written by MyST v1.2.3 */
 
 = No plugins <no-plugins>
 

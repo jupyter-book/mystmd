@@ -5,7 +5,7 @@ import type { TypstResult } from '../src';
 import mystToTypst from '../src';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-describe('myst-to-tex math', () => {
+describe('myst-to-typst math', () => {
   it('includes recursive commands', () => {
     const tree = u('root', [u('paragraph', [u('inlineMath', { value: '\\aRecursion' })])]);
     const plugins = {

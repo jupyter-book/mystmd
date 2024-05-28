@@ -1,5 +1,6 @@
 ---
 title: Testing Math Plugins
+date: 1 Jan 2024
 math:
   '\one': 'x'
   '\six': 'd = \three'

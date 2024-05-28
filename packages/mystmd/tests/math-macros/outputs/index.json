@@ -1,6 +1,6 @@
 {
   "kind": "Article",
-  "sha256": "277a7a1ac33f0bfb5efc764170b3376d327c2028fffe2a16daa02b0bfc91d358",
+  "sha256": "4f99ada19a89bbed71ae75d39b1002cef777f213f76d9340d4603a3a82472aa5",
   "slug": "index",
   "location": "/index.md",
   "dependencies": [],
@@ -24,7 +24,8 @@
       }
     ],
     "github": "https://github.com/executablebooks/mystjs",
-    "keywords": []
+    "keywords": [],
+    "date": "1 Jan 2024"
   },
   "mdast": {
     "type": "root",
@@ -36,16 +37,16 @@
             "type": "heading",
             "depth": 2,
             "position": {
-              "start": { "line": 14, "column": 1 },
-              "end": { "line": 14, "column": 1 }
+              "start": { "line": 15, "column": 1 },
+              "end": { "line": 15, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "No plugins",
                 "position": {
-                  "start": { "line": 14, "column": 1 },
-                  "end": { "line": 14, "column": 1 }
+                  "start": { "line": 15, "column": 1 },
+                  "end": { "line": 15, "column": 1 }
                 }
               }
             ],
@@ -58,8 +59,8 @@
             "type": "math",
             "value": "a^2 + b^2 = c^2",
             "position": {
-              "start": { "line": 16, "column": 1 },
-              "end": { "line": 18, "column": 1 }
+              "start": { "line": 17, "column": 1 },
+              "end": { "line": 19, "column": 1 }
             },
             "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup><mo>=</mo><msup><mi>c</mi><mn>2</mn></msup></mrow><annotation encoding=\"application/x-tex\">a^2 + b^2 = c^2</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">a</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">b</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8641em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">c</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span></span></span></span>",
             "enumerator": "1"
@@ -68,16 +69,16 @@
             "type": "heading",
             "depth": 2,
             "position": {
-              "start": { "line": 20, "column": 1 },
-              "end": { "line": 20, "column": 1 }
+              "start": { "line": 21, "column": 1 },
+              "end": { "line": 21, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "Simple plugin",
                 "position": {
-                  "start": { "line": 20, "column": 1 },
-                  "end": { "line": 20, "column": 1 }
+                  "start": { "line": 21, "column": 1 },
+                  "end": { "line": 21, "column": 1 }
                 }
               }
             ],
@@ -89,24 +90,24 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 22, "column": 1 },
-              "end": { "line": 22, "column": 1 }
+              "start": { "line": 23, "column": 1 },
+              "end": { "line": 23, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "Project frontmatter should give us ",
                 "position": {
-                  "start": { "line": 22, "column": 1 },
-                  "end": { "line": 22, "column": 1 }
+                  "start": { "line": 23, "column": 1 },
+                  "end": { "line": 23, "column": 1 }
                 }
               },
               {
                 "type": "inlineCode",
                 "value": "d",
                 "position": {
-                  "start": { "line": 22, "column": 1 },
-                  "end": { "line": 22, "column": 1 }
+                  "start": { "line": 23, "column": 1 },
+                  "end": { "line": 23, "column": 1 }
                 }
               }
             ]
@@ -115,8 +116,8 @@
             "type": "math",
             "value": "d = \\three",
             "position": {
-              "start": { "line": 24, "column": 1 },
-              "end": { "line": 26, "column": 1 }
+              "start": { "line": 25, "column": 1 },
+              "end": { "line": 27, "column": 1 }
             },
             "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>d</mi><mo>=</mo><mi>d</mi></mrow><annotation encoding=\"application/x-tex\">d = \\three</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.6944em;\"></span><span class=\"mord mathnormal\">d</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6944em;\"></span><span class=\"mord mathnormal\">d</span></span></span></span></span>",
             "enumerator": "2"
@@ -124,24 +125,24 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 28, "column": 1 },
-              "end": { "line": 28, "column": 1 }
+              "start": { "line": 29, "column": 1 },
+              "end": { "line": 29, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "Page should override and we should see ",
                 "position": {
-                  "start": { "line": 28, "column": 1 },
-                  "end": { "line": 28, "column": 1 }
+                  "start": { "line": 29, "column": 1 },
+                  "end": { "line": 29, "column": 1 }
                 }
               },
               {
                 "type": "inlineCode",
                 "value": "x",
                 "position": {
-                  "start": { "line": 28, "column": 1 },
-                  "end": { "line": 28, "column": 1 }
+                  "start": { "line": 29, "column": 1 },
+                  "end": { "line": 29, "column": 1 }
                 }
               }
             ]
@@ -150,8 +151,8 @@
             "type": "math",
             "value": "x = \\one",
             "position": {
-              "start": { "line": 30, "column": 1 },
-              "end": { "line": 32, "column": 1 }
+              "start": { "line": 31, "column": 1 },
+              "end": { "line": 33, "column": 1 }
             },
             "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>x</mi><mo>=</mo><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">x = \\one</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.4306em;\"></span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.4306em;\"></span><span class=\"mord mathnormal\">x</span></span></span></span></span>",
             "enumerator": "3"
@@ -160,16 +161,16 @@
             "type": "heading",
             "depth": 2,
             "position": {
-              "start": { "line": 34, "column": 1 },
-              "end": { "line": 34, "column": 1 }
+              "start": { "line": 35, "column": 1 },
+              "end": { "line": 35, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "Macros should recurse",
                 "position": {
-                  "start": { "line": 34, "column": 1 },
-                  "end": { "line": 34, "column": 1 }
+                  "start": { "line": 35, "column": 1 },
+                  "end": { "line": 35, "column": 1 }
                 }
               }
             ],
@@ -181,16 +182,16 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 36, "column": 1 },
-              "end": { "line": 36, "column": 1 }
+              "start": { "line": 37, "column": 1 },
+              "end": { "line": 37, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "Page frontmatter should fill in this project macro",
                 "position": {
-                  "start": { "line": 36, "column": 1 },
-                  "end": { "line": 36, "column": 1 }
+                  "start": { "line": 37, "column": 1 },
+                  "end": { "line": 37, "column": 1 }
                 }
               }
             ]
@@ -199,8 +200,8 @@
             "type": "math",
             "value": "\\five",
             "position": {
-              "start": { "line": 38, "column": 1 },
-              "end": { "line": 40, "column": 1 }
+              "start": { "line": 39, "column": 1 },
+              "end": { "line": 41, "column": 1 }
             },
             "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>x</mi><mo>=</mo><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">\\five</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.4306em;\"></span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.4306em;\"></span><span class=\"mord mathnormal\">x</span></span></span></span></span>",
             "enumerator": "4"
@@ -208,16 +209,16 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 42, "column": 1 },
-              "end": { "line": 42, "column": 1 }
+              "start": { "line": 43, "column": 1 },
+              "end": { "line": 43, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "Project frontmatter should fill in this page macro",
                 "position": {
-                  "start": { "line": 42, "column": 1 },
-                  "end": { "line": 42, "column": 1 }
+                  "start": { "line": 43, "column": 1 },
+                  "end": { "line": 43, "column": 1 }
                 }
               }
             ]
@@ -226,8 +227,8 @@
             "type": "math",
             "value": "\\six",
             "position": {
-              "start": { "line": 44, "column": 1 },
-              "end": { "line": 46, "column": 1 }
+              "start": { "line": 45, "column": 1 },
+              "end": { "line": 47, "column": 1 }
             },
             "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>d</mi><mo>=</mo><mi>d</mi></mrow><annotation encoding=\"application/x-tex\">\\six</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.6944em;\"></span><span class=\"mord mathnormal\">d</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6944em;\"></span><span class=\"mord mathnormal\">d</span></span></span></span></span>",
             "enumerator": "5"
@@ -235,16 +236,16 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 48, "column": 1 },
-              "end": { "line": 48, "column": 1 }
+              "start": { "line": 49, "column": 1 },
+              "end": { "line": 49, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "Double recurse",
                 "position": {
-                  "start": { "line": 48, "column": 1 },
-                  "end": { "line": 48, "column": 1 }
+                  "start": { "line": 49, "column": 1 },
+                  "end": { "line": 49, "column": 1 }
                 }
               }
             ]
@@ -253,8 +254,8 @@
             "type": "math",
             "value": "\\seven",
             "position": {
-              "start": { "line": 50, "column": 1 },
-              "end": { "line": 52, "column": 1 }
+              "start": { "line": 51, "column": 1 },
+              "end": { "line": 53, "column": 1 }
             },
             "html": "<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>d</mi><mo>=</mo><mi>d</mi><mo>=</mo><mi>d</mi></mrow><annotation encoding=\"application/x-tex\">\\seven</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.6944em;\"></span><span class=\"mord mathnormal\">d</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6944em;\"></span><span class=\"mord mathnormal\">d</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6944em;\"></span><span class=\"mord mathnormal\">d</span></span></span></span></span>",
             "enumerator": "6"
