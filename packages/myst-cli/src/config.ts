@@ -385,7 +385,7 @@ async function resolveProjectConfigPaths(
   if (projectConfig.exclude) {
     resolvedFields.exclude = await Promise.all(
       projectConfig.exclude.map(async (file) => {
-        const resolved = await resolutionFn(session, path, file, false);
+        const resolved = await resolutionFn(session, path, file, { allowNotExist: true });
         return resolved;
       }),
     );

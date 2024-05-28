@@ -576,7 +576,7 @@ describe('findProjectPaths', () => {
       'folder/newproj/page.md': '',
       'folder/newproj/myst.yml': SITE_CONFIG,
     });
-    expect(findProjectsOnPath(session, '.')).toEqual([]);
+    expect(await findProjectsOnPath(session, '.')).toEqual([]);
   });
   it('project myst.ymls', async () => {
     memfs.vol.fromJSON({
@@ -587,7 +587,7 @@ describe('findProjectPaths', () => {
       'folder/newproj/page.md': '',
       'folder/newproj/myst.yml': PROJECT_CONFIG,
     });
-    expect(findProjectsOnPath(session, '.')).toEqual(['.', 'folder/newproj']);
+    expect(await findProjectsOnPath(session, '.')).toEqual(['.', 'folder/newproj']);
   });
 });
 

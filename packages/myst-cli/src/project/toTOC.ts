@@ -49,7 +49,7 @@ function tocFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: st
 }
 
 export function tocFromProject(
-  project: Omit<LocalProject, 'bibliography'>,
+  project: Pick<LocalProject, 'file' | 'pages'>,
   dir: string = '.',
 ): any {
   return [
