@@ -62,7 +62,7 @@ export async function loadProjectFromDisk(
       addWarningForFile(
         session,
         sphinxTOCFile,
-        `Ignoring legacy jupyterbook TOC in favor of myst.yml toc: ${sphinxTOCFile}`,
+        `Ignoring legacy jupyterbook TOC in favor of myst.yml TOC: ${sphinxTOCFile}`,
         'warn',
         {
           ruleId: RuleId.encounteredLegacyTOC,
