@@ -36,7 +36,7 @@ project:
 
 URLs can be defined in the TOC. These URLs are links to external references within your table of contents. URLs are ignored in non-web exports.
 
-:::{warn}
+:::{warning}
 Currently these URLs are also ignored in MyST sites. Support will be added in a future release.
 :::
 
