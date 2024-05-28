@@ -1,5 +1,14 @@
 # myst-frontmatter
 
+## 1.4.4
+
+### Patch Changes
+
+- 65ade89: Math frontmatter coerces to object with name/description
+- 435c4329: Update licenses from spdx
+- Updated dependencies [65ade89]
+  - simple-validators@1.0.5
+
 ## 1.4.3
 
 ### Patch Changes

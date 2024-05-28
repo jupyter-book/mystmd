@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.3.15
+
+### Patch Changes
+
+- dd007024: Fix link transform for card links
+- 65ade89: Consume new math structure
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - myst-frontmatter@1.4.4
+  - myst-common@1.4.4
+  - myst-spec-ext@1.4.4
+
 ## 1.3.14
 
 ### Patch Changes

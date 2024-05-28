@@ -1,5 +1,26 @@
 # myst-cli
 
+## 1.2.5
+
+### Patch Changes
+
+- 65ade89: Consume new math structure
+- Updated dependencies [dd007024]
+- Updated dependencies [65ade89]
+- Updated dependencies [65ade89]
+- Updated dependencies [65ade89]
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - myst-transforms@1.3.15
+  - simple-validators@1.0.5
+  - myst-to-typst@0.0.17
+  - myst-to-tex@1.0.29
+  - myst-frontmatter@1.4.4
+  - myst-common@1.4.4
+  - myst-config@1.4.4
+  - myst-spec-ext@1.4.4
+  - tex-to-myst@1.0.29
+
 ## 1.2.4
 
 ### Patch Changes

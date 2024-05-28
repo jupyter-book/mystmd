@@ -1,5 +1,17 @@
 # myst-to-typst
 
+## 0.0.17
+
+### Patch Changes
+
+- 65ade89: Consume new math structure
+- 65ade89: Resolve recursive macros early for typst
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - myst-frontmatter@1.4.4
+  - myst-common@1.4.4
+  - myst-spec-ext@1.4.4
+
 ## 0.0.16
 
 ### Patch Changes
