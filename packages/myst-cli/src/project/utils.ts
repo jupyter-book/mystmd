@@ -17,7 +17,7 @@ export function yamlLineIndent(line: string): number | undefined {
  **/
 function matchesYAMLSection(name: string, line: string): boolean {
   // NB this is not escaped!
-  return !!line.match(new RegExp(`^\\s*${name}:`));
+  return !!line.match(new RegExp(`^\\s*${name}:\\s*`));
 }
 
 /**
@@ -102,8 +102,9 @@ export function findYAMLSection(
     }
   }
 
+  // Otherwise, we have no children!
   if (childIndent === undefined) {
-    return { start, stop: start + 1, indent: undefined };
+    return { start, stop: start, indent: undefined };
   }
 
   // Find section stop
