@@ -208,3 +208,39 @@ See [](xref.md) for more details on how cross-references are stored.
 :::{note} URL Nesting
 URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/executablebooks/mystmd/issues/670).
 :::
+
+(toc-format-legacy)=
+## Defining a `_toc.yml` using Jupyter Book's format
+
+:::{warning}
+Support for `_toc.yml` exists only for compatability reasons, and will be removed in future. 
+New users should use `myst.tml` instead.
+:::
+
+The `_toc.yml` can be defined for a site, and uses the format describe by Jupyter Book, the documentation for the format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html). Briefly, it defines a `format` as `jb-book` and can list a number of `chapters` with files. The file paths are relative to your `_toc.yml` file and can optionally include the extension.
+
+```yaml
+format: jb-book
+root: index
+chapters:
+  - file: path/to/chapter1
+  - file: path/to/chapter2
+```
+
+For larger books, you can group the content into `parts`. Each `part` has a `caption` and a list of `chapters` files can define children using a list of `sections`.
+
+```yaml
+format: jb-book
+root: index
+parts:
+  - caption: Name of Part 1
+    chapters:
+      - file: path/to/part1/chapter1
+      - file: path/to/part1/chapter2
+        sections:
+          - file: path/to/part1/chapter2/section1
+  - caption: Name of Part 2
+    chapters:
+      - file: path/to/part2/chapter1
+      - file: path/to/part2/chapter2
+```
