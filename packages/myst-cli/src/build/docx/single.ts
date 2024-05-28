@@ -123,7 +123,7 @@ export async function runWordExport(
   data.frontmatter = { ...data.frontmatter, ...exportFrontmatter };
   const { options, doc } = mystTemplate.prepare({
     frontmatter: data.frontmatter,
-    parts: [],
+    parts: {},
     options: { ...data.frontmatter.options, ...exportOptions },
     sourceFile: file,
   });

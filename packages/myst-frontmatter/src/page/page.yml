@@ -80,7 +80,8 @@ cases:
       biblio: {}
       oxa: ''
       math:
-        a: b
+        a:
+          macro: b
       subtitle: sub
       short_title: short
       date: 14 Dec 2021
