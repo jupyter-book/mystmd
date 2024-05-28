@@ -35,9 +35,9 @@ function pagesFromEntries(
     if (isFile(entry)) {
       // Level must be "chapter" or "section" for files
       entryLevel = level < 0 ? 0 : level;
-      const file = join(path, entry.file);
+      const file = resolveExtension(join(path, entry.file));
 
-      if (fs.existsSync(file) && !isDirectory(file)) {
+      if (file && fs.existsSync(file) && !isDirectory(file)) {
         const { slug } = fileInfo(file, pageSlugs);
         pages.push({ file, level: entryLevel, slug });
       } else {
@@ -78,8 +78,8 @@ function pagesFromEntries(
       addWarningForFile(
         session,
         configFile,
-        `URLs in table of contents are not supported: ${entry.url}`,
-        'error',
+        `URLs in table of contents are not yet supported: ${entry.url}`,
+        'warn',
         {
           ruleId: RuleId.tocContentsExist,
         },
