@@ -34,7 +34,11 @@ project:
 
 ### URL entries
 
-URLs can be defined in the TOC. These links will show up in web exports, and will be ignored for non-web exports.
+URLs can be defined in the TOC. These URLs are links to external references within your table of contents. URLs are ignored in non-web exports.
+
+:::{warn}
+Currently these URLs are also ignored in MyST sites. Support will be added in a future release.
+:::
 
 :::{code} yaml
 :filename: myst.yml
@@ -77,7 +81,6 @@ project:
     - file: root.md
     - file: first-child.md
     - file: second-child.md
-    - url: https://google.com
 :::
 ::::
 :::::
@@ -121,23 +124,6 @@ project:
       children:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
-:::
-
-## Define document parts for exports
-
-A MyST document [can be split into several "parts"](document-parts.md#known-frontmatter-parts) that correspond to distinct components (e.g. "abstract" or "acknowledgements"). Each TOC entry can be given a `part` key that corresponds to one of these recognized parts, e.g.
-
-:::{code} yaml
-:filename: myst.yml
-
-version: 1
-project:
-  toc:
-    - file: root.md
-    - file: abstract.md
-      part: abstract
-    - file: acknowledgements.md
-      part: acknowledgements
 :::
 
 
@@ -209,15 +195,18 @@ See [](xref.md) for more details on how cross-references are stored.
 URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/executablebooks/mystmd/issues/670).
 :::
 
+:::{note} Compatibility with JupyterBook
+:class: dropdown
+
 (toc-format-legacy)=
-## Defining a `_toc.yml` using Jupyter Book's format
+## Defining a `_toc.yml` using Jupyter Book’s format
 
 :::{warning}
 Support for `_toc.yml` exists only for compatability reasons, and will be removed in future. 
-New users should use `myst.tml` instead.
+New users should use `myst.yml` instead.
 :::
 
-The `_toc.yml` can be defined for a site, and uses the format describe by Jupyter Book, the documentation for the format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html). Briefly, it defines a `format` as `jb-book` and can list a number of `chapters` with files. The file paths are relative to your `_toc.yml` file and can optionally include the extension.
+Site table of contents may be defined with a `_toc.yml` file, following the Jupyter Book format. The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html). Briefly, it defines a `format` as `jb-book` and can list a number of `chapters` with files. The file paths are relative to your `_toc.yml` file and can optionally include the extension.
 
 ```yaml
 format: jb-book
@@ -244,3 +233,4 @@ parts:
       - file: path/to/part2/chapter1
       - file: path/to/part2/chapter2
 ```
+:::

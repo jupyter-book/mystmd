@@ -55,26 +55,40 @@ export async function loadProjectFromDisk(
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeTOC } = opts || {};
   let legacyToc = false;
+  const sphinxTOCFile = validateSphinxTOC(session, path) ? tocFile(path) : undefined;
   if (projectConfig?.toc !== undefined) {
     newProject = projectFromTOC(session, path, projectConfig.toc);
+    if (sphinxTOCFile) {
+      addWarningForFile(
+        session,
+        sphinxTOCFile,
+        `Ignoring legacy jupyterbook TOC in favor of myst.yml toc: ${sphinxTOCFile}`,
+        'warn',
+        {
+          ruleId: RuleId.encounteredLegacyTOC,
+        },
+      );
+    }
     if (writeTOC) session.log.warn('Not writing the table of contents, it already exists!');
     writeTOC = false;
-  } else if (validateSphinxTOC(session, path)) {
+  } else if (sphinxTOCFile) {
     // Legacy validator
     legacyToc = true;
     if (!writeTOC) {
       // Do not warn if user is explicitly upgrading toc
-      const filename = tocFile(path);
-      addWarningForFile(
-        session,
-        filename,
-        `Encountered legacy jupyterbook TOC: ${filename}`,
-        'warn',
-        {
-          ruleId: RuleId.encounteredLegacyTOC,
-          note: 'To upgrade to a MyST TOC, try running `myst init --write-toc`',
-        },
-      );
+      // TODO: Add this back as a warning rather than debug as we surface this feature more
+      session.log.debug(`Encountered legacy jupyterbook TOC: ${sphinxTOCFile}`);
+      session.log.debug('To upgrade to a MyST TOC, try running `myst init --write-toc`');
+      // addWarningForFile(
+      //   session,
+      //   filename,
+      //   `Encountered legacy jupyterbook TOC: ${sphinxTOCFile}`,
+      //   'warn',
+      //   {
+      //     ruleId: RuleId.encounteredLegacyTOC,
+      //     note: 'To upgrade to a MyST TOC, try running `myst init --write-toc`',
+      //   },
+      // );
     }
     newProject = projectFromSphinxTOC(session, path);
   } else {
