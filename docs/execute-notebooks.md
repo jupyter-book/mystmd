@@ -29,16 +29,23 @@ In order to execute your MyST content, you must install a Jupyter Server and the
 :::
 
 
-## Dealing with errors
+## Expected errors
 
-Sometimes, it is expected that a code-cell might fail (e.g. to demonstrate invalid code). Notebook environments like JupyterLab (and Jupyter Notebook, its predecessor) will stop notebook execution once a cell failure occurs. These applications can be instructed to continue execution of a notebook if a cell fails by setting the `raises-exception` tag. This is often used to execute code that is expected to fail, e.g. to demonstrate the traceback for invalid code.
+By default, MyST will stop executing a notebook if a cell raises an error.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the {guilabel}`raises-exception` tag to the cell.
+If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
 
-For example, setting the tag for a {myst:directive}`code-cell` directive:
+The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
+Additionally, you can specify tags (and other cell metadata) with markdown using the {myst:directive}`code-cell` directive.
+
+Here's an example of adding this tag with a {myst:directive}`code-cell` directive:
+
 ````markdown
 ```{code-cell}
 :tags: raises-exception
 
 print("Hello" + 10001)
+```
 ````
 
 
