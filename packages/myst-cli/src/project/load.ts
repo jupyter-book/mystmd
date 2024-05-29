@@ -57,7 +57,7 @@ export async function loadProjectFromDisk(
   let legacyToc = false;
   const sphinxTOCFile = validateSphinxTOC(session, path) ? tocFile(path) : undefined;
   if (projectConfig?.toc !== undefined) {
-    newProject = projectFromTOC(session, path, projectConfig.toc);
+    newProject = projectFromTOC(session, path, projectConfig.toc, 1, projectConfigFile);
     if (sphinxTOCFile) {
       addWarningForFile(
         session,
