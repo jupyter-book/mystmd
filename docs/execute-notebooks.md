@@ -29,7 +29,7 @@ In order to execute your MyST content, you must install a Jupyter Server and the
 :::
 
 
-## Deadling with errors
+## Dealing with errors
 
 Sometimes, it is expected that a code-cell might fail (e.g. to demonstrate invalid code). Notebook environments like JupyterLab (and Jupyter Notebook, its predecessor) will stop notebook execution once a cell failure occurs. These applications can be instructed to continue execution of a notebook if a cell fails by setting the `raises-exception` tag. This is often used to execute code that is expected to fail, e.g. to demonstrate the traceback for invalid code.
 
