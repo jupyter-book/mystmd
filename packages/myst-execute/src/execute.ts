@@ -118,7 +118,7 @@ function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
       hashableItems.push({
         kind: node.type,
         content: (select('code', node) as Code).value,
-        raisesException: !!node.data?.tags?.['raises-exception'],
+        raisesException: !!node.data?.tags?.includes?.('raises-exception'),
       });
     } else {
       assert(isInlineExpression(node));
@@ -188,8 +188,7 @@ async function computeExecutableNodes(
       results.push(outputs);
 
       // Check for errors
-      const metadata = matchedNode.data || {};
-      const allowErrors = !!metadata?.tags?.['raises-exception'];
+      const allowErrors = !!matchedNode.data?.tags?.includes?.('raises-exception');
       if (status === 'error' && !allowErrors) {
         fileWarn(
           opts.vfile,
