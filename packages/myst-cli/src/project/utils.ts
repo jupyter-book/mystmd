@@ -16,8 +16,8 @@ export function yamlLineIndent(line: string): number | undefined {
  *
  **/
 function matchesYAMLSection(name: string, line: string): boolean {
-  // NB this is not escaped!
-  return !!line.match(new RegExp(`^\\s*${name}:\\s*`));
+  // NB the name is not escaped!
+  return !!line.match(new RegExp(`^\\s*${name}:\\s*(#.*)?$`));
 }
 
 /**

@@ -9,7 +9,7 @@ cases:
         - foo
       section:
         body: "hi"
-    result: 
+    result:
       start: 1
       stop: 1
   - title: Empty section at end
@@ -20,7 +20,7 @@ cases:
         - baz
         - foo
       section:
-    result: 
+    result:
       start: 5
       stop: 5
   - title: Section at beginning
@@ -31,8 +31,8 @@ cases:
       foo: bar
       bar:
         - baz
-        - foo    
-    result: 
+        - foo
+    result:
       start: 1
       stop: 2
       indent: 2
@@ -44,9 +44,21 @@ cases:
         - baz
         - foo   
       section:
-        body: "hi" 
-    result: 
+        body: "hi"
+    result:
       start: 5
       stop: 6
       indent: 2
-
+  - title: Section with comment
+    name: section
+    source: |-
+      foo: bar
+      bar:
+        - baz
+        - foo   
+      section:  # This is a section
+        body: "hi"
+    result:
+      start: 5
+      stop: 6
+      indent: 2
