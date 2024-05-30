@@ -15,15 +15,15 @@ const session = new Session();
 describe('site section generation', () => {
   it('empty', async () => {
     memfs.vol.fromJSON({});
-    expect((async () => await projectFromPath(session, '.'))()).rejects.toThrow();
+    expect((async () => projectFromPath(session, '.'))()).rejects.toThrow();
   });
   it('invalid index', async () => {
     memfs.vol.fromJSON({ 'readme.md': '' });
-    expect((async () => await projectFromPath(session, '.', 'index.md'))()).rejects.toThrow();
+    expect((async () => projectFromPath(session, '.', 'index.md'))()).rejects.toThrow();
   });
   it('readme.md only', async () => {
     memfs.vol.fromJSON({ 'readme.md': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',
@@ -33,7 +33,7 @@ describe('site section generation', () => {
   });
   it('README.md only', async () => {
     memfs.vol.fromJSON({ 'README.md': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'README.md',
       path: '.',
       index: 'readme',
@@ -43,7 +43,7 @@ describe('site section generation', () => {
   });
   it('README.md and index.md', async () => {
     memfs.vol.fromJSON({ 'README.md': '', 'index.md': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'index.md',
       path: '.',
       index: 'index',
@@ -53,7 +53,7 @@ describe('site section generation', () => {
   });
   it('index.md only', async () => {
     memfs.vol.fromJSON({ 'index.md': '' });
-    expect(await projectFromPath(session, '.', 'index.md')).toEqual({
+    expect(projectFromPath(session, '.', 'index.md')).toEqual({
       file: 'index.md',
       path: '.',
       index: 'index',
@@ -63,7 +63,7 @@ describe('site section generation', () => {
   });
   it('folder/subfolder/index.md only', async () => {
     memfs.vol.fromJSON({ 'folder/subfolder/index.md': '' });
-    expect(await projectFromPath(session, '.', 'folder/subfolder/index.md')).toEqual({
+    expect(projectFromPath(session, '.', 'folder/subfolder/index.md')).toEqual({
       file: 'folder/subfolder/index.md',
       path: '.',
       index: 'index',
@@ -73,7 +73,7 @@ describe('site section generation', () => {
   });
   it('flat folder', async () => {
     memfs.vol.fromJSON({ 'readme.md': '', 'page.md': '', 'notebook.ipynb': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',
@@ -94,7 +94,7 @@ describe('site section generation', () => {
   });
   it('single folder', async () => {
     memfs.vol.fromJSON({ 'readme.md': '', 'folder/page.md': '', 'folder/notebook.ipynb': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',
@@ -123,7 +123,7 @@ describe('site section generation', () => {
       'folder1/01_MySecond_folder-ok/folder3/01_notebook.ipynb': '',
       'folder1/01_MySecond_folder-ok/folder3/02_page.md': '',
     });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',
@@ -156,7 +156,7 @@ describe('site section generation', () => {
   });
   it('files before folders', async () => {
     memfs.vol.fromJSON({ 'readme.md': '', 'zfile.md': '', 'afolder/page.md': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',
@@ -187,7 +187,7 @@ describe('site section generation', () => {
       'folder1/folder2/page2.md': '',
       'folder1/folder2/folder3/page3.md': '',
     });
-    expect(await projectFromPath(session, 'folder1', 'folder1/folder2/readme.md')).toEqual({
+    expect(projectFromPath(session, 'folder1', 'folder1/folder2/readme.md')).toEqual({
       file: 'folder1/folder2/readme.md',
       path: 'folder1',
       index: 'readme',
@@ -221,7 +221,7 @@ describe('site section generation', () => {
   });
   it('first md file as index', async () => {
     memfs.vol.fromJSON({ 'folder/page.md': '', 'folder/notebook.ipynb': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'folder/page.md',
       path: '.',
       index: 'page',
@@ -241,7 +241,7 @@ describe('site section generation', () => {
   });
   it('other md picked over default notebook', async () => {
     memfs.vol.fromJSON({ 'page.md': '', 'index.ipynb': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'page.md',
       path: '.',
       index: 'page',
@@ -257,7 +257,7 @@ describe('site section generation', () => {
   });
   it('index notebook picked over other notebook', async () => {
     memfs.vol.fromJSON({ 'aaa.ipynb': '', 'index.ipynb': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'index.ipynb',
       path: '.',
       index: 'index',
@@ -273,7 +273,7 @@ describe('site section generation', () => {
   });
   it('first notebook as index', async () => {
     memfs.vol.fromJSON({ 'folder/page.docx': '', 'folder/notebook.ipynb': '' });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'folder/notebook.ipynb',
       path: '.',
       index: 'notebook',
@@ -289,7 +289,7 @@ describe('site section generation', () => {
       'folder/newproj/page.md': '',
       'folder/newproj/myst.yml': '',
     });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',
@@ -319,7 +319,7 @@ describe('site section generation', () => {
       'chapter2.ipynb': '',
       'chapter10.ipynb': '',
     });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',
@@ -352,7 +352,7 @@ describe('site section generation', () => {
       'folder/newproj/page.md': '',
       'folder/newproj/myst.yml': '',
     });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       file: 'readme.md',
       path: '.',
       index: 'readme',

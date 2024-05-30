@@ -44,10 +44,11 @@ export function resolveExtension(
     if (normalizedMatches.length === 0 && path.extname(file)) {
       warnFn(`Table of contents entry does not exist: ${file}`, 'error');
     } else if (normalizedMatches.length === 0) {
+      // Need a different warning if this is a folder
       warnFn(
         `Unable to resolve table of contents entry: ${file}`,
         'error',
-        `Expected one of:\n     - ${VALID_FILE_EXTENSIONS.map((ext) => `${file}${ext}`).join('\n- ')}`,
+        `Expected one of:\n     - ${VALID_FILE_EXTENSIONS.map((ext) => `${file}${ext}`).join('\n     - ')}`,
       );
     } else if (normalizedMatches.length === 1) {
       warnFn(
