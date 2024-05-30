@@ -331,7 +331,7 @@ project:
   - When `false` (default) any server settings received from `binder` will be cached in local storage. On page refresh or future page load the save session info will be used provided the session is still activate and the max age (86400s) has not been exceeded
   - `false`
 * - `mathjaxUrl`
-  - Allows the default mathjax bindle loaded by the Juptyer Latex Typesetter to be changed
+  - Allows the default mathjax bindle loaded by the Jupyter Latex Typesetter to be changed
   - Mathjax 2.7.5 from `cdnjs.cloudflare`[^mathjax]
 * - `mathjaxConfig`
   - Allows the default mathjax configuration string to be changed
