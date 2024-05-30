@@ -28,6 +28,27 @@ The following computational content will be executed:
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
+
+## Expected errors
+
+By default, MyST will stop executing a notebook if a cell raises an error.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the {guilabel}`raises-exception` tag to the cell.
+If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
+
+The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
+Additionally, you can specify tags (and other cell metadata) with markdown using the {myst:directive}`code-cell` directive.
+
+Here's an example of adding this tag with a {myst:directive}`code-cell` directive:
+
+````markdown
+```{code-cell}
+:tags: raises-exception
+
+print("Hello" + 10001)
+```
+````
+
+
 ## Cache execution outputs
 
 When MyST executes your notebook, it will store the outputs in a cache in a folder called `execute/` in your MyST build folder.
