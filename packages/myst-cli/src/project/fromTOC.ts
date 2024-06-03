@@ -208,7 +208,6 @@ export function listExplicitFiles(entries: Entry[], path: string): string[] {
  * - However, implicitly ignored files (node_modules, _build, .*) are _not_ ignored
  * - Project `exclude` files are still respected
  * - Pages never show up twice even if they match multiple patterns
- * - TODO: Only if pattern is first entry in toc, use same index resolution logic.
  */
 export function patternsToFileEntries(
   session: ISession,
