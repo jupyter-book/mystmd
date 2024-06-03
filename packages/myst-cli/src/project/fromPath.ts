@@ -8,7 +8,12 @@ import { fileInfo } from '../utils/fileInfo.js';
 import { nextLevel } from '../utils/nextLevel.js';
 import { VALID_FILE_EXTENSIONS, isValidFile } from '../utils/resolveExtension.js';
 import { shouldIgnoreFile } from '../utils/shouldIgnoreFile.js';
-import { getIgnoreFiles, pagesFromSphinxTOC, sortByNumber } from './fromTOC.js';
+import {
+  DEFAULT_INDEX_FILENAMES,
+  getIgnoreFiles,
+  pagesFromSphinxTOC,
+  sortByNumber,
+} from './fromTOC.js';
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -16,8 +21,6 @@ import type {
   LocalProject,
   PageSlugs,
 } from './types.js';
-
-const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
 
 type Options = {
   ignore?: string[];

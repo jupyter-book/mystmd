@@ -30,6 +30,12 @@ import { isFile, isPattern, isURL } from 'myst-toc';
 import { globSync } from 'glob';
 import { isDirectory } from 'myst-cli-utils';
 
+export const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
+
+const DEFAULT_INDEX_WITH_EXT = ['.md', '.ipynb']
+  .map((ext) => DEFAULT_INDEX_FILENAMES.map((file) => `${file}${ext}`))
+  .flat();
+
 type EntryWithoutPattern = FileEntry | URLEntry | FileParentEntry | URLParentEntry | ParentEntry;
 
 /** Sort any folders/files to ensure that `chapter10`, etc., comes after `chapter9` */
@@ -59,23 +65,21 @@ export function sortByNumber(a: string, b: string) {
  *   },
  * }
  */
-function objFromPath(parts: string[], obj?: Record<string, any>) {
+export function objFromPathParts(parts: string[], obj?: Record<string, any>) {
   if (!obj) obj = {};
   const [part, ...remainingParts] = parts;
   if (!part) return obj;
   if (!obj[part]) obj[part] = {} as Record<string, any>;
-  obj[part] = objFromPath(remainingParts, obj[part]);
+  obj[part] = objFromPathParts(remainingParts, obj[part]);
   return obj;
 }
 
 /**
- * Take flat list of files and create nested pseudo-directory structure
+ * Take glob pattern and create nested pseudo-directory structure
  *
- * This does not care if files exist.
+ * For example, given a pattern that resolves to:
  *
- * For example, given:
- *
- * files = [
+ * matches = [
  *   'one/two/three',
  *   'one/two/four',
  *   'five',
@@ -93,12 +97,17 @@ function objFromPath(parts: string[], obj?: Record<string, any>) {
  *   five: {},
  * }
  */
-function fileListToDirectoryStructure(files: string[]) {
+export function patternToDirectoryStructure(
+  pattern: string,
+  path: string,
+  opts?: Omit<Parameters<typeof globSync>[1], 'withFileTypes'>,
+) {
+  const matches = globSync(pattern, { cwd: path, ...opts });
   const dirStructure: Record<string, any> = {};
-  files.forEach((file) => {
+  matches.forEach((match) => {
     // Glob always uses '/' separator, not filesystem separator
-    const fileParts = file.split('/');
-    objFromPath(fileParts, dirStructure);
+    const fileParts = match.split('/');
+    objFromPathParts(fileParts, dirStructure);
   });
   return dirStructure;
 }
@@ -139,15 +148,23 @@ function fileListToDirectoryStructure(files: string[]) {
  *   },
  * ]
  */
-function directoryStructureToFileEntries(
+export function directoryStructureToFileEntries(
   dirStructure: Record<string, any>,
   path: string,
   ignore: string[],
 ): (FileEntry | ParentEntry)[] {
-  const files = Object.keys(dirStructure)
+  let files = Object.keys(dirStructure)
     // .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(join(path, file)))
     .sort(sortByNumber);
+  let indexFile: string | undefined;
+  DEFAULT_INDEX_WITH_EXT.forEach((index) => {
+    if (indexFile) return;
+    indexFile = files.find((file) => file.toLowerCase() === index);
+  });
+  if (indexFile) {
+    files = [indexFile, ...files.filter((file) => file !== indexFile)];
+  }
   const entries = [
     ...files
       .filter((file) => isValidFile(file) && Object.keys(dirStructure[file]).length === 0)
@@ -169,7 +186,7 @@ function directoryStructureToFileEntries(
 /**
  * Traverse toc entries and return a list of files
  */
-function listExplicitFiles(entries: Entry[], path: string): string[] {
+export function listExplicitFiles(entries: Entry[], path: string): string[] {
   const files: string[] = [];
   entries.forEach((entry) => {
     if ((entry as FileEntry).file) {
@@ -193,7 +210,7 @@ function listExplicitFiles(entries: Entry[], path: string): string[] {
  * - Pages never show up twice even if they match multiple patterns
  * - TODO: Only if pattern is first entry in toc, use same index resolution logic.
  */
-function patternsToFileEntries(
+export function patternsToFileEntries(
   session: ISession,
   entries: Entry[],
   path: string,
@@ -204,8 +221,7 @@ function patternsToFileEntries(
     .map((entry) => {
       if (isPattern(entry)) {
         const { pattern } = entry as PatternEntry;
-        const matches = globSync(pattern, { cwd: path });
-        const dirStructure = fileListToDirectoryStructure(matches);
+        const dirStructure = patternToDirectoryStructure(pattern, path);
         const newEntries = directoryStructureToFileEntries(dirStructure, path, ignore);
         if (newEntries.length === 0) {
           addWarningForFile(
