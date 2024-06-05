@@ -53,9 +53,14 @@ project:
 ### Glob pattern matching
 
 You can specify glob-like patterns in the TOC with the `pattern` key.
-The files matched by `pattern` will be expanded as a series of `file` entries.
+The files matched by `pattern` will be expanded using similar logic to the [implicit table of contents](#implicit-toc):
 
-For example, with a folder with `root.md`, `first-child.md`, `second-child.md`, the following two `toc` entries are equivalent:
+- Folder structure is maintained
+- [Project exclude](#project-exclude) files are respected
+- Index/readme files are sorted to come first
+- Files that are listed explicitly in the TOC will be ignored by the pattern
+
+For example, with a folder with `root.md`, `child9.md`, `child10.md`, the following two `toc` entries are equivalent:
 
 :::::{grid} 1 2 2 2
 ::::{card} Pattern-matching
@@ -66,7 +71,7 @@ version: 1
 project:
   toc:
     - file: root.md
-    - pattern: '*-child.md'
+    - pattern: '*.md'
 :::
 ::::
 ::::{card} No pattern-matching
@@ -79,8 +84,8 @@ version: 1
 project:
   toc:
     - file: root.md
-    - file: first-child.md
-    - file: second-child.md
+    - file: child9.md
+    - file: child10.md
 
 :::
 ::::
@@ -126,6 +131,8 @@ project:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
 :::
+
+(implicit-toc)=
 
 ## Implicit Table of Contents from filenames
 
@@ -201,7 +208,7 @@ URL nesting that matches the folder structure is a requested feature that is bei
 ## Defining a `_toc.yml` using Jupyter Book’s format
 
 :::{warning}
-Support for `_toc.yml` exists only for compatability reasons, and will be removed in future. 
+Support for `_toc.yml` exists only for compatibility reasons, and will be removed in future. 
 New users should use `myst.yml` instead.
 :::
 
