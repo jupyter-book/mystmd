@@ -151,15 +151,14 @@ If a title is not provided by a notebook or markdown document in the front matte
 
 The “root” of a site is the page displayed when someone browses to the index of your site without any pathname. The CLI will choose the root file in the following order:
 
-1. `index.md`
-2. `README.md`
-3. `main.md`
+1. `index.md` / `README.md` / `main.md`
+2. `index.tex` / `README.tex` / `main.tex`
+3. `index.ipynb` / `README.ipynb` / `main.ipynb`
 4. The first `.md` file found alphabetically
-5. `index.ipynb`
-6. `README.ipynb`
-7. `main.ipynb`
-8. The first `.ipynb` file found alphabetically
+5. The first `.tex` file found alphabetically
+6. The first `.ipynb` file found alphabetically
 
+(project-exclude)=
 
 ### Excluding Files
 

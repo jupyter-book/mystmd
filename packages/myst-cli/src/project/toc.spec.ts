@@ -239,17 +239,17 @@ describe('site section generation', () => {
       ],
     });
   });
-  it('other md picked over default notebook', async () => {
+  it('index notebook picked over md', async () => {
     memfs.vol.fromJSON({ 'page.md': '', 'index.ipynb': '' });
     expect(projectFromPath(session, '.')).toEqual({
-      file: 'page.md',
+      file: 'index.ipynb',
       path: '.',
-      index: 'page',
+      index: 'index',
       implicitIndex: true,
       pages: [
         {
-          file: 'index.ipynb',
-          slug: 'index',
+          file: 'page.md',
+          slug: 'page',
           level: 1,
         },
       ],
@@ -279,6 +279,35 @@ describe('site section generation', () => {
       index: 'notebook',
       implicitIndex: true,
       pages: [],
+    });
+  });
+  it('tex file as index over notebook', async () => {
+    memfs.vol.fromJSON({
+      'folder/page.md': '',
+      'folder/index.ipynb': '',
+      'folder/main.tex': '',
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'folder/main.tex',
+      path: '.',
+      index: 'main',
+      implicitIndex: true,
+      pages: [
+        {
+          title: 'Folder',
+          level: 1,
+        },
+        {
+          file: 'folder/page.ipynb',
+          slug: 'page',
+          level: 2,
+        },
+        {
+          file: 'folder/notebook.ipynb',
+          slug: 'notebook',
+          level: 2,
+        },
+      ],
     });
   });
   it('stop traversing at myst.yml', async () => {

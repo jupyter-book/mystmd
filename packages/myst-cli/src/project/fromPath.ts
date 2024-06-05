@@ -122,8 +122,10 @@ function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pa
   };
 
   if (!indexFile) indexFile = matcher('.md');
-  if (!indexFile) [indexFile] = files.filter((file) => extname(file) === '.md');
+  if (!indexFile) indexFile = matcher('.tex');
   if (!indexFile) indexFile = matcher('.ipynb');
+  if (!indexFile) [indexFile] = files.filter((file) => extname(file) === '.md');
+  if (!indexFile) [indexFile] = files.filter((file) => extname(file) === '.tex');
   if (!indexFile) [indexFile] = files;
   return indexFile;
 }
