@@ -471,7 +471,7 @@ export async function collectExportOptions(
     sourceFiles.map(async (file) => {
       let fileProjectPath: string | undefined;
       if (!projectPath) {
-        fileProjectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+        fileProjectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
         if (fileProjectPath) await loadProjectFromDisk(session, fileProjectPath);
       } else {
         fileProjectPath = projectPath;

@@ -25,7 +25,7 @@ describe('session warnings', () => {
   });
   it('getAllWarnings returns clone warnings', async () => {
     const session = new Session();
-    const clone = session.clone();
+    const clone = await session.clone();
     addWarningForFile(session, 'my-file-0', 'my message', 'error', {
       ruleId: RuleId.bibFileExists,
     });
@@ -55,7 +55,7 @@ describe('session warnings', () => {
   });
   it('getAllWarnings deduplicates clone warnings', async () => {
     const session = new Session();
-    const clone = session.clone();
+    const clone = await session.clone();
     addWarningForFile(session, 'my-file', 'my message', 'error', { ruleId: RuleId.bibFileExists });
     addWarningForFile(clone, 'my-file', 'my message', 'error', { ruleId: RuleId.bibFileExists });
     expect(session.getAllWarnings(RuleId.bibFileExists)).toEqual([

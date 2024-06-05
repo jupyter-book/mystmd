@@ -69,7 +69,7 @@ export async function init(session: ISession, opts: InitOptions) {
   if (!project && !site && !writeTOC) {
     session.log.info(WELCOME());
   }
-  loadConfig(session, '.');
+  await loadConfig(session, '.');
   const state = session.store.getState();
   const existingRawConfig = selectors.selectLocalRawConfig(state, '.');
   const existingProjectConfig = selectors.selectLocalProjectConfig(state, '.');
@@ -96,7 +96,7 @@ export async function init(session: ISession, opts: InitOptions) {
     }
     if (siteConfig || projectConfig) {
       session.log.info(`💾 Updating config file: ${existingConfigFile}`);
-      writeConfigs(session, '.', { siteConfig, projectConfig });
+      await writeConfigs(session, '.', { siteConfig, projectConfig });
     }
   } else {
     // If no config is present, write it explicitly to include comments.
@@ -119,7 +119,7 @@ export async function init(session: ISession, opts: InitOptions) {
     fs.writeFileSync(configFile, configData);
   }
   if (writeTOC) {
-    loadConfig(session, '.');
+    await loadConfig(session, '.');
     await loadProjectFromDisk(session, '.', { writeTOC });
   }
   // If we have any options, this command is complete!

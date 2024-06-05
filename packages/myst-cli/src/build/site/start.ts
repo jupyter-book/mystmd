@@ -120,7 +120,7 @@ export async function startServer(
   opts: StartOptions,
 ): Promise<AppServer | undefined> {
   // Ensure we are on the latest version of the configs
-  session.reload();
+  await session.reload();
   warnOnHostEnvironmentVariable(session, opts);
   const mystTemplate = await getMystTemplate(session, opts);
   if (!opts.headless) await installSiteTemplate(session, mystTemplate);

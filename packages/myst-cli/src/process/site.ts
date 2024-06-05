@@ -466,7 +466,7 @@ export async function processProject(
 
 export async function processSite(session: ISession, opts?: ProcessSiteOptions): Promise<boolean> {
   try {
-    reloadAllConfigsForCurrentSite(session);
+    await reloadAllConfigsForCurrentSite(session);
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
     const prefix = (error as Error)?.message

@@ -38,7 +38,7 @@ export async function loadProjectFromDisk(
     const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
     if (cachedProject) return cachedProject;
   }
-  loadConfig(session, path, opts);
+  await loadConfig(session, path, opts);
   const state = session.store.getState();
   const projectConfig = selectors.selectLocalProjectConfig(state, path);
   const projectConfigFile =
@@ -139,21 +139,24 @@ export async function loadProjectFromDisk(
   return project;
 }
 
-export function findProjectsOnPath(session: ISession, path: string) {
+export async function findProjectsOnPath(session: ISession, path: string) {
   let projectPaths: string[] = [];
   const content = fs.readdirSync(path);
   if (session.configFiles.filter((file) => content.includes(file)).length) {
-    loadConfig(session, path);
+    await loadConfig(session, path);
     if (selectors.selectLocalProjectConfig(session.store.getState(), path)) {
       projectPaths.push(path);
     }
   }
-  content
-    .map((dir) => join(path, dir))
-    .filter((file) => isDirectory(file))
-    .forEach((dir) => {
-      projectPaths = projectPaths.concat(findProjectsOnPath(session, dir));
-    });
+  const projs = await Promise.all(
+    content
+      .map((dir) => join(path, dir))
+      .filter((file) => isDirectory(file))
+      .map(async (dir) => await findProjectsOnPath(session, dir)),
+  );
+  projs.forEach((p) => {
+    projectPaths = projectPaths.concat(p);
+  });
   return projectPaths;
 }
 

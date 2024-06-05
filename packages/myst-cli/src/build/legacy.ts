@@ -47,7 +47,7 @@ export async function localArticleToWord(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await legacyCollectExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
@@ -81,7 +81,7 @@ export async function localArticleToJats(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await legacyCollectExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)
@@ -115,7 +115,7 @@ export async function localArticleToMd(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await legacyCollectExportOptions(session, file, 'md', [ExportFormats.md], projectPath, opts)
@@ -146,7 +146,7 @@ export async function localProjectToMeca(
   extraLinkTransformers?: LinkTransformer[],
 ) {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await legacyCollectExportOptions(session, file, 'zip', [ExportFormats.meca], projectPath, opts)
@@ -179,7 +179,7 @@ export async function localArticleToPdf(
   templateOptions?: Record<string, any>,
 ): Promise<ExportResults> {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const pdfExportOptionsList = (
     await legacyCollectExportOptions(
@@ -249,7 +249,7 @@ export async function localArticleToTex(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await legacyCollectExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
@@ -323,7 +323,7 @@ export async function localArticleToTypst(
   extraLinkTransformers?: LinkTransformer[],
 ): Promise<ExportResults> {
   let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
+  if (!projectPath) projectPath = await findCurrentProjectAndLoad(session, path.dirname(file));
   if (projectPath) await loadProjectFromDisk(session, projectPath);
   const exportOptionsList = (
     await legacyCollectExportOptions(session, file, 'typ', [ExportFormats.typst], projectPath, opts)
