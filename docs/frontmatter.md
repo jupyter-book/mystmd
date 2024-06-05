@@ -68,7 +68,7 @@ extends:
   - ../funding.yml
 ```
 
-Each of these files listed under `extends` must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional files listed under `extends`.
+Each entry listed under `extends` may be a relative path to a file or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
 
 Composing files together this way allows you to have a single source of truth for project frontmatter that may be reused across multiple projects, for example math macros or funding information.
 
