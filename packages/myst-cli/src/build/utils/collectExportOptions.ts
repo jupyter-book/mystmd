@@ -87,7 +87,7 @@ function resolveArticlesFromTOC(
   } else if (exp.top_level === 'chapters') {
     level = 0;
   }
-  const proj = projectFromTOC(session, projectPath, toc, level);
+  const proj = projectFromTOC(session, projectPath, toc, level, vfile.path);
   return resolveArticlesFromProject(exp, proj, vfile);
 }
 

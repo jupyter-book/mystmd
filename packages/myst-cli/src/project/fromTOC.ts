@@ -35,21 +35,16 @@ function pagesFromEntries(
     if (isFile(entry)) {
       // Level must be "chapter" or "section" for files
       entryLevel = level < 0 ? 0 : level;
-      const file = resolveExtension(join(path, entry.file));
+      const file = resolveExtension(join(path, entry.file), (message, errorLevel, note) => {
+        addWarningForFile(session, configFile, message, errorLevel, {
+          ruleId: RuleId.tocContentsExist,
+          note,
+        });
+      });
 
       if (file && fs.existsSync(file) && !isDirectory(file)) {
         const { slug } = fileInfo(file, pageSlugs);
         pages.push({ file, level: entryLevel, slug });
-      } else {
-        addWarningForFile(
-          session,
-          configFile,
-          `Referenced file not found: ${entry.file}`,
-          'error',
-          {
-            ruleId: RuleId.tocContentsExist,
-          },
-        );
       }
     } else if (isPattern(entry)) {
       entryLevel = level < 0 ? 0 : level;
@@ -120,6 +115,7 @@ export function projectFromTOC(
   path: string,
   toc: TOC,
   level: PageLevels = 1,
+  file?: string,
 ): Omit<LocalProject, 'bibliography'> {
   const pageSlugs: PageSlugs = {};
   const [root, ...entries] = toc;
@@ -129,15 +125,18 @@ export function projectFromTOC(
   if (!isFile(root)) {
     throw new Error(`First TOC item must be a file`);
   }
-  const indexFile = resolveExtension(join(path, root.file));
+  const warnFile =
+    file ??
+    selectors.selectLocalConfigFile(session.store.getState(), path) ??
+    join(path, session.configFiles[0]);
+  const indexFile = resolveExtension(join(path, root.file), (message, errorLevel, note) => {
+    addWarningForFile(session, warnFile, message, errorLevel, {
+      ruleId: RuleId.tocContentsExist,
+      note,
+    });
+  });
   if (!indexFile) {
-    throw Error(
-      `The table of contents could not find file "${
-        root.file
-      }" defined as the first (root) page. Please ensure that one of these files is defined:\n- ${VALID_FILE_EXTENSIONS.map(
-        (ext) => join(path, `${root.file}${ext}`),
-      ).join('\n- ')}\n`,
-    );
+    throw Error(`Could not resolve project index file: ${root.file}`);
   }
   const { slug } = fileInfo(indexFile, pageSlugs);
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
