@@ -97,7 +97,7 @@ export async function loadProjectFromDisk(
       // If there is no new index, keep the original unless it was implicit previously
       index = project.file;
     }
-    newProject = await projectFromPath(session, path, index);
+    newProject = projectFromPath(session, path, index);
   }
   if (!newProject) {
     throw new Error(`Could not load project from ${path}`);

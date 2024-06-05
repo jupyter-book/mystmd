@@ -1,11 +1,11 @@
 import fs from 'node:fs';
-import { join, parse } from 'node:path';
+import { join, parse, resolve, sep } from 'node:path';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import type { JupyterBookChapter } from '../utils/toc.js';
 import { readSphinxTOC, tocFile } from '../utils/toc.js';
-import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtension.js';
-import { fileInfo } from '../utils/fileInfo.js';
+import { VALID_FILE_EXTENSIONS, isValidFile, resolveExtension } from '../utils/resolveExtension.js';
+import { createTitle, fileInfo } from '../utils/fileInfo.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { nextLevel } from '../utils/nextLevel.js';
 import { selectors } from '../store/index.js';
@@ -16,15 +16,240 @@ import type {
   LocalProject,
   PageSlugs,
 } from './types.js';
-import type { TOC, Entry, ParentEntry } from 'myst-toc';
+import type {
+  TOC,
+  Entry,
+  ParentEntry,
+  FileEntry,
+  PatternEntry,
+  URLEntry,
+  FileParentEntry,
+  URLParentEntry,
+} from 'myst-toc';
 import { isFile, isPattern, isURL } from 'myst-toc';
 import { globSync } from 'glob';
 import { isDirectory } from 'myst-cli-utils';
 
+export const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
+
+const DEFAULT_INDEX_WITH_EXT = ['.md', '.ipynb']
+  .map((ext) => DEFAULT_INDEX_FILENAMES.map((file) => `${file}${ext}`))
+  .flat();
+
+type EntryWithoutPattern = FileEntry | URLEntry | FileParentEntry | URLParentEntry | ParentEntry;
+
+/** Sort any folders/files to ensure that `chapter10`, etc., comes after `chapter9` */
+export function sortByNumber(a: string, b: string) {
+  // Replace any repeated numbers with padded zeros
+  const regex = /(\d+)/g;
+  const paddedA = a.replace(regex, (match) => match.padStart(10, '0'));
+  const paddedB = b.replace(regex, (match) => match.padStart(10, '0'));
+  // Compare the modified strings
+  return paddedA.localeCompare(paddedB);
+}
+
+/**
+ * Take path parts and fill into nested object structure.
+ *
+ * For example, given:
+ *
+ * parts = ['one', 'two', 'three']
+ *
+ * This builds:
+ *
+ * {
+ *   one: {
+ *     two: {
+ *       three: {},
+ *     },
+ *   },
+ * }
+ */
+export function objFromPathParts(parts: string[], obj?: Record<string, any>) {
+  if (!obj) obj = {};
+  const [part, ...remainingParts] = parts;
+  if (!part) return obj;
+  if (!obj[part]) obj[part] = {} as Record<string, any>;
+  obj[part] = objFromPathParts(remainingParts, obj[part]);
+  return obj;
+}
+
+/**
+ * Take glob pattern and create nested pseudo-directory structure
+ *
+ * For example, given a pattern that resolves to:
+ *
+ * matches = [
+ *   'one/two/three',
+ *   'one/two/four',
+ *   'five',
+ * ]
+ *
+ * This builds:
+ *
+ * {
+ *   one: {
+ *     two: {
+ *       three: {},
+ *       four: {},
+ *     },
+ *   },
+ *   five: {},
+ * }
+ */
+export function patternToDirectoryStructure(
+  pattern: string,
+  path: string,
+  opts?: Omit<Parameters<typeof globSync>[1], 'withFileTypes'>,
+) {
+  const matches = globSync(pattern, { cwd: path, ...opts });
+  const dirStructure: Record<string, any> = {};
+  matches.forEach((match) => {
+    // Glob always uses '/' separator, not filesystem separator
+    const fileParts = match.split('/');
+    objFromPathParts(fileParts, dirStructure);
+  });
+  return dirStructure;
+}
+
+/**
+ * Take "directory structure" object and return corresponding toc entries
+ *
+ * The resulting entries are only FileEntries and ParentEntries. Similar
+ * to the implicit project ordering, files come before parents.
+ *
+ * For example, given:
+ *
+ * dirStructure = {
+ *   one: {
+ *     two: {
+ *       three: {},
+ *       four: {},
+ *     },
+ *   },
+ *   five: {},
+ * }
+ *
+ * This builds:
+ *
+ * [
+ *   { file: 'five' },
+ *   {
+ *     title: one,
+ *     children: [
+ *       {
+ *          title: two,
+ *          children: [
+ *            { file: 'four' },
+ *            { file: 'three' },
+ *          ],
+ *       },
+ *     ],
+ *   },
+ * ]
+ */
+export function directoryStructureToFileEntries(
+  dirStructure: Record<string, any>,
+  path: string,
+  ignore: string[],
+): (FileEntry | ParentEntry)[] {
+  let files = Object.keys(dirStructure)
+    // .map((file) => join(path, file))
+    .filter((file) => !ignore || !ignore.includes(join(path, file)))
+    .sort(sortByNumber);
+  let indexFile: string | undefined;
+  DEFAULT_INDEX_WITH_EXT.forEach((index) => {
+    if (indexFile) return;
+    indexFile = files.find((file) => file.toLowerCase() === index);
+  });
+  if (indexFile) {
+    files = [indexFile, ...files.filter((file) => file !== indexFile)];
+  }
+  const entries = [
+    ...files
+      .filter((file) => isValidFile(file) && Object.keys(dirStructure[file]).length === 0)
+      .map((file): FileEntry => {
+        return { file: join(path, file) };
+      }),
+    ...files
+      .filter((dir) => Object.keys(dirStructure[dir]).length > 0)
+      .map((dir): ParentEntry => {
+        return {
+          title: createTitle(dir),
+          children: directoryStructureToFileEntries(dirStructure[dir], join(path, dir), ignore),
+        };
+      }),
+  ];
+  return entries;
+}
+
+/**
+ * Traverse toc entries and return a list of files
+ */
+export function listExplicitFiles(entries: Entry[], path: string): string[] {
+  const files: string[] = [];
+  entries.forEach((entry) => {
+    if ((entry as FileEntry).file) {
+      files.push(resolve(path, (entry as FileEntry).file));
+    }
+    if ((entry as ParentEntry).children) {
+      files.push(...listExplicitFiles((entry as ParentEntry).children, path));
+    }
+  });
+  return files;
+}
+
+/**
+ * Resolve pattern entries in a toc in the same way as implicit project sorting
+ *
+ * This is a normalization function that should be run on the toc prior to computing pages.
+ *
+ * - Resolution of pattern matches implicit structure (alpha sorting, respecting numbering)
+ * - However, implicitly ignored files (node_modules, _build, .*) are _not_ ignored
+ * - Project `exclude` files are still respected
+ * - Pages never show up twice even if they match multiple patterns
+ */
+export function patternsToFileEntries(
+  session: ISession,
+  entries: Entry[],
+  path: string,
+  ignore: string[],
+  file: string,
+): EntryWithoutPattern[] {
+  return entries
+    .map((entry) => {
+      if (isPattern(entry)) {
+        const { pattern } = entry as PatternEntry;
+        const dirStructure = patternToDirectoryStructure(pattern, path);
+        const newEntries = directoryStructureToFileEntries(dirStructure, path, ignore);
+        if (newEntries.length === 0) {
+          addWarningForFile(
+            session,
+            file,
+            `Pattern from table of contents did not match any files: ${pattern}`,
+            'error',
+            {
+              ruleId: RuleId.tocContentsExist,
+            },
+          );
+        }
+        ignore.push(...listExplicitFiles(newEntries, path));
+        return newEntries;
+      }
+      const { children } = entry as ParentEntry;
+      if (children) {
+        const newChildren = patternsToFileEntries(session, children, path, ignore, file);
+        return { ...entry, children: newChildren };
+      }
+      return entry;
+    })
+    .flat();
+}
+
 function pagesFromEntries(
   session: ISession,
   path: string,
-  entries: Entry[],
+  entries: EntryWithoutPattern[],
   pages: (LocalProjectFolder | LocalProjectPage)[] = [],
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
@@ -33,42 +258,18 @@ function pagesFromEntries(
   for (const entry of entries) {
     let entryLevel = level;
     if (isFile(entry)) {
-      // Level must be "chapter" or "section" for files
+      // Level must be "chapter" (0) or "section" (1-6) for files
       entryLevel = level < 0 ? 0 : level;
-      const file = resolveExtension(join(path, entry.file), (message, errorLevel, note) => {
+      const file = resolveExtension(resolve(path, entry.file), (message, errorLevel, note) => {
         addWarningForFile(session, configFile, message, errorLevel, {
           ruleId: RuleId.tocContentsExist,
           note,
         });
       });
-
       if (file && fs.existsSync(file) && !isDirectory(file)) {
         const { slug } = fileInfo(file, pageSlugs);
         pages.push({ file, level: entryLevel, slug });
       }
-    } else if (isPattern(entry)) {
-      entryLevel = level < 0 ? 0 : level;
-      const { pattern } = entry;
-      const matches = globSync(pattern, { cwd: path });
-      matches.forEach((filePath) => {
-        const file = join(path, filePath);
-        if (fs.existsSync(file)) {
-          if (!isDirectory(file)) {
-            const { slug } = fileInfo(file, pageSlugs);
-            pages.push({ file, level: entryLevel, slug });
-          }
-        } else {
-          addWarningForFile(
-            session,
-            configFile,
-            `Referenced file not found: ${filePath}`,
-            'error',
-            {
-              ruleId: RuleId.tocContentsExist,
-            },
-          );
-        }
-      });
     } else if (isURL(entry)) {
       addWarningForFile(
         session,
@@ -91,7 +292,7 @@ function pagesFromEntries(
       pagesFromEntries(
         session,
         path,
-        parentEntry.children,
+        parentEntry.children as EntryWithoutPattern[],
         pages,
         nextLevel(entryLevel),
         pageSlugs,
@@ -99,6 +300,24 @@ function pagesFromEntries(
     }
   }
   return pages;
+}
+
+/**
+ * Get a list of ignored files, including configs and project.exclude entries
+ */
+export function getIgnoreFiles(session: ISession, path: string) {
+  const rootConfigYamls = session.configFiles.map((file) => join(path, file));
+  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
+  const excludePatterns = projectConfig?.exclude ?? [];
+  const excludeFiles = excludePatterns
+    .map((pattern) => {
+      const matches = globSync(pattern); //.split(sep).join('/'));
+      return matches
+        .map((match) => match.split('/').join(sep))
+        .filter((match) => isValidFile(match));
+    })
+    .flat();
+  return [...rootConfigYamls, ...excludeFiles];
 }
 
 /**
@@ -118,18 +337,20 @@ export function projectFromTOC(
   file?: string,
 ): Omit<LocalProject, 'bibliography'> {
   const pageSlugs: PageSlugs = {};
-  const [root, ...entries] = toc;
+  const ignoreFiles = [...getIgnoreFiles(session, path), ...listExplicitFiles(toc, path)];
+  const warnFile =
+    file ??
+    selectors.selectLocalConfigFile(session.store.getState(), path) ??
+    join(path, session.configFiles[0]);
+  const tocWithoutPatterns = patternsToFileEntries(session, toc, path, ignoreFiles, warnFile);
+  const [root, ...entries] = tocWithoutPatterns;
   if (!root) {
     throw new Error('Project TOC must have at least one item');
   }
   if (!isFile(root)) {
     throw new Error(`First TOC item must be a file`);
   }
-  const warnFile =
-    file ??
-    selectors.selectLocalConfigFile(session.store.getState(), path) ??
-    join(path, session.configFiles[0]);
-  const indexFile = resolveExtension(join(path, root.file), (message, errorLevel, note) => {
+  const indexFile = resolveExtension(resolve(path, root.file), (message, errorLevel, note) => {
     addWarningForFile(session, warnFile, message, errorLevel, {
       ruleId: RuleId.tocContentsExist,
       note,

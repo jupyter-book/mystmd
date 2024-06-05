@@ -53,9 +53,14 @@ project:
 ### Glob pattern matching
 
 You can specify glob-like patterns in the TOC with the `pattern` key.
-The files matched by `pattern` will be expanded as a series of `file` entries.
+The files matched by `pattern` will be expanded using similar logic to the [implicit table of contents](#implicit-toc):
 
-For example, with a folder with `root.md`, `first-child.md`, `second-child.md`, the following two `toc` entries are equivalent:
+- Folder structure is maintained
+- [Project exclude](#project-exclude) files are respected
+- Index/readme files are sorted to come first
+- Files that are listed explicitly in the TOC will be ignored by the pattern
+
+For example, with a folder with `root.md`, `child9.md`, `child10.md`, the following two `toc` entries are equivalent:
 
 :::::{grid} 1 2 2 2
 ::::{card} Pattern-matching
@@ -66,7 +71,7 @@ version: 1
 project:
   toc:
     - file: root.md
-    - pattern: '*-child.md'
+    - pattern: '*.md'
 :::
 ::::
 ::::{card} No pattern-matching
@@ -79,8 +84,8 @@ version: 1
 project:
   toc:
     - file: root.md
-    - file: first-child.md
-    - file: second-child.md
+    - file: child9.md
+    - file: child10.md
 
 :::
 ::::
@@ -127,6 +132,8 @@ project:
         - file: part-2-second-child.md
 :::
 
+(implicit-toc)=
+
 ## Implicit Table of Contents from filenames
 
 When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
@@ -151,15 +158,14 @@ If a title is not provided by a notebook or markdown document in the front matte
 
 The “root” of a site is the page displayed when someone browses to the index of your site without any pathname. The CLI will choose the root file in the following order:
 
-1. `index.md`
-2. `README.md`
-3. `main.md`
+1. `index.md` / `README.md` / `main.md`
+2. `index.tex` / `README.tex` / `main.tex`
+3. `index.ipynb` / `README.ipynb` / `main.ipynb`
 4. The first `.md` file found alphabetically
-5. `index.ipynb`
-6. `README.ipynb`
-7. `main.ipynb`
-8. The first `.ipynb` file found alphabetically
+5. The first `.tex` file found alphabetically
+6. The first `.ipynb` file found alphabetically
 
+(project-exclude)=
 
 ### Excluding Files
 
@@ -202,7 +208,7 @@ URL nesting that matches the folder structure is a requested feature that is bei
 ## Defining a `_toc.yml` using Jupyter Book’s format
 
 :::{warning}
-Support for `_toc.yml` exists only for compatability reasons, and will be removed in future. 
+Support for `_toc.yml` exists only for compatibility reasons, and will be removed in future. 
 New users should use `myst.yml` instead.
 :::
 

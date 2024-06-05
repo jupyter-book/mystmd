@@ -1,16 +1,19 @@
 import fs from 'node:fs';
-import { extname, join, sep } from 'node:path';
-import { glob } from 'glob';
+import { extname, join } from 'node:path';
 import { isDirectory } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
-import { selectors } from '../store/index.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { fileInfo } from '../utils/fileInfo.js';
 import { nextLevel } from '../utils/nextLevel.js';
 import { VALID_FILE_EXTENSIONS, isValidFile } from '../utils/resolveExtension.js';
 import { shouldIgnoreFile } from '../utils/shouldIgnoreFile.js';
-import { pagesFromSphinxTOC } from './fromTOC.js';
+import {
+  DEFAULT_INDEX_FILENAMES,
+  getIgnoreFiles,
+  pagesFromSphinxTOC,
+  sortByNumber,
+} from './fromTOC.js';
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -19,22 +22,10 @@ import type {
   PageSlugs,
 } from './types.js';
 
-const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
-
 type Options = {
   ignore?: string[];
   suppressWarnings?: boolean;
 };
-
-/** Sort any folders/files to ensure that `chapter10`, etc., comes after `chapter9` */
-function sortByNumber(a: string, b: string) {
-  // Replace any repeated numbers with padded zeros
-  const regex = /(\d+)/g;
-  const paddedA = a.replace(regex, (match) => match.padStart(10, '0'));
-  const paddedB = b.replace(regex, (match) => match.padStart(10, '0'));
-  // Compare the modified strings
-  return paddedA.localeCompare(paddedB);
-}
 
 /**
  * Recursively traverse path for md/ipynb files
@@ -109,6 +100,9 @@ function projectPagesFromPath(
  *
  * If "{path}/index.md" or "{path}/readme.md" exist, use that. Otherwise, use the first
  * markdown file. Otherwise, use the first file of any type.
+ *
+ * This does not look into subdirectories for index files. If no index file is at the top level,
+ * it will use the first file, regardless of filename.
  */
 function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string) {
   let indexFile: string | undefined;
@@ -131,8 +125,10 @@ function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pa
   };
 
   if (!indexFile) indexFile = matcher('.md');
-  if (!indexFile) [indexFile] = files.filter((file) => extname(file) === '.md');
+  if (!indexFile) indexFile = matcher('.tex');
   if (!indexFile) indexFile = matcher('.ipynb');
+  if (!indexFile) [indexFile] = files.filter((file) => extname(file) === '.md');
+  if (!indexFile) [indexFile] = files.filter((file) => extname(file) === '.tex');
   if (!indexFile) [indexFile] = files;
   return indexFile;
 }
@@ -140,31 +136,18 @@ function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], pa
 /**
  * Build project structure from local file/folder structure.
  */
-export async function projectFromPath(
+export function projectFromPath(
   session: ISession,
   path: string,
   indexFile?: string,
-): Promise<Omit<LocalProject, 'bibliography'>> {
+): Omit<LocalProject, 'bibliography'> {
   const ext_string = VALID_FILE_EXTENSIONS.join(' or ');
   if (indexFile) {
     if (!isValidFile(indexFile))
       throw Error(`Index file ${indexFile} has invalid extension; must be ${ext_string}}`);
     if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
-  const rootConfigYamls = session.configFiles.map((file) => join(path, file));
-  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
-  const excludePatterns = projectConfig?.exclude ?? [];
-  const excludeFiles = (
-    await Promise.all(
-      excludePatterns.map(async (pattern) => {
-        const matches = await glob(pattern.split(sep).join('/'));
-        return matches
-          .map((match) => match.split('/').join(sep))
-          .filter((match) => isValidFile(match));
-      }),
-    )
-  ).flat();
-  const ignoreFiles = [...rootConfigYamls, ...excludeFiles];
+  const ignoreFiles = getIgnoreFiles(session, path);
   let implicitIndex = false;
   if (!indexFile) {
     const searchPages = projectPagesFromPath(
