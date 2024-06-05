@@ -283,14 +283,39 @@ describe('site section generation', () => {
   });
   it('tex file as index over notebook', async () => {
     memfs.vol.fromJSON({
-      'folder/page.md': '',
+      'page.md': '',
+      'index.ipynb': '',
+      'main.tex': '',
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'main.tex',
+      path: '.',
+      index: 'main',
+      implicitIndex: true,
+      pages: [
+        {
+          file: 'index.ipynb',
+          slug: 'index',
+          level: 1,
+        },
+        {
+          file: 'page.md',
+          slug: 'page',
+          level: 1,
+        },
+      ],
+    });
+  });
+  it('first md file alphabetically as index in subfolder', async () => {
+    memfs.vol.fromJSON({
       'folder/index.ipynb': '',
+      'folder/page.md': '',
       'folder/main.tex': '',
     });
     expect(projectFromPath(session, '.')).toEqual({
-      file: 'folder/main.tex',
+      file: 'folder/page.md',
       path: '.',
-      index: 'main',
+      index: 'page',
       implicitIndex: true,
       pages: [
         {
@@ -298,13 +323,71 @@ describe('site section generation', () => {
           level: 1,
         },
         {
-          file: 'folder/page.ipynb',
-          slug: 'page',
+          file: 'folder/index.ipynb',
+          slug: 'index',
           level: 2,
         },
         {
-          file: 'folder/notebook.ipynb',
+          file: 'folder/main.tex',
+          slug: 'main',
+          level: 2,
+        },
+      ],
+    });
+  });
+  it('root index file preferred over nested file', async () => {
+    memfs.vol.fromJSON({
+      'folder/page.md': '',
+      'index.ipynb': '',
+      'folder/main.tex': '',
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'index.ipynb',
+      path: '.',
+      index: 'index',
+      implicitIndex: true,
+      pages: [
+        {
+          title: 'Folder',
+          level: 1,
+        },
+        {
+          file: 'folder/main.tex',
+          slug: 'main',
+          level: 2,
+        },
+        {
+          file: 'folder/page.md',
+          slug: 'page',
+          level: 2,
+        },
+      ],
+    });
+  });
+  it('md file preferred for index even if not at root level', async () => {
+    memfs.vol.fromJSON({
+      'folder/page.md': '',
+      'notebook.ipynb': '',
+      'folder/main.tex': '',
+    });
+    expect(projectFromPath(session, '.')).toEqual({
+      file: 'folder/page.md',
+      path: '.',
+      index: 'page',
+      implicitIndex: true,
+      pages: [
+        {
+          file: 'notebook.ipynb',
           slug: 'notebook',
+          level: 1,
+        },
+        {
+          title: 'Folder',
+          level: 1,
+        },
+        {
+          file: 'folder/main.tex',
+          slug: 'main',
           level: 2,
         },
       ],

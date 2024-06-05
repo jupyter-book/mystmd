@@ -100,6 +100,9 @@ function projectPagesFromPath(
  *
  * If "{path}/index.md" or "{path}/readme.md" exist, use that. Otherwise, use the first
  * markdown file. Otherwise, use the first file of any type.
+ *
+ * This does not look into subdirectories for index files. If no index file is at the top level,
+ * it will use the first file, regardless of filename.
  */
 function indexFileFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string) {
   let indexFile: string | undefined;
