@@ -46,6 +46,12 @@ export function footnotesTransform(mdast: GenericParent, file: VFile) {
       });
       return;
     }
+    if (def.enumerator) {
+      // The definition is already enumerated, use that enumerator
+      node.number = def.number;
+      node.enumerator = def.enumerator;
+      return;
+    }
     const identifierNumber = Number(node.identifier);
     if (!Number.isNaN(identifierNumber) && identifierNumber > 0) {
       def.number = identifierNumber;
