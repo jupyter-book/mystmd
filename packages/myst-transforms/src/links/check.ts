@@ -30,9 +30,10 @@ export function checkLinkTextTransform(
         });
       }
     } else if (!toText(node.children) && !select('image', node)) {
+      const url = node.urlSource ?? node.url;
       fileWarn(
         vfile,
-        `Link text is empty for <${node.urlSource ?? node.url}${node.identifier ? `#${node.identifier}` : ''}>`,
+        `Link text is empty for <${url}${node.identifier && node.identifier !== url ? `#${node.identifier}` : ''}>`,
         {
           node,
           ruleId: RuleId.linkTextExists,
