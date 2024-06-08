@@ -335,7 +335,6 @@ export const csvTableDirective: DirectiveSpec = {
       children: rows,
     };
 
-
     const container = {
       type: 'container',
       kind: 'table',
