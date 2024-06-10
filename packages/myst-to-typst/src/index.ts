@@ -249,6 +249,9 @@ const handlers: Record<string, Handler> = {
     });
     state.renderChildren(node);
   },
+  glossary(node, state) {
+    state.renderChildren(node)
+  },
   link: linkHandler,
   admonition(node: Admonition, state) {
     state.useMacro(admonition);
@@ -295,6 +298,10 @@ const handlers: Record<string, Handler> = {
   legend: captionHandler,
   captionNumber: () => undefined,
   crossReference(node, state, parent) {
+    if (node.kind === "definitionTerm") {
+      state.renderChildren(node);
+      return;
+    }
     // Look up reference and add the text
     // const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
     // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
