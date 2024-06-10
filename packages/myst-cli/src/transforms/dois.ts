@@ -99,7 +99,8 @@ export async function resolveDoiOrg(
 ): Promise<CSL[] | undefined> {
   const normalizedDoi = doi.normalize(doiString);
   const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
-  if (!doi.validate(doiString) || !normalizedDoi || !url) return undefined;
+  const handleUrl = url?.replace('doi.org', 'hdl.handle.net');
+  if (!doi.validate(doiString) || !normalizedDoi || !url || !handleUrl) return undefined;
   const filename = doiCSLJSONCacheFilename(normalizedDoi);
 
   // Cache DOI resolution as CSL JSON (parsed)
@@ -113,6 +114,7 @@ export async function resolveDoiOrg(
   let data: CSL[] | undefined;
   try {
     data = await resolveDOIAsBibTeX(session, url);
+    if (!data) data = await resolveDOIAsBibTeX(session, handleUrl);
     if (data) {
       session.log.debug(toc(`Fetched reference BibTeX for doi:${normalizedDoi} in %s`));
     } else {
@@ -128,6 +130,7 @@ export async function resolveDoiOrg(
   if (!data) {
     try {
       data = await resolveDOIAsCSLJSON(session, url);
+      if (!data) data = await resolveDOIAsCSLJSON(session, handleUrl);
       if (data) {
         session.log.debug(toc(`Fetched reference CSL-JSON for doi:${normalizedDoi} in %s`));
       } else {
@@ -203,7 +206,7 @@ export async function getCitation(
     const renderer = await getCitationRenderers(data);
     const id = Object.keys(renderer)[0];
     const render = renderer[id];
-    return { id, render };
+    return { id, render, remote: true };
   } catch (error) {
     fileError(
       vfile,
@@ -249,19 +252,22 @@ export async function transformLinkedDOIs(
   let number = 0;
   await Promise.all([
     ...linkedDois.map(async (node) => {
-      let cite: SingleCitationRenderer | null = doiRenderer[node.url];
+      const normalized = doi.normalize(node.url)?.toLowerCase();
+      if (!normalized) return false;
+      let cite: SingleCitationRenderer | null = doiRenderer[normalized];
       if (!cite) {
         cite = await getCitation(session, vfile, node.url, node);
-        if (cite) number += 1;
-        else return false;
+        if (cite) {
+          number += 1;
+          doiRenderer[normalized] = cite;
+          renderer[cite.render.getLabel()] = cite.render;
+        } else return false;
       }
-      doiRenderer[node.url] = cite;
-      const label = cite.render.getLabel();
-      renderer[label] = cite.render;
       const citeNode = node as unknown as Cite;
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
-      citeNode.label = label;
+      citeNode.label = cite.render.getLabel();
+      citeNode.identifier = node.url;
       if (doi.validate(toText(citeNode.children))) {
         // If the link text is the DOI, update with a citation in a following pass
         citeNode.children = [];
@@ -269,16 +275,18 @@ export async function transformLinkedDOIs(
       return true;
     }),
     ...citeDois.map(async (node) => {
-      let cite: SingleCitationRenderer | null = doiRenderer[node.label];
+      const normalized = doi.normalize(node.label)?.toLowerCase();
+      if (!normalized) return false;
+      let cite: SingleCitationRenderer | null = doiRenderer[normalized];
       if (!cite) {
         cite = await getCitation(session, vfile, node.label, node);
-        if (cite) number += 1;
-        else return false;
+        if (cite) {
+          number += 1;
+          doiRenderer[normalized] = cite;
+          renderer[cite.render.getLabel()] = cite.render;
+        } else return false;
       }
-      doiRenderer[node.label] = cite;
-      const label = cite.render.getLabel();
-      renderer[label] = cite.render;
-      node.label = label;
+      node.label = cite.render.getLabel();
       return true;
     }),
   ]);
