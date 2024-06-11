@@ -230,3 +230,9 @@ cases:
         content: math-macros/outputs/index.json
       - path: math-macros/_build/site/config.json
         content: math-macros/outputs/config.json
+  - title: Write DOI .bib file
+    cwd: write-doi-bib
+    command: myst build --doi-bib
+    outputs:
+      - path: write-doi-bib/myst.doi.bib
+        content: write-doi-bib/outputs/myst.doi.bib

@@ -215,8 +215,8 @@ function extToKind(ext: string): string {
 }
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
-  const { site, all, watch } = opts;
-  const performSiteBuild = all || (files.length === 0 && exportSite(session, opts));
+  const { site, all, watch, writeDOIBib } = opts;
+  const performSiteBuild = all || (files.length === 0 && exportSite(session, opts)) || writeDOIBib;
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   // TODO: generalize and pull this out!
   const buildLog: Record<string, any> = {
