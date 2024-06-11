@@ -257,12 +257,13 @@ export async function transformLinkedDOIs(
       let cite: SingleCitationRenderer | null = doiRenderer[normalized];
       if (!cite) {
         cite = await getCitation(session, vfile, node.url, node);
-        if (cite) {
-          number += 1;
-          doiRenderer[normalized] = cite;
-          renderer[cite.render.getLabel()] = cite.render;
-        } else return false;
+        if (cite) number += 1;
+        else return false;
       }
+      if (cite.remote) {
+        renderer[cite.render.getLabel()] = cite.render;
+      }
+      doiRenderer[normalized] = cite;
       const citeNode = node as unknown as Cite;
       citeNode.type = 'cite';
       citeNode.kind = 'narrative';
@@ -280,12 +281,13 @@ export async function transformLinkedDOIs(
       let cite: SingleCitationRenderer | null = doiRenderer[normalized];
       if (!cite) {
         cite = await getCitation(session, vfile, node.label, node);
-        if (cite) {
-          number += 1;
-          doiRenderer[normalized] = cite;
-          renderer[cite.render.getLabel()] = cite.render;
-        } else return false;
+        if (cite) number += 1;
+        else return false;
       }
+      if (cite.remote) {
+        renderer[cite.render.getLabel()] = cite.render;
+      }
+      doiRenderer[normalized] = cite;
       node.label = cite.render.getLabel();
       return true;
     }),
