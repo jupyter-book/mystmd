@@ -82,7 +82,7 @@ export async function processNotebookFull(
   session: ISession,
   file: string,
   content: string,
-): Promise<{mdast: GenericParent, frontmatter: PageFrontmatter}> {
+): Promise<{ mdast: GenericParent; frontmatter: PageFrontmatter }> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
