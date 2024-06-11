@@ -66,7 +66,7 @@ const blockquote = `#let blockquote(node, color: gray) = {
 const INDENT = '  ';
 
 function identifierToTerm(identifier: string): string {
-  // Try and strip off the term- prefix, as we're using #gls() for now 
+  // Try and strip off the term- prefix, as we're using #gls() for now
   // which makes it obvious that we have a term
   const match = identifier.match(/term-(.*)/);
   // Fall back to full identifier (in case this changes in future)
@@ -287,9 +287,11 @@ const handlers: Record<string, Handler> = {
 
       state.write(`),\n`);
     }
-    state.write(`
-    )
-)`);
+    state.write(
+      `    )
+)
+`,
+    );
   },
   link: linkHandler,
   admonition(node: Admonition, state) {
