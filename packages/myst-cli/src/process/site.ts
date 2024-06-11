@@ -15,6 +15,8 @@ import {
   resolvePageDownloads,
   resolvePageExports,
 } from '../build/site/manifest.js';
+import { writeRemoteDOIBibtex } from '../build/utils/bibtex.js';
+import { MYST_DOI_BIB_FILE } from '../cli/options.js';
 import { filterPages, loadProjectFromDisk } from '../project/load.js';
 import type { LocalProject } from '../project/types.js';
 import { castSession } from '../session/cache.js';
@@ -54,6 +56,7 @@ export type ProcessFileOptions = {
 export type ProcessProjectOptions = ProcessFileOptions & {
   watchMode?: boolean;
   writeTOC?: boolean;
+  writeDOIBib?: boolean;
   writeFiles?: boolean;
   reloadProject?: boolean;
   checkLinks?: boolean;
@@ -375,6 +378,7 @@ export async function processProject(
     extraTransforms,
     watchMode,
     writeTOC,
+    writeDOIBib,
     writeFiles = true,
     reloadProject,
     execute,
@@ -461,6 +465,11 @@ export async function processProject(
   log.info(
     toc(`📚 Built ${plural('%s page(s)', pages)} for ${siteProject.slug ?? 'project'} in %s.`),
   );
+  if (writeDOIBib) {
+    const doiBibFile = join(siteProject.path, MYST_DOI_BIB_FILE);
+    log.info(`🎓 Writing remote DOI citations to ${doiBibFile}`);
+    writeRemoteDOIBibtex(session, doiBibFile);
+  }
   return project;
 }
 

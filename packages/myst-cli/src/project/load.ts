@@ -13,7 +13,7 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { getAllBibTexFilesOnPath } from '../utils/getAllBibtexFiles.js';
 import { tocFile, validateSphinxTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
-import { projectFromTOC, projectFromSphinxTOC } from './fromTOC.js';
+import { projectFromTOC, projectFromSphinxTOC, getIgnoreFiles } from './fromTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
 import { writeTOCToConfigFile } from './toTOC.js';
 /**
@@ -107,9 +107,9 @@ export async function loadProjectFromDisk(
       session.log.info(`⬆️ Upgrading legacy jupyterbook TOC to MyST: ${tocFile(path)}`);
     }
     session.log.info(`💾 Writing new TOC to: ${projectConfigFile}`);
-    writeTOCToConfigFile(newProject, projectConfigFile, projectConfigFile);
+    await writeTOCToConfigFile(newProject, projectConfigFile, projectConfigFile);
   }
-  const allBibFiles = getAllBibTexFilesOnPath(session, path);
+  const allBibFiles = getAllBibTexFilesOnPath(session, path, getIgnoreFiles(session, path));
   let bibliography: string[];
   if (projectConfig?.bibliography) {
     const bibConfigPath = `${projectConfigFile}#bibliography`;

@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { tic } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
+import { doi } from 'doi-utils';
 import type { GenericParent } from 'myst-common';
 import { RuleId, toText } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
@@ -162,8 +163,13 @@ export async function loadFile(
         break;
       }
       case '.bib': {
-        const renderer = await loadBibTeXCitationRenderers(session, file);
-        cache.$citationRenderers[file] = renderer;
+        const renderers = await loadBibTeXCitationRenderers(session, file);
+        cache.$citationRenderers[file] = renderers;
+        Object.entries(renderers).forEach(([id, renderer]) => {
+          const normalizedDOI = doi.normalize(renderer.getDOI())?.toLowerCase();
+          if (!normalizedDOI || cache.$doiRenderers[normalizedDOI]) return;
+          cache.$doiRenderers[normalizedDOI] = { id, render: renderer };
+        });
         break;
       }
       default:

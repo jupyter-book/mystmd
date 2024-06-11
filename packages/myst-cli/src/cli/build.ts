@@ -18,6 +18,7 @@ import {
   makeCIOption,
   makeExecuteOption,
   makeMaxSizeWebpOption,
+  makeDOIBibOption,
 } from './options.js';
 
 export function makeBuildCommand() {
@@ -35,6 +36,7 @@ export function makeBuildCommand() {
     .addOption(makeSiteOption('Build MyST site content'))
     .addOption(makeHtmlOption('Build static HTML site content'))
     .addOption(makeAllOption('Build all exports'))
+    .addOption(makeDOIBibOption())
     .addOption(makeWatchOption())
     .addOption(makeNamedExportOption('Output file for the export'))
     .addOption(makeForceOption())

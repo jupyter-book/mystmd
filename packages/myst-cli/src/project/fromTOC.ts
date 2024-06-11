@@ -312,9 +312,7 @@ export function getIgnoreFiles(session: ISession, path: string) {
   const excludeFiles = excludePatterns
     .map((pattern) => {
       const matches = globSync(pattern); //.split(sep).join('/'));
-      return matches
-        .map((match) => match.split('/').join(sep))
-        .filter((match) => isValidFile(match));
+      return matches.map((match) => match.split('/').join(sep));
     })
     .flat();
   return [...rootConfigYamls, ...excludeFiles];
