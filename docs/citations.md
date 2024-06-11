@@ -19,7 +19,7 @@ This is a link in markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.64760
 
 It is also possible to to drop the link text, that is:\
 `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
-which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.). The citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory. This cache may be cleared with `myst clean --cache`.
+which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.). If the DOI is present on a citation from a BibTeX file in your project, that citation will be used. Otherwise, the citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory. This cache may be cleared with `myst clean --cache`.
 
 Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link. If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
 
@@ -38,6 +38,16 @@ For the DOI, `10.1175/1520-0493(1972)100<0081:OTAOSH>2.3.CO;2` there are `<`, `;
 For DOIs with multiple slashes in the identifier you also have to use the full https://doi.org URL, for example, `https://doi.org/10.3847/1538-4365/ac5f56` becomes <https://doi.org/10.3847/1538-4365/ac5f56>.
 
 :::
+
+### Writing DOIs to BibTeX
+
+If you encounter problems fetching DOIs from `https://doi.org`, for example the downloaded citation does not include all the data you expect or requests to `https://doi.org` are failing on an automated continuous integration platform, you may write your DOI citations to file using the MyST command
+
+```bash
+myst build --doi-bib
+```
+
+This will generate a BibTeX file `myst.doi.bib` which you may then rename, edit, and save to your project. On subsequent builds, the DOIs will load be loaded from this file rather than fetched remotely.
 
 ## Including BibTeX
 
