@@ -47,7 +47,7 @@ If you encounter problems fetching DOIs from `https://doi.org`, for example the 
 myst build --doi-bib
 ```
 
-This will generate a BibTeX file `myst.doi.bib` which you may then rename, edit, and save to your project. On subsequent builds, the DOIs will load be loaded from this file rather than fetched remotely.
+This will generate a BibTeX file `myst.doi.bib` which you may then rename, edit, and save to your project. On subsequent builds, the DOIs will be loaded from this file rather than fetched remotely.
 
 ## Including BibTeX
 
