@@ -271,6 +271,14 @@ export const csvTableDirective: DirectiveSpec = {
   run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
 
+    const captions: GenericParent[] = [];
+    if (data.arg) {
+      captions.push({
+        type: 'caption',
+        children: [{ type: 'paragraph', children: data.arg as GenericNode[] }],
+      });
+    }
+
     const rows: GenericParent[] = [];
 
     if (data.options?.header !== undefined) {
@@ -326,13 +334,14 @@ export const csvTableDirective: DirectiveSpec = {
       align: data.options?.align,
       children: rows,
     };
+
     const container = {
       type: 'container',
       kind: 'table',
       identifier: identifier,
       label: label,
       class: data.options?.class,
-      children: [...((data.arg ?? []) as GenericNode[]), table],
+      children: [...captions, table],
     };
 
     return [container];
