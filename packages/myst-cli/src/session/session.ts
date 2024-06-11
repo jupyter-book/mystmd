@@ -129,7 +129,12 @@ export class Session implements ISession {
       init = { agent: this.proxyAgent, ...init };
       this.log.debug(`Using HTTPS proxy: ${this.proxyAgent.proxy}`);
     }
+    const logData = { url: urlOnly, done: false };
+    setTimeout(() => {
+      if (!logData.done) this.log.iinfo(`⏳ Waiting for response from ${url}`);
+    }, 5000);
     const resp = await nodeFetch(url, init);
+    logData.done = true;
     return resp;
   }
 
