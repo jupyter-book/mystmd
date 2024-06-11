@@ -6,7 +6,6 @@ import { shouldIgnoreFile } from './shouldIgnoreFile.js';
 
 export function getAllBibTexFilesOnPath(session: ISession, dir: string, ignore?: string[]) {
   let bibFiles: string[] = [];
-  console.log(ignore);
   const content = fs.readdirSync(dir);
   content
     .map((file) => path.join(dir, file))
