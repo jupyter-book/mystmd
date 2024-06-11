@@ -54,6 +54,10 @@ export function writeBibtexFromCitationRenderers(
 export function writeRemoteDOIBibtex(session: ISession, output: string) {
   const cache = castSession(session);
   const bibtexContent: string[] = [];
+  // Keep existing myst.doi.bib entries
+  Object.values(cache.$citationRenderers[output] ?? {}).forEach((render) => {
+    bibtexContent.push(render.exportBibTeX());
+  });
   Object.values(cache.$doiRenderers).forEach(({ render, remote }) => {
     if (!remote) return;
     bibtexContent.push(render.exportBibTeX());

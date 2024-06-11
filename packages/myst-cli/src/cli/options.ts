@@ -63,7 +63,7 @@ export function makeAllOption(description: string) {
 export function makeDOIBibOption() {
   return new Option(
     '--doi-bib',
-    `Generate ${MYST_DOI_BIB_FILE} file containing bibtex entries for all remotely loaded DOI citations`,
+    `Generate (or regenerate) ${MYST_DOI_BIB_FILE} file containing bibtex entries for all remotely loaded DOI citations`,
   )
     .default(false)
     .implies({ writeDOIBib: true });

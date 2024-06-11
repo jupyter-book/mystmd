@@ -466,8 +466,9 @@ export async function processProject(
     toc(`📚 Built ${plural('%s page(s)', pages)} for ${siteProject.slug ?? 'project'} in %s.`),
   );
   if (writeDOIBib) {
-    log.info(`🎓 Writing remote DOI citations to ${MYST_DOI_BIB_FILE}`);
-    writeRemoteDOIBibtex(session, join(siteProject.path, MYST_DOI_BIB_FILE));
+    const doiBibFile = join(siteProject.path, MYST_DOI_BIB_FILE);
+    log.info(`🎓 Writing remote DOI citations to ${doiBibFile}`);
+    writeRemoteDOIBibtex(session, doiBibFile);
   }
   return project;
 }
