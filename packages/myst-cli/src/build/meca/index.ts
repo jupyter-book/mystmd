@@ -282,7 +282,7 @@ export async function runMecaExport(
       );
       // Ensure that an explicit TOC is present
       if (configDest) {
-        writeTOCToConfigFile(project, configFile, configDest);
+        await writeTOCToConfigFile(project, configFile, configDest);
       }
 
       addManifestItem(manifestItems, 'article-source', mecaFolder, configDest);

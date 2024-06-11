@@ -107,7 +107,7 @@ export async function loadProjectFromDisk(
       session.log.info(`⬆️ Upgrading legacy jupyterbook TOC to MyST: ${tocFile(path)}`);
     }
     session.log.info(`💾 Writing new TOC to: ${projectConfigFile}`);
-    writeTOCToConfigFile(newProject, projectConfigFile, projectConfigFile);
+    await writeTOCToConfigFile(newProject, projectConfigFile, projectConfigFile);
   }
   const allBibFiles = getAllBibTexFilesOnPath(session, path, getIgnoreFiles(session, path));
   let bibliography: string[];
