@@ -19,6 +19,10 @@ import { parseMyst } from './myst.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IUserExpressionMetadata } from '../transforms/inlineExpressions.js';
 import { findExpression, metadataSection } from '../transforms/inlineExpressions.js';
+import { frontmatterValidationOpts } from '../frontmatter.js';
+
+import { validatePageFrontmatter } from 'myst-frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
@@ -70,12 +74,26 @@ export async function processNotebook(
   file: string,
   content: string,
 ): Promise<GenericParent> {
+  const { mdast } = await processNotebookFull(session, file, content);
+  return mdast;
+}
+
+export async function processNotebookFull(
+  session: ISession,
+  file: string,
+  content: string,
+): Promise<{mdast: GenericParent, frontmatter: PageFrontmatter}> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
 
   const language = metadata?.kernelspec?.language ?? 'python';
   log.debug(`Processing Notebook: "${file}"`);
+
+  // Load frontmatter from notebook metadata
+  const vfile = new VFile();
+  vfile.path = file;
+  const frontmatter = validatePageFrontmatter(metadata ?? {}, frontmatterValidationOpts(vfile));
 
   let end = cells.length;
   if (cells && cells.length > 1 && cells?.[cells.length - 1].source.length === 0) {
@@ -143,5 +161,6 @@ export async function processNotebook(
     Promise.resolve([] as GenericNode[]),
   );
 
-  return { type: 'root', children: items };
+  const mdast = { type: 'root', children: items };
+  return { mdast, frontmatter };
 }

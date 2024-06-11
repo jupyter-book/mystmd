@@ -215,6 +215,7 @@ export async function transformMdast(
 
   if (execute) {
     const cachePath = path.join(session.buildPath(), 'execute');
+    console.log(JSON.stringify(frontmatter, null, 2))
     await kernelExecutionTransform(mdast, vfile, {
       basePath: session.sourcePath(),
       cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),

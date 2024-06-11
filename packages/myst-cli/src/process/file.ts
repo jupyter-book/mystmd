@@ -18,7 +18,7 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
-import { processNotebook } from './notebook.js';
+import { processNotebookFull } from './notebook.js';
 import { selectors } from '../store/index.js';
 
 type LoadFileOptions = { preFrontmatter?: Record<string, any>; keepTitleNode?: boolean };
@@ -65,14 +65,15 @@ export async function loadNotebookFile(
 ): Promise<LoadFileResult> {
   const vfile = new VFile();
   vfile.path = file;
-  const mdast = await processNotebook(session, file, content);
-  const { frontmatter, identifiers } = getPageFrontmatter(
+  const { mdast, frontmatter: nbFrontmatter } = await processNotebookFull(session, file, content);
+  const { frontmatter: cellFrontmatter, identifiers } = getPageFrontmatter(
     session,
     mdast,
     vfile,
     opts?.preFrontmatter,
     opts?.keepTitleNode,
   );
+  const frontmatter = { ...nbFrontmatter, ...cellFrontmatter };
   return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers };
 }
 
