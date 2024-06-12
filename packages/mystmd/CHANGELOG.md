@@ -1,5 +1,13 @@
 # mystmd
 
+## 1.2.6
+
+### Patch Changes
+
+- 2c3290be: Add build command to write remote doi citations to bibtex
+- 286ceaaf: Fetch config files from url
+- 3d93fdb9: Footnotes that are reused should have the same number
+
 ## 1.2.5
 
 ### Patch Changes

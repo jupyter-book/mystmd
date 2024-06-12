@@ -1,5 +1,13 @@
 # myst-directives
 
+## 1.4.4
+
+### Patch Changes
+
+- 933b7b33: Fix caption for CSV table
+  - myst-common@1.4.5
+  - myst-spec-ext@1.4.5
+
 ## 1.4.3
 
 ### Patch Changes
