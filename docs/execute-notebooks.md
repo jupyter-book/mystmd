@@ -28,11 +28,10 @@ The following computational content will be executed:
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
-
 ## Expected errors
 
 By default, MyST will stop executing a notebook if a cell raises an error.
-If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the {guilabel}`raises-exception` tag to the cell.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell.
 If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
 
 The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
@@ -47,7 +46,6 @@ Here's an example of adding this tag with a {myst:directive}`code-cell` directiv
 print("Hello" + 10001)
 ```
 ````
-
 
 ## Cache execution outputs
 
@@ -86,7 +84,6 @@ pip install ipykernel
 ```
 
 If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find a healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
-
 
 ## Manually launch a Jupyter server
 

@@ -19,9 +19,9 @@ myst init --write-toc
 
 ## Structure the Table of Contents
 
-The  MyST TOC comprises a simple tree structure, built from `file`s, `url`s, `pattern`s, and `children`. For example, a simple TOC consisting of files:
+The MyST TOC comprises a simple tree structure, built from `file`s, `url`s, `pattern`s, and `children`. For example, a simple TOC consisting of files:
 
-:::{code} yaml
+```{code} yaml
 :filename: myst.yml
 
 version: 1
@@ -30,7 +30,7 @@ project:
     - file: root.md
     - file: first-child.md
     - file: second-child.md
-:::
+```
 
 ### URL entries
 
@@ -40,7 +40,7 @@ URLs can be defined in the TOC. These URLs are links to external references with
 Currently these URLs are also ignored in MyST sites. Support will be added in a future release.
 :::
 
-:::{code} yaml
+```{code} yaml
 :filename: myst.yml
 
 version: 1
@@ -48,7 +48,7 @@ project:
   toc:
     - file: root.md
     - url: 'https://google.com'
-:::
+```
 
 ### Glob pattern matching
 
@@ -64,30 +64,31 @@ For example, with a folder with `root.md`, `child9.md`, `child10.md`, the follow
 
 :::::{grid} 1 2 2 2
 ::::{card} Pattern-matching
-:::{code} yaml
-:filename: myst.yml
 
+```{code} yaml
+:filename: myst.yml
 version: 1
 project:
   toc:
     - file: root.md
     - pattern: '*.md'
-:::
+```
+
 ::::
 ::::{card} No pattern-matching
-:::{code} yaml
+
+```{code} yaml
 :filename: myst.yml
 :linenos:
 :emphasize-lines: 5,6
-
 version: 1
 project:
   toc:
     - file: root.md
     - file: child9.md
     - file: child10.md
+```
 
-:::
 ::::
 :::::
 
@@ -95,9 +96,8 @@ project:
 
 For larger projects, you can group the content using the `children` key, which can be defined for both `url` and `file` entries:
 
-:::{code} yaml
+```{code} yaml
 :filename: myst.yml
-
 version: 1
 project:
   toc:
@@ -110,14 +110,13 @@ project:
       children:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
-:::
+```
 
 You can nest children under a `title` without specifying a parent `file`.
 This will create a dropdown of pages in the Table of Contents.
 
-:::{code} yaml
+```{code} yaml
 :filename: myst.yml
-
 version: 1
 project:
   toc:
@@ -130,7 +129,7 @@ project:
       children:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
-:::
+```
 
 (implicit-toc)=
 
@@ -201,14 +200,15 @@ See [](website-metadata.md) for more details on how cross-references are stored.
 URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/executablebooks/mystmd/issues/670).
 :::
 
-:::{note} Compatibility with JupyterBook
+::::{note} Compatibility with JupyterBook
 :class: dropdown
 
 (toc-format-legacy)=
+
 ## Defining a `_toc.yml` using Jupyter Book’s format
 
 :::{warning}
-Support for `_toc.yml` exists only for compatibility reasons, and will be removed in future. 
+Support for `_toc.yml` exists only for compatibility reasons, and will be removed in future.
 New users should use `myst.yml` instead.
 :::
 
@@ -239,4 +239,5 @@ parts:
       - file: path/to/part2/chapter1
       - file: path/to/part2/chapter2
 ```
-:::
+
+::::

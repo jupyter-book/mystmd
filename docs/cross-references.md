@@ -58,9 +58,9 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
 * - `[](./citations.md)`
     : Link to documents using relative links from the markdown.
   - [](./citations.md)
-* - `[](./_toc.yml)`
+* - `[](./myst.yml)`
     : Link to static files that will be included in your built website. Similar to the [{download}](#download-role) role.
-  - [](./_toc.yml)
+  - [](./myst.yml)
 * - `[Admonition](xref:spec#admonition)`
     : External hover-references to MyST or Sphinx projects. See [](./external-references.md).
   - [Admonition](xref:spec#admonition)
