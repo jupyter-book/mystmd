@@ -50,8 +50,9 @@ For example, try editing the following {myst:directive}`figure` directive, you c
 
 ```{myst}
 
-:::{figure} https://source.unsplash.com/random/400x200?meditation
+:::{figure} https://github.com/rowanc1/pics/blob/main/banff-tall.png?raw=true
 :align: right
+:width: 40%
 
 The picture would look better if it is `:align: center`-ed!
 :::
@@ -126,7 +127,7 @@ To link to a document, for example [](./frontmatter.md), is done through a simpl
 To create a cross-reference, you need to label a "target", like a figure, section, equation or table (or anything!!). To be referenceable, these elements can add the `label` option in many directives. To then reference the figure, use the link syntax again pointing to the label as the target `[](#my-fig)`. If you leave the title blank the default will fill in with an enumerated "Figure 1".
 
 ````{myst}
-```{figure} https://source.unsplash.com/random/500x200/?mountain
+```{figure} https://github.com/rowanc1/pics/blob/main/mountains.png?raw=true
 :label: my-fig
 :align: center
 

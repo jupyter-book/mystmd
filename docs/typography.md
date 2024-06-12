@@ -181,7 +181,7 @@ Term 3
 : > A quote
 : A final definition, that can even include images:
 
-  ![Beach!](https://source.unsplash.com/random/400x200?beach,ocean)
+  ![Sunset at the Beach!](https://github.com/rowanc1/pics/blob/main/sunset.png?raw=true)
 ```
 ````
 
@@ -220,7 +220,7 @@ That's exactly right[^1].
     - and some *serious* points 💥
     - and even images!
 
-    ![Beach!](https://source.unsplash.com/random/400x200?beach,ocean)
+    ![Mountains!](https://github.com/rowanc1/pics/blob/main/mountains.png?raw=true)
 
     Plus any preceding unindented lines,
 that are not separated by a blank line

@@ -32,8 +32,8 @@ There are two directives that can be used to add additional information about th
 ## Image directive
 
 ````{myst}
-```{image} https://source.unsplash.com/random/500x150?sunset
-:alt: Beautiful Sunset
+```{image} https://github.com/rowanc1/pics/blob/main/grapes-wide.png?raw=true
+:alt: Grapes on a vineyard
 :width: 500px
 :align: center
 ```
@@ -44,9 +44,9 @@ There are two directives that can be used to add additional information about th
 ## Figure directive
 
 ````{myst}
-```{figure} https://source.unsplash.com/random/400x200?beach,ocean
+```{figure} https://github.com/rowanc1/pics/blob/main/sunset.png?raw=true
 :label: myFigure
-:alt: Random image of the beach or ocean!
+:alt: Sunset at the beach
 :align: center
 
 Relaxing at the beach 🏝 🌊 😎
@@ -66,8 +66,8 @@ These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 :label: subFigure
 :align: left
 
-![Banff, Canada](https://source.unsplash.com/random/600x225?banff)
-![Golden Gate Bridge, San Francisco](https://source.unsplash.com/random/600x225?golden-gate)
+![Banff, Canada](https://github.com/rowanc1/pics/blob/main/banff-wide.png)
+![Golden Gate Bridge, San Francisco](https://github.com/rowanc1/pics/blob/main/sfo-wide.png)
 
 We saw some great things on our trips this year to Banff, Canada 🇨🇦 and San Francisco, USA 🌉.
 :::
@@ -80,11 +80,11 @@ You can also cross-reference either the whole figure [@subFigure], or an individ
 :align: left
 
 (my-figure-fruit)=
-![Here is some fruit 🍌](https://source.unsplash.com/random/600x100?fruit)
+![Here is some fruit 🍏](https://github.com/rowanc1/pics/blob/main/apples-wide.png?raw=true)
 
-![My beach pics! 🏝](https://source.unsplash.com/random/600x100?beach)
+![My vacation pics! 🏝](https://github.com/rowanc1/pics/blob/main/ocean-wide.png?raw=true)
 
-Some pictures of fruit and beaches!
+Some pictures of fruit and the ocean!
 :::
 
 See [](#my-figure-fruit) for the fruit, and [](#my-figure) to reference both subfigures.
@@ -163,6 +163,7 @@ The image transforms and optimizations requires you to have the following packag
 :::
 
 (figures:multiple-images)=
+
 ### Multiple Images
 
 If you have manually converted your images or have different images for different formats, use an asterisk (`*`) as the extension. All images matching the provided pattern will be found and the best image out of the available candidates will be used for the export:
