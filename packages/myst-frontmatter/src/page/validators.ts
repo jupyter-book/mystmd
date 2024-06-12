@@ -47,15 +47,6 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
   }
-  if (defined(value.tags)) {
-    output.tags = validateList(
-      value.tags,
-      incrementOptions('tags', opts),
-      (file, index: number) => {
-        return validateString(file, incrementOptions(`tags.${index}`, opts));
-      },
-    );
-  }
   const partsOptions = incrementOptions('parts', opts);
   let parts: Record<string, any> | undefined;
   if (defined(value.parts)) {

@@ -42,6 +42,15 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
     // No validation, this is expected to be set programmatically
     output.bannerOptimized = value.bannerOptimized;
   }
+  if (defined(value.tags)) {
+    output.tags = validateList(
+      value.tags,
+      incrementOptions('tags', opts),
+      (file, index: number) => {
+        return validateString(file, incrementOptions(`tags.${index}`, opts));
+      },
+    );
+  }
   const stash: ReferenceStash = {};
   if (defined(value.affiliations)) {
     const affiliationsOpts = incrementOptions('affiliations', opts);
