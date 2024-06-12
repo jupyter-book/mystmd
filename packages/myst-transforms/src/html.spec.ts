@@ -419,4 +419,15 @@ describe('Test reconstructHtmlTransform', () => {
       ],
     });
   });
+  test('video tags in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<video loop mute src="test.mp4" />' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [{ type: 'paragraph', children: [{ type: 'image', url: 'test.mp4' }] }],
+    });
+  });
 });
