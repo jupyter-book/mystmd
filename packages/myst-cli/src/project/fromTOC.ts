@@ -345,8 +345,12 @@ export function projectFromTOC(
   if (!root) {
     throw new Error('Project TOC must have at least one item');
   }
+  // TODO: Relax project structure so these index file constraints may be lifted
   if (!isFile(root)) {
     throw new Error(`First TOC item must be a file`);
+  }
+  if ((root as ParentEntry).children?.length) {
+    throw new Error(`First TOC item cannot have children`);
   }
   const indexFile = resolveExtension(resolve(path, root.file), (message, errorLevel, note) => {
     addWarningForFile(session, warnFile, message, errorLevel, {
