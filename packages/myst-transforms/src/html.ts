@@ -116,6 +116,14 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       if (node.properties.alt) attrs.alt = node.properties.alt;
       return h(node, 'image', attrs);
     },
+    video(h: H, node: any) {
+      // Currently this creates an image node, we should change this to video in the future
+      const attrs = addClassAndIdentifier(node);
+      attrs.url = String(node.properties.src || '');
+      if (node.properties.title) attrs.title = node.properties.title;
+      if (node.properties.alt) attrs.alt = node.properties.alt;
+      return h(node, 'image', attrs);
+    },
     figure(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
       return h(node, 'container', attrs, all(h, node));
