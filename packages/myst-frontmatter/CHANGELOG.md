@@ -1,5 +1,13 @@
 # myst-frontmatter
 
+## 1.4.5
+
+### Patch Changes
+
+- ad969c37: Add tags to project frontmatter
+- Updated dependencies [20beec96]
+  - myst-toc@0.1.1
+
 ## 1.4.4
 
 ### Patch Changes

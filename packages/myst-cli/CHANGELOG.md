@@ -1,5 +1,30 @@
 # myst-cli
 
+## 1.2.6
+
+### Patch Changes
+
+- 10e80d03: Modify index file selection - allow tex, prefer index.ipynb over non-index md
+- 90446d99: Error if toc index file has children
+- 2c3290be: Add build command to write remote doi citations to bibtex
+- 2c3290be: Fall back to handle.net if doi.org fails
+- 286ceaaf: Fetch config files from url
+- a665cb14: Surface warnings during tocfile extension resolution
+- 2c3290be: Normalize doi keys in in-memory doi cache
+- b2736fa4: Add a log message for slow web requests
+- 2c3290be: Prioritize dois from bibtex over remote fetching
+- 10e80d03: Resolve toc patterns in intentional order
+- Updated dependencies [ad969c37]
+- Updated dependencies [20beec96]
+- Updated dependencies [3d93fdb9]
+  - myst-frontmatter@1.4.5
+  - myst-toc@0.1.1
+  - myst-transforms@1.3.16
+  - myst-common@1.4.5
+  - myst-config@1.4.5
+  - myst-spec-ext@1.4.5
+  - myst-parser@1.4.4
+
 ## 1.2.5
 
 ### Patch Changes

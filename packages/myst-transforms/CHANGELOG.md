@@ -1,5 +1,16 @@
 # myst-transforms
 
+## 1.3.16
+
+### Patch Changes
+
+- 3d93fdb9: Footnotes that are reused should have the same number
+- Updated dependencies [ad969c37]
+  - myst-frontmatter@1.4.5
+  - myst-common@1.4.5
+  - myst-spec-ext@1.4.5
+  - myst-to-html@1.4.4
+
 ## 1.3.15
 
 ### Patch Changes
