@@ -55,6 +55,7 @@ project:
 ```
 
 (composing-myst-yml)=
+
 #### Composing multiple `.yml` files
 
 You may separate your frontmatter into multiple, composable files. To reference other files from your main `myst.yml` file, use the `extends` key with relative path(s) to the other configuration files:
@@ -88,6 +89,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `title`
   - a string (max 500 chars, see [](#titles))
   - page & project
+* - `subtitle`
+  - a string (max 500 chars, see [](#titles))
+  - page & project
 * - `short_title`
   - a string (max 40 chars, see [](#titles))
   - page & project
@@ -104,16 +108,19 @@ The following table lists the available frontmatter fields, a brief description 
   - a string (max 500 chars) to identify the page in cross-references
   - page only
 * - `tags`
-  - a list of strings
-  - page only
+  - a list of strings. Use to categorize posts/articles or the project to make it easier for readers to find related content within your site.
+  - page & project
 * - `thumbnail`
   - a link to a local or remote image
-  - page only
-* - `subtitle`
-  - a string (max 500 chars, see [](#titles))
-  - page only
+  - page & project
+* - `banner`
+  - a link to a local or remote image
+  - page & project
 * - `date`
   - a valid date formatted string
+  - page can override project
+* - `keywords`
+  - a list of strings. Use in articles to highlight key concepts and facilitate indexing in scientific databases.
   - page can override project
 * - `authors`
   - a list of author objects, see [](#frontmatter:authors)

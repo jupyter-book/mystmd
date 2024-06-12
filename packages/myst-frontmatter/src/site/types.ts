@@ -12,6 +12,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'thumbnailOptimized',
   'banner',
   'bannerOptimized',
+  'tags',
   'authors',
   'reviewers',
   'editors',
@@ -64,6 +65,7 @@ export type SiteFrontmatter = {
   banner?: string | null;
   bannerOptimized?: string;
   authors?: Contributor[];
+  tags?: string[];
 
   /**
    * Reviewers and editors are author/contributor ids.
