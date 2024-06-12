@@ -108,7 +108,7 @@ The following table lists the available frontmatter fields, a brief description 
   - a string (max 500 chars) to identify the page in cross-references
   - page only
 * - `tags`
-  - a list of strings
+  - a list of strings. Use to categorize posts/articles or the project to make it easier for readers to find related content within your site.
   - page & project
 * - `thumbnail`
   - a link to a local or remote image
@@ -118,6 +118,9 @@ The following table lists the available frontmatter fields, a brief description 
   - page & project
 * - `date`
   - a valid date formatted string
+  - page can override project
+* - `keywords`
+  - a list of strings. Use in articles to highlight key concepts and facilitate indexing in scientific databases.
   - page can override project
 * - `authors`
   - a list of author objects, see [](#frontmatter:authors)
