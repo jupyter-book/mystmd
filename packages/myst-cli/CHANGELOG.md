@@ -1,5 +1,11 @@
 # myst-cli
 
+## 1.2.7
+
+### Patch Changes
+
+- 61b7795: Update doi fetching to resolve 429 too many request errors
+
 ## 1.2.6
 
 ### Patch Changes
