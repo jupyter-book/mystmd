@@ -1,3 +1,4 @@
+import pLimit from 'p-limit';
 import type { CitationRenderer, CSL } from 'citation-js-utils';
 import { getCitationRenderers, parseBibTeX, parseCSLJSON } from 'citation-js-utils';
 import { doi } from 'doi-utils';
@@ -246,12 +247,19 @@ export async function transformLinkedDOIs(
     citeDois.push(node as Cite);
   });
   if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
+  const total = linkedDois.length + citeDois.length;
   session.log.debug(
-    `Found ${plural('%s DOI(s)', linkedDois.length + citeDois.length)} to auto link.`,
+    `Found ${plural('%s DOI(s)', total)} to auto link.`,
   );
+  const logData = { total, done: false };
+  setTimeout(() => {
+    if (!logData.done) session.log.info(`⏳ Waiting to resolve up to ${plural('%s DOI(s)', logData.total)} from doi.org...`);
+  }, 5000);
   let number = 0;
+  // Currently doi.org is strictly rate limiting their requests
+  const limit = pLimit(3);
   await Promise.all([
-    ...linkedDois.map(async (node) => {
+    ...linkedDois.map((node) => limit(async () => {
       const normalized = doi.normalize(node.url)?.toLowerCase();
       if (!normalized) return false;
       let cite: SingleCitationRenderer | null = doiRenderer[normalized];
@@ -274,8 +282,8 @@ export async function transformLinkedDOIs(
         citeNode.children = [];
       }
       return true;
-    }),
-    ...citeDois.map(async (node) => {
+    })),
+    ...citeDois.map((node) => limit(async () => {
       const normalized = doi.normalize(node.label)?.toLowerCase();
       if (!normalized) return false;
       let cite: SingleCitationRenderer | null = doiRenderer[normalized];
@@ -290,10 +298,11 @@ export async function transformLinkedDOIs(
       doiRenderer[normalized] = cite;
       node.label = cite.render.getLabel();
       return true;
-    }),
+    })),
   ]);
+  logData.done = true;
   if (number > 0) {
-    session.log.info(toc(`🪄  Linked ${number} DOI${number > 1 ? 's' : ''} in %s for ${path}`));
+    session.log.info(toc(`🪄  Linked ${plural('%s DOI(s)', number)} from doi.org in %s for ${path}`));
   }
   return renderer;
 }
