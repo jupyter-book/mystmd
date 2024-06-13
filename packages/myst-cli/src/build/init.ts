@@ -101,6 +101,7 @@ export async function init(session: ISession, opts: InitOptions) {
       const contents = await fs.promises.readFile('.gitignore', { encoding: 'utf-8' });
       const lines = contents.split(/\r\n|\r|\n/);
       // Do we have mention of `/?_build`?
+      //eslint-disable-next-line
       if (lines.some((line) => /^\/?_build([#\/].*)?$/.test(line))) {
         session.log.info(`✅ .gitignore exists and already ignores MyST outputs`);
       } else {
