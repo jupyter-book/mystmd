@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
+import type { MystXRefs } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import type { SiteManifestOptions } from '../site/manifest.js';
 import { getSiteManifest } from '../site/manifest.js';
@@ -154,10 +155,15 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
   fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
-  fs.copySync(
-    path.join(session.sitePath(), 'myst.xref.json'),
-    path.join(htmlDir, 'myst.xref.json'),
-  );
+
+  // NOTE: HTML static output needs to patch the contents, this is done on the fly by the server
+  const xrefs = JSON.parse(
+    fs.readFileSync(path.join(session.sitePath(), 'myst.xref.json')).toString(),
+  ) as MystXRefs;
+  xrefs.references?.forEach((ref) => {
+    ref.data = ref.data?.replace(/^\/content/, '');
+  });
+  fs.writeFileSync(path.join(htmlDir, 'myst.xref.json'), JSON.stringify(xrefs));
 
   // We need to go through and change all links to the right folder
   rewriteAssetsFolder(htmlDir, baseurl);
