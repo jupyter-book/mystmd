@@ -3,8 +3,10 @@ import path from 'node:path';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import type { ISession } from 'myst-cli-utils';
-import { makeExecutable, writeFileToFolder } from 'myst-cli-utils';
+import { writeFileToFolder } from 'myst-cli-utils';
 import { getGithubUrl } from '../utils/github.js';
+import { checkFolderIsGit, checkAtGitRoot } from '../utils/git.js';
+
 
 function createGithubPagesAction({
   defaultBranch = 'main',
@@ -97,23 +99,6 @@ jobs:
 `;
 }
 
-async function checkFolderIsGit(): Promise<boolean> {
-  try {
-    await makeExecutable('git status', null)();
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
-async function checkAtGitRoot(): Promise<boolean> {
-  try {
-    fs.readdirSync('.git');
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
 
 async function prelimGitChecks(session: ISession): Promise<string | undefined> {
   const inGitRepo = await checkFolderIsGit();
