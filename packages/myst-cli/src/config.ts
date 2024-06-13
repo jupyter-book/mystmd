@@ -275,12 +275,12 @@ export async function resolveToAbsolute(
 ) {
   let message: string | undefined;
   if (opts?.allowRemote && isUrl(relativePath)) {
-    const cacheFilename = `config-item-${computeHash(relativePath)}${extname(relativePath)}`;
+    const cacheFilename = `config-item-${computeHash(relativePath)}${extname(new URL(relativePath).pathname)}`;
     if (!loadFromCache(session, cacheFilename, { maxAge: 30 })) {
       try {
         const resp = await session.fetch(relativePath);
         if (resp.ok) {
-          writeToCache(session, cacheFilename, await resp.text());
+          writeToCache(session, cacheFilename, Buffer.from(await resp.arrayBuffer()));
         } else {
           message = `Bad response from config URL: ${relativePath}`;
         }

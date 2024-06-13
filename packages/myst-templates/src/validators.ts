@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { globSync } from 'glob';
-import { hashAndCopyStaticFile, isDirectory } from 'myst-cli-utils';
+import { hashAndCopyStaticFile, isDirectory, isUrl } from 'myst-cli-utils';
 import { TemplateKind, TemplateOptionType } from 'myst-common';
 import type { ReferenceStash } from 'myst-frontmatter';
 import {
@@ -41,7 +41,7 @@ import type {
 } from './types.js';
 import { KIND_TO_EXT } from './download.js';
 
-export type FileOptions = { copyFolder?: string; relativePathFrom?: string };
+export type FileOptions = { copyFolder?: string; relativePathFrom?: string; allowRemote?: boolean };
 
 export type FileValidationOptions = ValidationOptions & FileOptions;
 
@@ -49,10 +49,14 @@ export type FileValidationOptions = ValidationOptions & FileOptions;
  *
  * Resolved relative to the file cached on validation options.
  * Full resolved path is returned.
+ *
+ * If opts.allowRemote is true, input may be a URL.
+ * In this case, the URL is returned unchanged.
  */
 function validateFile(session: ISession, input: any, opts: FileValidationOptions) {
   const filename = validateString(input, opts);
   if (!filename) return;
+  if (opts.allowRemote && isUrl(filename)) return filename;
   let resolvedFile: string;
   if (opts.file) {
     resolvedFile = path.resolve(path.dirname(opts.file), filename);

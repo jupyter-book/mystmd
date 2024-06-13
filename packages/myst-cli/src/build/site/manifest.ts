@@ -216,7 +216,7 @@ async function resolveTemplateFileOptions(
       if (option.type === TemplateOptionType.file && options[option.id]) {
         const configPath = selectors.selectCurrentSitePath(session.store.getState());
         const absPath = configPath
-          ? await resolveToAbsolute(session, configPath, options[option.id])
+          ? await resolveToAbsolute(session, configPath, options[option.id], { allowRemote: true })
           : options[option.id];
         const fileHash = hashAndCopyStaticFile(
           session,
@@ -388,6 +388,7 @@ export async function getSiteManifest(
   const validatedOptions = mystTemplate.validateOptions(
     siteFrontmatter.options ?? {},
     siteConfigFile,
+    { allowRemote: true },
   );
   const validatedFrontmatter = mystTemplate.validateDoc(
     siteFrontmatter,
