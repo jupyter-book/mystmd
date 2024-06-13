@@ -7,7 +7,7 @@ import { VFile } from 'vfile';
 import type { GenericParent } from 'myst-common';
 import { RuleId, toText } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { validatePageFrontmatter } from 'myst-frontmatter';
+import { validatePageFrontmatter, fillProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import { frontmatterValidationOpts, getPageFrontmatter } from '../frontmatter.js';
 import type { ISession, ISessionWithCache } from '../session/types.js';
@@ -73,7 +73,11 @@ export async function loadNotebookFile(
     opts?.preFrontmatter,
     opts?.keepTitleNode,
   );
-  const frontmatter = fillProjectFrontmatter(cellFrontmatter, nbFrontmatter, { /** validation opts */ };
+  const frontmatter = fillProjectFrontmatter(
+    cellFrontmatter,
+    nbFrontmatter,
+    frontmatterValidationOpts(vfile),
+  );
   return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers };
 }
 
