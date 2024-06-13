@@ -19,23 +19,17 @@ function createProjectConfig({ github }: { github?: string } = {}) {
   id: ${uuid()}
   # title:
   # description:
-  keywords: []
-  authors: []
+  # keywords: []
+  # authors: []
   ${github ? `github: ${github}` : '# github:'}
-  # bibliography: []
+  # To autogenerate a Table of Contents, run "myst init --write-toc"
 `;
 }
 const SITE_CONFIG = `site:
   template: book-theme
-  # title:
   # options:
   #   favicon: favicon.ico
   #   logo: site_logo.png
-  nav: []
-  actions:
-    - title: Learn More
-      url: https://mystmd.org/guide
-  domains: []
 `;
 
 export type InitOptions = {
