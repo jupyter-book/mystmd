@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
-import { fillPageFrontmatter } from './fillPageFrontmatter';
+import { fillPageFrontmatter, fillSiteFrontmatter } from './fillPageFrontmatter';
 import type { PageFrontmatter } from '../page/types';
 import type { ProjectFrontmatter } from '../project/types';
 
@@ -703,6 +703,23 @@ describe('fillPageFrontmatter', () => {
   it('page options override project options', async () => {
     expect(fillPageFrontmatter({ options: { a: 'b' } }, { options: { a: 'z' } }, opts)).toEqual({
       options: { a: 'b' },
+    });
+  });
+});
+
+describe('fillSiteFrontmatter', () => {
+  it('empty frontmatters return empty', async () => {
+    expect(fillSiteFrontmatter({}, {}, opts)).toEqual({});
+  });
+  it('site options are combined', async () => {
+    expect(
+      fillSiteFrontmatter(
+        { options: { logo: 'my-logo.png' } },
+        { options: { hide_outline: true } },
+        opts,
+      ),
+    ).toEqual({
+      options: { logo: 'my-logo.png', hide_outline: true },
     });
   });
 });

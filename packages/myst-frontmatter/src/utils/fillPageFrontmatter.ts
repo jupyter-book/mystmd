@@ -6,6 +6,7 @@ import { fillNumbering } from '../numbering/validators.js';
 import { USE_PROJECT_FALLBACK } from '../page/validators.js';
 import type { PageFrontmatter } from '../page/types.js';
 import type { ProjectFrontmatter } from '../project/types.js';
+import type { SiteFrontmatter } from '../site/types.js';
 import { normalizeJsonToString } from './normalizeString.js';
 import { isStashPlaceholder, stashPlaceholder } from './referenceStash.js';
 
@@ -23,44 +24,19 @@ export function fillPageFrontmatter(
   return fillProjectFrontmatter(pageFrontmatter, projectFrontmatter, opts, USE_PROJECT_FALLBACK);
 }
 
-export function fillProjectFrontmatter(
-  base: ProjectFrontmatter,
-  filler: ProjectFrontmatter,
+export function fillSiteFrontmatter(
+  base: SiteFrontmatter,
+  filler: SiteFrontmatter,
   opts: ValidationOptions,
   keys?: string[],
 ) {
   const frontmatter = fillMissingKeys(base, filler, keys ?? Object.keys(filler));
-
-  if (filler.numbering || base.numbering) {
-    frontmatter.numbering = fillNumbering(base.numbering, filler.numbering);
-  }
-
-  // Combine all math macros defined on page and project
-  if (filler.math || base.math) {
-    frontmatter.math = { ...(filler.math ?? {}), ...(base.math ?? {}) };
-  }
-
-  // Combine all abbreviation defined on page and project
-  if (filler.abbreviations || base.abbreviations) {
-    frontmatter.abbreviations = {
-      ...(filler.abbreviations ?? {}),
-      ...(base.abbreviations ?? {}),
-    };
-  }
 
   // Combine all options defined on page and project
   if (filler.options || base.options) {
     frontmatter.options = {
       ...(filler.options ?? {}),
       ...(base.options ?? {}),
-    };
-  }
-
-  // Combine all settings defined on page and project
-  if (filler.settings || base.settings) {
-    frontmatter.settings = {
-      ...(filler.settings ?? {}),
-      ...(base.settings ?? {}),
     };
   }
 
@@ -151,6 +127,47 @@ export function fillProjectFrontmatter(
     frontmatter.affiliations = [...affiliationIds].map((id) => {
       return affiliationLookup[id] ?? stashPlaceholder(id);
     });
+  }
+
+  return frontmatter;
+}
+
+export function fillProjectFrontmatter(
+  base: ProjectFrontmatter,
+  filler: ProjectFrontmatter,
+  opts: ValidationOptions,
+  keys?: string[],
+) {
+  const frontmatter: ProjectFrontmatter = fillSiteFrontmatter(
+    base,
+    filler,
+    opts,
+    keys ?? Object.keys(filler),
+  );
+
+  if (filler.numbering || base.numbering) {
+    frontmatter.numbering = fillNumbering(base.numbering, filler.numbering);
+  }
+
+  // Combine all math macros defined on page and project
+  if (filler.math || base.math) {
+    frontmatter.math = { ...(filler.math ?? {}), ...(base.math ?? {}) };
+  }
+
+  // Combine all abbreviation defined on page and project
+  if (filler.abbreviations || base.abbreviations) {
+    frontmatter.abbreviations = {
+      ...(filler.abbreviations ?? {}),
+      ...(base.abbreviations ?? {}),
+    };
+  }
+
+  // Combine all settings defined on page and project
+  if (filler.settings || base.settings) {
+    frontmatter.settings = {
+      ...(filler.settings ?? {}),
+      ...(base.settings ?? {}),
+    };
   }
 
   return frontmatter;
