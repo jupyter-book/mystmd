@@ -97,11 +97,11 @@ export async function init(session: ISession, opts: InitOptions) {
       session.log.info(`💾 Writing default .gitignore`);
       await fs.promises.writeFile('.gitignore', GITIGNORE);
     } else {
-	    // Parse the existing gitignore
+      // Parse the existing gitignore
       const contents = await fs.promises.readFile('.gitignore', { encoding: 'utf-8' });
       const lines = contents.split(/\r\n|\r|\n/);
       // Do we have mention of `/?_build`?
-      if (lines.some(line => /^\/?_build([#\/].*)?$/.test(line))) {
+      if (lines.some((line) => /^\/?_build([#\/].*)?$/.test(line))) {
         session.log.info(`✅ .gitignore exists and already ignores MyST outputs`);
       } else {
         session.log.info(`💾 Updating .gitignore`);

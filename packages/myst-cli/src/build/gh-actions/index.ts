@@ -7,7 +7,6 @@ import { writeFileToFolder } from 'myst-cli-utils';
 import { getGithubUrl } from '../utils/github.js';
 import { checkFolderIsGit, checkAtGitRoot } from '../utils/git.js';
 
-
 function createGithubPagesAction({
   defaultBranch = 'main',
   username = 'username',
@@ -98,7 +97,6 @@ jobs:
           CURVENOTE_TOKEN: \${{ secrets.CURVENOTE_TOKEN }}
 `;
 }
-
 
 async function prelimGitChecks(session: ISession): Promise<string | undefined> {
   const inGitRepo = await checkFolderIsGit();
