@@ -1,5 +1,22 @@
 # myst-cli
 
+## 1.2.8
+
+### Patch Changes
+
+- 464b955f: Fix cross references for static sites
+- 4cea894: Combine site options when using config extend
+- fec350ab: Allow remote files for template/site options
+- Updated dependencies [1b6ee5e2]
+- Updated dependencies [4cea894]
+- Updated dependencies [fec350ab]
+  - myst-transforms@1.3.17
+  - myst-frontmatter@1.4.6
+  - myst-templates@1.0.19
+  - myst-common@1.4.6
+  - myst-config@1.4.6
+  - myst-spec-ext@1.4.6
+
 ## 1.2.7
 
 ### Patch Changes

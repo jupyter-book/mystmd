@@ -1,5 +1,14 @@
 # myst-templates
 
+## 1.0.19
+
+### Patch Changes
+
+- fec350ab: Allow remote files for template/site options
+- Updated dependencies [4cea894]
+  - myst-frontmatter@1.4.6
+  - myst-common@1.4.6
+
 ## 1.0.18
 
 ### Patch Changes

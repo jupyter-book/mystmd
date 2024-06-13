@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.4.6
+
+### Patch Changes
+
+- Updated dependencies [4cea894]
+  - myst-frontmatter@1.4.6
+
 ## 1.4.5
 
 ### Patch Changes
