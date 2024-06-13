@@ -11,7 +11,7 @@ import chalk from 'chalk';
 import { startServer } from './site/start.js';
 import { githubCurvenoteAction, githubPagesAction } from './gh-actions/index.js';
 import { getGithubUrl } from './utils/github.js';
-
+import { checkFolderIsGit } from './utils/git.js';
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
@@ -38,6 +38,18 @@ const SITE_CONFIG = `site:
   domains: []
 `;
 
+const GITIGNORE = `
+/_build/
+
+# Python development
+.ipynb_checkpoints/
+__pycache__/
+.venv
+
+# MacOSX
+.DS_Store				    
+`;
+
 export type InitOptions = {
   project?: boolean;
   site?: boolean;
@@ -60,6 +72,16 @@ Learn more about this CLI and MyST Markdown at: ${chalk.bold('https://mystmd.org
 
 `;
 
+async function gitignoreExists(): Promise<boolean> {
+  try {
+    await fs.promises.access('.gitignore');
+    // The check succeeded
+  } catch (error) {
+    return false;
+  }
+  return true;
+}
+
 export async function init(session: ISession, opts: InitOptions) {
   const { project, site, writeTOC, ghPages, ghCurvenote } = opts;
 
@@ -69,6 +91,17 @@ export async function init(session: ISession, opts: InitOptions) {
   if (!project && !site && !writeTOC) {
     session.log.info(WELCOME());
   }
+
+  // Assume we're working in the cwd
+  if (await checkFolderIsGit()) {
+    if (await gitignoreExists()) {
+      session.log.info(`✅ .gitignore already exists`);
+    } else {
+      session.log.info(`💾 Writing default .gitignore`);
+      await fs.promises.writeFile('.gitignore', GITIGNORE);
+    }
+  }
+
   await loadConfig(session, '.');
   const state = session.store.getState();
   const existingRawConfig = selectors.selectLocalRawConfig(state, '.');
