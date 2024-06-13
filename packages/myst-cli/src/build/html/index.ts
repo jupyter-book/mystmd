@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
+import type { MystXRefs } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import type { SiteManifestOptions } from '../site/manifest.js';
 import { getSiteManifest } from '../site/manifest.js';
@@ -158,8 +159,8 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   // NOTE: HTML static output needs to patch the contents, this is done on the fly by the server
   const xrefs = JSON.parse(
     fs.readFileSync(path.join(session.sitePath(), 'myst.xref.json')).toString(),
-  ) as any;
-  xrefs.references?.forEach((ref: any) => {
+  ) as MystXRefs;
+  xrefs.references?.forEach((ref) => {
     ref.data = ref.data?.replace(/^\/content/, '');
   });
   fs.writeFileSync(path.join(htmlDir, 'myst.xref.json'), JSON.stringify(xrefs));
