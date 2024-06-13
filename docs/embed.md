@@ -13,13 +13,13 @@ To attach labels to Jupyter Notebook content, see [](./reuse-jupyter-outputs.md)
 For the examples below, we are defining a figure with a label:
 
 ```markdown
-:::{figure} https://source.unsplash.com/random/400x200?beach,ocean
+:::{figure} https://github.com/rowanc1/pics/blob/main/mountains.png
 :label: myLabel
 Here's a cool figure.
 :::
 ```
 
-:::{figure} https://source.unsplash.com/random/400x200?beach,ocean
+:::{figure} https://github.com/rowanc1/pics/blob/main/mountains.png
 :label: myLabel
 Here's a cool figure.
 :::
@@ -78,11 +78,11 @@ For example, we'll define an image with a label below:
 
 ```
 (nice-sunset)=
-![](https://source.unsplash.com/random/500x150?sunset)
+![](https://github.com/rowanc1/pics/blob/main/sunset.png)
 ```
 
 (nice-sunset)=
-![](https://source.unsplash.com/random/500x150?sunset)
+![](https://github.com/rowanc1/pics/blob/main/sunset.png)
 
 And embed it into a figure next with a new `label`:
 
@@ -125,6 +125,7 @@ You can then refer to content in these sites in two ways:
    ```md
    ![](xref:spec#admonition)
    ```
+
 2. The {myst:directive}`Embed directive <embed>`:
 
    ```md

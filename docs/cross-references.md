@@ -159,7 +159,7 @@ There are many ways that you can label a target, and the sections below describe
 Targets are custom anchors that you can refer to elsewhere, for example, a figure, section, table, program, or proof. To be referenced, they must have a `label`/`identifier` pair [in the AST](xref:spec#association). These can be created by setting the `label` option in many directives. For example, to label and reference a figure, use the following syntax:
 
 ````{myst}
-```{figure} https://source.unsplash.com/random/500x200/?mountain
+```{figure} https://github.com/rowanc1/pics/blob/main/mountains.png?raw=true
 :label: my-fig
 :align: center
 

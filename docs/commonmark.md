@@ -167,7 +167,7 @@ Link with alternative text and optional title:
 Link to an image can be done similar to other inline links, or you may use HTML syntax to include image size, etc.
 
 ```{myst}
-![alt](https://source.unsplash.com/random/500x200/?fruit "title")
+![alt](https://github.com/rowanc1/pics/blob/main/apples.png?raw=true "title")
 ```
 
 ```{seealso}
@@ -184,5 +184,5 @@ break
 ```
 
 ```{seealso}
-[](./typography.md) provides other roles for subscript, superscript, abbeviations, and other text formatting.
+[](./typography.md) provides other roles for subscript, superscript, abbreviations, and other text formatting.
 ```

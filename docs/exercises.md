@@ -250,7 +250,7 @@ to include in an exercise or solution admonition.
 
 and maybe you wish to add a figure
 
-```{figure} https://source.unsplash.com/random/400x200?beach,ocean
+```{figure} https://github.com/rowanc1/pics/blob/main/beach.png
 
 ```
 
@@ -269,7 +269,7 @@ and maybe you wish to add a figure
 
 and maybe you wish to add a figure
 
-```{figure} https://source.unsplash.com/random/400x200?beach,ocean
+```{figure} https://github.com/rowanc1/pics/blob/main/sunset.png
 
 ```
 
