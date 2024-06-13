@@ -30,7 +30,11 @@ export function cachePath(session: ISession, filename: string) {
 /**
  * Write data to file on-disk cache
  */
-export function writeToCache(session: ISession, filename: string, data: string) {
+export function writeToCache(
+  session: ISession,
+  filename: string,
+  data: string | NodeJS.ArrayBufferView,
+) {
   const file = cachePath(session, filename);
   session.log.debug(`Writing cache file: ${file}`);
   writeFileToFolder(file, data);
