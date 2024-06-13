@@ -178,7 +178,7 @@ export async function localToManifestProject(
     path.join(projectPath, 'myst.yml'),
     projFrontmatter,
     session.publicPath(),
-    { altOutputFolder: '/' },
+    { altOutputFolder: '/', webp: true },
   );
   const thumbnail = await transformThumbnail(
     session,
@@ -186,15 +186,22 @@ export async function localToManifestProject(
     path.join(projectPath, 'myst.yml'),
     projFrontmatter,
     session.publicPath(),
-    { altOutputFolder: '/' },
+    { altOutputFolder: '/', webp: true },
   );
   return {
     ...projFrontmatter,
     // TODO: a null in the project frontmatter should not fall back to index page
     thumbnail: thumbnail?.url || projectFileInfo.thumbnail,
-    thumbnailOptimized: thumbnail?.urlOptimized || projectFileInfo.thumbnailOptimized || undefined,
+    thumbnailOptimized:
+      thumbnail?.urlOptimized ||
+      // Do not fall back to optimized page thumbnail if unoptimized project thumbnail exists
+      (thumbnail?.url ? undefined : projectFileInfo.thumbnailOptimized) ||
+      undefined,
     banner: banner?.url || projectFileInfo.banner,
-    bannerOptimized: banner?.urlOptimized || projectFileInfo.bannerOptimized || undefined,
+    bannerOptimized:
+      banner?.urlOptimized ||
+      (banner?.url ? undefined : projectFileInfo.bannerOptimized) ||
+      undefined,
     exports,
     downloads,
     bibliography: projFrontmatter.bibliography || [],
