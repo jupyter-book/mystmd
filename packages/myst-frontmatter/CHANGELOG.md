@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.4.6
+
+### Patch Changes
+
+- 4cea894: Combine site options when using config extend
+
 ## 1.4.5
 
 ### Patch Changes

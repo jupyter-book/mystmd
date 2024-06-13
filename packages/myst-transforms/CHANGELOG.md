@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.3.17
+
+### Patch Changes
+
+- 1b6ee5e2: Support HTML video tags
+- Updated dependencies [4cea894]
+  - myst-frontmatter@1.4.6
+  - myst-common@1.4.6
+  - myst-spec-ext@1.4.6
+
 ## 1.3.16
 
 ### Patch Changes
