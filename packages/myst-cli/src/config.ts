@@ -5,7 +5,7 @@ import { writeFileToFolder, isUrl, computeHash } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
-import { fillProjectFrontmatter } from 'myst-frontmatter';
+import { fillProjectFrontmatter, fillSiteFrontmatter } from 'myst-frontmatter';
 import type { ValidationOptions } from 'simple-validators';
 import {
   incrementOptions,
@@ -13,7 +13,6 @@ import {
   validationError,
   validateList,
   validateString,
-  fillMissingKeys,
 } from 'simple-validators';
 import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
@@ -84,8 +83,8 @@ function configValidationOpts(vfile: VFile, property: string, ruleId: RuleId): V
 /**
  * Function to add filler keys to base if the keys are not defined in base
  */
-function fillSiteConfig(base: SiteConfig, filler: SiteConfig) {
-  return fillMissingKeys(base, filler, Object.keys(filler));
+function fillSiteConfig(base: SiteConfig, filler: SiteConfig, opts: ValidationOptions) {
+  return fillSiteFrontmatter(base, filler, opts, Object.keys(filler));
 }
 
 /**
@@ -190,7 +189,7 @@ async function getValidatedConfigsFromFile(
         );
         session.store.dispatch(config.actions.receiveConfigExtension({ file: extFile }));
         if (extSite) {
-          site = site ? fillSiteConfig(extSite, site) : extSite;
+          site = site ? fillSiteConfig(extSite, site, incrementOptions('extend', opts)) : extSite;
         }
         if (extProject) {
           project = project ? fillProjectFrontmatter(extProject, project, projectOpts) : extProject;
@@ -204,6 +203,7 @@ async function getValidatedConfigsFromFile(
     site = fillSiteConfig(
       await validateSiteConfigAndThrow(session, path, vfile, rawSite),
       site ?? {},
+      incrementOptions('extend', opts),
     );
   }
   if (site) {
