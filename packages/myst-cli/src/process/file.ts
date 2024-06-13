@@ -73,7 +73,7 @@ export async function loadNotebookFile(
     opts?.preFrontmatter,
     opts?.keepTitleNode,
   );
-  const frontmatter = { ...nbFrontmatter, ...cellFrontmatter };
+  const frontmatter = fillProjectFrontmatter(cellFrontmatter, nbFrontmatter, { /** validation opts */ };
   return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers };
 }
 
