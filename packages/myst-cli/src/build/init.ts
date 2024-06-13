@@ -38,8 +38,7 @@ const SITE_CONFIG = `site:
   domains: []
 `;
 
-const GITIGNORE = `
-/_build/
+const GITIGNORE = `/_build/
 
 # Python development
 .ipynb_checkpoints/
