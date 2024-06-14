@@ -22,7 +22,11 @@ import { findExpression, metadataSection } from '../transforms/inlineExpressions
 import { frontmatterValidationOpts } from '../frontmatter.js';
 
 import { filterKeys } from 'simple-validators';
-import { validatePageFrontmatter, PAGE_FRONTMATTER_KEYS, FRONTMATTER_ALIASES } from 'myst-frontmatter';
+import {
+  validatePageFrontmatter,
+  PAGE_FRONTMATTER_KEYS,
+  FRONTMATTER_ALIASES,
+} from 'myst-frontmatter';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
@@ -95,8 +99,17 @@ export async function processNotebookFull(
   const vfile = new VFile();
   vfile.path = file;
   // Pull out only the keys we care about
-  const filteredMetadata = filterKeys(metadata ?? {}, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)])
-  const frontmatter = validatePageFrontmatter(filteredMetadata ?? {}, frontmatterValidationOpts(vfile));
+  const filteredMetadata = filterKeys(metadata ?? {}, [
+    ...PAGE_FRONTMATTER_KEYS,
+    // Include aliased entries for page frontmatter keys
+    ...Object.entries(FRONTMATTER_ALIASES)
+      .filter(([_, value]) => PAGE_FRONTMATTER_KEYS.includes(value))
+      .map(([key, _]) => key),
+  ]);
+  const frontmatter = validatePageFrontmatter(
+    filteredMetadata ?? {},
+    frontmatterValidationOpts(vfile),
+  );
 
   let end = cells.length;
   if (cells && cells.length > 1 && cells?.[cells.length - 1].source.length === 0) {
