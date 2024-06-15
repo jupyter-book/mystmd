@@ -176,9 +176,9 @@ cases:
     command: myst build --tex --ci
     outputs:
       - path: dois/_build/out.tex
-        content: outputs/dois.tex
+        content: dois/outputs/dois.tex
       - path: dois/_build/main.bib
-        content: outputs/dois.bib
+        content: dois/outputs/dois.bib
   - title: Basic site build
     cwd: basic-site
     command: myst build
