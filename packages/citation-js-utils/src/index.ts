@@ -1,10 +1,14 @@
-import { Cite } from '@citation-js/core';
+import { Cite, plugins } from '@citation-js/core';
 import { doi as doiUtils } from 'doi-utils';
 import { clean as cleanCSL } from '@citation-js/core/lib/plugins/input/csl.js';
 import sanitizeHtml from 'sanitize-html';
 
 import '@citation-js/plugin-bibtex';
 import '@citation-js/plugin-csl';
+
+const config = plugins.config.get('@bibtex');
+config.format.useIdAsLabel = true;
+config.format.checkLabel = false;
 
 const DOI_IN_TEXT = /(10.\d{4,9}\/[-._;()/:A-Z0-9]*[A-Z0-9])/i;
 
