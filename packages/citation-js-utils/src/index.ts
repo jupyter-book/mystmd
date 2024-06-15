@@ -203,7 +203,14 @@ export function parseCSLJSON(source: object[]): CSL[] {
  */
 export async function getCitations(bibtex: string): Promise<CitationRenderer> {
   const csl = parseBibTeX(bibtex);
-  return await getCitationRenderers(csl);
+  return getCitationRenderers(csl);
+}
+
+function getLabel(cite: Cite, c: CSL) {
+  const bibtexObjects = cite.set(c).format('bibtex', { format: 'object' }) as {
+    label: string;
+  }[];
+  return bibtexObjects[0]?.label;
 }
 
 /**
@@ -211,7 +218,7 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
  *
  * @param data - array of CSL items
  */
-export async function getCitationRenderers(data: CSL[]): Promise<CitationRenderer> {
+export function getCitationRenderers(data: CSL[]): CitationRenderer {
   const cite = new Cite();
   return Object.fromEntries(
     data.map((c): [string, CitationRenderer[0]] => {
@@ -256,13 +263,20 @@ export async function getCitationRenderers(data: CSL[]): Promise<CitationRendere
           },
           cite: c,
           getLabel(): string {
-            const bibtexObjects = cite.set(c).format('bibtex', { format: 'object' }) as {
-              label: string;
-            }[];
-            return bibtexObjects[0]?.label;
+            if (getLabel(cite, c).startsWith('temp_id_')) {
+              config.format.useIdAsLabel = false;
+            }
+            const label = getLabel(cite, c);
+            config.format.useIdAsLabel = true;
+            return label;
           },
           exportBibTeX(): string {
-            return cite.set(c).format('bibtex', { format: 'text' }) as string;
+            if (getLabel(cite, c).startsWith('temp_id_')) {
+              config.format.useIdAsLabel = false;
+            }
+            const bibtex = cite.set(c).format('bibtex', { format: 'text' }) as string;
+            config.format.useIdAsLabel = true;
+            return bibtex;
           },
         },
       ];

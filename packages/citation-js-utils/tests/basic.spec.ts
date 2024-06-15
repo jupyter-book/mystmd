@@ -20,7 +20,7 @@ const key = 'Cockett2015SimPEG';
 describe('Test reference rendering', () => {
   it('APA', async () => {
     const data = parseBibTeX(bibtex);
-    const citations = await getCitationRenderers(data);
+    const citations = getCitationRenderers(data);
     expect(Object.keys(citations).length).toBe(1);
     const cite = citations[key];
     expect(cite.render()).toEqual(TEST_APA_HTML);
@@ -29,7 +29,7 @@ describe('Test reference rendering', () => {
   });
   it('Vancouver', async () => {
     const data = parseBibTeX(bibtex);
-    const citations = await getCitationRenderers(data);
+    const citations = getCitationRenderers(data);
     const cite = citations[key];
     expect(cite.render(CitationJSStyles.vancouver)).toEqual(TEST_VANCOUVER_HTML);
   });
@@ -38,7 +38,7 @@ describe('Test reference rendering', () => {
     ['note', doiInNote],
   ])('Extract the DOI from the %s', async (_, src) => {
     const data = parseBibTeX(src);
-    const citations = await getCitationRenderers(data);
+    const citations = getCitationRenderers(data);
     expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_OTHER_FIELD);
     expect(citations['cury2020sparse'].getURL()).toBe(`https://doi.org/${TEST_DOI_IN_OTHER_FIELD}`);
   });

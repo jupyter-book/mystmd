@@ -28,7 +28,7 @@ export async function loadBibTeXCitationRenderers(
     data = fs.readFileSync(path).toString();
   }
   const csl = parseBibTeX(data);
-  const renderer = await getCitationRenderers(csl);
+  const renderer = getCitationRenderers(csl);
   session.log.debug(toc(`Read ${plural('%s citations(s)', renderer)} from ${path} in %s.`));
   return renderer;
 }
