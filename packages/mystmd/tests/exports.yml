@@ -236,3 +236,9 @@ cases:
     outputs:
       - path: write-doi-bib/myst.doi.bib
         content: write-doi-bib/outputs/myst.doi.bib
+  - title: Bibtex file is written correctly on tex export
+    cwd: tex-with-bib
+    command: myst build --tex
+    outputs:
+      - path: tex-with-bib/_build/main.bib
+        content: tex-with-bib/outputs/main.bib
