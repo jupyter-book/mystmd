@@ -145,8 +145,12 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
       state.warn(`Multiple packages imported with the same name: "${p}"`, node);
     });
   },
+  /** `newcommand` defines a new command, and makes an error if it is already defined. */
   macro_newcommand: newCommand(true),
+  /** `renewcommand` redefines a predefined command, and makes an error if it is not yet defined. */
   macro_renewcommand: newCommand(false),
+  /** `providecommand` defines a new command if it isn't already defined. */
+  macro_providecommand: newCommand(false),
   macro_date(node, state) {
     state.closeParagraph();
     // No action for now
