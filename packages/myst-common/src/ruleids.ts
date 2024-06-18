@@ -101,5 +101,5 @@ export enum RuleId {
   // Plugins
   pluginLoads = 'plugin-loads',
   // Container rules
-  containerChildrenValid = 'contianer-children-valid',
+  containerChildrenValid = 'container-children-valid',
 }
