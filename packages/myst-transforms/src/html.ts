@@ -280,6 +280,16 @@ function reconstructHtml(tree: GenericParent) {
   htmlOpenNodes.forEach((node: GenericNode) => {
     delete node.children;
   });
+  // Finalize children by combining consecutive html nodes
+  const combined: GenericNode[] = [];
+  tree.children.forEach((child) => {
+    if (combined[combined.length - 1]?.type === 'html' && child.type === 'html') {
+      combined[combined.length - 1].value = `${combined[combined.length - 1].value}${child.value}`;
+    } else {
+      combined.push(child);
+    }
+  });
+  tree.children = combined;
 }
 
 /**
