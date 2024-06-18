@@ -38,16 +38,8 @@ const SITE_CONFIG = `site:
   domains: []
 `;
 
-const GITIGNORE = `/_build/
-
-# Python development
-.ipynb_checkpoints/
-__pycache__/
-.venv
-
-# MacOSX
-.DS_Store				    
-`;
+const GITIGNORE = `# MyST build outputs
+/_build/`;
 
 export type InitOptions = {
   project?: boolean;
