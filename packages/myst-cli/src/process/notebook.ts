@@ -177,6 +177,8 @@ export async function processNotebookFull(
     Promise.resolve([] as GenericNode[]),
   );
 
+  logMessagesFromVFile(session, vfile);
+
   const mdast = { type: 'root', children: items };
   return { mdast, frontmatter };
 }
