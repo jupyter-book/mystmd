@@ -206,11 +206,46 @@ export async function getCitations(bibtex: string): Promise<CitationRenderer> {
   return getCitationRenderers(csl);
 }
 
-function getLabel(cite: Cite, c: CSL) {
-  const bibtexObjects = cite.set(c).format('bibtex', { format: 'object' }) as {
-    label: string;
-  }[];
-  return bibtexObjects[0]?.label;
+/**
+ * Generate a label from a citation
+ *
+ * formatLabel is pulled directly from citation-js
+ *
+ * This would be used always if `config.format.useIdAsLabel = false`, but is used never
+ * when `config.format.useIdAsLabel = true`. We want to use it sometimes - only when
+ * no ide is provided.
+ */
+function formatLabel(c: CSL): string {
+  const stopWords = new Set(['the', 'a', 'an']);
+  const unsafeChars = /(?:<\/?.*?>|[\u0020-\u002F\u003A-\u0040\u005B-\u005E\u0060\u007B-\u007F])+/g;
+  const unicode = /[^\u0020-\u007F]+/g;
+  const firstWord = (text?: string): string => {
+    if (!text) {
+      return '';
+    } else {
+      return (
+        text
+          .normalize('NFKD')
+          .replace(unicode, '')
+          .split(unsafeChars)
+          .find((word) => word.length && !stopWords.has(word.toLowerCase())) ?? ''
+      );
+    }
+  };
+  const { author, issued, suffix, title } = c;
+  let label = '';
+  if (author && author[0]) {
+    label += firstWord(author[0].family || author[0].literal);
+  }
+  if (issued && issued['date-parts'] && issued['date-parts'][0]) {
+    label += issued['date-parts'][0][0];
+  }
+  if (suffix) {
+    label += suffix;
+  } else if (title) {
+    label += firstWord(title);
+  }
+  return label;
 }
 
 /**
@@ -225,6 +260,9 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
       const matchDoi = c.URL?.match(DOI_IN_TEXT) ?? c.note?.match(DOI_IN_TEXT);
       if (!c.DOI && matchDoi) {
         c.DOI = matchDoi[0];
+      }
+      if (!c.id) {
+        c.id = formatLabel(c);
       }
       return [
         c.id,
@@ -263,20 +301,13 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
           },
           cite: c,
           getLabel(): string {
-            if (getLabel(cite, c).startsWith('temp_id_')) {
-              config.format.useIdAsLabel = false;
-            }
-            const label = getLabel(cite, c);
-            config.format.useIdAsLabel = true;
-            return label;
+            const bibtexObjects = cite.set(c).format('bibtex', { format: 'object' }) as {
+              label: string;
+            }[];
+            return bibtexObjects[0]?.label;
           },
           exportBibTeX(): string {
-            if (getLabel(cite, c).startsWith('temp_id_')) {
-              config.format.useIdAsLabel = false;
-            }
-            const bibtex = cite.set(c).format('bibtex', { format: 'text' }) as string;
-            config.format.useIdAsLabel = true;
-            return bibtex;
+            return cite.set(c).format('bibtex', { format: 'text' }) as string;
           },
         },
       ];
