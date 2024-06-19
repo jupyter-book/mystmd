@@ -65,6 +65,7 @@ const JupyterBookConfig = z.object({
     })
     .optional(),
   latex: z.object({ latex_engine: z.string().default('pdflatex') }).optional(),
+  bibtex_bibfiles: z.array(z.string()).optional(),
   launch_buttons: z
     .object({
       notebook_interface: z.string().optional(),
@@ -194,6 +195,12 @@ export function upgradeConfig(data: JupyterBookConfig): Pick<Config, 'project' |
       },
     };
   }
+  
+  // Take bibliography
+  if (defined(data.bibtex_bibfiles)) {
+    project.bibliography = data.bibtex_bibfiles;
+  }
+
 
   return { project, site };
 }
