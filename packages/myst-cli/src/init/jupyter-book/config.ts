@@ -92,6 +92,13 @@ const JupyterBookConfig = z.object({
 });
 
 export type JupyterBookConfig = z.infer<typeof JupyterBookConfig>;
+
+
+/**
+ * Validate a loaded Jupyter Book _config.yml, or return undefined
+ *
+ * @param config - config object
+ */
 export function validateJupyterBookConfig(config: unknown): JupyterBookConfig | undefined {
   const result = JupyterBookConfig.safeParse(config);
   if (!result.success) {
@@ -102,6 +109,11 @@ export function validateJupyterBookConfig(config: unknown): JupyterBookConfig | 
   }
 }
 
+/**
+ * Parse a GitHub repo URL to extract the user/repo substring
+ *
+ * @param url - GitHub URL
+ */
 function parseGitHubRepoURL(url: string): string | undefined {
   //eslint-disable-next-line
   const match = url.match(/(?:git@|https:\/\/)github.com[:\/](.*)(?:.git)?/);
@@ -111,6 +123,12 @@ function parseGitHubRepoURL(url: string): string | undefined {
   return match[1];
 }
 
+
+/**
+ * Upgrade a Jupyter Book _config.yml into a myst.yml configuration
+ *
+ * @param config - validated Jupyter Book configuration
+ */
 export function upgradeConfig(data: JupyterBookConfig): Pick<Config, 'project' | 'site'> {
   const project: ProjectConfig = {};
   const siteOptions: SiteConfig['options'] = {};
@@ -124,6 +142,7 @@ export function upgradeConfig(data: JupyterBookConfig): Pick<Config, 'project' |
   }
 
   if (defined(data.author)) {
+    // Try and parse comma-delimited author lists into separate authors
     const authors = data.author.split(/,\s*(?:and\s)?\s*|\s+and\s+/);
     if (authors.length === 1) {
       project.authors = [{ name: data.author }]; // TODO prompt user for alias?
