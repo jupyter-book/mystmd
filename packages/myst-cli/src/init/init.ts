@@ -137,7 +137,7 @@ export async function init(session: ISession, opts: InitOptions) {
         `📘 Found a legacy Jupyter Book, writing new config file: ${chalk.blue(path.resolve(configFile))}`,
       );
       await upgradeJupyterBook(session, configFile);
-    } 
+    }
     // Otherwise, write some default configs
     else {
       // If no config is present, write it explicitly to include comments.

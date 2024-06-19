@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises';
 
-
 /**
  * Asynchronous version of fs.existsSync
  *

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { defined } from '../../utils/defined.js';
 import type { Config, ProjectConfig, SiteConfig } from 'myst-config';
-import  { ExportFormats } from 'myst-frontmatter';
+import { ExportFormats } from 'myst-frontmatter';
 import { parse } from 'node:path';
 
 const JupyterBookConfig = z.object({

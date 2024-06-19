@@ -1,4 +1,3 @@
-
 import { makeExecutable } from 'myst-cli-utils';
 import { fsExists } from './fsExists.js';
 
@@ -12,5 +11,5 @@ export async function checkFolderIsGit(): Promise<boolean> {
 }
 
 export async function checkAtGitRoot(): Promise<boolean> {
-  return await fsExists(".git");
+  return await fsExists('.git');
 }
