@@ -5,7 +5,7 @@ import yaml from 'js-yaml';
 import type { Config } from 'myst-config';
 import { upgradeConfig, validateJupyterBookConfig } from './config.js';
 import { upgradeTOC, validateSphinxExternalTOC } from './toc.js';
-import { upgradeGlossaries } from './syntax.js';
+import { upgradeProjectSyntax } from './syntax.js';
 import { fsExists } from '../../utils/fsExists.js';
 import chalk from 'chalk';
 import type { ISession } from '../../session/types.js';
@@ -37,7 +37,7 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
   }
 
   // Upgrade legacy syntax
-  await upgradeGlossaries(session);
+  await upgradeProjectSyntax(session);
 
   // Write new myst.yml
   await fs.writeFile(configFile, yaml.dump(config));

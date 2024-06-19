@@ -8,43 +8,128 @@ import chalk from 'chalk';
 import type { ISession } from '../../session/types.js';
 import { makeExecutable } from 'myst-cli-utils';
 import { parse } from 'node:path';
-type Line = {
+import type { INotebookContent } from '@jupyterlab/nbformat';
+
+// Preserve newlines through group construct
+const SPLIT_PATTERN = /\r\n|\r|\n/;
+type DocumentLine = {
   content: string;
   offset: number;
 };
 
 type LegacyGlossaryItem = {
-  termLines: Line[];
-  definitionLines: Line[];
+  termLines: DocumentLine[];
+  definitionLines: DocumentLine[];
 };
 
-export async function upgradeGlossaries(session: ISession) {
-  let markdownPaths: string[];
+/**
+ * In-place upgrade Sphinx-style glossaries into MyST definition-list glossaries
+ * in all MyST documents
+ *
+ * @param session - session with logging
+ */
+export async function upgradeProjectSyntax(session: ISession) {
+  let documentPaths: string[];
+  // Try and find all Git-tracked files, to ignore _build (hopefully)
   try {
-    const allFiles = (await makeExecutable('git ls-files', null)()).split(/\r\n|\r|\n/);
-    markdownPaths = allFiles.filter((path) => {
+    const allFiles = (await makeExecutable('git ls-files', null)()).split(SPLIT_PATTERN);
+    documentPaths = allFiles.filter((path) => {
       const { ext } = parse(path);
-      return ext == '.md';
+      return ext == '.md' || ext == '.ipynb';
     });
-  console.log(allFiles, markdownPaths);
   } catch (error) {
-    markdownPaths = await glob('**/*.md');
+    // Fall back on globbing
+    documentPaths = await glob('**/*.{md,ipynb}');
   }
-  await Promise.all(markdownPaths.map((path) => upgradeGlossary(session, path)));
+  // Update all documents
+  await Promise.all(documentPaths.map((path) => upgradeDocument(session, path)));
 }
 
-const SPLIT_PATTERN = /\r\n|\r|\n/;
-
-async function upgradeGlossary(session: ISession, path: string) {
+/**
+ * In-place upgrade Sphinx-style glossaries into MyST definition-list glossaries
+ * in a single document
+ *
+ * @param session - session with logging
+ * @param path - path to document
+ */
+async function upgradeDocument(session: ISession, path: string) {
   const backupFilePath = `.${path}.myst.bak`;
 
   // Ensure that we havent' already done this once
   if (await fsExists(backupFilePath)) {
     return;
   }
-  const data = (await fs.readFile(path)).toString();
-  const documentLines = data.split(SPLIT_PATTERN);
 
+  const { ext } = parse(path);
+  switch (ext) {
+    case '.md':
+      {
+        // Upgrade entire Markdown document in one pass
+        const data = (await fs.readFile(path)).toString();
+        const maybeNewLines = await upgradeContent(data.split(SPLIT_PATTERN));
+        if (maybeNewLines !== undefined) {
+          // Backup existing file
+          await fs.rename(path, backupFilePath);
+
+          // Write modified result
+          session.log.info(chalk.dim(`Backed up original version of ${path} to ${backupFilePath}`));
+          await fs.writeFile(path, maybeNewLines.join('\n'));
+        }
+      }
+      break;
+    case '.ipynb': {
+      // Upgrade each cell of the notebook
+      const data = (await fs.readFile(path)).toString();
+      const notebook = JSON.parse(data) as INotebookContent;
+      const cellDidUpgrade = await Promise.all(
+        notebook.cells
+          .filter((cell) => cell.cell_type === 'markdown')
+          .map(async (cell) => {
+            // Try and upgrade the cell
+            const maybeNewLines = await upgradeContent(
+              (cell.source as string[])
+                // Strip newlines
+                .map((line) => line.replace('\n', '')),
+            );
+            // Did we compute new state?
+            if (maybeNewLines !== undefined) {
+              // Write to cell and indicate modification
+              cell.source = maybeNewLines.map((line) => `${line}\n`);
+              return true;
+            } else {
+              return false;
+            }
+          }),
+      );
+
+      // Do we need to update the notebook?
+      if (cellDidUpgrade.some((x) => x)) {
+        // Backup existing file
+        await fs.rename(path, backupFilePath);
+
+        // Write modified result
+        const newData = JSON.stringify(notebook);
+        session.log.info(chalk.dim(`Backed up original version of ${path} to ${backupFilePath}`));
+        await fs.writeFile(path, newData);
+      }
+    }
+  }
+}
+
+async function upgradeContent(documentLines: string[]): Promise<string[] | undefined> {
+  let didUpgrade = false;
+
+  for (const transform of [upgradeGlossary]) {
+    const nextLines = await transform(documentLines);
+    didUpgrade = didUpgrade || nextLines !== undefined;
+    documentLines = nextLines ?? documentLines;
+  }
+
+  return didUpgrade ? documentLines : undefined;
+}
+
+async function upgradeGlossary(documentLines: string[]): Promise<string[] | undefined> {
+  const data = documentLines.join('\n');
   const mdast = mystParse(data);
   const glossaryNodes = selectAll('mystDirective[name=glossary]', mdast);
 
@@ -137,9 +222,8 @@ async function upgradeGlossary(session: ISession, path: string) {
 
   // Update the file
   if (glossaryNodes.length) {
-    await fs.rename(path, backupFilePath);
-
-    session.log.info(chalk.dim(`Backed up original version of ${path} to ${backupFilePath}`));
-    await fs.writeFile(path, documentLines.join('\n'));
+    return documentLines;
+  } else {
+    return undefined;
   }
 }
