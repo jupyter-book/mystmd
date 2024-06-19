@@ -1,6 +1,7 @@
 export * from './addWarningForFile.js';
 export * from './check.js';
 export * from './createTempFolder.js';
+export * from './defined.js';
 export * from './fileInfo.js';
 export * from './filterFilenamesByExtension.js';
 export * from './getAllBibtexFiles.js';
