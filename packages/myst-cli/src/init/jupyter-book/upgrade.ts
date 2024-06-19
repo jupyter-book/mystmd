@@ -32,7 +32,7 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
     const tocContent = await fs.readFile('_toc.yml', { encoding: 'utf-8' });
     const tocData = validateSphinxExternalTOC(yaml.load(tocContent));
     if (defined(tocData)) {
-      (config as any).project.toc = upgradeTOC(data);
+      (config as any).project.toc = upgradeTOC(tocData);
     }
   }
 
