@@ -51,4 +51,16 @@ declare module '@citation-js/core' {
 
     data: CSL[];
   }
+
+  // Only declare types for used config fields
+  export const plugins: {
+    config: {
+      get(format: string): {
+        format: {
+          useIdAsLabel?: boolean;
+          checkLabel?: boolean;
+        };
+      };
+    };
+  };
 }

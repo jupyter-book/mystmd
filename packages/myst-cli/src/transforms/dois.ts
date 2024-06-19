@@ -204,7 +204,7 @@ export async function getCitation(
     return null;
   }
   try {
-    const renderer = await getCitationRenderers(data);
+    const renderer = getCitationRenderers(data);
     const id = Object.keys(renderer)[0];
     const render = renderer[id];
     return { id, render, remote: true };
@@ -271,14 +271,15 @@ export async function transformLinkedDOIs(
           if (cite) number += 1;
           else return false;
         }
+        const label = cite.render.getLabel();
         if (cite.remote) {
-          renderer[cite.render.getLabel()] = cite.render;
+          renderer[label] = cite.render;
         }
         doiRenderer[normalized] = cite;
         const citeNode = node as unknown as Cite;
         citeNode.type = 'cite';
         citeNode.kind = 'narrative';
-        citeNode.label = cite.render.getLabel();
+        citeNode.label = label;
         citeNode.identifier = node.url;
         if (doi.validate(toText(citeNode.children))) {
           // If the link text is the DOI, update with a citation in a following pass
@@ -297,11 +298,12 @@ export async function transformLinkedDOIs(
           if (cite) number += 1;
           else return false;
         }
+        const label = cite.render.getLabel();
         if (cite.remote) {
-          renderer[cite.render.getLabel()] = cite.render;
+          renderer[label] = cite.render;
         }
         doiRenderer[normalized] = cite;
-        node.label = cite.render.getLabel();
+        node.label = label;
         return true;
       }),
     ),
