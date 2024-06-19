@@ -3,6 +3,7 @@ import { resolveExtension } from '../../utils/resolveExtension.js';
 import { join, relative } from 'node:path';
 import { cwd } from 'node:process';
 import type { Entry as MySTEntry, ParentEntry as MySTParentEntry } from 'myst-toc';
+
 const TOCTreeOptions = z
   .object({
     caption: z.string(),
@@ -187,10 +188,19 @@ export function validateSphinxExternalTOC(toc: unknown): SphinxExternalTOC | und
   }
 }
 
+/**
+ * Helper function throwing a compile error if the branch is reachable
+ */
 function assertNever(): never {
   throw new Error('unreachable code');
 }
 
+/**
+ * Convert a no-format TOC to a MyST TOC
+ *
+ * @param dir - directory in which the _toc.yml lives
+ * @param data - validated TOC
+ */
 function convertNoFormat(dir: string, data: z.infer<typeof NoFormatTOC>) {
   const rootEntry = { file: relative(dir, resolveExtension(join(dir, data.root))!) };
 
@@ -254,6 +264,11 @@ function convertNoFormat(dir: string, data: z.infer<typeof NoFormatTOC>) {
   return entries;
 }
 
+/**
+ * Convert a Book TOC into a no-format TOC
+ *
+ * @param data - validated TOC
+ */
 function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof NoFormatTOC> {
   const convertEntry = (item: z.infer<typeof BookEntry>): z.infer<typeof NoFormatEntry> => {
     // Drop subtrees and sections
@@ -317,6 +332,11 @@ function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof No
   return result;
 }
 
+/**
+ * Convert a Article TOC into a no-format TOC
+ *
+ * @param data - validated TOC
+ */
 function convertArticleToNoFormat(data: z.infer<typeof ArticleTOC>): z.infer<typeof NoFormatTOC> {
   const convertEntry = (item: z.infer<typeof ArticleEntry>): z.infer<typeof NoFormatEntry> => {
     // Drop subtrees and sections
@@ -360,7 +380,10 @@ function convertArticleToNoFormat(data: z.infer<typeof ArticleTOC>): z.infer<typ
   return result;
 }
 
-export function upgradeTOC(data: SphinxExternalTOC) {
+/**
+ * Upgrade a sphinx-external-toc TOC into a MyST TOC
+ */
+export function upgradeTOC(data: SphinxExternalTOC): MySTEntry[] {
   const dir = cwd();
   let dataNoFormat: z.infer<typeof NoFormatTOC>;
   if ('format' in data) {
