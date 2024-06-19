@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { resolveExtension } from '../../utils/resolveExtension.js';
 import { join, relative } from 'node:path';
 import { cwd } from 'node:process';
-import type { Entry as MySTEntry } from 'myst-toc';
+import type { Entry as MySTEntry, ParentEntry as MySTParentEntry } from 'myst-toc';
 const TOCTreeOptions = z
   .object({
     caption: z.string(),
@@ -189,7 +189,7 @@ export function validateSphinxExternalTOC(toc: unknown): SphinxExternalTOC | und
 
 type PrimitiveEntry = FileEntry | URLEntry | GlobEntry;
 
-function convertPrimitive(dir: string, data: PrimitiveEntry): MySTEntry {
+function convertEntry(dir: string, data: PrimitiveEntry): MySTEntry {
   if ('file' in data) {
     const resolved = resolveExtension(join(dir, data.file as string));
     // TODO: check this is valid!
@@ -207,29 +207,199 @@ function convertPrimitive(dir: string, data: PrimitiveEntry): MySTEntry {
       pattern: data.glob,
     };
   } else {
-    throw new Error('This should not happen!');
+    assertNever();
   }
 }
 
-function convertGeneric(dir: string, data: Record<string, unknown>): any {
-  // The JB schema is quite complex, so rather than being type-safe here
-  // we'll drop type-information in order to write something readable
-
-  // TODO: handle numbering
-  if ('parts' in data || 'subtrees' in data) {
-    const parts = (data.parts ?? data.subtrees) as Record<string, unknown>[];
-    return parts.map((part, index) => {
-      return { title: part.caption ?? `Part ${index}`, children: convertGeneric(dir, part) };
-    });
-  } else if ('chapters' in data || 'sections' in data) {
-    const chapters = (data.chapters ?? data.sections) as Record<string, unknown>[];
-    return chapters.map((chapter) => convertGeneric(dir, chapter));
-  } else {
-    return convertPrimitive(dir, data as any);
-  }
+function assertNever(): never {
+  throw new Error('unreachable code');
 }
+
+function convertNoFormat(dir: string, data: z.infer<typeof NoFormatTOC>) {
+  const rootEntry = { file: relative(dir, resolveExtension(join(dir, data.root))!) };
+
+  const convertEntry = (item: z.infer<typeof NoFormatEntry>): MySTEntry => {
+    let entry: MySTEntry;
+    if ('file' in item) {
+      const resolved = resolveExtension(join(dir, item.file as string));
+      // TODO: check this is valid!
+      entry = {
+        file: relative(dir, resolved as string),
+        title: item.title,
+      };
+    } else if ('url' in item) {
+      entry = {
+        url: item.url,
+        title: item.title,
+      };
+    } else if ('glob' in item) {
+      entry = {
+        pattern: item.glob,
+      };
+    } else {
+      assertNever();
+    }
+
+    if ('subtrees' in item || 'entries' in item) {
+      const children = convertHasOrIsSubtree(item);
+      entry = { ...entry, children: children };
+    }
+
+    return entry;
+  };
+
+  const convertSubtree = (
+    item: z.infer<typeof NoFormatShorthandSubtree> | z.infer<typeof NoFormatSubtree>,
+    options: z.infer<typeof TOCTreeOptions> | undefined,
+    index: number,
+  ): MySTParentEntry => {
+    return {
+      title: options?.caption ?? `Subtree ${index}`,
+      children: item.entries.map(convertEntry),
+    };
+  };
+
+  const convertHasOrIsSubtree = (
+    item: z.infer<typeof NoFormatShorthandSubtree> | z.infer<typeof NoFormatHasSubtrees>,
+  ): MySTEntry[] => {
+    if ('subtrees' in item) {
+      return item.subtrees.map((subtree, i) => convertSubtree(subtree, subtree, i));
+    } else {
+      // Convert the subtree
+      const subtree = convertSubtree(item, item.options, 0);
+      // Lift the children (erasing the shorthand subtree)
+      return subtree.children;
+    }
+  };
+  const entries: MySTEntry[] = [rootEntry];
+  if ('subtrees' in data || 'entries' in data) {
+    entries.push(...convertHasOrIsSubtree(data));
+  }
+  return entries;
+}
+
+function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof NoFormatTOC> {
+  const convertEntry = (item: z.infer<typeof BookEntry>): z.infer<typeof NoFormatEntry> => {
+    // Drop subtrees and sections
+    let { sections, subtrees, ...result } = item as z.infer<typeof BookEntry> & {
+      sections: any;
+      subtrees: any;
+    };
+
+    if ('sections' in item || 'subtrees' in item) {
+      result = { ...result, ...convertHasOrIsInnerSubtree(item) };
+    }
+
+    return result;
+  };
+  const convertInnerSubtree = (item: z.infer<typeof BookInnerSubtree>) => {
+    const { sections, ...result } = item;
+    return { ...result, entries: sections.map(convertEntry) };
+  };
+
+  const convertHasOrIsInnerSubtree = (
+    item: z.infer<typeof BookShorthandInnerSubtree> | z.infer<typeof BookHasInnerSubtrees>,
+  ): z.infer<typeof NoFormatShorthandSubtree> | z.infer<typeof NoFormatHasSubtrees> => {
+    if ('subtrees' in item) {
+      const { subtrees, ...rest } = item;
+      return { ...rest, subtrees: subtrees.map(convertInnerSubtree) };
+    } else {
+      const { options, ...rest } = item;
+      return { options, ...convertInnerSubtree(rest) };
+    }
+  };
+
+  const convertOuterSubtree = (
+    item: z.infer<typeof BookOuterSubtree>,
+  ): z.infer<typeof NoFormatSubtree> => {
+    const { chapters, ...rest } = item;
+    return { ...rest, entries: chapters.map(convertEntry) };
+  };
+
+  const convertHasOrIsOuterSubtree = (
+    item: z.infer<typeof BookShorthandOuterSubtree> | z.infer<typeof BookHasOuterSubtrees>,
+  ): z.infer<typeof NoFormatShorthandSubtree> | z.infer<typeof NoFormatHasSubtrees> => {
+    if ('parts' in item) {
+      const { parts, ...rest } = item;
+      return { ...rest, subtrees: parts.map(convertOuterSubtree) };
+    } else {
+      const { options, ...rest } = item;
+      return { options, ...convertOuterSubtree(rest) };
+    }
+  };
+
+  const { root, defaults, format, ...rest } = data;
+  let result = {
+    root,
+    defaults,
+  };
+  if ('chapters' in rest || 'parts' in rest) {
+    result = { ...result, ...convertHasOrIsOuterSubtree(rest) };
+  }
+
+  return result;
+}
+
+function convertArticleToNoFormat(data: z.infer<typeof ArticleTOC>): z.infer<typeof NoFormatTOC> {
+  const convertEntry = (item: z.infer<typeof ArticleEntry>): z.infer<typeof NoFormatEntry> => {
+    // Drop subtrees and sections
+    let { sections, subtrees, ...result } = item as z.infer<typeof ArticleEntry> & {
+      sections: any;
+      subtrees: any;
+    };
+
+    if ('sections' in item || 'subtrees' in item) {
+      result = { ...result, ...convertHasOrIsSubtree(item) };
+    }
+
+    return result;
+  };
+  const convertSubtree = (item: z.infer<typeof ArticleSubtree>) => {
+    const { sections, ...result } = item;
+    return { ...result, entries: sections.map(convertEntry) };
+  };
+
+  const convertHasOrIsSubtree = (
+    item: z.infer<typeof ArticleShorthandSubtree> | z.infer<typeof ArticleHasSubtrees>,
+  ): z.infer<typeof NoFormatShorthandSubtree> | z.infer<typeof NoFormatHasSubtrees> => {
+    if ('subtrees' in item) {
+      const { subtrees, ...rest } = item;
+      return { ...rest, subtrees: subtrees.map(convertSubtree) };
+    } else {
+      const { options, ...rest } = item;
+      return { options, ...convertSubtree(rest) };
+    }
+  };
+  const { root, defaults, format, ...rest } = data;
+  let result = {
+    root,
+    defaults,
+  };
+  if ('sections' in rest || 'subtrees' in rest) {
+    result = { ...result, ...convertHasOrIsSubtree(rest) };
+  }
+
+  return result;
+}
+
 export function upgradeTOC(data: SphinxExternalTOC) {
   const dir = cwd();
-  const entries = convertGeneric(dir, data) as any[];
-  return [{ file: relative(dir, resolveExtension(join(dir, data.root))!) }, ...entries];
+  let dataNoFormat: z.infer<typeof NoFormatTOC>;
+  if ('format' in data) {
+    switch (data.format) {
+      case 'jb-book':
+        {
+          dataNoFormat = convertBookToNoFormat(data);
+        }
+        break;
+      case 'jb-article':
+        {
+          dataNoFormat = convertArticleToNoFormat(data);
+        }
+        break;
+    }
+  } else {
+    dataNoFormat = data;
+  }
+  return convertNoFormat(dir, dataNoFormat);
 }
