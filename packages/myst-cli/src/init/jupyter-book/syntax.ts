@@ -9,6 +9,7 @@ import type { ISession } from '../../session/types.js';
 import { makeExecutable } from 'myst-cli-utils';
 import { parse } from 'node:path';
 import type { INotebookContent } from '@jupyterlab/nbformat';
+import { makeBackupName } from './utils.js';
 
 // Preserve newlines through group construct
 const SPLIT_PATTERN = /\r\n|\r|\n/;
@@ -53,7 +54,7 @@ export async function upgradeProjectSyntax(session: ISession) {
  * @param path - path to document
  */
 async function upgradeDocument(session: ISession, path: string) {
-  const backupFilePath = `.${path}.myst.bak`;
+  const backupFilePath = makeBackupName(path);
 
   // Ensure that we havent' already done this once
   if (await fsExists(backupFilePath)) {
