@@ -187,30 +187,6 @@ export function validateSphinxExternalTOC(toc: unknown): SphinxExternalTOC | und
   }
 }
 
-type PrimitiveEntry = FileEntry | URLEntry | GlobEntry;
-
-function convertEntry(dir: string, data: PrimitiveEntry): MySTEntry {
-  if ('file' in data) {
-    const resolved = resolveExtension(join(dir, data.file as string));
-    // TODO: check this is valid!
-    return {
-      file: relative(dir, resolved as string),
-      title: data.title,
-    };
-  } else if ('url' in data) {
-    return {
-      url: data.url,
-      title: data.title,
-    };
-  } else if ('glob' in data) {
-    return {
-      pattern: data.glob,
-    };
-  } else {
-    assertNever();
-  }
-}
-
 function assertNever(): never {
   throw new Error('unreachable code');
 }
@@ -281,6 +257,7 @@ function convertNoFormat(dir: string, data: z.infer<typeof NoFormatTOC>) {
 function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof NoFormatTOC> {
   const convertEntry = (item: z.infer<typeof BookEntry>): z.infer<typeof NoFormatEntry> => {
     // Drop subtrees and sections
+    // eslint-disable-next-line prefer-const, @typescript-eslint/no-unused-vars
     let { sections, subtrees, ...result } = item as z.infer<typeof BookEntry> & {
       sections: any;
       subtrees: any;
@@ -328,7 +305,7 @@ function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof No
     }
   };
 
-  const { root, defaults, format, ...rest } = data;
+  const { root, defaults, format: _, ...rest } = data;
   let result = {
     root,
     defaults,
@@ -343,6 +320,7 @@ function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof No
 function convertArticleToNoFormat(data: z.infer<typeof ArticleTOC>): z.infer<typeof NoFormatTOC> {
   const convertEntry = (item: z.infer<typeof ArticleEntry>): z.infer<typeof NoFormatEntry> => {
     // Drop subtrees and sections
+    // eslint-disable-next-line prefer-const, @typescript-eslint/no-unused-vars
     let { sections, subtrees, ...result } = item as z.infer<typeof ArticleEntry> & {
       sections: any;
       subtrees: any;
@@ -370,7 +348,7 @@ function convertArticleToNoFormat(data: z.infer<typeof ArticleTOC>): z.infer<typ
       return { options, ...convertSubtree(rest) };
     }
   };
-  const { root, defaults, format, ...rest } = data;
+  const { root, defaults, format: _, ...rest } = data;
   let result = {
     root,
     defaults,

@@ -20,18 +20,18 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
   if (!(await fsExists('_config.yml'))) {
     throw new Error('_config.yml is a required Jupyter Book configuration file');
   }
-  const content = await fs.readFile('_config.yml', { encoding: 'utf-8' });
-  const data = validateJupyterBookConfig(yaml.load(content));
-  if (defined(data)) {
+  const configContent = await fs.readFile('_config.yml', { encoding: 'utf-8' });
+  const configData = validateJupyterBookConfig(yaml.load(configContent));
+  if (defined(configData)) {
     // Update MyST configuration
-    ({ site: config.site, project: config.project } = upgradeConfig(data));
+    ({ site: config.site, project: config.project } = upgradeConfig(configData));
   }
 
   // Does TOC exist?
   if (await fsExists('_toc.yml')) {
-    const content = await fs.readFile('_toc.yml', { encoding: 'utf-8' });
-    const data = validateSphinxExternalTOC(yaml.load(content));
-    if (defined(data)) {
+    const tocContent = await fs.readFile('_toc.yml', { encoding: 'utf-8' });
+    const tocData = validateSphinxExternalTOC(yaml.load(tocContent));
+    if (defined(tocData)) {
       (config as any).project.toc = upgradeTOC(data);
     }
   }
