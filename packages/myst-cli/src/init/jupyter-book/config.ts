@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { defined } from '../../utils/defined.js';
 import type { Config, ProjectConfig, SiteConfig } from 'myst-config';
+import  { ExportFormats } from 'myst-frontmatter';
+import { parse } from 'node:path';
 
 const JupyterBookConfig = z.object({
   title: z.string().optional(),
@@ -64,7 +66,17 @@ const JupyterBookConfig = z.object({
       announcement: z.string().optional(),
     })
     .optional(),
-  latex: z.object({ latex_engine: z.string().default('pdflatex') }).optional(),
+  latex: z
+    .object({
+      latex_engine: z.string().default('pdflatex'),
+      use_jupyterbook_latex: z.boolean().optional(),
+      latex_documents: z
+        .object({
+          targetname: z.string().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
   bibtex_bibfiles: z.array(z.string()).optional(),
   launch_buttons: z
     .object({
@@ -93,7 +105,6 @@ const JupyterBookConfig = z.object({
 });
 
 export type JupyterBookConfig = z.infer<typeof JupyterBookConfig>;
-
 
 /**
  * Validate a loaded Jupyter Book _config.yml, or return undefined
@@ -124,7 +135,6 @@ function parseGitHubRepoURL(url: string): string | undefined {
   return match[1];
 }
 
-
 /**
  * Upgrade a Jupyter Book _config.yml into a myst.yml configuration
  *
@@ -135,7 +145,7 @@ export function upgradeConfig(data: JupyterBookConfig): Pick<Config, 'project' |
   const siteOptions: SiteConfig['options'] = {};
   const site: SiteConfig = {
     options: siteOptions,
-    template: "book-theme"
+    template: 'book-theme',
   };
 
   if (defined(data.title)) {
@@ -195,12 +205,24 @@ export function upgradeConfig(data: JupyterBookConfig): Pick<Config, 'project' |
       },
     };
   }
-  
+
   // Take bibliography
   if (defined(data.bibtex_bibfiles)) {
     project.bibliography = data.bibtex_bibfiles;
   }
 
+  // Defined LaTeX target name
+  if (defined(data.latex?.latex_documents?.targetname)) {
+    project.exports = project.exports ?? [];
+
+    // Strip any extensions
+    const { name } = parse(data.latex.latex_documents.targetname);
+    project.exports.push({
+      format: ExportFormats.pdf,
+      template: 'plain_latex_book',
+      output: `exports/${name}.pdf`,
+    });
+  }
 
   return { project, site };
 }
