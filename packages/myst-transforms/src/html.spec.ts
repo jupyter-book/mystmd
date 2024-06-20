@@ -430,4 +430,24 @@ describe('Test reconstructHtmlTransform', () => {
       children: [{ type: 'paragraph', children: [{ type: 'image', url: 'test.mp4' }] }],
     });
   });
+  test('more open tags than close tags', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        { type: 'html', value: '<table>\n<tr>\n<th>Heading</th>\n</tr>' },
+        { type: 'html', value: '<tr>\n<td>data</td>\n</tr>' },
+        { type: 'html', value: '</table>' },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value: '<table>\n<tr>\n<th>Heading</th>\n</tr><tr>\n<td>data</td>\n</tr></table>',
+        },
+      ],
+    });
+  });
 });
