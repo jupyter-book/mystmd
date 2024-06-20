@@ -100,8 +100,7 @@ export async function resolveDoiOrg(
 ): Promise<CSL[] | undefined> {
   const normalizedDoi = doi.normalize(doiString);
   const url = doi.buildUrl(doiString); // This must be based on the incoming string, not the normalizedDoi. (e.g. short DOIs)
-  const handleUrl = url?.replace('doi.org', 'hdl.handle.net');
-  if (!doi.validate(doiString) || !normalizedDoi || !url || !handleUrl) return undefined;
+  if (!doi.validate(doiString) || !normalizedDoi || !url) return undefined;
   const filename = doiCSLJSONCacheFilename(normalizedDoi);
 
   // Cache DOI resolution as CSL JSON (parsed)
@@ -115,7 +114,6 @@ export async function resolveDoiOrg(
   let data: CSL[] | undefined;
   try {
     data = await resolveDOIAsBibTeX(session, url);
-    if (!data) data = await resolveDOIAsBibTeX(session, handleUrl);
     if (data) {
       session.log.debug(toc(`Fetched reference BibTeX for doi:${normalizedDoi} in %s`));
     } else {
@@ -131,7 +129,6 @@ export async function resolveDoiOrg(
   if (!data) {
     try {
       data = await resolveDOIAsCSLJSON(session, url);
-      if (!data) data = await resolveDOIAsCSLJSON(session, handleUrl);
       if (data) {
         session.log.debug(toc(`Fetched reference CSL-JSON for doi:${normalizedDoi} in %s`));
       } else {
