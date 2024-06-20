@@ -8,6 +8,8 @@ import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
 import { HttpsProxyAgent } from 'https-proxy-agent';
+import pLimit from 'p-limit';
+import type { Limit } from 'p-limit';
 import {
   findCurrentProjectAndLoad,
   findCurrentSiteAndLoad,
@@ -74,6 +76,7 @@ export class Session implements ISession {
   configFiles: string[];
   store: Store<RootState>;
   $logger: Logger;
+  doiLimiter: Limit;
 
   proxyAgent?: HttpsProxyAgent<string>;
   _shownUpgrade = false;
@@ -84,10 +87,11 @@ export class Session implements ISession {
     return this.$logger;
   }
 
-  constructor(opts: { logger?: Logger } = {}) {
+  constructor(opts: { logger?: Logger; doiLimiter?: Limit } = {}) {
     this.API_URL = API_URL;
     this.configFiles = CONFIG_FILES;
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
+    this.doiLimiter = opts.doiLimiter ?? pLimit(3);
     const proxyUrl = process.env.HTTPS_PROXY;
     if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
     this.store = createStore(rootReducer);
@@ -177,7 +181,7 @@ export class Session implements ISession {
   _clones: ISession[] = [];
 
   async clone() {
-    const cloneSession = new Session({ logger: this.log });
+    const cloneSession = new Session({ logger: this.log, doiLimiter: this.doiLimiter });
     await cloneSession.reload();
     // TODO: clean this up through better state handling
     cloneSession._jupyterSessionManagerPromise = this._jupyterSessionManagerPromise;
