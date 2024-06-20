@@ -62,6 +62,47 @@ cases:
                   children:
                     - type: text
                       value: Hello world
+  - title: lstlisting with caption in brackets
+    tex: |
+      \begin{lstlisting}[language=Python, caption={RGB Image Tiles}, label= lst:save_rgb_tiles]
+      from rasterio import Window
+      from tifffile import imwrite
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: code
+          label: lst:save_rgb_tiles
+          identifier: lst:save_rgb_tiles
+          children:
+            - type: code
+              lang: Python
+              value: |-
+                from rasterio import Window
+                from tifffile import imwrite
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: RGB Image Tiles
+  - title: lstlisting with caption that is only brackets
+    tex: |
+      \begin{lstlisting}[language=Python, caption={}, label= lst:save_rgb_tiles]
+      from rasterio import Window
+      from tifffile import imwrite
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: code
+          lang: Python
+          label: lst:save_rgb_tiles
+          identifier: lst:save_rgb_tiles
+          value: |-
+            from rasterio import Window
+            from tifffile import imwrite
   - title: lstlisting and line numbers
     tex: |
       \begin{lstlisting}[language=c,numbers=left,firstnumber=2,label=lst:loop]
