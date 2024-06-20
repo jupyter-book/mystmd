@@ -79,6 +79,7 @@ const macros: Record<string, number> = {
   multirow: 5,
   multicolumn: 3,
   subfigure: 2,
+  wrapfigure: 3,
   tabularx: 2,
   longtable: 2,
   ['longtable*']: 2,

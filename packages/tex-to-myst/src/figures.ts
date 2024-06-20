@@ -24,21 +24,18 @@ function centering(node: GenericNode, state: ITexParser) {
   }
 }
 
+function renderFigure(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  state.openNode('container', { kind: 'figure' });
+  state.renderChildren(node);
+  state.closeParagraph();
+  state.closeNode();
+}
+
 const FIGURE_HANDLERS: Record<string, Handler> = {
-  env_figure(node, state) {
-    state.closeParagraph();
-    state.openNode('container', { kind: 'figure' });
-    state.renderChildren(node);
-    state.closeParagraph();
-    state.closeNode();
-  },
-  env_subfigure(node, state) {
-    state.closeParagraph();
-    state.openNode('container', { kind: 'figure' });
-    state.renderChildren(node);
-    state.closeParagraph();
-    state.closeNode();
-  },
+  env_figure: renderFigure,
+  env_subfigure: renderFigure,
+  env_wrapfigure: renderFigure,
   env_centering(node, state) {
     centering(node, state);
     state.renderChildren(node);
