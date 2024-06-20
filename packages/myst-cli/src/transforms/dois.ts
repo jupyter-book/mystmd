@@ -1,4 +1,3 @@
-import pLimit from 'p-limit';
 import type { CitationRenderer, CSL } from 'citation-js-utils';
 import { getCitationRenderers, parseBibTeX, parseCSLJSON } from 'citation-js-utils';
 import { doi } from 'doi-utils';
@@ -259,10 +258,9 @@ export async function transformLinkedDOIs(
   }, 5000);
   let number = 0;
   // Currently doi.org is strictly rate limiting their requests
-  const limit = pLimit(3);
   await Promise.all([
     ...linkedDois.map((node) =>
-      limit(async () => {
+      session.doiLimiter(async () => {
         const normalized = doi.normalize(node.url)?.toLowerCase();
         if (!normalized) return false;
         let cite: SingleCitationRenderer | null = doiRenderer[normalized];
@@ -289,7 +287,7 @@ export async function transformLinkedDOIs(
       }),
     ),
     ...citeDois.map((node) =>
-      limit(async () => {
+      session.doiLimiter(async () => {
         const normalized = doi.normalize(node.label)?.toLowerCase();
         if (!normalized) return false;
         let cite: SingleCitationRenderer | null = doiRenderer[normalized];

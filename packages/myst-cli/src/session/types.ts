@@ -5,6 +5,7 @@ import type { ResolvedExternalReference, ReferenceState } from 'myst-transforms'
 import type { MinifiedContentCache } from 'nbtx';
 import type { Store } from 'redux';
 import type { RequestInfo, RequestInit, Response } from 'node-fetch';
+import type { Limit } from 'p-limit';
 import type { BuildWarning, RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
 import type { SessionManager } from '@jupyterlab/services';
@@ -14,6 +15,7 @@ export type ISession = {
   configFiles: string[];
   store: Store<RootState>;
   log: Logger;
+  doiLimiter: Limit;
   reload(): Promise<ISession>;
   clone(): Promise<ISession>;
   sourcePath(): string;
