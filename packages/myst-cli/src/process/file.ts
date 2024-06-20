@@ -8,7 +8,7 @@ import { doi } from 'doi-utils';
 import type { GenericParent } from 'myst-common';
 import { RuleId, toText } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { validatePageFrontmatter } from 'myst-frontmatter';
+import { validatePageFrontmatter, fillProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import { frontmatterValidationOpts, getPageFrontmatter } from '../frontmatter.js';
 import type { ISession, ISessionWithCache } from '../session/types.js';
@@ -19,7 +19,7 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
-import { processNotebook } from './notebook.js';
+import { processNotebookFull } from './notebook.js';
 import { selectors } from '../store/index.js';
 
 type LoadFileOptions = { preFrontmatter?: Record<string, any>; keepTitleNode?: boolean };
@@ -66,13 +66,18 @@ export async function loadNotebookFile(
 ): Promise<LoadFileResult> {
   const vfile = new VFile();
   vfile.path = file;
-  const mdast = await processNotebook(session, file, content);
-  const { frontmatter, identifiers } = getPageFrontmatter(
+  const { mdast, frontmatter: nbFrontmatter } = await processNotebookFull(session, file, content);
+  const { frontmatter: cellFrontmatter, identifiers } = getPageFrontmatter(
     session,
     mdast,
     vfile,
     opts?.preFrontmatter,
     opts?.keepTitleNode,
+  );
+  const frontmatter = fillProjectFrontmatter(
+    cellFrontmatter,
+    nbFrontmatter,
+    frontmatterValidationOpts(vfile),
   );
   return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers };
 }
