@@ -17,9 +17,9 @@ function getListingProperty(line?: string): ListingsProps | false {
   if (!line || !line.match(/^\s*\[(.*)\]\s*$/)) return false;
   const props: ListingsProps = {};
   ['language', 'caption', 'label', 'numbers', 'firstnumber'].forEach((key) => {
-    props[key as keyof typeof props] = line
-      .match(new RegExp(`${key}(?:[\\s]*)?=([^,\\]]*)`))?.[1]
-      .trim();
+    let prop = line.match(new RegExp(`${key}(?:[\\s]*)?=([^,\\]]*)`))?.[1].trim();
+    if (prop?.match(/^{.*}$/)) prop = prop.slice(1, prop.length - 1);
+    props[key as keyof typeof props] = prop;
   });
   return props;
 }
