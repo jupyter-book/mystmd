@@ -311,7 +311,7 @@ export function getIgnoreFiles(session: ISession, path: string) {
   const excludePatterns = projectConfig?.exclude ?? [];
   const excludeFiles = excludePatterns
     .map((pattern) => {
-      const matches = globSync(pattern); //.split(sep).join('/'));
+      const matches = globSync(pattern, { cwd: path, absolute: true });
       return matches.map((match) => match.split('/').join(sep));
     })
     .flat();
