@@ -188,3 +188,35 @@ cases:
                   children:
                     - type: text
                       value: Simulation Two
+  - title: Wrapfigure environment
+    tex: |-
+      \begin{wrapfigure}[23]{r}{0.5\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{figures/my_pic.png}
+        \caption{ This is the caption, \href{computations.ipynb}{link to notebook}.}
+        \label{fig:picture}
+      \end{wrapfigure}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: fig:picture
+          label: fig:picture
+          align: center
+          children:
+            - type: image
+              url: figures/my_pic.png
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'This is the caption, '
+                    - type: link
+                      url: computations.ipynb
+                      children:
+                        - type: text
+                          value: link to notebook
+                    - type: text
+                      value: '.'
