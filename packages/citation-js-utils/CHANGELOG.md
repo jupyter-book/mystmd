@@ -1,5 +1,12 @@
 # citation-js-utils
 
+## 1.2.2
+
+### Patch Changes
+
+- fc79fb1e: Configure citation-js to keep original citation labels
+- fc79fb1e: Prevent generation of random temp*id*\* citation labels
+
 ## 1.2.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.4.7
+
+### Patch Changes
+
+- 1e2092dc: Fix typo in rule-id
+  - myst-frontmatter@1.4.7
+
 ## 1.4.6
 
 ### Patch Changes
