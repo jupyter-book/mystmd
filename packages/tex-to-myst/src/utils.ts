@@ -187,7 +187,7 @@ function lastNode(node: GenericNode): GenericNode {
     const lastArg = node.args?.[node.args.length - 1];
     const last = lastNode(lastArg);
     // This is a bit of a hack, we need to put the positions around the arguments
-    if (node.type === 'macro' && last.position?.end.offset && lastArg.closeMark.match(/^\}|\]$/)) {
+    if (node.type === 'macro' && last?.position?.end.offset && lastArg.closeMark.match(/^\}|\]$/)) {
       lastArg.position = {
         ...lastArg.content[0].position,
         end: { ...last.position.end, offset: last.position.end.offset + 1 },
