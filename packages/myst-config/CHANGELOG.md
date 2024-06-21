@@ -1,5 +1,11 @@
 # myst-config
 
+## 1.4.7
+
+### Patch Changes
+
+- myst-frontmatter@1.4.7
+
 ## 1.4.6
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.2.9
+
+### Patch Changes
+
+- fc79fb1e: Prevent generation of random temp*id*\* citation labels
+
 ## 1.2.8
 
 ## 1.2.7

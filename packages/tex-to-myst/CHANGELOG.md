@@ -1,5 +1,17 @@
 # tex-to-myst
 
+## 1.0.30
+
+### Patch Changes
+
+- 8fb32d3a: Support wrapfigure environment
+- cc68b984: Differentiate behavior of newcommand, renewcommand, providecommand
+- de4c3912: Remove curly braces around properties in verbatim latex handler
+- Updated dependencies [1e2092dc]
+  - myst-common@1.4.7
+  - myst-frontmatter@1.4.7
+  - myst-spec-ext@1.4.7
+
 ## 1.0.29
 
 ### Patch Changes

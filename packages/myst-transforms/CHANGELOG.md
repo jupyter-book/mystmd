@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.3.18
+
+### Patch Changes
+
+- 2a8fe63f: Combine html nodes split by whitespace in reconstructHtml transform
+- Updated dependencies [1e2092dc]
+  - myst-common@1.4.7
+  - myst-frontmatter@1.4.7
+  - myst-spec-ext@1.4.7
+
 ## 1.3.17
 
 ### Patch Changes

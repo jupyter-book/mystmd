@@ -1,5 +1,33 @@
 # myst-cli
 
+## 1.2.9
+
+### Patch Changes
+
+- 410d8006: Remove doi requests to handle.net
+- 6326cf59: Optimize project thumbnail/banner and fallback correctly
+- 19d8ef14: Include ipynb metadata in frontmatter
+- 603019b: Fix exclude glob/path resolution
+- ef6b23bc: Share doi request limiter across session
+- fc79fb1e: Prevent generation of random temp*id*\* citation labels
+- a00b7f79: Add gitignore support to myst init
+- a8a745b3: Update the myst init default template
+- Updated dependencies [fc79fb1e]
+- Updated dependencies [8fb32d3a]
+- Updated dependencies [fc79fb1e]
+- Updated dependencies [1e2092dc]
+- Updated dependencies [2a8fe63f]
+- Updated dependencies [cc68b984]
+- Updated dependencies [de4c3912]
+  - citation-js-utils@1.2.2
+  - tex-to-myst@1.0.30
+  - myst-common@1.4.7
+  - myst-transforms@1.3.18
+  - myst-config@1.4.7
+  - myst-frontmatter@1.4.7
+  - myst-spec-ext@1.4.7
+  - myst-to-tex@1.0.30
+
 ## 1.2.8
 
 ### Patch Changes
