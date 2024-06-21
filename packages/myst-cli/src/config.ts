@@ -382,14 +382,6 @@ async function resolveProjectConfigPaths(
   if (projectConfig.index) {
     resolvedFields.index = await resolutionFn(session, path, projectConfig.index);
   }
-  if (projectConfig.exclude) {
-    resolvedFields.exclude = await Promise.all(
-      projectConfig.exclude.map(async (file) => {
-        const resolved = await resolutionFn(session, path, file, { allowNotExist: true });
-        return resolved;
-      }),
-    );
-  }
   if (projectConfig.plugins) {
     resolvedFields.plugins = await Promise.all(
       projectConfig.plugins.map(async (file) => {

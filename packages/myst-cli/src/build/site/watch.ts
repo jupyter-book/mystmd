@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 import chalk from 'chalk';
-import { join, extname, basename } from 'node:path';
+import { join, extname, basename, resolve } from 'node:path';
 import type { SiteProject } from 'myst-config';
 import type { ISession } from '../../session/types.js';
 import type { ProcessSiteOptions } from '../../process/site.js';
@@ -126,7 +126,7 @@ async function processorFn(
 
 function watchProcessor(
   session: ISession,
-  siteProject: SiteProject | null,
+  siteProject: { slug: string; path: string } | null,
   serverReload: () => void,
   opts: ProcessSiteOptions,
 ) {
@@ -141,6 +141,7 @@ function watchProcessor(
       return;
     }
     session.store.dispatch(watch.actions.markReloading(true));
+    if (siteProject?.path) file = resolve(siteProject.path, file);
     session.log.debug(`File modified: "${file}" (${eventType})`);
     try {
       await processorFn(session, file, eventType, siteProject, serverReload, opts);
@@ -189,6 +190,7 @@ export function watchContent(
         ignoreInitial: true,
         ignored: ['public', '**/_build/**', '**/node_modules/**', '**/.*/**', ...ignored],
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
+        cwd: proj.path,
       })
       .on('all', watchProcessor(session, proj, serverReload, opts));
   });
