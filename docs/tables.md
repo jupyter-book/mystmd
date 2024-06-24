@@ -132,7 +132,7 @@ CSS styles are currently only used for HTML outputs and are not carried through 
 
 ## Include tables from file
 
-If you have tables in a file (e.g. output from your data analysis elsewhere), you can use the [`{include}` directive](directives.md/#include). This works both for HTML and TeX tables.
+If you have tables in a file (e.g. output from your data analysis elsewhere), you can use the {myst:directive}`include` directive. This works both for HTML and LaTeX tables.
 
 ```{myst}
 ::::{table} Area Comparisons (imported HTML file)
