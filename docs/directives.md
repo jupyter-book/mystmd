@@ -60,8 +60,5 @@ description: A full list of the directives included in MyST Markdown by default.
 :::{myst:directive} myst
 :::
 
-:::{myst:directive} output
-:::
-
 :::{myst:directive} table
 :::
