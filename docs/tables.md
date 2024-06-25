@@ -22,9 +22,9 @@ Cells in a column can be aligned using the `:` character:
 
 % TODO: The centering isn't working!?
 
-## Adding a Caption
+## Table directive
 
-You can use the {myst:directive}`table` directive to add a caption to a markdown table.
+To add more features to your table, you can use the {myst:directive}`table` directive. Here you can add a caption and label. Adding a label enables [cross-referencing](cross-references.md) .
 
 ```{myst}
 :::{table} Table caption
@@ -129,6 +129,20 @@ It is also possible to write tables in raw HTML with `rowspan` and `colspan`, as
 :::{note} Styles are Only for HTML
 CSS styles are currently only used for HTML outputs and are not carried through to all export targets (e.g. LaTeX) and are primarily used for web.
 :::
+
+## Include tables from file
+
+If you have tables in a file (e.g. output from your data analysis elsewhere), you can use the {myst:directive}`include` directive. This works both for HTML and LaTeX tables.
+
+```{myst}
+::::{table} Area Comparisons (imported HTML file)
+:label: tbl:areas-html-file
+
+:::{include} table-from-file.html
+:::
+
+::::
+```
 
 ## Notebook outputs as tables
 
