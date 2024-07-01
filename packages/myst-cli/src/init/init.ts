@@ -18,11 +18,17 @@ import { fsExists } from '../utils/fsExists.js';
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
 import { binaryName, homeURL, readableName, baseConfigs } from '../utils/whiteLabelling.js';
 
-const extendsConfigItems = baseConfigs().map(item => `
-    - ${item}`).join("");
-const extendsConfig = extendsConfigItems ? `
+const extendsConfigItems = baseConfigs()
+  .map(
+    (item) => `
+    - ${item}`,
+  )
+  .join('');
+const extendsConfig = extendsConfigItems
+  ? `
   # ${readableName()} base configuration
-  extends:${extendsConfigItems}` : "";
+  extends:${extendsConfigItems}`
+  : '';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
   return `project:${extendsConfig}
