@@ -14,6 +14,7 @@ export * from './shouldIgnoreFile.js';
 export * from './toc.js';
 export * from './uniqueArray.js';
 export * from './github.js';
+export * from './whiteLabelling.js';
 
 export * as imagemagick from './imagemagick.js';
 export * as inkscape from './inkscape.js';

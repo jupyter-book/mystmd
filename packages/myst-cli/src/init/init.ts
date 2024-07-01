@@ -16,6 +16,7 @@ import { upgradeJupyterBook } from './jupyter-book/upgrade.js';
 import { fsExists } from '../utils/fsExists.js';
 
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
+import { binaryName, helpURL, readableName } from '../utils/whiteLabelling.js';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
   return `project:
@@ -25,7 +26,7 @@ function createProjectConfig({ github }: { github?: string } = {}) {
   # keywords: []
   # authors: []
   ${github ? `github: ${github}` : '# github:'}
-  # To autogenerate a Table of Contents, run "myst init --write-toc"
+  # To autogenerate a Table of Contents, run "${binaryName()} init --write-toc"
 `;
 }
 const SITE_CONFIG = `site:
@@ -35,7 +36,7 @@ const SITE_CONFIG = `site:
   #   logo: site_logo.png
 `;
 
-const GITIGNORE = `# MyST build outputs
+const GITIGNORE = `# ${readableName()} build outputs
 /_build/`;
 
 export type InitOptions = {
@@ -47,16 +48,16 @@ export type InitOptions = {
 };
 
 const WELCOME = () => `
-${chalk.bold.yellowBright.italic('Welcome to the MyST Markdown CLI!!')} 🎉 🚀
+${chalk.bold.yellowBright.italic(`Welcome to the ${readableName()} CLI!`)} 🎉 🚀
 
-${chalk.bold.green('myst init')} walks you through creating a ${chalk.bold.blue('myst.yml')} file.
+${chalk.bold.green(`${binaryName()} init`)} walks you through creating a ${chalk.bold.blue('myst.yml')} file.
 
-You can use myst to:
+You can use ${readableName()} to:
 
  - create interactive ${chalk.bold.magenta('websites')} from markdown and Jupyter Notebooks 📈
  - ${chalk.bold.magenta('build & export')} professional PDFs and Word documents 📄
 
-Learn more about this CLI and MyST Markdown at: ${chalk.bold('https://mystmd.org')}
+Learn more about this CLI and MyST Markdown at: ${chalk.bold(helpURL())}
 
 `;
 
@@ -92,7 +93,7 @@ export async function init(session: ISession, opts: InitOptions) {
       // Do we have mention of `/?_build`?
       //eslint-disable-next-line
       if (lines.some((line) => /^\/?_build([#\/].*)?$/.test(line))) {
-        session.log.info(`✅ .gitignore exists and already ignores MyST outputs`);
+        session.log.info(`✅ .gitignore exists and already ignores ${readableName()} outputs`);
       } else {
         session.log.info(`💾 Updating .gitignore`);
         await fs.promises.writeFile('.gitignore', `${contents}\n/_build/`);
@@ -196,17 +197,17 @@ export async function init(session: ISession, opts: InitOptions) {
   const promptStart = await inquirer.prompt([
     {
       name: 'start',
-      message: `Would you like to run ${chalk.green('myst start')} now?`,
+      message: `Would you like to run ${chalk.green(`${binaryName()} start`)} now?`,
       type: 'confirm',
       default: true,
     },
   ]);
   if (!promptStart.start) {
     session.log.info(
-      chalk.dim('\nYou can start the myst web server later with:'),
-      chalk.bold('myst start'),
+      chalk.dim(`\nYou can start the ${readableName()} web server later with:`),
+      chalk.bold(`${binaryName()} start`),
       chalk.dim('\nYou can build all content with:'),
-      chalk.bold('myst build --all'),
+      chalk.bold(`${binaryName()} build --all`),
     );
     return;
   }
