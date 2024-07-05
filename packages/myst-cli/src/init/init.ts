@@ -133,8 +133,28 @@ export async function init(session: ISession, opts: InitOptions) {
     // Is this a Jupyter Book?
     if (await fsExists('_config.yml')) {
       const configFile = defaultConfigFile(session, '.');
+      const promptUpgrade = await inquirer.prompt([
+        {
+          name: 'upgrade',
+          message: [
+            `📘 Found a legacy Jupyter Book. To proceed, myst needs to perform an upgrade which will:
+`,
+            chalk.dim(`     ‣ Upgrade any Sphinx-style glossaries to MyST-style glossaries
+     ‣ Migrate configuration from ${chalk.blue('_config.yml')} and (if applicable) ${chalk.blue('_toc.yml')} files
+     ‣ Rename any modified or unneeded files so that they are hidden
+
+`),
+            `     Are you willing to proceed?`,
+          ].join(''),
+          type: 'confirm',
+          default: true,
+        },
+      ]);
+      if (!promptUpgrade.upgrade) {
+        return;
+      }
       session.log.info(
-        `📘 Found a legacy Jupyter Book, writing new config file: ${chalk.blue(path.resolve(configFile))}`,
+        `  💾 Writing new config file: ${chalk.blue(path.resolve(configFile))}`,
       );
       await upgradeJupyterBook(session, configFile);
     }

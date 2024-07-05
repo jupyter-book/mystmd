@@ -43,8 +43,8 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
   await fs.writeFile(configFile, yaml.dump(config));
 
   await fs.rename('_config.yml', '._config.yml.myst.bak');
-  session.log.info(chalk.dim('Renamed _config.yml to ._config.yml.myst.bak'));
+  session.log.debug(chalk.dim('Renamed _config.yml to ._config.yml.myst.bak'));
 
   await fs.rename('_toc.yml', '._toc.yml.myst.bak');
-  session.log.info(chalk.dim('Renamed _toc.yml to ._toc.yml.myst.bak'));
+  session.log.debug(chalk.dim('Renamed _toc.yml to ._toc.yml.myst.bak'));
 }
