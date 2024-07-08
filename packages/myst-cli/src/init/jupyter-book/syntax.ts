@@ -148,7 +148,7 @@ async function upgradeNotes(documentLines: string[]): Promise<string[] | undefin
     const newLine = documentLines[start - 1].replace(
       // Find :::{fOo} or ```{fOo}
       // eslint-disable-next-line no-useless-escape
-      /^(:{3,}|`{3,})\{([^\}]+)\}/,
+      /^(:{3,}|`{3,})\s*\{([^\}]+)\}/,
       // Replace it with :::{foo} or ```{foo}
       (_, prefix, name) => `${prefix}{${name.toLowerCase()}}`,
     );
