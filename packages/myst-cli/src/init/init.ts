@@ -153,9 +153,7 @@ export async function init(session: ISession, opts: InitOptions) {
       if (!promptUpgrade.upgrade) {
         return;
       }
-      session.log.info(
-        `  💾 Writing new config file: ${chalk.blue(path.resolve(configFile))}`,
-      );
+      session.log.info(`  💾 Writing new config file: ${chalk.blue(path.resolve(configFile))}`);
       await upgradeJupyterBook(session, configFile);
     }
     // Otherwise, write some default configs
