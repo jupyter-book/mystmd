@@ -97,3 +97,23 @@ cases:
   - title: A Markdown link (unchanged)
     source: |
       [A link](https://google.com)
+  - title: Admonition with incorrectly cased name
+    source: |
+      :::{noTE}
+      I am a note
+
+      - foo
+      :::
+    result: |
+      :::{note}
+      I am a note
+
+      - foo
+      :::
+  - title: Admonition with correctly cased name
+    source: |
+      :::{note}
+      I am a note
+
+      - foo
+      :::

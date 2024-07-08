@@ -116,17 +116,50 @@ async function upgradeDocument(session: ISession, path: string) {
     }
   }
 }
-
 export async function upgradeContent(documentLines: string[]): Promise<string[] | undefined> {
   let didUpgrade = false;
 
-  for (const transform of [upgradeGlossary]) {
+  for (const transform of [upgradeGlossary, upgradeNotes]) {
     const nextLines = await transform(documentLines);
     didUpgrade = didUpgrade || nextLines !== undefined;
     documentLines = nextLines ?? documentLines;
   }
 
   return didUpgrade ? documentLines : undefined;
+}
+
+const admonitionPattern =
+  /^(attention|caution|danger|error|important|hint|note|seealso|tip|warning|\.callout-note|\.callout-warning|\.callout-important|\.callout-tip|\.callout-caution)$/;
+
+async function upgradeNotes(documentLines: string[]): Promise<string[] | undefined> {
+  const data = documentLines.join('\n');
+  const mdast = mystParse(data);
+
+  const caseInsenstivePattern = new RegExp(admonitionPattern.source, admonitionPattern.flags + 'i');
+  const directiveNodes = selectAll('mystDirective', mdast);
+  const misNamedAdmonitionNodes = directiveNodes.filter((item) => {
+    const name = (item as any).name as string;
+    return name.match(caseInsenstivePattern) && !name.match(admonitionPattern);
+  });
+  misNamedAdmonitionNodes.forEach((node) => {
+    const start = node.position?.start?.line!;
+
+    // Find declaration immediately _above_ body node
+    const newLine = documentLines[start - 1].replace(
+      // Find :::{fOo} or ```{fOo}
+      /^(:{3,}|`{3,})\{([^\}]+)\}/,
+      // Replace it with :::{foo} or ```{foo}
+      (_, prefix, name) => `${prefix}{${name.toLowerCase()}}`,
+    );
+    documentLines[start - 1] = newLine;
+  });
+
+  // Update the file
+  if (misNamedAdmonitionNodes.length) {
+    return documentLines;
+  } else {
+    return undefined;
+  }
 }
 
 async function upgradeGlossary(documentLines: string[]): Promise<string[] | undefined> {
