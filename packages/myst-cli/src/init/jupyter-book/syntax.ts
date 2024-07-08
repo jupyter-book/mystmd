@@ -117,7 +117,7 @@ async function upgradeDocument(session: ISession, path: string) {
   }
 }
 
-async function upgradeContent(documentLines: string[]): Promise<string[] | undefined> {
+export async function upgradeContent(documentLines: string[]): Promise<string[] | undefined> {
   let didUpgrade = false;
 
   for (const transform of [upgradeGlossary]) {
@@ -192,16 +192,20 @@ async function upgradeGlossary(documentLines: string[]): Promise<string[] | unde
     // Build glossary
     const newLines: string[] = [];
 
-    for (const entry of entries) {
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
       const { termLines, definitionLines } = entry;
 
-      const definitionBody = definitionLines.map((line) => ` ${line.content}`).join('\n');
+      const [firstDefinitionLine, ...restDefinitionLines] = definitionLines;
       const [firstTerm, ...restTerms] = termLines;
 
       // Initial definition
       const firstTermValue = firstTerm.content.split(/\s+:\s+/, 1)[0];
-      newLines.push(firstTermValue, `:${definitionBody}\n`);
-
+      newLines.push(
+        firstTermValue,
+        `: ${firstDefinitionLine.content}`,
+        ...restDefinitionLines.map((line) => `  ${line.content}`),
+      );
       if (restTerms) {
         // Terms can contain markup, but we need the text-form to create a term reference
         // TODO: what if something magical like an xref is used here? Assume not.
@@ -209,8 +213,19 @@ async function upgradeGlossary(documentLines: string[]): Promise<string[] | unde
         const termName = toText(parsedTerm);
         for (const { content } of restTerms) {
           const term = content.split(/\s+:\s+/, 1)[0];
-          newLines.push(term, `: {term}\`${termName}\`\n`);
+          newLines.push(
+            // Separate from parent term
+            '',
+            term,
+            `: {term}\`${termName}\``,
+          );
         }
+      }
+
+      // Will there be following terms?
+      const isFinalEntry = i === entries.length - 1;
+      if (!isFinalEntry) {
+        newLines.push('');
       }
     }
     const nodeSpan = { start: node.position?.start?.line, stop: node.position?.end?.line };
