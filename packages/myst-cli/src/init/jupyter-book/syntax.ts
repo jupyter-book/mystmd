@@ -176,7 +176,7 @@ async function upgradeGlossary(documentLines: string[]): Promise<string[] | unde
         }
       }
       // Open a definition
-      else if (!inDefinition) {
+      else {
         inDefinition = true;
         indentSize = line.length - line.replace(/^\s+/, '').length;
 
@@ -195,12 +195,12 @@ async function upgradeGlossary(documentLines: string[]): Promise<string[] | unde
     for (const entry of entries) {
       const { termLines, definitionLines } = entry;
 
-      const definitionBody = definitionLines.map((line) => line.content).join('\n');
+      const definitionBody = definitionLines.map((line) => ` ${line.content}`).join('\n');
       const [firstTerm, ...restTerms] = termLines;
 
       // Initial definition
       const firstTermValue = firstTerm.content.split(/\s+:\s+/, 1)[0];
-      newLines.push(firstTermValue, `: ${definitionBody}\n`);
+      newLines.push(firstTermValue, `:${definitionBody}\n`);
 
       if (restTerms) {
         // Terms can contain markup, but we need the text-form to create a term reference
