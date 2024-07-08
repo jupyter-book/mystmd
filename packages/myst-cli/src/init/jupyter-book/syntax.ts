@@ -137,16 +137,17 @@ async function upgradeNotes(documentLines: string[]): Promise<string[] | undefin
 
   const caseInsenstivePattern = new RegExp(admonitionPattern.source, admonitionPattern.flags + 'i');
   const directiveNodes = selectAll('mystDirective', mdast);
-  const misNamedAdmonitionNodes = directiveNodes.filter((item) => {
+  const mixedCaseAdmonitions = directiveNodes.filter((item) => {
     const name = (item as any).name as string;
     return name.match(caseInsenstivePattern) && !name.match(admonitionPattern);
   });
-  misNamedAdmonitionNodes.forEach((node) => {
-    const start = node.position?.start?.line!;
+  mixedCaseAdmonitions.forEach((node) => {
+    const start = node.position!.start.line;
 
     // Find declaration immediately _above_ body node
     const newLine = documentLines[start - 1].replace(
       // Find :::{fOo} or ```{fOo}
+      // eslint-disable-next-line no-useless-escape
       /^(:{3,}|`{3,})\{([^\}]+)\}/,
       // Replace it with :::{foo} or ```{foo}
       (_, prefix, name) => `${prefix}{${name.toLowerCase()}}`,
@@ -155,7 +156,7 @@ async function upgradeNotes(documentLines: string[]): Promise<string[] | undefin
   });
 
   // Update the file
-  if (misNamedAdmonitionNodes.length) {
+  if (mixedCaseAdmonitions.length) {
     return documentLines;
   } else {
     return undefined;
