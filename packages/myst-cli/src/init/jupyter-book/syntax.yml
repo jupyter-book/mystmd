@@ -117,3 +117,29 @@ cases:
 
       - foo
       :::
+  - title: Admonition with space between backticks and name
+    source: |
+      ``` {noTE}
+      I am a note
+
+      - foo
+      ```
+    result: |
+      ```{note}
+      I am a note
+
+      - foo
+      ```
+  - title: Admonition with space between colon-fence and name
+    source: |
+      ::: {noTE}
+      I am a note
+
+      - foo
+      :::
+    result: |
+      :::{note}
+      I am a note
+
+      - foo
+      :::
