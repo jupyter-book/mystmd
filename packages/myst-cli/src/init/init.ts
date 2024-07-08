@@ -26,12 +26,12 @@ const extendsConfigItems = baseConfigs()
   .join('');
 const extendsConfig = extendsConfigItems
   ? `
-  # ${readableName()} base configuration
-  extends:${extendsConfigItems}`
+# ${readableName()} base configuration
+extend:${extendsConfigItems}`
   : '';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
-  return `project:${extendsConfig}
+  return `project:
   id: ${uuid()}
   # title:
   # description:
