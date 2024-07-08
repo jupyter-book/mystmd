@@ -49,6 +49,8 @@ const JupyterBookConfig = z.object({
       use_repository_button: z.boolean().optional(),
       use_issues_button: z.boolean().optional(),
       extra_footer: z.string().optional(),
+      // Legacy analytics field
+      google_analytics_id: z.string().optional(),
       analytics: z
         .object({
           plausible_analytics_domain: z.string().optional(),
@@ -180,6 +182,8 @@ export function upgradeConfig(data: JupyterBookConfig): Pick<Config, 'project' |
 
   if (defined(data.html?.analytics?.google_analytics_id)) {
     siteOptions.analytics_google = data.html.analytics.google_analytics_id;
+  } else if (defined(data.html?.google_analytics_id)) {
+    siteOptions.analytics_google = data.html.google_analytics_id;
   }
 
   if (defined(data.html?.analytics?.plausible_analytics_domain)) {
