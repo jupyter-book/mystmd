@@ -140,6 +140,7 @@ export async function init(session: ISession, opts: InitOptions) {
             `📘 Found a legacy Jupyter Book. To proceed, myst needs to perform an upgrade which will:
 `,
             chalk.dim(`     ‣ Upgrade any Sphinx-style glossaries to MyST-style glossaries
+     ‣ Upgrade any case-insensitive admonition names to lowercase (${chalk.blue('Note')} → ${chalk.blue('note')})
      ‣ Migrate configuration from ${chalk.blue('_config.yml')} and (if applicable) ${chalk.blue('_toc.yml')} files
      ‣ Rename any modified or unneeded files so that they are hidden
 
