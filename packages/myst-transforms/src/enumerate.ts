@@ -20,7 +20,8 @@ import {
 } from 'myst-common';
 import type { LinkTransformer } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
-import { PageFrontmatter, fillNumbering, type Numbering } from 'myst-frontmatter';
+import { fillNumbering } from 'myst-frontmatter';
+import type { PageFrontmatter, Numbering } from 'myst-frontmatter';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
@@ -350,6 +351,11 @@ export class ReferenceState implements IReferenceStateResolver {
         this.targetCounts.heading,
         this.numbering.enumerator?.template,
       );
+    } else if (this.numbering.title?.enabled && !opts?.frontmatter?.content_includes_title) {
+      this.targetCounts.title ??= { main: 0, sub: 0 };
+      this.targetCounts.title.main += 1;
+      this.targetCounts.title.sub = 0;
+      this.enumerator = this.resolveEnumerator(this.targetCounts.title.main);
     }
     this.identifiers = opts?.identifiers ?? [];
     this.targets = {};
@@ -396,6 +402,11 @@ export class ReferenceState implements IReferenceStateResolver {
     );
   }
 
+  resolveEnumerator(val: any): string {
+    const prefix = this.numbering.enumerator?.template;
+    return prefix ? prefix.replace(/%s/g, String(val)) : String(val);
+  }
+
   /**
    * Increment target count state for container/equation nodes
    *
@@ -423,10 +434,6 @@ export class ReferenceState implements IReferenceStateResolver {
       node.enumerator = enumerator;
       return enumerator;
     }
-    const resolveEnumerator = (val: any): string => {
-      const prefix = this.numbering.enumerator?.template;
-      return prefix ? prefix.replace(/%s/g, String(val)) : String(val);
-    };
     const countKind = kind === TargetKind.subequation ? TargetKind.equation : kind;
     // Ensure target kind is instantiated
     this.targetCounts[countKind] ??= { main: 0, sub: 0 };
@@ -437,15 +444,15 @@ export class ReferenceState implements IReferenceStateResolver {
         ((this.targetCounts[countKind].sub - 1) % 26) + 'a'.charCodeAt(0),
       );
       if (node.subcontainer) {
-        node.parentEnumerator = resolveEnumerator(this.targetCounts[countKind].main);
+        node.parentEnumerator = this.resolveEnumerator(this.targetCounts[countKind].main);
         enumerator = letter;
       } else {
-        enumerator = resolveEnumerator(this.targetCounts[countKind].main + letter);
+        enumerator = this.resolveEnumerator(this.targetCounts[countKind].main + letter);
       }
     } else {
       this.targetCounts[kind].main += 1;
       this.targetCounts[kind].sub = 0;
-      enumerator = resolveEnumerator(this.targetCounts[kind].main);
+      enumerator = this.resolveEnumerator(this.targetCounts[kind].main);
     }
     node.enumerator = enumerator;
     return enumerator;

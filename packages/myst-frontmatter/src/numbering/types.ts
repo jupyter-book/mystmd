@@ -13,6 +13,7 @@ export type Numbering = {
   subequation?: NumberingItem;
   table?: NumberingItem;
   code?: NumberingItem;
+  title?: NumberingItem;
   heading_1?: NumberingItem;
   heading_2?: NumberingItem;
   heading_3?: NumberingItem;
