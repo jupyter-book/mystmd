@@ -36,6 +36,7 @@
     "unified": "^10.0.0",
     "unist-builder": "^3.0.0",
     "unist-util-find-after": "^4.0.0",
+    "unist-util-find-before": "4.0.0",
     "unist-util-modify-children": "^3.1.0",
     "unist-util-map": "^3.0.0",
     "unist-util-remove": "^3.1.0",

@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import type Token from 'markdown-it/lib/token';
-import { citationsPlugin } from '../src';
+import { citationsPlugin, labelsPlugin } from '../src';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
@@ -17,7 +17,7 @@ type TestCase = {
 };
 
 const directory = path.join('tests');
-const files = ['citations.yml'];
+const files = ['citations.yml', 'labels.yml'];
 
 const only = ''; // Can set this to a test title
 
@@ -36,7 +36,7 @@ casesList.forEach(({ title, cases }) => {
     test.each(casesToUse.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
       (_, { md, tokens }) => {
-        const mdit = MarkdownIt().use(citationsPlugin);
+        const mdit = MarkdownIt().use(citationsPlugin).use(labelsPlugin);
         const parsed = mdit.parse(md, {});
         expect(parsed).containSubset(tokens);
       },

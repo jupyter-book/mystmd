@@ -1,11 +1,12 @@
 import type { Plugin } from 'unified';
 import { findAfter } from 'unist-util-find-after';
+import { findBefore } from 'unist-util-find-before';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import type { Target, Parent } from 'myst-spec';
 import type { Heading } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
-import type { GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { normalizeLabel, toText } from 'myst-common';
 
 /**
@@ -25,15 +26,30 @@ import { normalizeLabel, toText } from 'myst-common';
  * and other structural changes to the tree that don't preserve labels.
  */
 export function mystTargetsTransform(tree: GenericParent) {
+  const paragraphs = selectAll('paragraph', tree) as GenericParent[];
+  paragraphs.forEach((paragraph) => {
+    if (paragraph.children?.length !== 1) return;
+    const target = paragraph.children[0];
+    if (target.type !== 'mystTarget') return;
+    paragraph.type = target.type;
+    paragraph.label = target.label;
+    paragraph.position = target.position;
+  });
   visit(tree, 'mystTarget', (node: Target, index: number, parent: Parent) => {
     // TODO: have multiple targets and collect the labels
-    const nextNode = findAfter(parent, index) as any;
     const normalized = normalizeLabel(node.label);
-    if (nextNode && normalized) {
+    if (!normalized) return;
+    let targetedNode = findAfter(parent, index) as GenericNode;
+    if (!targetedNode && parent.type === 'heading') targetedNode = parent;
+    if (!targetedNode) {
+      const prevNode = findBefore(parent, index) as GenericNode;
+      if (prevNode?.type === 'image') targetedNode = prevNode;
+    }
+    if (targetedNode && normalized) {
       // TODO: raise error if the node is already labelled
-      nextNode.identifier = normalized.identifier;
-      nextNode.label = normalized.label;
-      nextNode.html_id = normalized.html_id;
+      targetedNode.identifier = normalized.identifier;
+      targetedNode.label = normalized.label;
+      targetedNode.html_id = normalized.html_id;
     }
   });
   remove(tree, 'mystTarget');
