@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import MarkdownIt from 'markdown-it';
-import plugin from '../src';
+import { default as plugin, spanPlugin } from '../src';
 
 describe('parses spans', () => {
   it('basic span parses', () => {
-    const mdit = MarkdownIt().use(plugin);
+    const mdit = MarkdownIt().use(spanPlugin).use(plugin);
     const tokens = mdit.parse('ok [content]{.python}', {});
     expect(tokens.map((t) => t.type)).toEqual(['paragraph_open', 'inline', 'paragraph_close']);
     expect(tokens[1].children?.map((t) => t.type)).toEqual([
@@ -19,6 +19,7 @@ describe('parses spans', () => {
     // Pass the column information for the role
     expect((tokens[1].children?.[1] as any).col).toEqual([3, 21]);
     expect(tokens[1].children?.[1].info).toEqual('span');
+    expect(tokens[1].children?.[1].meta.options.class).toEqual('python');
     expect(tokens[1].children?.[1].content).toEqual('content');
     expect(tokens[1].children?.[3].content).toEqual('content');
   });

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import MarkdownIt from 'markdown-it';
-import plugin from '../src';
+import { default as plugin, shortcodePlugin } from '../src';
 
 describe('parses roles', () => {
   it('basic role parses', () => {
-    const mdit = MarkdownIt().use(plugin);
+    const mdit = MarkdownIt().use(shortcodePlugin).use(plugin);
     const tokens = mdit.parse('ok {{< var lang >}}', {});
     expect(tokens.map((t) => t.type)).toEqual(['paragraph_open', 'inline', 'paragraph_close']);
     expect(tokens[1].children?.map((t) => t.type)).toEqual([
@@ -23,7 +23,7 @@ describe('parses roles', () => {
     expect(tokens[1].children?.[3].content).toEqual('lang');
   });
   it('basic role parses', () => {
-    const mdit = MarkdownIt().use(plugin);
+    const mdit = MarkdownIt().use(shortcodePlugin).use(plugin);
     const content = `Notice that the value for \`some_numbers\` is {{< var np_or_r >}},
 and that this value *contains* 10 numbers.`;
     const tokens = mdit.parse(content, {});
