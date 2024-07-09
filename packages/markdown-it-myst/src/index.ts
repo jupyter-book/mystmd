@@ -6,7 +6,7 @@ import { labelsPlugin } from './labels.js';
 import { shortcodePlugin } from './shortcode.js';
 import { spanPlugin } from './span.js';
 
-export { rolePlugin, directivePlugin, citationsPlugin, shortcodePlugin, labelsPlugin };
+export { rolePlugin, directivePlugin, citationsPlugin, shortcodePlugin, spanPlugin, labelsPlugin };
 
 /**
  * A markdown-it plugin for parsing MyST roles and directives to structured data
