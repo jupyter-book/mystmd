@@ -6,6 +6,7 @@ import {
   validateString,
   validateBoolean,
   validateObject,
+  validateNumber,
 } from 'simple-validators';
 import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
 import { PAGE_FRONTMATTER_KEYS, type PageFrontmatter } from './types.js';
@@ -51,6 +52,9 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
   }
+  if (defined(value.enumerator)) {
+    output.enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
+  }
   if (defined(value.content_includes_title)) {
     output.content_includes_title = validateBoolean(
       value.content_includes_title,
@@ -61,6 +65,13 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     // These are validated later based on the siteTemplate
     // At this point, they just need to be an object
     output.site = validateObject(value.site, incrementOptions('site', opts));
+  }
+  if (defined(value.titleDepth)) {
+    output.titleDepth = validateNumber(value.titleDepth, {
+      integer: true,
+      min: 0,
+      ...incrementOptions('titleDepth', opts),
+    });
   }
   return output;
 }

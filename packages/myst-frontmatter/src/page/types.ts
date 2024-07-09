@@ -10,8 +10,10 @@ export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
   'jupytext',
   'tags',
-  'content_includes_title',
   'site',
+  'enumerator',
+  'content_includes_title',
+  'titleDepth',
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
@@ -19,6 +21,7 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];
+  enumerator?: string;
   /** Flag if frontmatter title is duplicated in content
    *
    * Set during initial file/frontmatter load
@@ -26,4 +29,5 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   content_includes_title?: boolean;
   /** Site Options, for example for turning off the outline on a single page */
   site?: Record<string, any>;
+  titleDepth?: number;
 };

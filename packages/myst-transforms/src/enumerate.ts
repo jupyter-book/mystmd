@@ -1,7 +1,7 @@
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
-import type { CrossReference, Heading, Paragraph } from 'myst-spec';
-import type { Cite, Container, Math, MathGroup, Link, IndexEntry } from 'myst-spec-ext';
+import type { CrossReference, Paragraph } from 'myst-spec';
+import type { Cite, Container, Heading, Math, MathGroup, Link, IndexEntry } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
@@ -20,7 +20,7 @@ import {
 } from 'myst-common';
 import type { LinkTransformer } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
-import { fillNumbering, type Numbering } from 'myst-frontmatter';
+import { PageFrontmatter, fillNumbering, type Numbering } from 'myst-frontmatter';
 
 const TRANSFORM_NAME = 'myst-transforms:enumerate';
 
@@ -86,7 +86,7 @@ function getReferenceTemplate(
   let template: string | undefined;
   if (numbered) {
     if (kind === TargetKind.heading && node.type === 'heading') {
-      template = numbering[`heading_${node.depth}`]?.template;
+      template = numbering[`heading_${node.depthSource ?? node.depth}`]?.template;
     } else if (node.subcontainer) {
       template = numbering.subfigure?.template;
     } else {
@@ -209,7 +209,7 @@ function shouldEnumerate(
   if (node.enumerated != null) return node.enumerated;
   const enabledDefault = numbering.all?.enabled ?? false;
   if (kind === 'heading' && node.type === 'heading') {
-    return numbering[`heading_${node.depth}`]?.enabled ?? enabledDefault;
+    return numbering[`heading_${node.depthSource ?? node.depth}`]?.enabled ?? enabledDefault;
   }
   if (node.subcontainer) return numbering.subfigure?.enabled ?? enabledDefault;
   return numbering[kind]?.enabled ?? enabledDefault;
@@ -256,6 +256,7 @@ export function formatHeadingEnumerator(counts: (number | null)[], prefix?: stri
 export function initializeTargetCounts(
   numbering: Numbering,
   initialCounts?: TargetCounts,
+  titleDepth?: number,
   tree?: GenericParent,
 ): TargetCounts {
   let heading: (number | null)[];
@@ -266,7 +267,9 @@ export function initializeTargetCounts(
     const headingNodes = selectAll('heading', tree).filter(
       (node) => (node as Heading).enumerated !== false,
     );
-    const headingDepths = new Set(headingNodes.map((node) => (node as Heading).depth));
+    const headingDepths = new Set(
+      headingNodes.map((node) => (node as Heading).depthSource ?? (node as Heading).depth),
+    );
     heading = [1, 2, 3, 4, 5, 6].map((depth) => (headingDepths.has(depth) ? 0 : null));
   } else {
     heading = [0, 0, 0, 0, 0, 0];
@@ -294,6 +297,9 @@ export function initializeTargetCounts(
       targetCounts[key] = { main: val.start - 1, sub: 0 };
     }
   });
+  if (titleDepth) {
+    targetCounts.heading = incrementHeadingCounts(titleDepth, targetCounts.heading);
+  }
   return targetCounts;
 }
 
@@ -321,29 +327,37 @@ export class ReferenceState implements IReferenceStateResolver {
   targetCounts: TargetCounts;
   initialCounts?: TargetCounts;
   identifiers: string[];
+  enumerator?: string;
+  titleDepth?: number;
 
   constructor(
     filePath: string,
     opts?: {
+      frontmatter?: PageFrontmatter;
       url?: string;
       dataUrl?: string;
-      title?: string;
       targetCounts?: TargetCounts;
-      numbering?: Numbering;
       identifiers?: string[];
       vfile: VFile;
     },
   ) {
-    this.numbering = fillNumbering(opts?.numbering, DEFAULT_NUMBERING);
+    this.numbering = fillNumbering(opts?.frontmatter?.numbering, DEFAULT_NUMBERING);
     this.initialCounts = opts?.targetCounts;
-    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts);
+    this.titleDepth = opts?.frontmatter?.titleDepth;
+    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts, this.titleDepth);
+    if (opts?.frontmatter?.titleDepth) {
+      this.enumerator = formatHeadingEnumerator(
+        this.targetCounts.heading,
+        this.numbering.enumerator?.template,
+      );
+    }
     this.identifiers = opts?.identifiers ?? [];
     this.targets = {};
     this.vfile = opts?.vfile ?? new VFile();
     this.filePath = filePath;
     this.url = opts?.url;
     this.dataUrl = opts?.dataUrl;
-    this.title = opts?.title;
+    this.title = opts?.frontmatter?.title;
   }
 
   addTarget(node: TargetNodes) {
@@ -374,7 +388,12 @@ export class ReferenceState implements IReferenceStateResolver {
   }
 
   initializeNumberedTargetCounts(tree: GenericParent) {
-    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts, tree);
+    this.targetCounts = initializeTargetCounts(
+      this.numbering,
+      this.initialCounts,
+      this.titleDepth,
+      tree,
+    );
   }
 
   /**
@@ -393,7 +412,10 @@ export class ReferenceState implements IReferenceStateResolver {
     }
     let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
-      this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);
+      this.targetCounts.heading = incrementHeadingCounts(
+        node.depthSource ?? node.depth,
+        this.targetCounts.heading,
+      );
       enumerator = formatHeadingEnumerator(
         this.targetCounts.heading,
         this.numbering.enumerator?.template,
