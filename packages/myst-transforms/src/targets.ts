@@ -40,7 +40,13 @@ export function mystTargetsTransform(tree: GenericParent) {
     const normalized = normalizeLabel(node.label);
     if (!normalized) return;
     let targetedNode = findAfter(parent, index) as GenericNode;
-    if (!targetedNode && parent.type === 'heading') targetedNode = parent;
+    if (!targetedNode && parent.type === 'heading') {
+      targetedNode = parent;
+      // Strip trailing whitespace if there is a label
+      const headingText = selectAll('text', targetedNode) as GenericNode[];
+      const lastHeadingText = headingText[headingText.length - 1];
+      lastHeadingText.value = lastHeadingText.value?.trimEnd();
+    }
     if (!targetedNode) {
       const prevNode = findBefore(parent, index) as GenericNode;
       if (prevNode?.type === 'image') targetedNode = prevNode;
