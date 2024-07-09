@@ -7,7 +7,7 @@ import type { Target, Parent } from 'myst-spec';
 import type { Heading } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { normalizeLabel, toText } from 'myst-common';
+import { copyNode, normalizeLabel, toText } from 'myst-common';
 
 /**
  * Propagate target identifier/value to subsequent node
@@ -49,9 +49,24 @@ export function mystTargetsTransform(tree: GenericParent) {
     }
     if (!targetedNode) {
       const prevNode = findBefore(parent, index) as GenericNode;
-      if (prevNode?.type === 'image') targetedNode = prevNode;
+      if (prevNode?.type === 'image') {
+        // Convert labeled image to figure
+        const image = copyNode(prevNode);
+        targetedNode = prevNode;
+        targetedNode.type = 'container';
+        targetedNode.kind = 'figure';
+        targetedNode.children = [image];
+        if (image.alt) {
+          targetedNode.children.push({
+            type: 'paragraph',
+            children: [{ type: 'text', value: image.alt }],
+          });
+        }
+        delete targetedNode.alt;
+        delete targetedNode.url;
+      }
     }
-    if (targetedNode && normalized) {
+    if (targetedNode) {
       // TODO: raise error if the node is already labelled
       targetedNode.identifier = normalized.identifier;
       targetedNode.label = normalized.label;
