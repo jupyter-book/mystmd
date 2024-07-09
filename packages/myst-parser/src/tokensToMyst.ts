@@ -416,9 +416,11 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   parsed_role: {
     type: 'mystRole',
     getAttrs(t) {
+      if (t.info !== 'var') console.log({ role: t });
       return {
         name: t.info,
         value: t.content,
+        options: t.meta?.options,
         processed: false,
       };
     },
