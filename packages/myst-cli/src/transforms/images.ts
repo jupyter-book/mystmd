@@ -449,10 +449,10 @@ export async function transformImageFormats(
       addWarningForFile(
         session,
         file,
-        `Cannot convert image "${path.basename(image.url)}" - may not correctly render.`,
+        `To convert image "${path.basename(image.url)}" you must install imagemagick.`,
         'error',
         {
-          note: 'To convert this image, you must install imagemagick',
+          note: `Image ${path.basename(image.url)} may not render correctly`,
           position: image.position,
           ruleId: RuleId.imageFormatConverts,
         },
