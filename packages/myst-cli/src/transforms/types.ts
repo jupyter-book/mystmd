@@ -2,7 +2,6 @@ import type { References, GenericParent } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { SourceFileKind, Dependency } from 'myst-spec-ext';
 import type { CitationRenderer } from 'citation-js-utils';
-import type { INotebookMetadata } from '@jupyterlab/nbformat';
 
 export type PreRendererData = {
   file: string;
@@ -11,7 +10,7 @@ export type PreRendererData = {
   kind: SourceFileKind;
   frontmatter?: PageFrontmatter;
   identifiers?: string[];
-  metadata?: INotebookMetadata;
+  widgets?: Record<string, any>;
 };
 
 export type RendererData = PreRendererData & {
