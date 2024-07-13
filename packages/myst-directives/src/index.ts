@@ -17,6 +17,7 @@ import { mystdemoDirective } from './mystdemo.js';
 import { blockquoteDirective } from './blockquote.js';
 import { rawDirective } from './raw.js';
 import { divDirective } from './div.js';
+import { pyvistaDirective } from './pyvista.js';
 
 export const defaultDirectives = [
   admonitionDirective,
@@ -41,6 +42,7 @@ export const defaultDirectives = [
   mystdemoDirective,
   rawDirective,
   divDirective,
+  pyvistaDirective,
 ];
 
 export { admonitionDirective } from './admonition.js';
@@ -61,3 +63,4 @@ export { mystdemoDirective } from './mystdemo.js';
 export { blockquoteDirective } from './blockquote.js';
 export { rawDirective } from './raw.js';
 export { divDirective } from './div.js';
+export { pyvistaDirective } from './pyvista.js';

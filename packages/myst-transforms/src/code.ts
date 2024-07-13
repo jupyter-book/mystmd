@@ -97,3 +97,38 @@ export const inlineCodeFlattenPlugin: Plugin<[], GenericParent, GenericParent> =
   () => (tree, file) => {
     inlineCodeFlattenTransform(tree, file);
   };
+
+export function pyvistaIframeTransform(tree: GenericParent) {
+  const blocks = selectAll('block', tree) as GenericNode[];
+  blocks.forEach((block) => {
+    if (block.data?.tags?.includes('pyvista')) {
+      const src = `http://localhost:3100/static_viewer.html?fileURL=http://localhost:3100/output.vtksz`;
+      const width = '100%';
+      const iframe = { type: 'iframe', src, width };
+      delete block.kind;
+      const caption = block.children?.slice(2);
+      if (block.label) {
+        block.children = [
+          {
+            type: 'container',
+            kind: 'figure',
+            label: block.label,
+            identifier: block.identifier,
+            children: [iframe],
+          },
+        ];
+        if (caption?.length) {
+          block.children[0].children?.push({
+            type: 'caption',
+            children: caption,
+          });
+        }
+        delete block.label;
+        delete block.identifier;
+      } else {
+        block.children = [iframe];
+      }
+      delete block.data;
+    }
+  });
+}

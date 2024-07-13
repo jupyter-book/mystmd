@@ -38,6 +38,7 @@ export {
   codeTransform,
   inlineCodeFlattenPlugin,
   inlineCodeFlattenTransform,
+  pyvistaIframeTransform,
 } from './code.js';
 export { blockquotePlugin, blockquoteTransform } from './blockquote.js';
 export { imageAltTextPlugin, imageAltTextTransform } from './images.js';
@@ -60,7 +61,7 @@ export { containerChildrenPlugin, containerChildrenTransform } from './container
 export { headingDepthPlugin, headingDepthTransform } from './headings.js';
 
 // Enumeration
-export type { IReferenceStateResolver, ReferenceKind } from './enumerate.js';
+export type { IReferenceStateResolver, ReferenceKind, TargetCounts } from './enumerate.js';
 export {
   addChildrenFromTargetNode,
   enumerateTargetsTransform,

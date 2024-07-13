@@ -31,6 +31,7 @@ import {
   reconstructHtmlPlugin,
   inlineMathSimplificationPlugin,
   checkLinkTextTransform,
+  pyvistaIframeTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -225,6 +226,7 @@ export async function transformMdast(
       log: session.log,
     });
   }
+  pyvistaIframeTransform(mdast);
   transformRenderInlineExpressions(mdast, vfile);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
