@@ -6,15 +6,16 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural, slugToUrl } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
-import type { SearchRecord, MystSearchIndex } from 'myst-spec-ext';
+import { SourceFileKind } from 'myst-spec-ext';
+import type { Heading, SearchRecord, MystSearchIndex } from 'myst-spec-ext';
+import type { TargetCounts, LinkTransformer, MystXRefs } from 'myst-transforms';
+import { select, selectAll } from 'unist-util-select';
 import {
+  enumerateTargetsTransform,
+  ReferenceState,
   buildIndexTransform,
   MultiPageReferenceResolver,
-  type LinkTransformer,
-  type MystXRefs,
-  type ReferenceState,
 } from 'myst-transforms';
-import { select } from 'unist-util-select';
 import { VFile } from 'vfile';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
 import type { SiteManifestOptions } from '../build/site/manifest.js';
@@ -305,6 +306,14 @@ function warnOnDuplicateIdentifiers(session: ISession, states: ReferenceState[])
   });
 }
 
+function referenceFileFromPartFile(session: ISession, partFile: string) {
+  const state = session.store.getState();
+  const partDeps = selectors.selectDependentFiles(state, partFile);
+  if (partDeps.length > 0) return partDeps[0];
+  const file = selectors.selectFileFromPart(state, partFile);
+  return file ?? partFile;
+}
+
 /**
  * Finalize and return list of page ReferenceStates
  *
@@ -325,9 +334,44 @@ export function selectPageReferenceStates(
   opts?: { suppressWarnings?: boolean },
 ) {
   const cache = castSession(session);
+  const headingDepths = new Set(
+    pages
+      .map(({ file }) => {
+        const { mdast } = cache.$getMdast(file)?.post ?? {};
+        const headingNodes = selectAll('heading', mdast).filter(
+          (node) => (node as Heading).enumerated !== false,
+        );
+        return headingNodes.map((node) => (node as Heading).depthSource ?? (node as Heading).depth);
+      })
+      .flat(),
+  );
+  let previousCounts: TargetCounts | undefined;
   const pageReferenceStates: ReferenceState[] = pages
-    .map((page) => {
-      const state = cache.$internalReferences[page.file];
+    .map(({ file }) => {
+      const { frontmatter, identifiers, mdast, kind } = cache.$getMdast(file)?.post ?? {};
+      const vfile = new VFile();
+      vfile.path = file;
+
+      const refFile =
+        kind === SourceFileKind.Part ? referenceFileFromPartFile(session, file) : file;
+
+      const state = new ReferenceState(refFile, {
+        frontmatter,
+        identifiers,
+        headingDepths,
+        previousCounts,
+        vfile,
+      });
+      if (frontmatter && !frontmatter.enumerator) {
+        frontmatter.enumerator = state.enumerator;
+      }
+      if (frontmatter && frontmatter.enumerator) {
+        // It would be better to handle enumerator at the theme / template level rather than baking into title
+        frontmatter.title = `${frontmatter.enumerator}${frontmatter.title ? ` ${frontmatter.title}` : ''}`;
+      }
+      if (mdast) enumerateTargetsTransform(mdast, { state });
+      previousCounts = state.targetCounts;
+      logMessagesFromVFile(session, vfile);
       if (state) {
         const selectedFile = selectors.selectFileInfo(session.store.getState(), state.filePath);
         if (selectedFile?.url) state.url = selectedFile.url;
@@ -456,7 +500,7 @@ export async function fastProcessFile(
     }),
   ]);
   await Promise.all(
-    [file, ...fileParts].map(async (f) => {
+    [...pages.map(({ file }) => file), ...fileParts].map(async (f) => {
       return postProcessMdast(session, {
         file: f,
         pageReferenceStates,
@@ -465,10 +509,10 @@ export async function fastProcessFile(
     }),
   );
   await Promise.all(
-    [file, ...fileParts].map(async (f) => {
+    [...pages.map(({ file }) => file), ...fileParts].map(async (f) => {
       const { mdast, frontmatter } = castSession(session).$getMdast(f)?.post ?? {};
-      if (mdast) {
-        await finalizeMdast(session, mdast, frontmatter ?? {}, f, {
+      if (mdast && frontmatter) {
+        await finalizeMdast(session, mdast, frontmatter, f, {
           imageWriteFolder: imageWriteFolder ?? session.publicPath(),
           imageAltOutputFolder: imageAltOutputFolder ?? '/',
           imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
@@ -479,9 +523,16 @@ export async function fastProcessFile(
       }
     }),
   );
-  if (pageSlug) {
-    await writeFile(session, { file, pageSlug, projectSlug, projectPath });
-  }
+  await Promise.all(
+    pages.map(async (page) => {
+      return writeFile(session, {
+        file: page.file,
+        projectSlug,
+        projectPath,
+        pageSlug: page.slug,
+      });
+    }),
+  );
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
 }

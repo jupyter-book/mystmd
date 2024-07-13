@@ -116,7 +116,7 @@ export type Target = {
   kind: TargetKind | string;
 };
 
-type TargetCounts = {
+export type TargetCounts = {
   heading: (number | null)[];
 } & Record<string, { main: number; sub: number }>;
 
@@ -144,6 +144,11 @@ function fillReferenceEnumerators(
   target?: TargetNodes,
   title?: string | PhrasingContent[],
 ) {
+  // If the node children have no position, they were probably computed so recompute
+  // (this is sketchy...)
+  if (!node.children?.[0]?.position) {
+    node.children = [];
+  }
   const noNodeChildren = !node.children?.length;
   if (noNodeChildren) {
     setTextAsChild(node, template);
@@ -201,7 +206,7 @@ function kindFromNode(node: TargetNodes): TargetKind | string {
   return node.type;
 }
 
-function shouldEnumerate(
+function shouldEnumerateNode(
   node: TargetNodes,
   kind: TargetKind | string,
   numbering: Numbering,
@@ -214,6 +219,10 @@ function shouldEnumerate(
   }
   if (node.subcontainer) return numbering.subfigure?.enabled ?? enabledDefault;
   return numbering[kind]?.enabled ?? enabledDefault;
+}
+
+function shouldEnumerateFile(titleDepth: number, numbering: Numbering) {
+  return numbering[`heading_${titleDepth}`]?.enabled ?? numbering.all?.enabled;
 }
 
 /**
@@ -256,29 +265,23 @@ export function formatHeadingEnumerator(counts: (number | null)[], prefix?: stri
 
 export function initializeTargetCounts(
   numbering: Numbering,
-  initialCounts?: TargetCounts,
+  previousCounts?: TargetCounts,
   titleDepth?: number,
-  tree?: GenericParent,
+  headingDepths?: Set<number>,
 ): TargetCounts {
-  let heading: (number | null)[];
-  // Initialize headings based on explicit initial value, tree, or all zeros
-  if (initialCounts?.heading) {
-    heading = [...initialCounts.heading];
-  } else if (tree) {
-    const headingNodes = selectAll('heading', tree).filter(
-      (node) => (node as Heading).enumerated !== false,
-    );
-    const headingDepths = new Set(
-      headingNodes.map((node) => (node as Heading).depthSource ?? (node as Heading).depth),
-    );
-    heading = [1, 2, 3, 4, 5, 6].map((depth) => (headingDepths.has(depth) ? 0 : null));
-  } else {
-    heading = [0, 0, 0, 0, 0, 0];
-  }
+  const heading = [1, 2, 3, 4, 5, 6].map((depth, ind) => {
+    if (headingDepths && !headingDepths.has(depth)) return null;
+    if (numbering[`heading_${depth}`]?.continue && previousCounts?.heading?.[ind]) {
+      return previousCounts?.heading?.[ind];
+    }
+    return 0;
+  });
+
   const targetCounts = { heading } as TargetCounts;
   // Update with other initial values
-  Object.entries(initialCounts ?? {})
+  Object.entries(previousCounts ?? {})
     .filter(([key]) => key !== 'heading')
+    .filter(([key]) => numbering[key]?.continue)
     .forEach(([key, val]) => {
       targetCounts[key] = { ...(val as { main: number; sub: number }) };
     });
@@ -298,7 +301,7 @@ export function initializeTargetCounts(
       targetCounts[key] = { main: val.start - 1, sub: 0 };
     }
   });
-  if (titleDepth) {
+  if (titleDepth && shouldEnumerateFile(titleDepth, numbering)) {
     targetCounts.heading = incrementHeadingCounts(titleDepth, targetCounts.heading);
   }
   return targetCounts;
@@ -326,10 +329,8 @@ export class ReferenceState implements IReferenceStateResolver {
   numbering: Numbering;
   targets: Record<string, Target>;
   targetCounts: TargetCounts;
-  initialCounts?: TargetCounts;
   identifiers: string[];
   enumerator?: string;
-  titleDepth?: number;
 
   constructor(
     filePath: string,
@@ -337,16 +338,23 @@ export class ReferenceState implements IReferenceStateResolver {
       frontmatter?: PageFrontmatter;
       url?: string;
       dataUrl?: string;
-      targetCounts?: TargetCounts;
+      previousCounts?: TargetCounts;
       identifiers?: string[];
+      headingDepths?: Set<number>;
       vfile: VFile;
     },
   ) {
     this.numbering = fillNumbering(opts?.frontmatter?.numbering, DEFAULT_NUMBERING);
-    this.initialCounts = opts?.targetCounts;
-    this.titleDepth = opts?.frontmatter?.titleDepth;
-    this.targetCounts = initializeTargetCounts(this.numbering, this.initialCounts, this.titleDepth);
-    if (opts?.frontmatter?.titleDepth) {
+    this.targetCounts = initializeTargetCounts(
+      this.numbering,
+      opts?.previousCounts,
+      opts?.frontmatter?.titleDepth,
+      opts?.headingDepths,
+    );
+    if (
+      opts?.frontmatter?.titleDepth &&
+      shouldEnumerateFile(opts.frontmatter.titleDepth, this.numbering)
+    ) {
       this.enumerator = formatHeadingEnumerator(
         this.targetCounts.heading,
         this.numbering.enumerator?.template,
@@ -369,8 +377,9 @@ export class ReferenceState implements IReferenceStateResolver {
   addTarget(node: TargetNodes) {
     if (!isTargetIdentifierNode(node)) return;
     const kind = kindFromNode(node);
-    const numberNode = shouldEnumerate(node, kind, this.numbering);
-    if (numberNode && !node.enumerator) {
+    const numberNode = shouldEnumerateNode(node, kind, this.numbering);
+    // if (numberNode && !node.enumerator) { // Is this change a problem?
+    if (numberNode) {
       this.incrementCount(node, kind as TargetKind);
     }
     if (!(node as any).html_id) {
@@ -391,15 +400,6 @@ export class ReferenceState implements IReferenceStateResolver {
       node,
       kind: kind as TargetKind,
     };
-  }
-
-  initializeNumberedTargetCounts(tree: GenericParent) {
-    this.targetCounts = initializeTargetCounts(
-      this.numbering,
-      this.initialCounts,
-      this.titleDepth,
-      tree,
-    );
   }
 
   resolveEnumerator(val: any): string {
@@ -516,7 +516,7 @@ export function addChildrenFromTargetNode(
   const kind = kindFromNode(targetNode);
   const noNodeChildren = !node.children?.length;
   if (kind === TargetKind.heading) {
-    const numberHeading = shouldEnumerate(targetNode, TargetKind.heading, numbering);
+    const numberHeading = shouldEnumerateNode(targetNode, TargetKind.heading, numbering);
     const template = getReferenceTemplate(
       { node: targetNode, kind },
       numbering,
@@ -623,8 +623,8 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
 }
 
 export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOptions) => {
-  opts.state.initializeNumberedTargetCounts(tree);
   visit(tree, (node) => {
+    if (!isTargetIdentifierNode(node)) return;
     if (
       node.identifier ||
       node.enumerated ||
@@ -695,7 +695,10 @@ export function addContainerCaptionNumbersTransform(
         para = { type: 'paragraph', children: [] };
         container.children.push({ type: 'caption', children: [para] } as GenericNode);
       }
-      if (para && (para.children[0]?.type as string) !== 'captionNumber') {
+      if (para && (para.children[0]?.type as string) === 'captionNumber') {
+        para.children = para.children.slice(1);
+      }
+      if (para) {
         const captionNumber = {
           type: 'captionNumber',
           kind: container.kind,
