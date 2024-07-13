@@ -135,6 +135,7 @@ export async function transformMdast(
     kind,
     frontmatter: preFrontmatter,
     location,
+    metadata,
   } = cache.$getMdast(file)?.pre ?? {};
   if (!mdastPre || !kind || !location) throw new Error(`Expected mdast to be parsed for ${file}`);
   log.debug(`Processing "${file}"`);
@@ -251,7 +252,9 @@ export async function transformMdast(
     frontmatter,
     mdast,
     references,
-  };
+    metadata,
+    something: 'else',
+  } as any;
   const cachedMdast = cache.$getMdast(file);
   if (cachedMdast) cachedMdast.post = data;
   if (extraTransforms) {
@@ -387,6 +390,7 @@ export async function finalizeMdast(
   if (postData) {
     postData.frontmatter = frontmatter;
     postData.mdast = mdast;
+    postData.metadata = cache.$getMdast(file)?.pre.metadata;
     updateFileInfoFromFrontmatter(session, file, frontmatter);
   }
   logMessagesFromVFile(session, vfile);

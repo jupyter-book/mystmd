@@ -153,7 +153,7 @@ export async function writeFile(
   const toc = tic();
   const selectedFile = selectFile(session, file);
   if (!selectedFile) return;
-  const { frontmatter, mdast, kind, sha256, slug, references, dependencies, location } =
+  const { frontmatter, mdast, kind, sha256, slug, references, dependencies, location, metadata } =
     selectedFile;
   const exports = await Promise.all([
     resolvePageSource(session, file),
@@ -172,6 +172,7 @@ export async function writeFile(
       location,
       dependencies,
       frontmatter: frontmatterWithExports,
+      metadata,
       mdast,
       references,
     }),
@@ -219,6 +220,7 @@ export async function fastProcessFile(
     extraLinkTransformers,
   });
   const { mdast, frontmatter } = castSession(session).$getMdast(file)?.post ?? {};
+  console.log('fast process');
   if (mdast && frontmatter) {
     await finalizeMdast(session, mdast, frontmatter, file, {
       imageWriteFolder: session.publicPath(),
@@ -305,10 +307,12 @@ export async function processProject(
     ),
   );
   // Write all pages
+  console.log('full process');
   if (writeFiles) {
     await Promise.all(
       pages.map(async (page) => {
-        const { mdast, frontmatter } = castSession(session).$getMdast(page.file)?.post ?? {};
+        const { mdast, frontmatter, metadata } =
+          castSession(session).$getMdast(page.file)?.post ?? {};
         if (mdast && frontmatter) {
           await finalizeMdast(session, mdast, frontmatter, page.file, {
             imageWriteFolder: imageWriteFolder ?? session.publicPath(),

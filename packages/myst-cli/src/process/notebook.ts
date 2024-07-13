@@ -9,6 +9,7 @@ import type {
   ICell,
   IMimeBundle,
   INotebookContent,
+  INotebookMetadata,
   IOutput,
   MultilineString,
 } from '@jupyterlab/nbformat';
@@ -71,7 +72,7 @@ export async function processNotebook(
   file: string,
   content: string,
   opts?: { minifyMaxCharacters?: number },
-): Promise<GenericParent> {
+): Promise<{ mdast: GenericParent; metadata: INotebookMetadata }> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
@@ -139,5 +140,5 @@ export async function processNotebook(
     Promise.resolve([] as GenericNode[]),
   );
 
-  return { type: 'root', children: items };
+  return { mdast: { type: 'root', children: items }, metadata };
 }
