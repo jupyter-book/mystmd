@@ -44,7 +44,7 @@ export function resolveArticlesFromProject(
   if (MULTI_ARTICLE_EXPORT_FORMATS.includes(exp.format)) {
     return { articles };
   }
-  if (exp.format === ExportFormats.xml) {
+  if (exp.format === ExportFormats.xml || exp.format === ExportFormats.meca) {
     return {
       articles: [fileAsPage],
       sub_articles: pages

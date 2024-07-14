@@ -115,7 +115,7 @@ describe('resolveArticlesFromProject', () => {
     expect(vfile.messages.length).toBe(0);
   });
   it('single page format uses singe page if available', async () => {
-    const exp: any = { format: ExportFormats.meca };
+    const exp: any = { format: ExportFormats.docx };
     const proj: Omit<LocalProject, 'bibliography'> = {
       path: '.',
       file: 'index.md',
@@ -162,6 +162,36 @@ describe('resolveArticlesFromProject', () => {
       articles: [{ file: 'one.md', level: 1, slug: 'one' }],
     });
     expect(vfile.messages.length).toBe(1);
+  });
+  it('meca format uses no articles on multiple pages', async () => {
+    const exp: any = { format: ExportFormats.meca };
+    const proj: Omit<LocalProject, 'bibliography'> = {
+      path: '.',
+      file: 'index.md',
+      index: 'index',
+      pages: [
+        {
+          title: 'zero',
+          level: 1,
+        },
+        {
+          file: 'one.md',
+          level: 1,
+          slug: 'one',
+        },
+        {
+          file: 'two.md',
+          level: 2,
+          slug: 'two',
+        },
+      ],
+    };
+    const vfile = new VFile();
+    expect(resolveArticlesFromProject(exp, proj, vfile)).toEqual({
+      articles: [{ file: 'index.md', level: 1 }],
+      sub_articles: ['one.md', 'two.md'],
+    });
+    expect(vfile.messages?.length).toBeFalsy();
   });
 });
 
