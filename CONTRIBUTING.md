@@ -84,7 +84,7 @@ The `mystmd` libraries and command line tools are written in TypeScript, and req
 For local development, [clone the repository](https://github.com/executablebooks/mystmd) and install the dependencies using npm. You can then build the libraries (`npm run build`) and then optionally link to your globally installed `mystmd` in node using the `npm run link` command.
 
 ```shell
-git clone git@github.com:executablebooks/mystmd.git
+git clone git@github.com:jupyter-book/mystmd.git
 cd mystmd
 npm install
 npm run build
