@@ -124,12 +124,12 @@ export function fillSiteFrontmatter(
       affiliationIds.add(aff);
     });
   });
-  base.affiliations?.forEach((aff) => {
+  frontmatter.affiliations?.forEach((aff) => {
     if (aff.id) affiliationIds.add(aff.id);
   });
 
   if (!trimUnused) {
-    filler.affiliations?.forEach((aff) => {
+    [...(base.affiliations ?? []), ...(filler.affiliations ?? [])].forEach((aff) => {
       if (aff.id) affiliationIds.add(aff.id);
     });
   }
