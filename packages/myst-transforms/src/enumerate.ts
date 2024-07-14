@@ -53,6 +53,7 @@ type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
 };
 
 function getDefaultNumberedReferenceTemplate(kind: TargetKind | string) {
+  if (kind === 'code') kind = 'program';
   const domain = kind.includes(':') ? kind.split(':')[1] : kind;
   // eslint-disable-next-line no-irregular-whitespace
   return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)} %s`;
