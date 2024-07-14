@@ -8,7 +8,7 @@ import type { ISession } from '../session/types.js';
 import { addWarningForFile } from './addWarningForFile.js';
 
 export function isImageMagickAvailable() {
-  return which.sync('convert', { nothrow: true });
+  return which.sync('magick', { nothrow: true });
 }
 
 export function isWebpAvailable() {
@@ -52,7 +52,7 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   if (fs.existsSync(png)) {
     session.log.debug(`Cached file found for extracted GIF: ${gif}`);
   } else {
-    const executable = `convert -density 600 -colorspace RGB ${gif}[0] ${png}`;
+    const executable = `magick -density 600 -colorspace RGB ${gif}[0] ${png}`;
     session.log.debug(`Executing: ${executable}`);
     const exec = makeExecutable(executable, session.log);
     try {
@@ -92,7 +92,7 @@ export async function convert(
     session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
     return filename;
   } else {
-    const executable = `convert -density 600 -colorspace RGB ${input}${
+    const executable = `magick -density 600 -colorspace RGB ${input}${
       options?.trim ? ' -trim' : ''
     } ${output}`;
     session.log.debug(`Executing: ${executable}`);
@@ -187,7 +187,7 @@ export async function convertImageToWebp(
   const convertGif = makeExecutable(`gif2webp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
   // Density has to be BEFORE the PDF
   const convertPdfPng = makeExecutable(
-    `convert -density 600 -colorspace RGB ${image} -trim ${png}`,
+    `magick -density 600 -colorspace RGB ${image} -trim ${png}`,
     debugLogger,
   );
   const convertPdfWebP = makeExecutable(`cwebp -q ${quality} "${png}" -o "${webp}"`, debugLogger);
