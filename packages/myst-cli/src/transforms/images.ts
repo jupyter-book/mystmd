@@ -408,7 +408,7 @@ export async function transformImageFormats(
   // Build a lookup of {[extension]: [list of images]} for extensions not in validExts
   const invalidImages: Record<string, GenericNode[]> = {};
   images.forEach((image) => {
-    const ext = path.extname(image.url);
+    const ext = path.extname(image.url).toLowerCase();
     if (validExts.includes(ext as ImageExtensions)) return;
     if (invalidImages[ext]) {
       invalidImages[ext].push(image);
@@ -653,7 +653,7 @@ function isValidImageNode(node: GenericNode, validExts: ImageExtensions[]) {
   return (
     node.type === 'image' &&
     node.url &&
-    validExts.includes(path.extname(node.url) as ImageExtensions)
+    validExts.includes(path.extname(node.url).toLowerCase() as ImageExtensions)
   );
 }
 
