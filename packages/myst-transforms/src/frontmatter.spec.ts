@@ -480,6 +480,240 @@ describe('getFrontmatter', () => {
     expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: true });
     expect(file.messages.length).toBe(0);
   });
+  it('title extracted from first h1 heading node, removed if nested in block', () => {
+    const input = {
+      type: 'root',
+      children: [
+        {
+          type: 'code',
+          lang: 'yaml',
+          value: '',
+        },
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Heading Title',
+                },
+              ],
+            },
+            {
+              type: 'text',
+              value: 'hello',
+            },
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Another Heading',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const file = new VFile();
+    const { tree, frontmatter } = getFrontmatter(file, copy(input), {});
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'text',
+              value: 'hello',
+            },
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Another Heading',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
+    expect(file.messages.length).toBe(0);
+  });
+  it('title extracted from first h1 heading node, removed if only comments before', () => {
+    const input = {
+      type: 'root',
+      children: [
+        {
+          type: 'comment',
+          value: '',
+        },
+        {
+          type: 'comment',
+          value: '',
+        },
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Heading Title',
+                },
+              ],
+            },
+            {
+              type: 'text',
+              value: 'hello',
+            },
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Another Heading',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const file = new VFile();
+    const { tree, frontmatter } = getFrontmatter(file, copy(input), {});
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'comment',
+          value: '',
+        },
+        {
+          type: 'comment',
+          value: '',
+        },
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'text',
+              value: 'hello',
+            },
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Another Heading',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
+    expect(file.messages.length).toBe(0);
+  });
+  it('title extracted from first h1 heading node, removed if only yaml and comments before', () => {
+    const input = {
+      type: 'root',
+      children: [
+        {
+          type: 'code',
+          lang: 'yaml',
+          value: '',
+        },
+        {
+          type: 'comment',
+          value: '',
+        },
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'comment',
+              value: '',
+            },
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Heading Title',
+                },
+              ],
+            },
+            {
+              type: 'text',
+              value: 'hello',
+            },
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Another Heading',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const file = new VFile();
+    const { tree, frontmatter } = getFrontmatter(file, copy(input), {});
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'comment',
+          value: '',
+        },
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'comment',
+              value: '',
+            },
+            {
+              type: 'text',
+              value: 'hello',
+            },
+            {
+              type: 'heading',
+              depth: 1,
+              children: [
+                {
+                  type: 'text',
+                  value: 'Another Heading',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
+    expect(file.messages.length).toBe(0);
+  });
   it('title extracted from first h1 heading node, content_includes_title false ignored', () => {
     const input = {
       type: 'root',
