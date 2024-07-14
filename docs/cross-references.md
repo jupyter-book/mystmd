@@ -152,7 +152,7 @@ For example, in this reference syntax:
 ```
 
 The text `my-targets-label` is the label for the target.
-There are many ways that you can label a target, and the sections below describe the most common approaches. 
+There are many ways that you can label a target, and the sections below describe the most common approaches.
 
 :::{note}
 To be referenced, targets must have a `label`/`identifier` pair [in the AST](xref:spec#association).
