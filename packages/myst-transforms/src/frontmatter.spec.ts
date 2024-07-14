@@ -546,7 +546,7 @@ describe('getFrontmatter', () => {
         },
       ],
     });
-    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: true });
+    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
     expect(file.messages.length).toBe(0);
   });
   it('title extracted from first h1 heading node, content_includes_title false ignored', () => {

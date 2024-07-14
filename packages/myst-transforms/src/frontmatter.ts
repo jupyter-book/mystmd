@@ -38,7 +38,12 @@ export function getFrontmatter(
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
   const firstNode = firstParent.children?.[0] as Code;
-  const secondNode = firstParent.children?.[1] as Heading;
+  let secondNode: Heading | undefined;
+  if (firstParent.children?.[1]?.type === 'block') {
+    secondNode = firstParent.children?.[1]?.children?.[0] as Heading | undefined;
+  } else {
+    secondNode = firstParent.children?.[1] as Heading | undefined;
+  }
   let frontmatter: Record<string, any> = {};
   const identifiers: string[] = [];
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
