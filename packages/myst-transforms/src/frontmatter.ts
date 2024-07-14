@@ -38,11 +38,16 @@ export function getFrontmatter(
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
   const firstNode = firstParent.children?.[0] as Code;
+  const nextNonCommentNode = firstParent.children
+    ?.slice(1)
+    ?.find((child) => child.type !== 'comment');
   let secondNode: Heading | undefined;
-  if (firstParent.children?.[1]?.type === 'block') {
-    secondNode = firstParent.children?.[1]?.children?.[0] as Heading | undefined;
+  if (nextNonCommentNode?.type === 'block') {
+    secondNode = nextNonCommentNode?.children?.find((child) => child.type !== 'comment') as
+      | Heading
+      | undefined;
   } else {
-    secondNode = firstParent.children?.[1] as Heading | undefined;
+    secondNode = nextNonCommentNode as Heading | undefined;
   }
   let frontmatter: Record<string, any> = {};
   const identifiers: string[] = [];
@@ -76,7 +81,8 @@ export function getFrontmatter(
     frontmatter.title = title;
     frontmatter.content_includes_title = true;
   }
-  const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);
+  const firstIsComment = (firstNode as any)?.type === 'comment';
+  const nextNode = firstIsYaml || firstIsComment ? secondNode : (firstNode as unknown as Heading);
   const nextNodeIsH1 = nextNode?.type === 'heading' && nextNode.depth === 1;
   // Explicitly handle the case of an H1 directly after the frontmatter
   if (nextNodeIsH1 && !titleNull) {
