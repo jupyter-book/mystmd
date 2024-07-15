@@ -7,6 +7,7 @@ import { makeCleanCLI } from './clean.js';
 import { makeInitCLI, addDefaultCommand } from './init.js';
 import { makeStartCLI } from './site.js';
 import { makeTemplatesCLI } from './templates.js';
+import chalk from 'chalk';
 import { readableName, isWhiteLabelled } from 'myst-cli';
 
 const program = new Command();
