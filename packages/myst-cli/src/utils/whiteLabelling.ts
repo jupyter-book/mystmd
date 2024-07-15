@@ -3,7 +3,7 @@ export function readableName(): string {
     const name = process.env.MYSTMD_READABLE_NAME as string;
     return `${name} (via myst)`;
   } else {
-    return 'myst';
+    return 'MyST';
   }
 }
 
