@@ -13,7 +13,7 @@ const program = new Command();
 
 if (isWhiteLabelled()) {
   program.description(
-    `${readableName()} is powered by MyST-MD. See https://mystmd.org for more information.`,
+    `${readableName()} is powered by ${chalk.blue('mystmd')}. See https://mystmd.org for more information.`,
   );
 }
 
