@@ -21,7 +21,13 @@ export function fillPageFrontmatter(
   projectFrontmatter: ProjectFrontmatter,
   opts: ValidationOptions,
 ): PageFrontmatter {
-  return fillProjectFrontmatter(pageFrontmatter, projectFrontmatter, opts, USE_PROJECT_FALLBACK);
+  return fillProjectFrontmatter(
+    pageFrontmatter,
+    projectFrontmatter,
+    opts,
+    USE_PROJECT_FALLBACK,
+    true,
+  );
 }
 
 export function fillSiteFrontmatter(
@@ -29,6 +35,7 @@ export function fillSiteFrontmatter(
   filler: SiteFrontmatter,
   opts: ValidationOptions,
   keys?: string[],
+  trimUnused?: boolean,
 ) {
   const frontmatter = fillMissingKeys(base, filler, keys ?? Object.keys(filler));
 
@@ -64,6 +71,17 @@ export function fillSiteFrontmatter(
   frontmatter.editors?.forEach((editor) => {
     contributorIds.add(editor);
   });
+
+  if (!trimUnused) {
+    [
+      ...(base.authors ?? []),
+      ...(filler.authors ?? []),
+      ...(base.contributors ?? []),
+      ...(filler.contributors ?? []),
+    ].forEach((auth) => {
+      if (auth.id) contributorIds.add(auth.id);
+    });
+  }
 
   if (frontmatter.authors?.length || contributorIds.size) {
     // Gather all people from page/project authors/contributors
@@ -110,6 +128,12 @@ export function fillSiteFrontmatter(
     if (aff.id) affiliationIds.add(aff.id);
   });
 
+  if (!trimUnused) {
+    [...(base.affiliations ?? []), ...(filler.affiliations ?? [])].forEach((aff) => {
+      if (aff.id) affiliationIds.add(aff.id);
+    });
+  }
+
   if (affiliationIds.size) {
     const affiliations = [...(base.affiliations ?? []), ...(filler.affiliations ?? [])];
     const affiliationLookup: Record<string, Affiliation> = {};
@@ -137,12 +161,14 @@ export function fillProjectFrontmatter(
   filler: ProjectFrontmatter,
   opts: ValidationOptions,
   keys?: string[],
+  trimUnused?: boolean,
 ) {
   const frontmatter: ProjectFrontmatter = fillSiteFrontmatter(
     base,
     filler,
     opts,
     keys ?? Object.keys(filler),
+    trimUnused,
   );
 
   if (filler.numbering || base.numbering) {
