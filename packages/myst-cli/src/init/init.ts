@@ -16,19 +16,7 @@ import { upgradeJupyterBook } from './jupyter-book/upgrade.js';
 import { fsExists } from '../utils/fsExists.js';
 
 const VERSION_CONFIG = '# See docs at: https://mystmd.org/guide/frontmatter\nversion: 1\n';
-import { binaryName, homeURL, readableName, baseConfigs } from '../utils/whiteLabelling.js';
-
-const extendsConfigItems = baseConfigs()
-  .map(
-    (item) => `
-    - ${item}`,
-  )
-  .join('');
-const extendsConfig = extendsConfigItems
-  ? `
-# ${readableName()} base configuration
-extend:${extendsConfigItems}`
-  : '';
+import { binaryName, homeURL, readableName } from '../utils/whiteLabelling.js';
 
 function createProjectConfig({ github }: { github?: string } = {}) {
   return `project:
