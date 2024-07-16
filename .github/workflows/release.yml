@@ -13,7 +13,9 @@ on:
         default: false
         required: false
 concurrency: ${{ github.workflow }}-${{ github.ref }}
-
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   release-npm:
     name: Release NPM
