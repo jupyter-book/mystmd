@@ -192,7 +192,9 @@ export function upgradeConfig(data: JupyterBookConfig): Pick<Config, 'project' |
     siteOptions.analytics_plausible = data.html.analytics.plausible_analytics_domain;
   }
 
-  const repo = notNullish(data.repository?.url) ? parseGitHubRepoURL(data.repository?.url) : undefined;
+  const repo = notNullish(data.repository?.url)
+    ? parseGitHubRepoURL(data.repository?.url)
+    : undefined;
   if (notNullish(repo)) {
     project.github = repo;
   }
