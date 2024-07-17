@@ -31,7 +31,7 @@ type LegacyGlossaryItem = {
  */
 export async function upgradeProjectSyntax(session: ISession) {
   let documentPaths: string[];
-  session.log.info(chalk.dim(`Upgrading legacy-formatted files in a temporary location`));
+  session.log.debug(chalk.dim(`Upgrading legacy-formatted files in a temporary location`));
   // Try and find all Git-tracked files, to ignore _build (hopefully)
   try {
     const allFiles = (await makeExecutable('git ls-files', null)()).split(SPLIT_PATTERN);
@@ -50,7 +50,7 @@ export async function upgradeProjectSyntax(session: ISession) {
   );
 
   // Now upgrade all documents
-  session.log.info(chalk.dim(`Copying upgraded files into project`));
+  session.log.debug(chalk.dim(`Copying upgraded files into project`));
   await Promise.all(
     maybeUpgradedPaths
       .filter((item: string | undefined): item is string => item !== undefined)
