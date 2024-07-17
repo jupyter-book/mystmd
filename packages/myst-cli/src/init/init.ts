@@ -131,6 +131,7 @@ export async function init(session: ISession, opts: InitOptions) {
     }
   } else {
     // Is this a Jupyter Book?
+    let didUpgrade = false;
     if (await fsExists('_config.yml')) {
       const configFile = defaultConfigFile(session, '.');
       const promptUpgrade = await inquirer.prompt([
@@ -155,10 +156,16 @@ export async function init(session: ISession, opts: InitOptions) {
         return;
       }
       session.log.info(`💾 Writing new config file: ${chalk.blue(path.resolve(configFile))}`);
-      await upgradeJupyterBook(session, configFile);
+      try {
+        await upgradeJupyterBook(session, configFile);
+        didUpgrade = true;
+      } catch (err) {
+        session.log.error(`❌ An error occurred during Jupyter Book upgrade:\n\n${err}\n\n`);
+        session.log.warn(`Ignoring Jupyter Book configuration!`);
+      }
     }
     // Otherwise, write some default configs
-    else {
+    if (!didUpgrade) {
       // If no config is present, write it explicitly to include comments.
       const configFile = defaultConfigFile(session, '.');
       let configData: string;
