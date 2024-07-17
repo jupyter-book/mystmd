@@ -7,9 +7,9 @@ import { fsExists } from '../../utils/fsExists.js';
 import chalk from 'chalk';
 import type { ISession } from '../../session/types.js';
 import { makeExecutable } from 'myst-cli-utils';
-import { parse } from 'node:path';
+import { parse, join } from 'node:path';
 import type { INotebookContent } from '@jupyterlab/nbformat';
-import { makeBackupName } from './utils.js';
+import { createTempFolder } from '../../utils/createTempFolder.js';
 
 // Preserve newlines through group construct
 const SPLIT_PATTERN = /\r\n|\r|\n/;
@@ -31,6 +31,7 @@ type LegacyGlossaryItem = {
  */
 export async function upgradeProjectSyntax(session: ISession) {
   let documentPaths: string[];
+  session.log.info(chalk.dim(`Upgrading legacy-formatted files in a temporary location`));
   // Try and find all Git-tracked files, to ignore _build (hopefully)
   try {
     const allFiles = (await makeExecutable('git ls-files', null)()).split(SPLIT_PATTERN);
@@ -42,8 +43,25 @@ export async function upgradeProjectSyntax(session: ISession) {
     // Fall back on globbing
     documentPaths = await glob('**/*.{md,ipynb}');
   }
+  const tmpPath = createTempFolder(session);
   // Update all documents
-  await Promise.all(documentPaths.map((path) => upgradeDocument(session, path)));
+  const maybeUpgradedPaths = await Promise.all(
+    documentPaths.map((path) => upgradeDocument(session, path, tmpPath)),
+  );
+
+  // Now upgrade all documents
+  session.log.info(chalk.dim(`Copying upgraded files into project`));
+  await Promise.all(
+    maybeUpgradedPaths
+      .filter((item: string | undefined): item is string => item !== undefined)
+      .map(async (path) => {
+        const { dir, base } = parse(path);
+        const upgradeFilePath = join(tmpPath, base);
+        const backupFilePath = join(dir, `.${base}.myst.bak`);
+        await fs.rename(path, backupFilePath);
+        await fs.rename(upgradeFilePath, path);
+      }),
+  );
 }
 
 /**
@@ -53,13 +71,13 @@ export async function upgradeProjectSyntax(session: ISession) {
  * @param session - session with logging
  * @param path - path to document
  */
-async function upgradeDocument(session: ISession, path: string) {
-  const backupFilePath = makeBackupName(path);
-
-  // Ensure that we havent' already done this once
-  if (await fsExists(backupFilePath)) {
-    return;
-  }
+async function upgradeDocument(
+  session: ISession,
+  path: string,
+  tmpPath: string,
+): Promise<string | undefined> {
+  const { base } = parse(path);
+  const upgradeFilePath = join(tmpPath, base);
 
   const { ext } = parse(path);
   switch (ext) {
@@ -69,51 +87,50 @@ async function upgradeDocument(session: ISession, path: string) {
         const data = (await fs.readFile(path)).toString();
         const maybeNewLines = await upgradeContent(data.split(SPLIT_PATTERN));
         if (maybeNewLines !== undefined) {
-          // Backup existing file
-          await fs.rename(path, backupFilePath);
-
           // Write modified result
-          session.log.info(chalk.dim(`Backed up original version of ${path} to ${backupFilePath}`));
-          await fs.writeFile(path, maybeNewLines.join('\n'));
+          await fs.writeFile(upgradeFilePath, maybeNewLines.join('\n'));
+          session.log.info(chalk.dim(`Upgraded ${path}`));
+          return upgradeFilePath;
         }
       }
       break;
-    case '.ipynb': {
-      // Upgrade each cell of the notebook
-      const data = (await fs.readFile(path)).toString();
-      const notebook = JSON.parse(data) as INotebookContent;
-      const cellDidUpgrade = await Promise.all(
-        notebook.cells
-          .filter((cell) => cell.cell_type === 'markdown')
-          .map(async (cell) => {
-            // Try and upgrade the cell
-            const maybeNewLines = await upgradeContent(
-              (cell.source as string[])
-                // Strip newlines
-                .map((line) => line.replace('\n', '')),
-            );
-            // Did we compute new state?
-            if (maybeNewLines !== undefined) {
-              // Write to cell and indicate modification
-              cell.source = maybeNewLines.map((line) => `${line}\n`);
-              return true;
-            } else {
-              return false;
-            }
-          }),
-      );
+    case '.ipynb':
+      {
+        // Upgrade each cell of the notebook
+        const data = (await fs.readFile(path)).toString();
+        const notebook = JSON.parse(data) as INotebookContent;
+        const cellDidUpgrade = await Promise.all(
+          notebook.cells
+            .filter((cell) => cell.cell_type === 'markdown')
+            .map(async (cell) => {
+              // Try and upgrade the cell
+              const maybeNewLines = await upgradeContent(
+                (cell.source as string[])
+                  // Strip newlines
+                  .map((line) => line.replace('\n', '')),
+              );
+              // Did we compute new state?
+              if (maybeNewLines !== undefined) {
+                // Write to cell and indicate modification
+                cell.source = maybeNewLines.map((line) => `${line}\n`);
+                return true;
+              } else {
+                return false;
+              }
+            }),
+        );
 
-      // Do we need to update the notebook?
-      if (cellDidUpgrade.some((x) => x)) {
-        // Backup existing file
-        await fs.rename(path, backupFilePath);
-
-        // Write modified result
-        const newData = JSON.stringify(notebook);
-        session.log.info(chalk.dim(`Backed up original version of ${path} to ${backupFilePath}`));
-        await fs.writeFile(path, newData);
+        // Do we need to update the notebook?
+        if (cellDidUpgrade.some((x) => x)) {
+          // Write modified result
+          const newData = JSON.stringify(notebook);
+          // Write modified result
+          await fs.writeFile(upgradeFilePath, newData);
+          session.log.info(chalk.dim(`Upgraded ${path}`));
+          return upgradeFilePath;
+        }
       }
-    }
+      return undefined;
   }
 }
 export async function upgradeContent(documentLines: string[]): Promise<string[] | undefined> {

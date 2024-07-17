@@ -181,8 +181,10 @@ export type SphinxExternalTOC = z.infer<typeof SphinxExternalTOC>;
 export function validateSphinxExternalTOC(toc: unknown): SphinxExternalTOC | undefined {
   const result = SphinxExternalTOC.safeParse(toc);
   if (!result.success) {
-    console.error(result.error);
-    return undefined;
+    const errors = result.error.errors.map(
+      (issue) => `${issue.path.join('.')}: ${issue.message} (${issue.code})`,
+    );
+    throw new Error(`Error(s) in parsing Jupyter Book TOC:\n${errors}`);
   } else {
     return result.data;
   }
