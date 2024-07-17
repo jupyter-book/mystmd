@@ -139,13 +139,13 @@ export async function init(session: ISession, opts: InitOptions) {
           message: [
             `📘 Found a legacy Jupyter Book. To proceed, myst needs to perform an upgrade which will:
 `,
-            chalk.dim(`     ‣ Upgrade any Sphinx-style glossaries to MyST-style glossaries
-     ‣ Upgrade any case-insensitive admonition names to lowercase (${chalk.blue('Note')} → ${chalk.blue('note')})
-     ‣ Migrate configuration from ${chalk.blue('_config.yml')} and (if applicable) ${chalk.blue('_toc.yml')} files
-     ‣ Rename any modified or unneeded files so that they are hidden
+            chalk.dim(`‣ Upgrade any Sphinx-style glossaries to MyST-style glossaries
+‣ Upgrade any case-insensitive admonition names to lowercase (${chalk.blue('Note')} → ${chalk.blue('note')})
+‣ Migrate configuration from ${chalk.blue('_config.yml')} and (if applicable) ${chalk.blue('_toc.yml')} files
+‣ Rename any modified or unneeded files so that they are hidden
 
 `),
-            `     Are you willing to proceed?`,
+            `Are you willing to proceed?`,
           ].join(''),
           type: 'confirm',
           default: true,
@@ -154,7 +154,7 @@ export async function init(session: ISession, opts: InitOptions) {
       if (!promptUpgrade.upgrade) {
         return;
       }
-      session.log.info(`  💾 Writing new config file: ${chalk.blue(path.resolve(configFile))}`);
+      session.log.info(`💾 Writing new config file: ${chalk.blue(path.resolve(configFile))}`);
       await upgradeJupyterBook(session, configFile);
     }
     // Otherwise, write some default configs

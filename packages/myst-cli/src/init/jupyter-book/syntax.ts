@@ -3,11 +3,10 @@ import fs from 'node:fs/promises';
 import { glob } from 'glob';
 import { selectAll } from 'unist-util-select';
 import { toText } from 'myst-common';
-import { fsExists } from '../../utils/fsExists.js';
 import chalk from 'chalk';
 import type { ISession } from '../../session/types.js';
 import { makeExecutable } from 'myst-cli-utils';
-import { parse, join } from 'node:path';
+import { parse, join, relative } from 'node:path';
 import type { INotebookContent } from '@jupyterlab/nbformat';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 
@@ -22,6 +21,7 @@ type LegacyGlossaryItem = {
   termLines: DocumentLine[];
   definitionLines: DocumentLine[];
 };
+type CallbackType = () => Promise<void>;
 
 /**
  * In-place upgrade Sphinx-style glossaries into MyST definition-list glossaries
@@ -46,21 +46,15 @@ export async function upgradeProjectSyntax(session: ISession) {
   const tmpPath = createTempFolder(session);
   // Update all documents
   const maybeUpgradedPaths = await Promise.all(
-    documentPaths.map((path) => upgradeDocument(session, path, tmpPath)),
+    documentPaths.map((path) => upgradeDocument(session, path, tmpPath, process.cwd())),
   );
 
   // Now upgrade all documents
   session.log.debug(chalk.dim(`Copying upgraded files into project`));
   await Promise.all(
     maybeUpgradedPaths
-      .filter((item: string | undefined): item is string => item !== undefined)
-      .map(async (path) => {
-        const { dir, base } = parse(path);
-        const upgradeFilePath = join(tmpPath, base);
-        const backupFilePath = join(dir, `.${base}.myst.bak`);
-        await fs.rename(path, backupFilePath);
-        await fs.rename(upgradeFilePath, path);
-      }),
+      .filter((item: CallbackType | undefined): item is CallbackType => item !== undefined)
+      .map((fn) => fn()),
   );
 }
 
@@ -75,11 +69,25 @@ async function upgradeDocument(
   session: ISession,
   path: string,
   tmpPath: string,
-): Promise<string | undefined> {
-  const { base } = parse(path);
-  const upgradeFilePath = join(tmpPath, base);
+  basePath: string,
+): Promise<CallbackType | undefined> {
+  const relativePath = relative(basePath, path);
 
-  const { ext } = parse(path);
+  // Temporary location for upgrade path
+  const upgradeFilePath = join(tmpPath, relativePath);
+
+  // Ensure destination directory exists
+  const { dir: temporaryFileDir } = parse(upgradeFilePath);
+  await fs.mkdir(temporaryFileDir, { recursive: true });
+
+  const { base, ext, dir: originalDir } = parse(path);
+  // Callback for implementing the "atomic" replacement
+  const performUpgrade = async () => {
+    const backupFilePath = join(originalDir, `.${base}.bak`);
+    await fs.rename(path, backupFilePath);
+    await fs.rename(upgradeFilePath, path);
+  };
+
   switch (ext) {
     case '.md':
       {
@@ -89,8 +97,8 @@ async function upgradeDocument(
         if (maybeNewLines !== undefined) {
           // Write modified result
           await fs.writeFile(upgradeFilePath, maybeNewLines.join('\n'));
-          session.log.info(chalk.dim(`Upgraded ${path}`));
-          return upgradeFilePath;
+          session.log.info(chalk.dim(`Upgraded ${chalk.blue(path)}`));
+          return performUpgrade;
         }
       }
       break;
@@ -126,8 +134,8 @@ async function upgradeDocument(
           const newData = JSON.stringify(notebook);
           // Write modified result
           await fs.writeFile(upgradeFilePath, newData);
-          session.log.info(chalk.dim(`Upgraded ${path}`));
-          return upgradeFilePath;
+          session.log.info(chalk.dim(`Upgraded ${chalk.blue(path)}`));
+          return performUpgrade;
         }
       }
       return undefined;

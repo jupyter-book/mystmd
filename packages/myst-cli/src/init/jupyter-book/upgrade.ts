@@ -18,7 +18,7 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
 
   // Does config file exist?
   if (!(await fsExists('_config.yml'))) {
-    throw new Error('_config.yml is a required Jupyter Book configuration file');
+    throw new Error(`${chalk.blue('_config.yml')} is a required Jupyter Book configuration file`);
   }
   const configContent = await fs.readFile('_config.yml', { encoding: 'utf-8' });
   const configData = validateJupyterBookConfig(yaml.load(configContent));
@@ -42,9 +42,13 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
   // Write new myst.yml
   await fs.writeFile(configFile, yaml.dump(config));
 
-  await fs.rename('_config.yml', '._config.yml.myst.bak');
-  session.log.debug(chalk.dim('Renamed _config.yml to ._config.yml.myst.bak'));
+  await fs.rename('_config.yml', '._config.yml.bak');
+  session.log.debug(
+    chalk.dim(`Renamed ${chalk.blue('_config.yml')} to ${chalk.blue('._config.yml.bak')}`),
+  );
 
-  await fs.rename('_toc.yml', '._toc.yml.myst.bak');
-  session.log.debug(chalk.dim('Renamed _toc.yml to ._toc.yml.myst.bak'));
+  await fs.rename('_toc.yml', '._toc.yml.bak');
+  session.log.debug(
+    chalk.dim(`Renamed ${chalk.blue('_toc.yml')} to ${chalk.blue('._toc.yml.bak')}`),
+  );
 }
