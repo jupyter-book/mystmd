@@ -9,6 +9,7 @@ export enum ExportFormats {
   xml = 'xml',
   md = 'md',
   meca = 'meca',
+  cff = 'cff',
 }
 
 export type ExportArticle = {

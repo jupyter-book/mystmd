@@ -36,6 +36,10 @@ export function makeMecaOptions(description: string) {
   return new Option('--meca', description).default(false);
 }
 
+export function makeCffOption(description: string) {
+  return new Option('--cff', description).default(false);
+}
+
 export function makeSiteOption(description: string) {
   return new Option('--site', description).default(false);
 }

@@ -37,6 +37,7 @@ describe('get export formats', () => {
       ExportFormats.xml,
       ExportFormats.md,
       ExportFormats.meca,
+      ExportFormats.cff,
     ]);
     expect(
       getRequestedExportFormats({ all: true, docx: true, pdf: false, tex: false, xml: false }),
@@ -89,7 +90,7 @@ describe('exportSite', () => {
   it('force with existing config does not export site', async () => {
     expect(exportSite(sessionWithConfig, { force: true })).toBeFalsy();
   });
-  it.each(['docx', 'pdf', 'tex', 'xml', 'md', 'meca'])(
+  it.each(['docx', 'pdf', 'tex', 'xml', 'md', 'meca', 'cff'])(
     '%s with existing config does not export site',
     (opt) => {
       const opts: Record<string, boolean> = {};

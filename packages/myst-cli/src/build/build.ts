@@ -27,6 +27,7 @@ type FormatBuildOpts = {
   xml?: boolean;
   md?: boolean;
   meca?: boolean;
+  cff?: boolean;
   html?: boolean;
   all?: boolean;
   force?: boolean;
@@ -36,8 +37,8 @@ type FormatBuildOpts = {
 export type BuildOpts = FormatBuildOpts & CollectionOptions & RunExportOptions & StartOptions;
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
-  const { docx, pdf, tex, typst, xml, md, meca } = opts;
-  return docx || pdf || tex || typst || xml || md || meca || false;
+  const { docx, pdf, tex, typst, xml, md, meca, cff } = opts;
+  return docx || pdf || tex || typst || xml || md || meca || cff || false;
 }
 
 /**
@@ -54,7 +55,7 @@ export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
  * @param opts.explicit explicit input file was provided
  */
 export function getAllowedExportFormats(opts: FormatBuildOpts & { explicit?: boolean }) {
-  const { docx, pdf, tex, typst, xml, md, meca, all, explicit } = opts;
+  const { docx, pdf, tex, typst, xml, md, meca, cff, all, explicit } = opts;
   const formats = [];
   const any = hasAnyExplicitExportFormat(opts);
   const override = all || (!any && explicit);
@@ -69,6 +70,7 @@ export function getAllowedExportFormats(opts: FormatBuildOpts & { explicit?: boo
   if (xml || override) formats.push(ExportFormats.xml);
   if (md || override) formats.push(ExportFormats.md);
   if (meca || override) formats.push(ExportFormats.meca);
+  if (cff || override) formats.push(ExportFormats.cff);
   return [...new Set(formats)];
 }
 
@@ -76,7 +78,7 @@ export function getAllowedExportFormats(opts: FormatBuildOpts & { explicit?: boo
  * Return requested formats from CLI options
  */
 export function getRequestedExportFormats(opts: FormatBuildOpts) {
-  const { docx, pdf, tex, typst, xml, md, meca } = opts;
+  const { docx, pdf, tex, typst, xml, md, meca, cff } = opts;
   const formats = [];
   if (docx) formats.push(ExportFormats.docx);
   if (pdf) formats.push(ExportFormats.pdf);
@@ -85,6 +87,7 @@ export function getRequestedExportFormats(opts: FormatBuildOpts) {
   if (xml) formats.push(ExportFormats.xml);
   if (md) formats.push(ExportFormats.md);
   if (meca) formats.push(ExportFormats.meca);
+  if (cff) formats.push(ExportFormats.cff);
   return formats;
 }
 
@@ -235,7 +238,9 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     if (!(site || performSiteBuild)) {
       // Print out the kinds that are filtered
       const kinds = Object.entries(opts)
-        .filter(([k, v]) => ['docx', 'pdf', 'tex', 'typst', 'xml', 'md', 'meca'].includes(k) && v)
+        .filter(
+          ([k, v]) => ['docx', 'pdf', 'tex', 'typst', 'xml', 'md', 'meca', 'cff'].includes(k) && v,
+        )
         .map(([k]) => k);
       session.log.info(
         `📭 No file exports${
