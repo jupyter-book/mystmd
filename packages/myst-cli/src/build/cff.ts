@@ -54,6 +54,7 @@ type CFF = {
   abstract?: string;
   title?: string;
   authors?: (EntityCFF | PersonCFF)[];
+  contact?: (EntityCFF | PersonCFF)[];
   commit?: string;
   copyright?: string;
   doi?: string;
@@ -198,6 +199,9 @@ function exportOptionsToCFF(exportOptions: ExportWithOutput): CFF {
 function frontmatterToCFF(frontmatter: PageFrontmatter, abstract?: string): CFF {
   const { first_page, last_page, issue, volume } = frontmatter.biblio ?? {};
   const license = frontmatter.license?.content ?? frontmatter.license?.code;
+  const contact = frontmatter.authors
+    ?.filter((author) => author.corresponding)
+    .map((author) => authorToCFF(author, frontmatter.affiliations));
   return {
     'cff-version': '1.0.0',
     message: 'Please cite the following works when using this software.',
@@ -205,6 +209,7 @@ function frontmatterToCFF(frontmatter: PageFrontmatter, abstract?: string): CFF 
     abstract,
     title: frontmatter.title,
     authors: frontmatter.authors?.map((author) => authorToCFF(author, frontmatter.affiliations)),
+    contact: contact?.length ? contact : undefined,
     copyright: frontmatter.copyright,
     doi: frontmatter.doi,
     editors: frontmatter.editors
