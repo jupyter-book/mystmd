@@ -1,8 +1,13 @@
 import { describe, expect, it, beforeEach } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
-import { fillPageFrontmatter, fillSiteFrontmatter } from './fillPageFrontmatter';
+import {
+  fillPageFrontmatter,
+  fillProjectFrontmatter,
+  fillSiteFrontmatter,
+} from './fillPageFrontmatter';
 import type { PageFrontmatter } from '../page/types';
 import type { ProjectFrontmatter } from '../project/types';
+import type { ExportFormats } from '../exports/types';
 
 const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   title: 'frontmatter',
@@ -720,6 +725,171 @@ describe('fillSiteFrontmatter', () => {
       ),
     ).toEqual({
       options: { logo: 'my-logo.png', hide_outline: true },
+    });
+  });
+  it('site lists concatenate', async () => {
+    expect(
+      fillSiteFrontmatter(
+        {
+          tags: ['a', 'b'],
+          affiliations: [{ id: 'univ-a' }, { id: 'univ-b' }],
+          reviewers: ['rev-a'],
+          keywords: ['x', 'y'],
+          funding: [{ statement: 'Thank you' }],
+        },
+        {
+          tags: ['b', 'c'],
+          affiliations: [
+            { id: 'univ-a' },
+            { id: 'univ-b', name: 'University B' },
+            { id: 'univ-c' },
+          ],
+          editors: ['ed-a'],
+          keywords: [],
+          funding: [{ awards: [] }],
+        },
+        opts,
+      ),
+    ).toEqual({
+      tags: ['b', 'c', 'a'],
+      affiliations: [{ id: 'univ-a' }, { id: 'univ-b' }, { id: 'univ-c' }],
+      reviewers: ['rev-a'],
+      editors: ['ed-a'],
+      contributors: [
+        { id: 'rev-a', name: 'rev-a' },
+        { id: 'ed-a', name: 'ed-a' },
+      ],
+      keywords: ['x', 'y'],
+      funding: [{ awards: [] }, { statement: 'Thank you' }],
+    });
+  });
+});
+
+describe('filProjectFrontmatter', () => {
+  it('empty frontmatters return empty', async () => {
+    expect(fillProjectFrontmatter({}, {}, opts)).toEqual({});
+  });
+  it('project abbreviations/settings are combined', async () => {
+    expect(
+      fillProjectFrontmatter(
+        { abbreviations: { ABC: 'alphabet' }, settings: { output_stderr: 'show' } },
+        {
+          abbreviations: {
+            ABC: 'American Broadcasting Company',
+            BBC: 'British Broadcasting Company',
+          },
+          settings: { myst_to_tex: { codeStyle: 'verbatim' } },
+        },
+        opts,
+      ),
+    ).toEqual({
+      abbreviations: { ABC: 'alphabet', BBC: 'British Broadcasting Company' },
+      settings: { output_stderr: 'show', myst_to_tex: { codeStyle: 'verbatim' } },
+    });
+  });
+  it('project lists concatenate and deduplicate', async () => {
+    expect(
+      fillProjectFrontmatter(
+        {
+          bibliography: ['one.bib'],
+          requirements: ['requirements.txt'],
+          exports: [
+            {
+              format: 'md' as ExportFormats,
+            },
+            {
+              format: 'pdf' as ExportFormats,
+              id: 'my-pdf',
+              title: 'New Export',
+            },
+          ],
+          downloads: [
+            {
+              id: 'id-1',
+            },
+            {
+              id: 'id-3',
+            },
+            {
+              url: 'url-1',
+            },
+            {
+              url: 'url-3',
+            },
+          ],
+        },
+        {
+          bibliography: ['two.bib'],
+          resources: ['abc.dat'],
+          exports: [
+            {
+              format: 'cff' as ExportFormats,
+            },
+            {
+              format: 'pdf' as ExportFormats,
+              id: 'my-pdf',
+            },
+          ],
+          downloads: [
+            {
+              id: 'id-1',
+              title: 'previous',
+            },
+            {
+              id: 'id-2',
+              title: 'previous',
+            },
+            {
+              url: 'url-1',
+              title: 'previous',
+            },
+            {
+              url: 'url-2',
+              title: 'previous',
+            },
+          ],
+        },
+        opts,
+      ),
+    ).toEqual({
+      bibliography: ['two.bib', 'one.bib'],
+      requirements: ['requirements.txt'],
+      resources: ['abc.dat'],
+      exports: [
+        {
+          format: 'cff' as ExportFormats,
+        },
+        {
+          format: 'md' as ExportFormats,
+        },
+        {
+          format: 'pdf' as ExportFormats,
+          id: 'my-pdf',
+          title: 'New Export',
+        },
+      ],
+      downloads: [
+        {
+          id: 'id-2',
+          title: 'previous',
+        },
+        {
+          url: 'url-2',
+          title: 'previous',
+        },
+        {
+          id: 'id-1',
+        },
+        {
+          id: 'id-3',
+        },
+        {
+          url: 'url-1',
+        },
+        {
+          url: 'url-3',
+        },
+      ],
     });
   });
 });

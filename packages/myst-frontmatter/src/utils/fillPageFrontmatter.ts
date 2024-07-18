@@ -228,28 +228,28 @@ export function fillProjectFrontmatter(
       ];
     }
     if (filler.exports || base.exports) {
-      const allExports = [...(base.exports ?? [])];
+      frontmatter.exports = [];
       const ids = base.exports?.map(({ id }) => id) ?? [];
       filler.exports?.forEach((exp) => {
         if (!exp.id || !ids.includes(exp.id)) {
-          allExports.push(exp);
+          frontmatter.exports?.push(exp);
         }
       });
-      frontmatter.exports = allExports;
+      frontmatter.exports?.push(...(base.exports ?? []));
     }
     if (filler.downloads || base.downloads) {
-      const allDownloads = [...(base.downloads ?? [])];
+      frontmatter.downloads = [];
       const ids = base.downloads?.map(({ id }) => id).filter(Boolean) ?? [];
       const urls = base.downloads?.map(({ url }) => url).filter(Boolean) ?? [];
       filler.downloads?.forEach((download) => {
         if (download.id && !ids.includes(download.id)) {
-          allDownloads.push(download);
+          frontmatter.downloads?.push(download);
         }
         if (download.url && !urls.includes(download.url)) {
-          allDownloads.push(download);
+          frontmatter.downloads?.push(download);
         }
       });
-      frontmatter.downloads = allDownloads;
+      frontmatter.downloads?.push(...(base.downloads ?? []));
     }
   }
 
