@@ -72,3 +72,27 @@ cases:
           title: My File
           static: true
           filename: file.md
+  - title: duplicate id errors
+    raw:
+      downloads:
+        - url: my-file.pdf
+        - id: my-file
+        - id: my-file
+    normalized:
+      downloads:
+        - url: my-file.pdf
+        - id: my-file
+        - id: my-file
+    errors: 1
+  - title: duplicate url errors
+    raw:
+      downloads:
+        - url: my-file.pdf
+        - url: my-file.pdf
+        - id: my-file
+    normalized:
+      downloads:
+        - url: my-file.pdf
+        - url: my-file.pdf
+        - id: my-file
+    errors: 1

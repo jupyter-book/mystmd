@@ -56,13 +56,38 @@ export function validateDownload(input: any, opts: ValidationOptions): Download 
 
 export function validateDownloadsList(input: any, opts: ValidationOptions): Download[] | undefined {
   if (input === undefined) return undefined;
-  const output = validateList(
-    input,
-    { coerce: true, ...incrementOptions('downloads', opts) },
-    (exp, ind) => {
-      return validateDownload(exp, incrementOptions(`downloads.${ind}`, opts));
-    },
-  );
+  const downloadOptions = { coerce: true, ...incrementOptions('downloads', opts) };
+  const output = validateList(input, downloadOptions, (exp, ind) => {
+    return validateDownload(exp, incrementOptions(`downloads.${ind}`, opts));
+  });
   if (!output) return undefined;
+  const duplicateIds = new Set<string>();
+  const duplicateUrls = new Set<string>();
+  output.forEach((download, ind) => {
+    if (
+      download.id &&
+      output
+        .slice(ind + 1)
+        .map(({ id }) => id)
+        .includes(download.id)
+    ) {
+      duplicateIds.add(download.id);
+    }
+    if (
+      download.url &&
+      output
+        .slice(ind + 1)
+        .map(({ url }) => url)
+        .includes(download.url)
+    ) {
+      duplicateUrls.add(download.url);
+    }
+  });
+  if (duplicateIds.size) {
+    validationError(`duplicate download ids: ${[...duplicateIds].join(', ')}`, downloadOptions);
+  }
+  if (duplicateUrls.size) {
+    validationError(`duplicate download urls: ${[...duplicateUrls].join(', ')}`, downloadOptions);
+  }
   return output;
 }
