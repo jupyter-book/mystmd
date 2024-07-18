@@ -12,68 +12,85 @@ import { KNOWN_IMAGE_EXTENSIONS } from '../utils/resolveExtension.js';
 import type { ExportWithOutput, ExportFnOptions } from './types.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import { getFileContent } from './utils/getFileContent.js';
+import { parseMyst } from '../process/myst.js';
 
 type PersonCFF = {
+  address?: string;
+  affiliation?: string;
+  alias?: string;
+  city?: string;
+  country?: string;
+  email?: string;
   'family-names': string;
+  fax?: string;
   'given-names': string;
   'name-particle'?: string;
   'name-suffix'?: string;
-  affiliation?: string;
-  address?: string;
-  city?: string;
-  region?: string;
-  'post-code'?: string;
-  country?: string;
   orcid?: string;
-  email?: string;
+  'post-code'?: string;
+  region?: string;
   tel?: string;
-  fax?: string;
   website?: string;
 };
 
 type EntityCFF = {
-  name: string;
   address?: string;
+  alias?: string;
   city?: string;
-  region?: string;
-  'post-code'?: string;
   country?: string;
-  orcid?: string;
-  email?: string;
-  tel?: string;
-  fax?: string;
-  website?: string;
-  'date-start'?: string;
   'date-end'?: string;
+  'date-start'?: string;
+  email?: string;
+  fax?: string;
   location?: string;
+  name: string;
+  orcid?: string;
+  'post-code'?: string;
+  region?: string;
+  tel?: string;
+  website?: string;
 };
+
+type IdentifierCFF = {
+  type: 'doi' | 'url' | 'swh' | 'other';
+  value: string;
+  description?: string;
+};
+
 type CFF = {
-  'cff-version': string;
-  message: string;
-  type?: string;
+  // These keys are described in github write up
   abstract?: string;
-  title?: string;
   authors?: (EntityCFF | PersonCFF)[];
-  contact?: (EntityCFF | PersonCFF)[];
+  'cff-version': '1.2.0';
   commit?: string;
-  copyright?: string;
+  contact?: (EntityCFF | PersonCFF)[];
+  'date-released'?: string;
   doi?: string;
-  editors?: (EntityCFF | PersonCFF)[];
-  end?: number;
-  issue?: number;
-  'issue-title'?: string;
-  journal?: string;
+  identifiers?: IdentifierCFF[];
   keywords?: string[];
   license?: string;
   'license-url'?: string;
-  month?: number;
-  pages?: number;
+  message: string;
+  'preferred-citation'?: CFF;
+  references?: CFF[];
   repository?: string;
-  start?: number;
+  'repository-artifact'?: string;
+  'repository-code'?: string;
+  title?: string;
+  type?: string;
   url?: string;
+  version?: string;
+  // All CFF_KEYS are valid though, including the following
+  copyright?: string;
+  editors?: (EntityCFF | PersonCFF)[];
+  start?: number;
+  end?: number;
+  pages?: number;
+  issue?: number;
+  'issue-title'?: string;
   volume?: number;
   'volume-title'?: string;
-  year?: number;
+  journal?: string;
 };
 
 const CFF_KEYS = [
@@ -88,8 +105,8 @@ const CFF_KEYS = [
   'contact',
   'copyright',
   'data-type',
-  'database',
   'database-provider',
+  'database',
   'date-accessed',
   'date-downloaded',
   'date-published',
@@ -103,6 +120,7 @@ const CFF_KEYS = [
   'entry',
   'filename',
   'format',
+  'identifiers',
   'institution',
   'isbn',
   'issn',
@@ -114,9 +132,9 @@ const CFF_KEYS = [
   'languages',
   'license',
   'license-url',
-  'location',
   'loc-start',
   'loc-end',
+  'location',
   'medium',
   'month',
   'nihmsid',
@@ -129,13 +147,14 @@ const CFF_KEYS = [
   'publisher',
   'recipients',
   'repository',
-  'repository-code',
   'repository-artifact',
+  'repository-code',
   'scope',
   'section',
   'senders',
-  'status',
   'start',
+  'status',
+  'term',
   'thesis-type',
   'title',
   'translators',
@@ -202,16 +221,31 @@ function frontmatterToCFF(frontmatter: PageFrontmatter, abstract?: string): CFF 
   const contact = frontmatter.authors
     ?.filter((author) => author.corresponding)
     .map((author) => authorToCFF(author, frontmatter.affiliations));
+  let dateString: string | undefined;
+  if (frontmatter.date) {
+    const date = new Date(frontmatter.date);
+    dateString = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000)
+      .toISOString()
+      .split('T')[0];
+  }
   return {
-    'cff-version': '1.0.0',
-    message: 'Please cite the following works when using this software.',
+    'cff-version': '1.2.0',
+    message: 'Please cite the following works when using this project.',
     type: 'article',
     abstract,
     title: frontmatter.title,
     authors: frontmatter.authors?.map((author) => authorToCFF(author, frontmatter.affiliations)),
+    'date-released': dateString,
     contact: contact?.length ? contact : undefined,
     copyright: frontmatter.copyright,
-    doi: frontmatter.doi,
+    identifiers: frontmatter.doi
+      ? [
+          {
+            type: 'doi',
+            value: frontmatter.doi,
+          },
+        ]
+      : undefined,
     editors: frontmatter.editors
       ?.map((id) => {
         const editor = frontmatter.contributors?.find((contrib) => contrib.id === id);
@@ -230,12 +264,10 @@ function frontmatterToCFF(frontmatter: PageFrontmatter, abstract?: string): CFF 
       typeof last_page === 'number' && typeof first_page === 'number'
         ? last_page - first_page + 1
         : undefined,
-    month: frontmatter?.date ? new Date(frontmatter.date).getMonth() : undefined,
     start: typeof first_page === 'number' ? first_page : undefined,
     url: frontmatter.source,
     volume: typeof volume === 'number' ? volume : undefined,
     'volume-title': typeof volume === 'string' ? volume : undefined,
-    year: frontmatter?.date ? new Date(frontmatter.date).getFullYear() : undefined,
     repository: frontmatter?.github,
   };
 }
@@ -255,8 +287,11 @@ export async function runCffExport(
   let abstract: string | undefined;
   if (projectPath && selectors.selectLocalConfigFile(state, projectPath) === sourceFile) {
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath);
-    // TODO: better "part-from-project" function - and allow abstract at project level
-    // abstract = frontmatter?.parts?.abstract?.join('\n\n');
+    const rawAbstract = frontmatter?.parts?.abstract?.join('\n\n');
+    if (rawAbstract) {
+      const abstractAst = parseMyst(session, rawAbstract, sourceFile);
+      abstract = toText(abstractAst);
+    }
   } else if (article.file) {
     const [content] = await getFileContent(session, [article.file], {
       projectPath,
