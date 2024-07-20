@@ -1,174 +1,92 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
-import {
-  directoryStructureToFileEntries,
-  listExplicitFiles,
-  objFromPathParts,
-  patternToDirectoryStructure,
-  sortByNumber,
-} from './fromTOC';
+import { listExplicitFiles, patternsToFileEntries } from './fromTOC';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
 const session = new Session();
 
-describe('sortByNumber', () => {
-  it.each([
-    ['a', 'b'],
-    ['a', 'A'],
-    ['A', 'b'],
-    ['a0', 'a1'],
-    ['a09', 'a10'],
-    ['a9', 'a10'],
-    ['a900000000', 'a1000000000'],
-    ['a10000000000', 'a9000000000'],
-  ])('%s is before %s', async (a, b) => {
-    expect(sortByNumber(a, b)).toBe(-1);
-  });
-});
-
-describe('objFromPathParts', () => {
-  it('empty path parts gives empty object', async () => {
-    expect(objFromPathParts([])).toEqual({});
-  });
-  it('empty path parts keeps object unchanged', async () => {
-    expect(objFromPathParts([], { a: { b: {} } })).toEqual({ a: { b: {} } });
-  });
-  it('single path part returned in object', async () => {
-    expect(objFromPathParts(['a'])).toEqual({ a: {} });
-  });
-  it('multiple path parts returned in object', async () => {
-    expect(objFromPathParts(['a', 'b', 'c'])).toEqual({ a: { b: { c: {} } } });
-  });
-  it('separate path parts added to object', async () => {
-    expect(objFromPathParts(['a', 'b', 'c'], { x: { y: { z: {} } } })).toEqual({
-      a: { b: { c: {} } },
-      x: { y: { z: {} } },
-    });
-  });
-  it('overlapping path parts added to object', async () => {
-    expect(objFromPathParts(['a', 'b', 'c'], { a: { b: { x: { y: {} } } } })).toEqual({
-      a: { b: { c: {}, x: { y: {} } } },
-    });
-  });
-});
-
-describe('patternToDirectoryStructure', () => {
+describe('patternsToFileEntries', () => {
   beforeEach(() => memfs.vol.reset());
-  it('pattern with no match returns empty structure', async () => {
+  it('non-matching patterns resolve to empty entries', () => {
     memfs.vol.fromJSON({ 'readme.md': '' });
-    expect(patternToDirectoryStructure('', '.', { fs: memfs })).toEqual({});
+    expect(
+      patternsToFileEntries(session, [{ pattern: 'foo-*.md' }], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
+    ).toEqual([]);
   });
-  it('pattern in empty directory returns empty structure', async () => {
+  it('patterns tested against empty file-system resolve to empty entries', () => {
     memfs.vol.fromJSON({});
-    expect(patternToDirectoryStructure('**', '.', { fs: memfs })).toEqual({});
+    expect(
+      patternsToFileEntries(session, [{ pattern: 'foo-*.md' }], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
+    ).toEqual([]);
   });
-  it('directory mapped to structure, respecting glob pattern', async () => {
+  it('patterns tested against nested folders respect folder precedence', () => {
     memfs.vol.fromJSON({
-      'dir/README.md': '',
-      'dir/a/index.md': '',
-      'dir/a/image.png': '',
-      'dir/a/b/data.dat': '',
-      'dir/c/supplement.md': '',
-      'dir/c/d/e/manuscript.pdf': '',
+      'foo/file-1.md': '',
+      'foo/file-10.md': '',
+      'foo/file-3.md': '',
+      'bar/file-2.md': '',
+      'bar/file-9.md': '',
     });
-    expect(patternToDirectoryStructure('dir/**', '.', { fs: memfs })).toEqual({
-      dir: {
-        'README.md': {},
-        a: { 'index.md': {}, 'image.png': {}, b: { 'data.dat': {} } },
-        c: { 'supplement.md': {}, d: { e: { 'manuscript.pdf': {} } } },
-      },
-    });
-    expect(patternToDirectoryStructure('dir/*', '.', { fs: memfs })).toEqual({
-      dir: {
-        'README.md': {},
-        a: {},
-        c: {},
-      },
-    });
-    expect(patternToDirectoryStructure('dir/**/*.md', '.', { fs: memfs })).toEqual({
-      dir: {
-        'README.md': {},
-        a: { 'index.md': {} },
-        c: { 'supplement.md': {} },
-      },
-    });
-  });
-});
-
-describe('directoryStructureToFileEntries', () => {
-  it('empty structure returns no entries', async () => {
-    expect(directoryStructureToFileEntries({}, '.', [])).toEqual([]);
-  });
-  it('files are filtered and sorted', async () => {
     expect(
-      directoryStructureToFileEntries({ 'c.ipynb': {}, 'a.md': {}, 'b.txt': {} }, '.', []),
+      patternsToFileEntries(session, [{ pattern: '**/file-*.md' }], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
     ).toEqual([
-      {
-        file: 'a.md',
-      },
-      {
-        file: 'c.ipynb',
-      },
+      { file: 'bar/file-2.md' },
+      { file: 'bar/file-9.md' },
+      { file: 'foo/file-1.md' },
+      { file: 'foo/file-3.md' },
+      { file: 'foo/file-10.md' },
     ]);
   });
-  it('folders follow files', async () => {
-    expect(directoryStructureToFileEntries({ a: { 'b.md': {} }, 'z.md': {} }, '.', [])).toEqual([
-      {
-        file: 'z.md',
-      },
-      {
-        title: 'A',
-        children: [
-          {
-            file: 'a/b.md',
-          },
-        ],
-      },
+  it('files containing natural numbers are sorted correctly', () => {
+    memfs.vol.fromJSON({
+      'foo/file-2.md': '',
+      'foo/file-01.md': '',
+      'foo/file-10.md': '',
+      'foo/file-3.md': '',
+    });
+    expect(
+      patternsToFileEntries(session, [{ pattern: '**/file-*.md' }], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
+    ).toEqual([
+      { file: 'foo/file-01.md' },
+      { file: 'foo/file-2.md' },
+      { file: 'foo/file-3.md' },
+      { file: 'foo/file-10.md' },
     ]);
   });
-  it('ignore is respected', async () => {
+  it('directories with index files are sorted correctly', () => {
+    memfs.vol.fromJSON({
+      'foo/file-2.md': '',
+      'foo/file-10.md': '',
+      'foo/index.ipynb': '',
+      'foo/file-3.md': '',
+      'bar/index.md': '',
+      'bar/file-8.md': '',
+      'bar/file-1.md': '',
+      'bar/file-10.md': '',
+    });
     expect(
-      directoryStructureToFileEntries({ a: { 'b.md': {} }, 'z.md': {} }, '.', ['a/b.md']),
+      patternsToFileEntries(session, [{ pattern: '**/*' }], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
     ).toEqual([
-      {
-        file: 'z.md',
-      },
-      {
-        title: 'A',
-        children: [],
-      },
-    ]);
-  });
-  it('index files are first', async () => {
-    expect(
-      directoryStructureToFileEntries(
-        { a: { 'b.md': {}, 'index.ipynb': {} }, 'c.md': {}, 'README.MD': {}, 'main.md': {} },
-        '.',
-        [],
-      ),
-    ).toEqual([
-      {
-        file: 'README.MD',
-      },
-      {
-        file: 'c.md',
-      },
-      {
-        file: 'main.md',
-      },
-      {
-        title: 'A',
-        children: [
-          {
-            file: 'a/index.ipynb',
-          },
-          {
-            file: 'a/b.md',
-          },
-        ],
-      },
+      { file: 'bar/index.md' },
+      { file: 'bar/file-1.md' },
+      { file: 'bar/file-8.md' },
+      { file: 'bar/file-10.md' },
+      { file: 'foo/index.ipynb' },
+      { file: 'foo/file-2.md' },
+      { file: 'foo/file-3.md' },
+      { file: 'foo/file-10.md' },
     ]);
   });
 });

@@ -12,7 +12,7 @@ import {
   DEFAULT_INDEX_FILENAMES,
   getIgnoreFiles,
   pagesFromSphinxTOC,
-  sortByNumber,
+  comparePaths,
 } from './fromTOC.js';
 import type {
   PageLevels,
@@ -43,7 +43,8 @@ function projectPagesFromPath(
     .filter((file) => !shouldIgnoreFile(session, file))
     .map((file) => join(path, file))
     .filter((file) => !ignore || !ignore.includes(file))
-    .sort(sortByNumber);
+    .sort(comparePaths);
+
   if (session.configFiles.filter((file) => contents.includes(join(path, file))).length) {
     session.log.debug(`🔍 Found config file, ignoring subdirectory: ${path}`);
     return [];
@@ -77,7 +78,7 @@ function projectPagesFromPath(
     });
   const folders = contents
     .filter((file) => isDirectory(file))
-    .sort(sortByNumber)
+    .sort(comparePaths)
     .map((dir) => {
       const projectFolder: LocalProjectFolder = { title: fileInfo(dir, pageSlugs).title, level };
       const pages = projectPagesFromPath(session, dir, nextLevel(level), pageSlugs, opts);

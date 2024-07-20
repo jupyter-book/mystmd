@@ -1,14 +1,15 @@
 import fs from 'node:fs';
-import { join, parse, resolve, sep } from 'node:path';
+import { join, parse, resolve, sep, dirname, basename } from 'node:path';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import type { JupyterBookChapter } from '../utils/toc.js';
 import { readSphinxTOC, tocFile } from '../utils/toc.js';
-import { VALID_FILE_EXTENSIONS, isValidFile, resolveExtension } from '../utils/resolveExtension.js';
-import { createTitle, fileInfo } from '../utils/fileInfo.js';
+import { VALID_FILE_EXTENSIONS, resolveExtension } from '../utils/resolveExtension.js';
+import { fileInfo } from '../utils/fileInfo.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { nextLevel } from '../utils/nextLevel.js';
 import { selectors } from '../store/index.js';
+
 import type {
   PageLevels,
   LocalProjectFolder,
@@ -31,156 +32,44 @@ import { globSync } from 'glob';
 import { isDirectory } from 'myst-cli-utils';
 
 export const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
-
 const DEFAULT_INDEX_WITH_EXT = ['.md', '.ipynb', '.myst.json']
   .map((ext) => DEFAULT_INDEX_FILENAMES.map((file) => `${file}${ext}`))
   .flat();
 
 type EntryWithoutPattern = FileEntry | URLEntry | FileParentEntry | URLParentEntry | ParentEntry;
 
-/** Sort any folders/files to ensure that `chapter10`, etc., comes after `chapter9` */
-export function sortByNumber(a: string, b: string) {
-  // Replace any repeated numbers with padded zeros
-  const regex = /(\d+)/g;
-  const paddedA = a.replace(regex, (match) => match.padStart(10, '0'));
-  const paddedB = b.replace(regex, (match) => match.padStart(10, '0'));
-  // Compare the modified strings
-  return paddedA.localeCompare(paddedB);
-}
+export function comparePaths(a: string, b: string): number {
+  const aDirName = dirname(a);
+  const bDirName = dirname(b);
+  // Same directory?
+  if (aDirName === bDirName) {
+    const aBaseName = basename(a);
+    const bBaseName = basename(b);
 
-/**
- * Take path parts and fill into nested object structure.
- *
- * For example, given:
- *
- * parts = ['one', 'two', 'three']
- *
- * This builds:
- *
- * {
- *   one: {
- *     two: {
- *       three: {},
- *     },
- *   },
- * }
- */
-export function objFromPathParts(parts: string[], obj?: Record<string, any>) {
-  if (!obj) obj = {};
-  const [part, ...remainingParts] = parts;
-  if (!part) return obj;
-  if (!obj[part]) obj[part] = {} as Record<string, any>;
-  obj[part] = objFromPathParts(remainingParts, obj[part]);
-  return obj;
-}
+    const aIsIndex = DEFAULT_INDEX_WITH_EXT.includes(aBaseName);
+    const bIsIndex = DEFAULT_INDEX_WITH_EXT.includes(bBaseName);
 
-/**
- * Take glob pattern and create nested pseudo-directory structure
- *
- * For example, given a pattern that resolves to:
- *
- * matches = [
- *   'one/two/three',
- *   'one/two/four',
- *   'five',
- * ]
- *
- * This builds:
- *
- * {
- *   one: {
- *     two: {
- *       three: {},
- *       four: {},
- *     },
- *   },
- *   five: {},
- * }
- */
-export function patternToDirectoryStructure(
-  pattern: string,
-  path: string,
-  opts?: Omit<Parameters<typeof globSync>[1], 'withFileTypes'>,
-) {
-  const matches = globSync(pattern, { cwd: path, ...opts });
-  const dirStructure: Record<string, any> = {};
-  matches.forEach((match) => {
-    // Glob always uses '/' separator, not filesystem separator
-    const fileParts = match.split('/');
-    objFromPathParts(fileParts, dirStructure);
-  });
-  return dirStructure;
-}
-
-/**
- * Take "directory structure" object and return corresponding toc entries
- *
- * The resulting entries are only FileEntries and ParentEntries. Similar
- * to the implicit project ordering, files come before parents.
- *
- * For example, given:
- *
- * dirStructure = {
- *   one: {
- *     two: {
- *       three: {},
- *       four: {},
- *     },
- *   },
- *   five: {},
- * }
- *
- * This builds:
- *
- * [
- *   { file: 'five' },
- *   {
- *     title: one,
- *     children: [
- *       {
- *          title: two,
- *          children: [
- *            { file: 'four' },
- *            { file: 'three' },
- *          ],
- *       },
- *     ],
- *   },
- * ]
- */
-export function directoryStructureToFileEntries(
-  dirStructure: Record<string, any>,
-  path: string,
-  ignore: string[],
-): (FileEntry | ParentEntry)[] {
-  let files = Object.keys(dirStructure)
-    // .map((file) => join(path, file))
-    .filter((file) => !ignore || !ignore.includes(join(path, file)))
-    .sort(sortByNumber);
-  let indexFile: string | undefined;
-  DEFAULT_INDEX_WITH_EXT.forEach((index) => {
-    if (indexFile) return;
-    indexFile = files.find((file) => file.toLowerCase() === index);
-  });
-  if (indexFile) {
-    files = [indexFile, ...files.filter((file) => file !== indexFile)];
+    // Are both a and b index files, or neither?
+    if (aIsIndex === bIsIndex) {
+      return aBaseName.localeCompare(bBaseName, undefined, {
+        numeric: true,
+        ignorePunctuation: true,
+      });
+    }
+    // Prefer index files
+    else if (aIsIndex) {
+      return -1;
+    } else {
+      return +1;
+    }
   }
-  const entries = [
-    ...files
-      .filter((file) => isValidFile(file) && Object.keys(dirStructure[file]).length === 0)
-      .map((file): FileEntry => {
-        return { file: join(path, file) };
-      }),
-    ...files
-      .filter((dir) => Object.keys(dirStructure[dir]).length > 0)
-      .map((dir): ParentEntry => {
-        return {
-          title: createTitle(dir),
-          children: directoryStructureToFileEntries(dirStructure[dir], join(path, dir), ignore),
-        };
-      }),
-  ];
-  return entries;
+  // Otherwise, compare naively as strings
+  else {
+    return a.localeCompare(b, undefined, {
+      numeric: true,
+      ignorePunctuation: true,
+    });
+  }
 }
 
 /**
@@ -215,14 +104,22 @@ export function patternsToFileEntries(
   path: string,
   ignore: string[],
   file: string,
+  opts?: Omit<Parameters<typeof globSync>[1], 'withFileTypes'>,
 ): EntryWithoutPattern[] {
   return entries
     .map((entry) => {
       if (isPattern(entry)) {
         const { pattern } = entry as PatternEntry;
-        const dirStructure = patternToDirectoryStructure(pattern, path);
-        const newEntries = directoryStructureToFileEntries(dirStructure, path, ignore);
-
+        // Glob matches, relative to `path`, ordered naturally
+        const matches = globSync(pattern, { cwd: path, nodir: true, ...opts })
+          .filter((item) => !ignore || !ignore.includes(item))
+          .sort(comparePaths);
+        // Build file entries
+        const newEntries = matches.map((item) => {
+          return {
+            file: item,
+          };
+        });
         if (newEntries.length === 0) {
           addWarningForFile(
             session,
@@ -236,13 +133,15 @@ export function patternsToFileEntries(
         }
         ignore.push(...listExplicitFiles(newEntries, path));
         return newEntries;
+      } else {
+        const { children } = entry as ParentEntry;
+        if (children) {
+          const newChildren = patternsToFileEntries(session, children, path, ignore, file);
+          return { ...entry, children: newChildren };
+        } else {
+          return entry;
+        }
       }
-      const { children } = entry as ParentEntry;
-      if (children) {
-        const newChildren = patternsToFileEntries(session, children, path, ignore, file);
-        return { ...entry, children: newChildren };
-      }
-      return entry;
     })
     .flat();
 }

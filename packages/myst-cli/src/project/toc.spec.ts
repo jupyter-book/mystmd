@@ -861,11 +861,11 @@ describe('pagesFromSphinxTOC', () => {
       pages: [
         { slug: 'x', file: 'x.md', level: 1 },
         { title: 'Project', level: 1 },
+        { slug: 'index', file: 'project/index.md', level: 2 },
         { slug: 'a', file: 'project/a.md', level: 2 },
         { slug: 'b', file: 'project/b.md', level: 2 },
         { slug: 'c', file: 'project/c.md', level: 2 },
         { slug: 'd', file: 'project/d.md', level: 2 },
-        { slug: 'index', file: 'project/index.md', level: 2 },
         { title: 'Section', level: 1 },
         { slug: 'y', file: 'section/y.md', level: 2 },
         { slug: 'z', file: 'section/z.md', level: 2 },

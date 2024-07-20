@@ -129,7 +129,7 @@ export function validatePatternEntry(
     entry,
     {
       required: ['pattern'],
-      optional: [...COMMON_ENTRY_KEYS, 'children'],
+      optional: [...COMMON_ENTRY_KEYS],
     },
     opts,
   );
