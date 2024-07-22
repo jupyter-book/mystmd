@@ -17,14 +17,18 @@ First, we'll declare the plugin _specification_ that allows MyST to discover the
 :::{literalinclude} unsplash.py
 :caption: a plugin to add an `unsplash-py` directive that includes a beautiful, random picture based on a query string.
 :::
-this code should be referenced from your `myst.yml` under the `projects.plugins`:
+this file should be executable, e.g.
+```{code} shell
+chmod +x ./unsplash.py
+```
+and should be referenced from your `myst.yml` under the `projects.plugins`:
 
 ```{code} yaml
 :filename: myst.yml
 project:
   plugins:
     - type: executable
-      path: unsplash.mjs
+      path: unsplash.py
 ```
 
 then start or build your document using `myst start` or `myst build`, and you will see that the plugin is loaded.
