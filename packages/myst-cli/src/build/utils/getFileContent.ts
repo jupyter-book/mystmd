@@ -40,7 +40,7 @@ export async function getFileContent(
   await Promise.all([
     // Load all citations (.bib)
     ...project.bibliography.map((path) => loadFile(session, path, projectPath, '.bib')),
-    // Load all content (.md and .ipynb)
+    // Load all content (.md, .tex, .myst.json, or .ipynb)
     ...allFiles.map((file, ind) => {
       const preFrontmatter = Array.isArray(preFrontmatters)
         ? preFrontmatters?.[ind]

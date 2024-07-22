@@ -29,7 +29,7 @@ import { getExportListFromRawFrontmatter } from '../../frontmatter.js';
 import { getDefaultExportFilename, getDefaultExportFolder } from './defaultNames.js';
 import { getRawFrontmatterFromFile } from '../../process/file.js';
 
-export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex'];
+export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex', '.myst.json'];
 
 type ResolvedArticles = Pick<Export, 'articles' | 'sub_articles'>;
 
@@ -197,7 +197,7 @@ export function resolveArticles(
     }
   }
   // If no articles are specified, use the sourceFile for article
-  if (!resolved.articles && SOURCE_EXTENSIONS.includes(path.extname(sourceFile))) {
+  if (!resolved.articles && SOURCE_EXTENSIONS.some(ext => sourceFile.endsWith(ext))) {
     resolved.articles = [{ file: path.resolve(sourceFile) }];
   }
   // If there is only one article with no explicit level, it should be 0, making the first section depth 1.

@@ -16,19 +16,21 @@ export enum ImageExtensions {
   mp4 = '.mp4', // A moving image!
 }
 export const KNOWN_IMAGE_EXTENSIONS = Object.values(ImageExtensions);
-export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex'];
-export const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md', '.tex']);
+
+export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex', '.myst.json'];
+export const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md', '.tex', '.myst.json']);
 
 /** Return true if file has a valid extension for MyST content */
 export function isValidFile(file: string): boolean {
-  return VALID_FILE_EXTENSIONS.includes(path.extname(file).toLowerCase());
+  const lowerCasePath = file.toLowerCase();
+  return VALID_FILE_EXTENSIONS.some(ext => lowerCasePath.endsWith(ext));
 }
 
 /**
  * Given a file with resolved path and filename, match to md, ipynb, or tex files
  *
  * If the file already has an extension and exists, it is returned as is.
- * If the file with any of the extensions .md, .ipynb, and .tex appended exists,
+ * If the file with any of the extensions .md, .ipynb, .myst.json, or .tex appended exists,
  * the existing file is returned.
  *
  * This will log an error if no match is found or multiple valid matches are found.

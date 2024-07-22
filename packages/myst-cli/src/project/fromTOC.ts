@@ -32,7 +32,7 @@ import { isDirectory } from 'myst-cli-utils';
 
 export const DEFAULT_INDEX_FILENAMES = ['index', 'readme', 'main'];
 
-const DEFAULT_INDEX_WITH_EXT = ['.md', '.ipynb']
+const DEFAULT_INDEX_WITH_EXT = ['.md', '.ipynb', '.myst.json']
   .map((ext) => DEFAULT_INDEX_FILENAMES.map((file) => `${file}${ext}`))
   .flat();
 
