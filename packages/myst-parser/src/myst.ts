@@ -114,8 +114,9 @@ export function mystParse(content: string, opts?: Options) {
 /**
  * MyST Parser as a Unified Plugin
  */
-export const mystParser: Plugin<[Options?], string, GenericParent> =
-  function mystParser(opts?: Options) {
+export const mystParser: Plugin<[Options?], string, GenericParent> = function mystParser(
+  opts?: Options,
+) {
     this.Parser = (content: string) => {
       return mystParse(content, opts);
     };
