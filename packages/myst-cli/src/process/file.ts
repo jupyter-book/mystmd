@@ -108,6 +108,11 @@ export function loadTexFile(
   return { kind: SourceFileKind.Article, mdast: tex.ast as GenericParent, frontmatter };
 }
 
+export function loadMySTJSON(content: string) {
+  const { mdast, frontmatter } = JSON.parse(content);
+  return { kind: SourceFileKind.Article, mdast, frontmatter };
+}
+
 /**
  * Attempt to load a file into the current session. Unsupported files with
  * issue a warning
