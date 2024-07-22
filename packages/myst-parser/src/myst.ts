@@ -114,8 +114,8 @@ export function mystParse(content: string, opts?: Options) {
 /**
  * MyST Parser as a Unified Plugin
  */
-export const mystParser: Plugin<[Options?], string, GenericParent> = function mystParser() {
-  this.Parser = (content: string, opts?: Options) => {
+export const mystParser: Plugin<[Options?], string, GenericParent> = function mystParser(opts?: Options) {
+  this.Parser = (content: string, _file: VFile) => {
     return mystParse(content, opts);
   };
 };
