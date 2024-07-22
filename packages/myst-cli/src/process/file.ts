@@ -178,13 +178,13 @@ export async function loadFile(
         break;
       }
       case '.json': {
-	if (file.endsWith(".myst.json")) {
+        if (file.endsWith('.myst.json')) {
           loadResult = loadMySTJSON(content);
           break;
-	}
-	// This MUST be the final case before `default`, as
-	// we rely on falling through to the `default` case if 
-	// a non-MyST JSON file is encountered here
+        }
+        // This MUST be the final case before `default`, as
+        // we rely on falling through to the `default` case if
+        // a non-MyST JSON file is encountered here
       }
       default:
         addWarningForFile(session, file, 'Unrecognized extension', 'error', {

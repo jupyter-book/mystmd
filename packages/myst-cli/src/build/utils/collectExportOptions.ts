@@ -197,7 +197,7 @@ export function resolveArticles(
     }
   }
   // If no articles are specified, use the sourceFile for article
-  if (!resolved.articles && SOURCE_EXTENSIONS.some(ext => sourceFile.endsWith(ext))) {
+  if (!resolved.articles && SOURCE_EXTENSIONS.some((ext) => sourceFile.endsWith(ext))) {
     resolved.articles = [{ file: path.resolve(sourceFile) }];
   }
   // If there is only one article with no explicit level, it should be 0, making the first section depth 1.

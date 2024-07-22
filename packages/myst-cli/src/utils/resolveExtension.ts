@@ -23,7 +23,7 @@ export const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md', '.tex', '.myst.json']
 /** Return true if file has a valid extension for MyST content */
 export function isValidFile(file: string): boolean {
   const lowerCasePath = file.toLowerCase();
-  return VALID_FILE_EXTENSIONS.some(ext => lowerCasePath.endsWith(ext));
+  return VALID_FILE_EXTENSIONS.some((ext) => lowerCasePath.endsWith(ext));
 }
 
 /**
