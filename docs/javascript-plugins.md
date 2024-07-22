@@ -22,8 +22,7 @@ This code should be referenced from your `myst.yml` under the `projects.plugins`
 :filename: myst.yml
 project:
   plugins:
-    - type: javascript
-      path: unsplash.mjs
+    - unsplash.mjs
 ```
 
 Then start or build your document using `myst start` or `myst build`, and you will see that the plugin is loaded.
