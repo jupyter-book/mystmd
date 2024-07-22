@@ -109,8 +109,8 @@ export function loadTexFile(
 }
 
 export function loadMySTJSON(content: string) {
-  const { mdast, frontmatter } = JSON.parse(content);
-  return { kind: SourceFileKind.Article, mdast, frontmatter };
+  const { mdast, frontmatter, kind } = JSON.parse(content);
+  return { kind: kind ?? SourceFileKind.Article, mdast, frontmatter };
 }
 
 /**
