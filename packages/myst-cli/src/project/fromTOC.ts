@@ -222,6 +222,7 @@ export function patternsToFileEntries(
         const { pattern } = entry as PatternEntry;
         const dirStructure = patternToDirectoryStructure(pattern, path);
         const newEntries = directoryStructureToFileEntries(dirStructure, path, ignore);
+
         if (newEntries.length === 0) {
           addWarningForFile(
             session,

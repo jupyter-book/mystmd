@@ -185,6 +185,8 @@ export async function loadFile(
         // This MUST be the final case before `default`, as
         // we rely on falling through to the `default` case if
         // a non-MyST JSON file is encountered here
+        //
+        // falls through
       }
       default:
         addWarningForFile(session, file, 'Unrecognized extension', 'error', {
