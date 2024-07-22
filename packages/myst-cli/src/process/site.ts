@@ -400,7 +400,7 @@ export async function processProject(
     await Promise.all([
       // Load all citations (.bib)
       ...project.bibliography.map((path) => loadFile(session, path, siteProject.path, '.bib')),
-      // Load all content (.md and .ipynb)
+      // Load all content (.md, .ipynb, .tex, and .myst.json)
       ...pages.map((page) => loadFile(session, page.file, siteProject.path, undefined)),
       // Load up all the intersphinx references
       loadReferences(session, { projectPath: siteProject.path }),

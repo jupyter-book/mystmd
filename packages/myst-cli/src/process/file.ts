@@ -108,6 +108,11 @@ export function loadTexFile(
   return { kind: SourceFileKind.Article, mdast: tex.ast as GenericParent, frontmatter };
 }
 
+export function loadMySTJSON(content: string) {
+  const { mdast, frontmatter, kind } = JSON.parse(content);
+  return { kind: kind ?? SourceFileKind.Article, mdast, frontmatter };
+}
+
 /**
  * Attempt to load a file into the current session. Unsupported files with
  * issue a warning
@@ -129,7 +134,7 @@ export async function loadFile(
   session: ISession,
   file: string,
   projectPath?: string,
-  extension?: '.md' | '.ipynb' | '.tex' | '.bib',
+  extension?: '.md' | '.ipynb' | '.tex' | '.bib' | '.myst.json',
   opts?: LoadFileOptions,
 ): Promise<PreRendererData | undefined> {
   await session.loadPlugins();
@@ -176,6 +181,17 @@ export async function loadFile(
           cache.$doiRenderers[normalizedDOI] = { id, render: renderer };
         });
         break;
+      }
+      case '.json': {
+        if (file.endsWith('.myst.json')) {
+          loadResult = loadMySTJSON(content);
+          break;
+        }
+        // This MUST be the final case before `default`, as
+        // we rely on falling through to the `default` case if
+        // a non-MyST JSON file is encountered here
+        //
+        // falls through
       }
       default:
         addWarningForFile(session, file, 'Unrecognized extension', 'error', {
