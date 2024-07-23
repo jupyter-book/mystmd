@@ -5,7 +5,7 @@ import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent, IExpressionResult, IExpressionError } from 'myst-common';
-import { NotebookCell, fileError, fileWarn } from 'myst-common';
+import { NotebookCell, fileError } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
