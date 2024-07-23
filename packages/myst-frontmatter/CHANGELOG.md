@@ -1,5 +1,13 @@
 # myst-frontmatter
 
+## 1.5.0
+
+### Patch Changes
+
+- 8c487991: Keep all contributors/affiliations until final page resolution
+- f6aa726c: Allow parts in project frontmatter
+- 478c4d4f: Extend (and deduplicate) lists when extending project frontmatter
+
 ## 1.4.7
 
 ## 1.4.6

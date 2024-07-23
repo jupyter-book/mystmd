@@ -1,5 +1,18 @@
 # myst-parser
 
+## 1.5.0
+
+### Patch Changes
+
+- 8e486e56: Ignore 'dot' top level domain.
+- 372de44c: Exclude '.so' from tlds
+- 848b6d8b: Fix options passing for mystParse unified plugin
+- Updated dependencies [d04ceb6a]
+- Updated dependencies [0576d5ad]
+  - myst-directives@1.5.0
+  - myst-common@1.5.0
+  - myst-roles@1.5.0
+
 ## 1.4.4
 
 ### Patch Changes

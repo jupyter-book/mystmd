@@ -1,5 +1,21 @@
 # myst-transforms
 
+## 1.3.19
+
+### Patch Changes
+
+- 661039d4: Do not duplicate h1 title nested in block
+- 19e96e27: Fix conversion of hast fragments to mdast fragments
+- 1239104c: Change code caption numbers from 'Code' to 'Program'
+- Updated dependencies [8c487991]
+- Updated dependencies [f6aa726c]
+- Updated dependencies [0576d5ad]
+- Updated dependencies [478c4d4f]
+  - myst-frontmatter@1.5.0
+  - myst-common@1.5.0
+  - myst-spec-ext@1.5.0
+  - myst-to-html@1.5.0
+
 ## 1.3.18
 
 ### Patch Changes
