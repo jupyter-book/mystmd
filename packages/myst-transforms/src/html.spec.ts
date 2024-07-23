@@ -427,7 +427,7 @@ describe('Test reconstructHtmlTransform', () => {
     htmlTransform(mdast);
     expect(mdast).toEqual({
       type: 'root',
-      children: [{ type: 'paragraph', children: [{ type: 'image', url: 'test.mp4' }] }],
+      children: [{ type: 'image', url: 'test.mp4' }],
     });
   });
   test('more open tags than close tags', async () => {
