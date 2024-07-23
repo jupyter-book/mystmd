@@ -73,6 +73,17 @@ Each entry listed under `extends` may be a relative path to a file or a URL. URL
 
 Composing files together this way allows you to have a single source of truth for project frontmatter that may be reused across multiple projects, for example math macros or funding information.
 
+When using `extends` to compose configuration files, list-type fields are combined, rather than replaced. This means, for example, you may define a single export in one file:
+
+```yaml
+version: 1
+project:
+  export:
+    format: meca
+```
+
+Then, any `myst.yml` file that extends this file will have a `meca` export in addition to any other exports it defines. This behavior applies to the list fields: `tags`, `keywords`, `exports`, `downloads`, `funding`, `resources`, `requirements`, `bibliography`, `editors`, and `reviewers`. The fields `exports` and `downloads` are deduplicated by `id`, so if you wish to override a value from an inherited configuration you may assign it the same `id`. Other fields cannot be overridden; instead, shared configurations should be as granular and shareable as possible.
+
 +++
 
 ## Available frontmatter fields
