@@ -141,6 +141,9 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     sub(h: H, node: any) {
       return h(node, 'subscript', all(h, node));
     },
+    kbd(h: H, node: any) {
+      return h(node, 'keyboard', all(h, node));
+    },
     cite(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
       return attrs.label ? h(node, 'cite', attrs, all(h, node)) : all(h, node);
