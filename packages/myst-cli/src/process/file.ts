@@ -155,16 +155,25 @@ function validateMySTJSON(
   return {
     mdast,
     kind: kind ?? SourceFileKind.Article,
-    frontmatter: frontmatter ?? {}
+    frontmatter: frontmatter ?? {},
   };
 }
 
-export function loadMySTJSON(session: ISession, content: string, file: string, opts?: LoadFileOptions) {
+export function loadMySTJSON(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+) {
   const vfile = new VFile();
   vfile.path = file;
 
   const rawData = JSON.parse(content);
-  const { mdast, kind, frontmatter: jsonFrontmatter } = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
+  const {
+    mdast,
+    kind,
+    frontmatter: jsonFrontmatter,
+  } = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
   const { frontmatter: astFrontmatter, identifiers } = getPageFrontmatter(
     session,
     mdast,
@@ -179,7 +188,7 @@ export function loadMySTJSON(session: ISession, content: string, file: string, o
   );
 
   logMessagesFromVFile(session, vfile);
-  return {mdast, kind, frontmatter, identifiers};
+  return { mdast, kind, frontmatter, identifiers };
 }
 
 /**
