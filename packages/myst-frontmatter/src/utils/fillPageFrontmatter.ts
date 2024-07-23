@@ -81,6 +81,27 @@ export function fillSiteFrontmatter(
     ].forEach((auth) => {
       if (auth.id) contributorIds.add(auth.id);
     });
+    [...(base.affiliations ?? []), ...(filler.affiliations ?? [])].forEach((aff) => {
+      if (aff.id) affiliationIds.add(aff.id);
+    });
+    if (filler.tags || base.tags) {
+      frontmatter.tags = [...new Set([...(filler.tags ?? []), ...(base.tags ?? [])])];
+    }
+    if (filler.reviewers || base.reviewers) {
+      frontmatter.reviewers = [
+        ...new Set([...(filler.reviewers ?? []), ...(base.reviewers ?? [])]),
+      ];
+    }
+    if (filler.editors || base.editors) {
+      frontmatter.editors = [...new Set([...(filler.editors ?? []), ...(base.editors ?? [])])];
+    }
+    if (filler.keywords || base.keywords) {
+      frontmatter.keywords = [...new Set([...(filler.keywords ?? []), ...(base.keywords ?? [])])];
+    }
+    if (filler.funding || base.funding) {
+      // This does nothing to deduplicate repeated awards
+      frontmatter.funding = [...(filler.funding ?? []), ...(base.funding ?? [])];
+    }
   }
 
   if (frontmatter.authors?.length || contributorIds.size) {
@@ -127,12 +148,6 @@ export function fillSiteFrontmatter(
   frontmatter.affiliations?.forEach((aff) => {
     if (aff.id) affiliationIds.add(aff.id);
   });
-
-  if (!trimUnused) {
-    [...(base.affiliations ?? []), ...(filler.affiliations ?? [])].forEach((aff) => {
-      if (aff.id) affiliationIds.add(aff.id);
-    });
-  }
 
   if (affiliationIds.size) {
     const affiliations = [...(base.affiliations ?? []), ...(filler.affiliations ?? [])];
@@ -194,6 +209,48 @@ export function fillProjectFrontmatter(
       ...(filler.settings ?? {}),
       ...(base.settings ?? {}),
     };
+  }
+
+  if (!trimUnused) {
+    if (filler.bibliography || base.bibliography) {
+      frontmatter.bibliography = [
+        ...new Set([...(filler.bibliography ?? []), ...(base.bibliography ?? [])]),
+      ];
+    }
+    if (filler.requirements || base.requirements) {
+      frontmatter.requirements = [
+        ...new Set([...(filler.requirements ?? []), ...(base.requirements ?? [])]),
+      ];
+    }
+    if (filler.resources || base.resources) {
+      frontmatter.resources = [
+        ...new Set([...(filler.resources ?? []), ...(base.resources ?? [])]),
+      ];
+    }
+    if (filler.exports || base.exports) {
+      frontmatter.exports = [];
+      const ids = base.exports?.map(({ id }) => id) ?? [];
+      filler.exports?.forEach((exp) => {
+        if (!exp.id || !ids.includes(exp.id)) {
+          frontmatter.exports?.push(exp);
+        }
+      });
+      frontmatter.exports?.push(...(base.exports ?? []));
+    }
+    if (filler.downloads || base.downloads) {
+      frontmatter.downloads = [];
+      const ids = base.downloads?.map(({ id }) => id).filter(Boolean) ?? [];
+      const urls = base.downloads?.map(({ url }) => url).filter(Boolean) ?? [];
+      filler.downloads?.forEach((download) => {
+        if (download.id && !ids.includes(download.id)) {
+          frontmatter.downloads?.push(download);
+        }
+        if (download.url && !urls.includes(download.url)) {
+          frontmatter.downloads?.push(download);
+        }
+      });
+      frontmatter.downloads?.push(...(base.downloads ?? []));
+    }
   }
 
   return frontmatter;

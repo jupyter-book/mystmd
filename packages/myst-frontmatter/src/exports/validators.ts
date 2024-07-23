@@ -79,14 +79,26 @@ export const MULTI_ARTICLE_EXPORT_FORMATS = [
 
 export function validateExportsList(input: any, opts: ValidationOptions): Export[] | undefined {
   if (input === undefined) return undefined;
-  const output = validateList(
-    input,
-    { coerce: true, ...incrementOptions('exports', opts) },
-    (exp, ind) => {
-      return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
-    },
-  );
+  const exportsOptions = { coerce: true, ...incrementOptions('exports', opts) };
+  const output = validateList(input, exportsOptions, (exp, ind) => {
+    return validateExport(exp, incrementOptions(`exports.${ind}`, opts));
+  });
   if (!output || output.length === 0) return undefined;
+  const duplicates = new Set<string>();
+  output.forEach((exp, ind) => {
+    if (
+      exp.id &&
+      output
+        .slice(ind + 1)
+        .map(({ id }) => id)
+        .includes(exp.id)
+    ) {
+      duplicates.add(exp.id);
+    }
+  });
+  if (duplicates.size) {
+    validationError(`duplicate export ids: ${[...duplicates].join(', ')}`, exportsOptions);
+  }
   return output;
 }
 

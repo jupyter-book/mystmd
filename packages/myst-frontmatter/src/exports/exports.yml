@@ -486,3 +486,17 @@ cases:
       exports:
         - format: pdf
           id: my-pdf
+  - title: duplicate id errors
+    raw:
+      exports:
+        - format: pdf
+          id: my-pdf
+        - format: typst
+          id: my-pdf
+    normalized:
+      exports:
+        - format: pdf
+          id: my-pdf
+        - format: typst
+          id: my-pdf
+    errors: 1
