@@ -197,8 +197,7 @@
                     "metadata": {},
                     "data": {
                       "text/html": {
-                        "content_type": "text/html",
-                        "hash": "b7397eaae9b8b69ecb0927a44a1599c1"
+                        "content_type": "text/html"
                       },
                       "text/plain": {
                         "content": "alt.VConcatChart(...)",
@@ -294,8 +293,7 @@
                     "metadata": {},
                     "data": {
                       "text/html": {
-                        "content_type": "text/html",
-                        "hash": "b7397eaae9b8b69ecb0927a44a1599c1"
+                        "content_type": "text/html"
                       },
                       "text/plain": {
                         "content": "alt.VConcatChart(...)",
