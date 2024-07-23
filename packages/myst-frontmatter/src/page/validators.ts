@@ -2,14 +2,12 @@ import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
-  validateList,
   validateObjectKeys,
   validateString,
-  validationError,
   validateBoolean,
 } from 'simple-validators';
 import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
-import { PAGE_FRONTMATTER_KEYS, PAGE_KNOWN_PARTS, type PageFrontmatter } from './types.js';
+import { PAGE_FRONTMATTER_KEYS, type PageFrontmatter } from './types.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
@@ -46,40 +44,6 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   }
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
-  }
-  const partsOptions = incrementOptions('parts', opts);
-  let parts: Record<string, any> | undefined;
-  if (defined(value.parts)) {
-    parts = validateObjectKeys(
-      value.parts,
-      { optional: PAGE_KNOWN_PARTS, alias: FRONTMATTER_ALIASES },
-      { keepExtraKeys: true, suppressWarnings: true, ...partsOptions },
-    );
-  }
-  PAGE_KNOWN_PARTS.forEach((partKey) => {
-    if (defined(value[partKey])) {
-      parts ??= {};
-      if (parts[partKey]) {
-        validationError(`duplicate value for part ${partKey}`, partsOptions);
-      } else {
-        parts[partKey] = value[partKey];
-      }
-    }
-  });
-  if (parts) {
-    const partsEntries = Object.entries(parts)
-      .map(([k, v]) => {
-        return [
-          k,
-          validateList(v, { coerce: true, ...incrementOptions(k, partsOptions) }, (item, index) => {
-            return validateString(item, incrementOptions(`${k}.${index}`, partsOptions));
-          }),
-        ];
-      })
-      .filter((entry): entry is [string, string[]] => !!entry[1]?.length);
-    if (partsEntries.length > 0) {
-      output.parts = Object.fromEntries(partsEntries);
-    }
   }
   if (defined(value.content_includes_title)) {
     output.content_includes_title = validateBoolean(

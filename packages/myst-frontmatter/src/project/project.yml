@@ -181,3 +181,19 @@ cases:
       copyright: {}
     normalized: {}
     errors: 1
+  - title: parts are validated
+    raw:
+      abstract: |-
+        Just an example part!
+      data_availability: Example
+      parts:
+        example_part: |-
+          Another example part!
+    normalized:
+      parts:
+        abstract:
+          - Just an example part!
+        data_availability:
+          - Example
+        example_part:
+          - Another example part!

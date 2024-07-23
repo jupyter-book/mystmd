@@ -10,6 +10,7 @@ import {
   validateObjectKeys,
   validateString,
   validateUrl,
+  validationError,
 } from 'simple-validators';
 import { validateTOC } from 'myst-toc';
 import { validateBiblio } from '../biblio/validators.js';
@@ -21,7 +22,7 @@ import { validateExternalReferences } from '../references/validators.js';
 import { validateSiteFrontmatterKeys } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateDoi } from '../utils/validators.js';
-import { PROJECT_FRONTMATTER_KEYS } from './types.js';
+import { PAGE_KNOWN_PARTS, PROJECT_FRONTMATTER_KEYS } from './types.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
@@ -131,6 +132,40 @@ export function validateProjectAndPageFrontmatterKeys(
       incrementOptions('settings', opts),
     );
     if (settings) output.settings = settings;
+  }
+  const partsOptions = incrementOptions('parts', opts);
+  let parts: Record<string, any> | undefined;
+  if (defined(value.parts)) {
+    parts = validateObjectKeys(
+      value.parts,
+      { optional: PAGE_KNOWN_PARTS, alias: FRONTMATTER_ALIASES },
+      { keepExtraKeys: true, suppressWarnings: true, ...partsOptions },
+    );
+  }
+  PAGE_KNOWN_PARTS.forEach((partKey) => {
+    if (defined(value[partKey])) {
+      parts ??= {};
+      if (parts[partKey]) {
+        validationError(`duplicate value for part ${partKey}`, partsOptions);
+      } else {
+        parts[partKey] = value[partKey];
+      }
+    }
+  });
+  if (parts) {
+    const partsEntries = Object.entries(parts)
+      .map(([k, v]) => {
+        return [
+          k,
+          validateList(v, { coerce: true, ...incrementOptions(k, partsOptions) }, (item, index) => {
+            return validateString(item, incrementOptions(`${k}.${index}`, partsOptions));
+          }),
+        ];
+      })
+      .filter((entry): entry is [string, string[]] => !!entry[1]?.length);
+    if (partsEntries.length > 0) {
+      output.parts = Object.fromEntries(partsEntries);
+    }
   }
   return output;
 }
