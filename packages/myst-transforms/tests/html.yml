@@ -42,11 +42,9 @@ cases:
     after:
       type: root
       children:
-        - type: paragraph
-          children:
-            - type: image
-              url: example.jpg
-              title: example
+        - type: image
+          url: example.jpg
+          title: example
   - title: table
     before:
       type: root
@@ -132,3 +130,36 @@ cases:
     after:
       type: root
       children: []
+
+  - title: inline elements
+    before:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: listItem
+              children:
+                - type: html
+                  value: <code>foo</code>
+    after:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: listItem
+              children:
+                - type: inlineCode
+                  value: foo
+  - title: kbd tag
+    before:
+      type: root
+      children:
+        - type: html
+          value: <kbd>Shift</kbd>
+    after:
+      type: root
+      children:
+        - type: keyboard
+          children:
+            - type: text
+              value: Shift
