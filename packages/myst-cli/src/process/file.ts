@@ -6,7 +6,7 @@ import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
 import { doi } from 'doi-utils';
 import type { GenericParent } from 'myst-common';
-import { RuleId, toText } from 'myst-common';
+import { RuleId, toText, fileError, fileWarn } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { validatePageFrontmatter, fillProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -23,7 +23,6 @@ import { processNotebookFull } from './notebook.js';
 import { selectors } from '../store/index.js';
 import { defined, incrementOptions, validateObjectKeys, validateEnum } from 'simple-validators';
 import type { ValidationOptions } from 'simple-validators';
-import { fileError, fileWarn } from 'myst-common';
 
 type LoadFileOptions = { preFrontmatter?: Record<string, any>; keepTitleNode?: boolean };
 
