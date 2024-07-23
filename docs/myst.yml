@@ -45,7 +45,7 @@ project:
     TLA: Three Letter Acronym
     OA: Open Access
     CSV: comma-separated values
-    TOC: table of contents  
+    TOC: table of contents
   plugins:
     - directives.mjs
     - unsplash.mjs

@@ -46,9 +46,8 @@ There are two ways to implement a plugin in MyST: JavaScript plugins, and execut
 Plugins written in JavaScript with access to helpful AST manipulation routines.
 :::
 
-:::{card} Executable Plugins
+:::{card} Any Executable Plugins (e.g. Python)
 :link: ./executable-plugins.md
 
 Plugins written in other languages which communicate with MyST over stdin and stdout.
 :::
-

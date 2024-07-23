@@ -132,9 +132,10 @@ CSS styles are currently only used for HTML outputs and are not carried through 
 
 ## Include tables from file
 
-If you have tables in a file (e.g. output from your data analysis elsewhere), you can use the {myst:directive}`include` directive. This works both for HTML and LaTeX tables.
+If you have tables in a file (e.g. output from your data analysis elsewhere), you can use the {myst:directive}`include` directive. This works both for HTML and LaTeX tables ([`table-from-file.html`](table-from-file.html)).
 
-```{myst}
+````{card}
+```myst
 ::::{table} Area Comparisons (imported HTML file)
 :label: tbl:areas-html-file
 
@@ -143,6 +144,15 @@ If you have tables in a file (e.g. output from your data analysis elsewhere), yo
 
 ::::
 ```
+
+::::{table} Area Comparisons (imported HTML file)
+:label: tbl:areas-html-file
+
+:::{include} table-from-file.html
+:::
+
+::::
+````
 
 ## Notebook outputs as tables
 

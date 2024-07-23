@@ -1,15 +1,14 @@
 ---
-title: Executable Plugins
+title: Executable Plugins (Python)
 description: Plugins built as stand-alone applications can be written in languages such as Python, and may be more familiar to some developers.
 ---
 
-MyST is able to invoke plugins written in different languages through standard IO protocols. Executable MyST plugins are treated as a [](wiki:Black_box), whereby MyST only sees the data it passes to the plugin, and the response from the plugin itself.
-
+MyST is able to invoke plugins written in different languages through standard IO protocols, for example, in Python. Executable MyST plugins are treated as a [](wiki:black_box), whereby MyST only sees the data it passes to the plugin, and the response from the plugin itself.
 
 ## Defining a new directive
 
 :::{note}
-There are many different ways to create an executable plugin. Here we'll use Python to implement an `unsplash-py` directive, but any programming language that can read and write from stdin, stdout, and stderr, and define a commandline interface would work.
+There are many different ways to create an executable plugin. Here we'll use Python to implement an `unsplash-py` directive, but any programming language that can read and write from stdin, stdout, and stderr, and define a command line interface would work.
 :::
 
 First, we'll declare the plugin _specification_ that allows MyST to discover the directives, transforms, and/or roles that the plugin implements. This specification looks very similar to [the definition of a JavaScript plugin](javascript-plugins.md#unsplash-js-source), except the implementation logic (e.g. the directive `run` method) is not defined.
@@ -18,9 +17,11 @@ First, we'll declare the plugin _specification_ that allows MyST to discover the
 :caption: a plugin to add an `unsplash-py` directive that includes a beautiful, random picture based on a query string.
 :::
 this file should be executable, e.g.
+
 ```{code} shell
 chmod +x ./unsplash.py
 ```
+
 and should be referenced from your `myst.yml` under the `projects.plugins`:
 
 ```{code} yaml
@@ -57,7 +58,7 @@ The types are defined in `myst-common` ([npm](https://www.npmjs.com/package/myst
 
 ## Implementing a custom transform
 
-Directives can be used to extend MyST with rich structured content. However, sometimes we want to _modify_ the existing behavior of MyST. One of the ways to do this is by writing a custom transform. In this section, we'll implement a transform that replaces **bold** text with _emphasis_.
+Directives can be used to extend MyST with rich structured content. However, sometimes we want to _modify_ the existing behavior of MyST. One of the ways to do this is by writing a custom transform. In this section, we'll implement a transform that replaces **bold** text with **special bold text**.
 
 First, let's define the transform
 :::{literalinclude} markup.py
@@ -89,4 +90,3 @@ I am **special bold text (python)**, whilst I am **normal bold text**
 ```
 
 I am **special bold text (python)**, whilst I am **normal bold text**
-

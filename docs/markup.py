@@ -27,7 +27,7 @@ def find_all_by_type(node: dict, type_: str):
 
     if "children" not in node:
         return
-    for next_node in node["children"]:      
+    for next_node in node["children"]:
         yield from find_all_by_type(next_node, type_)
 
 
@@ -56,8 +56,13 @@ def run_transform(name, data):
 
         # Only transform nodes whose text reads "special bold text (python)"
         if child_text == "special bold text (python)":
-            strong_node["type"] = "emphasis"
-    
+            strong_node["type"] = "span"
+            strong_node["style"] = {
+              "background": "-webkit-linear-gradient(20deg, #09009f, #E743D9)",
+              "-webkit-background-clip": "text",
+              "-webkit-text-fill-color": "transparent",
+            };
+
     return data
 
 
