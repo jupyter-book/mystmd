@@ -150,3 +150,16 @@ cases:
               children:
                 - type: inlineCode
                   value: foo
+  - title: kbd tag
+    before:
+      type: root
+      children:
+        - type: html
+          value: <kbd>Shift</kbd>
+    after:
+      type: root
+      children:
+        - type: keyboard
+          children:
+            - type: text
+              value: Shift
