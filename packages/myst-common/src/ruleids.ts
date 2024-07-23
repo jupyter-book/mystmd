@@ -103,4 +103,6 @@ export enum RuleId {
   pluginExecutionFailed = 'plugin-execution-failed',
   // Container rules
   containerChildrenValid = 'container-children-valid',
+  // File rules
+  mystJsonValid = 'myst-json-valid',
 }

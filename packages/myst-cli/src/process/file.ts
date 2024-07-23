@@ -21,6 +21,9 @@ import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebookFull } from './notebook.js';
 import { selectors } from '../store/index.js';
+import { defined, incrementOptions, validateObjectKeys, validateEnum } from 'simple-validators';
+import type { ValidationOptions } from 'simple-validators';
+import { fileError, fileWarn } from 'myst-common';
 
 type LoadFileOptions = { preFrontmatter?: Record<string, any>; keepTitleNode?: boolean };
 
@@ -108,9 +111,61 @@ export function loadTexFile(
   return { kind: SourceFileKind.Article, mdast: tex.ast as GenericParent, frontmatter };
 }
 
-export function loadMySTJSON(content: string) {
-  const { mdast, frontmatter, kind } = JSON.parse(content);
-  return { kind: kind ?? SourceFileKind.Article, mdast, frontmatter };
+export function mystJSONValidationOpts(
+  vfile: VFile,
+  opts?: { property?: string; ruleId?: RuleId },
+): ValidationOptions {
+  return {
+    property: opts?.property ?? 'file',
+    file: vfile.path,
+    messages: {},
+    errorLogFn: (message: string) => {
+      fileError(vfile, message, { ruleId: opts?.ruleId ?? RuleId.mystJsonValid });
+    },
+    warningLogFn: (message: string) => {
+      fileWarn(vfile, message, { ruleId: opts?.ruleId ?? RuleId.mystJsonValid });
+    },
+  };
+}
+
+function validateMySTJSON(
+  input: any,
+  opts: ValidationOptions,
+): { mdast: GenericParent; kind: SourceFileKind; frontmatter: PageFrontmatter } {
+  const value = validateObjectKeys(
+    input,
+    { required: ['mdast'], optional: ['kind', 'frontmatter'] },
+    opts,
+  );
+  const mdast: GenericParent = value?.ast ?? { type: 'root', children: [] };
+
+  let kind: undefined | SourceFileKind;
+  if (defined(input.kind)) {
+    kind = validateEnum<SourceFileKind>(input.kind, {
+      ...incrementOptions('kind', opts),
+      enum: SourceFileKind,
+    });
+  }
+  let frontmatter: undefined | PageFrontmatter;
+  if (defined(input.frontmatter)) {
+    frontmatter = validatePageFrontmatter(input.frontmatter, incrementOptions('frontmatter', opts));
+  }
+
+  return {
+    mdast,
+    kind: kind ?? SourceFileKind.Article,
+    frontmatter: frontmatter ?? {},
+  };
+}
+
+export function loadMySTJSON(session: ISession, content: string, file: string) {
+  const vfile = new VFile();
+  vfile.path = file;
+
+  const rawData = JSON.parse(content);
+  const result = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
+  logMessagesFromVFile(session, vfile);
+  return result;
 }
 
 /**
@@ -184,7 +239,7 @@ export async function loadFile(
       }
       case '.json': {
         if (file.endsWith('.myst.json')) {
-          loadResult = loadMySTJSON(content);
+          loadResult = loadMySTJSON(session, content, file);
           break;
         }
         // This MUST be the final case before `default`, as
