@@ -137,7 +137,8 @@ function validateMySTJSON(
     { required: ['mdast'], optional: ['kind', 'frontmatter'] },
     opts,
   );
-  const mdast: GenericParent = value?.ast ?? { type: 'root', children: [] };
+  // Although this is required, we'll set it to an empty article by default
+  const mdast: GenericParent = value?.mdast ?? { type: 'root', children: [] };
 
   let kind: undefined | SourceFileKind;
   if (defined(input.kind)) {
@@ -154,18 +155,31 @@ function validateMySTJSON(
   return {
     mdast,
     kind: kind ?? SourceFileKind.Article,
-    frontmatter: frontmatter ?? {},
+    frontmatter: frontmatter ?? {}
   };
 }
 
-export function loadMySTJSON(session: ISession, content: string, file: string) {
+export function loadMySTJSON(session: ISession, content: string, file: string, opts?: LoadFileOptions) {
   const vfile = new VFile();
   vfile.path = file;
 
   const rawData = JSON.parse(content);
-  const result = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
+  const { mdast, kind, frontmatter: jsonFrontmatter } = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
+  const { frontmatter: astFrontmatter, identifiers } = getPageFrontmatter(
+    session,
+    mdast,
+    vfile,
+    opts?.preFrontmatter,
+    opts?.keepTitleNode,
+  );
+  const frontmatter = fillProjectFrontmatter(
+    astFrontmatter,
+    jsonFrontmatter,
+    frontmatterValidationOpts(vfile),
+  );
+
   logMessagesFromVFile(session, vfile);
-  return result;
+  return {mdast, kind, frontmatter, identifiers};
 }
 
 /**
