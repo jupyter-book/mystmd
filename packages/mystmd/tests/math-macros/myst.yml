@@ -3,7 +3,7 @@ project:
   id: d040ca98-d48a-487f-9745-8d337ff305eb
   keywords: []
   authors: []
-  github: https://github.com/executablebooks/mystjs
+  github: https://github.com/jupyter-book/mystmd
   math:
     '\one': 'b'
     '\three': 'd'

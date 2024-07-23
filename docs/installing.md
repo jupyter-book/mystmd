@@ -12,7 +12,7 @@ The MyST Markdown Command Line Interface (CLI) is available through [NodeJS](./i
 
 ```{important} Installing Node
 
-If you do not have `node` installed you can look at our how to guide for [Installing NodeJS](./installing-prerequisites.md). If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystmd/issues).
+If you do not have `node` installed you can look at our how to guide for [Installing NodeJS](./installing-prerequisites.md). If you have any challenges installing, please [open an issue here](https://github.com/jupyter-book/mystmd/issues).
 ```
 
 🛠️ Choose either PyPI, Conda, Mamba or NPM and run the following command:
@@ -29,7 +29,7 @@ myst --version
 This command should print the current version of the package. If all is good, you can type `myst` again in your terminal and it will list the help with all of the options available to you.
 
 ```{note}
-If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystmd/issues).
+If you have any challenges installing, please [open an issue here](https://github.com/jupyter-book/mystmd/issues).
 ```
 
 +++

@@ -224,17 +224,17 @@ Wikipedia links, like `https://fr.wikipedia.org/wiki/Croissant_(viennoiserie)` w
 
 ### Issues and Pull Requests
 
-MyST Markdown can directly link and show preview of GitHub issues and Pull Requests, for example, [#336](https://github.com/executablebooks/mystmd/issues/336) and [#87](https://github.com/executablebooks/myst-theme/pull/87). To enable this, just use a normal link to your
+MyST Markdown can directly link and show preview of GitHub issues and Pull Requests, for example, [#336](https://github.com/jupyter-book/mystmd/issues/336) and [#87](https://github.com/jupyter-book/myst-theme/pull/87). To enable this, just use a normal link to your
 
 ```markdown
-[#87](https://github.com/executablebooks/myst-theme/pull/87)
+[#87](https://github.com/jupyter-book/myst-theme/pull/87)
 ```
 
 If you do not include children for the link, then the default text will become `owner/repo#123`.
 
 ### Linking to Code
 
-MyST Markdown can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/executablebooks/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both multiple line numbers and highlighting [single lines](https://github.com/executablebooks/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/executablebooks/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
+MyST Markdown can directly integrate with links to GitHub to create hover-card information directly integrated into your MyST documents. For example, a link to the [linkTransforms](https://github.com/jupyter-book/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L12-L28) plugin code shows a preview of the code. The code preview works for both multiple line numbers and highlighting [single lines](https://github.com/jupyter-book/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts#L30), which shows the surrounding ten lines, with the referenced line highlighted. If you reference the [full file](https://github.com/jupyter-book/mystmd/blob/78d16ee1a/packages/myst-transforms/src/links/plugin.ts) then the first ten lines of the file are shown in the preview.
 
 ````{important}
 :class: dropdown

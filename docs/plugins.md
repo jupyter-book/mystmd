@@ -9,7 +9,7 @@ Plugins provide powerful ways to extend and customize MyST by adding directives 
 The interfaces and packaging for the plugins may change substantially in the future.\
 **Expect changes!!**
 
-If you are implementing a plugin, please let us know on [GitHub](https://github.com/executablebooks/mystmd) or [Discord](https://discord.mystmd.org/).
+If you are implementing a plugin, please let us know on [GitHub](https://github.com/jupyter-book/mystmd) or [Discord](https://discord.mystmd.org/).
 :::
 
 ## Overview of a Plugin

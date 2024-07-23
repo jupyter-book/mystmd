@@ -78,7 +78,7 @@ TL;DR
 
 ## Project Goals
 
-MyST is part of the [Executable Books](https://executablebooks.org/) organization, and is an open-source, community-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
+MyST is part of the [Project Jupyter](https://jupyter.org/) organization, and is an open-source, community-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
 
 ::::{grid} 1 1 2 3
 

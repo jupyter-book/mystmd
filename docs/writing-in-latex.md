@@ -45,7 +45,7 @@ While MyST effectively handles a wide range of LaTeX documents, particularly sci
 
 The following packages are supported and includes common typography, figures, tables, code and algorithms.
 The MyST team will extend functionality for highly-used packages and conventions,
-if you have a package that you think we should support, please [open an issue](https://github.com/executablebooks/mystmd/issues).
+if you have a package that you think we should support, please [open an issue](https://github.com/jupyter-book/mystmd/issues).
 
 :::{myst:tex-list}
 :::

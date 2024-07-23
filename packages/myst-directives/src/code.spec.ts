@@ -45,7 +45,7 @@ describe('Code block options', () => {
     expect(opts).toEqual({ emphasizeLines: [3, 5] });
     expect(vfile.messages.length).toEqual(0);
   });
-  // See https://github.com/executablebooks/jupyterlab-myst/issues/174
+  // See https://github.com/jupyter-book/jupyterlab-myst/issues/174
   test(':lineno-start: 10, :emphasize-lines: 12,13', () => {
     const vfile = new VFile();
     const opts = getCodeBlockOptionsWrap({ 'lineno-start': 10, 'emphasize-lines': '12,13' }, vfile);

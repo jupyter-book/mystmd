@@ -8,9 +8,9 @@ describe('Test GithubTransformer', () => {
     const file = new VFile();
     const t = new GithubTransformer();
     const url =
-      'https://github.com/executablebooks/mystmd/blob/3cdb8ec6/packages/mystmd/src/mdast/state.ts#L32-L36';
+      'https://github.com/jupyter-book/mystmd/blob/3cdb8ec6/packages/mystmd/src/mdast/state.ts#L32-L36';
     const raw =
-      'https://raw.githubusercontent.com/executablebooks/mystmd/3cdb8ec6/packages/mystmd/src/mdast/state.ts';
+      'https://raw.githubusercontent.com/jupyter-book/mystmd/3cdb8ec6/packages/mystmd/src/mdast/state.ts';
     const link: Link = {
       type: 'link',
       url,
@@ -21,7 +21,7 @@ describe('Test GithubTransformer', () => {
     expect(link.url).toBe(url);
     expect(link.children).toEqual([{ type: 'text', value: 'packages/mystmd/src/mdast/state.ts' }]);
     expect(link.data?.raw).toEqual(raw);
-    expect(link.data?.org).toEqual('executablebooks');
+    expect(link.data?.org).toEqual('jupyter-book');
     expect(link.data?.repo).toEqual('mystmd');
     expect(link.data?.reference).toEqual('3cdb8ec6');
     expect(link.data?.file).toEqual('packages/mystmd/src/mdast/state.ts');
@@ -31,7 +31,7 @@ describe('Test GithubTransformer', () => {
   test('dont change other links', () => {
     const file = new VFile();
     const t = new GithubTransformer();
-    const url = 'https://github.com/executablebooks/mystmd';
+    const url = 'https://github.com/jupyter-book/mystmd';
     const link: Link = {
       type: 'link',
       url,
@@ -45,7 +45,7 @@ describe('Test GithubTransformer', () => {
   test('Check issue links', () => {
     const file = new VFile();
     const t = new GithubTransformer();
-    const url = 'https://github.com/executablebooks/mystmd/issues/1';
+    const url = 'https://github.com/jupyter-book/mystmd/issues/1';
     const link: Link = {
       type: 'link',
       url,
@@ -55,7 +55,7 @@ describe('Test GithubTransformer', () => {
     expect(t.transform(link, file)).toBe(true);
     expect(link.data).toEqual({
       kind: 'issue',
-      org: 'executablebooks',
+      org: 'jupyter-book',
       repo: 'mystmd',
       issue_number: '1',
     });
@@ -63,7 +63,7 @@ describe('Test GithubTransformer', () => {
   test('Check pull request links', () => {
     const file = new VFile();
     const t = new GithubTransformer();
-    const url = 'https://github.com/executablebooks/mystmd/pull/1';
+    const url = 'https://github.com/jupyter-book/mystmd/pull/1';
     const link: Link = {
       type: 'link',
       url,
@@ -73,7 +73,7 @@ describe('Test GithubTransformer', () => {
     expect(t.transform(link, file)).toBe(true);
     expect(link.data).toEqual({
       kind: 'issue',
-      org: 'executablebooks',
+      org: 'jupyter-book',
       repo: 'mystmd',
       issue_number: '1',
     });

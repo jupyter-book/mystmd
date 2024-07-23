@@ -325,4 +325,4 @@ You can choose to also list your template so that it is available to any one els
 See [](./contribute-a-template.md) for more information!
 ```
 
-Nice work on creating a template, share the word on [twitter](https://twitter.com/intent/tweet?text=I%20just%20created%20a%20new%20MyST%20Markdown%20template!&url=https://mystmd.org/jtex/create-a-latex-template&via=executablebooks), and think about [contributing your template](./contribute-a-template.md) to make it discoverable to other users!
+Nice work on creating a template, share the word on [twitter](https://twitter.com/intent/tweet?text=I%20just%20created%20a%20new%20MyST%20Markdown%20template!&url=https://mystmd.org/jtex/create-a-latex-template&via=MystMarkdown), and think about [contributing your template](./contribute-a-template.md) to make it discoverable to other users!

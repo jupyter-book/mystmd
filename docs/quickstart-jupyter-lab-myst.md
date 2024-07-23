@@ -40,7 +40,7 @@ To follow along on _without_ installing anything, you can try to [![Launch on Bi
 pip install jupyterlab_myst
 ```
 
-See the GitHub repository, [jupyterlab-myst](https://github.com/executablebooks/jupyterlab-myst) for full installation instructions.
+See the GitHub repository, [jupyterlab-myst](https://github.com/jupyter-book/jupyterlab-myst) for full installation instructions.
 
 :::{tip} 🛠 Verify the installation
 :class: dropdown
@@ -66,7 +66,7 @@ Our goal will be to try out some of the main features of `jupyterlab-myst`, incl
 🛠 Download the example content, and navigate into the folder:
 
 ```bash
-git clone https://github.com/executablebooks/jupyterlab-myst-quickstart.git
+git clone https://github.com/jupyter-book/jupyterlab-myst-quickstart.git
 cd jupyterlab-myst-quickstart
 ```
 

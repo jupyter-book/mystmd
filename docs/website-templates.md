@@ -5,7 +5,7 @@ description: There are two templates for MyST websites, a `book-theme`, based lo
 
 Web templates allow MyST to render documents as HTML-based sites.
 These provide different reading experiences that are designed for different types of MyST documents.
-They are defined via the same templating system used for [static document exporting](./documents-exports.md), and a base set of web themes can be found in the [`executablebooks/myst-themes` repository](https://github.com/executablebooks/myst-theme/tree/main/themes).
+They are defined via the same templating system used for [static document exporting](./documents-exports.md), and a base set of web themes can be found in the [`jupyter-book/myst-theme` repository](https://github.com/jupyter-book/myst-theme/tree/main/themes).
 
 :::{tip} Themes and templates mean the same thing
 For the remainder of this page, assume that "theme" and "template" mean the same thing.
@@ -24,7 +24,7 @@ Example of a banner in a site using the `article-theme`, ([online](https://simpe
 
 ::::{tab} Book Theme
 :::{figure} ./images/book-theme.png
-Example of a site using the `book-theme`, ([online](https://mystmd.org), [source](https://github.com/executablebooks/mystmd/tree/main/docs))
+Example of a site using the `book-theme`, ([online](https://mystmd.org), [source](https://github.com/jupyter-book/mystmd/tree/main/docs))
 :::
 ::::
 :::::
@@ -51,6 +51,7 @@ site:
 ```
 
 (site-navigation)=
+
 ## Site navigation
 
 In addition to [your MyST document's Table of Contents](./table-of-contents.md), you may specify a top-level navigation for your MyST site.
@@ -76,7 +77,8 @@ site:
 ```
 
 % TODO: Clarify why some things have their own section (nav: and actions:) while
-%       others are nested under site.options.
+% others are nested under site.options.
+
 ## Action buttons
 
 Action buttons provide a more noticeable button that invites users to click on them.
@@ -105,7 +107,6 @@ For example:
 
 [^opts]: They are generally unique to the theme (and thus in a dediated `site.options` key rather than a top-level option in `site`).
 
-
 ```{code-block} yaml
 :filename: myst.yml
 site:
@@ -120,7 +121,6 @@ Below is a table of options for each theme bundled with MyST.
 :heading-depth: 3
 ```
 
-
 ```{myst:template} article-theme
 :heading-depth: 3
 ```
@@ -131,8 +131,7 @@ There are some other top-level site configuration options not documented here.
 You can find them in the following two files.
 
 % TODO: Add proper documentation for these
-%   ref: https://github.com/executablebooks/mystmd/issues/1211
-https://github.com/executablebooks/mystmd/blob/8e7ac4ae05d833140181ed69aa1e354face7caa0/packages/myst-frontmatter/src/site/types.ts#L57-L83
+% ref: https://github.com/jupyter-book/mystmd/issues/1211
+https://github.com/jupyter-book/mystmd/blob/8e7ac4ae05d833140181ed69aa1e354face7caa0/packages/myst-frontmatter/src/site/types.ts#L57-L83
 
-
-https://github.com/executablebooks/mystmd/blob/main/packages/myst-config/src/site/types.ts?rgh-link-date=2024-05-15T06%3A31%3A26Z#L26-L33
+https://github.com/jupyter-book/mystmd/blob/main/packages/myst-config/src/site/types.ts?rgh-link-date=2024-05-15T06%3A31%3A26Z#L26-L33

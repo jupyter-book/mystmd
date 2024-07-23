@@ -483,7 +483,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - 3fba7cb7: Modify extractPart to no longer support tags
 
 ## 0.0.4

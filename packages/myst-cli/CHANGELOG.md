@@ -731,8 +731,8 @@
 
   Addresses:
 
-  - https://github.com/executablebooks/mystmd/pull/748
-  - https://github.com/executablebooks/mystmd/issues/816
+  - https://github.com/jupyter-book/mystmd/pull/748
+  - https://github.com/jupyter-book/mystmd/issues/816
 
 - 134c26ab: Watch dependency files during myst start and build
 - a9073876: Remove file extensions from latex include
@@ -2294,7 +2294,7 @@ The CLI is no longer exported directly from this package. Use `mystmd`.
 
 - 17daf15e: Introduce GithubTransformer for file links.
 - 88666aee: Deprecate unified exports from `mystjs`
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - cfb1307b: Relative paths in config should be '.' not ''
 - 615c1441: Sessions are now aware of their build path (making things more consistent)
   For example, change the template location to the site working directory.

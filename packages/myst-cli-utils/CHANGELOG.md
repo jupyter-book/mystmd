@@ -102,7 +102,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 
 ## 0.0.5
 

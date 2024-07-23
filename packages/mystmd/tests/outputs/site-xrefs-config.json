@@ -6,7 +6,7 @@
   ],
   "projects": [
     {
-      "github": "https://github.com/executablebooks/mystjs",
+      "github": "https://github.com/jupyter-book/mystmd",
       "keywords": [],
       "id": "150e302b-37a9-40ab-86f4-d4a735915a60",
       "references": {

@@ -104,7 +104,7 @@ npm install -g mystmd
 :::
 ::::
 
-If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/executablebooks/mystmd/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
+If you have any problems, see [installing MyST](./installing.md) and or [open an issue here](https://github.com/jupyter-book/mystmd/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
 
 :::::{note}
 :class: dropdown
@@ -154,11 +154,11 @@ In it's initial state, the project is **not** a good example of how to use MyST,
 🛠 Download the example content[^no-git], and navigate into the folder:
 
 ```bash
-git clone https://github.com/executablebooks/mystmd-quickstart.git
+git clone https://github.com/jupyter-book/mystmd-quickstart.git
 cd mystmd-quickstart
 ```
 
-[^no-git]: If you aren't familiar with git, it isn't required for this tutorial, you can download the zip file with the contents from the [quickstart repository](https://github.com/executablebooks/mystmd-quickstart).
+[^no-git]: If you aren't familiar with git, it isn't required for this tutorial, you can download the zip file with the contents from the [quickstart repository](https://github.com/jupyter-book/mystmd-quickstart).
 
 ## Go through the tutorials 🚀
 

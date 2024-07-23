@@ -332,8 +332,8 @@
 
   Addresses:
 
-  - https://github.com/executablebooks/mystmd/pull/748
-  - https://github.com/executablebooks/mystmd/issues/816
+  - https://github.com/jupyter-book/mystmd/pull/748
+  - https://github.com/jupyter-book/mystmd/issues/816
   - myst-common@1.1.21
   - myst-spec-ext@1.1.21
   - myst-to-html@1.0.21
@@ -824,7 +824,7 @@
 ### Patch Changes
 
 - 17daf15e: Introduce GithubTransformer for file links.
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - Updated dependencies [184ad9f9]
 - Updated dependencies [3fba7cb7]
   - intersphinx@0.0.4

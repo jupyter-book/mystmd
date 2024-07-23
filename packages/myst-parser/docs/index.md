@@ -1,13 +1,13 @@
 # myst-parser
 
 [![myst-parser on npm](https://img.shields.io/npm/v/myst-parser.svg)](https://www.npmjs.com/package/myst-parser)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystmd/blob/master/LICENSE)
-[![CI](https://github.com/executablebooks/mystmd/workflows/CI/badge.svg)](https://github.com/executablebooks/mystmd/actions)
-[![docs](https://github.com/executablebooks/mystmd/workflows/docs/badge.svg)](https://executablebooks.github.io/myst-parser)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jupyter-book/mystmd/blob/master/LICENSE)
+[![CI](https://github.com/jupyter-book/mystmd/workflows/CI/badge.svg)](https://github.com/jupyter-book/mystmd/actions)
+[![docs](https://github.com/jupyter-book/mystmd/workflows/docs/badge.svg)](https://executablebooks.github.io/myst-parser)
 
 {abbr}`MyST (Markedly Structured Text)` is a flavor of markdown inspired from the Sphinx ecosystem and {abbr}`RST (reStructuredText)`.
 
-Any [CommonMark](https://commonmark.org/) markdown (such as [Jupyter Notebook](https://jupyter.org) markdown) is natively supported by the MyST parser. The goal of MyST _javascript_ parser ([myst-parser](https://github.com/executablebooks/mystmd)) is to have overlap with Sphinx ecosystem and {abbr}`RST (reStructuredText)` and provide a flexible parser and renderer that can be used with other content workflows.
+Any [CommonMark](https://commonmark.org/) markdown (such as [Jupyter Notebook](https://jupyter.org) markdown) is natively supported by the MyST parser. The goal of MyST _javascript_ parser ([myst-parser](https://github.com/jupyter-book/mystmd)) is to have overlap with Sphinx ecosystem and {abbr}`RST (reStructuredText)` and provide a flexible parser and renderer that can be used with other content workflows.
 
 ```{important}
 For integration with **Sphinx**, use the Python reference implementation for MyST parser, which can be found at:
