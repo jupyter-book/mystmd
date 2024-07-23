@@ -6,7 +6,7 @@
   "dependencies": [],
   "frontmatter": {
     "title": "Basic Test",
-    "github": "https://github.com/executablebooks/mystjs",
+    "github": "https://github.com/jupyter-book/mystmd",
     "keywords": [],
     "exports": [
       {

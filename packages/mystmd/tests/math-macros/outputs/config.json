@@ -11,7 +11,7 @@
         "\\three": { "macro": "d" },
         "\\five": { "macro": "x = \\one" }
       },
-      "github": "https://github.com/executablebooks/mystjs",
+      "github": "https://github.com/jupyter-book/mystmd",
       "keywords": [],
       "id": "d040ca98-d48a-487f-9745-8d337ff305eb",
       "exports": [],

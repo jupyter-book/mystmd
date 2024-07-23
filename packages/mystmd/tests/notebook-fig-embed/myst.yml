@@ -6,7 +6,7 @@ project:
   # description:
   keywords: []
   authors: []
-  github: https://github.com/executablebooks/mystjs
+  github: https://github.com/jupyter-book/mystmd
   # bibliography: []
   thebe: true
   references:

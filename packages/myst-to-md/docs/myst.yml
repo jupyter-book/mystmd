@@ -1,7 +1,7 @@
 version: 1
 project:
   title: MyST to Markdown
-  github: https://github.com/executablebooks/mystmd/tree/main/packages/myst-to-md
+  github: https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-md
   license: MIT
   subject: MyST Converters
 site:

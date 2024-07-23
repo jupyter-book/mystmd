@@ -161,8 +161,8 @@
 
   Addresses:
 
-  - https://github.com/executablebooks/mystmd/pull/748
-  - https://github.com/executablebooks/mystmd/issues/816
+  - https://github.com/jupyter-book/mystmd/pull/748
+  - https://github.com/jupyter-book/mystmd/issues/816
 
 - bfed37b: Make table directive less opinionated
 - 9573382a: Remove `code-cell` language warning in jupytext notebooks

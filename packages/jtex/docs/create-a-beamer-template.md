@@ -4,7 +4,7 @@ description: jtex can render to beamer templates, and needs an additional flag t
 ---
 
 ```{danger}
-Beamer templating is currently in development, and cannot yet be accessed through the command line tools. Please see [github](https://github.com/executablebooks/mystmd/issues/97) for updates.
+Beamer templating is currently in development, and cannot yet be accessed through the command line tools. Please see [github](https://github.com/jupyter-book/mystmd/issues/97) for updates.
 ```
 
 Beamer slides are created in MyST by separating them out into blocks, denoted by the `+++` markup with optional metadata in JSON.

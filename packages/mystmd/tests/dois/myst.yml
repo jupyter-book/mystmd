@@ -4,7 +4,7 @@ project:
   id: 86ea1257-1eaf-440b-9bea-7c610745dc86
   keywords: []
   authors: []
-  github: https://github.com/executablebooks/mystjs
+  github: https://github.com/jupyter-book/mystmd
 site:
   template: book-theme
   nav: []

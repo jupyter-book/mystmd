@@ -11,9 +11,11 @@ MyST Markdown (Markedly Structured Text) is a markup language that builds on sta
 
 The initial use case driving the development and design of MyST Markdown has been [JupyterBook], which allows you to create educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST. The extensions and design of MyST is inspired by the [Sphinx] and [reStructuredText](https://docutils.sourceforge.io/rst.html) (RST) ecosystems. Jupyter Book is considered a [distribution of Sphinx](xref:jupyterbook#explain/sphinx), and builds on the Sphinx and [Docutils] Python packages.
 
-MyST Markdown enables rich content generation and is a powerful textual format for scientific and technical communication with potential for broad adoption in modern publishing workflows. In 2022, the Executable Books team started work to document the specification behind the markup language, called [myst-spec](https://github.com/executablebooks/myst-spec), this work has enabled other tools and implementations in the scientific ecosystem to build on MyST Markdown (e.g. [scientific authoring tools](https://curvenote.com/for/writing), and [documentation systems](https://blog.readthedocs.com/jupyter-book-read-the-docs/)).
+MyST Markdown enables rich content generation and is a powerful textual format for scientific and technical communication with potential for broad adoption in modern publishing workflows. In 2022, the Executable Books team started work to document the specification behind the markup language, called [myst-spec](https://github.com/jupyter-book/myst-spec), this work has enabled other tools and implementations in the scientific ecosystem to build on MyST Markdown (e.g. [scientific authoring tools](https://curvenote.com/for/writing), and [documentation systems](https://blog.readthedocs.com/jupyter-book-read-the-docs/)).
 
 The `mystmd`[^naming] command line tools were developed as a collaboration between [Curvenote], [2i2c] and the [ExecutableBooks] team. The initial version was release by [Curvenote] as the [Curvenote CLI](https://curvenote.com/docs/cli) under the MIT license, and later transferred to the [ExecutableBooks] team. The goal of the project is to enable the same rich content and authoring experiences that Sphinx allows for software documentation, with a focus on web-first technologies (Javascript), interactivity, accessibility, scientific references (e.g. DOIs and other PIDs), and professional PDF outputs.
+
+In June, 2024 the `mystmd` project became an official Jupyter project [See #123](https://github.com/jupyter/enhancement-proposals/pull/123).
 
 [^naming]: Originally `mystmd` was called `mystjs`, but was changed as we matured the command-line interfaces.
 
@@ -38,7 +40,7 @@ Yes! There **is** overlap in functionality for creating websites, however, you c
 
 If you want, you can also try a `mystmd` website to view your JupyterBook (try the [online tool provided by Curvenote](https://try.curvenote.com), to test with your JupyterBook). `mystmd` provides improved interactivity around [cross-linking content](./cross-references.md), [performance and accessibility](./accessibility-and-performance.md) improvements.
 
-JupyterBook and `mystmd` both use MyST Markdown for content and read Jupyter Notebooks, and we ensure that your content can be read equally by both renderers. However, no custom Sphinx extensions that you may have added to your JupyterBooks will work. If you find something that doesn't work with `mystmd` from your JupyterBook content, please [let us know on GitHub](https://github.com/executablebooks/mystmd/issues) and we will try to support it!
+JupyterBook and `mystmd` both use MyST Markdown for content and read Jupyter Notebooks, and we ensure that your content can be read equally by both renderers. However, no custom Sphinx extensions that you may have added to your JupyterBooks will work. If you find something that doesn't work with `mystmd` from your JupyterBook content, please [let us know on GitHub](https://github.com/jupyter-book/mystmd/issues) and we will try to support it!
 
 Jupyter Books are an excellent medium for tutorials, textbooks & software documentation but are currently less well suited to content such as blogs, lab-websites, and journal articles. Additionally, JupyterBook cannot create scientific PDFs that are submission ready.
 
@@ -54,6 +56,7 @@ At this time `mystmd` does not support software documentation[^1], as such, if y
 [curvenote]: https://curvenote.com
 [docutils]: https://docutils.sourceforge.io/
 [executablebooks]: https://executablebooks.org/
+[jupyter]: https://jupyter.org
 [jupyterbook]: https://jupyterbook.org/
-[jupyterlab-myst]: https://github.com/executablebooks/jupyterlab-myst
+[jupyterlab-myst]: https://github.com/jupyter-book/jupyterlab-myst
 [sphinx]: https://www.sphinx-doc.org/

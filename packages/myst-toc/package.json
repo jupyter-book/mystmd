@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "MyST Table of Contents types and validation",
   "author": "Angus Hollands <goosey15@gmail.com>",
-  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-toc",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-toc",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystmd.git"
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
   },
   "scripts": {
     "clean": "rimraf dist",
@@ -29,7 +29,7 @@
     "build": "npm-run-all -s -l clean build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystmd/issues"
+    "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
     "simple-validators": "^1.0.4"

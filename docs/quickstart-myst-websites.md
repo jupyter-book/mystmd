@@ -41,7 +41,7 @@ Our goal will be to try out some of the main features of `mystmd` to create a we
 🛠 Download the example content, and navigate into the folder:
 
 ```bash
-git clone https://github.com/executablebooks/mystmd-quickstart.git
+git clone https://github.com/jupyter-book/mystmd-quickstart.git
 cd mystmd-quickstart
 ```
 

@@ -1,7 +1,7 @@
 # MyST Markdown Command Line Interface, `mystmd`
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/executablebooks/mystmd/blob/main/LICENSE)
-![CI](https://github.com/executablebooks/mystmd/workflows/CI/badge.svg)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/jupyter-book/mystmd/blob/main/LICENSE)
+![CI](https://github.com/jupyter-book/mystmd/workflows/CI/badge.svg)
 [![Discord Chat](https://img.shields.io/badge/discord-chat-blue?logo=discord&logoColor=white)](https://discord.mystmd.org)
 
 `mystmd` is a set of open-source, community-driven tools designed for scientific communication, including a powerful authoring framework that supports blogs, online books, scientific papers, reports and journals articles.

@@ -16,7 +16,7 @@
   "frontmatter": {
     "title": "XRef Content",
     "content_includes_title": false,
-    "github": "https://github.com/executablebooks/mystjs",
+    "github": "https://github.com/jupyter-book/mystmd",
     "keywords": [],
     "exports": [{ "format": "md", "filename": "index.md" }]
   },

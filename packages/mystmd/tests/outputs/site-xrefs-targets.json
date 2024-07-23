@@ -8,7 +8,7 @@
     "title": "Targets",
     "label": "page-fm-label",
     "content_includes_title": false,
-    "github": "https://github.com/executablebooks/mystjs",
+    "github": "https://github.com/jupyter-book/mystmd",
     "keywords": [],
     "exports": [
       {

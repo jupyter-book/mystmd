@@ -63,5 +63,5 @@ Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are 
 The performance metrics above are subject to changes over time, and may differ on your computer, network connection and page analyzed.
 We include these metrics on this page because (1) we have put a lot of work into performance and accessibility 🎉 and (2) to let you know that as MyST developers we care about performance, accessibility, and semantic HTML that can be read by both search engine crawlers and academic indexes.
 
-If you find a place where we can improve performance in your site, please [open an issue](https://github.com/executablebooks/mystmd/issues).
+If you find a place where we can improve performance in your site, please [open an issue](https://github.com/jupyter-book/mystmd/issues).
 ```

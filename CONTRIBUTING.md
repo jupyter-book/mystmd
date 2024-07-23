@@ -19,25 +19,25 @@ We expect all contributors to this project to [Code of Conduct][coc].
 
 ## Where we work
 
-We do most of our work in GitHub repositories in [the `executablebooks/` GitHub organization](https://github.com/executablebooks).
+We do most of our work in GitHub repositories in [the `jupyter-book/` GitHub organization](https://github.com/jupyter-book).
 
 ## Where we communicate
 
 - For chat and real-time conversations: [The MyST community Discord server](https://discord.mystmd.org).
 - For discussions around work and development: Issues in the `mystmd` repositories.
-- For general discussions and questions: [the `mystmd` community forum](https://github.com/executablebooks/mystmd/discussions).
+- For general discussions and questions: [the `mystmd` community forum](https://github.com/jupyter-book/mystmd/discussions).
 
 ## Relevant GitHub repositories
 
-The `mystmd` project covers a _subset_ of the [`executablebooks/` GitHub organization](https://github.com/executablebooks).
+The `mystmd` project covers a _subset_ of the [`jupyter-book/` GitHub organization](https://github.com/jupyter-book).
 It focuses on the Javascript-based MyST Markdown engine and ecosystem, as well as the markdown syntax that MyST uses.
 
 Below is a list of relevant repositories and a brief description of each.
 
-- [mystmd](https://github.com/executablebooks/mystmd): The MyST document engine and functionality not related to specific renderers.
-- [myst-theme](https://github.com/executablebooks/myst-theme): The web components and themes that are used for either the book or article themes for MyST.
-- [myst-spec](https://github.com/executablebooks/myst-spec): Questions about the markdown syntax for MyST and standardization efforts for MyST functionality.
-- [jupyterlab-myst](https://github.com/executablebooks/jupyterlab-myst): Questions about the JupyterLab extension for MyST.
+- [mystmd](https://github.com/jupyter-book/mystmd): The MyST document engine and functionality not related to specific renderers.
+- [myst-theme](https://github.com/jupyter-book/myst-theme): The web components and themes that are used for either the book or article themes for MyST.
+- [myst-spec](https://github.com/jupyter-book/myst-spec): Questions about the markdown syntax for MyST and standardization efforts for MyST functionality.
+- [jupyterlab-myst](https://github.com/jupyter-book/jupyterlab-myst): Questions about the JupyterLab extension for MyST.
 - [MyST Templates](https://github.com/myst-templates): Repositories that contain templates for rendering MyST documents into various outputs like LaTeX, JATS, Typst, and Docx.
 
 > [!NOTE]
@@ -47,8 +47,8 @@ Below is a list of relevant repositories and a brief description of each.
 
 Generally speaking, our contribution workflow looks something like this:
 
-- **Conduct free-form conversation and brainstorming in our forum**. We have [a community forum](https://github.com/executablebooks/mystmd/discussions) for general discussion that does not necessarily require a change to our code or documentation. If you have a specific enhancement or bug you would like to propose for resolution, see the next steps.
-- **Search open issues to see if your idea is already discussed**. Use [a GitHub search in the `executablebooks/` organization](https://github.com/search?q=org:executablebooks%20&type=code) to see if you should add to an existing issue or create a new one. If you don't think an issue exists that covers your idea or bug, go ahead and open one.
+- **Conduct free-form conversation and brainstorming in our forum**. We have [a community forum](https://github.com/jupyter-book/mystmd/discussions) for general discussion that does not necessarily require a change to our code or documentation. If you have a specific enhancement or bug you would like to propose for resolution, see the next steps.
+- **Search open issues to see if your idea is already discussed**. Use [a GitHub search in the `jupyter-book/` organization](https://github.com/search?q=org:jupyter-book%20&type=code) to see if you should add to an existing issue or create a new one. If you don't think an issue exists that covers your idea or bug, go ahead and open one.
 - **Discuss and propose changes in issues**. Issues are a way for us to agree on a problem to solve, and align on a way to solve it. They should invite broad feedback and be as explicit as possible when making formal proposals.
 - **Make a pull request to implement an idea**. We use Pull Requests to formally propose changes to our code or documentation. These generally point to an issue and ideally will close it.
 - **Iterate on the pull request and merge**. Pull Requests should have discussion and feedback from at least one core team member, and ideally from many. Once the PR is ready to merge, a core team member may decide to do so. See [our decision-making guide for formal details][governance].
@@ -58,7 +58,7 @@ In practice, we recommend attempting a contribution to get a feel for how it wor
 
 ## How our team is structured
 
-Our [Team page][team] lists all of the teams in the `executablebooks/` organization and their members.
+Our [Team page][team] lists all of the teams in the `jupyter-book/` organization and their members.
 In addition, [our Governance page][governance] describes the responsibilities and authority that team members have.
 
 ## How we make decisions
@@ -81,7 +81,7 @@ These sections help you get started with a development environment for `mystmd` 
 
 The `mystmd` libraries and command line tools are written in TypeScript, and require [NodeJS and npm](https://nodejs.org) for local development. The `mystmd-py` package, which is a thin Python wrapper around the `mystmd` bundle, can be installed by users using `pip` or `conda`. If you have already installed `mystmd` (e.g. via `pip` or `conda`), it is recommended that you uninstall it (or deactivate the relevant environment) before using the local development instructions below.
 
-For local development, [clone the repository](https://github.com/executablebooks/mystmd) and install the dependencies using npm. You can then build the libraries (`npm run build`) and then optionally link to your globally installed `mystmd` in node using the `npm run link` command.
+For local development, [clone the repository](https://github.com/jupyter-book/mystmd) and install the dependencies using npm. You can then build the libraries (`npm run build`) and then optionally link to your globally installed `mystmd` in node using the `npm run link` command.
 
 ```shell
 git clone git@github.com:jupyter-book/mystmd.git
@@ -164,8 +164,8 @@ The `mystmd` package includes the following packages/apps:
 
 Each package is 100% [TypeScript](https://www.typescriptlang.org/) and [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c).
 
-[compass]: https://compass.executablebooks.org/en/latest/
-[coc]: https://compass.executablebooks.org/en/latest/code-of-conduct.html
-[team]: https://compass.executablebooks.org/en/latest/team/structure.html
-[governance]: https://compass.executablebooks.org/en/latest/governance.html
-[decisions]: https://compass.executablebooks.org/en/latest/governance.html
+[compass]: https://compass.jupyterbook.org
+[coc]: https://compass.jupyterbook.org/code-of-conduct
+[team]: https://compass.jupyterbook.org/team
+[governance]: https://compass.jupyterbook.org/team
+[decisions]: https://compass.jupyterbook.org/team

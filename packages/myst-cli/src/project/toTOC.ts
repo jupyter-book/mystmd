@@ -132,7 +132,7 @@ export async function writeTOCToConfigFile(
     const errorMessage = lines.map((line) => `    ${line}`).join('\n');
     throw new Error(
       `Invalid YAML was generated when attempting to write the table-of-contents to ${dstPath}.
-This should not happenm please file a bug report at https://github.com/executablebooks/mystmd.
+This should not happenm please file a bug report at https://github.com/jupyter-book/mystmd.
 The invalid TOC contents are as follows:
 ${errorMessage}`,
     );

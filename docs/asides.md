@@ -26,7 +26,7 @@ You can also refer to this directive using {myst:directive}`margin` or {myst:dir
 
 Many of the features on this page are experimental and may change at any time.
 
-These elements can conflict with the document outline when they are both competing for the margin space (see [#170](https://github.com/executablebooks/myst-theme/issues/170)).
+These elements can conflict with the document outline when they are both competing for the margin space (see [#170](https://github.com/jupyter-book/myst-theme/issues/170)).
 
 :::
 

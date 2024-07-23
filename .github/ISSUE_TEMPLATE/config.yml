@@ -1,4 +1,4 @@
 contact_links:
   - name: Ask a question
-    url: https://github.com/executablebooks/meta/discussions
+    url: https://github.com/orgs/jupyter-book/discussions
     about: Ask questions and discuss ideas with other community members
