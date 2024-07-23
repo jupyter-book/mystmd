@@ -176,7 +176,7 @@ export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) 
         n.tagName = '_brKeep';
       });
     }
-    const mdast = unified().use(rehypeRemark, { handlers }).runSync(hast);
+    const mdast = unified().use(rehypeRemark, { handlers, document: false }).runSync(hast);
     node.type = 'htmlParsed';
     node.children = mdast.children as Parent[];
     visit(node, (n: any) => delete n.position);
