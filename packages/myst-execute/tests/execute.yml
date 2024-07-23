@@ -94,7 +94,7 @@ cases:
               text/plain: '3'
             metadata: {}
   - title: tree with bad inline expression throws
-    throws: An error occurred during kernel execution
+    throws: An exception occurred during expression evaluation
     before:
       type: root
       children:
@@ -108,7 +108,7 @@ cases:
           name: expr-0
           value: 1 + llama
   - title: tree with bad executable code is evaluated and throws
-    throws: An error occurred during kernel execution
+    throws: An exception occurred during code execution
     before:
       type: root
       children:
@@ -233,7 +233,7 @@ cases:
               id: T7FMDqDm8dM2bOT1tKeeM
               identifier: nb-cell-0-output
               html_id: nb-cell-0-output
-              data:  
+              data:
     after:
       type: root
       children:

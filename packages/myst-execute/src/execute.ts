@@ -4,8 +4,8 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
-import { NotebookCell, fileError, fileWarn } from 'myst-common';
+import type { GenericNode, GenericParent, IExpressionResult, IExpressionError } from 'myst-common';
+import { NotebookCell, fileError } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
@@ -190,9 +190,13 @@ async function computeExecutableNodes(
       // Check for errors
       const allowErrors = !!matchedNode.data?.tags?.includes?.('raises-exception');
       if (status === 'error' && !allowErrors) {
-        fileWarn(
+        const errorMessage = outputs
+          .map((item) => item.traceback)
+          .flat()
+          .join('\n');
+        fileError(
           opts.vfile,
-          'An exception occurred during code execution, halting further execution',
+          `An exception occurred during code execution, halting further execution:\n\n${errorMessage}`,
           {
             node: matchedNode,
           },
@@ -207,9 +211,10 @@ async function computeExecutableNodes(
 
       // Check for errors
       if (status === 'error') {
-        fileWarn(
+        const errorMessage = (result as IExpressionError).traceback.join('\n');
+        fileError(
           opts.vfile,
-          'An exception occurred during expression evaluation, halting further execution',
+          `An exception occurred during expression evaluation, halting further execution:\n\n${errorMessage}`,
           { node: matchedNode },
         );
         // Make a note of the failure
@@ -336,11 +341,6 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
           // Populate cache if things were successful
           if (!errorOccurred) {
             opts.cache.set(cacheKey, results);
-          } else {
-            // Otherwise, keep tabs on the error
-            fileError(vfile, 'An error occurred during kernel execution', {
-              fatal: opts.errorIsFatal,
-            });
           }
           // Refer to these computed results
           cachedResults = results;
