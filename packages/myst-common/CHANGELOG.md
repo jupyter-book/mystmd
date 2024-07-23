@@ -1,5 +1,18 @@
 # myst-common
 
+## 1.5.0
+
+### Minor Changes
+
+- 0576d5ad: Add support for executable (IPC) plugins
+
+### Patch Changes
+
+- Updated dependencies [8c487991]
+- Updated dependencies [f6aa726c]
+- Updated dependencies [478c4d4f]
+  - myst-frontmatter@1.5.0
+
 ## 1.4.7
 
 ### Patch Changes

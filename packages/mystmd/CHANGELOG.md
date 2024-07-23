@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.0
+
+### Patch Changes
+
+- 0576d5ad: Add support for whitelabelling
+
 ## 1.2.9
 
 ### Patch Changes

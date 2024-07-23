@@ -1,5 +1,38 @@
 # myst-cli
 
+## 1.3.0
+
+### Minor Changes
+
+- 4f51370f: Add Jupyter Book upgrade feature
+- 0576d5ad: Add support for executable (IPC) plugins
+
+### Patch Changes
+
+- 0576d5ad: Add support for whitelabelling
+- 0576d5ad: Add support for .myst.json files
+- 167238b6: Support multiple articles with meca like jats
+- e4698ac3: Use 'magick' command instead of 'convert' for imagemagick
+- 004f1e28: Do not warn on uppercase image extensions
+- Updated dependencies [8e486e56]
+- Updated dependencies [8c487991]
+- Updated dependencies [28642fe]
+- Updated dependencies [661039d4]
+- Updated dependencies [19e96e27]
+- Updated dependencies [f6aa726c]
+- Updated dependencies [1239104c]
+- Updated dependencies [372de44c]
+- Updated dependencies [0576d5ad]
+- Updated dependencies [478c4d4f]
+- Updated dependencies [848b6d8b]
+  - myst-parser@1.5.0
+  - myst-frontmatter@1.5.0
+  - myst-execute@0.0.7
+  - myst-transforms@1.3.19
+  - myst-common@1.5.0
+  - myst-config@1.5.0
+  - myst-spec-ext@1.5.0
+
 ## 1.2.9
 
 ### Patch Changes

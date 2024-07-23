@@ -1,5 +1,13 @@
 # myst-execute
 
+## 0.0.7
+
+### Patch Changes
+
+- 28642fe: Add error messages for failed kernel execution
+- Updated dependencies [0576d5ad]
+  - myst-common@1.5.0
+
 ## 0.0.6
 
 ### Patch Changes
