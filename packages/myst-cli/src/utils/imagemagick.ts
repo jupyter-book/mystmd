@@ -21,9 +21,9 @@ export function isImageMagickAvailable() {
 
 export function imageMagickCommand() {
   if (!magickCommandAvailable() && convertCommandAvailable()) {
-    return 'convert'
+    return 'convert';
   }
-  return 'magick'
+  return 'magick';
 }
 
 export function isWebpAvailable() {
