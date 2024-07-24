@@ -1,5 +1,15 @@
 # myst-to-docx
 
+## 1.0.11
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
 ## 1.0.10
 
 ### Patch Changes

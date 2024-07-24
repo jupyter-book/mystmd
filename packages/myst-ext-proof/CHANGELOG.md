@@ -1,5 +1,13 @@
 # myst-ext-proof
 
+## 1.0.10
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-common@1.5.1
+
 ## 1.0.9
 
 ### Patch Changes

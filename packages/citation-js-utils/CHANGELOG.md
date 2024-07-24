@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.3
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
 ## 1.2.2
 
 ### Patch Changes

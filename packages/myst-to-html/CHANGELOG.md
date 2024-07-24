@@ -1,5 +1,13 @@
 # myst-to-html
 
+## 1.5.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-common@1.5.1
+
 ## 1.5.0
 
 ### Patch Changes

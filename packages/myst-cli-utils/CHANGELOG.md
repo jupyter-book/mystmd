@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.10
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
 ## 2.0.9
 
 ### Patch Changes

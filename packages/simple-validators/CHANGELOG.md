@@ -1,5 +1,11 @@
 # simple-validators
 
+## 1.0.6
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
 ## 1.0.5
 
 ### Patch Changes

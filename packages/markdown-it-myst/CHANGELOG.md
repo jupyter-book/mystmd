@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.8
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
 ## 1.0.7
 
 ### Patch Changes

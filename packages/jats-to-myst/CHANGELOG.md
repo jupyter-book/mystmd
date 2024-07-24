@@ -1,5 +1,16 @@
 # jats-to-myst
 
+## 1.0.27
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-transforms@1.3.20
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
 ## 1.0.26
 
 ### Patch Changes
