@@ -1,5 +1,38 @@
 # myst-cli
 
+## 1.3.1
+
+### Patch Changes
+
+- 752ebcf: Fall back to 'convert' command for imagemagick
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - citation-js-utils@1.2.3
+  - myst-ext-exercise@1.0.7
+  - myst-ext-reactive@1.0.7
+  - simple-validators@1.0.6
+  - myst-frontmatter@1.5.1
+  - myst-transforms@1.3.20
+  - myst-cli-utils@2.0.10
+  - myst-ext-proof@1.0.10
+  - myst-templates@1.0.20
+  - myst-ext-card@1.0.7
+  - myst-ext-grid@1.0.7
+  - myst-ext-tabs@1.0.7
+  - myst-spec-ext@1.5.1
+  - myst-to-typst@0.0.18
+  - myst-execute@0.0.8
+  - myst-to-docx@1.0.11
+  - myst-to-jats@1.0.27
+  - myst-common@1.5.1
+  - myst-config@1.5.1
+  - myst-parser@1.5.1
+  - myst-to-tex@1.0.31
+  - tex-to-myst@1.0.31
+  - myst-to-md@1.0.12
+  - myst-toc@0.1.2
+  - jtex@1.0.18
+
 ## 1.3.0
 
 ### Minor Changes

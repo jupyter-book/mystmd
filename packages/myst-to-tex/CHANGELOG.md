@@ -1,5 +1,16 @@
 # myst-to-tex
 
+## 1.0.31
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-ext-proof@1.0.10
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
 ## 1.0.30
 
 ### Patch Changes

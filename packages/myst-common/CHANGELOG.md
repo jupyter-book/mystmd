@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.5.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+
 ## 1.5.0
 
 ### Minor Changes

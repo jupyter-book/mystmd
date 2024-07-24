@@ -1,6 +1,6 @@
 {
   "name": "myst-toc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST Table of Contents types and validation",
@@ -32,6 +32,6 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "simple-validators": "^1.0.4"
+    "simple-validators": "^1.0.6"
   }
 }

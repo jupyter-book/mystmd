@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
 ## 1.3.0
 
 ### Patch Changes
