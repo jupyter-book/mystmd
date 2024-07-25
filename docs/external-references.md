@@ -102,7 +102,7 @@ It is also a machine-readable record that can be used for analyzing the cross-re
 MyST can integrate directly with other Sphinx documentation, which is used in many Python projects including the [standard library](https://docs.python.org/).
 This re-uses the reference specification defined by [the intersphinx plugin for Sphinx](https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html).
 
-Similar to [MyST cross references](#myst-xref), use the `references` object to list Sphinx projects. For example, in the demonstration below we will load the Python 3.7 documentation and JupyterBook docs, both of which use sphinx and expose cross references through an `objects.inv` file.
+Similar to [MyST cross references](#myst-xref), use the `references` object to list Sphinx projects. For example, in the demonstration below we will load the Python 3.7 documentation and Jupyter Book docs, both of which use sphinx and expose cross references through an `objects.inv` file.
 
 (intersphinx-config)=
 
@@ -129,7 +129,7 @@ The behavior of these entries is identical to MyST cross references: the remote 
     : A reference to the reference documentation in Python.
   - [](xref:python#zipapp-specifying-the-interpreter)
 * - `[](xref:jupyterbook#content:references)`
-    : A reference to the JupyterBook documentation, that brings you directly to the reference,
+    : A reference to the Jupyter Book documentation, that brings you directly to the reference,
       as well as fills in the label text.
   - [](xref:jupyterbook#content:references)
 ```

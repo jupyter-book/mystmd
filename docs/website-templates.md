@@ -1,6 +1,6 @@
 ---
 title: Website Themes & Templates
-description: There are two templates for MyST websites, a `book-theme`, based loosely on JupyterBook, and an `article-theme` that is designed for scientific documents with supporting notebooks.
+description: There are two templates for MyST websites, a `book-theme`, based loosely on Jupyter Book, and an `article-theme` that is designed for scientific documents with supporting notebooks.
 ---
 
 Web templates allow MyST to render documents as HTML-based sites.
@@ -13,7 +13,7 @@ For the remainder of this page, assume that "theme" and "template" mean the same
 
 ## Themes bundled with MyST
 
-There are two templates for MyST websites, a `book-theme`, which is the default and is based loosely on JupyterBook and an `article-theme` that is designed for scientific documents with supporting notebooks. The documentation for this site uses the `book-theme`. For a demonstration of the `article-theme`, you can see [an article on finite volume](https://simpeg.xyz/tle-finitevolume).
+There are two templates for MyST websites, a `book-theme`, which is the default and is based loosely on Jupyter Book and an `article-theme` that is designed for scientific documents with supporting notebooks. The documentation for this site uses the `book-theme`. For a demonstration of the `article-theme`, you can see [an article on finite volume](https://simpeg.xyz/tle-finitevolume).
 
 :::::{tab-set}
 ::::{tab} Article Theme

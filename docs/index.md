@@ -64,16 +64,16 @@ See an overview of MyST Markdown syntax with inline demos and examples.
 :::{seealso}
 :class: dropdown
 
-# Coming from JupyterBook or Sphinx?
+# Coming from Jupyter Book or Sphinx?
 
 👋 We are glad you are here! 💚
 
-There are many ways that `mystmd` can be used with JupyterBook and Sphinx. We recommend that you read [background on `mystmd`](./background.md), which goes over how these projects overlap and work together!
+There are many ways that `mystmd` can be used with Jupyter Book and Sphinx. We recommend that you read [background on `mystmd`](./background.md), which goes over how these projects overlap and work together!
 
 TL;DR
-: **Yes**, you can use `mystmd` with your JupyterBook! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
+: **Yes**, you can use `mystmd` with your Jupyter Book! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
 : **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in Javascript not Python!
-: JupyterBook and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+: Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
 :::
 
 ## Project Goals
@@ -147,10 +147,10 @@ flowchart LR
 :class: dropdown
 **Using Sphinx or Python?**
 
-For integration with **Sphinx**, use the Python implementation for MyST or JupyterBook, which can be found at:
+For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book, which can be found at:
 
 - [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
-- [JupyterBook](https://jupyterbook.org/)
+- [Jupyter Book](https://jupyterbook.org/)
 
 Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the **Javascript** MyST Markdown CLI.
 ```

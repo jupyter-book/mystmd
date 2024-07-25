@@ -182,7 +182,7 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 ````
 
 ```{warning}
-If you are using JupyterBook or Sphinx, there are the following limitations:
+If you are using Jupyter Book or Sphinx, there are the following limitations:
 (1) the `label` analysis of the source is not yet implemented;
 (2) you can not reference equations using the {myst:role}`numref` role; and
 (3) labels must not have spaces or start with a number (this is good practice anyways!).

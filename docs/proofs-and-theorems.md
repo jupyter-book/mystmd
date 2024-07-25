@@ -12,7 +12,7 @@ All proof directives can be included using the `prf:kind` pattern, where the pro
 
 The implementation and documentation for proofs, theorems, etc. is based on [Sphinx Proof](https://github.com/executablebooks/sphinx-proof), the syntax can be used interchangeably. We have reused the examples in that extension here to show off the various parts of the MyST extension.
 
-Changes to the original extension include being able to click on the proof label (e.g. "Theorem 1"), and having a link to that proof anchor. We have also updated the styles from both Sphinx and JupyterBook to be more distinct from admonitions.
+Changes to the original extension include being able to click on the proof label (e.g. "Theorem 1"), and having a link to that proof anchor. We have also updated the styles from both Sphinx and Jupyter Book to be more distinct from admonitions.
 
 You can also reference proofs with any cross-reference syntax (including the {myst:role}`prf:ref` role). We recommend the markdown link syntax.
 :::
