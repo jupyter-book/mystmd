@@ -267,7 +267,7 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
       }
       // Trim the DOIs and URLs (these are encoded) on load
       if (c.DOI) c.DOI = c.DOI.trim();
-      if (c.URL) c.URL = c.URL.replace(/^(\%20)*/, '').replace(/(\%20)*$/, '');
+      if (c.URL) c.URL = c.URL.replace(/^(%20)*/, '').replace(/(%20)*$/, '');
 
       return [
         c.id,
