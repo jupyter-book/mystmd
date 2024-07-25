@@ -18,13 +18,13 @@ The tutorials will be brief on explaining MyST syntax, but we include an [MyST M
 
 :::{note}
 :class: dropdown
-**Looking for JupyterBook docs?**
+**Looking for Jupyter Book docs?**
 
-The `myst` CLI is not the same as [JupyterBook](https://jupyterbook.org/), which uses the Sphinx documentation engine!
+The `myst` CLI is not the same as [Jupyter Book](https://jupyterbook.org/), which uses the Sphinx documentation engine!
 You can read about the [history of `mystmd` development](./background.md).
 The content that you build is compatible between tools in the MyST ecosystem, however, this tutorial focuses on the `mystmd` tools and CLI.
 
-`mystmd` has capabilities beyond JupyterBook, for example exporting to scientific PDF documents, and you can use the two tools together! 💚
+`mystmd` has capabilities beyond Jupyter Book, for example exporting to scientific PDF documents, and you can use the two tools together! 💚
 :::
 ::::
 

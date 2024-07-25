@@ -200,7 +200,7 @@ See [](website-metadata.md) for more details on how cross-references are stored.
 URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/jupyter-book/mystmd/issues/670).
 :::
 
-::::{note} Compatibility with JupyterBook
+::::{note} Compatibility with Jupyter Book
 :class: dropdown
 
 (toc-format-legacy)=
