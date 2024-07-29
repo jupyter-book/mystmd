@@ -38,6 +38,7 @@ export type ExportFnOptions = {
   extraLinkTransformers?: LinkTransformer[];
   extraTransforms?: TransformFn[];
   ci?: boolean;
+  execute?: boolean;
 };
 
 export type ExportResults = {

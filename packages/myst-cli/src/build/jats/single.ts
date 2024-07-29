@@ -28,7 +28,7 @@ export async function runJatsExport(
 ) {
   const toc = tic();
   const { output, articles, sub_articles } = exportOptions;
-  const { clean, projectPath, extraLinkTransformers } = opts ?? {};
+  const { clean, projectPath, extraLinkTransformers, execute } = opts ?? {};
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
   if (!article?.file) return { tempFolders: [] };
@@ -41,6 +41,7 @@ export async function runJatsExport(
       preFrontmatters: [
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
       ], // only apply to article, not sub_articles
+      execute,
     })
   ).map((content) => {
     const { kind, file, mdast, frontmatter, slug } = content;

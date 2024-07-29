@@ -128,7 +128,7 @@ export async function localArticleToTexRaw(
   opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const { projectPath, extraLinkTransformers } = opts ?? {};
+  const { projectPath, extraLinkTransformers, execute } = opts ?? {};
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
     session,
@@ -141,6 +141,7 @@ export async function localArticleToTexRaw(
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
       ),
+      execute,
     },
   );
 
@@ -192,7 +193,7 @@ export async function localArticleToTexTemplated(
   opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
-  const { projectPath, extraLinkTransformers, clean, ci } = opts ?? {};
+  const { projectPath, extraLinkTransformers, clean, ci, execute } = opts ?? {};
   const filesPath = path.join(path.dirname(output), 'files');
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
@@ -206,6 +207,7 @@ export async function localArticleToTexTemplated(
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
       ),
+      execute,
     },
   );
   const bibtexWritten = writeBibtexFromCitationRenderers(

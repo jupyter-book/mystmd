@@ -146,7 +146,7 @@ export async function localArticleToTypstRaw(
   opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const { projectPath, extraLinkTransformers } = opts ?? {};
+  const { projectPath, extraLinkTransformers, execute } = opts ?? {};
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
     session,
@@ -159,6 +159,7 @@ export async function localArticleToTypstRaw(
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
       ),
+      execute,
     },
   );
 
@@ -210,7 +211,7 @@ export async function localArticleToTypstTemplated(
   opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
-  const { projectPath, extraLinkTransformers, clean, ci } = opts ?? {};
+  const { projectPath, extraLinkTransformers, clean, ci, execute } = opts ?? {};
   const filesPath = path.join(path.dirname(output), 'files');
   const fileArticles = articlesWithFile(articles);
   const content = await getFileContent(
@@ -224,6 +225,7 @@ export async function localArticleToTypstTemplated(
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
       ),
+      execute,
     },
   );
   const bibtexWritten = writeBibtexFromCitationRenderers(
