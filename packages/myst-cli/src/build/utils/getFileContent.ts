@@ -21,7 +21,7 @@ export async function getFileContent(
     extraTransforms,
     titleDepths,
     preFrontmatters,
-    execute
+    execute,
   }: {
     projectPath?: string;
     imageExtensions: ImageExtensions[];
@@ -70,7 +70,7 @@ export async function getFileContent(
         index: project.index,
         titleDepth,
         extraTransforms,
-	execute
+        execute,
       });
     }),
   );
