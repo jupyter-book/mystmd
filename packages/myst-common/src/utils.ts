@@ -75,6 +75,31 @@ export function createHtmlId(identifier?: string): string | undefined {
     .replace(/(?:^[-]+)|(?:[-]+$)/g, ''); // Remove repeated `-`s at the start or the end
 }
 
+export function transferTargetAttrs(sourceNode: GenericNode, destNode: GenericNode, vfile?: VFile) {
+  if (sourceNode.label) {
+    if (destNode.label && vfile) {
+      fileWarn(vfile, `label "${destNode.label}" replaced with "${sourceNode.label}"`, {
+        node: destNode,
+      });
+    }
+    destNode.label = sourceNode.label;
+    delete sourceNode.label;
+  }
+  if (sourceNode.identifier) {
+    destNode.identifier = sourceNode.identifier;
+    delete sourceNode.identifier;
+  }
+  if (sourceNode.html_id) {
+    destNode.html_id = sourceNode.html_id;
+    delete sourceNode.html_id;
+  }
+  if (sourceNode.indexEntries) {
+    if (!destNode.indexEntries) destNode.indexEntries = [];
+    destNode.indexEntries.push(...sourceNode.indexEntries);
+    delete sourceNode.indexEntries;
+  }
+}
+
 /**
  * Helper function for recursively lifting children
  */

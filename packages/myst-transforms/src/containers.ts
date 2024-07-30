@@ -1,5 +1,13 @@
 import type { Plugin } from 'unified';
-import { fileError, fileWarn, liftChildren, normalizeLabel, RuleId, plural } from 'myst-common';
+import {
+  fileError,
+  fileWarn,
+  liftChildren,
+  normalizeLabel,
+  RuleId,
+  plural,
+  transferTargetAttrs,
+} from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { remove } from 'unist-util-remove';
 import { select, selectAll } from 'unist-util-select';
@@ -57,16 +65,15 @@ function createSubfigure(node: GenericNode, parent: GenericParent): GenericParen
     delete node.alt;
   }
   const { label, identifier } = normalizeLabel(node.label) ?? {};
+  node.label = label;
+  node.identifier = identifier;
   const subfigure = {
     type: 'container',
     kind: node.kind ?? parent.kind ?? 'figure',
     subcontainer: true,
-    label,
-    identifier,
     children,
   };
-  delete node.label;
-  delete node.identifier;
+  transferTargetAttrs(node, subfigure);
   return subfigure;
 }
 

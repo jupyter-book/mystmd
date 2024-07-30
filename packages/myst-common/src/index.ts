@@ -7,6 +7,7 @@ export {
   createId,
   normalizeLabel,
   createHtmlId,
+  transferTargetAttrs,
   liftChildren,
   setTextAsChild,
   copyNode,

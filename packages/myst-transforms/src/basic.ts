@@ -26,7 +26,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts?: Re
   mathLabelTransform(tree, file);
   subequationTransform(tree, file);
   // Target transformation must happen after lifting the directives, and before the heading labels
-  mystTargetsTransform(tree);
+  mystTargetsTransform(tree, file);
   // Label headings after the targets-transform
   headingLabelTransform(tree);
   admonitionBlockquoteTransform(tree); // Must be before header transforms
