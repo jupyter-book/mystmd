@@ -251,6 +251,10 @@ export class Session implements ISession {
   }
 
   dispose() {
+    this._clones.forEach((session) => {
+      session.dispose();
+    });
+
     if (this._jupyterSessionManagerPromise) {
       this._jupyterSessionManagerPromise.then((manager) => manager?.dispose?.());
       this._jupyterSessionManagerPromise = undefined;

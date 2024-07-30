@@ -20,7 +20,7 @@ export async function runMdExport(
 ) {
   const toc = tic();
   const { output, articles } = exportOptions;
-  const { clean, projectPath, extraLinkTransformers } = opts ?? {};
+  const { clean, projectPath, extraLinkTransformers, execute } = opts ?? {};
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
   if (!article?.file) return { tempFolders: [] };
@@ -32,6 +32,7 @@ export async function runMdExport(
     preFrontmatters: [
       filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
     ],
+    execute,
   });
   await finalizeMdast(session, mdast, frontmatter, article.file, {
     imageWriteFolder: path.join(path.dirname(output), 'files'),

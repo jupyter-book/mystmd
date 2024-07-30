@@ -21,6 +21,7 @@ export async function getFileContent(
     extraTransforms,
     titleDepths,
     preFrontmatters,
+    execute,
   }: {
     projectPath?: string;
     imageExtensions: ImageExtensions[];
@@ -28,6 +29,7 @@ export async function getFileContent(
     extraTransforms?: TransformFn[];
     titleDepths?: number | (number | undefined)[];
     preFrontmatters?: Record<string, any> | (Record<string, any> | undefined)[];
+    execute?: boolean;
   },
 ) {
   const toc = tic();
@@ -68,6 +70,7 @@ export async function getFileContent(
         index: project.index,
         titleDepth,
         extraTransforms,
+        execute,
       });
     }),
   );
