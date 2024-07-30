@@ -17,6 +17,7 @@ export {
 } from './utils.js';
 export { plural } from './plural.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
+export { parseIndexLine, splitEntryValue, createIndexEntries } from './indices.js';
 export { RuleId } from './ruleids.js';
 export { isTargetIdentifierNode, selectMdastNodes } from './selectNodes.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
@@ -27,10 +28,13 @@ export {
   ParseTypesEnum,
   TargetKind,
 } from './types.js';
-export type { IExpressionResult, IExpressionError, IExpressionOutput } from './types.js';
 
+export type { IndexEntry, IndexTypeLists } from './indices.js';
 export type { MessageInfo } from './utils.js';
 export type {
+  IExpressionResult,
+  IExpressionError,
+  IExpressionOutput,
   GenericNode,
   GenericParent,
   Citations,

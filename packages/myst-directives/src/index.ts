@@ -7,6 +7,7 @@ import { figureDirective } from './figure.js';
 import { iframeDirective } from './iframe.js';
 import { imageDirective } from './image.js';
 import { includeDirective } from './include.js';
+import { indexDirective, genIndexDirective } from './indices.js';
 import { csvTableDirective, tableDirective, listTableDirective } from './table.js';
 import { asideDirective } from './aside.js';
 import { glossaryDirective } from './glossary.js';
@@ -31,6 +32,8 @@ export const defaultDirectives = [
   iframeDirective,
   imageDirective,
   includeDirective,
+  indexDirective,
+  genIndexDirective,
   tableDirective,
   listTableDirective,
   asideDirective,
@@ -52,6 +55,7 @@ export { figureDirective } from './figure.js';
 export { iframeDirective } from './iframe.js';
 export { imageDirective } from './image.js';
 export { includeDirective } from './include.js';
+export { indexDirective, genIndexDirective } from './indices.js';
 export { csvTableDirective, listTableDirective, tableDirective } from './table.js';
 export { asideDirective } from './aside.js';
 export { mathDirective } from './math.js';
