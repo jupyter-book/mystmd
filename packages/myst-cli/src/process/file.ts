@@ -6,7 +6,7 @@ import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
 import { doi } from 'doi-utils';
 import type { GenericParent } from 'myst-common';
-import { RuleId, toText } from 'myst-common';
+import { RuleId, toText, fileError, fileWarn } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { validatePageFrontmatter, fillProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -21,6 +21,8 @@ import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebookFull } from './notebook.js';
 import { selectors } from '../store/index.js';
+import { defined, incrementOptions, validateObjectKeys, validateEnum } from 'simple-validators';
+import type { ValidationOptions } from 'simple-validators';
 
 type LoadFileOptions = { preFrontmatter?: Record<string, any>; keepTitleNode?: boolean };
 
@@ -108,9 +110,83 @@ export function loadTexFile(
   return { kind: SourceFileKind.Article, mdast: tex.ast as GenericParent, frontmatter };
 }
 
-export function loadMySTJSON(content: string) {
-  const { mdast, frontmatter, kind } = JSON.parse(content);
-  return { kind: kind ?? SourceFileKind.Article, mdast, frontmatter };
+export function mystJSONValidationOpts(
+  vfile: VFile,
+  opts?: { property?: string; ruleId?: RuleId },
+): ValidationOptions {
+  return {
+    property: opts?.property ?? 'file',
+    file: vfile.path,
+    messages: {},
+    errorLogFn: (message: string) => {
+      fileError(vfile, message, { ruleId: opts?.ruleId ?? RuleId.mystJsonValid });
+    },
+    warningLogFn: (message: string) => {
+      fileWarn(vfile, message, { ruleId: opts?.ruleId ?? RuleId.mystJsonValid });
+    },
+  };
+}
+
+function validateMySTJSON(
+  input: any,
+  opts: ValidationOptions,
+): { mdast: GenericParent; kind: SourceFileKind; frontmatter: PageFrontmatter } | undefined {
+  const value = validateObjectKeys(
+    input,
+    { required: ['mdast'], optional: ['kind', 'frontmatter'] },
+    opts,
+  );
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const { mdast } = value;
+
+  let kind: undefined | SourceFileKind;
+  if (defined(value.kind)) {
+    kind = validateEnum<SourceFileKind>(value.kind, {
+      ...incrementOptions('kind', opts),
+      enum: SourceFileKind,
+    });
+  }
+  let frontmatter: undefined | PageFrontmatter;
+  if (defined(value.frontmatter)) {
+    frontmatter = validatePageFrontmatter(value.frontmatter, incrementOptions('frontmatter', opts));
+  }
+
+  return {
+    mdast,
+    kind: kind ?? SourceFileKind.Article,
+    frontmatter: frontmatter ?? {},
+  };
+}
+
+export function loadMySTJSON(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+) {
+  const vfile = new VFile();
+  vfile.path = file;
+
+  const rawData = JSON.parse(content);
+  const result = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
+  if (result === undefined) {
+    logMessagesFromVFile(session, vfile);
+    throw new Error('Unable to load JSON file: error during validation');
+  } else {
+    const { mdast, kind, frontmatter: pageFrontmatter } = result;
+    const { frontmatter, identifiers } = getPageFrontmatter(
+      session,
+      mdast,
+      vfile,
+      { ...pageFrontmatter, ...opts?.preFrontmatter },
+      opts?.keepTitleNode,
+    );
+    logMessagesFromVFile(session, vfile);
+    return { mdast, kind, frontmatter, identifiers };
+  }
 }
 
 /**
@@ -184,7 +260,7 @@ export async function loadFile(
       }
       case '.json': {
         if (file.endsWith('.myst.json')) {
-          loadResult = loadMySTJSON(content);
+          loadResult = loadMySTJSON(session, content, file);
           break;
         }
         // This MUST be the final case before `default`, as
