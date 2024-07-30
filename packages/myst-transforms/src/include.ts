@@ -1,5 +1,5 @@
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileError, fileWarn, RuleId } from 'myst-common';
+import { fileError, fileWarn, RuleId, transferTargetAttrs } from 'myst-common';
 import type { Code, Container, Include } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { Caption } from 'myst-spec';
@@ -114,13 +114,10 @@ export async function includeDirectiveTransform(
           const container: Container = {
             type: 'container',
             kind: 'code' as any,
-            // Move the label to the container
-            label: code.label,
-            identifier: code.identifier,
             children: [code as any, caption],
           };
-          delete code.label;
-          delete code.identifier;
+          // Move the label to the container
+          transferTargetAttrs(code, container, vfile);
           children = [container];
         }
       } else {

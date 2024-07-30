@@ -34,7 +34,7 @@ export function getFrontmatter(
   tree: GenericParent,
   opts: Options = { propagateTargets: true },
 ): { tree: GenericParent; frontmatter: Record<string, any>; identifiers: string[] } {
-  if (opts.propagateTargets) mystTargetsTransform(tree);
+  if (opts.propagateTargets) mystTargetsTransform(tree, file);
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
   const firstNode = firstParent.children?.[0] as Code;
