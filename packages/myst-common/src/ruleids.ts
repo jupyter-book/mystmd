@@ -81,6 +81,7 @@ export enum RuleId {
   gatedNodesJoin = 'gated-nodes-join',
   glossaryUsesDefinitionList = 'glossary-uses-definition-list',
   blockMetadataLoads = 'block-metadata-loads',
+  indexEntriesResolve = 'index-entries-resolve',
   // Citation rules
   citationIsUnique = 'citation-is-unique',
   bibFileExists = 'bib-file-exists',

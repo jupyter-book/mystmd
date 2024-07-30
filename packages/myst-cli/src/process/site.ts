@@ -6,8 +6,15 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
-import type { LinkTransformer, MystXRefs, ReferenceState } from 'myst-transforms';
+import {
+  buildIndexTransform,
+  MultiPageReferenceResolver,
+  type LinkTransformer,
+  type MystXRefs,
+  type ReferenceState,
+} from 'myst-transforms';
 import { select } from 'unist-util-select';
+import { VFile } from 'vfile';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
 import type { SiteManifestOptions } from '../build/site/manifest.js';
 import {
@@ -24,6 +31,7 @@ import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { watch } from '../store/reducers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
 import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
@@ -253,6 +261,19 @@ export function selectPageReferenceStates(
     })
     .filter((state): state is ReferenceState => !!state);
   if (!opts?.suppressWarnings) warnOnDuplicateIdentifiers(session, pageReferenceStates);
+  pageReferenceStates.forEach((state) => {
+    const { mdast } = cache.$getMdast(state.filePath)?.post ?? {};
+    if (!mdast) return;
+    const vfile = new VFile();
+    vfile.path = state.filePath;
+    buildIndexTransform(
+      mdast,
+      vfile,
+      state,
+      new MultiPageReferenceResolver(pageReferenceStates, state.filePath),
+    );
+    logMessagesFromVFile(session, vfile);
+  });
   return pageReferenceStates;
 }
 
