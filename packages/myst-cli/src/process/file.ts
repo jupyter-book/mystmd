@@ -140,15 +140,15 @@ function validateMySTJSON(
   const mdast: GenericParent = value?.mdast ?? { type: 'root', children: [] };
 
   let kind: undefined | SourceFileKind;
-  if (defined(input.kind)) {
-    kind = validateEnum<SourceFileKind>(input.kind, {
+  if (defined(value?.kind)) {
+    kind = validateEnum<SourceFileKind>(value?.kind, {
       ...incrementOptions('kind', opts),
       enum: SourceFileKind,
     });
   }
   let frontmatter: undefined | PageFrontmatter;
-  if (defined(input.frontmatter)) {
-    frontmatter = validatePageFrontmatter(input.frontmatter, incrementOptions('frontmatter', opts));
+  if (defined(value?.frontmatter)) {
+    frontmatter = validatePageFrontmatter(value?.frontmatter, incrementOptions('frontmatter', opts));
   }
 
   return {
