@@ -41,6 +41,9 @@ const numbers = '0123456789';
 const nanoidAZ = customAlphabet(alpha, 1);
 const nanoidAZ9 = customAlphabet(alpha + numbers, 9);
 
+/**
+ * Create random 10-digit alphanumeric string
+ */
 export function createId() {
   return nanoidAZ() + nanoidAZ9();
 }
