@@ -181,9 +181,10 @@ export function loadMySTJSON(
       session,
       mdast,
       vfile,
-      {...pageFrontmatter, ...opts?.preFrontmatter},
+      { ...pageFrontmatter, ...opts?.preFrontmatter },
       opts?.keepTitleNode,
-    );    logMessagesFromVFile(session, vfile);
+    );
+    logMessagesFromVFile(session, vfile);
     return { mdast, kind, frontmatter, identifiers };
   }
 }
