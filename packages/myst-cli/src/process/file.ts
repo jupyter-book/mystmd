@@ -130,25 +130,28 @@ export function mystJSONValidationOpts(
 function validateMySTJSON(
   input: any,
   opts: ValidationOptions,
-): { mdast: GenericParent; kind: SourceFileKind; frontmatter: PageFrontmatter } {
+): { mdast: GenericParent; kind: SourceFileKind; frontmatter: PageFrontmatter } | undefined {
   const value = validateObjectKeys(
     input,
     { required: ['mdast'], optional: ['kind', 'frontmatter'] },
     opts,
   );
-  // Although this is required, we'll set it to an empty article by default
-  const mdast: GenericParent = value?.mdast ?? { type: 'root', children: [] };
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const { mdast } = value;
 
   let kind: undefined | SourceFileKind;
-  if (defined(value?.kind)) {
-    kind = validateEnum<SourceFileKind>(value?.kind, {
+  if (defined(value.kind)) {
+    kind = validateEnum<SourceFileKind>(value.kind, {
       ...incrementOptions('kind', opts),
       enum: SourceFileKind,
     });
   }
   let frontmatter: undefined | PageFrontmatter;
-  if (defined(value?.frontmatter)) {
-    frontmatter = validatePageFrontmatter(value?.frontmatter, incrementOptions('frontmatter', opts));
+  if (defined(value.frontmatter)) {
+    frontmatter = validatePageFrontmatter(value.frontmatter, incrementOptions('frontmatter', opts));
   }
 
   return {
@@ -168,26 +171,21 @@ export function loadMySTJSON(
   vfile.path = file;
 
   const rawData = JSON.parse(content);
-  const {
-    mdast,
-    kind,
-    frontmatter: jsonFrontmatter,
-  } = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
-  const { frontmatter: astFrontmatter, identifiers } = getPageFrontmatter(
-    session,
-    mdast,
-    vfile,
-    opts?.preFrontmatter,
-    opts?.keepTitleNode,
-  );
-  const frontmatter = fillProjectFrontmatter(
-    astFrontmatter,
-    jsonFrontmatter,
-    frontmatterValidationOpts(vfile),
-  );
-
-  logMessagesFromVFile(session, vfile);
-  return { mdast, kind, frontmatter, identifiers };
+  const result = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
+  if (result === undefined) {
+    logMessagesFromVFile(session, vfile);
+    throw new Error('Unable to load JSON file: error during validation');
+  } else {
+    const { mdast, kind, frontmatter: pageFrontmatter } = result;
+    const { frontmatter, identifiers } = getPageFrontmatter(
+      session,
+      mdast,
+      vfile,
+      {...pageFrontmatter, ...opts?.preFrontmatter},
+      opts?.keepTitleNode,
+    );    logMessagesFromVFile(session, vfile);
+    return { mdast, kind, frontmatter, identifiers };
+  }
 }
 
 /**
