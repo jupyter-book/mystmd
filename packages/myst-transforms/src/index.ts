@@ -41,6 +41,7 @@ export {
 } from './code.js';
 export { blockquotePlugin, blockquoteTransform } from './blockquote.js';
 export { imageAltTextPlugin, imageAltTextTransform } from './images.js';
+export { buildIndexTransform, indexIdentifierPlugin, indexIdentifierTransform } from './indices.js';
 export {
   liftMystDirectivesAndRolesPlugin,
   liftMystDirectivesAndRolesTransform,

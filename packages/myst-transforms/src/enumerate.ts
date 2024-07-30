@@ -6,7 +6,7 @@ import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent, IndexEntry } from 'myst-common';
 import {
   createHtmlId,
   fileWarn,
@@ -107,9 +107,10 @@ type TargetNodes = (Container | Math | MathGroup | Heading) & {
   html_id: string;
   subcontainer?: boolean;
   parentEnumerator?: string;
+  indexEntries?: IndexEntry[];
 };
 
-type Target = {
+export type Target = {
   node: TargetNodes;
   kind: TargetKind | string;
 };
@@ -302,6 +303,7 @@ export interface IReferenceStateResolver {
    * If the page is provided, it will only look at that page.
    */
   getTarget: (identifier?: string, page?: string) => Target | undefined;
+  getAllTargets: () => Target[];
   getFileTarget: (identifier?: string) => ReferenceState | undefined;
   getIdentifiers: () => string[];
   resolveReferenceContent: (node: ResolvableCrossReference) => void;
@@ -435,6 +437,10 @@ export class ReferenceState implements IReferenceStateResolver {
     return this.targets[identifier];
   }
 
+  getAllTargets(): Target[] {
+    return [...Object.values(this.targets)];
+  }
+
   getFileTarget(identifier?: string): ReferenceState | undefined {
     if (!identifier) return undefined;
     if (this.identifiers.includes(identifier)) return this;
@@ -555,6 +561,10 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
   getTarget(identifier?: string, page?: string): Target | undefined {
     const state = this.resolveStateProvider(identifier, page);
     return state?.getTarget(identifier);
+  }
+
+  getAllTargets(): Target[] {
+    return this.states.map((state) => state.getAllTargets()).flat();
   }
 
   getFileTarget(identifier?: string): ReferenceState | undefined {
