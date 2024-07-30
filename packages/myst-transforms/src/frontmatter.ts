@@ -6,6 +6,7 @@ import type { GenericParent } from 'myst-common';
 import { RuleId, fileError, toText, fileWarn, normalizeLabel } from 'myst-common';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
+import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
 
 type Options = {
   /**
@@ -34,7 +35,10 @@ export function getFrontmatter(
   tree: GenericParent,
   opts: Options = { propagateTargets: true },
 ): { tree: GenericParent; frontmatter: Record<string, any>; identifiers: string[] } {
-  if (opts.propagateTargets) mystTargetsTransform(tree, file);
+  if (opts.propagateTargets) {
+    liftMystDirectivesAndRolesTransform(tree);
+    mystTargetsTransform(tree, file);
+  }
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
   const firstNode = firstParent.children?.[0] as Code;
