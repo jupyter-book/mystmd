@@ -29,7 +29,7 @@ export function parseIndexLine(
   const splitLine = line.split(/(?<!\\):/).map((val) => val.trim().replace('\\:', ':'));
   if (splitLine.length > 2) {
     fileError(vfile, `Too many colons encountered in index line "${line}"`, {
-      node: node,
+      node,
       note: 'Index entry must follow pattern "type: entry; sub entry"',
     });
   } else if (splitLine.length === 2) {
