@@ -10,6 +10,7 @@ export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 
 export type PreambleData = {
   hasProofs?: boolean;
+  hasIndex?: boolean;
   printGlossaries?: boolean;
   glossary: Record<string, [string, string]>;
   abbreviations: Record<string, [string, string]>;
@@ -49,6 +50,7 @@ export type StateData = {
   nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;
   hasProofs?: boolean;
+  hasIndex?: boolean;
   mathPlugins: SimplifiedMathPlugins;
   imports: Set<string>;
 };
