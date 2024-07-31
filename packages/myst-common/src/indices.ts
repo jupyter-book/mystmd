@@ -69,7 +69,7 @@ export function createIndexEntries(
   const entries: IndexEntry[] = [];
   single.forEach((singleEntry) => {
     const { emphasis, splitEntry } = splitEntryValue(singleEntry);
-    if (splitEntry.length !== 1 || splitEntry.length > 2) {
+    if (splitEntry.length !== 1 && splitEntry.length !== 2) {
       fileError(vfile, `Unable to parse index "single" entry "${singleEntry}"`, {
         node,
         note: 'Single index entry must follow pattern "entry" or "entry; sub entry"',
@@ -135,5 +135,5 @@ export function createIndexEntries(
   if (entries.length === 0) {
     fileError(vfile, 'No entries parsed from index directive', { node });
   }
-  return entries
+  return entries;
 }
