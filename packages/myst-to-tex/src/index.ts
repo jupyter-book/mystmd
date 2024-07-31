@@ -2,11 +2,12 @@ import type { Root, Parent, Code, Abbreviation } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
-import { RuleId, fileError, toText, getMetadataTags } from 'myst-common';
+import { RuleId, fileError, toText, getMetadataTags, fileWarn } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
 import { renderNodeToLatex } from './tables.js';
 import type { Handler, ITexSerializer, LatexResult, Options, StateData } from './types.js';
 import {
+  addIndexEntries,
   getClasses,
   getLatexImageWidth,
   hrefToLatexText,
@@ -35,11 +36,23 @@ const glossaryReferenceHandler: Handler = (node, state) => {
 
   const entry = state.glossary[node.identifier];
   if (!entry) {
-    fileError(state.file, `Unknown glossary entry identifier "${node.identifier}"`, {
-      node,
-      source: 'myst-to-tex',
-      ruleId: RuleId.texRenders,
-    });
+    if (node.identifier.startsWith('index-heading-')) {
+      fileWarn(
+        state.file,
+        `Cannot cross-reference index headings in tex export "${node.identifier}"`,
+        {
+          node,
+          source: 'myst-to-tex',
+          ruleId: RuleId.texRenders,
+        },
+      );
+    } else {
+      fileError(state.file, `Unknown glossary entry identifier "${node.identifier}"`, {
+        node,
+        source: 'myst-to-tex',
+        ruleId: RuleId.texRenders,
+      });
+    }
     const gn = node as GenericNode;
     state.write(toText(node).trim() || gn.label || '');
     return;
@@ -128,6 +141,7 @@ const handlers: Record<string, Handler> = {
     if (enumerated !== false && label && !node.implicit) {
       state.write(`\\label{${label}}`);
     }
+    addIndexEntries(node, state);
     state.closeBlock(node);
   },
   block(node, state) {
@@ -156,6 +170,12 @@ const handlers: Record<string, Handler> = {
       state.write('\\newpage\n');
     } else if (metadataTags.includes('page-break')) {
       state.write('\\pagebreak\n');
+    }
+    if (node.data?.part === 'index') {
+      state.data.hasIndex = true;
+      state.usePackages('imakeidx');
+      state.write('\\printindex\n');
+      return;
     }
     state.renderChildren(node, false);
   },
@@ -234,6 +254,7 @@ const handlers: Record<string, Handler> = {
   },
   span(node, state) {
     state.renderChildren(node, true);
+    addIndexEntries(node, state);
   },
   comment(node, state) {
     state.ensureNewLine();
@@ -548,6 +569,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
       imports: [...state.data.imports],
       preamble: {
         hasProofs: state.data.hasProofs,
+        hasIndex: state.data.hasIndex,
         printGlossaries: opts?.printGlossaries,
         glossary: state.glossary,
         abbreviations: state.abbreviations,

@@ -94,6 +94,9 @@ export function generatePreamble(data: PreambleData): { preamble: string; suffix
   if (data.hasProofs) {
     preambleLines.push(new TexProofSerializer().preamble);
   }
+  if (data.hasIndex) {
+    preambleLines.push('\\makeindex');
+  }
   if (data.printGlossaries) {
     const glossaryState = new TexGlossaryAndAcronymSerializer(data.glossary, data.abbreviations);
     preambleLines.push(glossaryState.preamble);
@@ -110,6 +113,7 @@ export function mergePreambles(
   warningLogFn: (message: string) => void,
 ) {
   const hasProofs = current.hasProofs || next.hasProofs;
+  const hasIndex = current.hasIndex || next.hasIndex;
   const printGlossaries = current.printGlossaries || next.printGlossaries;
   Object.keys(next.glossary).forEach((key) => {
     if (Object.keys(current.glossary).includes(key)) {
@@ -123,5 +127,5 @@ export function mergePreambles(
   });
   const glossary = { ...next.glossary, ...current.glossary };
   const abbreviations = { ...next.abbreviations, ...current.abbreviations };
-  return { hasProofs, printGlossaries, glossary, abbreviations };
+  return { hasProofs, hasIndex, printGlossaries, glossary, abbreviations };
 }
