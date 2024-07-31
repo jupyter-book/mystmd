@@ -16,9 +16,11 @@ export function indexIdentifierTransform(mdast: GenericParent) {
     if (!indexEntryNode.label) {
       indexEntryNode.label = `index-${createId()}`;
     }
-    const { identifier, html_id } = normalizeLabel(indexEntryNode.label) ?? {};
-    indexEntryNode.identifier = identifier;
-    indexEntryNode.html_id = html_id;
+    if (!indexEntryNode.identifier) {
+      const { identifier, html_id } = normalizeLabel(indexEntryNode.label) ?? {};
+      indexEntryNode.identifier = identifier;
+      indexEntryNode.html_id = html_id;
+    }
   });
 }
 
