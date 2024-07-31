@@ -284,11 +284,10 @@ export function buildIndexTransform(
   genindices.forEach((genindex) => {
     genindex.type = 'block';
     genindex.data = { part: 'index' };
-    genindex.children = [
-      {
-        type: 'definitionList',
-        children: indexContent,
-      },
-    ];
+    if (!genindex.children) genindex.children = [];
+    genindex.children.push({
+      type: 'definitionList',
+      children: indexContent,
+    });
   });
 }
