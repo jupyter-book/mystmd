@@ -20,9 +20,11 @@ def main():
         )
     node = pathlib.Path(NODE_LOCATION).absolute()
 
-    _version = subprocess.run([node, "-v"], capture_output=True, check=True, text=True).stdout
+    _version = subprocess.run(
+        [node, "-v"], capture_output=True, check=True, text=True
+    ).stdout
     major_version_match = re.match(r"v(\d+).*", _version)
-    
+
     if major_version_match is None:
         raise SystemExit(f"MyST could not determine the version of Node.js: {_version}")
 
@@ -33,8 +35,12 @@ def main():
             "Please update to the latest LTS release, using your preferred package manager\n"
             "or following instructions here: https://nodejs.org/en/download"
         )
-    os.execve(node, [node.name, PATH_TO_BIN_JS, *sys.argv[1:]], {**os.environ, "MYST_LANG": "PYTHON"})
-  
+    os.execve(
+        node,
+        [node.name, PATH_TO_BIN_JS, *sys.argv[1:]],
+        {**os.environ, "MYST_LANG": "PYTHON"},
+    )
+
 
 if __name__ == "__main__":
     main()
