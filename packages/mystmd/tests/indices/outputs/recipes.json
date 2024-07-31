@@ -9,7 +9,6 @@
     "downloads": [
       {
         "title": "recipes.md",
-        "url": "/recipes-bd5f5a72b971c2b65b251a3f6e8e974a.md",
         "filename": "recipes.md",
         "format": "md",
         "static": true
@@ -28,8 +27,7 @@
     "exports": [
       {
         "format": "md",
-        "filename": "recipes.md",
-        "url": "/recipes-bd5f5a72b971c2b65b251a3f6e8e974a.md"
+        "filename": "recipes.md"
       }
     ]
   },

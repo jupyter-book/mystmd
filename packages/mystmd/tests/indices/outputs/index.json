@@ -9,7 +9,6 @@
     "downloads": [
       {
         "title": "index.md",
-        "url": "/index-87e7385984943b26c3d87800b124127c.md",
         "filename": "index.md",
         "format": "md",
         "static": true
@@ -28,8 +27,7 @@
     "exports": [
       {
         "format": "md",
-        "filename": "index.md",
-        "url": "/index-87e7385984943b26c3d87800b124127c.md"
+        "filename": "index.md"
       }
     ]
   },
