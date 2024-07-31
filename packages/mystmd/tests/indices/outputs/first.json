@@ -9,7 +9,6 @@
     "downloads": [
       {
         "title": "first.md",
-        "url": "/first-e420aa072177b10320404ba3b39a18c6.md",
         "filename": "first.md",
         "format": "md",
         "static": true
@@ -28,8 +27,7 @@
     "exports": [
       {
         "format": "md",
-        "filename": "first.md",
-        "url": "/first-e420aa072177b10320404ba3b39a18c6.md"
+        "filename": "first.md"
       }
     ]
   },

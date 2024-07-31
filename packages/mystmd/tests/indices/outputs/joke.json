@@ -9,7 +9,6 @@
     "downloads": [
       {
         "title": "joke.md",
-        "url": "/joke-f2cbc1c35d69932086392c508fb4e7ca.md",
         "filename": "joke.md",
         "format": "md",
         "static": true
@@ -25,9 +24,7 @@
     ],
     "date": "20 Jul 2024",
     "affiliations": [{ "id": "Curvenote", "name": "Curvenote" }],
-    "exports": [
-      { "format": "md", "filename": "joke.md", "url": "/joke-f2cbc1c35d69932086392c508fb4e7ca.md" }
-    ]
+    "exports": [{ "format": "md", "filename": "joke.md" }]
   },
   "mdast": {
     "type": "root",
