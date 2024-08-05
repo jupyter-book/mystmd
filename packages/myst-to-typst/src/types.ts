@@ -2,7 +2,7 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 import type { FootnoteDefinition } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 
-export const DEFAULT_IMAGE_WIDTH = 0.7;
+export const DEFAULT_IMAGE_WIDTH = 0.9;
 export const DEFAULT_PAGE_WIDTH_PIXELS = 800;
 
 export type Handler = (node: any, state: ITypstSerializer, parent: any) => void;

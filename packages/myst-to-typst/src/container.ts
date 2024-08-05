@@ -51,11 +51,10 @@ export const containerHandler: Handler = (node, state) => {
   }
 
   state.ensureNewLine();
-  state.write('#show figure: set block(breakable: true)');
-  state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
-  const { identifier: label, kind } = node;
+  const { identifier, kind } = node;
+  let label: string | undefined = identifier;
   const captions = node.children?.filter(
     (child: GenericNode) => child.type === 'caption' || child.type === 'legend',
   );
@@ -69,21 +68,44 @@ export const containerHandler: Handler = (node, state) => {
     });
   }
   if (nonCaptions && nonCaptions.length > 1) {
-    state.write('#figure((');
+    const allSubFigs =
+      nonCaptions.filter((item: GenericNode) => item.type === 'container').length ===
+      nonCaptions.length;
+    state.useMacro('#import "@preview/subpar:0.1.1"');
+    state.write(`#show figure: set block(breakable: ${allSubFigs ? 'false' : 'true'})\n`);
+    state.write('#subpar.grid(');
+    let columns = 2;
     nonCaptions.forEach((item: GenericNode) => {
-      renderFigureChild(item, state);
-      state.write('\n, ');
+      if (item.type === 'container') {
+        state.write('figure(\n');
+        state.renderChildren(item);
+        state.write('\n),');
+        if (item.identifier) {
+          state.write(` <${item.identifier}>,`);
+        }
+        state.write('\n');
+      } else {
+        renderFigureChild(item, state);
+        state.write(',\n');
+        columns = 1;
+      }
     });
-    state.write(').join()');
+    state.write(`columns: (${Array(columns).fill('1fr')}),\n`);
+    if (label) {
+      state.write(`label: <${label}>,`);
+      label = undefined;
+    }
   } else if (nonCaptions && nonCaptions.length === 1) {
+    state.write('#show figure: set block(breakable: true)\n');
     state.write('#figure(');
     renderFigureChild(nonCaptions[0], state);
+    state.write(',');
   } else {
+    state.write('#show figure: set block(breakable: true)\n');
     state.write('#figure([\n  ');
     state.renderChildren(node, 1);
-    state.write(']');
+    state.write('],');
   }
-  state.write(',');
   if (captions?.length) {
     state.write('\n  caption: [\n');
     state.renderChildren({
