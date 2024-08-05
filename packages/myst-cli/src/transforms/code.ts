@@ -175,6 +175,7 @@ export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast:
         node: block,
         ruleId: RuleId.codeMetatagsValid,
       });
+      return;
     }
     const validMetatags = checkMetaTags(vfile, block, block.data.tags, true);
     const codeNode = select('code[executable=true]', block) as GenericNode | null;
