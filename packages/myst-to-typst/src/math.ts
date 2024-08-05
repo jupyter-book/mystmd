@@ -1,12 +1,15 @@
+import { normalizeLabel } from 'myst-common';
 import { texToTypst } from 'tex-to-typst';
 import type { Handler, ITypstSerializer, MathPlugins } from './types.js';
 
 function addMacrosToState(value: string, state: ITypstSerializer) {
   if (!state.options.math) return;
   Object.entries(state.options.math).forEach(([k, v]) => {
-    const key = texToTypst(k);
+    const key = texToTypst(k).value;
     if (value.includes(key)) {
-      state.data.mathPlugins[key] = texToTypst(v.macro);
+      const typstState = texToTypst(v.macro);
+      state.data.mathPlugins[key] = typstState.value;
+      typstState.macros?.forEach((macro) => state.useMacro(macro));
     }
   });
 }
@@ -55,16 +58,19 @@ export function resolveRecursiveCommands(plugins: MathPlugins): MathPlugins {
 }
 
 const math: Handler = (node, state) => {
-  const value = texToTypst(node.value);
+  const { value, macros } = texToTypst(node.value);
+  macros?.forEach((macro) => state.useMacro(macro));
+  const { identifier: label } = normalizeLabel(node.label) ?? {};
   addMacrosToState(value, state);
   state.ensureNewLine();
   // Note: must have spaces $ math $ for the block!
-  state.write(`$ ${value} $${node.label ? ` <${node.label}>` : ''}\n\n`);
+  state.write(`$ ${value} $${label ? ` <${label}>` : ''}\n\n`);
   state.ensureNewLine(true);
 };
 
 const inlineMath: Handler = (node, state) => {
-  const value = texToTypst(node.value);
+  const { value, macros } = texToTypst(node.value);
+  macros?.forEach((macro) => state.useMacro(macro));
   addMacrosToState(value, state);
   state.write(`$${value}$`);
 };
