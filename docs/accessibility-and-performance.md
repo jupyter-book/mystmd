@@ -50,12 +50,12 @@ As a comparison to Jupyter Book or Quarto, which are both static site generators
 
 ```{figure} ./images/lighthouse-jb-2022_09_15.png
 :label: lighthouse-jb
-Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are around bundling assets, reducing javascript used, optimizing images, and speed to initial page load.
+Jupyter Book Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are around bundling assets, reducing javascript used, optimizing images, and speed to initial page load.
 ```
 
 ```{figure} ./images/lighthouse-quarto-2022_09_15.png
 :label: lighthouse-quarto
-Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are image sizing, main-thread work, and high network payloads.
+Quarto Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are image sizing, main-thread work, and high network payloads.
 ```
 ````
 
