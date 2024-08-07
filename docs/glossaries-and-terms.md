@@ -77,6 +77,11 @@ Index functionality is [heavily inspired by Sphinx](https://www.sphinx-doc.org/e
 
 ### Index entry directive
 
+:::{warning}
+
+The existing syntax for `index` directives and `index` roles has been taken from Sphinx. An improved MyST-specific syntax will likely be added in the future, and this Sphinx syntax may be removed.
+:::
+
 You can define index entries with Directives like so:
 
 ````
