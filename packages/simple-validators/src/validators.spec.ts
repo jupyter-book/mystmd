@@ -252,8 +252,8 @@ describe('validateDate', () => {
     expect(validateDate(date, opts)).toEqual('2021-12-14');
   });
   it('date object is valid', () => {
-    const date = new Date("2024-11-03");
-    expect(validateDate(date, opts)).toEqual("2024-11-03");
+    const date = new Date('2024-11-03');
+    expect(validateDate(date, opts)).toEqual('2024-11-03');
   });
   it('invalid date errors', () => {
     expect(validateDate('https://example.com', opts)).toEqual(undefined);

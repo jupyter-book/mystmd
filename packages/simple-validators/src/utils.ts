@@ -14,7 +14,6 @@ export function getDate(object: undefined | Date | string | { toDate: () => Date
   throw new Error(`Could not parse date: ${object}`);
 }
 
-
 function formatISODateString(date: Date): string {
   const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 
@@ -22,7 +21,7 @@ function formatISODateString(date: Date): string {
   const isoString = utcDate.toISOString();
   const match = isoString.match(/^\d+-\d+-\d+/);
   return match![0];
-};
+}
 
 export function formatDate(date: Date | { toDate: () => Date }): string {
   if (date instanceof Date) {
