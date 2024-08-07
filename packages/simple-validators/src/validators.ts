@@ -215,18 +215,14 @@ export function validateEnum<T>(
  * IETF timestamps are valid.
  */
 export function validateDate(input: any, opts: ValidationOptions) {
-  const parsedDate = new Date(input);
-  if (!parsedDate.getDate()) {
+  const date = new Date(input);
+  if (!date.getDate()) {
     return validationError(
       `invalid date "${input}" - must be ISO 8601 format or IETF timestamp`,
       opts,
     );
   }
-  // Build a "wall-time" timestamp (choosing UTC as the timezone) from the wall-time components
-  const date = new Date(
-    Date.UTC(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()),
-  );
-  return typeof input === 'string' ? input : formatDate(date);
+  return formatDate(date);
 }
 
 /**
