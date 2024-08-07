@@ -32,6 +32,11 @@ function replaceFences(state: StateCore): boolean {
         token.info = match[1].trim();
         token.meta = { arg: match[2] };
       }
+      if (!match && token.markup.startsWith(':::')) {
+        token.type = 'directive';
+        token.meta = { options: { class: token.info?.trim() } };
+        token.info = 'div';
+      }
     }
   }
   return true;
@@ -49,6 +54,7 @@ function runDirectives(state: StateCore): boolean {
           token.content.trim() ? token.content.split(/\r?\n/) : [],
           info,
           state,
+          token.meta.options,
         );
         const { body, options } = content;
         let { bodyOffset } = content;
@@ -106,6 +112,7 @@ function parseDirectiveContent(
   content: string[],
   info: string,
   state: StateCore,
+  optionsIn: Record<string, any> = {},
 ): {
   body: string[];
   bodyOffset: number;
@@ -136,7 +143,11 @@ function parseDirectiveContent(
     try {
       const options = yaml.load(yamlBlock.join('\n')) as Record<string, any>;
       if (options && typeof options === 'object') {
-        return { body: newContent, options: Object.entries(options), bodyOffset };
+        return {
+          body: newContent,
+          options: Object.entries({ ...optionsIn, ...options }),
+          bodyOffset,
+        };
       }
     } catch (err) {
       stateWarn(
@@ -145,7 +156,7 @@ function parseDirectiveContent(
       );
     }
   } else if (content.length && COLON_OPTION_REGEX.exec(content[0])) {
-    const options: [string, string][] = [];
+    const options: Record<string, any> = {};
     let foundDivider = false;
     for (const line of content) {
       if (!foundDivider && !COLON_OPTION_REGEX.exec(line)) {
@@ -158,13 +169,15 @@ function parseDirectiveContent(
       } else {
         const match = COLON_OPTION_REGEX.exec(line);
         const { option, value } = match?.groups ?? {};
-        if (option) options.push([option, value || 'true']);
+        if (option) {
+          options[option] = value || 'true';
+        }
         bodyOffset++;
       }
     }
-    return { body: newContent, options, bodyOffset };
+    return { body: newContent, options: Object.entries({ ...optionsIn, ...options }), bodyOffset };
   }
-  return { body: content, bodyOffset: 1 };
+  return { body: content, bodyOffset: 1, options: Object.entries({ ...optionsIn }) };
 }
 
 function directiveArgToTokens(arg: string, lineNumber: number, state: StateCore) {

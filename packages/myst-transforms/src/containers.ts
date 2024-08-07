@@ -197,6 +197,15 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
     if (subfigures.length > 1 && !container.noSubcontainers) {
       subfigures = subfigures.map((node) => createSubfigure(node, container));
     }
+    if (subfigures.length === 1 && !container.label && !container.identifier) {
+      const { label, identifier, html_id } = normalizeLabel(subfigures[0].label) ?? {};
+      container.label = label;
+      container.identifier = identifier;
+      container.html_id = html_id;
+      delete subfigures[0].label;
+      delete subfigures[0].identifier;
+      delete subfigures[0].html_id;
+    }
     const children: GenericNode[] = [...subfigures];
     if (placeholderImage) children.push(placeholderImage);
     // Caption is above tables and below all other figures

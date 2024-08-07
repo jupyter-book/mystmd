@@ -1,0 +1,22 @@
+title: Labels
+cases:
+  - title: basic {#label}
+    md: '{#my-label}'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: myst_target
+            content: 'my-label'
+      - type: paragraph_close
+  - title: label stops at first }
+    md: '{#my-label}too}'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: myst_target
+            content: 'my-label'
+          - type: text
+            content: 'too}'
+      - type: paragraph_close

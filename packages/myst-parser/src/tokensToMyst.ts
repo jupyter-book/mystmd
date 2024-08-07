@@ -419,6 +419,7 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       return {
         name: t.info,
         value: t.content,
+        options: t.meta?.options,
         processed: false,
       };
     },

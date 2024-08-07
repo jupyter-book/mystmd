@@ -63,13 +63,14 @@ function runRoles(state: StateCore): boolean {
         if (child.type === 'role') {
           try {
             const { map } = token;
-            const { content, col } = child as any;
+            const { content, col, meta } = child as any;
             const roleOpen = new state.Token('parsed_role_open', '', 1);
             roleOpen.content = content;
             roleOpen.hidden = true;
             roleOpen.info = child.meta.name;
             roleOpen.block = false;
             roleOpen.map = map;
+            roleOpen.meta = meta;
             (roleOpen as any).col = col;
             const contentTokens = roleContentToTokens(content, map ? map[0] : 0, state);
             const roleClose = new state.Token('parsed_role_close', '', -1);

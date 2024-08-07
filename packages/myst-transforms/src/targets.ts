@@ -1,12 +1,13 @@
 import type { Plugin } from 'unified';
 import { findAfter } from 'unist-util-find-after';
+import { findBefore } from 'unist-util-find-before';
 import { visit } from 'unist-util-visit';
 import { remove } from 'unist-util-remove';
 import type { Target, Parent } from 'myst-spec';
 import type { Heading } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
-import type { GenericParent } from 'myst-common';
-import { normalizeLabel, toText } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
+import { copyNode, normalizeLabel, toText } from 'myst-common';
 
 /**
  * Propagate target identifier/value to subsequent node
@@ -25,15 +26,51 @@ import { normalizeLabel, toText } from 'myst-common';
  * and other structural changes to the tree that don't preserve labels.
  */
 export function mystTargetsTransform(tree: GenericParent) {
+  const paragraphs = selectAll('paragraph', tree) as GenericParent[];
+  paragraphs.forEach((paragraph) => {
+    if (paragraph.children?.length !== 1) return;
+    const target = paragraph.children[0];
+    if (target.type !== 'mystTarget') return;
+    paragraph.type = target.type;
+    paragraph.label = target.label;
+    paragraph.position = target.position;
+  });
   visit(tree, 'mystTarget', (node: Target, index: number, parent: Parent) => {
     // TODO: have multiple targets and collect the labels
-    const nextNode = findAfter(parent, index) as any;
     const normalized = normalizeLabel(node.label);
-    if (nextNode && normalized) {
+    if (!normalized) return;
+    let targetedNode = findAfter(parent, index) as GenericNode;
+    if (!targetedNode && parent.type === 'heading') {
+      targetedNode = parent;
+      // Strip trailing whitespace if there is a label
+      const headingText = selectAll('text', targetedNode) as GenericNode[];
+      const lastHeadingText = headingText[headingText.length - 1];
+      lastHeadingText.value = lastHeadingText.value?.trimEnd();
+    }
+    if (!targetedNode) {
+      const prevNode = findBefore(parent, index) as GenericNode;
+      if (prevNode?.type === 'image') {
+        // Convert labeled image to figure
+        const image = copyNode(prevNode);
+        targetedNode = prevNode;
+        targetedNode.type = 'container';
+        targetedNode.kind = 'figure';
+        targetedNode.children = [image];
+        if (image.alt) {
+          targetedNode.children.push({
+            type: 'paragraph',
+            children: [{ type: 'text', value: image.alt }],
+          });
+        }
+        delete targetedNode.alt;
+        delete targetedNode.url;
+      }
+    }
+    if (targetedNode) {
       // TODO: raise error if the node is already labelled
-      nextNode.identifier = normalized.identifier;
-      nextNode.label = normalized.label;
-      nextNode.html_id = normalized.html_id;
+      targetedNode.identifier = normalized.identifier;
+      targetedNode.label = normalized.label;
+      targetedNode.html_id = normalized.html_id;
     }
   });
   remove(tree, 'mystTarget');

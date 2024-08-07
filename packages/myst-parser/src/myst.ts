@@ -23,6 +23,7 @@ import { applyRoles } from './roles.js';
 import type { AllOptions } from './fromMarkdown.js';
 import type { GenericParent } from 'myst-common';
 import { visit } from 'unist-util-visit';
+import { labelsPlugin, shortcodePlugin, spanPlugin } from 'markdown-it-myst';
 
 type Options = Partial<AllOptions>;
 
@@ -41,6 +42,7 @@ export const defaultOptions: Omit<AllOptions, 'vfile'> = {
     tasklist: true,
     tables: true,
     blocks: true,
+    rmd: true,
   },
   mdast: {},
   directives: defaultDirectives,
@@ -82,6 +84,11 @@ export function createTokenizer(opts?: Options) {
   if (extensions.blocks) tokenizer.use(mystBlockPlugin);
   if (extensions.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
   if (extensions.citations) tokenizer.use(citationsPlugin);
+  if (extensions.rmd) {
+    tokenizer.use(labelsPlugin);
+    tokenizer.use(shortcodePlugin);
+    tokenizer.use(spanPlugin);
+  }
   tokenizer.use(mystPlugin);
   if (extensions.math) tokenizer.use(mathPlugin, extensions.math);
   if (extensions.deflist) tokenizer.use(deflistPlugin);

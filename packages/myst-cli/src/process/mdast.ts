@@ -181,15 +181,18 @@ export async function transformMdast(
     })
     .use(inlineMathSimplificationPlugin)
     .use(mathPlugin, { macros: frontmatter.math })
-    .use(glossaryPlugin) // This should be before the enumerate plugins
-    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
-    .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
     .use(joinGatesPlugin);
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
     pipe.use(t.plugin, undefined, pluginUtils);
   });
+
+  pipe
+    .use(glossaryPlugin) // This should be before the enumerate plugins
+    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
+    .use(enumerateTargetsPlugin, { state }); // This should be after math/container transforms
+
   await pipe.run(mdast, vfile);
 
   // This needs to come after basic transformations since meta tags are added there
