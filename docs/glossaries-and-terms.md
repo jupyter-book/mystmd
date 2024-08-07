@@ -1,7 +1,33 @@
 ---
-title: Glossaries, Terms and Abbreviations
-short_title: Glossaries & Terms
+title: Glossaries, Terms, Index Pages, and Abbreviations
+short_title: Glossaries, Terms, & Index Pages
 ---
+
+You can define Terms and generate reference pages for them with Glossaries and Index Pages. This allows you to centralize definitions and pointers to where various items are mentioned throughout your documents.
+
+:::{seealso} See our index and glossary page
+- The [glossary for these docs](#glossary-page)
+- The [index for these docs](#index-page)
+:::
+
+## Glossaries
+
+Glossaries are a collection of definitions for Terms in your documents.
+Below is the example of a glossary defining the terms {term}`glossary`, {term}`term`, and {term}`Index`
+
+:::{glossary}
+glossary
+: A glossary is a [list of terms and their definitions](https://en.wikipedia.org/wiki/Glossary).
+
+term
+: A term is a [word with a specialized meaning](https://en.wikipedia.org/wiki/Terminology).
+
+index
+: An [organized list of information in a publication](https://en.wikipedia.org/wiki/Index_(publishing)).
+
+index entry
+: A word or phrase that has been marked for inclusion in the index with the `index` directive or role.
+:::
 
 To add a glossary to your content, add the {myst:directive}`glossary` directive with the content as [definition lists](#definition-lists).
 
@@ -14,7 +40,7 @@ MyST
 You can use {term}`MyST` to create glossaries.
 ```
 
-The glossary can be in a different page, as long as it is parsed by your project. See an [example glossary](./glossary.md).
+You can define multiple glossaries in your documents, as long as they do not re-define the same term.
 
 :::{warning} Compatibility with {term}`Sphinx` and {term}`reStructuredText`
 :class: dropdown
@@ -34,7 +60,7 @@ A second term
 
 :::
 
-## Referencing a Term
+## Terms
 
 To reference a term in a glossary use the {myst:role}`term` role:
 
@@ -42,6 +68,82 @@ To reference a term in a glossary use the {myst:role}`term` role:
 - `` {term}`MyST Markdown <MyST>` `` produces {term}`MyST Markdown <MyST>`
 
 The label that you use for the term should be in the same case/spacing as it appears in the glossary. If there is additional syntax (e.g. a link) in the term, the text only representation will be used. The term is rendered as a cross-reference to the glossary and will provide a hover-reference.
+
+## Index pages
+
+Index pages show the location of various terms and phrases you define throughout your documentation.
+They will show an alphabetized pointer to all {term}`Terms <term>` and {term}`Index entries <index entry>` that you define.
+Index functionality is [heavily inspired by Sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#index-generating-markup).
+
+### Index entry directive
+
+You can define index entries with Directives like so:
+
+````
+:::{index} my first index
+:::
+````
+
+% This won't show up in the content
+:::{index} my first index
+:::
+
+In this case, no text will be displayed with the directive, but an index entry will be created in your index that points to the location of the directive.
+
+You can define a nested index entry with semicolons (`;`)
+
+```
+:::{index} index parent; index child
+:::
+```
+
+% This won't show up in the content
+:::{index} index parent; index child
+:::
+
+You can instead have semi-colons *split* into two index entries like so:
+
+```
+:::{index}
+pair: index one; index two
+:::
+```
+
+or for three entries:
+
+```
+:::{index}
+triple: index one; index two; index three
+:::
+```
+
+You can define multiple index entries in a single directive by putting them on multiple lines. In this case each entry must have a prefix of (`single`, `pair`, or `triple` to distinguish whether to use semi-colons for nesting or creating separate entries).
+
+```
+:::{index}
+single: index parent; index child
+pair: index two; index three
+pair: index four; index five
+triple: index six; index seven; index eight
+:::
+```
+
+### Index entry role
+
+You can define an index entry with a role like so: `` {index}`my second index` ``.
+This includes the text "{index}`my second index`" in your content and creates an entry.
+
+### Generate an index page
+
+You can generate an index with the {genindex} directive.
+For example:
+
+````
+```{genindex}
+```
+````
+
+See [the index for this documentation](#index-page) for what this generates.
 
 (abbreviations)=
 
