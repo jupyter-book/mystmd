@@ -19,7 +19,11 @@ The high-level differences between these approaches are outlined in [](#deployme
 |   MyST server   |         ✅        |         ✅        |        ❌       |
 :::
 
-The [default themes](website-templates.md#themes-bundled-with-myst) for MyST are designed to be MyST servers. Sites deployed in this manner benefit from [performance enhancements](./accessibility-and-performance.md) such as pre-fetching for instant page-transitions, loading indicators, and smaller network payloads. As the MyST themes receive new updates, it is easy to upgrade existing websites that have been deployed upon MyST servers, as the MyST site _content_ is only ever built once.
+:::{note} MyST was designed to be deployed as an application
+Deploying MyST as an application has many benefits. For example, [performance enhancements](./accessibility-and-performance.md) (like pre-fetching for instant page-transitions, loading indicators, and smaller network payloads) and easier upgrades as new MyST versions are released.
+
+The [default themes](website-templates.md#themes-bundled-with-myst) for MyST are designed to be MyST applications rather than static sites, but the core functionality is equally shared between the two options.
+:::
 
 %  - Static deployments are MPA (each page own HTML document), SSG (rendered ahead of time)
 %  - Servers are SPA (request JSON), SSR+hydration
