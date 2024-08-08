@@ -1,5 +1,16 @@
 # myst-templates
 
+## 1.0.21
+
+### Patch Changes
+
+- 0b3bf03: Validate template doc as project frontmatter
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+
 ## 1.0.20
 
 ### Patch Changes

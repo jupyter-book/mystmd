@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.5.2
+
+### Patch Changes
+
+- 134598fd: Add index directives/roles to myst-cli
+- 3fd53be8: Add better validation and post-processing to JSON files
+- Updated dependencies [38a45645]
+  - myst-frontmatter@1.5.2
+
 ## 1.5.1
 
 ### Patch Changes

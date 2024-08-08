@@ -1,5 +1,18 @@
 # myst-transforms
 
+## 1.3.21
+
+### Patch Changes
+
+- 134598fd: Add index directives/roles to myst-cli
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+  - myst-spec-ext@1.5.2
+  - myst-to-html@1.5.2
+
 ## 1.3.20
 
 ### Patch Changes
