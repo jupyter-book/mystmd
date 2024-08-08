@@ -12,7 +12,7 @@ import {
   validateContributor,
   validateGithubUrl,
   validateLicenses,
-  validatePageFrontmatter,
+  validateProjectFrontmatter,
 } from 'myst-frontmatter';
 import {
   defined,
@@ -211,7 +211,7 @@ export function validateTemplateDoc(
   options: Record<string, any>,
   opts: ValidationOptions,
 ) {
-  const output = validatePageFrontmatter(frontmatter, opts);
+  const output = validateProjectFrontmatter(frontmatter, opts);
   if (output === undefined) return undefined;
   const filteredDoc = docDefinitions.filter((def) => {
     return conditionMet(def, { ...options });
