@@ -68,5 +68,5 @@ and build a variety of outputs for interactivity and document publishing.
 (index-page)=
 ## Index
 
-```{genindex}
+```{show-index}
 ```

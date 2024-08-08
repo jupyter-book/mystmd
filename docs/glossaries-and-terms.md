@@ -73,29 +73,28 @@ The label that you use for the term should be in the same case/spacing as it app
 
 Index pages show the location of various terms and phrases you define throughout your documentation.
 They will show an alphabetized pointer to all {term}`Terms <term>` and {term}`Index entries <index entry>` that you define.
-Index functionality is [heavily inspired by Sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#index-generating-markup).
 
 ### Index entry directive
 
 :::{warning}
 
-The existing syntax for `index` directives and `index` roles has been taken from Sphinx. An improved MyST-specific syntax will likely be added in the future, and this Sphinx syntax may be removed.
+The existing syntax for `index` directives and `index` roles has been taken directly from [Sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#index-generating-markup). An improved MyST-specific syntax will likely be added in the future, and this Sphinx syntax may be removed.
 :::
 
 You can define index entries with Directives like so:
 
 ````
-:::{index} my first index
+:::{index} my first index item
 :::
 ````
 
 % This won't show up in the content
-:::{index} my first index
+:::{index} my first index item
 :::
 
 In this case, no text will be displayed with the directive, but an index entry will be created in your index that points to the location of the directive.
 
-You can define a nested index entry with semicolons (`;`)
+You can define a nested index entry with a semicolon (`;`)
 
 ```
 :::{index} index parent; index child
@@ -106,7 +105,16 @@ You can define a nested index entry with semicolons (`;`)
 :::{index} index parent; index child
 :::
 
-You can instead have semi-colons *split* into two index entries like so:
+Also, you can define multiple, non-nested index entries in the directive argument by delimiting with a comma:
+
+```
+:::{index} index one, index two, index three
+:::
+```
+
+#### Pairs and Triples
+
+You can generate two reciprocal, nested index entries with `pair:`, like so:
 
 ```
 :::{index}
@@ -114,7 +122,7 @@ pair: index one; index two
 :::
 ```
 
-or for three entries:
+or for three related items:
 
 ```
 :::{index}
@@ -122,14 +130,38 @@ triple: index one; index two; index three
 :::
 ```
 
-You can define multiple index entries in a single directive by putting them on multiple lines. In this case each entry must have a prefix of (`single`, `pair`, or `triple` to distinguish whether to use semi-colons for nesting or creating separate entries).
+You can define multiple index entries in a single directive by putting them on multiple lines. In this case each entry must have a prefix of (`single`, `pair`, or `triple` to distinguish what specific nested entries are created).
 
 ```
 :::{index}
+single: index one
 single: index parent; index child
 pair: index two; index three
 pair: index four; index five
 triple: index six; index seven; index eight
+:::
+```
+
+#### See and See Also
+
+For one index entry to reference another index entry, you may use the `see` or `seealso` prefix. For example,
+
+```
+:::{index}
+see: index 1; index one
+:::
+```
+
+This creates an entry like "_index 1_: See _index one_"
+
+The prefix `seealso:` behaves identically but uses the text "See also" instead of "See."
+
+#### Emphasis
+
+To emphasize any index entry, add an exclamation point before the index term. This will style the entry as either bold or italic and move it before other entries that refer to the same term but are not emphasized.
+
+```
+:::{index} ! index one
 :::
 ```
 
@@ -138,13 +170,17 @@ triple: index six; index seven; index eight
 You can define an index entry with a role like so: `` {index}`my second index` ``.
 This includes the text "{index}`my second index`" in your content and creates an entry.
 
-### Generate an index page
+If you the text to be different than the index entry, you may use the syntax `` {index}`text on the page <index term>` ``.
 
-You can generate an index with the {genindex} directive.
+Index roles can use all the same prefixes as described for the `{index}` directive, including `single`, `pair`, `triple`, `see`, and `seealso`. For example, `` {index}`pair: index one; index two` `` or `` {index}`text on the page <pair: index one; index two>` ``.
+
+### Generate an index
+
+You can show an index on a MyST page with the `{show-index}` directive.
 For example:
 
 ````
-```{genindex}
+```{show-index}
 ```
 ````
 
