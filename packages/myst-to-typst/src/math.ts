@@ -9,7 +9,9 @@ function addMacrosToState(value: string, state: ITypstSerializer) {
     if (value.includes(key)) {
       const typstState = texToTypst(v.macro);
       state.data.mathPlugins[key] = typstState.value;
-      typstState.macros?.forEach((macro) => state.useMacro(macro));
+      typstState.macros?.forEach((macro) => {
+        state.useMacro(macro);
+      });
     }
   });
 }
@@ -59,7 +61,9 @@ export function resolveRecursiveCommands(plugins: MathPlugins): MathPlugins {
 
 const math: Handler = (node, state) => {
   const { value, macros } = texToTypst(node.value);
-  macros?.forEach((macro) => state.useMacro(macro));
+  macros?.forEach((macro) => {
+    state.useMacro(macro);
+  });
   const { identifier: label } = normalizeLabel(node.label) ?? {};
   addMacrosToState(value, state);
   state.ensureNewLine();
@@ -70,7 +74,9 @@ const math: Handler = (node, state) => {
 
 const inlineMath: Handler = (node, state) => {
   const { value, macros } = texToTypst(node.value);
-  macros?.forEach((macro) => state.useMacro(macro));
+  macros?.forEach((macro) => {
+    state.useMacro(macro);
+  });
   addMacrosToState(value, state);
   state.write(`$${value}$`);
 };
