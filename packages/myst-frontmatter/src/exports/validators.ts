@@ -60,6 +60,7 @@ export const EXT_TO_FORMAT: Record<string, ExportFormats> = {
   '.jats': ExportFormats.xml,
   '.typ': ExportFormats.typst,
   '.typst': ExportFormats.typst,
+  '.cff': ExportFormats.cff,
 };
 
 export const RESERVED_EXPORT_KEYS = [

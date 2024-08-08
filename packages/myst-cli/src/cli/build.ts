@@ -19,6 +19,7 @@ import {
   makeExecuteOption,
   makeMaxSizeWebpOption,
   makeDOIBibOption,
+  makeCffOption,
 } from './options.js';
 import { readableName } from '../utils/whiteLabelling.js';
 
@@ -34,6 +35,7 @@ export function makeBuildCommand() {
     .addOption(makeMdOption('Build MD output'))
     .addOption(makeJatsOption('Build JATS xml output'))
     .addOption(makeMecaOptions('Build MECA zip output'))
+    .addOption(makeCffOption('Build CFF output'))
     .addOption(makeSiteOption(`Build ${readableName()} site content`))
     .addOption(makeHtmlOption('Build static HTML site content'))
     .addOption(makeAllOption('Build all exports'))

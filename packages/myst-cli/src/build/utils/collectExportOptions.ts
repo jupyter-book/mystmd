@@ -277,6 +277,7 @@ export const ALLOWED_EXTENSIONS: Record<ExportFormats, string[]> = {
   [ExportFormats.tex]: ['.tex', '.zip'],
   [ExportFormats.typst]: ['.pdf', '.typ', '.typst', '.zip'],
   [ExportFormats.xml]: ['.xml', '.jats'],
+  [ExportFormats.cff]: ['.cff'],
 };
 
 /**
@@ -301,6 +302,8 @@ export function resolveOutput(
   if (exp.output) {
     // output path from file frontmatter needs resolution relative to working directory
     output = path.resolve(path.dirname(sourceFile), exp.output);
+  } else if (exp.format === ExportFormats.cff && projectPath) {
+    output = projectPath;
   } else {
     output = getDefaultExportFolder(session, sourceFile, exp.format, projectPath);
   }
@@ -312,11 +315,16 @@ export function resolveOutput(
     exp.zip = false;
   }
   if (!path.extname(output)) {
-    const basename = getDefaultExportFilename(
-      session,
-      singleArticleWithFile(exp.articles)?.file ?? sourceFile,
-      projectPath,
-    );
+    let basename: string;
+    if (exp.format === ExportFormats.cff) {
+      basename = 'CITATION';
+    } else {
+      basename = getDefaultExportFilename(
+        session,
+        singleArticleWithFile(exp.articles)?.file ?? sourceFile,
+        projectPath,
+      );
+    }
     const ext = exp.zip ? '.zip' : ALLOWED_EXTENSIONS[exp.format]?.[0];
     output = path.join(output, `${basename}${ext ?? ''}`);
   }
@@ -395,6 +403,8 @@ export function resolveExportListFormats(
   return exportListWithFormat;
 }
 
+const FORMATS_ALLOW_NO_ARTICLES = [ExportFormats.meca, ExportFormats.cff];
+
 /**
  * Resolve export list with formats to export list with articles and outputs
  */
@@ -417,7 +427,7 @@ export function resolveExportListArticles(
         exp,
         projectPath,
       );
-      if (!articles?.length && exp.format !== ExportFormats.meca) {
+      if (!articles?.length && !FORMATS_ALLOW_NO_ARTICLES.includes(exp.format)) {
         // All export formats except meca require article(s)
         return undefined;
       }

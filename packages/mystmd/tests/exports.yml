@@ -264,3 +264,9 @@ cases:
         content: indices/outputs/joke.json
       - path: indices/_build/site/content/recipes.json
         content: indices/outputs/recipes.json
+  - title: Citation cff file builds
+    cwd: citation-cff
+    command: myst build --cff myst.yml
+    outputs:
+      - path: citation-cff/CITATION.cff
+        content: citation-cff/outputs/CITATION.cff
