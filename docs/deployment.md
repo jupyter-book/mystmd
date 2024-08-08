@@ -92,7 +92,7 @@ Deploy to Netlify as static HTML, and pull-request previews.
 
 % TODO: ReadTheDocs
 
-## Dynamic MyST Sites
+## Application Websites
 
 ### Creating Structured Site Data
 MyST servers consume _structured data_ that represents a MyST website. These data can be built using the `myst build` command,
