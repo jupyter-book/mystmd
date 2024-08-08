@@ -277,7 +277,7 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
         'DOI',
         'ISSN',
       ].forEach((tag) => {
-        if (c[tag]) c[tag] = c[tag].trim();
+        if (c[tag] && typeof c[tag] === 'string') c[tag] = c[tag].trim();
       });
       // Trim the DOIs and URLs (these are encoded) on load
       if (c.URL) c.URL = c.URL.replace(/^(%20)*/, '').replace(/(%20)*$/, '');
