@@ -40,7 +40,7 @@
     "myst-common": "^1.5.1",
     "myst-frontmatter": "^1.5.1",
     "myst-spec-ext": "^1.5.1",
-    "tex-to-typst": "^0.0.5",
+    "tex-to-typst": "^0.0.6",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   }
