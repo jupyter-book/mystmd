@@ -7,7 +7,7 @@ description: Deploy your MyST site to static HTML or a MyST-aware server.
 There are two different ways to host MyST websites online.
 
 - **As a static website**. An HTML file is generated for each page at once. The collection of HTML files and website assets can be served from static site hosts (like [GitHub Pages](https://docs.github.com/en/pages), [Netlify](https://netlify.com), and [ReadTheDocs](https://readthedocs.org)).
-- **As an application**. A MyST _server_ is run that dynamically generates pages when a user visits them. Your site can be served by a hosting provider that supports applications (like [Curvenote](https://curvenote.org) or [Vercel](https://vercel.com))
+- **As an application**. A MyST _server_ is run that dynamically generates pages when a user visits them. Your site can be served by a hosting provider that supports applications (like [Curvenote](https://curvenote.com) or [Vercel](https://vercel.com))
 
 The high-level differences between these approaches are outlined in [](#deployment-comparison).
 :::{table} High-Level Comparison of MyST Site Deployment Types
