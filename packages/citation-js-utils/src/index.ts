@@ -24,6 +24,7 @@ export type CSL = {
   'container-title'?: string;
   abstract?: string;
   DOI?: string;
+  URL?: string;
   ISBN?: string;
   ISSN?: string;
   issue?: string;
@@ -264,6 +265,22 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
       if (!c.id) {
         c.id = formatLabel(c);
       }
+      // Trim the titles, DOIs, etc. on load
+      [
+        'title',
+        'note',
+        'publisher',
+        'page',
+        'volume',
+        'issue',
+        'container-title',
+        'DOI',
+        'ISSN',
+      ].forEach((tag) => {
+        if (c[tag]) c[tag] = c[tag].trim();
+      });
+      // Trim the DOIs and URLs (these are encoded) on load
+      if (c.URL) c.URL = c.URL.replace(/^(%20)*/, '').replace(/(%20)*$/, '');
       return [
         c.id,
         {
