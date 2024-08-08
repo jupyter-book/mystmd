@@ -236,10 +236,18 @@ function warnOnDuplicateIdentifiers(session: ISession, states: ReferenceState[])
 }
 
 /**
- * Return list of ReferenceStates corresponding to list of pages
+ * Finalize and return list of page ReferenceStates
  *
- * Unless `opts.suppressWarnings` is true, this will log a warning when
- * multiple identifiers are encountered across pages.
+ * This adds file information to the corresponding state, which may
+ * have been modified after the state was created. It also builds
+ * indices and adds additional reference targets to pages that include
+ * an index. Unless `opts.suppressWarnings` is true, this will log a
+ * warning when multiple identifiers are encountered across pages.
+ *
+ * This function should be used as part of the mdast processing pipeline.
+ * Initial page processing and state creation occurs in `processMdast`.
+ * Then this function should be invoked before `postProcessMdast`, as that
+ * function assumes all page ReferenceStates are fully resolved.
  */
 export function selectPageReferenceStates(
   session: ISession,

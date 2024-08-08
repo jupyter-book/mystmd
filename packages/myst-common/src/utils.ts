@@ -78,6 +78,16 @@ export function createHtmlId(identifier?: string): string | undefined {
     .replace(/(?:^[-]+)|(?:[-]+$)/g, ''); // Remove repeated `-`s at the start or the end
 }
 
+/**
+ * Transfer all target-related attributes from one node to another
+ *
+ * During mdast transformation, these attributes (including: label,
+ * identifier, html_id, indexEntries) are often moved. For example
+ * `mystTarget` information propagates to the next node, `image`
+ * attributes may propagate to parent `container` node, etc.
+ *
+ * This shared function helps insure attributes are not lost along the way.
+ */
 export function transferTargetAttrs(sourceNode: GenericNode, destNode: GenericNode, vfile?: VFile) {
   if (sourceNode.label) {
     if (destNode.label && vfile) {
