@@ -14,9 +14,10 @@ The high-level differences between these approaches are outlined in [](#deployme
 :label: deployment-comparison
 
 | Deployment Type | High Performance | Seamless Updates | Static Hosting |
-|:---------------:|:----------------:|:----------------:|:--------------:|
-|  Static website |         ❌        |         ❌        |        ✅       |
-|   MyST server   |         ✅        |         ✅        |        ❌       |
+| :-------------: | :--------------: | :--------------: | :------------: |
+| Static website  |        ❌        |        ❌        |       ✅       |
+|   MyST server   |        ✅        |        ✅        |       ❌       |
+
 :::
 
 :::{note} MyST was designed to be deployed as an application
@@ -25,16 +26,17 @@ Deploying MyST as an application has many benefits. For example, [performance en
 The [default themes](website-templates.md#themes-bundled-with-myst) for MyST are designed to be MyST applications rather than static sites, but the core functionality is equally shared between the two options.
 :::
 
-%  - Static deployments are MPA (each page own HTML document), SSG (rendered ahead of time)
-%  - Servers are SPA (request JSON), SSR+hydration
+% - Static deployments are MPA (each page own HTML document), SSG (rendered ahead of time)
+% - Servers are SPA (request JSON), SSR+hydration
 %- Term definitions?
-%  - SPA vs MPA
-%  - SSR vs CSR vs SSG
+% - SPA vs MPA
+% - SSR vs CSR vs SSG
 
 The choice between static hosts and application-based hosts often comes down to the type of website hosting that is available, and the amount of complexity that you're willing to deal with in deploying your site.
 The sections below share a few considerations to help you make a decision.
 
 ## Static Websites
+
 ### Creating Static HTML
 
 To create a static HTML export of your MyST site, build it as HTML:
@@ -44,9 +46,11 @@ myst build --html
 ```
 
 After the build process, you can see the folder in `_build/html`, which has all assets for your static website. You can verify that the site is working correctly by starting a static web-server, for example,
+
 ```shell
 npx serve _build/html
 ```
+
 which will serve a static version of the site.
 
 :::{danger} Static sites should have an `index.html`
@@ -78,7 +82,8 @@ site:
 If you are using Git, add the `_build` folder to your `.gitignore` so that it is not tracked. This folder contains auto-generated assets that can easily be re-built -- for example in a Continuous Integration system like GitHub Actions.
 :::
 
-### Deploying to a Static Webhost
+### Deploying to a Static Web Server
+
 The contents of the `_build/html` can be served from any static web server. The following articles outline the process of deploying your static site to well-known website providers:
 
 :::{card} GitHub Pages
@@ -96,13 +101,17 @@ Deploy to Netlify as static HTML, and pull-request previews.
 ## Application Websites
 
 ### Creating Structured Site Data
+
 MyST servers consume _structured data_ that represents a MyST website. These data can be built using the `myst build` command,
+
 ```shell
 myst build --site
 ```
+
 which populates the `_build/site` directory with information about your website including the metadata, cross-references, static images, and [MyST AST](https://mystmd.org/spec).
 
 ### Deploying to a MyST-Aware Server
+
 :::{note}
 At present, only [Curvenote](https://curvenote.com/) provides out-of-the-box support for deployment of MyST websites:
 :::
@@ -113,4 +122,3 @@ At present, only [Curvenote](https://curvenote.com/) provides out-of-the-box sup
 :link: ./deployment-curvenote.md
 Deploy to Curvenote as a dynamic site with a managed MyST theme.
 :::
-
