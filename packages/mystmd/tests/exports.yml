@@ -268,5 +268,5 @@ cases:
     cwd: citation-cff
     command: myst build --cff myst.yml
     outputs:
-      - path: citation-cff/_build/exports/CITATION.cff
+      - path: citation-cff/CITATION.cff
         content: citation-cff/outputs/CITATION.cff
