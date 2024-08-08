@@ -31,7 +31,8 @@ The [default themes](website-templates.md#themes-bundled-with-myst) for MyST are
 %  - SPA vs MPA
 %  - SSR vs CSR vs SSG
 
-However, commonly used website hosts like GitHub Pages and ReadTheDocs are _static website hosts_, meaning that they can only serve webpages that have been built ahead of time. Therefore, the choice between using a static website or a MyST server deployment often comes down to the type of website hosting that is available.
+The choice between static hosts and application-based hosts often comes down to the type of website hosting that is available, and the amount of complexity that you're willing to deal with in deploying your site.
+The sections below share a few considerations to help you make a decision.
 
 ## Static Websites
 ### Creating Static HTML
