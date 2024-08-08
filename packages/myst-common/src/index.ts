@@ -29,7 +29,7 @@ export {
   TargetKind,
 } from './types.js';
 
-export type { IndexEntry, IndexTypeLists } from './indices.js';
+export type { IndexTypeLists } from './indices.js';
 export type { MessageInfo } from './utils.js';
 export type {
   IExpressionResult,

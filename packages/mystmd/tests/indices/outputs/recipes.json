@@ -55,12 +55,36 @@
               }
             ],
             "indexEntries": [
-              { "entry": "Chicken", "subEntry": "Egg", "emphasis": false },
-              { "entry": "Egg", "subEntry": "Chicken", "emphasis": false },
-              { "entry": "Egg", "subEntry": "Recipe", "emphasis": false },
-              { "entry": "Recipe", "subEntry": "Egg", "emphasis": false },
-              { "entry": "Chicken", "subEntry": "Recipe", "emphasis": false },
-              { "entry": "Recipe", "subEntry": "Chicken", "emphasis": false }
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Egg", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "Recipe", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Recipe",
+                "subEntry": { "value": "Egg", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Recipe", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Recipe",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              }
             ],
             "identifier": "does-it-matter-which-came-first",
             "label": "Does it matter which came first?",

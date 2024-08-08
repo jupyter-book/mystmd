@@ -1,4 +1,5 @@
-import type { GenericNode, IndexEntry } from 'myst-common';
+import type { GenericNode } from 'myst-common';
+import type { IndexEntry } from 'myst-spec-ext';
 import type { ITexSerializer } from './types.js';
 import { DEFAULT_IMAGE_WIDTH, DEFAULT_PAGE_WIDTH_PIXELS } from './types.js';
 
@@ -297,14 +298,16 @@ export function getClasses(className?: string): string[] {
 export function addIndexEntries(node: GenericNode, state: ITexSerializer) {
   if (!node.indexEntries?.length) return;
   state.data.hasIndex = true;
-  (node.indexEntries as IndexEntry[]).forEach(({ entry, subEntry, emphasis, see, seeAlso }) => {
+  (node.indexEntries as IndexEntry[]).forEach(({ entry, subEntry, emphasis }) => {
     let indexString = entry;
-    if (see) {
-      indexString += `|see{${subEntry}}`;
-    } else if (seeAlso) {
-      indexString += `|seealso{${subEntry}}`;
-    } else if (subEntry) {
-      indexString += `!${subEntry}`;
+    if (subEntry?.value) {
+      if (subEntry?.kind === 'see') {
+        indexString += `|see{${subEntry.value}}`;
+      } else if (subEntry?.kind === 'seealso') {
+        indexString += `|seealso{${subEntry.value}}`;
+      } else {
+        indexString += `!${subEntry.value}`;
+      }
     }
     if (emphasis) {
       indexString += '|textbf';

@@ -34,7 +34,7 @@ type IndexTargetInfo = {
 };
 
 type IndexSeeInfo = {
-  subEntry: string;
+  value: string;
   emphasis?: boolean;
 };
 
@@ -57,7 +57,7 @@ function organizeTargetEntries(indexTargets: Target[], vfile: VFile) {
     >
   > = {};
   indexTargets.forEach(({ node }) => {
-    node.indexEntries?.forEach(({ entry, subEntry, emphasis, see, seeAlso }) => {
+    node.indexEntries?.forEach(({ entry, subEntry, emphasis }) => {
       const letter = ALPHABET_UPPER.includes(entry[0]?.toUpperCase())
         ? entry[0].toUpperCase()
         : 'Other';
@@ -76,19 +76,20 @@ function organizeTargetEntries(indexTargets: Target[], vfile: VFile) {
         }
         entryDict[letter][entry] = { nodes: [], see: [], seeAlso: [], subEntries: {} };
       }
-      if (subEntry) {
-        if (see) {
-          entryDict[letter][entry].see.push({ subEntry, emphasis });
-        } else if (seeAlso) {
-          entryDict[letter][entry].seeAlso.push({ subEntry, emphasis });
+      const indexItem = entryDict[letter][entry];
+      if (subEntry?.value) {
+        if (subEntry.kind === 'see') {
+          indexItem.see.push({ value: subEntry.value, emphasis });
+        } else if (subEntry.kind === 'seealso') {
+          indexItem.seeAlso.push({ value: subEntry.value, emphasis });
         } else {
-          if (!entryDict[letter][entry].subEntries[subEntry]) {
-            entryDict[letter][entry].subEntries[subEntry] = [];
+          if (!indexItem.subEntries[subEntry.value]) {
+            indexItem.subEntries[subEntry.value] = [];
           }
-          entryDict[letter][entry].subEntries[subEntry].push(indexTargetInfo);
+          indexItem.subEntries[subEntry.value].push(indexTargetInfo);
         }
       } else {
-        entryDict[letter][entry].nodes.push(indexTargetInfo);
+        indexItem.nodes.push(indexTargetInfo);
       }
     });
   });
@@ -147,9 +148,9 @@ function resolveIndexPrefix(
   prefix: string,
 ) {
   return emphasisFirst(nodes)
-    .map(({ subEntry, emphasis }, ind) => {
-      if (!allEntries.includes(subEntry)) {
-        fileWarn(vfile, `"${prefix}" destination for "${key}" does not exist: "${subEntry}"`, {
+    .map(({ value, emphasis }, ind) => {
+      if (!allEntries.includes(value)) {
+        fileWarn(vfile, `"${prefix}" destination for "${key}" does not exist: "${value}"`, {
           ruleId: RuleId.indexEntriesResolve,
         });
       }
@@ -165,8 +166,8 @@ function resolveIndexPrefix(
           value: ', ',
         });
       }
-      const xrefLetter = ALPHABET_UPPER.includes(subEntry[0]?.toUpperCase())
-        ? subEntry[0].toLowerCase()
+      const xrefLetter = ALPHABET_UPPER.includes(value[0]?.toUpperCase())
+        ? value[0].toLowerCase()
         : 'other';
       const xref = {
         type: 'crossReference',
@@ -175,7 +176,7 @@ function resolveIndexPrefix(
         children: [
           {
             type: 'text',
-            value: subEntry,
+            value,
           },
         ],
       };
@@ -246,17 +247,18 @@ export function buildIndexTransform(
       children: Object.keys(entryDict[letter])
         .sort()
         .map((key) => {
+          const indexItem = entryDict[letter][key];
           return [
             {
               type: 'text',
               value: `${key}:`,
             },
-            ...resolveIndexReferences(entryDict[letter][key].nodes),
-            ...resolveIndexSee(entryDict[letter][key].see, key, allEntries, vfile),
-            ...resolveIndexSeeAlso(entryDict[letter][key].seeAlso, key, allEntries, vfile),
+            ...resolveIndexReferences(indexItem.nodes),
+            ...resolveIndexSee(indexItem.see, key, allEntries, vfile),
+            ...resolveIndexSeeAlso(indexItem.seeAlso, key, allEntries, vfile),
             {
               type: 'list',
-              children: Object.keys(entryDict[letter][key].subEntries)
+              children: Object.keys(indexItem.subEntries)
                 .sort()
                 .map((sub) => {
                   return {
@@ -269,7 +271,7 @@ export function buildIndexTransform(
                             type: 'text',
                             value: `${sub}: `,
                           },
-                          ...resolveIndexReferences(entryDict[letter][key].subEntries[sub]),
+                          ...resolveIndexReferences(indexItem.subEntries[sub]),
                         ],
                       },
                     ],

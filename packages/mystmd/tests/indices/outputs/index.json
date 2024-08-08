@@ -54,7 +54,13 @@
                 }
               }
             ],
-            "indexEntries": [{ "entry": "Egg", "subEntry": "-cited", "emphasis": false }],
+            "indexEntries": [
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "-cited", "kind": "entry" },
+                "emphasis": false
+              }
+            ],
             "identifier": "introduction",
             "label": "Introduction",
             "html_id": "introduction",

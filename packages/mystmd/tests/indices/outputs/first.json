@@ -56,13 +56,20 @@
             ],
             "indexEntries": [
               { "entry": "Reptilian ancestors", "emphasis": false },
-              { "entry": "Chicken", "subEntry": "Egg", "emphasis": false },
-              { "entry": "Egg", "subEntry": "Chicken", "emphasis": false },
               {
                 "entry": "Chicken",
-                "subEntry": "Reptilian ancestors",
-                "emphasis": false,
-                "seeAlso": true
+                "subEntry": { "value": "Egg", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Reptilian ancestors", "kind": "seealso" },
+                "emphasis": false
               }
             ],
             "identifier": "chicken-vs-egg",

@@ -197,7 +197,7 @@ describe('createIndexEntries', () => {
   test('single: ! one ; two', () => {
     value.single.push('! one ; two');
     expect(createIndexEntries(value, vfile, node)).toEqual([
-      { entry: 'one', subEntry: 'two', emphasis: true },
+      { entry: 'one', subEntry: { value: 'two', kind: 'entry' }, emphasis: true },
     ]);
     expect(vfile.messages?.length).toBeFalsy();
   });
@@ -214,8 +214,8 @@ describe('createIndexEntries', () => {
   test('pair: one; two', () => {
     value.pair.push('one; two');
     expect(createIndexEntries(value, vfile, node)).toEqual([
-      { entry: 'one', subEntry: 'two', emphasis: false },
-      { entry: 'two', subEntry: 'one', emphasis: false },
+      { entry: 'one', subEntry: { value: 'two', kind: 'entry' }, emphasis: false },
+      { entry: 'two', subEntry: { value: 'one', kind: 'entry' }, emphasis: false },
     ]);
     expect(vfile.messages?.length).toBeFalsy();
   });
@@ -227,12 +227,12 @@ describe('createIndexEntries', () => {
   test('triple: !one; two; three', () => {
     value.triple.push('!one; two; three');
     expect(createIndexEntries(value, vfile, node)).toEqual([
-      { entry: 'one', subEntry: 'two', emphasis: true },
-      { entry: 'two', subEntry: 'one', emphasis: true },
-      { entry: 'two', subEntry: 'three', emphasis: true },
-      { entry: 'three', subEntry: 'two', emphasis: true },
-      { entry: 'one', subEntry: 'three', emphasis: true },
-      { entry: 'three', subEntry: 'one', emphasis: true },
+      { entry: 'one', subEntry: { value: 'two', kind: 'entry' }, emphasis: true },
+      { entry: 'two', subEntry: { value: 'one', kind: 'entry' }, emphasis: true },
+      { entry: 'two', subEntry: { value: 'three', kind: 'entry' }, emphasis: true },
+      { entry: 'three', subEntry: { value: 'two', kind: 'entry' }, emphasis: true },
+      { entry: 'one', subEntry: { value: 'three', kind: 'entry' }, emphasis: true },
+      { entry: 'three', subEntry: { value: 'one', kind: 'entry' }, emphasis: true },
     ]);
     expect(vfile.messages?.length).toBeFalsy();
   });
@@ -245,7 +245,7 @@ describe('createIndexEntries', () => {
     value.see.push('!one; two');
     value.see.push('one');
     expect(createIndexEntries(value, vfile, node)).toEqual([
-      { entry: 'one', subEntry: 'two', see: true, emphasis: true },
+      { entry: 'one', subEntry: { value: 'two', kind: 'see' }, emphasis: true },
     ]);
     expect(vfile.messages?.length).toEqual(1);
   });
@@ -253,7 +253,7 @@ describe('createIndexEntries', () => {
     value.seealso.push('one; two');
     value.seealso.push('!one; two; three');
     expect(createIndexEntries(value, vfile, node)).toEqual([
-      { entry: 'one', subEntry: 'two', seeAlso: true, emphasis: false },
+      { entry: 'one', subEntry: { value: 'two', kind: 'seealso' }, emphasis: false },
     ]);
     expect(vfile.messages?.length).toEqual(1);
   });

@@ -1,12 +1,12 @@
 import type { Plugin } from 'unified';
 import { VFile } from 'vfile';
 import type { CrossReference, Heading, Paragraph } from 'myst-spec';
-import type { Cite, Container, Math, MathGroup, Link } from 'myst-spec-ext';
+import type { Cite, Container, Math, MathGroup, Link, IndexEntry } from 'myst-spec-ext';
 import type { PhrasingContent } from 'mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAndReplace } from 'mdast-util-find-and-replace';
-import type { GenericNode, GenericParent, IndexEntry } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import {
   createHtmlId,
   fileWarn,

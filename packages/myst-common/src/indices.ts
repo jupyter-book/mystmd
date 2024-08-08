@@ -1,14 +1,7 @@
 import type { VFile } from 'vfile';
+import type { IndexEntry } from 'myst-spec-ext';
 import { fileError } from './utils.js';
 import type { GenericNode } from './types.js';
-
-export type IndexEntry = {
-  entry: string;
-  subEntry?: string;
-  emphasis?: boolean;
-  see?: boolean;
-  seeAlso?: boolean;
-};
 
 export type IndexTypeLists = {
   single: string[];
@@ -61,6 +54,16 @@ export function splitEntryValue(entry: string) {
   return { emphasis, splitEntry };
 }
 
+function createIndexEntry(
+  entry: string,
+  sub?: string,
+  emphasis?: boolean,
+  kind?: 'entry' | 'see' | 'seealso',
+): IndexEntry {
+  const subEntry = sub ? { value: sub, kind: kind ?? 'entry' } : undefined;
+  return { entry, subEntry, emphasis };
+}
+
 export function createIndexEntries(
   { single, pair, triple, see, seealso }: IndexTypeLists,
   vfile: VFile,
@@ -76,7 +79,7 @@ export function createIndexEntries(
       });
     } else {
       const [entry, subEntry] = splitEntry;
-      entries.push({ entry, subEntry, emphasis });
+      entries.push(createIndexEntry(entry, subEntry, emphasis));
     }
   });
   pair.forEach((pairEntry) => {
@@ -88,8 +91,8 @@ export function createIndexEntries(
       });
     } else {
       const [entry, subEntry] = splitEntry;
-      entries.push({ entry, subEntry, emphasis });
-      entries.push({ entry: subEntry, subEntry: entry, emphasis });
+      entries.push(createIndexEntry(entry, subEntry, emphasis));
+      entries.push(createIndexEntry(subEntry, entry, emphasis));
     }
   });
   triple.forEach((tripleEntry) => {
@@ -100,37 +103,31 @@ export function createIndexEntries(
         note: 'Triple index entry must follow pattern "entry one; entry two; entry three"',
       });
     } else {
-      entries.push({ entry: splitEntry[0], subEntry: splitEntry[1], emphasis });
-      entries.push({ entry: splitEntry[1], subEntry: splitEntry[0], emphasis });
-      entries.push({ entry: splitEntry[1], subEntry: splitEntry[2], emphasis });
-      entries.push({ entry: splitEntry[2], subEntry: splitEntry[1], emphasis });
-      entries.push({ entry: splitEntry[0], subEntry: splitEntry[2], emphasis });
-      entries.push({ entry: splitEntry[2], subEntry: splitEntry[0], emphasis });
+      entries.push(createIndexEntry(splitEntry[0], splitEntry[1], emphasis));
+      entries.push(createIndexEntry(splitEntry[1], splitEntry[0], emphasis));
+      entries.push(createIndexEntry(splitEntry[1], splitEntry[2], emphasis));
+      entries.push(createIndexEntry(splitEntry[2], splitEntry[1], emphasis));
+      entries.push(createIndexEntry(splitEntry[0], splitEntry[2], emphasis));
+      entries.push(createIndexEntry(splitEntry[2], splitEntry[0], emphasis));
     }
   });
-  see.forEach((seeEntry) => {
+  const addSeeEntry = (seeEntry: string, kind: 'see' | 'seealso') => {
     const { emphasis, splitEntry } = splitEntryValue(seeEntry);
     if (splitEntry.length !== 2) {
-      fileError(vfile, `Unable to parse index "see" entry "${seeEntry}"`, {
+      fileError(vfile, `Unable to parse index "${kind}" entry "${seeEntry}"`, {
         node,
         note: 'See index entry must follow pattern "entry; sub entry"',
       });
     } else {
       const [entry, subEntry] = splitEntry;
-      entries.push({ entry, subEntry, emphasis, see: true });
+      entries.push(createIndexEntry(entry, subEntry, emphasis, kind));
     }
+  };
+  see.forEach((seeEntry) => {
+    addSeeEntry(seeEntry, 'see');
   });
   seealso.forEach((seealsoEntry) => {
-    const { emphasis, splitEntry } = splitEntryValue(seealsoEntry);
-    if (splitEntry.length !== 2) {
-      fileError(vfile, `Unable to parse index "seealso" entry "${seealsoEntry}"`, {
-        node,
-        note: 'Seealso index entry must follow pattern "entry; sub entry"',
-      });
-    } else {
-      const [entry, subEntry] = splitEntry;
-      entries.push({ entry, subEntry, emphasis, seeAlso: true });
-    }
+    addSeeEntry(seealsoEntry, 'seealso');
   });
   if (entries.length === 0) {
     fileError(vfile, 'No entries parsed from index directive', { node });

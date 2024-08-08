@@ -50,9 +50,21 @@
               }
             ],
             "indexEntries": [
-              { "entry": "Joke", "subEntry": "Chicken", "emphasis": false },
-              { "entry": "Chicken", "subEntry": "Joke", "emphasis": false },
-              { "entry": "Galliformes", "subEntry": "Chicken", "emphasis": false, "see": true }
+              {
+                "entry": "Joke",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Joke", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Galliformes",
+                "subEntry": { "value": "Chicken", "kind": "see" },
+                "emphasis": false
+              }
             ],
             "identifier": "why-did-the-chicken-cross-the-road",
             "label": "Why did the chicken cross the road?",
