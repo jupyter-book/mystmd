@@ -1,7 +1,10 @@
 ---
-title: Glossary
+title: Glossary & Index
 description: Glossary of terms used throughout the MyST ecosystem.
 ---
+
+(glossary-page)=
+## Glossary
 
 :::{glossary}
 
@@ -61,3 +64,9 @@ users. It can be deployed in the cloud, or on your own hardware.
 in markdown and Jupyter Notebooks, execute content and insert it into your book,
 and build a variety of outputs for interactivity and document publishing.
 :::
+
+(index-page)=
+## Index
+
+```{show-index}
+```

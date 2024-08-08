@@ -6,6 +6,7 @@ import { mathRole } from './math.js';
 import { refRole } from './reference.js';
 import { docRole } from './doc.js';
 import { downloadRole } from './download.js';
+import { indexRole } from './indices.js';
 import { termRole } from './term.js';
 import { siRole } from './si.js';
 import { evalRole } from './inlineExpression.js';
@@ -24,6 +25,7 @@ export const defaultRoles = [
   refRole,
   docRole,
   downloadRole,
+  indexRole,
   termRole,
   siRole,
   evalRole,
@@ -41,6 +43,7 @@ export { mathRole } from './math.js';
 export { refRole } from './reference.js';
 export { docRole } from './doc.js';
 export { downloadRole } from './download.js';
+export { indexRole } from './indices.js';
 export { termRole } from './term.js';
 export { siRole } from './si.js';
 export { smallcapsRole } from './smallcaps.js';

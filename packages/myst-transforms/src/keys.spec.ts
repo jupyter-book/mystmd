@@ -4,7 +4,7 @@ import { VFile } from 'vfile';
 import { keysTransform, keysPlugin } from './keys';
 
 describe('Test keys plugin', () => {
-  test('Asigns a key', () => {
+  test('Assigns a key', () => {
     const node = { type: 'node' } as any;
     const mdast = { children: [node] } as any;
     keysTransform(mdast);

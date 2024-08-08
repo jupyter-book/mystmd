@@ -1,3 +1,6 @@
+import type { GenericNode } from 'myst-common';
+import type { IndexEntry } from 'myst-spec-ext';
+import type { ITexSerializer } from './types.js';
 import { DEFAULT_IMAGE_WIDTH, DEFAULT_PAGE_WIDTH_PIXELS } from './types.js';
 
 /** Removes nobreak and zero-width spaces */
@@ -290,4 +293,25 @@ export function getClasses(className?: string): string[] {
       .map((s) => s.trim().toLowerCase())
       .filter((s) => !!s) ?? [];
   return Array.from(new Set(classes));
+}
+
+export function addIndexEntries(node: GenericNode, state: ITexSerializer) {
+  if (!node.indexEntries?.length) return;
+  state.data.hasIndex = true;
+  (node.indexEntries as IndexEntry[]).forEach(({ entry, subEntry, emphasis }) => {
+    let indexString = entry;
+    if (subEntry?.value) {
+      if (subEntry?.kind === 'see') {
+        indexString += `|see{${subEntry.value}}`;
+      } else if (subEntry?.kind === 'seealso') {
+        indexString += `|seealso{${subEntry.value}}`;
+      } else {
+        indexString += `!${subEntry.value}`;
+      }
+    }
+    if (emphasis) {
+      indexString += '|textbf';
+    }
+    state.write(`\\index{${indexString}}`);
+  });
 }

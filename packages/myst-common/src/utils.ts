@@ -41,6 +41,9 @@ const numbers = '0123456789';
 const nanoidAZ = customAlphabet(alpha, 1);
 const nanoidAZ9 = customAlphabet(alpha + numbers, 9);
 
+/**
+ * Create random 10-digit alphanumeric string
+ */
 export function createId() {
   return nanoidAZ() + nanoidAZ9();
 }
@@ -73,6 +76,41 @@ export function createHtmlId(identifier?: string): string | undefined {
     .replace(/^([0-9-])/, 'id-$1') // Ensure that the id starts with a letter
     .replace(/-[-]+/g, '-') // Replace repeated `-`s
     .replace(/(?:^[-]+)|(?:[-]+$)/g, ''); // Remove repeated `-`s at the start or the end
+}
+
+/**
+ * Transfer all target-related attributes from one node to another
+ *
+ * During mdast transformation, these attributes (including: label,
+ * identifier, html_id, indexEntries) are often moved. For example
+ * `mystTarget` information propagates to the next node, `image`
+ * attributes may propagate to parent `container` node, etc.
+ *
+ * This shared function helps insure attributes are not lost along the way.
+ */
+export function transferTargetAttrs(sourceNode: GenericNode, destNode: GenericNode, vfile?: VFile) {
+  if (sourceNode.label) {
+    if (destNode.label && vfile) {
+      fileWarn(vfile, `label "${destNode.label}" replaced with "${sourceNode.label}"`, {
+        node: destNode,
+      });
+    }
+    destNode.label = sourceNode.label;
+    delete sourceNode.label;
+  }
+  if (sourceNode.identifier) {
+    destNode.identifier = sourceNode.identifier;
+    delete sourceNode.identifier;
+  }
+  if (sourceNode.html_id) {
+    destNode.html_id = sourceNode.html_id;
+    delete sourceNode.html_id;
+  }
+  if (sourceNode.indexEntries) {
+    if (!destNode.indexEntries) destNode.indexEntries = [];
+    destNode.indexEntries.push(...sourceNode.indexEntries);
+    delete sourceNode.indexEntries;
+  }
 }
 
 /**

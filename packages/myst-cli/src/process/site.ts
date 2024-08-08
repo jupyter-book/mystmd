@@ -6,8 +6,15 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
-import type { LinkTransformer, MystXRefs, ReferenceState } from 'myst-transforms';
+import {
+  buildIndexTransform,
+  MultiPageReferenceResolver,
+  type LinkTransformer,
+  type MystXRefs,
+  type ReferenceState,
+} from 'myst-transforms';
 import { select } from 'unist-util-select';
+import { VFile } from 'vfile';
 import { reloadAllConfigsForCurrentSite } from '../config.js';
 import type { SiteManifestOptions } from '../build/site/manifest.js';
 import {
@@ -24,6 +31,7 @@ import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { watch } from '../store/reducers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
 import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
@@ -228,10 +236,18 @@ function warnOnDuplicateIdentifiers(session: ISession, states: ReferenceState[])
 }
 
 /**
- * Return list of ReferenceStates corresponding to list of pages
+ * Finalize and return list of page ReferenceStates
  *
- * Unless `opts.suppressWarnings` is true, this will log a warning when
- * multiple identifiers are encountered across pages.
+ * This adds file information to the corresponding state, which may
+ * have been modified after the state was created. It also builds
+ * indices and adds additional reference targets to pages that include
+ * an index. Unless `opts.suppressWarnings` is true, this will log a
+ * warning when multiple identifiers are encountered across pages.
+ *
+ * This function should be used as part of the mdast processing pipeline.
+ * Initial page processing and state creation occurs in `processMdast`.
+ * Then this function should be invoked before `postProcessMdast`, as that
+ * function assumes all page ReferenceStates are fully resolved.
  */
 export function selectPageReferenceStates(
   session: ISession,
@@ -253,6 +269,19 @@ export function selectPageReferenceStates(
     })
     .filter((state): state is ReferenceState => !!state);
   if (!opts?.suppressWarnings) warnOnDuplicateIdentifiers(session, pageReferenceStates);
+  pageReferenceStates.forEach((state) => {
+    const { mdast } = cache.$getMdast(state.filePath)?.post ?? {};
+    if (!mdast) return;
+    const vfile = new VFile();
+    vfile.path = state.filePath;
+    buildIndexTransform(
+      mdast,
+      vfile,
+      state,
+      new MultiPageReferenceResolver(pageReferenceStates, state.filePath),
+    );
+    logMessagesFromVFile(session, vfile);
+  });
   return pageReferenceStates;
 }
 

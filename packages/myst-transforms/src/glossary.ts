@@ -26,6 +26,7 @@ export function glossaryTransform<T extends Node | GenericParent>(mdast: T, file
           child.label = label;
           child.identifier = `term-${identifier}`;
           child.html_id = `term-${html_id}`;
+          child.indexEntries = [{ entry: toText(child) }];
         }
       });
     });

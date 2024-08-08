@@ -1,0 +1,46 @@
+\documentclass{article}
+\PassOptionsToPackage{short, nodayofweek}{datetime}
+
+\input{curvenote.def}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%  imports  %%%%%%%%%%%%%%%%%%%
+\usepackage{imakeidx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeindex
+
+
+
+% colors for hyperlinks
+\hypersetup{colorlinks=true, allcolors=blue}
+\hypersetup{
+pdftitle={\@title},
+pdfsubject={},
+pdfauthor={\@author},
+pdfkeywords={},
+addtopdfcreator={Written in Curvenote}
+}
+
+\usepackage{curvenote}
+
+\title{Chicken Thesis}
+
+\newdate{articleDate}{20}{7}{2024}
+\date{\displaydate{articleDate}}
+
+\author{\bfseries Franklin Koch\mdseries\\Curvenote\\}
+
+\begin{document}
+
+\maketitle
+
+\include{index-index}
+
+\include{index-first}
+
+\include{index-recipes}
+
+\include{index-joke}
+
+
+\end{document}

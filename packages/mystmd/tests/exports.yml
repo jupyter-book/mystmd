@@ -242,3 +242,25 @@ cases:
     outputs:
       - path: tex-with-bib/_build/main.bib
         content: tex-with-bib/outputs/main.bib
+  - title: Index entries write to site and tex
+    cwd: indices
+    command: myst build --all --ci
+    outputs:
+      - path: indices/_build/exports/myst_tex/index.tex
+        content: indices/outputs/index.tex
+      - path: indices/_build/exports/myst_tex/index-first.tex
+        content: indices/outputs/index-first.tex
+      - path: indices/_build/exports/myst_tex/index-index.tex
+        content: indices/outputs/index-index.tex
+      - path: indices/_build/exports/myst_tex/index-joke.tex
+        content: indices/outputs/index-joke.tex
+      - path: indices/_build/exports/myst_tex/index-recipes.tex
+        content: indices/outputs/index-recipes.tex
+      - path: indices/_build/site/content/index.json
+        content: indices/outputs/index.json
+      - path: indices/_build/site/content/first.json
+        content: indices/outputs/first.json
+      - path: indices/_build/site/content/joke.json
+        content: indices/outputs/joke.json
+      - path: indices/_build/site/content/recipes.json
+        content: indices/outputs/recipes.json

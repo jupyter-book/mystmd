@@ -3,6 +3,7 @@ import type { Image, Table, Code, Math } from 'myst-spec';
 import { select } from 'unist-util-select';
 import { getColumnWidths } from './tables.js';
 import type { Handler } from './types.js';
+import { addIndexEntries } from './utils.js';
 
 export enum CaptionKind {
   fig = 'fig',
@@ -133,6 +134,7 @@ export const containerHandler: Handler = (node, state) => {
   state.data.isInContainer = lastContainer;
   state.write(`\n\\end{${command}}`);
   if (after) state.write(after);
+  addIndexEntries(node, state);
   state.closeBlock(node);
 };
 

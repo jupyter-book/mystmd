@@ -43,16 +43,28 @@ function labelMathNodes(file: VFile, node: Math | InlineMath) {
   const label = match[1];
   const normalized = normalizeLabel(label);
   if (node.type === 'math' && normalized) {
-    if (node.enumerated === false) {
-      fileWarn(file, `Labelling an unnumbered math node with "\\label{${label}}"`, {
-        node,
-        source: TRANSFORM_NAME,
-        ruleId: RuleId.mathLabelLifted,
-      });
+    if (node.label) {
+      fileWarn(
+        file,
+        `Math node is already labeled "${node.label}" - ignoring inline "\\label{${label}}"`,
+        {
+          node,
+          source: TRANSFORM_NAME,
+          ruleId: RuleId.mathLabelLifted,
+        },
+      );
+    } else {
+      if (node.enumerated === false) {
+        fileWarn(file, `Labelling an unnumbered math node with "\\label{${label}}"`, {
+          node,
+          source: TRANSFORM_NAME,
+          ruleId: RuleId.mathLabelLifted,
+        });
+      }
+      node.identifier = normalized.identifier;
+      node.label = normalized.label;
+      (node as any).html_id = normalized.html_id;
     }
-    node.identifier = normalized.identifier;
-    node.label = normalized.label;
-    (node as any).html_id = normalized.html_id;
   } else if (node.type === 'inlineMath') {
     fileWarn(file, `Cannot use "\\label{${label}}" in inline math`, {
       node,

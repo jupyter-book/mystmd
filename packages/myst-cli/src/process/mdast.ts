@@ -31,6 +31,7 @@ import {
   reconstructHtmlPlugin,
   inlineMathSimplificationPlugin,
   checkLinkTextTransform,
+  indexIdentifierPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -183,6 +184,7 @@ export async function transformMdast(
     .use(mathPlugin, { macros: frontmatter.math })
     .use(glossaryPlugin) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
+    .use(indexIdentifierPlugin)
     .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
     .use(joinGatesPlugin);
   // Load custom transform plugins

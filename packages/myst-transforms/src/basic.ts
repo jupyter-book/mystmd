@@ -19,14 +19,14 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts?: Re
   // lifting roles and directives must happen before the mystTarget transformation
   liftMystDirectivesAndRolesTransform(tree);
   // Some specifics about the ordering are noted below
+  // Target transformation must happen after lifting the directives, and before the heading labels
+  mystTargetsTransform(tree, file);
   captionParagraphTransform(tree);
   codeBlockToDirectiveTransform(tree, file, { translate: ['math', 'mermaid'] });
   mathNestingTransform(tree, file);
-  // Math labelling should happen before the target-transformation
+  // Math labelling will not apply to nodes labeled during mystTargetsTransform
   mathLabelTransform(tree, file);
   subequationTransform(tree, file);
-  // Target transformation must happen after lifting the directives, and before the heading labels
-  mystTargetsTransform(tree);
   // Label headings after the targets-transform
   headingLabelTransform(tree);
   admonitionBlockquoteTransform(tree); // Must be before header transforms
