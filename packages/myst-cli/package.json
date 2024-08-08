@@ -49,6 +49,7 @@
     "chalk": "^5.2.0",
     "check-node-version": "^4.2.1",
     "chokidar": "^3.5.3",
+    "citation-cff-utils": "^0.0.1",
     "citation-js-utils": "^1.2.3",
     "commander": "^10.0.1",
     "cors": "^2.8.5",
