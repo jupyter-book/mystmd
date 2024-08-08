@@ -302,6 +302,8 @@ export function resolveOutput(
   if (exp.output) {
     // output path from file frontmatter needs resolution relative to working directory
     output = path.resolve(path.dirname(sourceFile), exp.output);
+  } else if (exp.format === ExportFormats.cff && projectPath) {
+    output = projectPath;
   } else {
     output = getDefaultExportFolder(session, sourceFile, exp.format, projectPath);
   }
