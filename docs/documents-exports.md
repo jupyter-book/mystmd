@@ -1,6 +1,6 @@
 ---
 title: Exporting documents
-description: Create an export for PDF, LaTeX, Typst, Docx, or JATS in your page or project frontmatter, and use `myst build` to build the export.
+description: Create an export for PDF, LaTeX, Typst, Docx, JATS, or CITATION.cff in your page or project frontmatter, and use `myst build` to build the export.
 ---
 
 You may define desired static exports in page or project frontmatter. In the export object, you may specify a `filename`, `format`, and/or `template`, as well as the article(s) you wish to include in your export. You may also provide any additional options required by your template in the export object.
@@ -24,6 +24,8 @@ Below are supported export types and links to documentation for further reading:
   * [](./creating-jats-xml.md)
 - * `Microsoft Word`
   * [](./creating-word-documents.md)
+- * `CITATION.cff`
+  * [](./creating-citation-cff.md)
 ```
 
 ```{seealso} The MyST templating engine drives document exports

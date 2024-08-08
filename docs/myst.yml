@@ -127,6 +127,7 @@ project:
         - file: creating-pdf-documents.md
         - file: creating-word-documents.md
         - file: creating-jats-xml.md
+        - file: creating-citation-cff.md
     - title: Extensions
       file: plugins.md
       children:
