@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.4
+
+### Patch Changes
+
+- 1ac4d7a6: Trim spaces on DOIs and URLs in bibtex
+
 ## 1.2.3
 
 ### Patch Changes

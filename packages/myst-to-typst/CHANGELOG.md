@@ -1,5 +1,18 @@
 # myst-to-typst
 
+## 0.0.19
+
+### Patch Changes
+
+- 0b3bf03: Fix labels, add macros for typst math
+- 0b3bf03: Support subfigures in typst export
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+  - myst-spec-ext@1.5.2
+
 ## 0.0.18
 
 ### Patch Changes

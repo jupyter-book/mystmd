@@ -1,5 +1,35 @@
 # myst-cli
 
+## 1.3.2
+
+### Patch Changes
+
+- 0f78ea1d: Prevent crash on non-list tags for code-cell
+- ee0378e3: Change pattern expansion to a flat list of files
+- 999d34a1: Fix execution for non-site builds
+- 134598fd: Add index directives/roles to myst-cli
+- 38a45645: Add CITATION.cff build target
+- 3fd53be8: Add better validation and post-processing to JSON files
+- Updated dependencies [0b3bf03]
+- Updated dependencies [0b3bf03]
+- Updated dependencies [134598fd]
+- Updated dependencies [1ac4d7a6]
+- Updated dependencies [0b3bf03]
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-to-typst@0.0.19
+  - myst-to-tex@1.0.32
+  - citation-js-utils@1.2.4
+  - myst-templates@1.0.21
+  - myst-transforms@1.3.21
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+  - myst-config@1.5.2
+  - myst-spec-ext@1.5.2
+  - tex-to-myst@1.0.32
+  - myst-parser@1.5.2
+
 ## 1.3.1
 
 ### Patch Changes
