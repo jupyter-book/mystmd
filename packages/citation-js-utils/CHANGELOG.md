@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.5
+
+### Patch Changes
+
+- 05b5e40e: Fix citations
+
 ## 1.2.4
 
 ### Patch Changes

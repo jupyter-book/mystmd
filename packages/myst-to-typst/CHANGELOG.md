@@ -1,5 +1,12 @@
 # myst-to-typst
 
+## 0.0.20
+
+### Patch Changes
+
+- 706d01e8: Updates for typst math subscripts
+- 8b75342d: Fix handling of remove- for exports
+
 ## 0.0.19
 
 ### Patch Changes

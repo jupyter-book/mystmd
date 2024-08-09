@@ -1,5 +1,12 @@
 # mystmd
 
+## 1.3.3
+
+### Patch Changes
+
+- 706d01e8: Updates for typst math subscripts
+- 05b5e40e: 🐛 Citations broken with trim when a list
+
 ## 1.3.2
 
 ## 1.3.1
