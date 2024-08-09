@@ -10,6 +10,7 @@ import type { PhrasingContent } from 'myst-spec';
 export async function rawDirectiveTransform(tree: GenericParent, vfile: VFile) {
   const rawNodes = selectAll('raw', tree) as Raw[];
   rawNodes.forEach((node) => {
+    if (!node.value) return;
     if (['latex', 'tex'].includes(node.lang as string)) {
       const state = new TexParser(node.value, vfile);
       (node as GenericNode).children = state.ast.children;

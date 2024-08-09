@@ -207,9 +207,21 @@ exports:
 
 Please consider [contributing your template](/jtex/contribute-a-template) to the growing list of templates so that other people can benefit and improve your work!
 
-## Excluding Source
+## Excluding Content from Specific Exports
 
 If you have a block or notebook cell that you do not want to render to your $\LaTeX$ output, add the `no-tex` tag to the cell. Similarly, to exclude a cell from Typst, use `no-typst`. To exclude a cell from both formats, use `no-pdf`.
+
+## Including Content with Specific Exports
+
+If you need to inject some $\LaTeX$- or Typst-specific content into their respective exports, you may use the `{raw:latex}` or `{raw:typst}` role and directive. For example, to insert a new page in Typst with two columns:
+
+````markdown
+```{raw:typst}
+#set page(columns: 2, margin: (x: 1.5cm, y: 2cm),);
+```
+````
+
+The content in these directives and roles will be included exactly as written in their respective exports, and will be ignored in all other contexts.
 
 (multi-article-exports)=
 

@@ -455,6 +455,13 @@ const handlers: Record<string, Handler> = {
       state.write('}');
     }
   },
+  raw(node, state) {
+    if (node.tex) {
+      state.write(node.tex);
+    } else if (node.children?.length) {
+      state.renderChildren(node);
+    }
+  },
 };
 
 class TexSerializer implements ITexSerializer {
