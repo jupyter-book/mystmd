@@ -1,5 +1,5 @@
 ---
-title: Author Enriched MyST Documents
+title: Enriched MyST Documents
 subject: MyST Quickstart Tutorial
 subtitle: Enhance your MyST project with more interactivity, scholarly metadata, and advanced functionality.
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.

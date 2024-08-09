@@ -16,6 +16,8 @@ This tutorial covers how to add metadata and export to both PDF and Word documen
 
 ````{note} See the video tutorial 📺
 :class: dropdown
+This video covers [](./quickstart-myst-documents.md) as well as the material on this page.
+
 ```{iframe} https://www.youtube.com/embed/NxSNVt9XsCI
 :width: 100%
 ```
@@ -52,7 +54,7 @@ Help support the transition to FAIR[^fair], open science by preferring web-based
 
 ::::
 
-## Microsoft Word Documents
+## Export to Microsoft Word
 
 🛠 In the `01-paper.md` add `export: docx` to the existing frontmatter section:
 
@@ -95,9 +97,9 @@ Next we will see how to change the template as well as how to add additional exp
 See [](./creating-word-documents.md) to learn about exporting to `*.docx`, for example some intricacies around equations!
 :::
 
-## Exporting to PDF
+## Export to PDF with Latex
 
-To export to PDF, MyST currently requires $\LaTeX$ to be installed. See [](./creating-pdf-documents.md) for more information about how to install $\LaTeX$.
+To export to PDF with $\LaTeX$, first ensure it is installed, see [](./creating-pdf-documents.md) for more information.
 
 First, we need to decide which template to export to, for this, we will use the `myst templates` command, and for example list all the two-column, PDF templates available.
 
@@ -204,7 +206,7 @@ Exporting the article to a two column PDF with appropriate metadata to submit to
 See [](./creating-pdf-documents.md) to learn about exporting to PDF, installing $\LaTeX$, and working with local templates.
 :::
 
-## Exporting to $\LaTeX$
+## Export to $\LaTeX$
 
 If you would like to see the $\LaTeX$ source, you can look in the `_build/temp` directory, or you can update the
 
@@ -235,7 +237,7 @@ You should see these two additional lines:
 Without specifying the `output:` location, this will copy the unzipped contents into the `_build/exports` folder along with all other exports.
 Creating a zip file can be helpful when directly submitted to the arXiv or a journal!
 
-## Exporting to Markdown
+## Export to Markdown
 
 🛠 In `01-paper.md` create an exports list with `docx`, `pdf` and `md` formats.
 
