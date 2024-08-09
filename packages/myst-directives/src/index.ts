@@ -16,7 +16,7 @@ import { mdastDirective } from './mdast.js';
 import { mermaidDirective } from './mermaid.js';
 import { mystdemoDirective } from './mystdemo.js';
 import { blockquoteDirective } from './blockquote.js';
-import { rawDirective } from './raw.js';
+import { rawDirective, rawLatexDirective, rawTypstDirective } from './raw.js';
 import { divDirective } from './div.js';
 
 export const defaultDirectives = [
@@ -43,6 +43,8 @@ export const defaultDirectives = [
   mermaidDirective,
   mystdemoDirective,
   rawDirective,
+  rawLatexDirective,
+  rawTypstDirective,
   divDirective,
 ];
 
@@ -63,5 +65,5 @@ export { mdastDirective } from './mdast.js';
 export { mermaidDirective } from './mermaid.js';
 export { mystdemoDirective } from './mystdemo.js';
 export { blockquoteDirective } from './blockquote.js';
-export { rawDirective } from './raw.js';
+export { rawDirective, rawLatexDirective, rawTypstDirective } from './raw.js';
 export { divDirective } from './div.js';

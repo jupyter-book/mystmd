@@ -15,6 +15,7 @@ import { subscriptRole } from './subscript.js';
 import { superscriptRole } from './superscript.js';
 import { underlineRole } from './underline.js';
 import { keyboardRole } from './keyboard.js';
+import { rawLatexRole, rawTypstRole } from './raw.js';
 
 export const defaultRoles = [
   abbreviationRole,
@@ -34,6 +35,8 @@ export const defaultRoles = [
   superscriptRole,
   underlineRole,
   keyboardRole,
+  rawLatexRole,
+  rawTypstRole,
 ];
 export { abbreviationRole } from './abbreviation.js';
 export { chemRole } from './chem.js';
@@ -51,3 +54,4 @@ export { subscriptRole } from './subscript.js';
 export { superscriptRole } from './superscript.js';
 export { underlineRole } from './underline.js';
 export { keyboardRole } from './keyboard.js';
+export { rawLatexRole, rawTypstRole } from './raw.js';

@@ -233,7 +233,9 @@ export type Include = {
 export type Raw = {
   type: 'raw';
   lang?: string;
-  value: string;
+  tex?: string;
+  typst?: string;
+  value?: string;
   children?: (FlowContent | ListContent | PhrasingContent)[];
 };
 

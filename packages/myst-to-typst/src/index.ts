@@ -354,6 +354,9 @@ const handlers: Record<string, Handler> = {
   span(node, state) {
     state.renderChildren(node, 0, { trimEnd: false });
   },
+  raw(node, state) {
+    if (node.typst) state.write(node.typst);
+  },
 };
 
 class TypstSerializer implements ITypstSerializer {
