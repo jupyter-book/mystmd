@@ -1,5 +1,18 @@
 # myst-cli
 
+## 1.3.3
+
+### Patch Changes
+
+- 8b75342d: Fix handling of remove- for exports
+- Updated dependencies [05b5e40e]
+- Updated dependencies [706d01e8]
+- Updated dependencies [8b75342d]
+  - citation-js-utils@1.2.5
+  - myst-to-typst@0.0.20
+  - myst-to-tex@1.0.33
+  - tex-to-myst@1.0.33
+
 ## 1.3.2
 
 ### Patch Changes

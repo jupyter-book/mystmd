@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 1.0.33
+
+### Patch Changes
+
+- 8b75342d: Fix handling of remove- for exports
+
 ## 1.0.32
 
 ### Patch Changes
