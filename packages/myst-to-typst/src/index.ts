@@ -1,4 +1,4 @@
-import type { Root, Parent, Code } from 'myst-spec';
+import type { Root, Parent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
@@ -21,7 +21,7 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
-import type { Admonition, FootnoteDefinition } from 'myst-spec-ext';
+import type { Admonition, Code, FootnoteDefinition } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
 
 export type { TypstResult } from './types.js';
@@ -138,6 +138,9 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
   },
   code(node: Code, state) {
+    if (node.visibility === 'remove') {
+      return;
+    }
     let ticks = '```';
     while (node.value.includes(ticks)) {
       ticks += '`';
