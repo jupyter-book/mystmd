@@ -213,7 +213,7 @@ $ npm run build
 $ npm run link
 ```
 
-After running these steps, the MyST CLI (as described in [](./quickstart-myst-websites.md)) can be used.
+After running these steps, the MyST CLI (as described in [](./quickstart-myst-documents.md)) can be used.
 
 ## Create a Demo
 

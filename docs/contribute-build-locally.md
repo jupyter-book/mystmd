@@ -24,4 +24,4 @@ The build process may take a minute, as it has to build every package when run f
 $ npm run link
 ```
 
-After running these steps, the MyST CLI (as described in [](./quickstart-myst-websites.md)) can be used.
+After running these steps, the MyST CLI (as described in [](./quickstart-myst-documents.md)) can be used.

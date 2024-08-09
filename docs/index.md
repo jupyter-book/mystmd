@@ -106,14 +106,14 @@ Read about performance »
 - `mystmd` is a Javascript parser and command line tool for working with MyST Markdown
 - Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://mystmd.org/spec)
 - Translate and render MyST into:
-  - Modern [interactive websites](./quickstart-myst-websites.md), using React (like this website!)
+  - Modern [interactive websites](./quickstart-myst-documents.md), using React (like this website!)
   - PDFs and $\LaTeX$ documents, with [specific templates for over 400 journals](./creating-pdf-documents.md)
   - Microsoft Word [export](./creating-word-documents.md)
 - Provide functionality for [cross-referencing](./cross-references.md), [external structured links](./external-references.md), and [scientific citations](./citations.md)
 
 **Architecture**
 
-The `mystmd` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF & $\LaTeX$](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./quickstart-myst-websites.md), or [JATS](./creating-jats-xml.md).
+The `mystmd` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF & $\LaTeX$](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./quickstart-myst-documents.md), or [JATS](./creating-jats-xml.md).
 
 ```{mermaid}
 flowchart LR

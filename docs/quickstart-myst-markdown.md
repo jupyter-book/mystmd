@@ -161,7 +161,7 @@ See [](./citations.md) for more information about using citations and references
 
 ## What's Next?
 
-We hope the above sections in this overview should have given you a sense of the types of things that MyST can do! Once you write a document in MyST, you can use the command line tools to translate that into a [scientific PDF article](./creating-pdf-documents.md), or a [Word Document](./creating-word-documents.md) or a [website](./quickstart-myst-websites.md) like this site!
+We hope the above sections in this overview should have given you a sense of the types of things that MyST can do! Once you write a document in MyST, you can use the command line tools to translate that into a [scientific PDF article](./creating-pdf-documents.md), or a [Word Document](./creating-word-documents.md) or a [website](./quickstart-myst-documents.md) like this site!
 
 ```{mermaid}
 flowchart LR
