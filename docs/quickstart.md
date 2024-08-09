@@ -27,7 +27,7 @@ The current tutorial will help you get up and running from scratch.
 
 ## Install the MyST Markdown CLI 📦
 
-`mystmd` is a {abbr}`CLI (Command Line Interface)` that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites. 
+`mystmd` is a {abbr}`CLI (Command Line Interface)` that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites.
 These instructions help you install the CLI.
 
 ### Install `conda` and `conda-forge`
@@ -103,7 +103,6 @@ cd mystmd-quickstart
 
 [^no-git]: If you aren't familiar with git, it isn't required for this tutorial, you can download the zip file with the contents from the [quickstart repository](https://github.com/jupyter-book/mystmd-quickstart).
 
-
 ### Initialize MyST in the content folder 🚀
 
 Next we will create a `myst.yml` configuration file that is required to render your project.
@@ -128,7 +127,6 @@ Learn more about this CLI and MyST Markdown at: https://mystmd.org
 
 💾 Writing new project and site config file: myst.yml
 ```
-
 
 ### Preview your MyST site locally
 
@@ -348,7 +346,7 @@ Enhance your MyST documents with interactivity, open scholarship, and reproducib
 :::
 
 :::{card} Export to static documents 📑
-:link: ./quickstart-myst-documents.md
+:link: ./quickstart-static-exports.md
 Export MyST documents to a Word document, PDF, and $\LaTeX$!
 :::
 
