@@ -1,8 +1,7 @@
 ---
-title: Working with MyST in Jupyter Lab
+title: MyST with Jupyter Interfaces
 subtitle: MyST has full support in Jupyter
 subject: MyST Quickstart Tutorial
-short_title: MyST in Jupyter
 description: MyST Markdown can be used in JupyterLab with support for all MyST syntax as well as inline execution.
 thumbnail: ./thumbnails/jupyterlab-myst.png
 ---
@@ -136,17 +135,9 @@ Edit task lists with the `jupyterlab-myst` plugin directly in the rendered view.
 
 ## Conclusion 🥳
 
-For now, that's it for this quickstart tutorial, please see the content in the notebooks or help contribute to the docs to help document these features! Other tutorials to explore are:
+For now, that's it for this quickstart tutorial, please see the content in the notebooks or help contribute to the docs to help document these features!
 
-:::{card} MyST Documents 📑
-:link: ./quickstart-myst-documents.md
-Learn the basics of MyST Markdown, and export to a Word document, PDF, and $\LaTeX$!
-:::
-
-:::{card} MyST Markdown Guide 📖
-:link: ./quickstart-myst-markdown.md
-See an overview of MyST Markdown syntax with inline demos and examples.
-:::
+![](#quickstart-cards)
 
 [binder-badge]: https://mybinder.org/badge_logo.svg
 [binder-link]: https://mybinder.org/v2/gh/executablebooks/jupyterlab-myst-quickstart/main?urlpath=lab

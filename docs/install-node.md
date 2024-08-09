@@ -1,5 +1,5 @@
 ---
-title: Installing NodeJS
+title: Install NodeJS
 description: The MyST Command Line Interface (CLI) is built on NodeJS, a Javascript runtime that is widely used in many projects including well-known Python projects such as Jupyter Lab. MyST can be installed by the package manager npm, PyPI, Conda or Mamba.
 ---
 

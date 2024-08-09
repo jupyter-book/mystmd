@@ -70,11 +70,11 @@ project:
         - /jtex/contribute-a-template
   toc:
     - file: index.md
-    - title: Quickstart Tutorials
+    - title: Tutorials
       children:
         - file: quickstart.md
-        - file: quickstart-myst-websites.md
         - file: quickstart-myst-documents.md
+        - file: quickstart-static-exports.md
         - file: quickstart-myst-markdown.md
         - file: quickstart-jupyter-lab-myst.md
     - title: Authoring
@@ -138,7 +138,7 @@ project:
         - file: background.md
         - file: guiding-principles.md
         - file: installing.md
-        - file: installing-prerequisites.md
+        - file: install-node.md
         - file: commonmark.md
         - file: syntax-overview.md
         - file: directives.md
