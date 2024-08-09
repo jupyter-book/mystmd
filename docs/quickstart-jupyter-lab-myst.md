@@ -1,6 +1,6 @@
 ---
 title: MyST with Jupyter Interfaces
-subtitle: MyST has full support in Jupyter
+subtitle: MyST has support in Jupyter frontends
 subject: MyST Quickstart Tutorial
 description: MyST Markdown can be used in JupyterLab with support for all MyST syntax as well as inline execution.
 thumbnail: ./thumbnails/jupyterlab-myst.png
