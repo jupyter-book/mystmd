@@ -4,7 +4,9 @@ build:
   tools:
     nodejs: "20"
   commands:
+    - npm install react@rc
     - npm install
+    - npm list
     - npm run build
     - npm run --workspace packages/mystmd link
     - myst --version
