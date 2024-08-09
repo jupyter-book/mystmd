@@ -174,11 +174,13 @@ Check out [](#my-fig)!!
 ````
 
 ```{tip} Using Markdown Links 🔗
-You can use this syntax to also reference [Section/Header targets](#targeting-headers) as well as [label equations](#targeting-equations) when using [dollar math](#dollar-math) or [AMS math](#ams-environments).
+You can use this syntax to also reference [Section/Header targets](#targeting-headers) as well as [label equations](#referencing-equations) when using [dollar math](#dollar-math) or [AMS math](#ams-environments).
 ```
 
 Or, to label an equation:
+
 (example-equation-targets)=
+
 ````{myst}
 ```{math}
 :label: my-math-label
