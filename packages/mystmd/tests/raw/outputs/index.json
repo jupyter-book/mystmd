@@ -35,7 +35,7 @@
                 }
               },
               { "type": "raw", "lang": "tex", "tex": "LaTeX" },
-              { "type": "raw", "lang": "tex", "typst": "Typst" },
+              { "type": "raw", "lang": "typst", "typst": "Typst" },
               {
                 "type": "text",
                 "value": " content",
