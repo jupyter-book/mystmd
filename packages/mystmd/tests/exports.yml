@@ -270,3 +270,13 @@ cases:
     outputs:
       - path: citation-cff/CITATION.cff
         content: citation-cff/outputs/CITATION.cff
+  - title: Raw directives and roles
+    cwd: raw
+    command: myst build --all
+    outputs:
+      - path: raw/_build/out.tex
+        content: raw/outputs/out.tex
+      - path: raw/_build/out.typ
+        content: raw/outputs/out.typ
+      - path: raw/_build/site/content/index.json
+        content: raw/outputs/index.json

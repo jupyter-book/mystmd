@@ -355,7 +355,11 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 0, { trimEnd: false });
   },
   raw(node, state) {
-    if (node.typst) state.write(node.typst);
+    if (node.typst) {
+      state.write(node.typst);
+    } else if (node.children?.length) {
+      state.renderChildren(node, undefined, { trimEnd: false });
+    }
   },
 };
 

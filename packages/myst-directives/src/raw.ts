@@ -15,8 +15,8 @@ export const rawDirective: DirectiveSpec = {
   run(data): Raw[] {
     const lang = (data.arg as string) ?? '';
     const value = (data.body as string) ?? '';
-    const tex = ['tex', 'latex'].includes(lang) ? value : undefined;
-    const typst = ['typst', 'typ'].includes(lang) ? value : undefined;
+    const tex = ['tex', 'latex'].includes(lang) ? `\n${value}\n` : undefined;
+    const typst = ['typst', 'typ'].includes(lang) ? `\n${value}\n` : undefined;
     return [
       {
         type: 'raw',
@@ -39,7 +39,8 @@ export const rawLatexDirective: DirectiveSpec = {
   },
   run(data): Raw[] {
     const lang = 'tex';
-    const tex = (data.body as string) ?? '';
+    const body = data.body as string;
+    const tex = body ? `\n${body}\n` : '';
     return [
       {
         type: 'raw',
@@ -59,8 +60,9 @@ export const rawTypstDirective: DirectiveSpec = {
     doc: 'Raw typst content',
   },
   run(data): Raw[] {
-    const lang = 'tex';
-    const typst = (data.body as string) ?? '';
+    const lang = 'typst';
+    const body = data.body as string;
+    const typst = body ? `\n${body}\n` : '';
     return [
       {
         type: 'raw',
