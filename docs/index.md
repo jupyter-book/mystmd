@@ -44,22 +44,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 
 ## Quickstart Tutorials
 
-Get up and running with MyST with the following **quickstart tutorials**:
-
-:::{card} Publish a Website 🌎
-:link: ./quickstart-myst-websites.md
-Learn the basics of customizing a MyST Website, including sharing frontmatter between pages.
-:::
-
-:::{card} Create Scientific Publications 📑
-:link: ./quickstart-myst-documents.md
-Learn the basics of MyST Markdown, and export to a Word document, PDF, and $\LaTeX$!
-:::
-
-:::{card} MyST Markdown Guide 📖
-:link: ./quickstart-myst-markdown.md
-See an overview of MyST Markdown syntax with inline demos and examples.
-:::
+![](#quickstart-cards)
 
 :::{seealso}
 :class: dropdown

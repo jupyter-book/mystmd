@@ -4,7 +4,7 @@ short_title: Installing Locally
 description: Install and build myst locally using NodeJS and NPM.
 ---
 
-A description of getting started with development is [given in the README](https://github.com/jupyter-book/mystmd/blob/main/README.md#development); we will also outline the basic process here. Like most [NodeJS](https://nodejs.org/) applications, MyST uses the NPM package manager to manage dependencies; you will need to [install NodeJS](./installing-prerequisites.md) before running the commands in this section.
+A description of getting started with development is [given in the README](https://github.com/jupyter-book/mystmd/blob/main/README.md#development); we will also outline the basic process here. Like most [NodeJS](https://nodejs.org/) applications, MyST uses the NPM package manager to manage dependencies; you will need to [install NodeJS](./install-node.md) before running the commands in this section.
 
 First, we must use `npm` in the base directory to install the MyST dependencies:
 
