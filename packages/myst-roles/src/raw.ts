@@ -31,7 +31,7 @@ export const rawTypstRole: RoleSpec = {
     doc: 'Raw typst content',
   },
   run(data): Raw[] {
-    const lang = 'tex';
+    const lang = 'typst';
     const typst = (data.body as string) ?? '';
     return [
       {
