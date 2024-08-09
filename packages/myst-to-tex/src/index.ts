@@ -1,4 +1,4 @@
-import type { Root, Parent, Code, Abbreviation } from 'myst-spec';
+import type { Root, Parent, Abbreviation } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode, References } from 'myst-common';
@@ -16,7 +16,7 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
 import { selectAll } from 'unist-util-select';
-import type { FootnoteDefinition, Heading } from 'myst-spec-ext';
+import type { FootnoteDefinition, Code, Heading } from 'myst-spec-ext';
 import { transformLegends } from './legends.js';
 import { proofHandler } from './proof.js';
 
@@ -199,6 +199,9 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true);
   },
   code(node: Code, state) {
+    if (node.visibility === 'remove') {
+      return;
+    }
     let start = '\\begin{verbatim}\n';
     let end = '\n\\end{verbatim}';
 
