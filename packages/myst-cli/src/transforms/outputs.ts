@@ -38,12 +38,14 @@ export async function transformOutputsToCache(
   if (!outputs.length) return;
   const cache = castSession(session);
   await Promise.all(
-    outputs.map(async (output) => {
-      output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
-        computeHash,
-        maxCharacters: opts?.minifyMaxCharacters,
-      });
-    }),
+    outputs
+      .filter((output) => output.visibility !== 'remove')
+      .map(async (output) => {
+        output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
+          computeHash,
+          maxCharacters: opts?.minifyMaxCharacters,
+        });
+      }),
   );
 }
 
