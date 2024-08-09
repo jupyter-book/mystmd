@@ -340,7 +340,7 @@ Here are some things to try for next steps:
 +++
 Check out the following tutorials for more step-by-step guides:
 ::::{grid} 1 1 2 2
-:::{card} Author Enriched MyST Documents ✨
+:::{card} Author enriched MyST documents ✨
 :link: ./quickstart-myst-documents.md
 Enhance your MyST documents with interactivity, open scholarship, and reproducibility.
 :::
