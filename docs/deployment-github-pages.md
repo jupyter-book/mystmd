@@ -26,24 +26,12 @@ Navigate to your repository settings, click on Pages and enable GitHub pages. Wh
 
 To trigger action, push your code with the workflow to main.
 
-:::{warning} Custom Domains
-GitHub allow you to host your static content on a custom domain, doing so _may_ require you to change the `BASE_URL` environment variable in the action. If you have unstyled content, try changing the `BASE_URL` to a blank string: `BASE_URL=''` (note the **single quotes**!); this serves the build assets from the root of your domain, rather than the default, which is the name or your repository.
+:::{tip} You will probably need to set a `BASE_URL`
+GitHub Pages likely requires you to set a `BASE_URL` because the URL for GitHub Pages defaults to a sub-folder of `username.github.io` (e.g. `username.github.io/myrepository/`.
+See [](#deploy:base-url) for more information.
 :::
 
-:::{tip} `BASE_URL` environment variable
-:class: dropdown
-The build and site assets are in the `/build` folder, which would point outside of the current repository to a repository called 'build', which probably doesn't exist!
-
-To fix this, we can change the base url that the site is mounted to, which can be done through the `BASE_URL` environment variable:
-
-```bash
-export BASE_URL="/repository_name"
-```
-
-The base URL is _absolute_ and should not end with a trailing slash. This can be done automatically in a GitHub Action by looking to the `github.event.repository.name` variable.
-:::
-
-:::{note} Full GitHub Action
+:::{note} Example: Full GitHub Action
 :class: dropdown
 
 The GitHub Action to build and deploy your site automatically is:
