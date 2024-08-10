@@ -79,6 +79,7 @@ project:
         - file: quickstart-jupyter-lab-myst.md
     - title: Authoring
       children:
+        - file: table-of-contents.md
         - file: typography.md
         - file: admonitions.md
         - file: figures.md
@@ -107,7 +108,7 @@ project:
     - title: Websites
       children:
         - file: website-templates.md
-        - file: table-of-contents.md
+        - file: website-navigation.md
         - file: website-metadata.md
         # - file: themes-and-extensions.md
         - file: seo-and-social.md

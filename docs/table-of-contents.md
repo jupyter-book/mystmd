@@ -4,7 +4,7 @@ description: The Table of Contents is the left-hand navigation for your site, it
 thumbnail: thumbnails/table-of-contents.png
 ---
 
-The Table of Contents defines the structure of your MyST project. For website exports, it defines the left-hand navigation for your site.
+The Table of Contents defines the structure of your MyST project. 
 It is defined in the `toc` attribute of [the project frontmatter](frontmatter.md#in-a-myst-yml-file).
 
 To automatically add a `toc` section to your `myst.yml` file using filenames to define ordering, use the following command:
@@ -12,6 +12,11 @@ To automatically add a `toc` section to your `myst.yml` file using filenames to 
 ```shell
 myst init --write-toc
 ```
+
+:::{seealso} Website exports
+For website exports, the Table of Contents defines the left-hand navigation for your site.
+See [](./website-navigation.md) for more information.
+:::
 
 +++
 
@@ -36,8 +41,9 @@ project:
 
 URLs can be defined in the TOC. These URLs are links to external references within your table of contents. URLs are ignored in non-web exports.
 
-:::{warning}
-Currently these URLs are also ignored in MyST sites. Support will be added in a future release.
+:::{warning} Work in progress
+Currently these URLs are also ignored in MyST sites.
+Follow https://github.com/jupyter-book/mystmd/issues/1445 for this enhancement and please provide feedback.
 :::
 
 ```{code} yaml
@@ -197,7 +203,7 @@ All internal links will automatically be updated, and there is a `file` property
 See [](website-metadata.md) for more details on how cross-references are stored.
 
 :::{note} URL Nesting
-URL nesting that matches the folder structure is a requested feature that is being tracked in [#670](https://github.com/jupyter-book/mystmd/issues/670).
+URL nesting that matches the folder structure is a requested feature that is being tracked in https://github.com/jupyter-book/mystmd/issues/670.
 :::
 
 ::::{note} Compatibility with Jupyter Book
