@@ -28,6 +28,12 @@ To trigger action, push your code with the workflow to main.
 
 :::{tip} You will probably need to set a `BASE_URL`
 GitHub Pages likely requires you to set a `BASE_URL` because the URL for GitHub Pages defaults to a sub-folder of `username.github.io` (e.g. `username.github.io/myrepository/`).
+The easieset thing to do is use the GitHub Action variable for the repository name:
+
+```yaml
+BASE_URL: /${{ github.event.repository.name }}
+```
+
 If you're using a custom domain (e.g. `mydomain.org`) then you may need to manually set `BASE_URL` to an empty string, like `export BASE_URL=''`.
 
 See [](#deploy:base-url) for more information.
