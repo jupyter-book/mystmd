@@ -11,7 +11,8 @@ Here's how you can configure them.
 
 The default MyST themes are divided into five main sections:
 
-:::{figure} images/website-layout.svg
+% Edit this figure with: excalidraw.com
+:::{figure} images/website-layout.excalidraw.svg
 :width: 400px
 The layout of the default MyST web themes.
 Other themes may have slightly different structure.
@@ -41,39 +42,78 @@ Specify top-level navigation with the `site.nav` option, and provide a collectio
 
 site:
   nav:
-    # A top-level dropdown
-    - title: Dropdown links
-      children:
-        - title: Page one
-          url: https://mystmd.org
-        - title: Page two
-          url: https://mystmd.org/guide
-    # A top-level link
-    - title: A standalone link
-      url: https://jupyter.org
+    - title: Internal page
+      url: /website-metadata
 ```
 
-% TODO: Clarify why some things have their own section (nav: and actions:) while
-% others are nested under site.options.
+There are a few types of entries you can define:
 
-### Action buttons
+:::{list-table}
+:header-rows: 1
+- * Type
+  * Pattern
+  * Description
+- * **Internal paths**
+  * ```yaml
+    - title: Custom title
+      url: /path/to/document
+    ```
+  * A path to an internal page. This should begin with `/`. Do not include the file extension of the page!
+- * **External URLs**
+  * ```yaml
+    - title: Custom title
+      url: https://somelink.org`
+    ```
+  * Direct links to an external website. This should be a fully-specified URL.
+- * **Dropdowns**
+  * ```yaml
+    - title: Dropdown title
+      children:
+      - url: pageone
+      - url: pagetwo
+    ```
+  * Becomes a dropdown with other entries inside.
+:::
+
+
+### Action Buttons
 
 Action buttons provide a more noticeable button that invites users to click on them.
-They are located in the top-right of the page.
+Add action buttons to your site header with the `site.actions` option.
 
-Add action buttons to your site header with the `site.actions` option. For example:
+For example:
 
 ```{code-block} yaml
 :filename: myst.yml
 
 site:
   actions:
-    - title: Button text
+    - title: A URL
       url: https://mystmd.org
-    - title: Second button text
-      url: https://mystmd.org/guide
 ```
 
+
+There are two types of actions:
+
+
+:::{list-table}
+:header-rows: 1
+- * Type
+  * Pattern
+  * Description
+- * **Static downloads**
+  * ```yaml
+    - title: Custom title
+      url: path/to/myfile.png
+    ```
+  * A path to an internal file. This turns the button into a download link for the file.
+- * **External URLs**
+  * ```yaml
+    - title: Custom title
+      url: https://somelink.org`
+    ```
+  * Direct links to an external website. This should be a fully-specified URL.
+:::
 
 (navigation:sidebar-primary)=
 ## Primary sidebar
