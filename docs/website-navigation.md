@@ -7,6 +7,10 @@ thumbnail: thumbnails/table-of-contents.png
 In the [default MyST templates](./website-templates.md) there are several sections of the page that help your users navigate within and between pages.
 Here's how you can configure them.
 
+:::{seealso} For all theme options
+See [](site-options) for a list of all site options in both of the default themes.
+:::
+
 ## Website Layout
 
 The default MyST themes are divided into five main sections:
@@ -26,7 +30,6 @@ Other themes may have slightly different structure.
 
 (navigation:header)=
 ## Header
-
 
 (site-navigation)=
 
@@ -116,9 +119,20 @@ There are two types of actions:
 :::
 
 (navigation:sidebar-primary)=
-## Primary sidebar
+## Primary sidebar (Table of Contents)
 
 Is defined by your [MyST Project Table of Contents](./table-of-contents.md).
+
+### Hide the primary sidebar
+
+To hide the Primary Sidebar, use `site.options.hide_toc` like so:
+
+```{code-block} yaml
+:filename: myst.yml
+site:
+  options:
+    hide_toc: true
+```
 
 (navigation:content-window)=
 ## Content window
@@ -130,6 +144,17 @@ See [](./frontmatter.md) for many kinds of metadata that configure this section.
 ## Secondary sidebar
 
 Contains the in-page navigation of the page, autopopulated by the page's header structure.
+
+### Hide the secondary sidebar
+
+To hide the secondary sidebar, use the `site.options.hide_outline` option:
+
+```{code-block} yaml
+:filename: myst.yml
+site:
+  options:
+    hide_outline: true
+```
 
 (navigation:footer)=
 ## Footer
