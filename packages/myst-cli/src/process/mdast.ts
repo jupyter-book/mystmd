@@ -376,7 +376,7 @@ export async function finalizeMdast(
   });
   if (!useExistingImages) {
     if (mermaidAsImage) {
-       await mermaidToImageTransform(session, mdast, imageWriteFolder, vfile);
+      await mermaidToImageTransform(session, mdast, imageWriteFolder, vfile);
     }
     await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,

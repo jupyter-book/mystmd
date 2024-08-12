@@ -153,7 +153,7 @@ export async function localArticleToTexRaw(
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
         simplifyFigures: true,
-	mermaidAsImage: true,
+        mermaidAsImage: true,
       });
       return mdastToTex(session, mdast, references, frontmatter, null, false);
     }),
@@ -253,7 +253,7 @@ export async function localArticleToTexTemplated(
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
         simplifyFigures: true,
-	mermaidAsImage: true,
+        mermaidAsImage: true,
       });
 
       partDefinitions.forEach((def) => {
