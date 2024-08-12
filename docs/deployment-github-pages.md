@@ -26,12 +26,30 @@ Navigate to your repository settings, click on Pages and enable GitHub pages. Wh
 
 To trigger action, push your code with the workflow to main.
 
-:::{tip} You will probably need to set a `BASE_URL`
+:::{tip} `BASE_URL` Configuration for GitHub Pages
+
+If you are deploying your mystmd website from a repository within an organization, you likely need to define a `BASE_URL` that includes the repository name.
+
+For example, if you wish to host your MyST site via a repository called `myrepository`, you'd want `BASE_URL` to be:
+
+`myrepository/`
+
 GitHub Pages likely requires you to set a `BASE_URL` because the URL for GitHub Pages defaults to a sub-folder of `username.github.io` (e.g. `username.github.io/myrepository/`).
-The easieset thing to do is use the GitHub Action variable for the repository name:
+The BASEURL variable is only needed for deploying your site to GitHub pages. If you are using GitHub actions to deploy your site, you can add a GitHub Action variable that defins the repository name and creates your BASE_URL like this:
 
 ```yaml
-BASE_URL: /${{ github.event.repository.name }}
+name: MyST GitHub Pages Deploy
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Run every Sunday @ midnight (UTC)
+  pull_request:
+  push:
+    branches:
+      - main
+env:
+  # `BASE_URL` determines the website is served from, including CSS & JS assets
+  # You may need to change this to `BASE_URL: ''`
+  BASE_URL: /${{ github.event.repository.name }}```
 ```
 
 If you're using a custom domain (e.g. `mydomain.org`) then you may need to manually set `BASE_URL` to an empty string, like `export BASE_URL=''`.
