@@ -1,12 +1,16 @@
 ---
-title: Deploying to GitHub Pages
+title: Deploy to GitHub Pages
 short_title: Github Pages
-description: Deploy your MyST site to GitHub pages with a single command.
+description: Deploy your MyST site to GitHub pages.
 ---
 
-GitHub Pages[^pages] allows you to host your project in a folder, which is your repositories name, for example:\
-`https://owner.github.io/repository_name`\
+[GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) allows you to host static HTML files online from GitHub repositories using GitHub Actions.
+This page has important information for how to do so.
+
+## Instructions
+
 To get setup with GitHub Pages, ensure that your repository is hosted in GitHub and you are in the root of the Git repository.
+There's a special `init` function which adds the proper configuration for deploying to GitHub Pages with a GitHub Action.
 
 🛠 In the root of your git repository run `myst init --gh-pages`
 
@@ -18,26 +22,39 @@ The command `myst init --gh-pages` will guide you through deploying to GitHub Pa
 :::
 
 [^actions]: To learn more about GitHub Actions, see the [GitHub documentation](https://docs.github.com/en/actions/quickstart). These are YAML files created in the `.github/workflows` folder in the root of your repository.
-[^pages]: To learn more about GitHub Pages, see the [GitHub documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 
-Navigate to your repository settings, click on Pages and enable GitHub pages. When choosing the source, use `GitHub Actions`:
+🛠 In your repository, navigate to {kbd}`Settings` -> {kbd}`Pages` and enable GitHub Pages by choosing {kbd}`GitHub Actions` as the source.
 
-🛠 Turn on GitHub Pages using **GitHub Actions** as the source.
+This has activated GitHub Pages to accept new HTML from GitHub actions.
 
-To trigger action, push your code with the workflow to main.
+To trigger the action, push new commits of code to the branch that you've configured with the action above. You should start seeing your website show up at `<githuborg>.github.io/<githubrepo>`.
 
-:::{tip} `BASE_URL` Configuration for GitHub Pages
+## `BASE_URL` Configuration for GitHub Pages
 
-If you are deploying your mystmd website from a repository within an organization, you likely need to define a `BASE_URL` that includes the repository name.
+If you deploy your website from a repository that's not the default GitHub Pages repository (i.e., not called `<username>.github.io`), you likely need to define a `BASE_URL` that includes the repository name.[^except-custom-domains]
 
-For example, if you wish to host your MyST site via a repository called `myrepository`, you'd want `BASE_URL` to be:
+[^except-custom-domains]: If you're using a custom domain, you may not need to set `BASE_URL` if the site is served from the base domain (e.g.: `mydomain.org`) without a sub-folder (e.g., `mydomain.org/mydocs/`).
 
-`myrepository/`
+For example, if you wish to host your MyST site via a repository called `myrepository`, you'd want `BASE_URL` to be `/myrepository`, which you can set as an environment variable in your GitHub Action like so:
 
-GitHub Pages likely requires you to set a `BASE_URL` because the URL for GitHub Pages defaults to a sub-folder of `username.github.io` (e.g. `username.github.io/myrepository/`).
-The BASEURL variable is only needed for deploying your site to GitHub pages. If you are using GitHub actions to deploy your site, you can add a GitHub Action variable that defins the repository name and creates your BASE_URL like this:
+```{code-block} yaml
+:filename: deploy.yml
+env:
+  BASE_URL: "/myrepository"
+```
 
-```yaml
+You can automate this by using the GitHub action environment variable for the repository name, like so:
+
+```{code-block} yaml
+:filename: deploy.yml
+env:
+  BASE_URL: /${{ github.event.repository.name }}
+```
+
+Below is a simple GitHub Action snippet that sets up the environment to deploy with the proper `BASE_URL`.
+
+```{code-block} yaml
+:filename: deploy.yml
 name: MyST GitHub Pages Deploy
 on:
   schedule:
@@ -48,19 +65,16 @@ on:
       - main
 env:
   # `BASE_URL` determines the website is served from, including CSS & JS assets
-  # You may need to change this to `BASE_URL: ''`
-  BASE_URL: /${{ github.event.repository.name }}```
+  BASE_URL: /${{ github.event.repository.name }}
 ```
 
-If you're using a custom domain (e.g. `mydomain.org`) then you may need to manually set `BASE_URL` to an empty string, like `export BASE_URL=''`.
+## Example: A Full GitHub Action
 
-See [](#deploy:base-url) for more information.
-:::
+The GitHub Action below builds and deploys your site automatically.
+Click the dropdown to show it, and copy/paste/modify as you like.
 
-:::{note} Example: Full GitHub Action
+:::{note} GitHub Action Example
 :class: dropdown
-
-The GitHub Action to build and deploy your site automatically is:
 
 ```{code} yaml
 :filename: deploy.yml
