@@ -29,3 +29,16 @@ cases:
       venue:
         title: test
     warnings: 1
+  - title: doi/short_title validate
+    raw:
+      venue:
+        title: test
+        url: http://example.com
+        doi: 10.0000/abc123
+        short_title: test
+    normalized:
+      venue:
+        title: test
+        url: http://example.com
+        doi: 10.0000/abc123
+        short_title: test
