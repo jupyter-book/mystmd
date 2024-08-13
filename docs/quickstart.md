@@ -30,16 +30,12 @@ The current tutorial will help you get up and running from scratch.
 `mystmd` is a {abbr}`CLI (Command Line Interface)` that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites.
 These instructions help you install the CLI.
 
-### Install `mamba` with `miniforge`
+### Install `conda` and `conda-forge`
 
-The easiest way to install MyST is with [`miniforge`](https://github.com/conda-forge/miniforge) from the [`conda-forge` community](https://conda-forge.org/) and the [`conda` package manager](https://docs.conda.io/en/latest/).
+The easiest way to install MyST is with [the `conda` package manager](https://conda.io/projects/conda/en/latest/).
 `conda` is a multi-language manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
 
-:::{warning} Make sure you're using the `conda-forge` channel
-If you've installed `conda` before, make sure that you're using the `conda-forge` package channel and not the default channel provided by the Anaconda distribution.
-:::
-
-The easiest way to install `conda` is with [the `miniforge` distribution](https://conda-forge.org/download/).
+The easiest way to install `conda` is with [the `conda-forge` distribution](https://conda-forge.org/download/).
 This includes miniconda and a community-driven package index called `conda-forge`.
 
 🛠 Install miniconda from [conda-forge](https://conda-forge.org):
@@ -53,21 +49,31 @@ This includes miniconda and a community-driven package index called `conda-forge
    conda 24.7.1
    ```
 
-### Install `mystmd`
+### Install Node and NPM
 
-Next install MySTMD with `conda`, using the `conda-forge` channel.
+MyST needs both NodeJS and NPM to build sites locally.
+We'll install each with `conda`, using the `conda-forge` channel.
 
-🛠 Install the MySTMD package as well as `pip`:
+🛠 Install Node and NPM:
 
 ```shell
-conda install mystmd
+conda install -c conda-forge 'nodejs>=20,<21'
 ```
 
-This will download `NodeJS` and `NPM`, and install the `mystmd` package with them.
-
-:::{seealso} Other ways to install MySTMD
+:::{seealso} Other ways to install NodeJS and NPM
 See [](./install-node.md) for more information about installing a JavaScript environment.
 :::
+
+### Install the `mystmd` Python package
+
+The MySTMD Python package is a wrapper around the MyST JavaScript library, and makes it easier to upgrade and use MyST with Python workflows.
+
+🛠 Install Python and the `mystmd` package:
+
+```shell
+conda install -c conda-forge pip
+pip install mystmd
+```
 
 Once installed you should be able to print the version of MyST like so:
 
