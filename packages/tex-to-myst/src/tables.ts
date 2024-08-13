@@ -162,6 +162,9 @@ const createTable = (addContainer = false) => {
       'cmidrule',
       'toprule',
       'bottomrule',
+      'tophline',
+      'middlehline',
+      'bottomhline',
     ]);
     const alignments = getTabularAlignment(node.args[node.args.length - 1]);
     node.content.forEach((n: GenericNode) => {

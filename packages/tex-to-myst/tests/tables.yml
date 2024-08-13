@@ -173,11 +173,11 @@ cases:
                     - type: tableCell
                       children:
                         - type: text
-                          value: 'º '
+                          value: '° '
                         - type: inlineMath
                           value: \mathrm{C}
                         - type: text
-                          value: ' (º '
+                          value: ' (° '
                         - type: inlineMath
                           value: \mathrm{K}
                         - type: text

@@ -58,6 +58,7 @@ const macros: Record<string, number> = {
   Citet: 1,
   Citep: 1,
   Citeauthor: 1,
+  citealp: 1,
   citeyear: 1,
   citeyearpar: 1,
   primarypubs: 2,

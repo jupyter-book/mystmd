@@ -81,7 +81,8 @@ export const LatexSpecialSymbols = {
   ldots: '…',
   texttimes: '×',
   textellipsis: '…',
-  textdegree: 'º',
+  textdegree: '°',
+  degree: '°',
   textasciitilde: '~',
   textvisiblespace: ' ', // Not sure this will work, but close enough
   ' ': ' ', // this is a single backslash followed by a space
