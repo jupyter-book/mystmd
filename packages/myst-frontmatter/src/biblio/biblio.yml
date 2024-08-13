@@ -19,9 +19,11 @@ cases:
         issue: example
         first_page: 1
         last_page: 2
+        doi: 10.0000/abc123
     normalized:
       biblio:
         volume: test
         issue: example
         first_page: 1
         last_page: 2
+        doi: 10.0000/abc123
