@@ -339,10 +339,16 @@ Here are some things to try for next steps:
 (quickstart-cards)=
 +++
 Check out the following tutorials for more step-by-step guides:
+
 ::::{grid} 1 1 2 2
 :::{card} Author enriched MyST documents ✨
 :link: ./quickstart-myst-documents.md
 Enhance your MyST documents with interactivity, open scholarship, and reproducibility.
+:::
+
+:::{card} Executable Documents with MyST 🌕
+:link: ./quickstart-executable-documents.md
+Learn how to use computation and execution with Jupyter in MyST.
 :::
 
 :::{card} Export to static documents 📑
