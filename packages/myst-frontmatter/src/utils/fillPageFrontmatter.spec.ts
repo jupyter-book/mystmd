@@ -710,6 +710,11 @@ describe('fillPageFrontmatter', () => {
       options: { a: 'b' },
     });
   });
+  it('biblio object fills', async () => {
+    expect(
+      fillPageFrontmatter({ biblio: { first_page: 10 } }, { biblio: { issue: 1 } }, opts),
+    ).toEqual({ biblio: { first_page: 10, issue: 1 } });
+  });
 });
 
 describe('fillSiteFrontmatter', () => {

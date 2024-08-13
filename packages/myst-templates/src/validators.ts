@@ -6,6 +6,7 @@ import { TemplateKind, TemplateOptionType } from 'myst-common';
 import type { ReferenceStash } from 'myst-frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
   RESERVED_EXPORT_KEYS,
   validateAffiliation,
   validateAndStashObject,
@@ -16,6 +17,7 @@ import {
 } from 'myst-frontmatter';
 import {
   defined,
+  filterKeys,
   incrementOptions,
   validateBoolean,
   validateChoice,
@@ -211,7 +213,10 @@ export function validateTemplateDoc(
   options: Record<string, any>,
   opts: ValidationOptions,
 ) {
-  const output = validateProjectFrontmatter(frontmatter, opts);
+  const output = validateProjectFrontmatter(
+    filterKeys(frontmatter, PROJECT_FRONTMATTER_KEYS),
+    opts,
+  );
   if (output === undefined) return undefined;
   const filteredDoc = docDefinitions.filter((def) => {
     return conditionMet(def, { ...options });

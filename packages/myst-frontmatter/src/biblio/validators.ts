@@ -1,9 +1,9 @@
 import type { ValidationOptions } from 'simple-validators';
 import { defined, incrementOptions, validateObjectKeys } from 'simple-validators';
-import { validateStringOrNumber } from '../utils/validators.js';
+import { validateDoi, validateStringOrNumber } from '../utils/validators.js';
 import type { Biblio } from './types.js';
 
-const BIBLIO_KEYS = ['volume', 'issue', 'first_page', 'last_page'];
+const BIBLIO_KEYS = ['volume', 'issue', 'doi', 'first_page', 'last_page'];
 
 /**
  * Validate Biblio object
@@ -19,6 +19,9 @@ export function validateBiblio(input: any, opts: ValidationOptions) {
   }
   if (defined(value.issue)) {
     output.issue = validateStringOrNumber(value.issue, incrementOptions('issue', opts));
+  }
+  if (defined(value.doi)) {
+    output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
   }
   if (defined(value.first_page)) {
     output.first_page = validateStringOrNumber(

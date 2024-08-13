@@ -728,13 +728,14 @@ The term `venue` is borrowed from the [OpenAlex](https://docs.openalex.org/about
 
 > Venues are where works are hosted.
 
-Available fields in the `venue` object are `title` and `url`.
+Available fields in the `venue` object are `title`, `short_title` (or title abbreviation), and `url`. You may also provide a DOI under `biblio`; this DOI is the _venue_ DOI.
 
 Some typical `venue` values may be:
 
 ```yaml
 venue:
   title: Journal of Geophysics
+  short_title: J. Geophys
   url: https://journal.geophysicsjournal.com
 ```
 
@@ -752,7 +753,7 @@ The term `biblio` is borrowed from the [OpenAlex](https://docs.openalex.org/abou
 
 > Old-timey bibliographic info for this work. This is mostly useful only in citation/reference contexts. These are all strings because sometimes you'll get fun values like "Spring" and "Inside cover."
 
-Available fields in the `biblio` object are `volume`, `issue`, `first_page` and `last_page`.
+Available fields in the `biblio` object are `volume`, `issue`, `first_page` and `last_page`. You may also provide a DOI under `biblio`; this DOI is the _issue_ DOI.
 
 Some example `biblio` values may be:
 
@@ -771,4 +772,5 @@ biblio:
   volume: '2022'
   issue: Winter
   first_page: Inside cover # can be a number or string
+  doi: 10.62329/MYISSUE
 ```
