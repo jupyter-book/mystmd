@@ -1,5 +1,16 @@
 # myst-to-typst
 
+## 0.0.21
+
+### Patch Changes
+
+- 857c5acf: Add raw directives/roles for inserting tex/typst-specific content
+- Updated dependencies [857c5acf]
+- Updated dependencies [313b218]
+  - myst-spec-ext@1.5.3
+  - myst-frontmatter@1.5.3
+  - myst-common@1.5.3
+
 ## 0.0.20
 
 ### Patch Changes

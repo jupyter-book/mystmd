@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.5.3
+
+### Patch Changes
+
+- 313b218: Add dois to venue and biblio
+
 ## 1.5.2
 
 ### Patch Changes
