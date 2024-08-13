@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.5.3
+
+### Patch Changes
+
+- 857c5acf: Add raw directives/roles for inserting tex/typst-specific content
+
 ## 1.5.2
 
 ## 1.5.1

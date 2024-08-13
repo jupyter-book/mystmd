@@ -1,5 +1,14 @@
 # myst-roles
 
+## 1.5.3
+
+### Patch Changes
+
+- 857c5acf: Add raw directives/roles for inserting tex/typst-specific content
+- Updated dependencies [857c5acf]
+  - myst-spec-ext@1.5.3
+  - myst-common@1.5.3
+
 ## 1.5.2
 
 ### Patch Changes

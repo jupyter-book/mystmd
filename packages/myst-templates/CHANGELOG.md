@@ -1,5 +1,14 @@
 # myst-templates
 
+## 1.0.22
+
+### Patch Changes
+
+- 313b218: Eliminate frontmatter validation warnings for template doc
+- Updated dependencies [313b218]
+  - myst-frontmatter@1.5.3
+  - myst-common@1.5.3
+
 ## 1.0.21
 
 ### Patch Changes
