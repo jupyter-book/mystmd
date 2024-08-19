@@ -49,6 +49,10 @@ The easiest way to install `mamba` is with [the `miniforge` distribution](https:
    conda 24.7.1   
    ```
 
+:::{seealso} There are many ways to install MyST
+This tutorial focuses on the simplest possible way to install MyST from scratch.
+If you're familiar with either Python or JavaScript-based workflows, see [](installing.md) for more information on how to install MyST.
+:::
 ### Install the `mystmd` package
 
 Once `conda` has been installed, we can install the `mystmd` package from `conda-forge`:
