@@ -57,7 +57,7 @@ If you're familiar with either Python or JavaScript-based workflows, see [](inst
 
 Once `conda` has been installed, we can install the `mystmd` package from `conda-forge`:
 ```shell
-conda install -c conda-forge mystmd
+mamba install mystmd
 ```
 
 Once installed you should be able to print the version of MyST like so:
