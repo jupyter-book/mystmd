@@ -492,9 +492,9 @@ Then we must use this transform in the `myst-cli` package, which contains much o
 🛠 Import the `wordCountPlugin` in `packages/myst-cli/src/process/mdast.ts`
 
 ```{code-block} typescript
-:filename: packages/myst-transforms/src/index.ts
+:filename: packages/myst-cli/src/process/mdast.ts
 :linenos:
-:emphasize-lines: 23
+:emphasize-lines: 3
 
 import {
   ...,
@@ -507,7 +507,7 @@ Finally, we'll _use_ this plugin as part of the MyST transformations in the same
 🛠 Add the `wordCountPlugin` to the unified pipe of transformations
 
 ```{code-block} typescript
-:filename: packages/myst-transforms/src/index.ts
+:filename: packages/myst-cli/src/process/mdast.ts
 :linenos:
 :emphasize-lines: 5
 
