@@ -32,7 +32,7 @@ These instructions help you install the CLI.
 
 ### Install `mamba`
 
-The easiest way to install MyST is with [the `mamba`/`conda` package manager](https://mamba.readthedocs.io/en/latest/index.html).
+The easiest way to install MyST is with [the `mamba` package manager](https://mamba.readthedocs.io/en/latest/index.html).
 `mamba` is a multi-language manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
 
 The easiest way to install `mamba` is with [the `miniforge` distribution](https://github.com/conda-forge/miniforge?tab=readme-ov-file).
