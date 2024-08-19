@@ -4,7 +4,7 @@ description: A collection of ideas that helps guide the direction and decisions 
 ---
 
 This document describes some high-level principles that the MyST community follows in designing technology and deciding where we are going.
-It is meant to align our team on the big ideas guiding the project, and provide visibility to others for the impact we're trying to have and where we are haeding.
+It is meant to align our team on the big ideas guiding the project, and provide visibility to others for the impact we're trying to have and where we are heading.
 
 
 :::{note} This will evolve!
