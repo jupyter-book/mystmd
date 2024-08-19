@@ -71,7 +71,7 @@ v1.3.1
 
 MyST needs both NodeJS and NPM to build sites locally. By installing `mystmd` from conda-forge, we do not need to install NodeJS manually. 
 
-See [](./install-node.md) for more information about installing a JavaScript environment.
+See [](./install-node.md) for more information about installing a JavaScript environment if you opt not to use `conda-forge`.
 :::
 
 For more information about installing MyST, see [installing MyST](./installing.md).
