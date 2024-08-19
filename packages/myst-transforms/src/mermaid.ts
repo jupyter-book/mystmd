@@ -1,4 +1,3 @@
-import type { Plugin } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent, GenericNode } from 'myst-common';
 import { RuleId } from 'myst-common';
@@ -6,7 +5,7 @@ import which from 'which';
 import type { VFile } from 'vfile';
 import type { LoggerDE } from 'myst-cli-utils';
 import type { ISession } from 'myst-cli';
-import { makeExecutable, tic } from 'myst-cli-utils';
+import { makeExecutable } from 'myst-cli-utils';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import { join } from 'node:path';
