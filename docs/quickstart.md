@@ -33,7 +33,7 @@ These instructions help you install the CLI.
 ### Install `mamba`
 
 The easiest way to install MyST is with [the `mamba` package manager](https://mamba.readthedocs.io/en/latest/index.html).
-`mamba` is a multi-language manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
+`mamba` is a cross-platform language-agnostic package manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
 
 The easiest way to install `mamba` is with [the `miniforge` distribution](https://github.com/conda-forge/miniforge?tab=readme-ov-file).
 
@@ -67,11 +67,11 @@ $ myst -v
 v1.3.1
 ```
 
-:::{seealso} Not using `conda-forge`?
+:::{seealso} Not using `mamba`?
 
-MyST needs both NodeJS and NPM to build sites locally. By installing `mystmd` from conda-forge, we do not need to install NodeJS manually. 
+MyST needs both NodeJS and NPM to build sites locally. By installing `mystmd` with `mamba`, we do not need to install NodeJS manually. 
 
-See [](./install-node.md) for more information about installing a JavaScript environment if you opt not to use `conda-forge`.
+See [](./install-node.md) for more information about installing a JavaScript environment if you opt not to use `mamba`.
 :::
 
 For more information about installing MyST, see [installing MyST](./installing.md).
