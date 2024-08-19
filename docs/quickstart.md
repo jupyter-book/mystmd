@@ -55,7 +55,7 @@ If you're familiar with either Python or JavaScript-based workflows, see [](inst
 :::
 ### Install the `mystmd` package
 
-Once `conda` has been installed, we can install the `mystmd` package from `conda-forge`:
+Once `mamba` has been installed, we can install the `mystmd` package (which `mamba` pulls from the `conda-forge` channel by default):
 ```shell
 mamba install mystmd
 ```
