@@ -30,7 +30,7 @@ The current tutorial will help you get up and running from scratch.
 `mystmd` is a {abbr}`CLI (Command Line Interface)` that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites.
 These instructions help you install the CLI.
 
-### Install `conda` and `conda-forge`
+### Install `mamba`
 
 The easiest way to install MyST is with [the `mamba`/`conda` package manager](https://mamba.readthedocs.io/en/latest/index.html).
 `mamba` is a multi-language manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
