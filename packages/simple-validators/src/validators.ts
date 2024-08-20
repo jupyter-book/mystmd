@@ -1,5 +1,5 @@
 import type { KeyOptions, ValidationOptions } from './types.js';
-import { formatDate } from './utils.js';
+import { getDate, formatDate } from './utils.js';
 
 export function defined<T = any>(val: T | null | undefined): val is T {
   return val != null;
@@ -215,7 +215,8 @@ export function validateEnum<T>(
  * IETF timestamps are valid.
  */
 export function validateDate(input: any, opts: ValidationOptions) {
-  const date = new Date(input);
+  // Parse the date and preserve the timezone, or assume UTC
+  const date = getDate(input);
   if (!date.getDate()) {
     return validationError(
       `invalid date "${input}" - must be ISO 8601 format or IETF timestamp`,

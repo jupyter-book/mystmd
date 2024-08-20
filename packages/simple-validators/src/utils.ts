@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export function getDate(object: undefined | Date | string | { toDate: () => Date }): Date {
   if (object == null) {
     return new Date();
@@ -6,7 +8,8 @@ export function getDate(object: undefined | Date | string | { toDate: () => Date
     return object;
   }
   if (typeof object === 'string') {
-    return new Date(object);
+    const result = moment.parseZone(object);
+    return result.toDate();
   }
   if (object?.toDate !== undefined) {
     return object.toDate();
@@ -15,10 +18,8 @@ export function getDate(object: undefined | Date | string | { toDate: () => Date
 }
 
 function formatISODateString(date: Date): string {
-  const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-
   // Format the date as a machine-readable date
-  const isoString = utcDate.toISOString();
+  const isoString = date.toISOString();
   const match = isoString.match(/^\d+-\d+-\d+/);
   return match![0];
 }
