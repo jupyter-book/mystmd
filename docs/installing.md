@@ -1,5 +1,6 @@
 ---
 title: Install and Update the MyST Markdown Command Line Interface
+subject: Advanced Installation
 short_title: Install and Update MyST
 description: MyST Markdown is available through Node and npm, install the package with `npm install mystmd`.
 ---
