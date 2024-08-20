@@ -744,6 +744,12 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   DOC: {
     name: 'DOC License',
   },
+  'DocBook-Schema': {
+    name: 'DocBook Schema License',
+  },
+  'DocBook-XML': {
+    name: 'DocBook XML License',
+  },
   Dotseqn: {
     name: 'Dotseqn License',
   },
@@ -1008,6 +1014,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   hdparm: {
     name: 'hdparm License',
   },
+  HIDAPI: {
+    name: 'HIDAPI License',
+  },
   'Hippocratic-2.1': {
     name: 'Hippocratic License 2.1',
   },
@@ -1063,6 +1072,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'HPND-MIT-disclaimer': {
     name: 'Historical Permission Notice and Disclaimer with MIT disclaimer',
+  },
+  'HPND-Netrek': {
+    name: 'Historical Permission Notice and Disclaimer - Netrek variant',
   },
   'HPND-Pbmplus': {
     name: 'Historical Permission Notice and Disclaimer - Pbmplus variant',
@@ -1481,9 +1493,6 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     osi: true,
     free: true,
   },
-  'Net-SNMP': {
-    name: 'Net-SNMP License',
-  },
   NetCDF: {
     name: 'NetCDF license',
   },
@@ -1835,6 +1844,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'Ruby License',
     free: true,
   },
+  'Ruby-pty': {
+    name: 'Ruby pty extension license',
+  },
   'SAX-PD': {
     name: 'Sax Public Domain Notice',
   },
@@ -2012,6 +2024,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'TU-Berlin-2.0': {
     name: 'Technische Universitaet Berlin License 2.0',
   },
+  'Ubuntu-font-1.0': {
+    name: 'Ubuntu Font Licence v1.0',
+  },
   UCAR: {
     name: 'UCAR License',
   },
@@ -2076,6 +2091,7 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'W3C-20150513': {
     name: 'W3C Software Notice and Document License (2015-05-13)',
+    osi: true,
   },
   w3m: {
     name: 'w3m License',
@@ -2100,6 +2116,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'X11-distribute-modifications-variant': {
     name: 'X11 License Distribution Modification Variant',
+  },
+  'X11-swapped': {
+    name: 'X11 swapped final paragraphs',
   },
   'Xdebug-1.03': {
     name: 'Xdebug License v 1.03',
@@ -2183,5 +2202,4 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     free: true,
   },
 };
-
 export default licenses;
