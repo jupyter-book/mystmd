@@ -26,7 +26,6 @@ export function isValidFile(file: string): boolean {
   return VALID_FILE_EXTENSIONS.some((ext) => lowerCasePath.endsWith(ext));
 }
 
-
 /**
  * Parse a file path into its constituent parts
  *
