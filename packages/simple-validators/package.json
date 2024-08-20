@@ -30,7 +30,7 @@
   "bugs": {
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
-  "devDependencies": {
+  "dependencies": {
     "moment": "^2.29.4"
   }
 }
