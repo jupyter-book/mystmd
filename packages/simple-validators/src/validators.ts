@@ -238,14 +238,14 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
     // Try ISO 8601
     let match = input.match(ISO8601_DATE_PATTERN);
     if (match) {
+      const [year, month, day, tail] = match.slice(1, 5);
       // Is a timestamp component present?
-      if (match[4] !== undefined) {
+      if (tail !== undefined) {
         validationWarning(
-          `invalid date "${input}" - ISO 8601 dates must not include a time component, which has been ignored`,
+          `invalid date "${input}" - ISO 8601 dates must not include a time component ("${tail}"), which has been ignored`,
           opts,
         );
       }
-      const [year, month, day] = match.slice(1, 4);
       const fullMonth = parseInt(month);
       const fullDay = parseInt(day);
       if (fullMonth < 1 || 12 < fullMonth || fullDay < 1 || 31 < fullDay) {
@@ -260,15 +260,15 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
     // Try a variant of RFC2822
     match = input.match(RFC2822_DATE_PATTERN);
     if (match) {
+      const [day, month, year, tail] = match.slice(2, 6);
+
       // Is a timestamp component present?
-      if (match[5] !== undefined) {
+      if (tail !== undefined) {
         validationWarning(
-          `invalid date "${input}" - specialised RFC 2822 dates must not include a time component, which has been ignored`,
+          `invalid date "${input}" - specialised RFC 2822 dates must not include a time component ("${tail}"), which has been ignored`,
           opts,
         );
       }
-
-      const [day, month, year] = match.slice(2, 5);
 
       const numericYear = parseInt(year);
 
