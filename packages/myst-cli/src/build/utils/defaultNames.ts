@@ -3,6 +3,7 @@ import { ExportFormats } from 'myst-frontmatter';
 import type { ISession } from '../../session/types.js';
 import { selectPageSlug } from '../../store/selectors.js';
 import { createSlug } from '../../utils/fileInfo.js';
+import { parseFilePath } from '../../utils/resolveExtension.js';
 
 /**
  * Get default filename for saving export.
@@ -10,7 +11,7 @@ import { createSlug } from '../../utils/fileInfo.js';
  * This uses the project slug if available, or creates a new slug from the filename otherwise.
  */
 export function getDefaultExportFilename(session: ISession, file: string, projectPath?: string) {
-  const { name } = path.parse(file);
+  const { name } = parseFilePath(file);
   const slugFromProject = projectPath
     ? selectPageSlug(session.store.getState(), projectPath, file)
     : undefined;

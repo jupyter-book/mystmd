@@ -1,5 +1,5 @@
-import path from 'node:path';
 import type { PageSlugs } from '../project/types.js';
+import { parseFilePath } from './resolveExtension.js';
 
 function input2name(input: string, allowed: RegExp, join: string) {
   let name = `¶${input}`
@@ -54,7 +54,7 @@ export function createTitle(s: string): string {
 }
 
 export function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; title: string } {
-  const { name } = path.parse(file);
+  const { name } = parseFilePath(file);
   let slug = createSlug(name);
   const title = createTitle(name);
   if (pageSlugs[slug]) {

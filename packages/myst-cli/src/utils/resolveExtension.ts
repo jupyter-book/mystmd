@@ -27,6 +27,26 @@ export function isValidFile(file: string): boolean {
 }
 
 /**
+ * Parse a file path into its constituent parts
+ *
+ * Handles multi-dot extensions
+ */
+export function parseFilePath(file: string): {
+  dir: string;
+  name: string;
+  ext: string;
+} {
+  const { dir, base, ext: baseExt, name: baseName } = path.parse(file);
+  for (const ext of VALID_FILE_EXTENSIONS) {
+    if (base.endsWith(ext)) {
+      const name = base.slice(0, base.length - ext.length);
+      return { dir, name, ext };
+    }
+  }
+  return { dir, name: baseName, ext: baseExt };
+}
+
+/**
  * Given a file with resolved path and filename, match to md, ipynb, or tex files
  *
  * If the file already has an extension and exists, it is returned as is.

@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
-import { isValidFile, resolveExtension } from './resolveExtension';
+import { isValidFile, resolveExtension, parseFilePath } from './resolveExtension';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
@@ -74,5 +74,15 @@ describe('isValidFile', () => {
   });
   it.each(['index.txt', 'INDEX', 'my-paper.latex'])(`%s is invalid`, async (f) => {
     expect(isValidFile(f)).toBe(false);
+  });
+});
+
+describe('parseFilePath', () => {
+  it.each([
+    ['/tmp/foo/bar.md', { dir: '/tmp/foo', name: 'bar', ext: '.md' }],
+    ['/tmp/foo/bar/bat.txt', { dir: '/tmp/foo/bar', name: 'bat', ext: '.txt' }],
+    ['/tmp/baz.myst.json', { dir: '/tmp', name: 'baz', ext: '.myst.json' }],
+  ])('%s parses properly', (path, result) => {
+    expect(parseFilePath(path)).toEqual(result);
   });
 });

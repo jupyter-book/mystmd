@@ -16,6 +16,7 @@ import { castSession } from '../session/cache.js';
 import { warnings, watch } from '../store/reducers.js';
 import type { PreRendererData, RendererData } from '../transforms/types.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
+import { parseFilePath } from '../utils/resolveExtension.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
@@ -233,7 +234,7 @@ export async function loadFile(
       session.log.debug(toc(`loadFile: ${file} already loaded.`));
       return cache.$getMdast(file)?.pre;
     }
-    const ext = extension || path.extname(file).toLowerCase();
+    const ext = extension || parseFilePath(file).ext.toLowerCase();
     let loadResult: LoadFileResult | undefined;
     switch (ext) {
       case '.md': {
@@ -258,16 +259,9 @@ export async function loadFile(
         });
         break;
       }
-      case '.json': {
-        if (file.endsWith('.myst.json')) {
-          loadResult = loadMySTJSON(session, content, file);
-          break;
-        }
-        // This MUST be the final case before `default`, as
-        // we rely on falling through to the `default` case if
-        // a non-MyST JSON file is encountered here
-        //
-        // falls through
+      case '.myst.json': {
+        loadResult = loadMySTJSON(session, content, file);
+        break;
       }
       default:
         addWarningForFile(session, file, 'Unrecognized extension', 'error', {
