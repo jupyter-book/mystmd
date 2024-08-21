@@ -317,8 +317,7 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
   }
   // Handle null-like as "current time"
   else if (input == null) {
-    const now = new Date();
-    return buildISO8601DateString(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    return null as any;
   }
   // Handle pre-existing date objects
   else if (input instanceof Date) {

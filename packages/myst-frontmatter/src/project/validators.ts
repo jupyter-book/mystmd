@@ -33,7 +33,7 @@ export function validateProjectAndPageFrontmatterKeys(
   opts: ValidationOptions,
 ) {
   const output: ProjectAndPageFrontmatter = validateSiteFrontmatterKeys(value, opts);
-  if (defined(value.date)) {
+  if (value.date !== undefined) {
     output.date = validateDate(value.date, { ...incrementOptions('date', opts), dateIsUTC: true });
   }
   if (defined(value.doi)) {
