@@ -116,7 +116,6 @@ function replaceCommentNodes(tree: GenericParent) {
 describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
-      const mdastString = yaml.dump(mdast);
       const newAst = fixMystDirectives(
         replaceMystCommentNodes(
           stripPositions(
@@ -140,13 +139,7 @@ describe('Testing myst --> mdast conversions', () => {
       if (myst.includes('{figure}')) {
         containerChildrenTransform(newAst, new VFile());
       }
-      const newAstString = yaml.dump(newAst);
-      if (newAstString.includes('startingLineNumber: 2')) {
-        console.log('FIX ME IN 0.0.5');
-        console.log(newAstString);
-        return;
-      }
-      expect(newAstString).toEqual(mdastString);
+      expect(newAst).toEqual(mdast);
     }
   });
 });
