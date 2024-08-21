@@ -72,7 +72,7 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, MathMacro>;
   /** Abbreviations used throughout the project */
-  abbreviations?: Record<string, string>;
+  abbreviations?: Record<string, string | null>;
   exports?: Export[];
   downloads?: Download[];
   settings?: ProjectSettings;

@@ -197,3 +197,26 @@ cases:
           - Example
         example_part:
           - Another example part!
+  - title: abbreviations can be null
+    raw:
+      abbreviations:
+        false-y: false
+        null-y: null
+        TEST: 'string'
+    normalized:
+      abbreviations:
+        false-y: null
+        null-y: null
+        TEST: 'string'
+  - title: abbreviations not added if invalid
+    raw:
+      abbreviations:
+        TEST: 42
+    normalized: {}
+    errors: 1
+  - title: short abbreviations are invalid
+    raw:
+      abbreviations:
+        A: Abbreviation
+    normalized: {}
+    errors: 1
