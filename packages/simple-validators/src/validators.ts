@@ -229,7 +229,7 @@ function buildISO8601DateString(year: number, month: number, day: number): strin
  * Validate date string or object
  *
  * Parses strings as ISO 8601 dates, or a variant of RFC 2822 dates, falling back to the Date constructor otherwise.
- * Parses date objects as UTC or local dates according to the given options.
+ * Parses Date objects as UTC or local dates according to the given options.
  * Parses `null` dates as "now".
  */
 export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?: boolean }) {
