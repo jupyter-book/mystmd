@@ -6,8 +6,10 @@ short_title: Glossaries, Terms, & Index Pages
 You can define Terms and generate reference pages for them with Glossaries and Index Pages. This allows you to centralize definitions and pointers to where various items are mentioned throughout your documents.
 
 :::{seealso} See our index and glossary page
+
 - The [glossary for these docs](#glossary-page)
 - The [index for these docs](#index-page)
+
 :::
 
 ## Glossaries
@@ -23,7 +25,7 @@ term
 : A term is a [word with a specialized meaning](https://en.wikipedia.org/wiki/Terminology).
 
 index
-: An [organized list of information in a publication](https://en.wikipedia.org/wiki/Index_(publishing)).
+: An [organized list of information in a publication](<https://en.wikipedia.org/wiki/Index_(publishing)>).
 
 index entry
 : A word or phrase that has been marked for inclusion in the index with the `index` directive or role.
@@ -83,10 +85,10 @@ The existing syntax for `index` directives and `index` roles has been taken dire
 
 You can define index entries with Directives like so:
 
-````
+```
 :::{index} my first index item
 :::
-````
+```
 
 % This won't show up in the content
 :::{index} my first index item

@@ -5,7 +5,17 @@ import { selectAll } from 'unist-util-select';
 import type { IReferenceStateResolver, ReferenceState, Target } from './enumerate.js';
 import type { VFile } from 'vfile';
 
-const ALPHABET_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const ALLOWED_INDEX_CHARS = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+/** Changes é to E etc. */
+function getNormalizedFirstLetter(entry: string): string {
+  if (!entry) return 'Other';
+  const char = entry[0]
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toUpperCase();
+  return ALLOWED_INDEX_CHARS.includes(char) ? char : 'Other';
+}
 
 /**
  * Ensure all nodes with index entries have label/identifier/html_id
@@ -58,9 +68,7 @@ function organizeTargetEntries(indexTargets: Target[], vfile: VFile) {
   > = {};
   indexTargets.forEach(({ node }) => {
     node.indexEntries?.forEach(({ entry, subEntry, emphasis }) => {
-      const letter = ALPHABET_UPPER.includes(entry[0]?.toUpperCase())
-        ? entry[0].toUpperCase()
-        : 'Other';
+      const letter = getNormalizedFirstLetter(entry);
       if (!entryDict[letter]) entryDict[letter] = {};
       const indexTargetInfo: IndexTargetInfo = { node, emphasis };
       if (!entryDict[letter][entry]) {
@@ -166,9 +174,7 @@ function resolveIndexPrefix(
           value: ', ',
         });
       }
-      const xrefLetter = ALPHABET_UPPER.includes(value[0]?.toUpperCase())
-        ? value[0].toLowerCase()
-        : 'other';
+      const xrefLetter = getNormalizedFirstLetter(value).toLowerCase();
       const xref = {
         type: 'crossReference',
         identifier: `index-heading-${xrefLetter}`,
@@ -228,7 +234,7 @@ export function buildIndexTransform(
     .map((entryItems) => [...Object.keys(entryItems)])
     .flat();
   const indexContent: GenericNode[] = [];
-  [...ALPHABET_UPPER, 'Other'].forEach((letter) => {
+  [...ALLOWED_INDEX_CHARS, 'Other'].forEach((letter) => {
     if (!entryDict[letter]) return;
     const term = {
       type: 'definitionTerm',
