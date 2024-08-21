@@ -14,7 +14,7 @@ export async function currentSiteRoutes(
   host: string,
   baseurl: string | undefined,
   opts?: SiteManifestOptions,
-) {
+): Promise<{ url: string; path: string; binary?: boolean }[]> {
   const manifest = await getSiteManifest(session, opts);
   return (manifest.projects ?? [])
     ?.map((proj) => {
@@ -44,9 +44,14 @@ export async function currentSiteRoutes(
           };
         }),
         // Download other assets
-        ...['favicon.ico', 'robots.txt', 'myst-theme.css'].map((asset) => ({
+        ...['robots.txt', 'myst-theme.css'].map((asset) => ({
           url: `${host}/${asset}`,
           path: asset,
+        })),
+        ...['favicon.ico'].map((asset) => ({
+          url: `${host}/${asset}`,
+          path: asset,
+          binary: true,
         })),
       ];
     })
@@ -135,14 +140,24 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
 
   // Fetch all HTML pages and assets by the template
   await Promise.all(
-    routes.map(async (page) => {
-      const resp = await session.fetch(page.url);
+    routes.map(async (route) => {
+      const resp = await session.fetch(route.url);
       if (!resp.ok) {
-        session.log.error(`Error fetching ${page.url}`);
+        session.log.error(`Error fetching ${route.url}`);
         return;
       }
-      const content = await resp.text();
-      writeFileToFolder(path.join(htmlDir, page.path), content);
+      if (route.binary && resp.body) {
+        await new Promise<void>((resolve) => {
+          const filename = path.join(htmlDir, route.path);
+          if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
+          const fileWriteStream = fs.createWriteStream(filename);
+          resp.body!.pipe(fileWriteStream);
+          fileWriteStream.on('finish', resolve);
+        });
+      } else {
+        const content = await resp.text();
+        writeFileToFolder(path.join(htmlDir, route.path), content);
+      }
     }),
   );
   appServer.stop();
