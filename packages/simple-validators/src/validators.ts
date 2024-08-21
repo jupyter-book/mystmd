@@ -206,8 +206,10 @@ export function validateEnum<T>(
   return input;
 }
 
-// This pattern implements the date pattern from ISO8601, with a trailing capture group for timestamps
-const ISO8601_DATE_PATTERN = /^(\d\d\d\d)(?:-(\d\d))?(?:-(\d\d))?(T.*)?$/;
+// This pattern implements the date pattern from ISO8601
+// Technically, it's also RFC3339 (a particular profile of ISO8601 i.e. YYYY-MM-DD
+// There is also a trailing capture group for timestamps
+const ISO8601_DATE_PATTERN = /^(\d\d\d\d)-(\d\d)-(\d\d)(T.*)?$/;
 // This pattern implements the following ABNF from RFC2822: `[ day-of-week "," ] date`
 // with a trailing capture group for time-like information
 const RFC2822_DATE_PATTERN =
@@ -219,6 +221,9 @@ const MONTH_TO_NUMBER = new Map(
   ),
 );
 
+/**
+ * Build an ISO8601-compliant date string
+ */
 function buildISO8601DateString(year: number, month: number, day: number): string {
   const paddedMonth = `${month}`.padStart(2, '0');
   const paddedDay = `${day}`.padStart(2, '0');
@@ -246,6 +251,7 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
           opts,
         );
       }
+      // Check our components are valid
       const fullMonth = parseInt(month);
       const fullDay = parseInt(day);
       if (fullMonth < 1 || 12 < fullMonth || fullDay < 1 || 31 < fullDay) {
@@ -254,7 +260,8 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
           opts,
         );
       }
-      return [year, month, day].filter((item) => item).join('-');
+      // Rebuild the string, dropping time
+      return [year, month, day].join('-');
     }
 
     // Try a variant of RFC2822
@@ -283,6 +290,7 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
           opts,
         );
       }
+      // Build an ISU8601 date string
       return buildISO8601DateString(numericYear, numericMonth, numericDay);
     }
     // Try falling back on JS parsing and assume it's parsed in the local timezone
