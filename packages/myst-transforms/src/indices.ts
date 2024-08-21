@@ -8,9 +8,10 @@ import type { VFile } from 'vfile';
 const ALLOWED_INDEX_CHARS = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 /** Changes é to E etc. */
-function getNormalizedFirstLetter(entry: string): string {
+export function getNormalizedFirstLetter(entry: string): string {
   if (!entry) return 'Other';
-  const char = entry[0]
+  const char = entry
+    .trim()[0]
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')
     .toUpperCase();
