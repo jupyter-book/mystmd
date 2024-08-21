@@ -170,7 +170,7 @@ To emphasize any index entry, add an exclamation point before the index term. Th
 You can define an index entry with a role like so: `` {index}`my second index` ``.
 This includes the text "{index}`my second index`" in your content and creates an entry.
 
-If you the text to be different than the index entry, you may use the syntax `` {index}`text on the page <index term>` ``.
+If you want the text to be different than the index entry, you may use the syntax `` {index}`text on the page <index term>` ``.
 
 Index roles can use all the same prefixes as described for the `{index}` directive, including `single`, `pair`, `triple`, `see`, and `seealso`. For example, `` {index}`pair: index one; index two` `` or `` {index}`text on the page <pair: index one; index two>` ``.
 
