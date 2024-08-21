@@ -216,4 +216,5 @@ The abbreviations are case-sensitive and will replace all instances[^1] in your 
 :::{tip} Order of Abbreviations
 :class: dropdown
 Abbreviations defined in your frontmatter are applied in longest-sorted order. If you have two abbreviations with the same suffix (e.g. `RHR` and `HR`), the longer abbreviation will always take precedence.
+To have the longer abbreviations not be transformed, explicitly set them to `null` in your frontmatter (e.g. `RHR: null`).
 :::
