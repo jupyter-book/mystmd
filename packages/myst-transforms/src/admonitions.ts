@@ -9,7 +9,7 @@ type Options = {
   replaceAdmonitionTitles?: boolean;
 };
 
-const githubAdmonitionKinds = ['note', 'important', 'warning'];
+const githubAdmonitionKinds = ['note', 'tip', 'important', 'warning', 'caution'];
 
 /**
  * Visit all admonitions and add headers if necessary
