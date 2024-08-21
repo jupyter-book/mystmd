@@ -116,7 +116,6 @@ function replaceCommentNodes(tree: GenericParent) {
 describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
-      const mdastString = yaml.dump(mdast);
       const newAst = fixMystDirectives(
         replaceMystCommentNodes(
           stripPositions(
@@ -146,7 +145,7 @@ describe('Testing myst --> mdast conversions', () => {
         console.log(newAstString);
         return;
       }
-      expect(newAstString).toEqual(mdastString);
+      expect(newAst).toEqual(mdast);
     }
   });
 });

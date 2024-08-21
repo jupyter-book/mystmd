@@ -1,5 +1,6 @@
 import type { Admonition } from 'myst-spec-ext';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const admonitionDirective: DirectiveSpec = {
   name: 'admonition',
@@ -26,10 +27,7 @@ export const admonitionDirective: DirectiveSpec = {
     doc: 'The optional title of the admonition, if not supplied the admonition kind will be used.\n\nNote that the argument parsing is different from Sphinx, which does not allow named admonitions to have custom titles.',
   },
   options: {
-    // label: {
-    //   type: String,
-    //   alias: ['name'],
-    // },
+    ...commonDirectiveOptions('admonition'),
     class: {
       type: String,
       doc: `CSS classes to add to your admonition. Special classes include:
@@ -73,6 +71,7 @@ export const admonitionDirective: DirectiveSpec = {
     if (data.options?.icon === false) {
       admonition.icon = false;
     }
+    addCommonDirectiveOptions(data, admonition);
     return [admonition];
   },
 };

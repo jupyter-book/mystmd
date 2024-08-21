@@ -1,6 +1,6 @@
 import type { Image } from 'myst-spec-ext';
 import type { DirectiveSpec, GenericNode, GenericParent } from 'myst-common';
-import { normalizeLabel } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const figureDirective: DirectiveSpec = {
   name: 'figure',
@@ -9,10 +9,7 @@ export const figureDirective: DirectiveSpec = {
     doc: 'The filename of an image (e.g. `my-fig.png`), or an ID of a Jupyter Notebook cell (e.g. `#my-cell`).',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('figure'),
     class: {
       type: String,
       alias: ['figclass'],
@@ -102,15 +99,13 @@ export const figureDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container: GenericParent = {
       type: 'container',
       kind: (data.options?.kind as string) || 'figure',
-      identifier,
-      label,
       class: data.options?.class,
       children,
     };
+    addCommonDirectiveOptions(data, container);
     if (data.options?.['no-subfigures']) {
       container.noSubcontainers = true;
     }

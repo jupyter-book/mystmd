@@ -5,10 +5,11 @@ import type {
   GenericNode,
   GenericParent,
 } from 'myst-common';
-import { fileError, normalizeLabel, RuleId } from 'myst-common';
+import { fileError, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import { parse } from 'csv-parse/browser/esm/sync';
 import { select } from 'unist-util-select';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const tableDirective: DirectiveSpec = {
   name: 'table',
@@ -17,10 +18,7 @@ export const tableDirective: DirectiveSpec = {
     doc: 'An optional table caption',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('table'),
     class: {
       type: String,
       // class_option: list of strings?
@@ -46,15 +44,13 @@ export const tableDirective: DirectiveSpec = {
       });
     }
     children.push(...(data.body as GenericNode[]));
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container = {
       type: 'container',
       kind: 'table',
-      identifier,
-      label,
       class: data.options?.class,
       children,
     };
+    addCommonDirectiveOptions(data, container);
     return [container];
   },
 };
@@ -66,10 +62,7 @@ export const listTableDirective: DirectiveSpec = {
     doc: 'An optional table caption',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('list table'),
     'header-rows': {
       type: Number,
       // nonnegative int
@@ -160,15 +153,13 @@ export const listTableDirective: DirectiveSpec = {
       }),
     };
     children.push(table);
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const container = {
       type: 'container',
       kind: 'table',
-      identifier,
-      label,
       class: data.options?.class,
       children,
     };
+    addCommonDirectiveOptions(data, container);
     return [container];
   },
 };
@@ -214,10 +205,7 @@ export const csvTableDirective: DirectiveSpec = {
     doc: 'An optional table caption',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('CSV table'),
     // file: {
     //   type: String,
     //   doc: 'The local filesystem path to a CSV data file.',
@@ -269,8 +257,6 @@ export const csvTableDirective: DirectiveSpec = {
     required: true,
   },
   run(data: DirectiveData, vfile: VFile, ctx: DirectiveContext): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
-
     const captions: GenericParent[] = [];
     if (data.arg) {
       captions.push({
@@ -338,11 +324,10 @@ export const csvTableDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'table',
-      identifier: identifier,
-      label: label,
       class: data.options?.class,
       children: [...captions, table],
     };
+    addCommonDirectiveOptions(data, container);
 
     return [container];
   },

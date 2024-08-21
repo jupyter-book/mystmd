@@ -1,5 +1,6 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { toText } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const imageDirective: DirectiveSpec = {
   name: 'image',
@@ -9,10 +10,7 @@ export const imageDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    // label: {
-    //   type: String,
-    //   alias: ['name'],
-    // },
+    ...commonDirectiveOptions('image'),
     class: {
       type: String,
       // class_option: list of strings?
@@ -49,17 +47,17 @@ export const imageDirective: DirectiveSpec = {
   },
   run(data: DirectiveData): GenericNode[] {
     const { alt, class: c, height, width, align, title } = data.options || {};
-    return [
-      {
-        type: 'image',
-        url: data.arg as string,
-        alt: alt ?? (data.body ? toText(data.body as GenericNode[]) : undefined),
-        title,
-        class: c,
-        height,
-        width,
-        align: align ?? 'center',
-      },
-    ];
+    const image = {
+      type: 'image',
+      url: data.arg as string,
+      alt: alt ?? (data.body ? toText(data.body as GenericNode[]) : undefined),
+      title,
+      class: c,
+      height,
+      width,
+      align: align ?? 'center',
+    };
+    addCommonDirectiveOptions(data, image);
+    return [image];
   },
 };

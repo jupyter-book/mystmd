@@ -189,15 +189,17 @@ If you are using Jupyter Book or Sphinx, there are the following limitations:
 ```
 `````
 
-### Disabling Numbering
+## Customizing Numbering
 
-TODO!
+To change the reference format for math, you can use the frontmatter under the `numbering` field [see numbering](#numbering).
+To override numbering for a specific equation you can use the {myst:directive}`math.enumerated` option on the math directive.
 
-### Customizing Numbering
-
-To change the reference format, you can use the frontmatter under the `xxx` field.
-
-TODO!
+```markdown
+:::{math}
+:enumerated: false
+Ax = b
+:::
+```
 
 (math-macros)=
 
