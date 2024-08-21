@@ -77,13 +77,12 @@ describe('isValidFile', () => {
   });
 });
 
-
 describe('parseFilePath', () => {
   it.each([
-    ['/tmp/foo/bar.md', { dir: '/tmp/foo', name: 'bar', ext: '.md'}],
-    ['/tmp/foo/bar/bat.txt', { dir: '/tmp/foo/bar', name: 'bat', ext: '.txt'}],
-    ['/tmp/baz.myst.json', { dir: '/tmp', name: 'baz', ext: '.myst.json'}],
+    ['/tmp/foo/bar.md', { dir: '/tmp/foo', name: 'bar', ext: '.md' }],
+    ['/tmp/foo/bar/bat.txt', { dir: '/tmp/foo/bar', name: 'bat', ext: '.txt' }],
+    ['/tmp/baz.myst.json', { dir: '/tmp', name: 'baz', ext: '.myst.json' }],
   ])('%s parses properly', (path, result) => {
-    expect(parseFilePath(path)).toEqual(result)
+    expect(parseFilePath(path)).toEqual(result);
   });
 });
