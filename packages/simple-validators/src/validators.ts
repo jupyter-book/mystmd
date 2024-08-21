@@ -245,7 +245,7 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
           opts,
         );
       }
-      const [_, month, day] = match.slice(1, 4);
+      const [year, month, day] = match.slice(1, 4);
       const fullMonth = parseInt(month);
       const fullDay = parseInt(day);
       if (fullMonth < 1 || 12 < fullMonth || fullDay < 1 || 31 < fullDay) {
@@ -254,7 +254,7 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
           opts,
         );
       }
-      return input;
+      return [year, month, day].filter((item) => item).join('-');
     }
 
     // Try a variant of RFC2822
@@ -287,6 +287,12 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
     }
     // Try falling back on JS parsing and assume it's parsed in the local timezone
     const parsed = Date.parse(input);
+    if (isNaN(parsed)) {
+      return validationError(
+        `invalid date "${input}" - must be ISO 8601 or (specialised) RFC 2822 format calendar date`,
+        opts,
+      );
+    }
     const localDate = new Date(parsed);
     const result = buildISO8601DateString(
       localDate.getFullYear(),
