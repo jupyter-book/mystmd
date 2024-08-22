@@ -20,6 +20,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
 ]
+dependencies = [
+  "platformdirs~=4.2.2",
+  "nodeenv~=1.9.1"
+]
 
 [project.optional-dependencies]
 execute = [
