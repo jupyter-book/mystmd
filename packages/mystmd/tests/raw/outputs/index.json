@@ -8,7 +8,7 @@
     "title": "Project with raw content",
     "content_includes_title": false,
     "authors": [{ "id": "Franklin Koch", "name": "Franklin Koch" }],
-    "date": "9 Aug 2024",
+    "date": "2024-08-09",
     "exports": [
       {
         "format": "md",

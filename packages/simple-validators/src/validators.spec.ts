@@ -243,25 +243,50 @@ describe('validateEnum', () => {
 
 describe('validateDate', () => {
   it.each([
-    '2021-12-14T10:43:51.777Z',
-    '14 Dec 2021',
-    '14 December 2021',
-    '2021, December 14',
-    '2021 December 14',
-    '12/14/2021',
-    '12-14-2021',
-    '2022/12/14',
-    '2022-12-14',
-  ])('valid date: %p', async (date: any) => {
-    expect(validateDate(date, opts)).toEqual(date);
+    ['2021-12-14T10:43:51.777Z', 1, 'time'],
+    ['14 Dec 2021', 0],
+    ['Sat, 14 Dec 2021', 0],
+    ['14 December 2021', 1],
+    ['2021, December 14', 1],
+    ['2021 December 14', 1],
+    ['12/14/2021', 1],
+    ['12-14-2021', 1],
+    ['2021/12/14', 1],
+    ['2021-12-14', 0],
+  ])('valid date: %s', async (date: string, warnings: number, message?: string) => {
+    expect(validateDate(date, opts)).toEqual('2021-12-14');
+    expect(opts.messages.warnings?.length ?? 0).toEqual(warnings);
+    if (warnings === 1 && message) {
+      expect(opts.messages.warnings?.[0].message).toContain(message);
+    }
+  });
+  it.each([
+    ['not a date', 1],
+    ['https://example.com', 1],
+    ['2023-02-32', 1],
+    ['2023-02-31', 1],
+    ['2023-02-29', 1], // Not a leap year!
+    ['2021-14-12', 1], // YYYY-DD-MM
+  ])('invalid date: %s', async (date: string, warnings: number) => {
+    expect(validateDate(date, opts)).toEqual(undefined);
+    expect(opts.messages.errors?.length ?? 0).toEqual(warnings);
+  });
+  it.each([
+    ['2024', '2024-01-01', 1],
+    ['2024-06', '2024-06-01', 1],
+    ['2024 June', '2024-06-01', 1],
+    ['June 2024', '2024-06-01', 1],
+    ['2024 June 25', '2024-06-25', 1],
+    ['Sat, 2024 June 25', '2024-06-25', 1],
+    ['Fri, 2024 June 25', '2024-06-25', 1], // ??!?!
+    ['2024/06', '2024-06-01', 1],
+  ])('non-standard date: %s', async (date: string, result: string, warnings: number) => {
+    expect(validateDate(date, opts)).toEqual(result);
+    expect(opts.messages.warnings?.length ?? 0).toEqual(warnings);
   });
   it('date object is valid', () => {
-    const date = new Date();
-    expect(validateDate(date, opts)).toEqual(date.toISOString());
-  });
-  it('invalid date errors', () => {
-    expect(validateDate('https://example.com', opts)).toEqual(undefined);
-    expect(opts.messages.errors?.length).toEqual(1);
+    const date = new Date('2024-08-22T01:03:52.011Z');
+    expect(validateDate(date, opts)).toEqual('2024-08-22');
   });
 });
 
