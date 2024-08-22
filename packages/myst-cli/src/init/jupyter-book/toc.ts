@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { resolveExtension } from '../../utils/resolveExtension.js';
-import { join, relative } from 'node:path';
+import { join } from 'node:path';
 import { cwd } from 'node:process';
+import type { ISession } from '../../session/types.js';
 import type { Entry as MySTEntry, ParentEntry as MySTParentEntry } from 'myst-toc';
 
 const TOCTreeOptions = z
@@ -197,22 +198,31 @@ function assertNever(): never {
   throw new Error('unreachable code');
 }
 
+function maybeResolveDocument(dir: string, name: string, session: ISession): string {
+  const resolved = resolveExtension(join(dir, name));
+  if (resolved) {
+    return relative(dir, resolved);
+  }
+  session.log.error(`Could not find a file named ${name} (declared in table of contents)`);
+
+  return name;
+}
+
 /**
  * Convert a no-format TOC to a MyST TOC
  *
+ * @param session - session with logging
  * @param dir - directory in which the _toc.yml lives
  * @param data - validated TOC
  */
-function convertNoFormat(dir: string, data: z.infer<typeof NoFormatTOC>) {
-  const rootEntry = { file: relative(dir, resolveExtension(join(dir, data.root))!) };
+function convertNoFormat(session: ISession, dir: string, data: z.infer<typeof NoFormatTOC>) {
+  const rootEntry = { file: maybeResolveDocument(dir, data.root, session) };
 
   const convertEntry = (item: z.infer<typeof NoFormatEntry>): MySTEntry => {
     let entry: MySTEntry;
     if ('file' in item) {
-      const resolved = resolveExtension(join(dir, item.file as string));
-      // TODO: check this is valid!
       entry = {
-        file: relative(dir, resolved as string),
+        file: maybeResolveDocument(dir, item.file as string, session),
         title: item.title,
       };
     } else if ('url' in item) {
@@ -385,7 +395,7 @@ function convertArticleToNoFormat(data: z.infer<typeof ArticleTOC>): z.infer<typ
 /**
  * Upgrade a sphinx-external-toc TOC into a MyST TOC
  */
-export function upgradeTOC(data: SphinxExternalTOC): MySTEntry[] {
+export function upgradeTOC(session: ISession, data: SphinxExternalTOC): MySTEntry[] {
   const dir = cwd();
   let dataNoFormat: z.infer<typeof NoFormatTOC>;
   if ('format' in data) {
@@ -404,5 +414,5 @@ export function upgradeTOC(data: SphinxExternalTOC): MySTEntry[] {
   } else {
     dataNoFormat = data;
   }
-  return convertNoFormat(dir, dataNoFormat);
+  return convertNoFormat(session, dir, dataNoFormat);
 }

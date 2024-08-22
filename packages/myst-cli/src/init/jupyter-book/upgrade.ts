@@ -23,6 +23,8 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
   const configContent = await fs.readFile('_config.yml', { encoding: 'utf-8' });
   const configData = validateJupyterBookConfig(yaml.load(configContent));
   if (defined(configData)) {
+    session.log.info(`Migrating Jupyter Book configuration to ${chalk.blue('myst.yml')}`);
+
     // Update MyST configuration
     ({ site: config.site, project: config.project } = upgradeConfig(configData));
   }
@@ -32,7 +34,9 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
     const tocContent = await fs.readFile('_toc.yml', { encoding: 'utf-8' });
     const tocData = validateSphinxExternalTOC(yaml.load(tocContent));
     if (defined(tocData)) {
-      (config as any).project.toc = upgradeTOC(tocData);
+      session.log.info(`Migrating TOC to ${chalk.blue('myst.yml')}`);
+
+      (config as any).project.toc = upgradeTOC(session, tocData);
     }
   }
 
