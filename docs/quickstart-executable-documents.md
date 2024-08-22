@@ -5,7 +5,7 @@ subtitle: Execute content and insert it into your pages when you build your MyST
 description: Learn the basics of how MyST can be used to execute content with Jupyter technology.
 ---
 
-:::{note} Goals and Prerequisites
+:::{note} Goals and prerequisites
 **Goals**: This tutorial covers how to take advantage of MyST features and customizability to execute computational content with your MyST build.
 
 **Prerequisites**: This assumes you've completed [](./quickstart.md) and have MyST installed locally, as well as a local version of the [MyST quickstart content](https://github.com/jupyter-book/mystmd-quickstart).
