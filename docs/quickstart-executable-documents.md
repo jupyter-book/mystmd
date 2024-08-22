@@ -5,7 +5,7 @@ subtitle: Execute content and insert it into your pages when you build your MyST
 description: Learn the basics of how MyST can be used to execute content with Jupyter technology.
 ---
 
-:::{note} Goals and prerequisites
+:::{note} Goals and Prerequisites
 **Goals**: This tutorial covers how to take advantage of MyST features and customizability to execute computational content with your MyST build.
 
 **Prerequisites**: This assumes you've completed [](./quickstart.md) and have MyST installed locally, as well as a local version of the [MyST quickstart content](https://github.com/jupyter-book/mystmd-quickstart).
@@ -21,11 +21,8 @@ To confirm this, run a MyST server to serve the MyST quickstart content:
 🛠 Run `myst start` to serve your quickstart content
 
 ```shell
-cd mystmd-quickstart
-myst start
-```
-
-```text
+$ cd mystmd-quickstart
+$ myst start
 📖 Built README.md in 33 ms.
 📖 Built 01-paper.md in 30 ms.
 📖 Built 02-notebook.ipynb in 6.94 ms.
@@ -48,14 +45,12 @@ To fully explore `myst start` see [](./quickstart.md).
 
 ## Install the packages needed for execution
 
+:::{note}
+This section requires the `pip` command. It should normally be installed with Python. 
+:::
+
 To execute the content in the `myst-quickstart` site, we must ensure that the proper environment is installed.
 To do so, install the packages listed in `myst-quickstart/requirements.txt`.
-
-🛠 Install `pip`
-
-```shell
-conda install pip
-```
 
 🛠 Use `pip` to install the packages for executing
 
