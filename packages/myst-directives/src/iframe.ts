@@ -1,6 +1,6 @@
 import type { Iframe } from 'myst-spec-ext';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const iframeDirective: DirectiveSpec = {
   name: 'iframe',
@@ -10,10 +10,7 @@ export const iframeDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('iframe'),
     class: {
       type: String,
       // class_option: list of strings?
@@ -29,7 +26,6 @@ export const iframeDirective: DirectiveSpec = {
   },
   body: { type: 'myst', doc: 'If provided, this will be the iframe caption.' },
   run(data: DirectiveData): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const iframe: Iframe = {
       type: 'iframe',
       src: data.arg as string,
@@ -37,19 +33,17 @@ export const iframeDirective: DirectiveSpec = {
       align: data.options?.align as Iframe['align'],
     };
     if (!data.body) {
-      iframe.label = label;
-      iframe.identifier = identifier;
       iframe.class = data.options?.class as string;
+      addCommonDirectiveOptions(data, iframe);
       return [iframe];
     }
     const container = {
       type: 'container',
       kind: 'figure',
-      identifier,
-      label,
       class: data.options?.class,
       children: [iframe, { type: 'caption', children: data.body as GenericNode[] }],
     };
+    addCommonDirectiveOptions(data, container);
     return [container];
   },
 };
