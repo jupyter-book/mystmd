@@ -14,6 +14,7 @@ export function nestedCoreParse(
   env: any,
   initLine: number,
   includeRule = true,
+  inline: boolean,
 ): Token[] {
   // disable all core rules after pluginRuleName
   const tempDisabledCore: string[] = [];
@@ -36,11 +37,18 @@ export function nestedCoreParse(
 
   md.core.ruler.disable(tempDisabledCore);
 
+  // For inline parsing, we need to disable all block level parsing except paragraphs
+  const blockRules = (md.block.ruler as any).__rules__
+    .map(({ name }: { name: string }) => name)
+    .filter((n: string) => n !== 'paragraph');
+  if (inline) md.block.ruler.disable(blockRules);
+
   let tokens = [];
   try {
     tokens = md.parse(src, env);
   } finally {
     md.core.ruler.enable(tempDisabledCore);
+    if (inline) md.block.ruler.enable(blockRules);
   }
   for (const token of tokens) {
     token.map = token.map !== null ? [token.map[0] + initLine, token.map[1] + initLine] : token.map;
@@ -61,7 +69,15 @@ export function nestedPartToTokens(
   openToken.content = part;
   openToken.hidden = true;
   openToken.map = [lineNumber, lineNumber];
-  let nestedTokens = nestedCoreParse(state.md, pluginRuleName, part, state.env, lineNumber, true);
+  let nestedTokens = nestedCoreParse(
+    state.md,
+    pluginRuleName,
+    part,
+    state.env,
+    lineNumber,
+    true,
+    inline,
+  );
   // Note: This handles the case where inline arguments are parsed independently
   //       and appear to the parser as paragraphs.
   if (

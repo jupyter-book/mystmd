@@ -139,12 +139,6 @@ describe('Testing myst --> mdast conversions', () => {
       if (myst.includes('{figure}')) {
         containerChildrenTransform(newAst, new VFile());
       }
-      const newAstString = yaml.dump(newAst);
-      if (newAstString.includes('startingLineNumber: 2')) {
-        console.log('FIX ME IN 0.0.5');
-        console.log(newAstString);
-        return;
-      }
       expect(newAst).toEqual(mdast);
     }
   });

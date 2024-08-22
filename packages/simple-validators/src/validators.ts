@@ -90,7 +90,12 @@ export function validateNumber(
  */
 export function validateString(
   input: any,
-  opts: { coerceNumber?: boolean; maxLength?: number; regex?: string | RegExp } & ValidationOptions,
+  opts: {
+    coerceNumber?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    regex?: string | RegExp;
+  } & ValidationOptions,
 ): string | undefined {
   let value = input as string;
   if (opts.coerceNumber && typeof value === 'number') {
@@ -98,6 +103,9 @@ export function validateString(
     value = String(value);
   }
   if (typeof value !== 'string') return validationError(`must be string`, opts);
+  if (opts.minLength && value.length < opts.minLength) {
+    return validationError(`must be greater than ${opts.minLength} chars`, opts);
+  }
   if (opts.maxLength && value.length > opts.maxLength) {
     return validationError(`must be less than ${opts.maxLength} chars`, opts);
   }
