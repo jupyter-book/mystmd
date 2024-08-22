@@ -136,7 +136,11 @@ describe('validateString', () => {
     expect(validateString({}, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
-  it('exceeding maxLenth errors', () => {
+  it('exceeding minLength errors', () => {
+    expect(validateString('a', { minLength: 2, ...opts })).toEqual(undefined);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('exceeding maxLength errors', () => {
     expect(validateString('abc', { maxLength: 1, ...opts })).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });

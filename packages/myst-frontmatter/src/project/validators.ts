@@ -1,7 +1,6 @@
 import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
-  filterKeys,
   incrementOptions,
   validateBoolean,
   validateDate,
@@ -87,13 +86,25 @@ export function validateProjectAndPageFrontmatterKeys(
   }
   if (defined(value.abbreviations)) {
     const abbreviationsOpts = incrementOptions('abbreviations', opts);
-    const abbreviations = validateObject(value.abbreviations, abbreviationsOpts);
-    if (abbreviations) {
-      const stringKeys = Object.keys(abbreviations).filter((key) => {
-        // Filter on non-string values
-        return validateString(abbreviations[key], incrementOptions(key, abbreviationsOpts));
-      });
-      output.abbreviations = filterKeys(abbreviations, stringKeys);
+    const abbreviations = Object.fromEntries(
+      Object.entries(validateObject(value.abbreviations, abbreviationsOpts) ?? {})
+        .map(([k, v]) => {
+          // A null / false explicitly disables an abbreviation
+          if (v === null || v === false) return [k, null];
+          // Filter on non-string values
+          const title = validateString(v, incrementOptions(k, abbreviationsOpts));
+          // Ensure that we filter out invalid abbreviations (single characters)
+          const key = validateString(k, {
+            ...incrementOptions(k, abbreviationsOpts),
+            minLength: 2,
+          });
+          if (!(key && title)) return null;
+          return [k, title];
+        })
+        .filter((v): v is [string, string | null] => !!v),
+    );
+    if (abbreviations && Object.keys(abbreviations).length > 0) {
+      output.abbreviations = abbreviations;
     }
   }
   if (defined(value.exports)) {
