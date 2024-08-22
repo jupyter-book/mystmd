@@ -346,7 +346,7 @@ Check out the following tutorials for more step-by-step guides:
 Enhance your MyST documents with interactivity, open scholarship, and reproducibility.
 :::
 
-:::{card} Executable Documents with MyST 🌕
+:::{card} Executable Documents with MyST 🐍 
 :link: ./quickstart-executable-documents.md
 Learn how to use computation and execution with Jupyter in MyST.
 :::
