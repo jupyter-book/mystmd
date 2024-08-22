@@ -540,7 +540,6 @@ The date field is a string and should conform to a well-defined calendar date. E
 - `2022-12-14` - `YYYY-MM-DD`
 - `01 Jan 2000` - `DD? MON YYYY`
 - `Sat, 1 Jan 2000` - `DAY, DD? MON YYYY`
-- `null` - The current date
 
 These dates correspond to two main formats:
 - A strict (full, extended) calendar date defined by [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) (see also [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339))
