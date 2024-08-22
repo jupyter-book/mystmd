@@ -267,6 +267,19 @@ describe('validateDate', () => {
     expect(validateDate(date, opts)).toEqual(undefined);
     expect(opts.messages.errors?.length ?? 0).toEqual(warnings);
   });
+  it.each([
+    ['2024', '2024-01-01', 1],
+    ['2024-06', '2024-06-01', 1],
+    ['2024 June', '2024-06-01', 1],
+    ['June 2024', '2024-06-01', 1],
+    ['2024 June 25', '2024-06-25', 1],
+    ['Sat, 2024 June 25', '2024-06-25', 1],
+    ['Fri, 2024 June 25', '2024-06-25', 1], // ??!?!
+    ['2024/06', '2024-06-01', 1],
+  ])('non-standard date: %s', async (date: string, result: string, warnings: number) => {
+    expect(validateDate(date, opts)).toEqual(result);
+    expect(opts.messages.warnings?.length ?? 0).toEqual(warnings);
+  });
   it('date object is valid', () => {
     const date = new Date('2024-08-22T01:03:52.011Z');
     expect(validateDate(date, opts)).toEqual('2024-08-22');

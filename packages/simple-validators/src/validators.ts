@@ -209,7 +209,7 @@ export function validateEnum<T>(
 // This pattern implements the date pattern from ISO8601
 // Technically, it's also RFC3339 (a particular profile of ISO8601 i.e. YYYY-MM-DD
 // There is also a trailing capture group for timestamps
-const ISO8601_DATE_PATTERN = /^(\d\d\d\d)-(\d\d)-(\d\d)(T.*)?$/;
+const ISO8601_DATE_PATTERN = /^(\d\d\d\d)(?:-(\d\d))?(?:-(\d\d))?(T.*)?$/;
 // This pattern implements the following ABNF from RFC2822: `[ day-of-week "," ] date`
 // with a trailing capture group for time-like information
 const RFC2822_DATE_PATTERN =
@@ -276,7 +276,13 @@ export function validateDate(
         );
       }
       // Rebuild the string, dropping time
-      const result = [year, month, day].join('-');
+      const result = [year, month ?? '01', day ?? '01'].join('-');
+      if (month === undefined || day === undefined) {
+        validationWarning(
+          `non-standard date "${input}": interpreting date as "${result}".\nPlease use a full date "YYYY-MM-DD" (ISO 8601).`,
+          opts,
+        );
+      }
       return revalidateDate(input, result, opts);
     }
 
@@ -313,7 +319,7 @@ export function validateDate(
       localDate.getDate(),
     );
     validationWarning(
-      `ambiguous date "${input}": interpreting date as "${result}".\nPlease use a full date "YYYY-MM-DD" (ISO 8601).`,
+      `non-standard date "${input}": interpreting date as "${result}".\nPlease use a full date "YYYY-MM-DD" (ISO 8601).`,
       opts,
     );
     return result;
