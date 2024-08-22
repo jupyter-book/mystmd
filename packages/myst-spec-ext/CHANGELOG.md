@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.5.4
+
+### Patch Changes
+
+- 4e880f3e: Add open to the admonition
+
 ## 1.5.3
 
 ### Patch Changes
