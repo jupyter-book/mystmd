@@ -167,7 +167,7 @@ This is the body.
 To turn an admonition into a dropdown, add the `dropdown` {myst:directive}`admonition.class` to them.
 Dropdown admonitions use the `<details>` HTML element (meaning they also will work without Javascript!),
 and they can be helpful when including text that shouldn't immediately visible to your readers.
-To have the admonition be a dropdown, and also start open, add the {myst:directive}`admonition.open` option.
+To have a dropdown-style admonition start open, add the {myst:directive}`admonition.open` option.
 
 ```{myst}
 :::{note} Click Me! 👈
