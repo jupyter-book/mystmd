@@ -55,7 +55,7 @@ To do so, install the packages listed in `myst-quickstart/requirements.txt`.
 🛠 Use `pip` to install the packages for executing
 
 ```shell
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 ## Execute demo content at build time
@@ -67,7 +67,7 @@ To execute your content at build time, use the `--execute` flag.
 🛠 Execute your content and build your MyST docs
 
 ```shell
-myst start --execute
+$ myst start --execute
 ```
 
 This will **execute** your notebook file before spinning up your MyST server.
