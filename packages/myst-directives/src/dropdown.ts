@@ -11,6 +11,7 @@ export const dropdownDirective: DirectiveSpec = {
     // TODO: Add enumeration in future
     open: {
       type: Boolean,
+      doc: 'When true, the dropdown starts open.',
     },
     // Legacy options we may want to implement:
     // color

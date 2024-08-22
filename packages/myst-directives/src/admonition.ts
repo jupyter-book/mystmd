@@ -41,6 +41,10 @@ export const admonitionDirective: DirectiveSpec = {
       doc: 'Setting icon to false will hide the icon.',
       // class_option: list of strings?
     },
+    open: {
+      type: Boolean,
+      doc: "Turn the admonition into a dropdown, if it isn't already, and set the open state.",
+    },
   },
   body: {
     type: 'myst',
@@ -72,6 +76,12 @@ export const admonitionDirective: DirectiveSpec = {
       admonition.icon = false;
     }
     addCommonDirectiveOptions(data, admonition);
+    if (typeof data.options?.open === 'boolean') {
+      if (!admonition.class?.split(' ').includes('dropdown')) {
+        admonition.class = `${admonition.class ?? ''} dropdown`.trim();
+      }
+      if (data.options?.open) admonition.open = true;
+    }
     return [admonition];
   },
 };

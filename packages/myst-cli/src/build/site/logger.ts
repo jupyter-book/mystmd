@@ -32,6 +32,8 @@ export function createServerLogger(session: ISession, ready: () => void): Logger
       // This is a spurious Remix warning https://github.com/remix-run/remix/issues/2677
       if (line.includes('is not listed in your package.json dependencies')) return;
       if (line.includes('was not found in your node_modules')) return;
+      // This is the punycode deprecation warning
+      if (line.includes('--trace-deprecation') || line.includes('DEP0040')) return;
       if (line.startsWith('Rebuilding')) {
         session.log.debug(line);
         return;
