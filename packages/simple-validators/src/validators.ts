@@ -230,13 +230,38 @@ function buildISO8601DateString(year: number, month: number, day: number): strin
   return `${year}-${paddedMonth}-${paddedDay}`;
 }
 
+function dateErrorString(input: string) {
+  return `invalid date "${input}" - must be a full date "YYYY-MM-DD" (ISO 8601) or calendar date "Sat, 1 Jan 2000" (RFC 2822)`;
+}
+
+function revalidateDate(
+  input: any,
+  result: string,
+  opts: ValidationOptions & { dateIsLocal?: boolean },
+): string | undefined {
+  // We put this into the validation date function recursively to see if it comes back with the same date
+  // For example "2024-02-31" is invalid
+  const validated = validateDate(new Date(result), {
+    ...opts,
+    suppressErrors: true,
+    suppressWarnings: true,
+  });
+  if (validated !== result) {
+    return validationError(dateErrorString(input), opts);
+  }
+  return result;
+}
+
 /**
  * Validate date string or object
  *
  * Parses strings as ISO 8601 dates, or a variant of RFC 2822 dates, falling back to the Date constructor otherwise.
  * Parses Date objects as UTC or local dates according to the given options.
  */
-export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?: boolean }) {
+export function validateDate(
+  input: any,
+  opts: ValidationOptions & { dateIsLocal?: boolean },
+): string | undefined {
   // String format dates
   if (typeof input === 'string') {
     // Try ISO 8601
@@ -246,21 +271,13 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
       // Is a timestamp component present?
       if (tail !== undefined) {
         validationWarning(
-          `invalid date "${input}" - ISO 8601 dates must not include a time component ("${tail}"), which has been ignored`,
-          opts,
-        );
-      }
-      // Check our components are valid
-      const fullMonth = parseInt(month);
-      const fullDay = parseInt(day);
-      if (fullMonth < 1 || 12 < fullMonth || fullDay < 1 || 31 < fullDay) {
-        return validationError(
-          `invalid date "${input}" - must be a full extended ISO 8601 (2000-01-01) or specialised RFC 2822 (Sat, 1 Jan 2000) format calendar date`,
+          `Date "${input}" should not include a time component ("${tail}"), which has been ignored`,
           opts,
         );
       }
       // Rebuild the string, dropping time
-      return [year, month, day].join('-');
+      const result = [year, month, day].join('-');
+      return revalidateDate(input, result, opts);
     }
 
     // Try a variant of RFC2822
@@ -271,36 +288,23 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
       // Is a timestamp component present?
       if (tail !== undefined) {
         validationWarning(
-          `invalid date "${input}" - specialised RFC 2822 dates must not include a time component ("${tail}"), which has been ignored`,
+          `Date "${input}" should not include a time component ("${tail}"), which has been ignored`,
           opts,
         );
       }
 
       const numericYear = parseInt(year);
-
-      // Convert Jan to 1 etc.
-      const numericMonth = MONTH_TO_NUMBER.get(month)!;
-
-      // Validate numeric day, which cannot be 0, 01, and cannot exceed 31
+      const numericMonth = MONTH_TO_NUMBER.get(month)!; // Convert Jan to 1 etc.
       const numericDay = parseInt(day);
-      if (day.startsWith('0') || numericDay < 1 || 31 < numericDay) {
-        return validationError(
-          `invalid date "${input}" - must be a full extended ISO 8601 (2000-01-01) or specialised RFC 2822 (Sat, 1 Jan 2000) format calendar date`,
 
-          opts,
-        );
-      }
-      // Build an ISU8601 date string
-      return buildISO8601DateString(numericYear, numericMonth, numericDay);
+      // Build an ISO8601 date string
+      const result = buildISO8601DateString(numericYear, numericMonth, numericDay);
+      return revalidateDate(input, result, opts);
     }
     // Try falling back on JS parsing and assume it's parsed in the local timezone
     const parsed = Date.parse(input);
     if (isNaN(parsed)) {
-      return validationError(
-        `invalid date "${input}" - must be a full extended ISO 8601 (2000-01-01) or specialised RFC 2822 (Sat, 1 Jan 2000) format calendar date`,
-
-        opts,
-      );
+      return validationError(dateErrorString(input), opts);
     }
     const localDate = new Date(parsed);
     const result = buildISO8601DateString(
@@ -309,7 +313,7 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
       localDate.getDate(),
     );
     validationWarning(
-      `invalid date "${input}" - must be a full extended ISO 8601 (2000-01-01) or specialised RFC 2822 (Sat, 1 Jan 2000) format calendar date. Attempting to interpret date as "${result}"`,
+      `ambiguous date "${input}": interpreting date as "${result}".\nPlease use a full date "YYYY-MM-DD" (ISO 8601).`,
       opts,
     );
     return result;
@@ -317,15 +321,11 @@ export function validateDate(input: any, opts: ValidationOptions & { dateIsUTC?:
   // Handle pre-existing date objects
   else if (input instanceof Date) {
     // Is the given timestamp representative of a UTC calendar date
-    return opts.dateIsUTC
-      ? buildISO8601DateString(input.getUTCFullYear(), input.getUTCMonth() + 1, input.getUTCDate())
-      : buildISO8601DateString(input.getFullYear(), input.getMonth() + 1, input.getDate());
+    return opts.dateIsLocal // Default is UTC!
+      ? buildISO8601DateString(input.getFullYear(), input.getMonth() + 1, input.getDate())
+      : buildISO8601DateString(input.getUTCFullYear(), input.getUTCMonth() + 1, input.getUTCDate());
   } else {
-    return validationError(
-      `invalid date "${input}" - must be a full extended ISO 8601 (2000-01-01) or specialised RFC 2822 (Sat, 1 Jan 2000) format calendar date`,
-
-      opts,
-    );
+    return validationError(dateErrorString(input), opts);
   }
 }
 
