@@ -8,6 +8,7 @@ export const dropdownDirective: DirectiveSpec = {
   options: {
     open: {
       type: Boolean,
+      doc: 'When true, the dropdown starts open.',
     },
     // Legacy options we may want to implement:
     // color
