@@ -31,8 +31,7 @@ function replaceText(mdast: GenericParent, opts: Options) {
         abbr,
         (value: any, { stack }: RegExpMatchObject) => {
           if (!title) {
-            // Explicitly do not match this abbreviation
-            // This does need to mark and split the text, which is undone below
+            // Change the type of this match to a transient node to guard from further replacements
             return u('__skippedAbbreviation__', value);
           }
           if (stack.slice(-1)[0].type !== 'text') return false;
