@@ -57,9 +57,6 @@ def main():
     try:
         node_path, os_path = find_any_node(binary_path)
     except Exception as err:
-        import traceback
-
-        traceback.print_exc()
         raise SystemExit(
             "You must install node >=18 to run MyST\n\n"
             "As NodeJS could not be found, an attempt to install a local node environment was made, but failed\n\n"
