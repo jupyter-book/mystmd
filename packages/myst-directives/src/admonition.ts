@@ -45,7 +45,7 @@ export const admonitionDirective: DirectiveSpec = {
     },
     open: {
       type: Boolean,
-      doc: 'When true and the admonition is a dropdown (i.e. has the `dropdown` class), the admonition starts open.',
+      doc: "Turn the admonition into a dropdown, if it isn't already, and set the open state.",
     },
   },
   body: {
@@ -77,8 +77,11 @@ export const admonitionDirective: DirectiveSpec = {
     if (data.options?.icon === false) {
       admonition.icon = false;
     }
-    if (data.options?.open === true && (data.options?.class as string).includes('dropdown')) {
-      admonition.open = true;
+    if (typeof data.options?.open === 'boolean') {
+      if (!admonition.class?.split(' ').includes('dropdown')) {
+        admonition.class = `${admonition.class ?? ''} dropdown`.trim();
+      }
+      if (data.options?.open) admonition.open = true;
     }
     return [admonition];
   },
