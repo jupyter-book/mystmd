@@ -372,4 +372,4 @@ numbering:
   enumerator: A1.%s
 ```
 
-If you want to control the numbering for a specific figure, you can use the {myst:directive}`figure.enumerator` option. This will give the figure a specific enumerator and not increment the counting for other figures. This is helpful if you want to explicitly count figure `2a` and then carry on counting figures as normal; alternatively you can take control of numbering entirely.
+If you want to control the numbering for a specific figure, you can use the {myst:directive}`figure.enumerator` option. This will give the figure a specific enumerator, and will not increment the counting for other figures. This is helpful if you want to explicitly count figure `2a` and then carry on counting figures as normal; alternatively you can take control of numbering entirely by setting {myst:directive}`figure.enumerator` on every figure.
