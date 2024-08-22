@@ -1,5 +1,15 @@
 # simple-validators
 
+## 1.1.0
+
+### Minor Changes
+
+- da224b78: Reduce scope of date parsing, and validate to ISO8601
+
+### Patch Changes
+
+- 85520edd: Add minLength to string validation
+
 ## 1.0.6
 
 ### Patch Changes

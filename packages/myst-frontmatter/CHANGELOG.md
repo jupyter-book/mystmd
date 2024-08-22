@@ -1,5 +1,16 @@
 # myst-frontmatter
 
+## 1.5.4
+
+### Patch Changes
+
+- 85520edd: Allow for explicit ignoring of longer abbreviations
+- da224b78: Reduce scope of date parsing, and validate to ISO8601
+- e2b74f4d: Update licenses
+- Updated dependencies [da224b78]
+- Updated dependencies [85520edd]
+  - simple-validators@1.1.0
+
 ## 1.5.3
 
 ### Patch Changes

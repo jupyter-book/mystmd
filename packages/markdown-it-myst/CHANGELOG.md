@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.9
+
+### Patch Changes
+
+- 5ac2d0bc: Fix inline parsing for roles
+
 ## 1.0.8
 
 ### Patch Changes
