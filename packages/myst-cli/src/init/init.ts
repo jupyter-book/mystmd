@@ -36,9 +36,8 @@ const SITE_CONFIG = `site:
   #   logo: site_logo.png
 `;
 
-const GITIGNORE = `# ${readableName()} build outputs
-_build
-`;
+const IGNORED_PATTERNS = ['_build'];
+const GITIGNORE = `# ${readableName()} build outputs\n${IGNORED_PATTERNS.join('\n')}\n`;
 
 export type InitOptions = {
   project?: boolean;
@@ -65,7 +64,8 @@ Learn more about this CLI and MyST Markdown at: ${chalk.bold(homeURL())}
 async function writeGitignore(session: ISession) {
   const inGit = await checkFolderIsGit();
   if (!inGit) return;
-  if (await checkIgnore('_build')) return;
+  const allIgnored = (await Promise.all(IGNORED_PATTERNS.map(checkIgnore))).every((x) => x);
+  if (allIgnored) return;
   if (fs.existsSync('.gitignore')) {
     session.log.info('💾 Updating .gitignore');
     const contents = fs.readFileSync('.gitignore').toString();
