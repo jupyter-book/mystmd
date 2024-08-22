@@ -25,57 +25,26 @@ The current tutorial will help you get up and running from scratch.
 
 > 🛠 Throughout the tutorial, whenever you're supposed to _do_ something you will see a 🛠
 
-## Install the MyST Markdown CLI 📦
+## Install the MyST Markdown CLI
 
-`mystmd` is a {abbr}`CLI (Command Line Interface)` that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites.
-These instructions help you install the CLI.
+🛠 Install MyST using your preferred packaging ecosystem. (See [](./installing.md) for more details).
 
-### Install `mamba`
 
-The easiest way to install MyST is with [the `mamba` package manager](https://mamba.readthedocs.io/en/latest/index.html).
-`mamba` is a cross-platform language-agnostic package manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
+:::{tip} Not sure which to pick?
+:class: dropdown
 
-The easiest way to install `mamba` is with [the `miniforge` distribution](https://github.com/conda-forge/miniforge?tab=readme-ov-file).
-
-🛠 Install [miniforge](https://github.com/conda-forge/miniforge):
-
-1. Go to [the `miniforge` Downloads section](https://github.com/conda-forge/miniforge?tab=readme-ov-file#download).
-2. Download the release for your platform and follow the instructions.
-3. To check that you've installed properly, you should be able to execute the following command to print the version of conda:
-
-   ```shell
-   $ mamba --version
-   mamba 1.5.8
-   conda 24.7.1   
-   ```
-
-:::{seealso} There are many ways to install MyST
-This tutorial focuses on the simplest possible way to install MyST from scratch.
-If you're familiar with either Python or JavaScript-based workflows, see [](installing.md) for more information on how to install MyST.
+The easiest way to install MyST is with the `mamba` package manager. `mamba` is a cross-platform language-agnostic package manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
 :::
-### Install the `mystmd` package
 
-Once `mamba` has been installed, we can install the `mystmd` package (which `mamba` pulls from the `conda-forge` channel by default):
-```shell
-mamba install mystmd
-```
+:::{embed} #installing-myst-tabs
+:::
 
-Once installed you should be able to print the version of MyST like so:
+🛠 Then, check that MyST has successfully been installed:
 
 ```shell
 $ myst -v
-v1.3.1
+v1.3.4
 ```
-
-:::{seealso} Not using `mamba`?
-
-MyST needs both NodeJS and NPM to build sites locally. By installing `mystmd` with `mamba`, we do not need to install NodeJS manually. 
-
-See [](./install-node.md) for more information about installing a JavaScript environment if you opt not to use `mamba`.
-:::
-
-For more information about installing MyST, see [installing MyST](./installing.md).
-If you run into any bugs or problems, [open an issue here](https://github.com/jupyter-book/mystmd/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
 
 ## Build your first MyST site
 
