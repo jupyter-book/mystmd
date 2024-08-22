@@ -43,6 +43,7 @@ function replaceText(mdast: GenericParent, opts: Options) {
       ]),
   );
   findAndReplace(mdast as any, replacements);
+  // Restore the original `text` type of the transient replacements performed above
   selectAll('__skippedAbbreviation__', mdast).forEach((n) => {
     n.type = 'text';
   });
