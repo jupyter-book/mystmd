@@ -9,6 +9,7 @@ import platformdirs
 
 
 NODEENV_VERSION = "18.0.0"
+INSTALL_NODEENV_KEY = "MYSTMD_ALLOW_NODENV"
 
 
 def find_installed_node():
@@ -19,6 +20,13 @@ def find_nodeenv_path():
     return platformdirs.user_data_path(
         appname="myst", appauthor=False, version=NODEENV_VERSION
     )
+
+
+def ask_to_install_node(path):
+    if env_value := os.environ.get(INSTALL_NODEENV_KEY, "").lower():
+        return env_value in {"yes", "true", "1"}
+
+    return input(f"⌨️ Install Node.js in '{path}'? (y/N): ").lower() == "y"
 
 
 def create_nodeenv(env_path):
@@ -42,8 +50,12 @@ def find_any_node(binary_path):
 
     nodeenv_path = find_nodeenv_path()
     if not nodeenv_path.exists():
-        print(f"🔍 Couldn't find installed `node`.\n\n⚙️ Installing Node.js in {nodeenv_path}")
-        create_nodeenv(nodeenv_path)
+        print("🔍 Couldn't find installed `node`.")
+        if ask_to_install_node(nodeenv_path):
+            print(f"⚙️ Installing Node.js in {nodeenv_path}")
+            create_nodeenv(nodeenv_path)
+        else:
+            raise RuntimeError("Node.js installation was not permitted")
 
     new_path = os.pathsep.join(
         [*binary_path.split(os.pathsep), str(nodeenv_path / "bin")]
