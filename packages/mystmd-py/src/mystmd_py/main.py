@@ -6,10 +6,18 @@ import subprocess
 import sys
 import re
 import platformdirs
+import traceback
+import textwrap
 
 
 NODEENV_VERSION = "18.0.0"
-INSTALL_NODEENV_KEY = "MYSTMD_ALLOW_NODENV"
+INSTALL_NODEENV_KEY = "MYSTMD_ALLOW_NODEENV"
+
+
+class PermissionDeniedError(Exception): ...
+
+
+class NodeEnvCreationError(Exception): ...
 
 
 def find_installed_node():
@@ -26,7 +34,7 @@ def ask_to_install_node(path):
     if env_value := os.environ.get(INSTALL_NODEENV_KEY, "").lower():
         return env_value in {"yes", "true", "1", "y"}
 
-    return input(f"⌨️ Install Node.js in '{path}'? (y/N): ").lower() == "y"
+    return input(f"❔ Install Node.js in '{path}'? (y/N): ").lower() == "y"
 
 
 def create_nodeenv(env_path):
@@ -40,7 +48,12 @@ def create_nodeenv(env_path):
         "--clean-src",
         env_path,
     ]
-    subprocess.run(command, check=True)
+    result = subprocess.run(command, capture_output=True, encoding="utf-8")
+    if result.returncode:
+        shutil.rmtree(env_path)
+        raise NodeEnvCreationError(result.stderr)
+    else:
+        return env_path
 
 
 def find_any_node(binary_path):
@@ -50,12 +63,13 @@ def find_any_node(binary_path):
 
     nodeenv_path = find_nodeenv_path()
     if not nodeenv_path.exists():
-        print("🔍 Couldn't find installed `node`.")
+        print("❗ Node.js (node) is required to run MyST, but could not be found`.")
         if ask_to_install_node(nodeenv_path):
-            print(f"⚙️ Installing Node.js in {nodeenv_path}")
+            print(f"⚙️ Attempting to install Node.js in {nodeenv_path} ...")
             create_nodeenv(nodeenv_path)
+            print(f"ℹ️ Successfully installed Node.js {NODEENV_VERSION}")
         else:
-            raise RuntimeError("Node.js installation was not permitted")
+            raise PermissionDeniedError("Node.js installation was not permitted")
 
     new_path = os.pathsep.join(
         [*binary_path.split(os.pathsep), str(nodeenv_path / "bin")]
@@ -68,12 +82,19 @@ def main():
     binary_path = os.environ.get("PATH", os.defpath)
     try:
         node_path, os_path = find_any_node(binary_path)
-    except Exception as err:
+    except NodeEnvCreationError as err:
+        message = textwrap.indent(err.args[0], "    ")
         raise SystemExit(
-            "You must install node >=18 to run MyST\n\n"
-            "As NodeJS could not be found, an attempt to install a local node environment was made, but failed\n\n"
-            "We recommend installing the latest LTS release, using your preferred package manager\n"
-            "or following instructions here: https://nodejs.org/en/download"
+            "💥 The attempt to install Node.js was unsuccessful.\n"
+            f"🔍 Underlying error:\n{message}\n\n"
+            "ℹ️ We recommend installing the latest LTS release, using your preferred package manager "
+            "or following instructions here: https://nodejs.org/en/download\n\n"
+        ) from err
+    except PermissionDeniedError as err:
+        raise SystemExit(
+            "💥 The attempt to install Node.js failed because the user denied the request.\n"
+            "ℹ️ We recommend installing the latest LTS release, using your preferred package manager "
+            "or following instructions here: https://nodejs.org/en/download\n\n"
         ) from err
 
     # Check version
