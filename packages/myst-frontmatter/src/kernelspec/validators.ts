@@ -26,9 +26,7 @@ export function validateKernelSpec(input: any, opts: ValidationOptions) {
     name = validatedName;
   } else {
     name = 'python3';
-    opts.warningLogFn?.(
-      `kernelspec should have "name" key; using '${name}' as placeholder value`,
-    );
+    opts.warningLogFn?.(`kernelspec should have "name" key; using '${name}' as placeholder value`);
   }
 
   // The same logic for `display_name` applies. It is usually ignored by frontends
