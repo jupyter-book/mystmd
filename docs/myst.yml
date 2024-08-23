@@ -79,7 +79,6 @@ project:
         - file: quickstart-jupyter-lab-myst.md
     - title: Authoring
       children:
-        - file: table-of-contents.md
         - file: typography.md
         - file: admonitions.md
         - file: figures.md
@@ -98,6 +97,7 @@ project:
         - file: dropdowns-cards-and-tabs.md
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
+        - file: table-of-contents.md
     - title: Executable Content
       children:
         - file: interactive-notebooks.ipynb
