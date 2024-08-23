@@ -6,6 +6,7 @@ import {
   validateObject,
   validateObjectKeys,
   validateString,
+  validationWarning,
 } from 'simple-validators';
 import type { KernelSpec } from './types.js';
 
@@ -26,7 +27,7 @@ export function validateKernelSpec(input: any, opts: ValidationOptions) {
     name = validatedName;
   } else {
     name = 'python3';
-    opts.warningLogFn?.(`kernelspec should have "name" key; using '${name}' as placeholder value`);
+    validationWarning(`"name" key is required; using '${name}' as placeholder value`, opts);
   }
 
   // The same logic for `display_name` applies. It is usually ignored by frontends
@@ -42,8 +43,9 @@ export function validateKernelSpec(input: any, opts: ValidationOptions) {
     displayName = validatedDisplayName;
   } else {
     displayName = `${name} Kernel`;
-    opts.warningLogFn?.(
-      `kernelspec should have "display_name" key; using '${displayName}' as placeholder value`,
+    validationWarning(
+      `"display_name" key is required; using '${displayName}' as placeholder value`,
+      opts,
     );
   }
 
