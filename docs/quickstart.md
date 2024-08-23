@@ -25,65 +25,26 @@ The current tutorial will help you get up and running from scratch.
 
 > 🛠 Throughout the tutorial, whenever you're supposed to _do_ something you will see a 🛠
 
-## Install the MyST Markdown CLI 📦
+## Install the MyST Markdown CLI
 
-`mystmd` is a {abbr}`CLI (Command Line Interface)` that provides modern tooling for technical writing, reproducible science, and creating scientific & technical websites.
-These instructions help you install the CLI.
+🛠 Install MyST using your preferred packaging ecosystem. (See [](./installing.md) for more details).
 
-### Install `conda` and `conda-forge`
 
-The easiest way to install MyST is with [the `conda` package manager](https://conda.io/projects/conda/en/latest/).
-`conda` is a multi-language manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
+:::{tip} Not sure which to pick?
+:class: dropdown
 
-The easiest way to install `conda` is with [the `conda-forge` distribution](https://conda-forge.org/download/).
-This includes miniconda and a community-driven package index called `conda-forge`.
-
-🛠 Install miniconda from [conda-forge](https://conda-forge.org):
-
-1. Go to [the conda-forge latest releases section](https://conda-forge.org/download/).
-2. Download the release for your platform and follow the instructions.
-3. To check that you've installed properly, you should be able to execute the following command to print the version of conda:
-
-   ```shell
-   $ conda --version
-   conda 24.7.1
-   ```
-
-### Install Node and NPM
-
-MyST needs both NodeJS and NPM to build sites locally.
-We'll install each with `conda`, using the `conda-forge` channel.
-
-🛠 Install Node and NPM:
-
-```shell
-conda install -c conda-forge 'nodejs>=20,<21'
-```
-
-:::{seealso} Other ways to install NodeJS and NPM
-See [](./install-node.md) for more information about installing a JavaScript environment.
+The easiest way to install MyST is with the `mamba` package manager. `mamba` is a cross-platform language-agnostic package manager that is useful for users across many data science languages like Python, R, Julia, and JavaScript.
 :::
 
-### Install the `mystmd` Python package
+:::{embed} #installing-myst-tabs
+:::
 
-The MySTMD Python package is a wrapper around the MyST JavaScript library, and makes it easier to upgrade and use MyST with Python workflows.
-
-🛠 Install Python and the `mystmd` package:
-
-```shell
-conda install -c conda-forge pip
-pip install mystmd
-```
-
-Once installed you should be able to print the version of MyST like so:
+🛠 Then, check that MyST has successfully been installed:
 
 ```shell
 $ myst -v
-v1.3.1
+v1.3.4
 ```
-
-For more information about installing MyST, see [installing MyST](./installing.md).
-If you run into any bugs or problems, [open an issue here](https://github.com/jupyter-book/mystmd/issues/new?assignees=&labels=bug&template=bug_report.yml). 🐛
 
 ## Build your first MyST site
 

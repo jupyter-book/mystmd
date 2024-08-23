@@ -11,6 +11,7 @@ project:
     jupyterbook: https://jupyterbook.org/en/stable/
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
+    biapol: https://biapol.github.io/blog/
   abbreviations:
     AST: Abstract Syntax Tree
     DOI: Digital Object Identifier
@@ -70,6 +71,7 @@ project:
         - /jtex/contribute-a-template
   toc:
     - file: index.md
+    - file: installing.md
     - title: Tutorials
       children:
         - file: quickstart.md
@@ -138,8 +140,8 @@ project:
       children:
         - file: background.md
         - file: guiding-principles.md
-        - file: installing.md
         - file: install-node.md
+        - file: update-myst.md
         - file: commonmark.md
         - file: syntax-overview.md
         - file: directives.md
