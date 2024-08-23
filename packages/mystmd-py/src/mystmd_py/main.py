@@ -24,7 +24,7 @@ def find_nodeenv_path():
 
 def ask_to_install_node(path):
     if env_value := os.environ.get(INSTALL_NODEENV_KEY, "").lower():
-        return env_value in {"yes", "true", "1"}
+        return env_value in {"yes", "true", "1", "y"}
 
     return input(f"⌨️ Install Node.js in '{path}'? (y/N): ").lower() == "y"
 
