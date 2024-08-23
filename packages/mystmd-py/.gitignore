@@ -3,5 +3,3 @@ dist
 src/mystmd_py/myst.cjs
 **/__pycache__/
 _package.json
-
-/_build/
