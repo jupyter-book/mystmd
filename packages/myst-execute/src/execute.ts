@@ -101,14 +101,6 @@ async function evaluateExpression(kernel: Kernel.IKernelConnection, expr: string
   return { status: result.status, result };
 }
 
-function buildEnvironmentStrings(env: Record<string, any>) {
-  // Assume env should map strings onto strings
-  // Process environments do not care about order, so ensure result order is well-defined by sorting
-  return Object.entries(env)
-    .map(([key, value]) => `${key}=${value}`)
-    .sort();
-}
-
 /**
  * Build a cache key from an array of executable nodes
  *
@@ -137,24 +129,12 @@ function buildCacheKey(kernelSpec: KernelSpec, nodes: (ICellBlock | InlineExpres
       });
     }
   }
-  // Build array of strings representing notebook state
-  const hashItems = [
-    // Kernel computing result
-    kernelSpec.name,
-    // Args to kernel
-    ...(kernelSpec.argv ?? []),
-    // Kernel environment
-    ...buildEnvironmentStrings(kernelSpec.env ?? {}),
-    // Executable data
-    JSON.stringify(hashableItems),
-  ];
 
   // Build a hash from notebook state
-  const hash = createHash('md5');
-  for (const item of hashItems) {
-    hash.update(item);
-  }
-  return hash.digest('hex');
+  return createHash('md5')
+    .update(kernelSpec.name)
+    .update(JSON.stringify(hashableItems))
+    .digest('hex');
 }
 
 type ICellBlockOutput = GenericNode & {
@@ -304,6 +284,15 @@ export type Options = {
  */
 export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile, opts: Options) {
   const log = opts.log ?? console;
+
+  // We need the kernelspec to proceed
+  if (opts.frontmatter.kernelspec === undefined) {
+    return fileError(
+      vfile,
+      `Notebook does not declare the necessary 'kernelspec' frontmatter key required for execution`,
+    );
+  }
+
   // Pull out code-like nodes
   const executableNodes = selectAll(`block[kind=${NotebookCell.code}],inlineExpression`, tree) as (
     | ICellBlock
@@ -316,7 +305,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
 
   // See if we already cached this execution
-  const cacheKey = buildCacheKey(executableNodes);
+  const cacheKey = buildCacheKey(opts.frontmatter.kernelspec, executableNodes);
   let cachedResults: (IExpressionResult | IOutput[])[] | undefined = opts.cache.get(cacheKey);
 
   // Do we need to re-execute notebook?
@@ -341,7 +330,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
         type: 'notebook',
         name: path.basename(vfile.path),
         kernel: {
-          name: opts.frontmatter?.kernelspec?.name ?? 'python3',
+          name: opts.frontmatter.kernelspec.name,
         },
       };
       await sessionManager
