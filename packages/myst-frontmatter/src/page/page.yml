@@ -41,7 +41,9 @@ cases:
       subtitle: sub
       short_title: short
       date: 14 Dec 2021
-      kernelspec: {}
+      kernelspec: 
+        name: python3
+        display_name: Python 3
       jupytext: {}
       keywords:
         - example
@@ -85,7 +87,9 @@ cases:
       subtitle: sub
       short_title: short
       date: 14 Dec 2021
-      kernelspec: {}
+      kernelspec: 
+        name: python3
+        display_name: Python 3
       jupytext: {}
       keywords:
         - example
