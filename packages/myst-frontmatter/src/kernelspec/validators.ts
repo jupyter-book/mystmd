@@ -27,7 +27,7 @@ export function validateKernelSpec(input: any, opts: ValidationOptions) {
   } else {
     name = 'python3';
     opts.warningLogFn?.(
-      `kernelspec should have "name" key, choosing '${name}' as an attempted value`,
+      `kernelspec should have "name" key; using '${name}' as placeholder value`,
     );
   }
 
@@ -45,7 +45,7 @@ export function validateKernelSpec(input: any, opts: ValidationOptions) {
   } else {
     displayName = `${name} Kernel`;
     opts.warningLogFn?.(
-      `kernelspec should have "display_name" key, choosing '${displayName}' as an attempted value`,
+      `kernelspec should have "display_name" key; using '${displayName}' as placeholder value`,
     );
   }
 
