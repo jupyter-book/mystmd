@@ -1,5 +1,16 @@
 # myst-directives
 
+## 1.5.4
+
+### Patch Changes
+
+- 60fc2574: Ensure é ends up in the E index.
+- 88396dd: Add enumerator and enumerated to directives
+- 4e880f3e: Add open to the admonition
+- Updated dependencies [4e880f3e]
+  - myst-spec-ext@1.5.4
+  - myst-common@1.5.4
+
 ## 1.5.3
 
 ### Patch Changes

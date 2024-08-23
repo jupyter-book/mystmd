@@ -74,6 +74,7 @@ project:
       children:
         - file: quickstart.md
         - file: quickstart-myst-documents.md
+        - file: quickstart-executable-documents.md
         - file: quickstart-static-exports.md
         - file: quickstart-myst-markdown.md
         - file: quickstart-jupyter-lab-myst.md

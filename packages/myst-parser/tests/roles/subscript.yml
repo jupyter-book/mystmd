@@ -30,3 +30,67 @@ cases:
                   children:
                     - type: text
                       value: test
+  - title: sub role with inline markup +
+    markdown: '{sub}`+`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: sub
+              value: +
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: +
+  - title: sub role with inline markup >
+    markdown: '{sub}`>`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: sub
+              value: '>'
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: '>'
+  - title: 'sub role with inline markup #'
+    markdown: '{sub}`# Heading`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: sub
+              value: '# Heading'
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: '# Heading'
+  - title: 'sub role with inline markup _italics_'
+    markdown: '{sub}`Ok _it_`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: sub
+              value: Ok _it_
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: 'Ok '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: it

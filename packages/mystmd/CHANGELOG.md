@@ -1,5 +1,15 @@
 # mystmd
 
+## 1.3.5
+
+### Patch Changes
+
+- 64e11918: Suppress punycode deprecation warning
+- 85520edd: Allow for explicit ignoring of longer abbreviations
+- da224b78: Reduce scope of date parsing, and validate to ISO8601
+- 88396dd: Add enumerator and enumerated to directives
+- 0625105e: Citation improvements for latex (citealp)
+
 ## 1.3.4
 
 ## 1.3.3

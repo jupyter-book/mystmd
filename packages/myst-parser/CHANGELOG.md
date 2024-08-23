@@ -1,5 +1,21 @@
 # myst-parser
 
+## 1.5.4
+
+### Patch Changes
+
+- 88396dd: Add enumerator and enumerated to directives
+- 5ac2d0bc: Fix inline parsing for roles
+- 1a5f3f33: Enable strikethrough as markdownit extension
+- Updated dependencies [60fc2574]
+- Updated dependencies [88396dd]
+- Updated dependencies [5ac2d0bc]
+- Updated dependencies [4e880f3e]
+  - myst-directives@1.5.4
+  - markdown-it-myst@1.0.9
+  - myst-common@1.5.4
+  - myst-roles@1.5.4
+
 ## 1.5.3
 
 ### Patch Changes

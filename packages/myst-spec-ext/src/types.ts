@@ -128,6 +128,7 @@ export type Iframe = Target & {
 
 export type Admonition = SpecAdmonition & {
   icon?: boolean;
+  open?: boolean;
 };
 
 export type Block = SpecBlock & { kind?: string; visibility?: Visibility };

@@ -1,5 +1,22 @@
 # myst-transforms
 
+## 1.3.23
+
+### Patch Changes
+
+- 60fc2574: Ensure é ends up in the E index.
+- d1d3cda9: Expand github alerts see https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts
+- 85520edd: Allow for explicit ignoring of longer abbreviations
+- 88396dd: Add enumerator and enumerated to directives
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [4e880f3e]
+- Updated dependencies [e2b74f4d]
+  - myst-frontmatter@1.5.4
+  - myst-spec-ext@1.5.4
+  - myst-common@1.5.4
+  - myst-to-html@1.5.4
+
 ## 1.3.22
 
 ### Patch Changes

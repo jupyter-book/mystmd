@@ -385,6 +385,12 @@ export class ReferenceState implements IReferenceStateResolver {
    * If node is subcontainer/subequation, a sub-count is incremented
    */
   incrementCount(node: TargetNodes, kind: TargetKind | string): string {
+    if (node.enumerator) {
+      // If the enumerator is explicitly defined, return early
+      // This is the case if the figure, for example, has an enumerator set (e.g. `2a`)
+      // The other numbering will not be affected, and may be wrong
+      return node.enumerator;
+    }
     let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
       this.targetCounts.heading = incrementHeadingCounts(node.depth, this.targetCounts.heading);

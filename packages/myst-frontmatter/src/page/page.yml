@@ -40,7 +40,7 @@ cases:
         a: b
       subtitle: sub
       short_title: short
-      date: 14 Dec 2021
+      date: '14 Dec 2021'
       kernelspec: 
         name: python3
         display_name: Python 3
@@ -86,7 +86,7 @@ cases:
           macro: b
       subtitle: sub
       short_title: short
-      date: 14 Dec 2021
+      date: '2021-12-14'
       kernelspec: 
         name: python3
         display_name: Python 3

@@ -48,6 +48,7 @@ export const defaultDirectives = [
   divDirective,
 ];
 
+export * from './utils.js';
 export { admonitionDirective } from './admonition.js';
 export { bibliographyDirective } from './bibliography.js';
 export { codeDirective } from './code.js';

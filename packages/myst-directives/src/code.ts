@@ -3,9 +3,10 @@ import type { Code } from 'myst-spec-ext';
 import { nanoid } from 'nanoid';
 import yaml from 'js-yaml';
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
-import { fileError, fileWarn, normalizeLabel, NotebookCell, RuleId } from 'myst-common';
+import { fileError, fileWarn, NotebookCell, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import { select } from 'unist-util-select';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[] | undefined {
   if (!emphasizeLinesString) return undefined;
@@ -140,10 +141,7 @@ export const codeDirective: DirectiveSpec = {
     doc: 'Code language, for example `python` or `typescript`',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('code'),
     class: {
       type: String,
       // class_option: list of strings?
@@ -155,7 +153,6 @@ export const codeDirective: DirectiveSpec = {
     doc: 'The raw code to display for the code block.',
   },
   run(data, vfile): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const opts = getCodeBlockOptions(data, vfile);
     const code: Code = {
       type: 'code',
@@ -165,8 +162,7 @@ export const codeDirective: DirectiveSpec = {
       value: data.body as string,
     };
     if (!data.options?.caption) {
-      code.label = label;
-      code.identifier = identifier;
+      addCommonDirectiveOptions(data, code);
       return [code];
     }
     const caption: Caption = {
@@ -181,10 +177,9 @@ export const codeDirective: DirectiveSpec = {
     const container: Container = {
       type: 'container',
       kind: 'code' as any,
-      label,
-      identifier,
       children: [code as any, caption],
     };
+    addCommonDirectiveOptions(data, container);
     return [container];
   },
 };
@@ -197,10 +192,7 @@ export const codeCellDirective: DirectiveSpec = {
     doc: 'Language for execution and display, for example `python`. It will default to the language of the notebook or containing markdown file.',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('code-cell'),
     tags: {
       type: String,
       alias: ['tag'],
@@ -212,7 +204,6 @@ export const codeCellDirective: DirectiveSpec = {
     doc: 'The code to be executed and displayed.',
   },
   run(data, vfile): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const code: Code = {
       type: 'code',
       lang: data.arg as string,
@@ -227,11 +218,10 @@ export const codeCellDirective: DirectiveSpec = {
     const block: GenericNode = {
       type: 'block',
       kind: NotebookCell.code,
-      label,
-      identifier,
       children: [code, output],
       data: {},
     };
+    addCommonDirectiveOptions(data, block);
 
     const tags = parseTags(data.options?.tags, vfile, data.node);
     if (tags) block.data.tags = tags;

@@ -535,19 +535,15 @@ affiliations:
 
 ## Date
 
-The date field is a string and should conform to a valid Javascript data format. Examples of acceptable date formats are:
+The date field is a string and should conform to a well-defined calendar date. Examples of acceptable date formats are:
 
-- `2021-12-14T10:43:51.777Z` - [an ISO 8601 calendar date extended format](https://262.ecma-international.org/11.0/#sec-date-time-string-format), or
-- `14 Dec 2021`
-- `14 December 2021`
-- `2021, December 14`
-- `2021 December 14`
-- `12/14/2021` - `MM/DD/YYYY`
-- `12-14-2021` - `MM-DD-YYYY`
-- `2022/12/14` - `YYYY/MM/DD`
 - `2022-12-14` - `YYYY-MM-DD`
+- `01 Jan 2000` - `DD? MON YYYY`
+- `Sat, 1 Jan 2000` - `DAY, DD? MON YYYY`
 
-Where the latter example in that list are valid [IETF timestamps](https://datatracker.ietf.org/doc/html/rfc2822#page-14)
+These dates correspond to two main formats:
+- A strict (full, extended) calendar date defined by [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) (see also [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339))
+- A date-only variant of [RFC 2822](https://datatracker.ietf.org/doc/html/rfc2822), built using the RFC gammar rules.
 
 (frontmatter:exports)=
 

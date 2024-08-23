@@ -1,5 +1,34 @@
 # myst-cli
 
+## 1.3.5
+
+### Patch Changes
+
+- 75b07331: Favicon is written as text rather than binary
+- 64e11918: Suppress punycode deprecation warning
+- fab598e9: Fix slug generation for JSON paths
+- c0918b5f: Only write gitignore if it is not already ignored
+- Updated dependencies [60fc2574]
+- Updated dependencies [d1d3cda9]
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [88396dd]
+- Updated dependencies [5ac2d0bc]
+- Updated dependencies [4e880f3e]
+- Updated dependencies [0625105e]
+- Updated dependencies [e2b74f4d]
+- Updated dependencies [1a5f3f33]
+- Updated dependencies [85520edd]
+  - myst-transforms@1.3.23
+  - myst-frontmatter@1.5.4
+  - simple-validators@1.1.0
+  - myst-parser@1.5.4
+  - myst-spec-ext@1.5.4
+  - tex-to-myst@1.0.35
+  - myst-common@1.5.4
+  - myst-config@1.5.4
+  - myst-to-tex@1.0.35
+
 ## 1.3.4
 
 ### Patch Changes

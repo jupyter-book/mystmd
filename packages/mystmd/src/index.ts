@@ -1,5 +1,17 @@
 #!/usr/bin/env node
 import 'core-js/actual'; // This adds backwards compatible functionality for various CLIs
+
+// This suppresses the punycode deprecation warning
+// https://github.com/jupyter-book/mystmd/issues/1166
+const { emit: originalEmit } = process;
+function suppressor(event: string, error: Error) {
+  return event === 'warning' && error.name === 'DeprecationWarning'
+    ? false
+    : // eslint-disable-next-line prefer-rest-params
+      originalEmit.apply(process, arguments);
+}
+(process as any).emit = suppressor;
+
 import { Command } from 'commander';
 import version from './version.js';
 import { makeBuildCLI } from './build.js';

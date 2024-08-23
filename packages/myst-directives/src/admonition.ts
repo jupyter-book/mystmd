@@ -1,5 +1,6 @@
 import type { Admonition } from 'myst-spec-ext';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const admonitionDirective: DirectiveSpec = {
   name: 'admonition',
@@ -26,10 +27,7 @@ export const admonitionDirective: DirectiveSpec = {
     doc: 'The optional title of the admonition, if not supplied the admonition kind will be used.\n\nNote that the argument parsing is different from Sphinx, which does not allow named admonitions to have custom titles.',
   },
   options: {
-    // label: {
-    //   type: String,
-    //   alias: ['name'],
-    // },
+    ...commonDirectiveOptions('admonition'),
     class: {
       type: String,
       doc: `CSS classes to add to your admonition. Special classes include:
@@ -42,6 +40,10 @@ export const admonitionDirective: DirectiveSpec = {
       type: Boolean,
       doc: 'Setting icon to false will hide the icon.',
       // class_option: list of strings?
+    },
+    open: {
+      type: Boolean,
+      doc: "Turn the admonition into a dropdown, if it isn't already, and set the open state.",
     },
   },
   body: {
@@ -72,6 +74,13 @@ export const admonitionDirective: DirectiveSpec = {
     };
     if (data.options?.icon === false) {
       admonition.icon = false;
+    }
+    addCommonDirectiveOptions(data, admonition);
+    if (typeof data.options?.open === 'boolean') {
+      if (!admonition.class?.split(' ').includes('dropdown')) {
+        admonition.class = `${admonition.class ?? ''} dropdown`.trim();
+      }
+      if (data.options?.open) admonition.open = true;
     }
     return [admonition];
   },

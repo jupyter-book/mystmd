@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.5.4
+
+### Patch Changes
+
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [e2b74f4d]
+  - myst-frontmatter@1.5.4
+
 ## 1.5.3
 
 ### Patch Changes

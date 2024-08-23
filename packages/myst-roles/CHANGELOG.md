@@ -1,5 +1,13 @@
 # myst-roles
 
+## 1.5.4
+
+### Patch Changes
+
+- Updated dependencies [4e880f3e]
+  - myst-spec-ext@1.5.4
+  - myst-common@1.5.4
+
 ## 1.5.3
 
 ### Patch Changes

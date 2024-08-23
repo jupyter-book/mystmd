@@ -27,7 +27,7 @@ cases:
       affiliations:
         - id: univa
           name: University A
-      date: 14 Dec 2021
+      date: '14 Dec 2021'
       doi: 10.1000/abcd/efg012
       arxiv: https://arxiv.org/example
       open_access: true
@@ -76,7 +76,7 @@ cases:
       affiliations:
         - id: univa
           name: University A
-      date: 14 Dec 2021
+      date: '2021-12-14'
       doi: 10.1000/abcd/efg012
       arxiv: https://arxiv.org/example
       open_access: true
@@ -197,3 +197,26 @@ cases:
           - Example
         example_part:
           - Another example part!
+  - title: abbreviations can be null
+    raw:
+      abbreviations:
+        false-y: false
+        null-y: null
+        TEST: 'string'
+    normalized:
+      abbreviations:
+        false-y: null
+        null-y: null
+        TEST: 'string'
+  - title: abbreviations not added if invalid
+    raw:
+      abbreviations:
+        TEST: 42
+    normalized: {}
+    errors: 1
+  - title: short abbreviations are invalid
+    raw:
+      abbreviations:
+        A: Abbreviation
+    normalized: {}
+    errors: 1

@@ -11,7 +11,7 @@ import type { ISession } from '../session/types.js';
 import { startServer } from '../build/site/start.js';
 import { githubCurvenoteAction, githubPagesAction } from './gh-actions/index.js';
 import { getGithubUrl } from '../utils/github.js';
-import { checkFolderIsGit } from '../utils/git.js';
+import { checkFolderIsGit, checkIgnore } from '../utils/git.js';
 import { upgradeJupyterBook } from './jupyter-book/upgrade.js';
 import { fsExists } from '../utils/fsExists.js';
 
@@ -36,8 +36,8 @@ const SITE_CONFIG = `site:
   #   logo: site_logo.png
 `;
 
-const GITIGNORE = `# ${readableName()} build outputs
-/_build/`;
+const IGNORED_PATTERNS = ['_build'];
+const GITIGNORE = `# ${readableName()} build outputs\n${IGNORED_PATTERNS.join('\n')}\n`;
 
 export type InitOptions = {
   project?: boolean;
@@ -61,14 +61,19 @@ Learn more about this CLI and MyST Markdown at: ${chalk.bold(homeURL())}
 
 `;
 
-async function gitignoreExists(): Promise<boolean> {
-  try {
-    await fs.promises.access('.gitignore');
-    // The check succeeded
-  } catch (error) {
-    return false;
+async function writeGitignore(session: ISession) {
+  const inGit = await checkFolderIsGit();
+  if (!inGit) return;
+  const allIgnored = (await Promise.all(IGNORED_PATTERNS.map(checkIgnore))).every((x) => x);
+  if (allIgnored) return;
+  if (fs.existsSync('.gitignore')) {
+    session.log.info('💾 Updating .gitignore');
+    const contents = fs.readFileSync('.gitignore').toString();
+    fs.writeFileSync('.gitignore', `${contents}\n${GITIGNORE}`);
+  } else {
+    session.log.info('💾 Writing default .gitignore');
+    fs.writeFileSync('.gitignore', GITIGNORE);
   }
-  return true;
 }
 
 export async function init(session: ISession, opts: InitOptions) {
@@ -81,25 +86,7 @@ export async function init(session: ISession, opts: InitOptions) {
     session.log.info(WELCOME());
   }
 
-  // Assume we're working in the cwd
-  if (await checkFolderIsGit()) {
-    if (!(await gitignoreExists())) {
-      session.log.info(`💾 Writing default .gitignore`);
-      await fs.promises.writeFile('.gitignore', GITIGNORE);
-    } else {
-      // Parse the existing gitignore
-      const contents = await fs.promises.readFile('.gitignore', { encoding: 'utf-8' });
-      const lines = contents.split(/\r\n|\r|\n/);
-      // Do we have mention of `/?_build`?
-      //eslint-disable-next-line
-      if (lines.some((line) => /^\/?_build([#\/].*)?$/.test(line))) {
-        session.log.info(`✅ .gitignore exists and already ignores ${readableName()} outputs`);
-      } else {
-        session.log.info(`💾 Updating .gitignore`);
-        await fs.promises.writeFile('.gitignore', `${contents}\n/_build/`);
-      }
-    }
-  }
+  await writeGitignore(session);
 
   await loadConfig(session, '.');
   const state = session.store.getState();

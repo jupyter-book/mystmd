@@ -315,8 +315,7 @@ Please see [this paragraph](#my-paragraph) and [these points](#my-points).
 
 ## Numbering
 
-Frontmatter may specify `numbering` to customize how various components of the page are numbered. By default, numbering is enabled for figures, equations, tables, and code blocks; it is disabled for headings and other content types contained on the page.
-
+Frontmatter may specify `numbering` to customize how various components of the page are numbered. By default, numbering is enabled for figures, equations, tables, math, and code blocks; it is disabled for headings and other content types contained on the page.
 To enable numbering of all content, you may simply use:
 
 ```yaml
@@ -334,6 +333,7 @@ The `numbering` object allows you to be much more granular with enabling and dis
 ```yaml
 numbering:
   code: false
+  math: false
   headings: true
 ```
 
@@ -371,3 +371,5 @@ Finally, under the `numbering` object, you may specify `enumerator`. For now, th
 numbering:
   enumerator: A1.%s
 ```
+
+If you want to control the numbering for a specific figure, you can use the {myst:directive}`figure.enumerator` option. This will give the figure a specific enumerator, and will not increment the counting for other figures. This is helpful if you want to explicitly count figure `2a` and then carry on counting figures as normal; alternatively you can take control of numbering entirely by setting {myst:directive}`figure.enumerator` on every figure.
