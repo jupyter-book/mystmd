@@ -1,6 +1,6 @@
 import { select, selectAll } from 'unist-util-select';
 import type { Logger } from 'myst-cli-utils';
-import type { PageFrontmatter } from 'myst-frontmatter';
+import type { PageFrontmatter, KernelSpec } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
@@ -101,12 +101,20 @@ async function evaluateExpression(kernel: Kernel.IKernelConnection, expr: string
   return { status: result.status, result };
 }
 
+function buildEnvironmentStrings(env: Record<string, any>) {
+  // Assume env should map strings onto strings
+  // Process environments do not care about order, so ensure result order is well-defined by sorting
+  return Object.entries(env)
+    .map(([key, value]) => `${key}=${value}`)
+    .sort();
+}
+
 /**
  * Build a cache key from an array of executable nodes
  *
  * @param nodes array of executable nodes
  */
-function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
+function buildCacheKey(kernelSpec: KernelSpec, nodes: (ICellBlock | InlineExpression)[]): string {
   // Build an array of hashable items from an array of nodes
   const hashableItems: {
     kind: string;
@@ -129,9 +137,24 @@ function buildCacheKey(nodes: (ICellBlock | InlineExpression)[]): string {
       });
     }
   }
-  // Serialize the array into JSON, and compute the hash
-  const hashableString = JSON.stringify(hashableItems);
-  return createHash('md5').update(hashableString).digest('hex');
+  // Build array of strings representing notebook state
+  const hashItems = [
+    // Kernel computing result
+    kernelSpec.name,
+    // Args to kernel
+    ...(kernelSpec.argv ?? []),
+    // Kernel environment
+    ...buildEnvironmentStrings(kernelSpec.env ?? {}),
+    // Executable data
+    JSON.stringify(hashableItems),
+  ];
+
+  // Build a hash from notebook state
+  const hash = createHash('md5');
+  for (const item of hashItems) {
+    hash.update(item);
+  }
+  return hash.digest('hex');
 }
 
 type ICellBlockOutput = GenericNode & {
