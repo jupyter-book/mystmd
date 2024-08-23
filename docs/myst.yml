@@ -116,9 +116,8 @@ project:
         # - file: search.md
         - file: analytics.md
         - file: website-downloads.md
-        - title: Deploy to the web
+        - file: deployment.md
           children:
-            - file: deployment.md
             - file: deployment-github-pages.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
