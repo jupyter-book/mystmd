@@ -40,19 +40,31 @@ mamba install -c conda-forge mystmd
 ::::
 ::::{tab-item} PyPI
 
-🛠 Install `node` (<https://nodejs.org>), see [Installing NodeJS](./install-node.md):
+:::{note} Install Node.js?
+:class: dropdown
 
-```shell
-$ node -v
-v20.4.0
-```
+The `mystmd` package on PyPI ships with the ability to install `node` (<https://nodejs.org>). If you would prefer to install NodeJS manually, see [Installing NodeJS](./install-node.md):
+:::
 
-🛠 Then install `mystmd`:
+
+🛠 Install `mystmd`:
 
 ```shell
 pip install mystmd
 ```
 
+🛠 Ensure `mystmd` is ready for use:
+
+MyST needs `node` (<https://nodejs.org>) in order to run correctly. If `node` is not already installed, starting `myst` will prompt you to install it:
+
+```shell
+$ myst -v
+❗ Node.js (node) is required to run MyST, but could not be found`.
+❔ Install Node.js in '/root/.local/share/myst/18.0.0'? (y/N): y
+⚙️ Attempting to install Node.js in /root/.local/share/myst/18.0.0 ...
+ℹ️ Successfully installed Node.js 18.0.0
+v1.3.4
+```
 ::::
 ::::{tab-item} NPM
 
