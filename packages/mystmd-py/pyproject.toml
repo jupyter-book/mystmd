@@ -20,10 +20,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
 ]
-dependencies = [
-  "platformdirs~=4.2.2",
-  "nodeenv~=1.9.1"
-]
 
 [project.optional-dependencies]
 execute = [
@@ -37,6 +33,14 @@ myst = "mystmd_py.main:main"
 [tool.hatch.version]
 source = "nodejs"
 path = "_package.json"		
+
+# Ensure that we only bring in nodeenv for PyPI
+[tool.hatch.build.hooks.custom]
+path = "build_plugin.py"
+pypi_dependencies = [
+  "platformdirs~=4.2.2",
+  "nodeenv~=1.9.1"
+]
 
 [tool.hatch.metadata.hooks.nodejs]
 fields = ["description", "authors", "urls", "keywords", "license"]

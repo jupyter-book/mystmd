@@ -5,8 +5,6 @@ import shutil
 import subprocess
 import sys
 import re
-import platformdirs
-import traceback
 import textwrap
 
 
@@ -25,6 +23,8 @@ def find_installed_node():
 
 
 def find_nodeenv_path():
+    # The conda packaging of this package does not need to install node!
+    import platformdirs
     return platformdirs.user_data_path(
         appname="myst", appauthor=False, version=NODEENV_VERSION
     )
