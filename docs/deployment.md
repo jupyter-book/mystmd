@@ -82,7 +82,31 @@ site:
 If you are using Git, add the `_build` folder to your `.gitignore` so that it is not tracked. This folder contains auto-generated assets that can easily be re-built -- for example in a Continuous Integration system like GitHub Actions.
 :::
 
-### Deploying to a Static Web Server
+(deploy:base-url)=
+### Custom domains and the base URL
+
+When deploying static HTML to the web, you may have to specify a Base URL so that links resolve properly.
+This happens when you serve your MyST site from a *subfolder* of a parent URL.
+For example:
+
+- `mysite.org/`: **Does not** require a `BASE_URL` to be set, because the root site is where your MyST site lives.
+- `mysite.org/docs/`: **Does** require a `BASE_URL` to be set, because your MyST HTML files will be in `docs/`, not the root.
+
+If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
+
+For example, the following example first defines a `BASE_URL` parameter and then builds the MyST HTML assets.
+
+```bash
+export BASE_URL="/repository_name"
+myst build --html
+```
+
+:::{tip} Set `BASE_URL` in your CI/CD
+You can set environment variables in many CI/CD services like GitHub Actions and Netlify.
+This can be a useful way to ensure the `BASE_URL` is set before your site is deployed.
+:::
+
+### Services for Static Web Hosting
 
 The contents of the `_build/html` can be served from any static web server. The following articles outline the process of deploying your static site to well-known website providers:
 

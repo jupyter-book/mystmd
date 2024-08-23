@@ -1,12 +1,16 @@
 ---
-title: Deploying to GitHub Pages
+title: Deploy to GitHub Pages
 short_title: Github Pages
-description: Deploy your MyST site to GitHub pages with a single command.
+description: Deploy your MyST site to GitHub pages.
 ---
 
-GitHub Pages[^pages] allows you to host your project in a folder, which is your repositories name, for example:\
-`https://owner.github.io/repository_name`\
+[GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) allows you to host static HTML files online from GitHub repositories using GitHub Actions.
+This page has important information for how to do so.
+
+## Instructions
+
 To get setup with GitHub Pages, ensure that your repository is hosted in GitHub and you are in the root of the Git repository.
+There's a special `init` function which adds the proper configuration for deploying to GitHub Pages with a GitHub Action.
 
 🛠 In the root of your git repository run `myst init --gh-pages`
 
@@ -18,35 +22,24 @@ The command `myst init --gh-pages` will guide you through deploying to GitHub Pa
 :::
 
 [^actions]: To learn more about GitHub Actions, see the [GitHub documentation](https://docs.github.com/en/actions/quickstart). These are YAML files created in the `.github/workflows` folder in the root of your repository.
-[^pages]: To learn more about GitHub Pages, see the [GitHub documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
 
-Navigate to your repository settings, click on Pages and enable GitHub pages. When choosing the source, use `GitHub Actions`:
+🛠 In your repository, navigate to {kbd}`Settings` -> {kbd}`Pages` and enable GitHub Pages by choosing {kbd}`GitHub Actions` as the source.
 
-🛠 Turn on GitHub Pages using **GitHub Actions** as the source.
+This has activated GitHub Pages to accept new HTML from GitHub actions.
 
-To trigger action, push your code with the workflow to main.
+To trigger the action, push new commits of code to the branch that you've configured with the action above. You should start seeing your website show up at `<githuborg>.github.io/<githubrepo>`.
 
-:::{warning} Custom Domains
-GitHub allows you to host your static content on a custom domain, doing so _may_ require you to change the `BASE_URL` environment variable in the action. If you have unstyled content, try changing the `BASE_URL` to a blank string: `BASE_URL=''` (note the **single quotes**!); this serves the build assets from the root of your domain, rather than the default, which is the name or your repository.
-:::
+## `BASE_URL` Configuration for GitHub Pages
+The MyST CLI needs to know the destination (base URL) or your site during build time. If you setup deployment to GitHub Pages using the `myst init --gh-pages` command, then _this is handled automatically for you_. Otherwise, if you deploy your website from a repository that's not the default GitHub Pages repository (i.e., not called `<username>.github.io`), you likely need to define a `BASE_URL` that includes the repository name.[^except-custom-domains] 
+[^except-custom-domains]: If you're using a custom domain, you may not need to set `BASE_URL` if the site is served from the base domain (e.g.: `mydomain.org`) without a sub-folder (e.g., `mydomain.org/mydocs/`).
 
-:::{tip} `BASE_URL` environment variable
+## Example: A Full GitHub Action
+
+The GitHub Action below builds and deploys your site automatically.
+Click the dropdown to show it, and copy/paste/modify as you like.
+
+:::{note} GitHub Action Example
 :class: dropdown
-The build and site assets are in the `/build` folder, which would point outside of the current repository to a repository called 'build', which probably doesn't exist!
-
-To fix this, we can change the base url that the site is mounted to, which can be done through the `BASE_URL` environment variable:
-
-```bash
-export BASE_URL="/repository_name"
-```
-
-The base URL is _absolute_ and should not end with a trailing slash. This can be done automatically in a GitHub Action by looking to the `github.event.repository.name` variable.
-:::
-
-:::{note} Full GitHub Action
-:class: dropdown
-
-The GitHub Action to build and deploy your site automatically is:
 
 ```{code} yaml
 :filename: deploy.yml

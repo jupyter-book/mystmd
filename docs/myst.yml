@@ -100,6 +100,7 @@ project:
         - file: dropdowns-cards-and-tabs.md
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
+        - file: table-of-contents.md
     - title: Executable Content
       children:
         - file: interactive-notebooks.ipynb
@@ -110,7 +111,7 @@ project:
     - title: Websites
       children:
         - file: website-templates.md
-        - file: table-of-contents.md
+        - file: website-navigation.md
         - file: website-metadata.md
         # - file: themes-and-extensions.md
         - file: seo-and-social.md

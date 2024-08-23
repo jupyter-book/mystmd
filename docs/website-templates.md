@@ -50,53 +50,6 @@ site:
   template: article-theme
 ```
 
-(site-navigation)=
-
-## Site navigation
-
-In addition to [your MyST document's Table of Contents](./table-of-contents.md), you may specify a top-level navigation for your MyST site.
-These links are displayed across all pages of your site, and are useful for quickly jumping to sections of your site, or for external links.
-
-Specify top-level navigation with the `site.nav` option, and provide a collection of navigation links similar to [how the Table of Contents is structured](./table-of-contents.md). For example:
-
-```{code-block} yaml
-:filename: myst.yml
-
-site:
-  nav:
-    # A top-level dropdown
-    - title: Dropdown links
-      children:
-        - title: Page one
-          url: https://mystmd.org
-        - title: Page two
-          url: https://mystmd.org/guide
-    # A top-level link
-    - title: A standalone link
-      url: https://jupyter.org
-```
-
-% TODO: Clarify why some things have their own section (nav: and actions:) while
-% others are nested under site.options.
-
-## Action buttons
-
-Action buttons provide a more noticeable button that invites users to click on them.
-They are located in the top-right of the page.
-
-Add action buttons to your site header with the `site.actions` option. For example:
-
-```{code-block} yaml
-:filename: myst.yml
-
-site:
-  actions:
-    - title: Button text
-      url: https://mystmd.org
-    - title: Second button text
-      url: https://mystmd.org/guide
-```
-
 (site-options)=
 
 ## Site Options
