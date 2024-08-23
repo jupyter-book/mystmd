@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { resolveExtension } from '../../utils/resolveExtension.js';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { cwd } from 'node:process';
 import type { ISession } from '../../session/types.js';
 import type { Entry as MySTEntry, ParentEntry as MySTParentEntry } from 'myst-toc';
