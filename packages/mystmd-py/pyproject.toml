@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-nodejs-version"]
+requires = ["hatchling", "hatch-nodejs-version", "hatch-deps-selector"]
 build-backend = "hatchling.build"
 
 [project]
@@ -35,9 +35,8 @@ source = "nodejs"
 path = "_package.json"		
 
 # Ensure that we only bring in nodeenv for PyPI
-[tool.hatch.build.hooks.custom]
-path = "build_plugin.py"
-pypi_dependencies = [
+[tool.hatch.build.hooks.selector.variants.PYPI]
+dependencies = [
   "platformdirs~=4.2.2",
   "nodeenv~=1.9.1"
 ]
