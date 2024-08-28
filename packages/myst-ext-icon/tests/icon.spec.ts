@@ -11,8 +11,14 @@ function deletePositions(tree: any) {
 }
 
 describe('icon role', () => {
-  it('icon role parses', async () => {
-    const content = '{fab}`github`';
+  it.each([
+    "fab", "far", "fas", "mtt", "mrg", "mrd", "mol", "msp",,"oct"
+  ])('icon role parses', async (kind) => {
+    const role = `icon:${kind}`;
+    const icon = "any-icon";
+
+    const markup = `{${role}}\`${icon}\``;
+
     const expected = {
       type: 'root',
       children: [
@@ -21,13 +27,13 @@ describe('icon role', () => {
           children: [
             {
               type: 'mystRole',
-              name: 'fab',
-              value: 'github',
+              name: role,
+              value: icon,
               children: [
                 {
                   type: 'icon',
-                  kind: 'fab',
-                  name: 'github',
+                  kind: kind,
+                  name: icon,
                 },
               ],
             },
@@ -35,7 +41,7 @@ describe('icon role', () => {
         },
       ],
     };
-    const output = mystParse(content, {
+    const output = mystParse(markup, {
       roles: [iconRole],
     });
     expect(deletePositions(output)).toEqual(expected);
