@@ -23,7 +23,7 @@ export const iconRole: RoleSpec = {
     'icon:fab',
     'icon:far',
     'icon:fas',
-    ...Object.keys(LEGACY_ICON_ALIASES)
+    ...Object.keys(LEGACY_ICON_ALIASES),
   ],
   body: {
     type: String,
