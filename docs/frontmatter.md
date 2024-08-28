@@ -208,6 +208,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `jupyter` or `thebe`
   - configuration for Jupyter execution (see [](./integrating-jupyter.md))
   - project only
+* - `kernelspec`
+  - configuration for the kernel (see [](./notebooks-with-markdown.md#kernel-specification))
+  - page only
 ```
 
 +++

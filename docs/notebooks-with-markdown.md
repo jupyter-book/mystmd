@@ -160,3 +160,83 @@ This results in the following:
 See [](./quickstart-jupyter-lab-myst.md) for how these eval statements also work in JupyterLab.
 ![](#fig:eval-array)
 :::
+
+## Kernel specification
+
+Kernel specification (kernel spec) tells the jupyter server how to start a kernel that executes your code.
+When you call `myst build --execute` or `myst start --execute`, the MyST CLI starts a jupyter kernel to execute your code and gather its results.
+Choosing different kernel specs in JupyterNotebook helps the user to flexibly switch the package environments and programming languages(for example, use R or Julia in the Notebook).
+Similarly, we can also switch the kernel spec in MyST building.
+
+### Setting in the frontmatter
+
+You could explicitly choose the kernel spec in the **page-level**  frontmatter of the markdown file.
+The following contents is a frontmatter sets the kernel spec to `python`:
+
+```yaml
+---
+# ... other sections of the frontmatter
+kernelspec:
+  name: python3
+  display_name: "Python 3"
+---
+```
+
+When we declare the frontmatter, all the contents in {myst:directive}`code-cell` and {myst:role}`eval` will be executed by the `python` kernel during the building process.
+
+Furthermore, you can build myst markdown content with other programming languages like JavaScript, R, and Julia by installing the corresponding kernel.
+For example, to build a page that uses JavaScript in the {myst:directive}`code-cell`, we could:
+1. Install the interactive JavaScript Kernel, like [ijavascript](https://github.com/n-riesco/ijavascript)
+2. To check the installation and the kernel name, run `jupyter kernelspec list`. In the default installation, the kernel name is `javascript`.
+3. Set the kernel spec in the frontmatter:
+```yaml
+---
+# ... other sections of the frontmatter
+kernelspec:
+  name: javascript
+  display_name: JavaScript
+---
+```
+
+then the code cell like the following section will get the correct result and render.
+
+````
+```{code-cell} javascript
+console.log("hello javascript kernel");
+```
+````
+
+The full options of the kernel spec field supported is a subsect of [jupyter kernelspec](https://jupyter-client.readthedocs.io/en/latest/kernels.html#kernelspecs).
+They are:
+
+```yaml
+kernelspec:
+  name: python3 # required, the name of the kernel. can be found by `jupyter kernelspec list`
+  display_name: "Python3 Kernel" # required, the display name of the kernel.
+  language: python # optional, the language of the kernel, used for syntax highlight
+  env: {} # optional, A dictionary of environment variables to set for the kernel
+  argv: # optional, A list of command line arguments used to start the kernel
+```
+
+## Compatibility with jupytext
+
+[jupytext](https://github.com/mwouts/jupytext) is a python package that makes some conventions to get the notebook-like experience in plain text documents.
+It provides a JupyterBook extension to render those documents and an command tool to convert the plain text documents to the `.ipynb` notebook.
+MyST is also supported by jupytext, and some of our users could use jupytext to write the draft MyST markdown files and do the conversion in different file formats.
+The following command will convert the MyST markdown file to the `.ipynb` notebook, which could be helpful when you want to check the execution results and modify some code cells in the myst with a local jupyter notebook.
+
+```shell
+$ jupytext --from md:myst --to notebook <path_to_the_md_document>
+```
+
+### Kernel spec in jupytext
+
+In myst CLI, it will do the auto-filling if there is the missing `name` or missing `display_name`.
+But they are required by jupytext to do the rendering and conversion.
+So we will raise a warning when the `name` or `display_name` is missing and suggest setting both `name` and `display_name` in the kernel spec.
+
+### Cell Block breaking
+
+The notebook converted by jupytext will only put cell partitions in code-cell and other markdown parts.
+But in some common practice, it would be nice to separate long markdown contents into serval cell blocks.
+As section [](./blocks.md) suggests, you could put `+++` in some proper positions in the file to get a better separated `.ipynb` notebook converted by jupytext.
