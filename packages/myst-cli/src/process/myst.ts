@@ -50,7 +50,7 @@ export function parseMyst(
     extensions: {
       frontmatter: !opts?.ignoreFrontmatter,
     },
-    roles: [reactiveRole, iconRole, ...(session.plugins?.roles ?? [])],
+    roles: [reactiveRole, ...(session.plugins?.roles ?? [])],
     vfile,
   });
   logMessagesFromVFile(session, vfile);
