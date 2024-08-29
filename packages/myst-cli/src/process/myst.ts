@@ -2,7 +2,6 @@ import { mystParse } from 'myst-parser';
 import { cardDirective } from 'myst-ext-card';
 import { gridDirectives } from 'myst-ext-grid';
 import { proofDirective } from 'myst-ext-proof';
-import { iconRole } from 'myst-ext-icon';
 import { exerciseDirectives } from 'myst-ext-exercise';
 import { reactiveDirective, reactiveRole } from 'myst-ext-reactive';
 import { tabDirectives } from 'myst-ext-tabs';
