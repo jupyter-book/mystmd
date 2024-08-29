@@ -173,7 +173,7 @@ export async function convertImageToWebp(
       session,
       image,
       `Image is too large (${inMB} MB) to convert to webp (build will be slow).`,
-      'warn',
+      (isGif2webpAvailable() && imageExt === '.gif') || isWebpAvailable() ? 'warn' : 'debug',
       { ruleId: RuleId.imageFormatOptimizes },
     );
     return null;
@@ -227,7 +227,7 @@ export async function convertImageToWebp(
           session,
           image,
           `Could not convert from image ${image} to webp:\ngif2webp is required\n`,
-          'warn',
+          'debug',
           { ruleId: RuleId.imageFormatOptimizes },
         );
         return null;
@@ -239,7 +239,7 @@ export async function convertImageToWebp(
           session,
           image,
           `Could not convert from image ${image} to webp:\ncwebp is required\n`,
-          'warn',
+          'debug',
           { ruleId: RuleId.imageFormatOptimizes },
         );
         return null;
