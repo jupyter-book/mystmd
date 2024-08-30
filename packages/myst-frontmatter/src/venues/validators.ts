@@ -6,7 +6,7 @@ import {
   validateString,
   validateUrl,
 } from 'simple-validators';
-import { validateDoi } from '../utils/validators.js';
+import { validateDoi, validateStringOrNumber } from '../utils/validators.js';
 import type { Venue } from './types.js';
 
 /**
@@ -25,7 +25,20 @@ export function validateVenue(input: any, opts: ValidationOptions) {
   }
   const value = validateObjectKeys(
     input,
-    { optional: ['title', 'short_title', 'url', 'doi'] },
+    {
+      optional: [
+        'title',
+        'short_title',
+        'url',
+        'doi',
+        'number',
+        'location',
+        'date',
+        'series',
+        'issn',
+        'publisher',
+      ],
+    },
     opts,
   );
   if (value === undefined) return undefined;
@@ -41,6 +54,24 @@ export function validateVenue(input: any, opts: ValidationOptions) {
   }
   if (defined(value.doi)) {
     output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
+  }
+  if (defined(value.number)) {
+    output.number = validateStringOrNumber(value.number, incrementOptions('number', opts));
+  }
+  if (defined(value.location)) {
+    output.location = validateString(value.location, incrementOptions('location', opts));
+  }
+  if (defined(value.date)) {
+    output.date = validateString(value.date, incrementOptions('date', opts));
+  }
+  if (defined(value.series)) {
+    output.series = validateString(value.series, incrementOptions('series', opts));
+  }
+  if (defined(value.issn)) {
+    output.issn = validateString(value.issn, incrementOptions('issn', opts));
+  }
+  if (defined(value.publisher)) {
+    output.publisher = validateString(value.publisher, incrementOptions('publisher', opts));
   }
   return output;
 }

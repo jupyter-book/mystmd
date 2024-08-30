@@ -5,4 +5,6 @@ export type Biblio = {
   doi?: string; // Issue DOI
   first_page?: string | number;
   last_page?: string | number;
+  title?: string;
+  subject?: string;
 };

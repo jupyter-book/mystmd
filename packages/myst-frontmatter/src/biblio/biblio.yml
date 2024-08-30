@@ -20,6 +20,8 @@ cases:
         first_page: 1
         last_page: 2
         doi: 10.0000/abc123
+        title: test proceedings
+        subject: test subject
     normalized:
       biblio:
         volume: test
@@ -27,3 +29,5 @@ cases:
         first_page: 1
         last_page: 2
         doi: 10.0000/abc123
+        title: test proceedings
+        subject: test subject
