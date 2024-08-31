@@ -31,6 +31,8 @@ import { getRawFrontmatterFromFile } from '../../process/file.js';
 
 export const SOURCE_EXTENSIONS = ['.ipynb', '.md', '.tex', '.myst.json'];
 
+const README_MD_TEMPLATE = 'https://github.com/myst-templates/readme-md.git';
+
 type ResolvedArticles = Pick<Export, 'articles' | 'sub_articles'>;
 
 export function resolveArticlesFromProject(
@@ -119,12 +121,17 @@ export function resolveTemplate(
   exp: Export,
   disableTemplate?: boolean,
 ): string | null | undefined {
-  if (disableTemplate) return null;
+  if (disableTemplate || exp.template === null) return null;
   if (exp.template) {
     const resolvedTemplatePath = path.resolve(path.dirname(sourceFile), exp.template);
     if (fs.existsSync(resolvedTemplatePath)) {
       return resolvedTemplatePath;
     }
+  } else if (
+    exp.output &&
+    ['README', 'README.MD'].includes(path.basename(exp.output).toUpperCase())
+  ) {
+    exp.template = README_MD_TEMPLATE;
   }
   return exp.template;
 }
@@ -299,7 +306,9 @@ export function resolveOutput(
   projectPath?: string,
 ) {
   let output: string;
-  if (exp.output) {
+  if (exp.output?.toUpperCase() === 'README' && projectPath) {
+    output = path.join(projectPath, 'README.md');
+  } else if (exp.output) {
     // output path from file frontmatter needs resolution relative to working directory
     output = path.resolve(path.dirname(sourceFile), exp.output);
   } else if (exp.format === ExportFormats.cff && projectPath) {

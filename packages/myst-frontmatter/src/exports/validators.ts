@@ -162,7 +162,7 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
       Object.entries(EXT_TO_FORMAT).forEach(([ext, fmt]) => {
         if (input === ext) format = fmt; // Input is a known, format-specific extension
       });
-    } else if (input.includes('.')) {
+    } else if (input.includes('.') || input.toUpperCase() === 'README') {
       output = input; // Input is filename; format TBD
     }
     if (!format && !output) {
@@ -204,9 +204,16 @@ export function validateExport(input: any, opts: ValidationOptions): Export | un
     }
   }
   if (defined(value.format)) {
-    format = validateExportFormat(value.format, incrementOptions('format', opts));
-    // If format is defined but invalid, validation fails
-    if (!format) return undefined;
+    if (value.format === 'readme' && !output) {
+      output = 'readme';
+    } else {
+      format = validateExportFormat(value.format, incrementOptions('format', opts));
+      // If format is defined but invalid, validation fails
+      if (!format) return undefined;
+    }
+  }
+  if (!format && output?.toUpperCase() === 'README') {
+    format = ExportFormats.md;
   }
   if (!format && !template && !output) {
     return validationError('export must specify one of: format, template, or output', opts);
