@@ -3,7 +3,7 @@ import type { Store } from 'redux';
 import { createStore } from 'redux';
 import type { Logger } from 'myst-cli-utils';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
-import type { MystPlugin, RuleId } from 'myst-common';
+import type { RuleId, ValidatedMystPlugin } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
@@ -142,9 +142,9 @@ export class Session implements ISession {
     return resp;
   }
 
-  plugins: MystPlugin | undefined;
+  plugins: ValidatedMystPlugin | undefined;
 
-  _pluginPromise: Promise<MystPlugin> | undefined;
+  _pluginPromise: Promise<ValidatedMystPlugin> | undefined;
 
   async loadPlugins() {
     // Early return if a promise has already been initiated

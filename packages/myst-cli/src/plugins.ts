@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
-import { RuleId, plural, type MystPlugin } from 'myst-common';
+import { RuleId, plural, type MystPlugin, type ValidatedMystPlugin } from 'myst-common';
 import type { PluginInfo } from 'myst-config';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 import { loadExecutablePlugin } from './executablePlugin.js';
@@ -11,7 +11,7 @@ import { loadExecutablePlugin } from './executablePlugin.js';
  *
  * @param session session with logging
  */
-export async function loadPlugins(session: ISession): Promise<MystPlugin> {
+export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugin> {
   let configPlugins: PluginInfo[] = [];
   const state = session.store.getState();
   const projConfig = selectors.selectCurrentProjectConfig(state);
@@ -29,7 +29,7 @@ export async function loadPlugins(session: ISession): Promise<MystPlugin> {
   // Deduplicate by path
   configPlugins = [...new Map(configPlugins.map((info) => [info.path, info])).values()];
 
-  const plugins: MystPlugin = {
+  const plugins: ValidatedMystPlugin = {
     directives: [],
     roles: [],
     transforms: [],

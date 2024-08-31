@@ -1,6 +1,6 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import type { Logger } from 'myst-cli-utils';
-import type { MystPlugin, RuleId } from 'myst-common';
+import type { MystPlugin, RuleId, ValidatedMystPlugin } from 'myst-common';
 import type { ResolvedExternalReference, ReferenceState } from 'myst-transforms';
 import type { MinifiedContentCache } from 'nbtx';
 import type { Store } from 'redux';
@@ -24,7 +24,7 @@ export type ISession = {
   contentPath(): string;
   publicPath(): string;
   showUpgradeNotice(): void;
-  plugins: MystPlugin | undefined;
+  plugins: ValidatedMystPlugin | undefined;
   loadPlugins(): Promise<MystPlugin>;
   getAllWarnings(ruleId: RuleId): (BuildWarning & { file: string })[];
   jupyterSessionManager(): Promise<SessionManager | undefined>;

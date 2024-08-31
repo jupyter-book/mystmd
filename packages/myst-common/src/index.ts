@@ -49,6 +49,7 @@ export type {
   RoleSpec,
   ParseTypes,
   MystPlugin,
+  ValidatedMystPlugin,
   PluginOptions,
   PluginUtils,
   TransformSpec,
