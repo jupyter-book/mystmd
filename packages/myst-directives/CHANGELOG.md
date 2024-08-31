@@ -1,5 +1,14 @@
 # myst-directives
 
+## 1.5.5
+
+### Patch Changes
+
+- Updated dependencies [85db77c7]
+- Updated dependencies [8ba7b73a]
+  - myst-spec-ext@1.6.0
+  - myst-common@1.6.0
+
 ## 1.5.4
 
 ### Patch Changes

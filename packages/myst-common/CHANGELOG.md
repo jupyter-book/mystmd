@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.6.0
+
+### Patch Changes
+
+- 8ba7b73a: Add `ValidatedMystPlugin` to make types more strict
+- Updated dependencies [9c1b8c73]
+  - myst-frontmatter@1.6.0
+
 ## 1.5.4
 
 ### Patch Changes

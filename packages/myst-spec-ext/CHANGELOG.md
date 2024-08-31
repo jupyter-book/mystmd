@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.6.0
+
+### Patch Changes
+
+- 85db77c7: Add urlOptimized to image type
+
 ## 1.5.4
 
 ### Patch Changes

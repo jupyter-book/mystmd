@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.6.0
+
+### Minor Changes
+
+- 9c1b8c73: Make `name`, `display_name` soft-required fields for kernelspec
+
 ## 1.5.4
 
 ### Patch Changes
