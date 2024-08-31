@@ -598,7 +598,7 @@ export async function transformWebp(
   if (!fs.existsSync(imageWriteFolder)) return; // No images exist to copy - not necessarily an error
   const writeFolderContents = fs.readdirSync(imageWriteFolder);
   const { mdast, frontmatter } = postData;
-  const images = selectAll('image', mdast) as GenericNode[];
+  const images = selectAll('image', mdast) as Image[];
   await Promise.all(
     images.map(async (image) => {
       if (!image.url) return;

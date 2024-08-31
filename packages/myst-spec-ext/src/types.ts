@@ -114,6 +114,7 @@ export type Heading = SpecHeading &
 
 export type Image = SpecImage & {
   urlSource?: string;
+  urlOptimized?: string;
   height?: string;
   placeholder?: boolean;
 };
