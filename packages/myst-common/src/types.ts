@@ -134,10 +134,12 @@ export type MystPlugin = {
   name?: string;
   author?: string;
   license?: string;
-  directives: DirectiveSpec[];
-  roles: RoleSpec[];
-  transforms: TransformSpec[];
+  directives?: DirectiveSpec[];
+  roles?: RoleSpec[];
+  transforms?: TransformSpec[];
 };
+
+export type ValidatedMystPlugin = Required<Pick<MystPlugin, 'directives' | 'roles' | 'transforms'>>;
 
 export enum TargetKind {
   heading = 'heading',
