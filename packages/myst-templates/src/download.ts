@@ -14,6 +14,7 @@ export const TEMPLATE_YML = 'template.yml';
 export const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
   tex: '.tex',
   typst: '.typ',
+  md: '.md',
   docx: undefined,
   site: undefined,
 };
@@ -21,6 +22,7 @@ export const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
 const DEFAULT_TEMPLATES = {
   tex: 'tex/myst/curvenote',
   typst: 'typst/myst/lapreprint-typst',
+  md: undefined,
   docx: 'docx/myst/default',
   site: 'site/myst/book-theme',
 };

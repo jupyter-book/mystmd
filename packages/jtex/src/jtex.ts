@@ -30,9 +30,11 @@ function getDefaultEnv(template: MystTemplate) {
   return env;
 }
 
-function commentSymbol(kind: string) {
-  if (kind === TemplateKind.typst) return '//';
-  return '%';
+function jtexComment(kind: string) {
+  const comment = `Created with jtex v.${version}`;
+  if (kind === TemplateKind.typst) return `// ${comment}`;
+  if (kind === TemplateKind.md) return `<!-- ${comment} -->`;
+  return `% ${comment}`;
 }
 
 /**
@@ -97,8 +99,6 @@ export function renderTemplate(
   template.copyTemplateFiles(dirname(opts.outputPath), { force: opts.force });
   fs.writeFileSync(
     opts.outputPath,
-    opts.removeVersionComment
-      ? rendered
-      : `${commentSymbol(template.kind)} Created with jtex v.${version}\n${rendered}`,
+    opts.removeVersionComment ? rendered : `${jtexComment(template.kind)}\n${rendered}`,
   );
 }
