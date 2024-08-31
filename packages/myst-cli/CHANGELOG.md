@@ -1,5 +1,24 @@
 # myst-cli
 
+## 1.3.6
+
+### Patch Changes
+
+- 0812009a: Fix TOC upgrade
+- 9864473: Quiet webp warnings to debug
+- 8ba7b73a: Add `ValidatedMystPlugin` to make types more strict
+- Updated dependencies [9c28805a]
+- Updated dependencies [85db77c7]
+- Updated dependencies [9c1b8c73]
+- Updated dependencies [8ba7b73a]
+  - myst-ext-icon@0.0.1
+  - myst-spec-ext@1.6.0
+  - myst-frontmatter@1.6.0
+  - myst-common@1.6.0
+  - myst-config@1.6.0
+  - myst-parser@1.5.5
+  - myst-transforms@1.3.24
+
 ## 1.3.5
 
 ### Patch Changes
