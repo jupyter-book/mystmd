@@ -53,8 +53,11 @@ export function addWarningForFile(
       session.log.error(`⛔️ ${prefix}${formatted}`);
       break;
     case 'warn':
-    default:
       session.log.warn(`⚠️  ${prefix}${formatted}`);
+      break;
+    case 'debug':
+    default:
+      session.log.debug(`${prefix}${formatted}`);
       break;
   }
   if (opts?.ruleId) {

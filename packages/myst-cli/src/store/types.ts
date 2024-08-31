@@ -8,7 +8,7 @@ export type ExternalLinkResult = {
   statusText?: string;
 };
 
-export type WarningKind = 'error' | 'warn' | 'info';
+export type WarningKind = 'error' | 'warn' | 'info' | 'debug';
 
 export type BuildWarning = {
   message: string;
