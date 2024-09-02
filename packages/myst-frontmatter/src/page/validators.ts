@@ -44,7 +44,10 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
   }
   if (defined(value.language_info)) {
-    output.language_info = validateLanguageInfo(value.language_info, incrementOptions('langage_info', opts));
+    output.language_info = validateLanguageInfo(
+      value.language_info,
+      incrementOptions('langage_info', opts),
+    );
   }
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
