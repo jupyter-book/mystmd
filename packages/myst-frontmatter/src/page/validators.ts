@@ -9,6 +9,7 @@ import {
 import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
 import { PAGE_FRONTMATTER_KEYS, type PageFrontmatter } from './types.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
+import { validateLanguageInfo } from '../languageInfo/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
 
@@ -41,6 +42,9 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   }
   if (defined(value.kernelspec)) {
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
+  }
+  if (defined(value.language_info)) {
+    output.language_info = validateLanguageInfo(value.language_info, incrementOptions('langage_info', opts));
   }
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));

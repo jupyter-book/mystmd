@@ -1,5 +1,6 @@
 import type { Jupytext } from '../jupytext/types.js';
 import type { KernelSpec } from '../kernelspec/types.js';
+import type { LanguageInfo } from '../languageInfo/types.js';
 import type { ProjectAndPageFrontmatter } from '../project/types.js';
 import { PROJECT_AND_PAGE_FRONTMATTER_KEYS } from '../project/types.js';
 
@@ -8,6 +9,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   // These keys only exist on the page
   'label',
   'kernelspec',
+  'language_info',
   'jupytext',
   'tags',
   'content_includes_title',
@@ -16,6 +18,7 @@ export const PAGE_FRONTMATTER_KEYS = [
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
   label?: string;
   kernelspec?: KernelSpec;
+  language_info?: LanguageInfo;
   jupytext?: Jupytext;
   tags?: string[];
   /** Flag if frontmatter title is duplicated in content

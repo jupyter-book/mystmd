@@ -232,7 +232,9 @@ export async function transformMdast(
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(session, file, mdast, fileCitationRenderer, references);
   await unified()
-    .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
+    .use(codePlugin, {
+      lang: frontmatter?.language_info?.name ?? frontmatter?.kernelspec?.language,
+    })
     .use(footnotesPlugin) // Needs to happen near the end
     .run(mdast, vfile);
   transformImagesToEmbed(mdast);
