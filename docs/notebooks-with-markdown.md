@@ -14,17 +14,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 ```
 
-You can specify Jupyter content in your Markdown, which allows you to execute computation using [MyST's notebook execution engine](./execute-notebooks.md). First, you will need to [define a kernel specification](#myst:define-kernel), after which you can introduce Markdown-based computation in several ways:
-- [Code cells](#myst:code-cell) for block-level content.
-- [Inline expressions](#myst:inline-expressions) for content inline with surrounding text.
+You can specify Jupyter content in your Markdown, which allows you to execute computation using [MyST's notebook execution engine](./execute-notebooks.md). First, you will need to [define a kernel specification](#kernel-specification), after which you can introduce Markdown-based computation in several ways:
+- [Code cells](#code-cell) for block-level content.
+- [Inline expressions](#inline-expressions) for content inline with surrounding text.
 
 
-(myst:define-kernel)=
+(kernel-specification)=
 ## Kernel specification
 
 Defining a kernel specification (`kernelspec`) informs the Jupyter server of the name of the kernel that should execute your code. When you call `myst build --execute` or `myst start --execute`, the MyST CLI starts a Jupyter kernel to execute your code and gather the execution results. Defining different `kernelspec`s in each notebook makes it possible to flexibly switch the package environment and programming language (e.g. to use R in one notebook, and Julia in another). 
 
-The `kernelspec` configuration should be defined in the *page-level* frontmatter of each executable markdown file (see [](myst:field-behavior) for more information). The following contents is a frontmatter defines a document that uses the `python` kernel:
+The `kernelspec` configuration should be defined in the *page-level* frontmatter of each executable markdown file (see [](field-behavior) for more information). The following contents is a frontmatter defines a document that uses the `python` kernel:
 
 ```yaml
 kernelspec:
@@ -65,7 +65,7 @@ The `kernelspec` field supports the same content that is validated by [`nbformat
   - human-readable name for the kernel, e.g. "Python 3.12"
 ```
 
-(myst:code-cell)=
+(code-cell)=
 
 ## Code cells with the {myst:directive}`code-cell` directive
 
@@ -215,9 +215,9 @@ See [](./quickstart-jupyter-lab-myst.md) for how these eval statements also work
 
 ## Markdown cells with block breaks
 
-In [](#myst:compatibility-jupytext), the `jupytext` tool for integrating text-based notebooks with existing Jupyter tools like JupyterLab is discussed. By default, when reading a MyST Markdown document, `jupytext` creates a single Markdown cell between adjacent code cells. The block-break (`+++`) syntax described in [](./blocks.md) can be used to separate blocks of Markdown into distinct Markdown cells.
+In [](#compatibility-jupytext), the `jupytext` tool for integrating text-based notebooks with existing Jupyter tools like JupyterLab is discussed. By default, when reading a MyST Markdown document, `jupytext` creates a single Markdown cell between adjacent code cells. The block-break (`+++`) syntax described in [](./blocks.md) can be used to separate blocks of Markdown into distinct Markdown cells.
 
-(myst:compatibility-jupytext)=
+(compatibility-jupytext)=
 ## Compatibility with `jupytext`
 
 [jupytext](https://github.com/mwouts/jupytext) is a Python package that converts between Jupyter Notebooks (ipynb files) and plain text documents (like MyST Markdown files). It provides both a commandline tool to perform these conversions, and an extension for JupyterLab to facilitate opening text-based notebooks with the Notebook viewer. MyST Markdown is understood by jupytext, which defines a `md:myst` format for reading from / writing to MyST Markdown.

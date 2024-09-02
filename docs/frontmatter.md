@@ -209,7 +209,7 @@ The following table lists the available frontmatter fields, a brief description 
   - configuration for Jupyter execution (see [](./integrating-jupyter.md))
   - project only
 * - `kernelspec`
-  - configuration for the kernel (see [](./notebooks-with-markdown.md#kernel-specification))
+  - configuration for the kernel (see [](#kernel-specification))
   - page only
 ```
 
