@@ -1,5 +1,6 @@
 import os
 import pathlib
+import platform
 import shutil
 import subprocess
 import sys
@@ -35,11 +36,18 @@ def main():
             "Please update to the latest LTS release, using your preferred package manager\n"
             "or following instructions here: https://nodejs.org/en/download"
         )
-    os.execve(
-        node,
-        [node.name, PATH_TO_BIN_JS, *sys.argv[1:]],
-        {**os.environ, "MYST_LANG": "PYTHON"},
-    )
+
+    node_args = [PATH_TO_BIN_JS, *sys.argv[1:]]
+    node_env = {**os.environ, "MYST_LANG": "PYTHON"}
+    if platform.system() == "Windows":
+        result = subprocess.run([node, *node_args], env=node_env)
+        sys.exit(result.returncode)
+    else:
+        os.execve(
+            node,
+            [node.name, *node_args],
+            node_env,
+        )
 
 
 if __name__ == "__main__":
