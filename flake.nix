@@ -23,12 +23,12 @@
                 with ps; [
                   jupyter-server
                   ipykernel
-		  # Computation modules
+                  # Computation modules
                   jupytext
-		  altair
-		  matplotlib
-		  vega-datasets
-		  numpy
+                  altair
+                  matplotlib
+                  vega-datasets
+                  numpy
                 ]))
               pkgs.texliveMedium
               pkgs.libwebp
