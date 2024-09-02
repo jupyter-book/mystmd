@@ -6,7 +6,10 @@ kernelspec:
 
 # Code Cells and Inline Expressions with Markdown
 
-
+```{warning} This is an alpha feature
+Markdown-based code cells are still in the works, and missing key functionality.
+Their behavior is subject to change unpredictably!
+```
 ```{code-cell} python
 :tag: hide-cell
 
@@ -24,7 +27,20 @@ You can specify Jupyter content in your Markdown, which allows you to execute co
 
 Defining a kernel specification (`kernelspec`) informs the Jupyter server of the name of the kernel that should execute your code. When you call `myst build --execute` or `myst start --execute`, the MyST CLI starts a Jupyter kernel to execute your code and gather the execution results. Defining different `kernelspec`s in each notebook makes it possible to flexibly switch the package environment and programming language (e.g. to use R in one notebook, and Julia in another). 
 
-The `kernelspec` configuration should be defined in the *page-level* frontmatter of each executable markdown file (see [](field-behavior) for more information). The following contents is a frontmatter defines a document that uses the `python` kernel:
+The `kernelspec` configuration should be defined in the *page-level* frontmatter of each executable markdown file (see [](#field-behavior) for more information), and supports the same content that is validated by [`nbformat`'s schema](https://github.com/jupyter/nbformat/blob/main/nbformat/v4/nbformat.v4.5.schema.json):
+```{list-table} A list of available kernelspec fields
+:header-rows: 1
+:label: table-kernelspec
+
+* - field
+  - description
+* - `name`
+  - name of the kernel, e.g. `python3`
+* - `display_name`
+  - human-readable name for the kernel, e.g. "Python 3.12"
+```
+
+The following contents is a frontmatter defines a document that uses the `python` kernel:
 
 ```yaml
 kernelspec:
@@ -32,7 +48,7 @@ kernelspec:
   display_name: "Python 3"
 ```
 
-When we declare the frontmatter, all the contents in {myst:directive}`code-cell` and {myst:role}`eval` will be executed by the `python` kernel during the building process.
+After we declare the frontmatter, the contents of each {myst:directive}`code-cell` directive and {myst:role}`eval` role will be executed by the `python` kernel during the building process.
 
 ### Use a different kernel
 Furthermore, you can build MyST Markdown content with other programming languages like JavaScript, R, and Julia by installing the corresponding kernel. For example, to build a page that uses JavaScript in the {myst:directive}`code-cell`, we could:
@@ -52,18 +68,6 @@ Furthermore, you can build MyST Markdown content with other programming language
     ```
     ````
 
-The `kernelspec` field supports the same content that is validated by [`nbformat`'s schema](https://github.com/jupyter/nbformat/blob/main/nbformat/v4/nbformat.v4.5.schema.json):
-```{list-table} A list of available kernelspec fields
-:header-rows: 1
-:label: table-kernelspec
-
-* - field
-  - description
-* - `name`
-  - name of the kernel, e.g. `python3`
-* - `display_name`
-  - human-readable name for the kernel, e.g. "Python 3.12"
-```
 
 (code-cell)=
 
@@ -71,10 +75,7 @@ The `kernelspec` field supports the same content that is validated by [`nbformat
 
 You can use the {myst:directive}`code-cell` directive to create block-level computational outputs in MyST Markdown.
 
-```{warning} This is an alpha feature
-Markdown-based code cells are still in the works, and missing key functionality.
-Their behavior is subject to change unpredictably!
-```
+
 
 {myst:directive}`code-cell` directives have the following form:
 
