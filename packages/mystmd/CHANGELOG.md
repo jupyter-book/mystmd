@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.7
+
+### Patch Changes
+
+- d642197: Update the python build packaging
+
 ## 1.3.6
 
 ## 1.3.5
