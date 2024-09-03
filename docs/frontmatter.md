@@ -208,10 +208,14 @@ The following table lists the available frontmatter fields, a brief description 
 * - `jupyter` or `thebe`
   - configuration for Jupyter execution (see [](./integrating-jupyter.md))
   - project only
+* - `kernelspec`
+  - configuration for the kernel (see [](#kernel-specification))
+  - page only
 ```
 
 +++
 
+(field-behavior)=
 ## Field Behavior
 
 Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a “project”. However, individual frontmatter fields are not uniformly available at both levels, and behavior of certain fields are different between project and page levels. There are three field behaviors to be aware of:
