@@ -80,7 +80,7 @@ def find_any_node(binary_path):
     # Find the executable path
     new_node_path = (
         (nodeenv_path / "Scripts" / "node.exe")
-        if is_windows
+        if is_windows()
         else (nodeenv_path / "bin" / "node")
     )
     new_path = os.pathsep.join(
