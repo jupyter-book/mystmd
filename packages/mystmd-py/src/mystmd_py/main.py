@@ -99,14 +99,14 @@ def main():
         raise SystemExit(
             "💥 The attempt to install Node.js was unsuccessful.\n"
             f"🔍 Underlying error:\n{message}\n\n"
-            "ℹ️ We recommend installing the latest LTS release, using your preferred package manager "
-            "or following instructions here: https://nodejs.org/en/download\n\n"
+            "ℹ️  We recommend installing the latest LTS release, using your preferred package manager "
+            "or following instructions here: https://nodejs.org\n\n"
         ) from err
     except PermissionDeniedError as err:
         raise SystemExit(
             "💥 The attempt to install Node.js failed because the user denied the request.\n"
-            "ℹ️ We recommend installing the latest LTS release, using your preferred package manager "
-            "or following instructions here: https://nodejs.org/en/download\n\n"
+            "ℹ️  We recommend installing the latest LTS release, using your preferred package manager "
+            "or following instructions here: https://nodejs.org\n\n"
         ) from err
 
     # Build new env dict
