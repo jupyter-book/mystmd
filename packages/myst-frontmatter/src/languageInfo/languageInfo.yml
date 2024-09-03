@@ -1,0 +1,25 @@
+title: Language Info
+cases:
+  - title: empty object throws errors
+    raw:
+      language_info: {}
+    normalized: {}
+    errors: 1
+  - title: full object returns self
+    raw:
+      language_info:
+        name: python
+    normalized:
+      language_info:
+        name: python
+  - title: extra keys removed
+    raw:
+      language_info:
+        extra: ''
+        name: python
+        other: Python is snakey
+    normalized:
+      language_info:
+        name: python
+    warnings: 1
+ 
