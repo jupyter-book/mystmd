@@ -18,13 +18,19 @@ class PermissionDeniedError(Exception): ...
 class NodeEnvCreationError(Exception): ...
 
 
+def is_windows():
+    return platform.system() == "Windows"
+
+
 def find_installed_node():
-    return shutil.which("node") or shutil.which("node.exe") or shutil.which("node.cmd")
+    # shutil.which can find things with PATHEXT, but 3.12.0 breaks this by preferring NODE over NODE.EXE on Windows
+    return shutil.which("node.exe") if is_windows() else shutil.which("node")
 
 
 def find_nodeenv_path():
     # The conda packaging of this package does not need to install node!
     import platformdirs
+
     return platformdirs.user_data_path(
         appname="myst", appauthor=False, version=NODEENV_VERSION
     )
@@ -71,10 +77,16 @@ def find_any_node(binary_path):
         else:
             raise PermissionDeniedError("Node.js installation was not permitted")
 
-    new_path = os.pathsep.join(
-        [*binary_path.split(os.pathsep), str(nodeenv_path / "bin")]
+    # Find the executable path
+    new_node_path = (
+        (nodeenv_path / "Scripts" / "node.exe")
+        if is_windows
+        else (nodeenv_path / "bin" / "node")
     )
-    return nodeenv_path / "bin" / "node", new_path
+    new_path = os.pathsep.join(
+        [*binary_path.split(os.pathsep), str(new_node_path.parent)]
+    )
+    return new_node_path, new_path
 
 
 def main():
@@ -97,9 +109,12 @@ def main():
             "or following instructions here: https://nodejs.org/en/download\n\n"
         ) from err
 
+    # Build new env dict
+    node_env = {**os.environ, "PATH": os_path}
+
     # Check version
     _version = subprocess.run(
-        [node_path, "-v"], capture_output=True, check=True, text=True
+        [node_path, "-v"], capture_output=True, check=True, text=True, env=node_env
     ).stdout
     major_version_match = re.match(r"v(\d+).*", _version)
 
@@ -112,24 +127,25 @@ def main():
             "Please update to the latest LTS release, using your preferred package manager\n"
             "or following instructions here: https://nodejs.org/en/download"
         )
-   
-    # Find path to compiled JS 
+
+    # Find path to compiled JS
     js_path = (pathlib.Path(__file__).parent / "myst.cjs").resolve()
 
     # Build args for Node.js process
-    node_args = [js_path, *sys.argv[1:]]
-    node_env = {**os.environ, "MYST_LANG": "PYTHON", "PATH": os_path}
+    myst_node_args = [js_path, *sys.argv[1:]]
+    myst_env = {**node_env, "MYST_LANG": "PYTHON"}
 
     # Invoke appropriate binary for platform
     if platform.system() == "Windows":
-        result = subprocess.run([node_path, *node_args], env=node_env)
+        result = subprocess.run([node_path, *myst_node_args], env=myst_env)
         sys.exit(result.returncode)
     else:
         os.execve(
             node_path,
-            [node_path.name, *node_args],
-            node_env,
+            [node_path.name, *myst_node_args],
+            myst_env,
         )
+
 
 if __name__ == "__main__":
     main()
