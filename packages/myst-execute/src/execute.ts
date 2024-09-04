@@ -285,14 +285,6 @@ export type Options = {
 export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile, opts: Options) {
   const log = opts.log ?? console;
 
-  // We need the kernelspec to proceed
-  if (opts.frontmatter.kernelspec === undefined) {
-    return fileError(
-      vfile,
-      `Notebook does not declare the necessary 'kernelspec' frontmatter key required for execution`,
-    );
-  }
-
   // Pull out code-like nodes
   const executableNodes = selectAll(`block[kind=${NotebookCell.code}],inlineExpression`, tree) as (
     | ICellBlock
@@ -302,6 +294,14 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   // Only do something if we have any nodes!
   if (executableNodes.length === 0) {
     return;
+  }
+
+  // We need the kernelspec to proceed
+  if (opts.frontmatter.kernelspec === undefined) {
+    return fileError(
+      vfile,
+      `Notebook does not declare the necessary 'kernelspec' frontmatter key required for execution`,
+    );
   }
 
   // See if we already cached this execution
