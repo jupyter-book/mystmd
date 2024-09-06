@@ -29,7 +29,7 @@ export function checkLinkTextTransform(
           note: key ? `You need an entry in your project references with key "${key}"` : undefined,
         });
       }
-    } else if (!toText(node.children) && !select('image', node)) {
+    } else if (!toText(node.children) && !select('image', node) && !node.title) {
       fileWarn(
         vfile,
         `Link text is empty for <${node.urlSource ?? node.url}${node.identifier ? `#${node.identifier}` : ''}>`,
