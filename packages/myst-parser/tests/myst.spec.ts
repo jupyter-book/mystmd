@@ -91,6 +91,21 @@ function fixMystDirectives(tree: GenericParent) {
     (node as any).value = (node as any).value?.trim();
     // These are added on afterwards and we aren't taking them into account in myst spec
     delete (node as any).tight;
+    // fix the options
+    Object.entries((node as any).options ?? {}).forEach(([key, val]) => {
+      const options = (node as any).options;
+      if (val === true) {
+        options[key] = true; // a flag
+      } else if (!isNaN(Number(val))) {
+        options[key] = Number(val);
+      } else if (typeof val === 'string' && val.toLowerCase() === 'true') {
+        options[key] = true;
+      } else if (typeof val === 'string' && val.toLowerCase() === 'false') {
+        options[key] = false;
+      } else {
+        options[key] = val;
+      }
+    });
   });
   return tree;
 }

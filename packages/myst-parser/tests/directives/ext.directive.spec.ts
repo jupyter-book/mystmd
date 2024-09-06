@@ -214,7 +214,7 @@ describe('custom directive extensions', () => {
           position: positionFn(1, 3),
           name: 'test',
           options: {
-            flag: false,
+            flag: 'false',
           },
           children: [
             {

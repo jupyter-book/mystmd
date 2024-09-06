@@ -64,7 +64,7 @@ function runDirectives(state: StateCore): boolean {
         directiveOpen.map = map;
         directiveOpen.meta = {
           arg,
-          options: simplifyDirectiveOptions(options),
+          options: getDirectiveOptions(options),
           // Tightness is computed for all directives (are they separated by a newline before/after)
           tight: computeBlockTightness(state.src, token.map),
         };
@@ -109,7 +109,7 @@ function parseDirectiveContent(
 ): {
   body: string[];
   bodyOffset: number;
-  options?: [string, string][];
+  options?: [string, string | true][];
 } {
   let bodyOffset = 1;
   let yamlBlock: string[] | null = null;
@@ -145,7 +145,7 @@ function parseDirectiveContent(
       );
     }
   } else if (content.length && COLON_OPTION_REGEX.exec(content[0])) {
-    const options: [string, string][] = [];
+    const options: [string, string | true][] = [];
     let foundDivider = false;
     for (const line of content) {
       if (!foundDivider && !COLON_OPTION_REGEX.exec(line)) {
@@ -158,7 +158,7 @@ function parseDirectiveContent(
       } else {
         const match = COLON_OPTION_REGEX.exec(line);
         const { option, value } = match?.groups ?? {};
-        if (option) options.push([option, value || 'true']);
+        if (option) options.push([option, value || true]);
         bodyOffset++;
       }
     }
@@ -171,44 +171,44 @@ function directiveArgToTokens(arg: string, lineNumber: number, state: StateCore)
   return nestedPartToTokens('directive_arg', arg, lineNumber, state, 'run_directives', true);
 }
 
-function simplifyDirectiveOptions(options?: [string, string][]) {
+function getDirectiveOptions(options?: [string, string | true][]) {
   if (!options) return undefined;
-  const simplified: Record<string, string | boolean | number> = {};
+  const simplified: Record<string, string | true> = {};
   options.forEach(([key, val]) => {
     if (simplified[key] !== undefined) {
       return;
-    } else if (!isNaN(Number(val))) {
-      simplified[key] = Number(val);
-    } else if (typeof val === 'string' && val.toLowerCase() === 'true') {
-      simplified[key] = true;
-    } else if (typeof val === 'string' && val.toLowerCase() === 'false') {
-      simplified[key] = false;
-    } else {
-      simplified[key] = val;
     }
+    simplified[key] = val;
   });
   return simplified;
 }
 
 function directiveOptionsToTokens(
-  options: [string, string][],
+  options: [string, string | true][],
   lineNumber: number,
   state: StateCore,
 ) {
   const tokens = options.map(([key, value], index) => {
     // lineNumber mapping assumes each option is only one line;
     // not necessarily true for yaml options.
-    const optTokens = nestedPartToTokens(
-      'directive_option',
-      `${value}`,
-      lineNumber + index,
-      state,
-      'run_directives',
-      true,
-    );
+    const optTokens =
+      typeof value === 'string'
+        ? nestedPartToTokens(
+            'directive_option',
+            value,
+            lineNumber + index,
+            state,
+            'run_directives',
+            true,
+          )
+        : [
+            new state.Token('directive_option_open', '', 1),
+            new state.Token('directive_option_close', '', -1),
+          ];
     if (optTokens.length) {
       optTokens[0].info = key;
-      optTokens[0].content = value;
+      optTokens[0].content = typeof value === 'string' ? value : '';
+      optTokens[0].meta = { value };
     }
     return optTokens;
   });
