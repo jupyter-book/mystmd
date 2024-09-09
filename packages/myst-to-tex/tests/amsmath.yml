@@ -32,3 +32,18 @@ cases:
       & c   \quad && \text{constante aditiva} \quad && 0\leq c<m\\
       & x_0 \quad && \text{valor inicial}     \quad && 0\leq x_0 <m
       \end{alignat*}
+  - title: multiple pmatrix
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{pmatrix}\omega^1 \\ \omega^2 \\ \omega^3 \end{pmatrix}
+            = \frac{1}{r} \begin{pmatrix}- \sin\theta^1 & \cos\theta^1 \\ - \sin\theta^2 & \cos\theta^2 \\ - \sin\theta^3 & \cos\theta^3 \end{pmatrix}
+            \begin{pmatrix}v_x \\ v_y \end{pmatrix}
+    latex: |-
+      \begin{equation}
+      \begin{pmatrix}\omega^1 \\ \omega^2 \\ \omega^3 \end{pmatrix}
+      = \frac{1}{r} \begin{pmatrix}- \sin\theta^1 & \cos\theta^1 \\ - \sin\theta^2 & \cos\theta^2 \\ - \sin\theta^3 & \cos\theta^3 \end{pmatrix}
+      \begin{pmatrix}v_x \\ v_y \end{pmatrix}
+      \end{equation}
