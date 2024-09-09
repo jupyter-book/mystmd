@@ -7,16 +7,21 @@ export const cardDirective: DirectiveSpec = {
   alias: ['grid-item-card'],
   arg: {
     type: 'myst',
+    doc: 'The title of the card, usually shown as bolded text at the top of the card.',
   },
   options: {
-    link: {
+    url: {
       type: String,
+      alias: ['link'],
+      doc: 'Turns the card into a link, can be internal or external.',
     },
     header: {
       type: 'myst',
+      doc: 'Adds a header to the card.',
     },
     footer: {
       type: 'myst',
+      doc: 'Adds a footer to the card.',
     },
     // // https://sphinx-design.readthedocs.io/en/furo-theme/cards.html#card-options
     // width
@@ -48,9 +53,10 @@ export const cardDirective: DirectiveSpec = {
   body: {
     type: 'myst',
     required: true,
+    doc: 'Main body content of the card.',
   },
   run(data: DirectiveData): GenericNode[] {
-    const { link, header, footer } = data.options || {};
+    const { url, header, footer } = data.options || {};
     let headerChildren: GenericNode[];
     let bodyChildren: GenericNode[];
     let footerChildren: GenericNode[];
@@ -89,7 +95,7 @@ export const cardDirective: DirectiveSpec = {
     return [
       {
         type: 'card',
-        url: link as string | undefined,
+        url: url as string | undefined,
         children,
       },
     ];
