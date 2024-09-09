@@ -1,5 +1,12 @@
 # myst-ext-card
 
+## 1.0.8
+
+### Patch Changes
+
+- c758f1b5: Directive option flag is always a boolean
+- 0a516e5: Add documentation and an alias for url/link in cards.
+
 ## 1.0.7
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # myst-cli
 
+## 1.3.8
+
+### Patch Changes
+
+- Updated dependencies [822fd2d5]
+- Updated dependencies [c758f1b5]
+- Updated dependencies [0a516e5]
+- Updated dependencies [41d8f35e]
+  - myst-to-tex@1.0.36
+  - myst-ext-reactive@1.0.8
+  - myst-ext-card@1.0.8
+  - myst-parser@1.5.6
+  - myst-execute@0.0.9
+  - tex-to-myst@1.0.36
+  - myst-transforms@1.3.25
+
 ## 1.3.7
 
 ## 1.3.6
