@@ -1,5 +1,12 @@
 # mystmd
 
+## 1.3.8
+
+### Patch Changes
+
+- 822fd2d5: Ensure that AMS Math environments are only used if there is a single environment that encloses the entire math environment.
+- c758f1b5: Directive option flag is always a boolean
+
 ## 1.3.7
 
 ### Patch Changes

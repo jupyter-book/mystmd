@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.10
+
+### Patch Changes
+
+- c758f1b5: Directive option flag is always a boolean
+
 ## 1.0.9
 
 ### Patch Changes

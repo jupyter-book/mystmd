@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 1.0.36
+
+### Patch Changes
+
+- 822fd2d5: Ensure that AMS Math environments are only used if there is a single environment that encloses the entire math environment.
+
 ## 1.0.35
 
 ### Patch Changes

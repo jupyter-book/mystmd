@@ -1,5 +1,15 @@
 # myst-parser
 
+## 1.5.6
+
+### Patch Changes
+
+- c758f1b5: Directive option flag is always a boolean
+- Updated dependencies [c758f1b5]
+  - markdown-it-myst@1.0.10
+  - myst-roles@1.5.6
+  - myst-directives@1.5.6
+
 ## 1.5.5
 
 ### Patch Changes

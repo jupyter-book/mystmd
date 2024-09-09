@@ -1,5 +1,11 @@
 # myst-execute
 
+## 0.0.9
+
+### Patch Changes
+
+- 41d8f35e: Fix overzealous missing kernelspec warning
+
 ## 0.0.8
 
 ### Patch Changes

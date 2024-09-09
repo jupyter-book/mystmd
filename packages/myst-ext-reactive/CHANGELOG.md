@@ -1,5 +1,11 @@
 # myst-ext-reactive
 
+## 1.0.8
+
+### Patch Changes
+
+- c758f1b5: Directive option flag is always a boolean
+
 ## 1.0.7
 
 ### Patch Changes
