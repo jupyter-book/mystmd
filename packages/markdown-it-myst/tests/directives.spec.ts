@@ -40,14 +40,13 @@ describe('parses directives', () => {
     expect(tokens.map((t) => t.type)).toEqual([
       'parsed_directive_open',
       'directive_option_open',
-      'inline',
       'directive_option_close',
       'parsed_directive_close',
     ]);
     expect(tokens[0].info).toEqual('abc');
     expect(tokens[1].info).toEqual('flag');
-    expect(tokens[1].content).toEqual('true');
-    expect(tokens[2].content).toEqual('true');
+    expect(tokens[1].content).toEqual('');
+    expect(tokens[1].meta.value).toEqual(true);
   });
   it('opt flag with space directive parses to true', () => {
     const mdit = MarkdownIt().use(plugin);
@@ -55,14 +54,13 @@ describe('parses directives', () => {
     expect(tokens.map((t) => t.type)).toEqual([
       'parsed_directive_open',
       'directive_option_open',
-      'inline',
       'directive_option_close',
       'parsed_directive_close',
     ]);
     expect(tokens[0].info).toEqual('abc');
     expect(tokens[1].info).toEqual('flag');
-    expect(tokens[1].content).toEqual('true');
-    expect(tokens[2].content).toEqual('true');
+    expect(tokens[1].content).toEqual('');
+    expect(tokens[1].meta.value).toEqual(true);
   });
   it('colon in first line is not option', () => {
     const mdit = MarkdownIt().use(plugin);

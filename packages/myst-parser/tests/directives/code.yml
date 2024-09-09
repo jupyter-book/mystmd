@@ -27,7 +27,7 @@ cases:
   - title: code-block with indentation
     markdown: |-
       ```{code-block} c
-      :linenos: true
+      :linenos:
       :lineno-start: 2
       :emphasize-lines: 3
           for (int i = 0; i < 10; i++) {
@@ -41,8 +41,8 @@ cases:
           name: code-block
           args: c
           options:
-            emphasize-lines: 3
-            lineno-start: 2
+            emphasize-lines: '3'
+            lineno-start: '2'
             linenos: true
           value: "    for (int i = 0; i < 10; i++) {\n        /* do something */\n    }"
           children:
@@ -73,7 +73,7 @@ cases:
             name: addition
             class: my-class
             linenos: true
-            lineno-start: 2
+            lineno-start: '2'
             emphasize-lines: 3, 4
           value: |-
             # here is math

@@ -398,7 +398,7 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
     getAttrs(t) {
       return {
         name: t.info,
-        value: t.content,
+        value: t.meta.value,
       };
     },
   },

@@ -51,3 +51,20 @@ cases:
           children:
             - type: text
               value: But not below
+  - title: math with empty label is not set
+    markdown: |-
+      ```{math}
+      :label:
+      1+2
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: math
+          options:
+            label: true
+          value: 1+2
+          children:
+            - type: math
+              value: 1+2
