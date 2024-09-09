@@ -176,10 +176,10 @@ The following table lists the available frontmatter fields, a brief description 
   - a string (max 40 chars)
   - page can override project
 * - `venue`
-  - a venue object
+  - a venue object with journal and conference metadata fields
   - page can override project
 * - `biblio`
-  - a biblio object with various fields
+  - a biblio object with volume and issue metadata fields
   - page can override project
 * - `math`
   - a dictionary of math macros (see [](#math-macros))
@@ -747,7 +747,34 @@ The term `venue` is borrowed from the [OpenAlex](https://docs.openalex.org/about
 
 > Venues are where works are hosted.
 
-Available fields in the `venue` object are `title`, `short_title` (or title abbreviation), and `url`. You may also provide a DOI under `biblio`; this DOI is the _venue_ DOI.
+For MyST frontmatter, the `venue` object holds metadata for journals and conferences where a work may be presented.
+
+```{list-table} Available Venue fields
+:header-rows: 1
+:label: table-frontmatter-venue
+* - field
+  - description
+* - `title`
+  - full title of the venue
+* - `short_title`
+  - short title of the venue; often journals have a standard abbreviation that should be defined here
+* - `url`
+  - URL of the venue
+* - `doi`
+  - the _venue_ DOI
+* - `number`
+  - number of the venue in a series, for example the "18th Python in Science Conference"
+* - `location`
+  - physical location of a conference
+* - `date`
+  - date associated with the venue, for example the dates of a conference. This field is a string, not a timestamp, so it may be a date range.
+* - `series`
+  - title of a series that this venue or work is part of. Examples include a conference proceedings series, where each year a new conference-specific proceedings journal is created, or a category of articles across multiple issues, such as colloquium papers.
+* - `issn`
+  - ISSN for the publication
+* - `publisher`
+  - publisher of the journal
+```
 
 Some typical `venue` values may be:
 
@@ -772,7 +799,28 @@ The term `biblio` is borrowed from the [OpenAlex](https://docs.openalex.org/abou
 
 > Old-timey bibliographic info for this work. This is mostly useful only in citation/reference contexts. These are all strings because sometimes you'll get fun values like "Spring" and "Inside cover."
 
-Available fields in the `biblio` object are `volume`, `issue`, `first_page` and `last_page`. You may also provide a DOI under `biblio`; this DOI is the _issue_ DOI.
+MyST has expanded the `biblio` object to cover all volume- and issue-specific metadata.
+
+```{list-table} Available Biblio fields
+:header-rows: 1
+:label: table-frontmatter-biblio
+* - field
+  - description
+* - `volume`
+  - a string or a number to identify journal volume
+* - `issue`
+  - a string or a number to identify journal issue
+* - `first_page`
+  - first page number of the work, as published in the journal
+* - `last_page`
+  - last page number of the work, as published in the journal
+* - `title`
+  - title of the journal issue in the case where there is both volume/issue number and separate title
+* - `subject`
+  - description of the subject of the journal issue
+* - `doi`
+  - the _issue_ DOI
+```
 
 Some example `biblio` values may be:
 
