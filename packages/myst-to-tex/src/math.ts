@@ -21,6 +21,12 @@ const ENVIRONMENTS = [
 const RE_OPEN = new RegExp(`^\\\\begin{(${ENVIRONMENTS.join('|')})([*]?)}`);
 
 function isAmsmathEnvironment(value: string): boolean {
+  // First test if there are multiple environments in this equation
+  const matches = value.trim().matchAll(new RegExp(`\\\\begin{(${ENVIRONMENTS.join('|')})}`, 'g'));
+  if ([...matches].length > 1) {
+    // If there are multiple amsmath environments, ensure we always return something with the equation wrappers
+    return false;
+  }
   const matchOpen = value.trim().match(RE_OPEN);
   if (!matchOpen) return false;
   const [, environment, star] = matchOpen;
