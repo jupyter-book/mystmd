@@ -47,3 +47,39 @@ cases:
       = \frac{1}{r} \begin{pmatrix}- \sin\theta^1 & \cos\theta^1 \\ - \sin\theta^2 & \cos\theta^2 \\ - \sin\theta^3 & \cos\theta^3 \end{pmatrix}
       \begin{pmatrix}v_x \\ v_y \end{pmatrix}
       \end{equation}
+  - title: bmatrix environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{bmatrix}
+            3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+            3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+            \end{bmatrix}
+    latex: |-
+      \begin{equation}
+      \begin{bmatrix}
+      3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+      3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+      \end{bmatrix}
+      \end{equation}
+  - title: align environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{align}
+            \begin{bmatrix}
+            3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+            3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+            \end{bmatrix}
+            \end{align}
+    latex: |-
+      \begin{align}
+      \begin{bmatrix}
+      3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+      3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+      \end{bmatrix}
+      \end{align}

@@ -2,31 +2,22 @@ import type { Handler, ITexSerializer, SimplifiedMathPlugins } from './types.js'
 
 // Top level environments in amsmath version 2.1 (and eqnarray), see:
 // http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf
-const ENVIRONMENTS = [
+const TOP_LEVEL_ENVIRONMENTS = [
   'equation',
   'multline',
   'gather',
   'align',
   'alignat',
   'flalign',
-  'matrix',
-  'pmatrix',
-  'bmatrix',
-  'Bmatrix',
-  'vmatrix',
-  'Vmatrix',
   'eqnarray',
 ];
+// The other environments can be inside of an equation
+// const MATRIX_ENVIRONMENTS = ['matrix', 'pmatrix', 'bmatrix', 'Bmatrix', 'vmatrix', 'Vmatrix'];
 
-const RE_OPEN = new RegExp(`^\\\\begin{(${ENVIRONMENTS.join('|')})([*]?)}`);
+const RE_OPEN = new RegExp(`^\\\\begin{(${TOP_LEVEL_ENVIRONMENTS.join('|')})([*]?)}`);
 
-function isAmsmathEnvironment(value: string): boolean {
+function isTopLevelAmsmathEnvironment(value: string): boolean {
   // First test if there are multiple environments in this equation
-  const matches = value.trim().matchAll(new RegExp(`\\\\begin{(${ENVIRONMENTS.join('|')})}`, 'g'));
-  if ([...matches].length > 1) {
-    // If there are multiple amsmath environments, ensure we always return something with the equation wrappers
-    return false;
-  }
   const matchOpen = value.trim().match(RE_OPEN);
   if (!matchOpen) return false;
   const [, environment, star] = matchOpen;
@@ -88,7 +79,7 @@ const math: Handler = (node, state) => {
     state.write(' \\)');
   } else {
     // Check if the node is an AMSMath environment, if so, render it directly
-    const isAmsMath = isAmsmathEnvironment(node.value);
+    const isAmsMath = isTopLevelAmsmathEnvironment(node.value);
     if (isAmsMath) {
       // TODO: labels may be stripped previously in the transform, we may need to back that out
       state.ensureNewLine();
