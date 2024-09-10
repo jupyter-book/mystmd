@@ -1,4 +1,5 @@
 import type { Handler, ITexSerializer, SimplifiedMathPlugins } from './types.js';
+import { addIndexEntries } from './utils.js';
 
 // Top level environments in amsmath version 2.1 (and eqnarray), see:
 // http://anorien.csc.warwick.ac.uk/mirrors/CTAN/macros/latex/required/amsmath/amsldoc.pdf
@@ -82,6 +83,7 @@ const math: Handler = (node, state) => {
   }
   state.usePackages('amsmath');
   addMacrosToState(node.value, state);
+  addIndexEntries(node, state);
   if (state.data.isInTable) {
     state.write('\\(\\displaystyle ');
     state.write(node.value);

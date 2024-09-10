@@ -118,6 +118,7 @@ const handlers: Record<string, Handler> = {
     state.text(node.value);
   },
   paragraph(node, state) {
+    addIndexEntries(node, state);
     state.renderChildren(node);
   },
   heading(node: Heading, state) {
@@ -177,9 +178,11 @@ const handlers: Record<string, Handler> = {
       state.write('\\printindex\n');
       return;
     }
+    addIndexEntries(node, state);
     state.renderChildren(node, false);
   },
   blockquote(node, state) {
+    addIndexEntries(node, state);
     state.renderEnvironment(node, 'quote');
   },
   definitionList(node, state) {
@@ -202,6 +205,7 @@ const handlers: Record<string, Handler> = {
     if (node.visibility === 'remove') {
       return;
     }
+    addIndexEntries(node, state);
     let start = '\\begin{verbatim}\n';
     let end = '\n\\end{verbatim}';
 
@@ -223,6 +227,7 @@ const handlers: Record<string, Handler> = {
     state.closeBlock(node);
   },
   list(node, state) {
+    addIndexEntries(node, state);
     if (state.data.isInTable) {
       node.children.forEach((child: any, i: number) => {
         state.write(node.ordered ? `${i}.~~` : '\\textbullet~~');
@@ -253,6 +258,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, false);
   },
   div(node, state) {
+    addIndexEntries(node, state);
     state.renderChildren(node, false);
   },
   span(node, state) {
@@ -341,6 +347,7 @@ const handlers: Record<string, Handler> = {
     state.write('}');
   },
   admonition(node, state) {
+    addIndexEntries(node, state);
     state.usePackages('framed');
     state.renderEnvironment(node, 'framed');
   },
@@ -350,6 +357,7 @@ const handlers: Record<string, Handler> = {
   },
   table: renderNodeToLatex,
   image(node, state) {
+    addIndexEntries(node, state);
     state.usePackages('graphicx');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align: nodeAlign } = node;

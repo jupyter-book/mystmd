@@ -1,5 +1,6 @@
 import type { Table, TableRow, TableCell as SpecTableCell } from 'myst-spec';
 import type { ITexSerializer } from './types.js';
+import { addIndexEntries } from './utils.js';
 
 export const TOTAL_TABLE_WIDTH = 886;
 
@@ -101,6 +102,7 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
   if (!numColumns) {
     throw new Error('invalid table format, no columns');
   }
+  addIndexEntries(node, state);
   state.data.isInTable = true; // this is cleared at the end of this function
   if (!state.data.isInContainer) {
     state.write('\\bigskip\\noindent');
