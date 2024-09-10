@@ -83,3 +83,67 @@ cases:
       3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
       \end{bmatrix}
       \end{align}
+  - title: align environment around bmatrix
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{align}
+            \begin{bmatrix}
+            P^0 \\ 1
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            R_{1}^{0} & d_{1}^{0}\\
+            0_{2} & 1
+            \end{bmatrix}
+            \begin{bmatrix}
+            P^1 \\ 1
+            \end{bmatrix}
+            \end{align}
+    latex: |-
+      \begin{align}
+      \begin{bmatrix}
+      P^0 \\ 1
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      R_{1}^{0} & d_{1}^{0}\\
+      0_{2} & 1
+      \end{bmatrix}
+      \begin{bmatrix}
+      P^1 \\ 1
+      \end{bmatrix}
+      \end{align}
+  - title: wrapping align environment around bmatrix
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{bmatrix}
+            P^0 \\ 1
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            R_{1}^{0} & d_{1}^{0}\\
+            0_{2} & 1
+            \end{bmatrix}
+            \begin{bmatrix}
+            P^1 \\ 1
+            \end{bmatrix}
+    latex: |-
+      \begin{equation}
+      \begin{bmatrix}
+      P^0 \\ 1
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      R_{1}^{0} & d_{1}^{0}\\
+      0_{2} & 1
+      \end{bmatrix}
+      \begin{bmatrix}
+      P^1 \\ 1
+      \end{bmatrix}
+      \end{equation}
