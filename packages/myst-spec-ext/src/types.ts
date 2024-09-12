@@ -327,3 +327,8 @@ export type ContentRecord = SearchRecordBase & {
  * Indexed search record type
  */
 export type SearchRecord = HeadingRecord | ContentRecord;
+
+export type MystSearchIndex = {
+  version: '1';
+  records: SearchRecord[];
+};

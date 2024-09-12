@@ -6,7 +6,7 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
-import type { SearchRecord } from 'myst-spec-ext';
+import type { SearchRecord, MystSearchIndex } from 'myst-spec-ext';
 import {
   buildIndexTransform,
   MultiPageReferenceResolver,
@@ -153,7 +153,7 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
 }
 
 export async function writeMystSearchJson(session: ISession, pages: LocalProjectPage[]) {
-  const data = pages
+  const records = pages
     .map((page) => selectFile(session, page.file))
     .map((file) => {
       const { mdast, slug, frontmatter } = file ?? {};
@@ -174,14 +174,12 @@ export async function writeMystSearchJson(session: ISession, pages: LocalProject
             ? `${pageURL}#${section.heading.html_id}`
             : pageURL;
 
-          const recordOffset = index * 2;
           return [
             {
               hierarchy,
               type: sectionToHeadingLevel(section.heading),
               url: recordURL,
               position: 2 * index,
-              id: `${pageURL}#${recordOffset}`,
             },
             {
               hierarchy,
@@ -189,13 +187,16 @@ export async function writeMystSearchJson(session: ISession, pages: LocalProject
               type: 'content' as SearchRecord['type'],
               url: recordURL,
               position: 2 * index + 1,
-              id: `${pageURL}#${recordOffset + 1}`,
             },
           ];
         })
         .flat();
     })
     .flat();
+  const data: MystSearchIndex = {
+    version: '1',
+    records,
+  };
   const filename = join(session.sitePath(), 'myst.search.json');
   session.log.debug(`Writing myst.search.json file: ${filename}`);
   writeFileToFolder(filename, JSON.stringify(data));
