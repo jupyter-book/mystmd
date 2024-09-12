@@ -151,3 +151,14 @@ cases:
           children:
             - type: text
               value: ok ok
+  - title: Strike-through and delete
+    tex: \cancel{me}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: delete
+              children:
+                - type: text
+                  value: me
