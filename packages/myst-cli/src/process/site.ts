@@ -153,7 +153,17 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
 }
 
 export async function writeMystSearchJson(session: ISession, pages: LocalProjectPage[]) {
-  const records = pages
+  const records = [...pages]
+    // Ensure deterministic ordering
+    .sort((left, right) => {
+      if (left.file < right.file) {
+        return -1;
+      } else if (left.file > right.file) {
+        return +1;
+      } else {
+        return +0;
+      }
+    })
     .map((page) => selectFile(session, page.file))
     .map((file) => {
       const { mdast, slug, frontmatter } = file ?? {};
