@@ -103,6 +103,7 @@
     "unist-util-filter": "^4.0.0",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
+    "unist-util-visit": "^4.0.0",
     "uuid": "^8.3.2",
     "vfile": "^5.3.5",
     "which": "^3.0.1",
@@ -121,7 +122,6 @@
     "@types/uuid": "^8.3.4",
     "@types/which": "^3.0.0",
     "@types/ws": "^8.5.5",
-    "concurrently": "^8.2.0",
-    "unist-util-visit": "^5.0.0"
+    "concurrently": "^8.2.0"
   }
 }

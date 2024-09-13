@@ -2,42 +2,7 @@ import type { GenericNode } from 'myst-common';
 import type { DocumentHierarchy } from 'myst-spec-ext';
 import type { Heading } from 'myst-spec';
 import { toText } from 'myst-common';
-export const SKIP = () => {};
-
-type Visit = (content: GenericNode, path: string) => typeof SKIP | void;
-type Depart = (content: GenericNode, path: string) => void;
-
-function visitNode(content: GenericNode, visit: Visit, depart: Depart | undefined, path: string) {
-  const result = visit(content, path);
-  if (result !== undefined && result === SKIP) {
-    return;
-  }
-  if ('children' in content && content.children) {
-    visitNodeArray(content.children, visit, depart, `${path}.`);
-  }
-
-  depart?.(content, path);
-}
-
-function visitNodeArray(
-  content: GenericNode[],
-  visit: Visit,
-  depart: Depart | undefined,
-  path: string,
-) {
-  content.forEach((n, i) => {
-    visitNode(n, visit, depart, `${path}${i}`);
-  });
-}
-
-export function walk(content: GenericNode, visit: Visit, depart?: Depart, basePath?: string) {
-  const path = basePath ?? '$';
-  if (Array.isArray(content)) {
-    visitNodeArray(content, visit, depart, path);
-  } else {
-    visitNode(content, visit, depart, path);
-  }
-}
+import { visit, SKIP } from 'unist-util-visit';
 
 export type HeadingInfo = {
   text: string;
@@ -63,33 +28,35 @@ export function toSectionedParts(content: GenericNode) {
     sections.push({ heading: info, parts: [] });
   };
   newSection();
-  const visit = (node: GenericNode) => {
-    if (node.type === 'heading') {
-      newSection(node as Heading);
-      return SKIP;
-    }
-    // deny-list
-    if (node.type === 'myst') {
-      return SKIP;
-    }
-    const section = sections[sections.length - 1];
+  visit(
+    content,
+    (node: GenericNode, index: number | undefined, parent: GenericNode | undefined) => {
+      if (node.type === 'heading') {
+        newSection(node as Heading);
+        return SKIP;
+      }
+      // deny-list
+      if (node.type === 'myst') {
+        return SKIP;
+      }
+      const section = sections[sections.length - 1];
 
-    // Literals are fused together
-    if ('value' in node && node.value) {
-      section.parts.push(node.value);
-    }
-    // Paragraphs are separated by newlines
-    else if (node.type === 'paragraph') {
-      section.parts.push('\n');
-    }
-  };
-
-  const depart = (node: GenericNode) => {
-    if (node.type === 'paragraph') {
-      sections[sections.length - 1].parts.push('\n');
-    }
-  };
-  walk(content, visit, depart);
+      // Literals are fused together
+      if ('value' in node && node.value) {
+        section.parts.push(node.value);
+        // Final children of paragraphs are separated by newlines
+        if (
+          parent &&
+          parent.children &&
+          index &&
+          parent.type === 'paragraph' &&
+          index === parent.children.length - 1
+        ) {
+          section.parts.push('\n');
+        }
+      }
+    },
+  );
   return sections;
 }
 
