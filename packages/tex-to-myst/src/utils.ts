@@ -100,6 +100,7 @@ export const phrasingTypes = new Set([
   'smallcaps',
   'link',
   'span',
+  'delete',
   'crossReference',
 ]);
 

@@ -11,6 +11,9 @@ const marks = {
   textsubscript: 'subscript',
   textsuperscript: 'superscript',
   hl: 'strong', // This needs to be done!
+  cancel: 'delete',
+  bcancel: 'delete',
+  xcancel: 'delete',
 };
 
 const TEXT_MARKS_HANDLERS: Record<string, Handler> = {

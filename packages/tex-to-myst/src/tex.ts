@@ -133,6 +133,10 @@ const macros: Record<string, number> = {
   t: 1,
   u: 1,
   v: 1,
+  // Cancel
+  cancel: 1,
+  bcancel: 1,
+  xcancel: 1,
 };
 
 // These macros allow a mix of {} and [] arguments, rather than only allowing
