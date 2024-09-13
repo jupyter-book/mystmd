@@ -320,7 +320,7 @@ export type HeadingRecord = SearchRecordBase & {
  */
 export type ContentRecord = SearchRecordBase & {
   type: 'content';
-  $content: string;
+  content: string;
 };
 
 /**

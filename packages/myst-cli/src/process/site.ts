@@ -193,7 +193,7 @@ export async function writeMystSearchJson(session: ISession, pages: LocalProject
             },
             {
               hierarchy,
-              $content: section.parts.join(''),
+              content: section.parts.join(''),
               type: 'content' as SearchRecord['type'],
               url: recordURL,
               position: 2 * index + 1,
