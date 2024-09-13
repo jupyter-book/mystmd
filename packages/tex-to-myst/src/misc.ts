@@ -1,3 +1,5 @@
+import type { GenericNode } from 'myst-common';
+import { copyNode } from 'myst-common';
 import type { Handler } from './types.js';
 import { getArguments, texToText } from './utils.js';
 
@@ -37,7 +39,10 @@ export const MISC_HANDLERS: Record<string, Handler> = {
     state.closeParagraph();
     const top = state.top();
     if (top?.type === 'container' && top?.kind === 'figure' && top?.children?.length) {
-      const topCopy = { ...top, children: [] };
+      const topCopy = copyNode({ ...top, children: [] }) as GenericNode;
+      delete topCopy.label;
+      delete topCopy.identifier;
+      delete topCopy.html_id;
       state.closeNode();
       state.openNode('container', topCopy);
     }

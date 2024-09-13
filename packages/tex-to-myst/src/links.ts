@@ -10,6 +10,12 @@ export const LINK_HANDLERS: Record<string, Handler> = {
     const url = texToText(urlNode);
     state.renderInline(textNode.content, 'link', { url });
   },
+  macro_hyperlink(node, state) {
+    state.openParagraph();
+    const [urlNode, textNode] = getArguments(node, 'group');
+    const url = texToText(urlNode);
+    state.renderInline(textNode.content, 'link', { url });
+  },
   macro_url(node, state) {
     state.openParagraph();
     const url = texToText(node);
@@ -20,7 +26,14 @@ export const LINK_HANDLERS: Record<string, Handler> = {
     state.openParagraph();
     const [urlNode] = getArguments(node, 'argument');
     const [textNode] = getArguments(node, 'group');
-    const url = texToText(urlNode);
-    state.renderInline(textNode.content, 'link', { url });
+    const label = texToText(urlNode);
+    state.renderInline(textNode.content, 'crossReference', { label });
+  },
+  macro_hypertarget(node, state) {
+    state.openParagraph();
+    const [urlNode, content] = getArguments(node, 'group');
+    const label = texToText(urlNode);
+    // Could potentially do this with a mystTarget?
+    state.renderInline(content, 'span', { label });
   },
 };

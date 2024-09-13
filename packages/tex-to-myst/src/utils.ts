@@ -101,6 +101,7 @@ export const phrasingTypes = new Set([
   'link',
   'span',
   'delete',
+  'crossReference',
 ]);
 
 export const UNHANDLED_ERROR_TEXT = 'Unhandled TEX conversion';
@@ -110,6 +111,20 @@ export function originalValue(original: string, node: Pick<GenericNode, 'positio
   const to = node.position?.end.offset;
   if (from == null || to == null) return '';
   return original.slice(from, to);
+}
+
+export function hasStar(node: GenericNode): boolean {
+  const first = node.args?.[0];
+  if (!first) return false;
+  if (
+    first.content?.length === 1 &&
+    first.content[0].type === 'string' &&
+    first.content[0].content === '*' &&
+    first.openMark === '' &&
+    first.closeMark === ''
+  )
+    return true;
+  return false;
 }
 
 export function getArguments(
