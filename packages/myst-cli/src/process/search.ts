@@ -3,6 +3,7 @@ import type { DocumentHierarchy } from 'myst-spec-ext';
 import type { Heading } from 'myst-spec';
 import { toText } from 'myst-common';
 import { visit, SKIP } from 'unist-util-visit';
+import { warn } from 'node:console';
 
 export type HeadingInfo = {
   text: string;
@@ -14,6 +15,19 @@ export type Section = {
   heading?: HeadingInfo;
   parts: string[];
 };
+
+const IGNORED_TYPES = ['myst', 'heading'];
+const INLINE_BLOCK_TYPES = [
+  'strong',
+  'emphasis',
+  'delete',
+  'superscript',
+  'underline',
+  'subscript',
+  'abbreviation',
+  'smallcaps',
+  'keyboard',
+];
 
 export function toSectionedParts(content: GenericNode) {
   const sections: Section[] = [];
@@ -33,10 +47,9 @@ export function toSectionedParts(content: GenericNode) {
     (node: GenericNode, index: number | undefined, parent: GenericNode | undefined) => {
       if (node.type === 'heading') {
         newSection(node as Heading);
-        return SKIP;
       }
       // deny-list
-      if (node.type === 'myst') {
+      if (IGNORED_TYPES.includes(node.type)) {
         return SKIP;
       }
       const section = sections[sections.length - 1];
@@ -44,15 +57,35 @@ export function toSectionedParts(content: GenericNode) {
       // Literals are fused together
       if ('value' in node && node.value) {
         section.parts.push(node.value);
-        // Final children of paragraphs are separated by newlines
-        if (
-          parent &&
-          parent.children &&
-          index &&
-          parent.type === 'paragraph' &&
-          index === parent.children.length - 1
-        ) {
-          section.parts.push('\n');
+      }
+
+      // Separate non-inline block elements in terms of the bottom element
+      if (
+        index !== undefined &&
+        parent !== undefined &&
+        // Skip literal nodes
+        'children' in node &&
+        // Skip inline-block nodes
+        !INLINE_BLOCK_TYPES.includes(node.type)
+      ) {
+        // Find the previous rendered node type
+        let previousNode: GenericNode | undefined;
+        for (let i = index - 1; i >= 0; i--) {
+          const maybePreviousNode = parent.children![i];
+          // Stop searching if we hit a heading
+          if (maybePreviousNode.type === 'heading') {
+            break;
+          }
+          // Stop searching and record result if it wasn't ignored
+          if (!IGNORED_TYPES.includes(maybePreviousNode.type)) {
+            previousNode = maybePreviousNode;
+            break;
+          }
+        }
+        // Don't separate interior nodes
+        if (previousNode !== undefined) {
+          // "interior" paragraphs are always
+          section.parts.push('\n\n');
         }
       }
     },
