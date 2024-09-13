@@ -202,6 +202,12 @@ cases:
         content: outputs/site-xrefs-config.json
       - path: site-xrefs/_build/site/myst.xref.json
         content: outputs/site-xrefs-myst.xref.json
+  - title: Search site build
+    cwd: site-search
+    command: myst build
+    outputs:
+      - path: site-search/_build/site/myst.search.json
+        content: outputs/site-search-myst.search.json
   - title: Notebook embed site build
     cwd: notebook-fig-embed
     command: myst build
