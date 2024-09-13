@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
+import type { MystSearchIndex } from 'myst-spec-ext';
 import type { ISession } from '../../session/types.js';
 import type { SiteManifestOptions } from '../site/manifest.js';
 import { getSiteManifest } from '../site/manifest.js';
@@ -179,6 +180,12 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
     ref.data = ref.data?.replace(/^\/content/, '');
   });
   fs.writeFileSync(path.join(htmlDir, 'myst.xref.json'), JSON.stringify(xrefs));
+
+  // Copy the search index
+  fs.copySync(
+    path.join(session.sitePath(), 'myst.search.json'),
+    path.join(htmlDir, 'myst.search.json'),
+  );
 
   // We need to go through and change all links to the right folder
   rewriteAssetsFolder(htmlDir, baseurl);
