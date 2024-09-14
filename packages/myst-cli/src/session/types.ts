@@ -9,6 +9,7 @@ import type { Limit } from 'p-limit';
 import type { BuildWarning, RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
 import type { SessionManager } from '@jupyterlab/services';
+import type MystTemplate from 'myst-templates';
 
 export type ISession = {
   API_URL: string;
@@ -38,6 +39,7 @@ export type ISessionWithCache = ISession & {
   $internalReferences: Record<string, ReferenceState>; // keyed on path
   $externalReferences: Record<string, ResolvedExternalReference>; // keyed on id
   $mdast: Record<string, { sha256?: string; pre: PreRendererData; post?: RendererData }>; // keyed on path
+  $siteTemplate: MystTemplate;
   $outputs: MinifiedContentCache;
   /** Method to get $mdast value with normalized path */
   $getMdast(

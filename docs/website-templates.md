@@ -78,6 +78,19 @@ Below is a table of options for each theme bundled with MyST.
 :heading-depth: 3
 ```
 
+### Page Options
+
+Depending on the option, these can also be controlled in the frontmatter on each page under the `site` key.
+
+```{code-block} yaml
+:filename: my-page.md
+---
+...
+site:
+  hide_toc: true
+---
+```
+
 ## Other top-level site configuration
 
 There are some other top-level site configuration options not documented here.
