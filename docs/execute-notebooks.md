@@ -28,7 +28,7 @@ The following computational content will be executed:
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
-## Expected errors
+## Expect a code-cell to fail
 
 By default, MyST will stop executing a notebook if a cell raises an error.
 If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell.
@@ -44,6 +44,20 @@ Here's an example of adding this tag with a {myst:directive}`code-cell` directiv
 :tags: raises-exception
 
 print("Hello" + 10001)
+```
+````
+
+## Skip particular code-cells
+
+Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book) use to prevent a cell from being executed. 
+
+Using the {myst:directive}`code-cell` directive, the `skip-execution` tag can be added as follows:
+
+````markdown
+```{code-cell}
+:tags: skip-execution
+
+name = input("What is your name?")
 ```
 ````
 
