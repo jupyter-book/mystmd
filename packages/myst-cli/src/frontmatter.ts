@@ -81,13 +81,14 @@ export function processPageFrontmatter(
   const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, validationOpts);
   const siteTemplate = cache.$siteTemplate;
   if (siteTemplate) {
-    frontmatter.site = siteTemplate.validateOptions(pageFrontmatter.site, path, {
+    const siteOptions = siteTemplate.validateOptions(pageFrontmatter.site ?? {}, path, {
       // The property is different on the page vs the myst.yml
       property: 'site',
       // Passing in the log files ensures this isn't prefixed with `myst.yml`.
       warningLogFn: session.log.warn,
       errorLogFn: session.log.error,
     } as ValidationOptions & FileOptions);
+    if (siteOptions && Object.keys(siteOptions).length > 0) frontmatter.site = siteOptions;
   } else {
     // The options are still there, they are just not validated
     session.log.debug(`Site template not available to validate site frontmatter in ${path}`);
