@@ -118,7 +118,7 @@ function buildCacheKey(kernelSpec: KernelSpec, nodes: (CodeBlock | InlineExpress
       hashableItems.push({
         kind: node.type,
         content: (select('code', node) as Code).value,
-        raisesException: !!node.data?.tags?.includes?.('raises-exception'),
+        raisesException: codeBlockRaisesException(node),
       });
     } else {
       assert(isInlineExpression(node));
@@ -154,7 +154,9 @@ type CodeBlockOutput = Output & {
 
 type CodeBlock = Block & {
   kind: 'code';
-  data: Record<string, unknown> | null;
+  data: {
+    tags?: string[];
+  };
   children: (Code | CodeBlockOutput)[];
 };
 
@@ -165,6 +167,10 @@ type CodeBlock = Block & {
  */
 function isCellBlock(node: GenericNode): node is CodeBlock {
   return node.type === 'block' && select('code', node) !== null && select('output', node) !== null;
+}
+
+function codeBlockRaisesException(node: CodeBlock) {
+  return !!node.data?.tags?.includes?.('raises-exception');
 }
 
 /**
@@ -204,7 +210,7 @@ async function computeExecutableNodes(
       results.push(outputs);
 
       // Check for errors
-      const allowErrors = !!matchedNode.data?.tags?.includes?.('raises-exception');
+      const allowErrors = codeBlockRaisesException(matchedNode);
       if (status === 'error' && !allowErrors) {
         const errorMessage = outputs
           .map((item) => item.traceback)
