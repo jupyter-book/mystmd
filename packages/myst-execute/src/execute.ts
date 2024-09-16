@@ -154,7 +154,7 @@ type CodeBlockOutput = Output & {
 
 type CodeBlock = Block & {
   kind: 'code';
-  data: {
+  data?: {
     tags?: string[];
   };
   children: (Code | CodeBlockOutput)[];
@@ -169,8 +169,21 @@ function isCellBlock(node: GenericNode): node is CodeBlock {
   return node.type === 'block' && select('code', node) !== null && select('output', node) !== null;
 }
 
+/**
+ * Return true if the given code block is expected to raise an exception
+ *
+ * @param node block to test
+ */
 function codeBlockRaisesException(node: CodeBlock) {
   return !!node.data?.tags?.includes?.('raises-exception');
+}
+/**
+ * Return true if the given code block should not be executed
+ *
+ * @param node block to test
+ */
+function codeBlockSkipsExecution(node: CodeBlock) {
+  return !!node.data?.tags?.includes?.('skip-execution');
 }
 
 /**
@@ -305,10 +318,14 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   const log = opts.log ?? console;
 
   // Pull out code-like nodes
-  const executableNodes = selectAll(`block[kind=${NotebookCell.code}],inlineExpression`, tree) as (
-    | CodeBlock
-    | InlineExpression
-  )[];
+  const executableNodes = (
+    selectAll(`block[kind=${NotebookCell.code}],inlineExpression`, tree) as (
+      | CodeBlock
+      | InlineExpression
+    )[]
+  )
+    // Filter out nodes that skip execution
+    .filter((node) => !(isCellBlock(node) && codeBlockSkipsExecution(node)));
 
   // Only do something if we have any nodes!
   if (executableNodes.length === 0) {

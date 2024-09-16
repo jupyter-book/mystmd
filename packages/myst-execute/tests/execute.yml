@@ -268,3 +268,42 @@ cases:
                   #   - "\e[0;31mValueError\e[0m: "
                   ename: ValueError
                   evalue: ''
+  - title: tree with bad executable code and `skip-execution` is not evaluated
+    before:
+      type: root
+      children:
+        - type: block
+          kind: notebook-code
+          data:
+            id: nb-cell-0
+            tags: skip-execution
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: raise ValueError
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+    after:
+      type: root
+      children:
+        - type: block
+          kind: notebook-code
+          data:
+            id: nb-cell-0
+            tags: skip-execution
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: raise ValueError
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
