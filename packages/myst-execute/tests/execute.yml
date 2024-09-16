@@ -288,6 +288,11 @@ cases:
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
     after:
       type: root
       children:
@@ -307,3 +312,8 @@ cases:
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+              data:
