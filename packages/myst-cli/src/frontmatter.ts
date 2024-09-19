@@ -14,6 +14,8 @@ import { VFile } from 'vfile';
 import type { ISession } from './session/types.js';
 import { selectors, watch } from './store/index.js';
 import { logMessagesFromVFile } from './utils/logging.js';
+import { castSession } from './session/cache.js';
+import type { FileOptions } from 'myst-templates';
 
 export function frontmatterValidationOpts(
   vfile: VFile,
@@ -71,11 +73,26 @@ export function processPageFrontmatter(
   validationOpts: ValidationOptions,
   path?: string,
 ) {
+  const cache = castSession(session);
   const state = session.store.getState();
   const siteFrontmatter = selectors.selectCurrentSiteConfig(state) ?? {};
   const projectFrontmatter = path ? selectors.selectLocalProjectConfig(state, path) ?? {} : {};
 
   const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, validationOpts);
+  const siteTemplate = cache.$siteTemplate;
+  if (siteTemplate) {
+    const siteOptions = siteTemplate.validateOptions(pageFrontmatter.site ?? {}, path, {
+      // The property is different on the page vs the myst.yml
+      property: 'site',
+      // Passing in the log files ensures this isn't prefixed with `myst.yml`.
+      warningLogFn: session.log.warn,
+      errorLogFn: session.log.error,
+    } as ValidationOptions & FileOptions);
+    if (siteOptions && Object.keys(siteOptions).length > 0) frontmatter.site = siteOptions;
+  } else {
+    // The options are still there, they are just not validated
+    session.log.debug(`Site template not available to validate site frontmatter in ${path}`);
+  }
 
   if (siteFrontmatter?.options?.hide_authors || siteFrontmatter?.options?.design?.hide_authors) {
     delete frontmatter.authors;

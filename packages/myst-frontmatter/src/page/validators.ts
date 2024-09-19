@@ -5,6 +5,7 @@ import {
   validateObjectKeys,
   validateString,
   validateBoolean,
+  validateObject,
 } from 'simple-validators';
 import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
 import { PAGE_FRONTMATTER_KEYS, type PageFrontmatter } from './types.js';
@@ -50,6 +51,11 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
       value.content_includes_title,
       incrementOptions('content_includes_title', opts),
     );
+  }
+  if (defined(value.site)) {
+    // These are validated later based on the siteTemplate
+    // At this point, they just need to be an object
+    output.site = validateObject(value.site, incrementOptions('site', opts));
   }
   return output;
 }

@@ -19,7 +19,7 @@ import { selectors } from '../../store/index.js';
 import { transformBanner, transformThumbnail } from '../../transforms/images.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import version from '../../version.js';
-import { getMystTemplate } from './template.js';
+import { getSiteTemplate } from './template.js';
 import { collectExportOptions } from '../utils/collectExportOptions.js';
 import { filterPages } from '../../project/load.js';
 import { getRawFrontmatterFromFile } from '../../process/file.js';
@@ -391,7 +391,7 @@ export async function getSiteManifest(
     ?.map((action) => resolveSiteAction(session, action, siteConfigFile, 'actions'))
     .filter((action): action is SiteAction => !!action);
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
-  const mystTemplate = await getMystTemplate(session, opts);
+  const mystTemplate = await getSiteTemplate(session, opts);
   const validatedOptions = mystTemplate.validateOptions(
     siteFrontmatter.options ?? {},
     siteConfigFile,

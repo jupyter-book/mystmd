@@ -11,6 +11,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'jupytext',
   'tags',
   'content_includes_title',
+  'site',
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
@@ -23,4 +24,6 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
    * Set during initial file/frontmatter load
    */
   content_includes_title?: boolean;
+  /** Site Options, for example for turning off the outline on a single page */
+  site?: Record<string, any>;
 };

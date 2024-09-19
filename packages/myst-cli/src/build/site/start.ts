@@ -13,7 +13,7 @@ import type { ISession } from '../../session/types.js';
 import version from '../../version.js';
 import { createServerLogger } from './logger.js';
 import { buildSite } from './prepare.js';
-import { installSiteTemplate, getMystTemplate } from './template.js';
+import { installSiteTemplate, getSiteTemplate } from './template.js';
 import { watchContent } from './watch.js';
 
 const DEFAULT_START_COMMAND = 'npm run start';
@@ -122,7 +122,7 @@ export async function startServer(
   // Ensure we are on the latest version of the configs
   await session.reload();
   warnOnHostEnvironmentVariable(session, opts);
-  const mystTemplate = await getMystTemplate(session, opts);
+  const mystTemplate = await getSiteTemplate(session, opts);
   if (!opts.headless) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session, opts);
