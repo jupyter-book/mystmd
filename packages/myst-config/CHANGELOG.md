@@ -1,5 +1,12 @@
 # myst-config
 
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies [760e411]
+  - myst-frontmatter@1.6.1
+
 ## 1.6.0
 
 ### Patch Changes

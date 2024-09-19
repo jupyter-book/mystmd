@@ -1,5 +1,16 @@
 # tex-to-myst
 
+## 1.0.37
+
+### Patch Changes
+
+- e3c3efa7: Add latex support for hyperlink and hypertarget
+- 5d5c2893: Add cancel to latex
+- Updated dependencies [760e411]
+  - myst-frontmatter@1.6.1
+  - myst-common@1.6.1
+  - myst-spec-ext@1.6.1
+
 ## 1.0.36
 
 ## 1.0.35

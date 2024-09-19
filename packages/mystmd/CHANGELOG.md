@@ -1,5 +1,12 @@
 # mystmd
 
+## 1.3.9
+
+### Patch Changes
+
+- 594a0f87: Top level AMS environments are not wrapped
+- e3c3efa7: Add latex support for hyperlink and hypertarget
+
 ## 1.3.8
 
 ### Patch Changes
