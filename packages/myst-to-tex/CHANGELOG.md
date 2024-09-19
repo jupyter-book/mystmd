@@ -1,5 +1,16 @@
 # myst-to-tex
 
+## 1.0.37
+
+### Patch Changes
+
+- 594a0f87: Top level AMS environments are not wrapped
+- adb3c75a: Allow index entries on many more nodes for myst-to-tex
+- Updated dependencies [760e411]
+  - myst-frontmatter@1.6.1
+  - myst-common@1.6.1
+  - myst-spec-ext@1.6.1
+
 ## 1.0.36
 
 ### Patch Changes

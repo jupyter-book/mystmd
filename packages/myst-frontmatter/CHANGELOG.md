@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.6.1
+
+### Patch Changes
+
+- 760e411: Enable site options on each page
+
 ## 1.6.0
 
 ### Minor Changes

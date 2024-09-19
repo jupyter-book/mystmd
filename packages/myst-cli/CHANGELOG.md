@@ -1,5 +1,24 @@
 # myst-cli
 
+## 1.3.9
+
+### Patch Changes
+
+- 760e411: Enable site options on each page
+- Updated dependencies [594a0f87]
+- Updated dependencies [e3c3efa7]
+- Updated dependencies [a2519bb3]
+- Updated dependencies [5d5c2893]
+- Updated dependencies [760e411]
+- Updated dependencies [adb3c75a]
+  - myst-to-tex@1.0.37
+  - tex-to-myst@1.0.37
+  - myst-execute@0.1.0
+  - myst-frontmatter@1.6.1
+  - myst-common@1.6.1
+  - myst-config@1.6.1
+  - myst-spec-ext@1.6.1
+
 ## 1.3.8
 
 ### Patch Changes
