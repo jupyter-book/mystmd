@@ -18,6 +18,7 @@ export type CSL = {
   id: string;
   author?: { given: string; family: string; literal?: string }[];
   issued?: { 'date-parts'?: number[][]; literal?: string };
+  accessed?: { 'date-parts'?: number[][]; literal?: string };
   publisher?: string;
   title?: string;
   'citation-key'?: string;
@@ -65,9 +66,10 @@ export enum InlineCite {
 }
 
 export function yearFromCitation(data: CSL) {
-  let year: number | string | undefined = data.issued?.['date-parts']?.[0]?.[0];
+  const date = data.issued ?? data.accessed;
+  let year: number | string | undefined = date?.['date-parts']?.[0]?.[0];
   if (year) return year;
-  year = data.issued?.['literal']?.match(/\b[12][0-9]{3}\b/)?.[0];
+  year = date?.['literal']?.match(/\b[12][0-9]{3}\b/)?.[0];
   if (year) return year;
   return 'n.d.';
 }
@@ -281,6 +283,7 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
       });
       // Trim the DOIs and URLs (these are encoded) on load
       if (c.URL) c.URL = c.URL.replace(/^(%20)*/, '').replace(/(%20)*$/, '');
+      if (!c.issued && c.accessed) c.issued = c.accessed;
       return [
         c.id,
         {
