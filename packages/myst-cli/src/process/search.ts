@@ -3,7 +3,6 @@ import type { DocumentHierarchy } from 'myst-spec-ext';
 import type { Heading } from 'myst-spec';
 import { toText } from 'myst-common';
 import { visit, SKIP } from 'unist-util-visit';
-import { warn } from 'node:console';
 
 export type HeadingInfo = {
   text: string;
@@ -103,6 +102,8 @@ export function sectionToHeadingLevel(heading: HeadingInfo | undefined): keyof D
     return 'lvl1';
   }
   switch (heading.depth) {
+    case 1:
+      return 'lvl1';
     case 2:
       return 'lvl2';
     case 3:
