@@ -5,33 +5,16 @@ short_title: Install MyST
 description: MyST Markdown is available through Node and npm, install the package with `npm install mystmd`.
 ---
 
-:::{tip}
-The MyST Markdown Command Line Interface (CLI) is available through [NodeJS](./install-node.md) and the node package manager, `npm`. NodeJS is used by [JupyterLab](https://github.com/jupyterlab/jupyterlab) (as well as many other Python packages) so you may already have it installed, and the following command may just work 🤞:
-
-```shell
-npm install -g mystmd
-```
-:::
-
-To install the MyST CLI, choose your preferred package manager. If you do not know what a package manager is, *it is recommended that you install MyST with `mamba` from conda-forge*.
-
+To install the MyST CLI, choose your preferred package manager. If you do not know what a package manager is, _it is recommended that you install MyST with `mamba` from conda-forge_.
 
 (installing-myst-tabs)=
 :::::{tab-set}
 (installing-with-mamba)=
 ::::{tab-item} conda-forge
 
+Install `mamba` (<https://mamba.readthedocs.io>), see [Getting started with Miniforge](xref:biapol#ref:miniforge_python).
 
-🛠 Install `mamba` (<https://mamba.readthedocs.io>), see <xref:biapol#ref:miniforge_python>.
-
-
-```shell
-$ mamba --version
-mamba 1.5.8
-conda 24.7.1   
-```
-
-🛠 Install `mystmd` from `conda-forge`:
+🛠 Then install `mystmd` from `conda-forge`:
 
 ```shell
 mamba install -c conda-forge mystmd
@@ -39,13 +22,6 @@ mamba install -c conda-forge mystmd
 
 ::::
 ::::{tab-item} PyPI
-
-:::{note} Install Node.js?
-:class: dropdown
-
-The `mystmd` package on PyPI ships with the ability to install `node` (<https://nodejs.org>). If you would prefer to install NodeJS manually, see [Installing NodeJS](./install-node.md):
-:::
-
 
 🛠 Install `mystmd`:
 
@@ -59,21 +35,23 @@ MyST needs `node` (<https://nodejs.org>) in order to run correctly. If `node` is
 
 ```shell
 $ myst -v
-❗ Node.js (node) is required to run MyST, but could not be found`.
-❔ Install Node.js in '/root/.local/share/myst/18.0.0'? (y/N): y
-⚙️ Attempting to install Node.js in /root/.local/share/myst/18.0.0 ...
-ℹ️ Successfully installed Node.js 18.0.0
+Node.js (node) is required to run MyST, but could not be found.
+Install Node.js in '/root/.local/share/myst/18.0.0'? (y/N): y
+Attempting to install Node.js in /root/.local/share/myst/18.0.0 ...
+Successfully installed Node.js 18.0.0
 v1.3.4
 ```
+
+:::{note} Installing Node.js Manually
+:class: dropdown
+
+The `mystmd` package on PyPI ships with the ability to install `node` (<https://nodejs.org>). If you would prefer to install NodeJS manually, see [Installing NodeJS](./install-node.md):
+:::
+
 ::::
 ::::{tab-item} NPM
 
-🛠 Install `node` (<https://nodejs.org>), see [Installing NodeJS](./install-node.md)
-
-```shell
-$ node -v
-v20.4.0
-```
+Ensure your `node` (<https://nodejs.org>) is up to date (>v18), see [Installing NodeJS](./install-node.md).
 
 🛠 Then install `mystmd` using npm, yarn or pnpm:
 
@@ -96,7 +74,6 @@ This command should print the current version of the package. If all is good, yo
 If you have any challenges installing, please [open an issue here](https://github.com/jupyter-book/mystmd/issues).
 ```
 
-
 ## Dependencies for $\LaTeX$ and PDF
 
 If you are exporting to $\LaTeX$ with an open-source template specified (see all [templates](https://github.com/myst-templates)) or if you are creating a PDF you will need to install a version of [LaTeX](https://www.latex-project.org/get).
@@ -109,7 +86,7 @@ If you are exporting to $\LaTeX$ with an open-source template specified (see all
 ```shell
 $ mamba --version
 mamba 1.5.8
-conda 24.7.1   
+conda 24.7.1
 ```
 
 🛠 Install `texlive-core` and `latexmk` from `conda-forge`:
