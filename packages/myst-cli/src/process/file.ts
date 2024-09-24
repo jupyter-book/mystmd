@@ -32,6 +32,7 @@ export type LoadFileResult = {
   mdast: GenericParent;
   frontmatter?: PageFrontmatter;
   identifiers?: string[];
+  widgets?: Record<string, any>;
 };
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
@@ -69,7 +70,11 @@ export async function loadNotebookFile(
 ): Promise<LoadFileResult> {
   const vfile = new VFile();
   vfile.path = file;
-  const { mdast, frontmatter: nbFrontmatter } = await processNotebookFull(session, file, content);
+  const {
+    mdast,
+    frontmatter: nbFrontmatter,
+    widgets,
+  } = await processNotebookFull(session, file, content);
   const { frontmatter: cellFrontmatter, identifiers } = getPageFrontmatter(
     session,
     mdast,
@@ -82,7 +87,7 @@ export async function loadNotebookFile(
     nbFrontmatter,
     frontmatterValidationOpts(vfile),
   );
-  return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers };
+  return { kind: SourceFileKind.Notebook, mdast, frontmatter, identifiers, widgets };
 }
 
 export function loadTexFile(

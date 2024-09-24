@@ -369,7 +369,7 @@ export async function writeFile(
   const toc = tic();
   const selectedFile = selectFile(session, file);
   if (!selectedFile) return;
-  const { frontmatter, mdast, kind, sha256, slug, references, dependencies, location } =
+  const { frontmatter, mdast, kind, sha256, slug, references, dependencies, location, widgets } =
     selectedFile;
   const exports = await Promise.all([
     resolvePageSource(session, file),
@@ -389,6 +389,7 @@ export async function writeFile(
       location,
       dependencies,
       frontmatter: frontmatterWithExports,
+      widgets,
       mdast,
       references,
     }),
