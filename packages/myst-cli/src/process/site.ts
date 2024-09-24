@@ -349,7 +349,6 @@ export async function fastProcessFile(
     extraLinkTransformers,
   });
   const { mdast, frontmatter } = castSession(session).$getMdast(file)?.post ?? {};
-  console.log('fast process');
   if (mdast && frontmatter) {
     await finalizeMdast(session, mdast, frontmatter, file, {
       imageWriteFolder: imageWriteFolder ?? session.publicPath(),
@@ -441,7 +440,6 @@ export async function processProject(
     ),
   );
   // Write all pages
-  console.log('full process');
   if (writeFiles) {
     await Promise.all(
       pages.map(async (page) => {
