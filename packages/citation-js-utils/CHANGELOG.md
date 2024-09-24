@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.6
+
+### Patch Changes
+
+- d0532699: Replace n.d. with access date for urls in citations
+
 ## 1.2.5
 
 ### Patch Changes

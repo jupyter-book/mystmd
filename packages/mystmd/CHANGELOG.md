@@ -1,5 +1,7 @@
 # mystmd
 
+## 1.3.10
+
 ## 1.3.9
 
 ### Patch Changes

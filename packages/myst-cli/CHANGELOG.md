@@ -1,5 +1,21 @@
 # myst-cli
 
+## 1.3.10
+
+### Patch Changes
+
+- 5f8f0b0d: Add support for seach index generation
+- 9f50eb8: 💦 building widget state
+- Updated dependencies [5f8f0b0d]
+- Updated dependencies [a550afdc]
+- Updated dependencies [d0532699]
+  - myst-spec-ext@1.7.0
+  - myst-to-typst@0.0.22
+  - citation-js-utils@1.2.6
+  - myst-common@1.7.0
+  - myst-config@1.7.0
+  - myst-frontmatter@1.7.0
+
 ## 1.3.9
 
 ### Patch Changes

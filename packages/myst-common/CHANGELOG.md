@@ -1,5 +1,11 @@
 # myst-common
 
+## 1.7.0
+
+### Patch Changes
+
+- myst-frontmatter@1.7.0
+
 ## 1.6.1
 
 ### Patch Changes
