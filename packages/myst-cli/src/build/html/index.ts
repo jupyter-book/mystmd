@@ -180,6 +180,12 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   });
   fs.writeFileSync(path.join(htmlDir, 'myst.xref.json'), JSON.stringify(xrefs));
 
+  // Copy the search index
+  fs.copySync(
+    path.join(session.sitePath(), 'myst.search.json'),
+    path.join(htmlDir, 'myst.search.json'),
+  );
+
   // We need to go through and change all links to the right folder
   rewriteAssetsFolder(htmlDir, baseurl);
 

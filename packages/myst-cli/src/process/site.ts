@@ -6,6 +6,7 @@ import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
+import type { SearchRecord, MystSearchIndex } from 'myst-spec-ext';
 import {
   buildIndexTransform,
   MultiPageReferenceResolver,
@@ -25,7 +26,8 @@ import {
 import { writeRemoteDOIBibtex } from '../build/utils/bibtex.js';
 import { MYST_DOI_BIB_FILE } from '../cli/options.js';
 import { filterPages, loadProjectFromDisk } from '../project/load.js';
-import type { LocalProject } from '../project/types.js';
+import { DEFAULT_INDEX_FILENAMES } from '../project/fromTOC.js';
+import type { LocalProject, LocalProjectPage } from '../project/types.js';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -39,6 +41,7 @@ import { loadFile, selectFile } from './file.js';
 import { loadReferences } from './loadReferences.js';
 import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
+import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -147,6 +150,66 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
   const filename = join(session.sitePath(), 'myst.xref.json');
   session.log.debug(`Writing myst.xref.json file: ${filename}`);
   writeFileToFolder(filename, JSON.stringify(mystXRefs));
+}
+
+export async function writeMystSearchJson(session: ISession, pages: LocalProjectPage[]) {
+  const records = [...pages]
+    // Ensure deterministic ordering
+    .sort((left, right) => {
+      if (left.file < right.file) {
+        return -1;
+      } else if (left.file > right.file) {
+        return +1;
+      } else {
+        return +0;
+      }
+    })
+    .map((page) => selectFile(session, page.file))
+    .map((file) => {
+      const { mdast, slug, frontmatter } = file ?? {};
+      if (!mdast || !frontmatter) {
+        return [];
+      }
+      const title = frontmatter.title ?? '';
+
+      // Group by section (simple running accumulator)
+      const sections = toSectionedParts(mdast);
+      const pageURL = slug && DEFAULT_INDEX_FILENAMES.includes(slug) ? '/' : `/${slug}`;
+      // Build sections into search records
+      return sections
+        .map((section, index) => {
+          const hierarchy = buildHierarchy(title, sections, index);
+
+          const recordURL = section.heading?.html_id
+            ? `${pageURL}#${section.heading.html_id}`
+            : pageURL;
+
+          return [
+            {
+              hierarchy,
+              type: sectionToHeadingLevel(section.heading),
+              url: recordURL,
+              position: 2 * index,
+            },
+            {
+              hierarchy,
+              content: section.parts.join(''),
+              type: 'content' as SearchRecord['type'],
+              url: recordURL,
+              position: 2 * index + 1,
+            },
+          ];
+        })
+        .flat();
+    })
+    .flat();
+  const data: MystSearchIndex = {
+    version: '1',
+    records,
+  };
+  const filename = join(session.sitePath(), 'myst.search.json');
+  session.log.debug(`Writing myst.search.json file: ${filename}`);
+  writeFileToFolder(filename, JSON.stringify(data));
 }
 
 /**
@@ -557,10 +620,12 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
   if (opts?.writeFiles ?? true) {
     await writeSiteManifest(session, opts);
     const states: ReferenceState[] = [];
+    const allPages: LocalProjectPage[] = [];
     await Promise.all(
       siteConfig.projects.map(async (project) => {
         if (!project.path) return;
         const { pages } = await loadProject(session, project.path);
+        allPages.push(...pages);
         states.push(
           ...selectPageReferenceStates(session, pages, {
             suppressWarnings: true,
@@ -570,6 +635,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
     );
     await writeObjectsInv(session, states, siteConfig);
     await writeMystXRefJson(session, states);
+    await writeMystSearchJson(session, allPages);
   }
   return true;
 }
