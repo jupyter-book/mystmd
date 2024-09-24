@@ -2,7 +2,6 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
-import type { MystSearchIndex } from 'myst-spec-ext';
 import type { ISession } from '../../session/types.js';
 import type { SiteManifestOptions } from '../site/manifest.js';
 import { getSiteManifest } from '../site/manifest.js';
