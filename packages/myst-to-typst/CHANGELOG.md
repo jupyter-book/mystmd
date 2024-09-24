@@ -1,5 +1,15 @@
 # myst-to-typst
 
+## 0.0.22
+
+### Patch Changes
+
+- a550afdc: Allow for styles in tables
+- Updated dependencies [5f8f0b0d]
+  - myst-spec-ext@1.7.0
+  - myst-common@1.7.0
+  - myst-frontmatter@1.7.0
+
 ## 0.0.21
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.7.0
+
+### Minor Changes
+
+- 5f8f0b0d: Add support for seach index generation
+
 ## 1.6.1
 
 ## 1.6.0
