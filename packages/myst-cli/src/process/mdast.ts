@@ -256,7 +256,6 @@ export async function transformMdast(
     mdast,
     references,
     widgets,
-    something: 'else',
   } as any;
   const cachedMdast = cache.$getMdast(file);
   if (cachedMdast) cachedMdast.post = data;
