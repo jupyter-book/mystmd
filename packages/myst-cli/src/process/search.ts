@@ -43,7 +43,7 @@ export function toSectionedParts(content: GenericNode) {
   newSection();
   visit(
     content,
-    (node: GenericNode, index: number | undefined, parent: GenericNode | undefined) => {
+    (node: GenericNode, index: number | null | undefined, parent: GenericNode | undefined) => {
       if (node.type === 'heading') {
         newSection(node as Heading);
       }
@@ -60,8 +60,8 @@ export function toSectionedParts(content: GenericNode) {
 
       // Separate non-inline block elements in terms of the bottom element
       if (
-        index !== undefined &&
-        parent !== undefined &&
+        index != null &&
+        parent != null &&
         // Skip literal nodes
         'children' in node &&
         // Skip inline-block nodes
