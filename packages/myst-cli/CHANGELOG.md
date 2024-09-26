@@ -1,5 +1,12 @@
 # myst-cli
 
+## 1.3.11
+
+### Patch Changes
+
+- fd4a7c3: Protect against circular references in logs
+- c02b1dcd: Update unist-util-visit deps
+
 ## 1.3.10
 
 ### Patch Changes
