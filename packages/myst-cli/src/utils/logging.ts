@@ -21,5 +21,19 @@ export function logMessagesFromVFile(session: ISession, file?: VFile): void {
 }
 
 export function writeJsonLogs(session: ISession, name: string, logData: Record<string, any>) {
-  writeFileToFolder(join(session.buildPath(), 'logs', name), JSON.stringify(logData, null, 2));
+  const seen = new WeakSet();
+  const data = JSON.stringify(
+    logData,
+    function (_, value) {
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) {
+          return '[Circular]';
+        }
+        seen.add(value);
+      }
+      return value;
+    },
+    2,
+  );
+  writeFileToFolder(join(session.buildPath(), 'logs', name), data);
 }
