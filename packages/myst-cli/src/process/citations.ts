@@ -29,7 +29,7 @@ export async function loadBibTeXCitationRenderers(
   }
   const csl = parseBibTeX(data);
   const renderer = getCitationRenderers(csl);
-  session.log.debug(toc(`Read ${plural('%s citations(s)', renderer)} from ${path} in %s.`));
+  session.log.debug(toc(`Read ${plural('%s citation(s)', renderer)} from ${path} in %s.`));
   return renderer;
 }
 
