@@ -21,7 +21,7 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
-import type { Admonition, Code, FootnoteDefinition } from 'myst-spec-ext';
+import type { Admonition, Code, CrossReference, FootnoteDefinition } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
 
 export type { TypstResult } from './types.js';
@@ -297,7 +297,16 @@ const handlers: Record<string, Handler> = {
   caption: captionHandler,
   legend: captionHandler,
   captionNumber: () => undefined,
-  crossReference(node, state, parent) {
+  crossReference(node: CrossReference, state, parent) {
+    if (node.remote) {
+      // We don't want to handle remote references, treat them as links
+      const url =
+        (node.remoteBaseUrl ?? '') +
+        (node.url === '/' ? '' : node.url ?? '') +
+        (node.html_id ? `#${node.html_id}` : '');
+      linkHandler({ ...node, url: url }, state);
+      return;
+    }
     // Look up reference and add the text
     // const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
     // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
