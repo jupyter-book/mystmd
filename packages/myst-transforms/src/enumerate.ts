@@ -211,7 +211,7 @@ function shouldEnumerate(
   if (kind === 'heading' && node.type === 'heading') {
     return numbering[`heading_${node.depth}`]?.enabled ?? enabledDefault;
   }
-  if (node.subcontainer) return !!numbering.subfigure?.enabled ?? enabledDefault;
+  if (node.subcontainer) return numbering.subfigure?.enabled ?? enabledDefault;
   return numbering[kind]?.enabled ?? enabledDefault;
 }
 
