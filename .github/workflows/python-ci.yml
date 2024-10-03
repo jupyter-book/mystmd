@@ -1,0 +1,96 @@
+name: Python CI
+
+on:
+  push:
+    branches: [main, ci-*]
+    paths:
+        - 'packages/mystmd-py/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/mystmd-py/**'
+  workflow_dispatch:
+
+jobs:
+  build-package:
+    name: Build Python package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: ./.github/actions/install
+        with:
+          node: ${{ matrix.node }}
+      - name: Copy necessary files
+        run: |
+          cp packages/mystmd/dist/myst.cjs packages/mystmd-py/src/mystmd_py/
+          cp packages/mystmd/package.json packages/mystmd-py/_package.json
+      - name: Build Python package
+        run: pipx run hatch -- build
+        working-directory: packages/mystmd-py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: packages/mystmd-py/dist/mystmd*.whl
+          if-no-files-found: error
+
+  platform-node:
+    name: Test with Node.js
+    runs-on: ubuntu-latest
+    needs: [build-package]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: actions/download-artifact@v4
+        with:
+          name: package
+      - name: Install myst from package
+        run: pip install mystmd*.whl
+      - name: Run myst expect success
+        env:
+          MYSTMD_ALLOW_NODEENV: 0
+        run: myst -v
+
+  no-node:
+    name: Test without Node.js
+    runs-on: ubuntu-latest
+    needs: [build-package]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: actions/download-artifact@v4
+        with:
+          name: package
+      - name: Run myst and expect failure
+        uses: "docker://python:3.12.7-slim-bookworm"
+        with:
+          entrypoint: /bin/bash
+          args: '-c "export MYSTMD_ALLOW_NODEENV=0; pip install mystmd*.whl && ! myst -v"'
+
+  nodeenv-node:
+    name: Test with nodeenv
+    runs-on: ubuntu-latest
+    needs: [build-package]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: actions/download-artifact@v4
+        with:
+          name: package
+      - name: Run myst with nodeenv and expect success
+        uses: "docker://python:3.12.7-slim-bookworm"
+        with:
+          entrypoint: /bin/bash
+          args: '-c "export MYSTMD_ALLOW_NODEENV=1; pip install mystmd*.whl && myst -v"'
