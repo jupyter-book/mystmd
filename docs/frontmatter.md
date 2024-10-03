@@ -816,10 +816,6 @@ MyST includes several fields to maintain bibliographic metadata for journal publ
   - description
 * - `number`
   - a string or a number to identify journal volume/issue
-* - `first_page`
-  - first page number of the volume/issue
-* - `last_page`
-  - last page number of the volume/issue
 * - `title`
   - title of the volume/issue, if provided separately from number
 * - `subject`

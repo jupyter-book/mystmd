@@ -15,30 +15,22 @@ cases:
     raw:
       volume:
         number: 12
-        first_page: 1
-        last_page: 2
         doi: 10.0000/abc123
         title: test proceedings
         subject: test subject
       issue:
-        number: spring
-        first_page: one
-        last_page: two
+        name: spring
         doi: 10.0000/abc456
         title: test proceedings
         subject: test subject
     normalized:
       volume:
         number: 12
-        first_page: 1
-        last_page: 2
         doi: 10.0000/abc123
         title: test proceedings
         subject: test subject
       issue:
         number: spring
-        first_page: one
-        last_page: two
         doi: 10.0000/abc456
         title: test proceedings
         subject: test subject
