@@ -1,5 +1,17 @@
 # myst-to-typst
 
+## 0.0.23
+
+### Patch Changes
+
+- 53fcd2ba: Replace remote cross references with links in typst
+- Updated dependencies [3c65de0]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+  - myst-frontmatter@1.7.1
+  - myst-common@1.7.1
+  - myst-spec-ext@1.7.1
+
 ## 0.0.22
 
 ### Patch Changes

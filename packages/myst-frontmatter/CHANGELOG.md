@@ -1,5 +1,13 @@
 # myst-frontmatter
 
+## 1.7.1
+
+### Patch Changes
+
+- 3c65de0: Add more frontmatter fields for different venue types
+- 64a33837: Allow custom licenses outside SPDX
+- 3c65de0: Deprecate biblio in favor of complete volume/issue objects
+
 ## 1.7.0
 
 ## 1.6.1

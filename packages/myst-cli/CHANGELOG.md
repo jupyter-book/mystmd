@@ -1,5 +1,24 @@
 # myst-cli
 
+## 1.3.12
+
+### Patch Changes
+
+- 64a33837: Consume new license simplification function
+- 3c65de0: Deprecate biblio in favor of complete volume/issue objects
+- Updated dependencies [53fcd2ba]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+  - myst-to-typst@0.0.23
+  - myst-to-md@1.0.13
+  - myst-frontmatter@1.7.1
+  - myst-to-jats@1.0.28
+  - myst-common@1.7.1
+  - myst-config@1.7.1
+  - myst-spec-ext@1.7.1
+
 ## 1.3.11
 
 ### Patch Changes
