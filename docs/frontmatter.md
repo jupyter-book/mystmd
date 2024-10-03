@@ -636,7 +636,7 @@ This field can be set to a string value directly or to a License object.
 
 Available fields in the License object are `content` and `code` allowing licenses to be set separately for these two forms of content, as often different subsets of licenses are applicable to each. If you only wish to apply a single license to your page or project use the string form rather than an object.
 
-String values for licenses should be a valid “Identifier” string from the [SPDX License List](https://spdx.org/licenses/). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some common licenses are:
+If selecting a license from the [SPDX License List](https://spdx.org/licenses/), you may simply use the “Identifier” string; MyST will expand these identifiers into objects with `name`, `url`, and additional metadata related to open access ([OSI-approved](https://opensource.org/licenses), [FSF free](https://www.gnu.org/licenses/license-list.en.html), and [CC](https://creativecommons.org/)). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some common licenses are:
 
 ```{list-table}
 :header-rows: 1
@@ -658,7 +658,25 @@ String values for licenses should be a valid “Identifier” string from the [S
     - `AGPL`
 ```
 
-By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition.
+By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition.  The simplest and most common example is something like:
+
+```yaml
+license: CC-BY-4.0
+```
+
+### Nonstandard licenses
+
+Although not recommended, you may specify nonstandard licenses not found on the SPDX License List. For these, you may provide an object where available fields are `id`, `name`, `url`, and `note`. You can also extend the default SPDX Licenses by providing modified values for these fields. Here is a more complex example where content and code have different licenses; content uses an SPDX License with an additional note, and code uses a totally custom license.
+
+```yaml
+license:
+  content:
+    id: CC-BY-4.0
+    note: When attributing this content, please indicate the Source was MyST Documentation.
+  code:
+    name: I Am Not A Lawyer License
+    url: https://example.com/i-am-not-a-lawyer
+```
 
 (frontmatter:funding)=
 
