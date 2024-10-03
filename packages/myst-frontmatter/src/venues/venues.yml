@@ -42,3 +42,27 @@ cases:
         url: http://example.com
         doi: 10.0000/abc123
         short_title: test
+  - title: additional venue fields validate
+    raw:
+      venue:
+        number: 21st
+        location: test location
+        date: '2022'
+        series: test series
+        issn: 0000-0000
+        publisher: myst
+    normalized:
+      venue:
+        number: 21st
+        location: test location
+        date: '2022'
+        series: test series
+        issn: 0000-0000
+        publisher: myst
+  - title: number for venue number validates
+    raw:
+      venue:
+        number: 21
+    normalized:
+      venue:
+        number: 21

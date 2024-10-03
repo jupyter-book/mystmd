@@ -589,14 +589,14 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
 }
 
 export function getArticleVolume(frontmatter: ProjectFrontmatter): Element[] {
-  const text = frontmatter.biblio?.volume;
+  const text = frontmatter.volume?.number;
   return text
     ? [{ type: 'element', name: 'volume', elements: [{ type: 'text', text: `${text}` }] }]
     : [];
 }
 
 export function getArticleIssue(frontmatter: ProjectFrontmatter): Element[] {
-  const text = frontmatter.biblio?.issue;
+  const text = frontmatter.issue?.number;
   return text
     ? [{ type: 'element', name: 'issue', elements: [{ type: 'text', text: `${text}` }] }]
     : [];
@@ -604,7 +604,7 @@ export function getArticleIssue(frontmatter: ProjectFrontmatter): Element[] {
 
 export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   // fpage/lpage, page-range, or elocation-id
-  const { first_page, last_page } = frontmatter.biblio ?? {};
+  const { first_page, last_page } = frontmatter ?? {};
   const pages: Element[] = [];
   if (first_page) {
     pages.push({

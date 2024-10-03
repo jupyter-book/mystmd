@@ -1,4 +1,4 @@
-import type { Biblio } from '../biblio/types.js';
+import type { PublicationMeta } from '../biblio/types.js';
 import type { Download } from '../downloads/types.js';
 import type { Export } from '../exports/types.js';
 import type { Licenses } from '../licenses/types.js';
@@ -29,7 +29,10 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'binder',
   'source',
   'subject',
-  'biblio',
+  'volume',
+  'issue',
+  'first_page',
+  'last_page',
   'oxa',
   'numbering',
   'bibliography',
@@ -66,7 +69,10 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   subject?: string;
   /** Links to bib files for citations */
   bibliography?: string[];
-  biblio?: Biblio;
+  volume?: PublicationMeta;
+  issue?: PublicationMeta;
+  first_page?: string | number;
+  last_page?: string | number;
   oxa?: string;
   numbering?: Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
