@@ -88,6 +88,53 @@ function fillSiteConfig(base: SiteConfig, filler: SiteConfig, opts: ValidationOp
 }
 
 /**
+ * Mutate config object to coerce deprecated frontmatter fields to valid schema
+ */
+export function handleDeprecatedFields(
+  conf: {
+    site?: Record<string, any>;
+    project?: Record<string, any>;
+  },
+  file: string,
+  vfile: VFile,
+) {
+  if (conf.site?.frontmatter) {
+    fileWarn(
+      vfile,
+      `Frontmatter fields should be defined directly on site, not nested under "${file}#site.frontmatter"`,
+      { ruleId: RuleId.configHasNoDeprecatedFields },
+    );
+    const { frontmatter, ...rest } = conf.site;
+    conf.site = { ...frontmatter, ...rest };
+  }
+  if (conf.project?.frontmatter) {
+    fileWarn(
+      vfile,
+      `Frontmatter fields should be defined directly on project, not nested under "${file}#project.frontmatter"`,
+      { ruleId: RuleId.configHasNoDeprecatedFields },
+    );
+    const { frontmatter, ...rest } = conf.project;
+    conf.project = { ...frontmatter, ...rest };
+  }
+  if (conf.project?.biblio) {
+    fileWarn(
+      vfile,
+      `biblio is deprecated, please use first_page/last_page/volume/issue fields "${file}#project"`,
+      { ruleId: RuleId.configHasNoDeprecatedFields },
+    );
+    const { biblio, ...rest } = conf.project;
+    conf.project = { ...biblio, ...rest };
+  }
+  if (conf.site?.logoText) {
+    fileWarn(vfile, `logoText is deprecated, please use logo_text in "${file}#site"`, {
+      ruleId: RuleId.configHasNoDeprecatedFields,
+    });
+    const { logoText, ...rest } = conf.site;
+    conf.site = { logo_text: logoText, ...rest };
+  }
+}
+
+/**
  * Load and validate a file as yaml config file
  *
  * Returns validated site and project configs.
@@ -125,31 +172,7 @@ async function getValidatedConfigsFromFile(
     throw Error(`Please address invalid config file ${file}`);
   }
   // Keep original config object with extra keys, etc.
-  if (conf.site?.frontmatter) {
-    fileWarn(
-      vfile,
-      `Frontmatter fields should be defined directly on site, not nested under "${file}#site.frontmatter"`,
-      { ruleId: RuleId.configHasNoDeprecatedFields },
-    );
-    const { frontmatter, ...rest } = conf.site;
-    conf.site = { ...frontmatter, ...rest };
-  }
-  if (conf.project?.frontmatter) {
-    fileWarn(
-      vfile,
-      `Frontmatter fields should be defined directly on project, not nested under "${file}#project.frontmatter"`,
-      { ruleId: RuleId.configHasNoDeprecatedFields },
-    );
-    const { frontmatter, ...rest } = conf.project;
-    conf.project = { ...frontmatter, ...rest };
-  }
-  if (conf.site?.logoText) {
-    fileWarn(vfile, `logoText is deprecated, please use logo_text in "${file}#site"`, {
-      ruleId: RuleId.configHasNoDeprecatedFields,
-    });
-    const { logoText, ...rest } = conf.site;
-    conf.site = { logo_text: logoText, ...rest };
-  }
+  handleDeprecatedFields(conf, file, vfile);
   let site: SiteConfig | undefined;
   let project: ProjectConfig | undefined;
   const projectOpts = configValidationOpts(vfile, 'config.project', RuleId.validProjectConfig);

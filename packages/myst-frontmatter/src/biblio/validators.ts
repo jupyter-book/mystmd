@@ -1,24 +1,22 @@
 import type { ValidationOptions } from 'simple-validators';
 import { defined, incrementOptions, validateObjectKeys, validateString } from 'simple-validators';
 import { validateDoi, validateStringOrNumber } from '../utils/validators.js';
-import type { Biblio } from './types.js';
+import type { PublicationMeta } from './types.js';
 
-const BIBLIO_KEYS = ['volume', 'issue', 'doi', 'first_page', 'last_page', 'title', 'subject'];
+const PUBLICATION_META_KEYS = ['number', 'doi', 'first_page', 'last_page', 'title', 'subject'];
 
 /**
- * Validate Biblio object
- *
- * https://docs.openalex.org/about-the-data/work#biblio
+ * Validate Publication Metadata object, used for volumes and issues
  */
-export function validateBiblio(input: any, opts: ValidationOptions) {
-  const value = validateObjectKeys(input, { optional: BIBLIO_KEYS }, opts);
-  if (value === undefined) return undefined;
-  const output: Biblio = {};
-  if (defined(value.volume)) {
-    output.volume = validateStringOrNumber(value.volume, incrementOptions('volume', opts));
+export function validatePublicationMeta(input: any, opts: ValidationOptions) {
+  if (typeof input !== 'object') {
+    input = { number: input };
   }
-  if (defined(value.issue)) {
-    output.issue = validateStringOrNumber(value.issue, incrementOptions('issue', opts));
+  const value = validateObjectKeys(input, { optional: PUBLICATION_META_KEYS }, opts);
+  if (value === undefined) return undefined;
+  const output: PublicationMeta = {};
+  if (defined(value.number)) {
+    output.number = validateStringOrNumber(value.number, incrementOptions('number', opts));
   }
   if (defined(value.doi)) {
     output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
@@ -38,5 +36,6 @@ export function validateBiblio(input: any, opts: ValidationOptions) {
   if (defined(value.subject)) {
     output.subject = validateString(value.subject, incrementOptions('subject', opts));
   }
+  if (Object.keys(output).length === 0) return undefined;
   return output;
 }

@@ -178,8 +178,17 @@ The following table lists the available frontmatter fields, a brief description 
 * - `venue`
   - a venue object with journal and conference metadata fields
   - page can override project
-* - `biblio`
-  - a biblio object with volume and issue metadata fields
+* - `volume`
+  - information about the journal volume, see [](#publication-metadata)
+  - page can override project
+* - `issue`
+  - information about the journal issue, see [](#publication-metadata)
+  - page can override project
+* - `first_page`
+  - first page of the project or article, for published works
+  - page can override project
+* - `last_page`
+  - last page of the project or article, for published works
   - page can override project
 * - `math`
   - a dictionary of math macros (see [](#math-macros))
@@ -793,51 +802,51 @@ venue:
   url: https://www.euroscipy.org/2022
 ```
 
-## Biblio
+(publication-metadata)=
 
-The term `biblio` is borrowed from the [OpenAlex](https://docs.openalex.org/about-the-data/venue) API definition:
+## Publication Metadata
 
-> Old-timey bibliographic info for this work. This is mostly useful only in citation/reference contexts. These are all strings because sometimes you'll get fun values like "Spring" and "Inside cover."
+MyST includes several fields to maintain bibliographic metadata for journal publications. First, it has `first_page` and `last_page` - these are page numbers for the article in its printed form. Also, `volume` and `issue` are available to describe the journal volume/issue containing the article. Each of these properties has the same fields available, described in @table-frontmatter-biblio.
 
-MyST has expanded the `biblio` object to cover all volume- and issue-specific metadata.
 
-```{list-table} Available Biblio fields
+```{list-table} Available Volume and Issue fields
 :header-rows: 1
 :label: table-frontmatter-biblio
 * - field
   - description
-* - `volume`
-  - a string or a number to identify journal volume
-* - `issue`
-  - a string or a number to identify journal issue
+* - `number`
+  - a string or a number to identify journal volume/issue
 * - `first_page`
-  - first page number of the work, as published in the journal
+  - first page number of the volume/issue
 * - `last_page`
-  - last page number of the work, as published in the journal
+  - last page number of the volume/issue
 * - `title`
-  - title of the journal issue in the case where there is both volume/issue number and separate title
+  - title of the volume/issue, if provided separately from number
 * - `subject`
-  - description of the subject of the journal issue
+  - description of the subject of the volume/issue
 * - `doi`
-  - the _issue_ DOI
+  - the volume/issue DOI
 ```
 
-Some example `biblio` values may be:
+An example of publication metadata for an article may be:
 
 ```yaml
-biblio:
-  volume: '42'
-  issue: '3'
-  first_page: '1' # can be a number or string
-  last_page: '99' # can be a number or string
-```
-
-OR
-
-```yaml
-biblio:
-  volume: '2022'
-  issue: Winter
-  first_page: Inside cover # can be a number or string
+first_page: 1500
+last_page: 1503
+volume:
+  number: 12
+  first_page: 1
+  last_page: 2000
+issue:
+  number: Winter
+  first_page: 1500
+  last_page: 2000
+  description: Special issue on software documentation
   doi: 10.62329/MYISSUE
 ```
+
+These fields provide a more complete superset of publication metadata than the ["biblio" object defined by OpenAlex API](https://docs.openalex.org/about-the-data/venue):
+
+> Old-timey bibliographic info for this work. This is mostly useful only in citation/reference contexts. These are all strings because sometimes you'll get fun values like "Spring" and "Inside cover."
+
+If MyST frontmatter includes an OpenAlex `biblio` object, it will be coerced to valid publication metadata.

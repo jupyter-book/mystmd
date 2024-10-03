@@ -12,7 +12,7 @@ import {
   validationError,
 } from 'simple-validators';
 import { validateTOC } from 'myst-toc';
-import { validateBiblio } from '../biblio/validators.js';
+import { validatePublicationMeta } from '../biblio/validators.js';
 import { validateDownloadsList } from '../downloads/validators.js';
 import { validateExportsList } from '../exports/validators.js';
 import { validateLicenses } from '../licenses/validators.js';
@@ -20,7 +20,7 @@ import { validateNumbering } from '../numbering/validators.js';
 import { validateExternalReferences } from '../references/validators.js';
 import { validateSiteFrontmatterKeys } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
-import { validateDoi } from '../utils/validators.js';
+import { validateDoi, validateStringOrNumber } from '../utils/validators.js';
 import { PAGE_KNOWN_PARTS, PROJECT_FRONTMATTER_KEYS } from './types.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
@@ -71,8 +71,20 @@ export function validateProjectAndPageFrontmatterKeys(
       },
     );
   }
-  if (defined(value.biblio)) {
-    output.biblio = validateBiblio(value.biblio, incrementOptions('biblio', opts));
+  if (defined(value.volume)) {
+    output.volume = validatePublicationMeta(value.volume, incrementOptions('volume', opts));
+  }
+  if (defined(value.issue)) {
+    output.issue = validatePublicationMeta(value.issue, incrementOptions('issue', opts));
+  }
+  if (defined(value.first_page)) {
+    output.first_page = validateStringOrNumber(
+      value.first_page,
+      incrementOptions('first_page', opts),
+    );
+  }
+  if (defined(value.last_page)) {
+    output.last_page = validateStringOrNumber(value.last_page, incrementOptions('last_page', opts));
   }
   if (defined(value.oxa)) {
     // TODO: better oxa validation

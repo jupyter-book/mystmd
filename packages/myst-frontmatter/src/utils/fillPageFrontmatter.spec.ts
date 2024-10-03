@@ -30,13 +30,23 @@ const TEST_PAGE_FRONTMATTER: PageFrontmatter = {
   binder: 'https://example.com/binder',
   source: 'https://example.com/source',
   subject: '',
-  biblio: {},
+  volume: {
+    number: 12,
+  },
+  issue: {
+    number: 12,
+  },
+  first_page: 100,
+  last_page: 200,
   oxa: '',
   math: { a: 'b' },
   subtitle: 'sub',
   short_title: 'short',
   date: '14 Dec 2021',
-  kernelspec: {},
+  kernelspec: {
+    name: 'my-kernel',
+    display_name: 'my-kernel',
+  },
   jupytext: {},
   keywords: ['example', 'test'],
   exports: [{ format: 'pdf' as any, template: 'default', output: 'out.tex', a: 1 }],
@@ -64,7 +74,14 @@ const TEST_PROJECT_FRONTMATTER: ProjectFrontmatter = {
   binder: 'https://example.com/binder',
   source: 'https://example.com/source',
   subject: '',
-  biblio: {},
+  volume: {
+    number: 12,
+  },
+  issue: {
+    number: 12,
+  },
+  first_page: 100,
+  last_page: 200,
   oxa: '',
   math: { a: 'b' },
   keywords: ['example', 'test'],
@@ -709,11 +726,6 @@ describe('fillPageFrontmatter', () => {
     expect(fillPageFrontmatter({ options: { a: 'b' } }, { options: { a: 'z' } }, opts)).toEqual({
       options: { a: 'b' },
     });
-  });
-  it('biblio object fills', async () => {
-    expect(
-      fillPageFrontmatter({ biblio: { first_page: 10 } }, { biblio: { issue: 1 } }, opts),
-    ).toEqual({ biblio: { first_page: 10, issue: 1 } });
   });
 });
 

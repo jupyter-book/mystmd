@@ -34,14 +34,19 @@ cases:
       binder: https://example.com/binder
       source: https://example.com/source
       subject: ''
-      biblio: {}
+      volume:
+        number: 12
+      issue:
+        number: 12
+      first_page: 100
+      last_page: 200
       oxa: ''
       math:
         a: b
       subtitle: sub
       short_title: short
       date: '14 Dec 2021'
-      kernelspec: 
+      kernelspec:
         name: python3
         display_name: Python 3
       jupytext: {}
@@ -85,7 +90,12 @@ cases:
       binder: https://example.com/binder
       source: https://example.com/source
       subject: ''
-      biblio: {}
+      volume:
+        number: 12
+      issue:
+        number: 12
+      first_page: 100
+      last_page: 200
       oxa: ''
       math:
         a:
@@ -93,7 +103,7 @@ cases:
       subtitle: sub
       short_title: short
       date: '2021-12-14'
-      kernelspec: 
+      kernelspec:
         name: python3
         display_name: Python 3
       jupytext: {}
