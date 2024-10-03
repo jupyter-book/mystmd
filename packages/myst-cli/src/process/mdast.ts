@@ -32,6 +32,7 @@ import {
   inlineMathSimplificationPlugin,
   checkLinkTextTransform,
   indexIdentifierPlugin,
+  mermaidToImageTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -343,6 +344,7 @@ export async function finalizeMdast(
   file: string,
   {
     imageWriteFolder,
+    mermaidAsImage,
     useExistingImages,
     imageAltOutputFolder,
     imageExtensions,
@@ -352,6 +354,7 @@ export async function finalizeMdast(
     maxSizeWebp,
   }: {
     imageWriteFolder: string;
+    mermaidAsImage?: boolean;
     useExistingImages?: boolean;
     imageAltOutputFolder?: string;
     imageExtensions?: ImageExtensions[];
@@ -374,6 +377,9 @@ export async function finalizeMdast(
     vfile,
   });
   if (!useExistingImages) {
+    if (mermaidAsImage) {
+      await mermaidToImageTransform(session, mdast, imageWriteFolder, vfile);
+    }
     await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
       imageExtensions,
