@@ -1,11 +1,11 @@
 import os
 import pathlib
+import platform
 import shutil
 import subprocess
 import sys
 
 
-NODEENV_VERSION = "18.0.0"
 INSTALL_NODEENV_KEY = "MYSTMD_ALLOW_NODEENV"
 
 
@@ -15,16 +15,20 @@ class PermissionDeniedError(Exception): ...
 class NodeEnvCreationError(Exception): ...
 
 
+def is_windows():
+    return platform.system() == "Windows"
+
+
 def find_installed_node():
-    return shutil.which("node") or shutil.which("node.exe") or shutil.which("node.cmd")
+    # shutil.which can find things with PATHEXT, but 3.12.0 breaks this by preferring NODE over NODE.EXE on Windows
+    return shutil.which("node.exe") if is_windows() else shutil.which("node")
 
 
-def find_nodeenv_path():
+def find_nodeenv_path(version: str):
     # The conda packaging of this package does not need to install node!
     import platformdirs
-    return platformdirs.user_data_path(
-        appname="myst", appauthor=False, version=NODEENV_VERSION
-    )
+
+    return platformdirs.user_data_path(appname="myst", appauthor=False, version=version)
 
 
 def ask_to_install_node(path):
@@ -34,13 +38,13 @@ def ask_to_install_node(path):
     return input(f"❔ Install Node.js in '{path}'? (y/N): ").lower() == "y"
 
 
-def create_nodeenv(env_path):
+def create_nodeenv(env_path, version):
     command = [
         sys.executable,
         "-m",
         "nodeenv",
         "-v",
-        f"--node={NODEENV_VERSION}",
+        f"--node={version}",
         "--prebuilt",
         "--clean-src",
         env_path,
@@ -53,24 +57,28 @@ def create_nodeenv(env_path):
         return env_path
 
 
-def find_any_node(binary_path):
+def find_any_node(binary_path, nodeenv_version):
     node_path = find_installed_node()
     if node_path is not None:
         return pathlib.Path(node_path).absolute(), binary_path
 
-    nodeenv_path = find_nodeenv_path()
+    nodeenv_path = find_nodeenv_path(nodeenv_version)
     if not nodeenv_path.exists():
         print("❗ Node.js (node) is required to run MyST, but could not be found`.")
         if ask_to_install_node(nodeenv_path):
             print(f"⚙️ Attempting to install Node.js in {nodeenv_path} ...")
-            create_nodeenv(nodeenv_path)
-            print(f"ℹ️ Successfully installed Node.js {NODEENV_VERSION}")
+            create_nodeenv(nodeenv_path, nodeenv_version)
+            print(f"ℹ️ Successfully installed Node.js {nodeenv_version}")
         else:
             raise PermissionDeniedError("Node.js installation was not permitted")
 
-    new_path = os.pathsep.join(
-        [*binary_path.split(os.pathsep), str(nodeenv_path / "bin")]
+    # Find the executable path
+    new_node_path = (
+        (nodeenv_path / "Scripts" / "node.exe")
+        if is_windows()
+        else (nodeenv_path / "bin" / "node")
     )
-    return nodeenv_path / "bin" / "node", new_path
-
-
+    new_path = os.pathsep.join(
+        [*binary_path.split(os.pathsep), str(new_node_path.parent)]
+    )
+    return new_node_path, new_path
