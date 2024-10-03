@@ -39,7 +39,7 @@ def main():
         message = textwrap.indent(err.args[0], "    ")
         raise SystemExit(
             "💥 The attempt to install Node.js was unsuccessful.\n"
-            f"🔍 Underlying error:\n{message}\n\n"
+            f"🔍  Underlying error:\n{message}\n\n"
             "ℹ️  We recommend installing the latest LTS release, using your preferred package manager "
             "or following instructions here: https://nodejs.org\n\n"
         ) from err

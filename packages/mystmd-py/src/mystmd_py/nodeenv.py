@@ -66,9 +66,9 @@ def find_any_node(binary_path, nodeenv_version):
     if not nodeenv_path.exists():
         print("❗ Node.js (node) is required to run MyST, but could not be found`.")
         if ask_to_install_node(nodeenv_path):
-            print(f"⚙️ Attempting to install Node.js in {nodeenv_path} ...")
+            print(f"⚙️  Attempting to install Node.js in {nodeenv_path} ...")
             create_nodeenv(nodeenv_path, nodeenv_version)
-            print(f"ℹ️ Successfully installed Node.js {nodeenv_version}")
+            print(f"ℹ️  Successfully installed Node.js {nodeenv_version}")
         else:
             raise PermissionDeniedError("Node.js installation was not permitted")
 
