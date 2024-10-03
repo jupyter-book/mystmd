@@ -2,13 +2,13 @@ name: Python CI
 
 on:
   push:
-    #branches: [main, ci-*]
-    #paths:
-    #    - 'packages/mystmd-py/**'
+    branches: [main, ci-*]
+    paths:
+        - 'packages/mystmd-py/**'
   pull_request:
-    #branches: [main]
-    #paths:
-    #  - 'packages/mystmd-py/**'
+    branches: [main]
+    paths:
+      - 'packages/mystmd-py/**'
   workflow_dispatch:
 
 jobs:
