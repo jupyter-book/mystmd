@@ -3,7 +3,7 @@ import type { Export, Licenses, PageFrontmatter } from 'myst-frontmatter';
 import {
   validateExportsList,
   fillPageFrontmatter,
-  licensesToString,
+  simplifyLicenses,
   unnestKernelSpec,
   validatePageFrontmatter,
 } from 'myst-frontmatter';
@@ -102,7 +102,7 @@ export function processPageFrontmatter(
 
 export function prepareToWrite(frontmatter: { license?: Licenses }) {
   if (!frontmatter.license) return { ...frontmatter };
-  return { ...frontmatter, license: licensesToString(frontmatter.license) };
+  return { ...frontmatter, license: simplifyLicenses(frontmatter.license) };
 }
 
 export function getExportListFromRawFrontmatter(
