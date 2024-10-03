@@ -831,12 +831,8 @@ first_page: 1500
 last_page: 1503
 volume:
   number: 12
-  first_page: 1
-  last_page: 2000
 issue:
-  number: Winter
-  first_page: 1500
-  last_page: 2000
+  name: Winter
   description: Special issue on software documentation
   doi: 10.62329/MYISSUE
 ```
