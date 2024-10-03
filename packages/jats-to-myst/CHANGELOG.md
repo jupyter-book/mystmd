@@ -1,5 +1,16 @@
 # jats-to-myst
 
+## 1.0.28
+
+### Patch Changes
+
+- Updated dependencies [3c65de0]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+  - myst-frontmatter@1.7.1
+  - myst-common@1.7.1
+  - myst-spec-ext@1.7.1
+
 ## 1.0.27
 
 ### Patch Changes

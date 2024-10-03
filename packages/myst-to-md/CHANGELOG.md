@@ -1,5 +1,16 @@
 # myst-to-md
 
+## 1.0.13
+
+### Patch Changes
+
+- 64a33837: Consume new license simplification function
+- Updated dependencies [3c65de0]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+  - myst-frontmatter@1.7.1
+  - myst-common@1.7.1
+
 ## 1.0.12
 
 ### Patch Changes
