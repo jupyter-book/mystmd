@@ -31,7 +31,7 @@ cases:
       doi: 10.1000/abcd/efg012
       arxiv: https://arxiv.org/example
       open_access: true
-      license: {}
+      license: CC-BY-4.0
       github: https://github.com/example
       binder: https://example.com/binder
       source: https://example.com/source
@@ -80,7 +80,13 @@ cases:
       doi: 10.1000/abcd/efg012
       arxiv: https://arxiv.org/example
       open_access: true
-      license: {}
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
       github: https://github.com/example
       binder: https://example.com/binder
       source: https://example.com/source

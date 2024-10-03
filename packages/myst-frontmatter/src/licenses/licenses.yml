@@ -1,5 +1,33 @@
 title: Licenses
 cases:
+  - title: non-spdx string warns
+    raw:
+      license: ''
+    normalized:
+      license:
+        content:
+          id: ''
+    warnings: 1
+  - title: non-spdx string under content warns
+    raw:
+      license:
+        content: ''
+    normalized:
+      license:
+        content:
+          id: ''
+    warnings: 1
+  - title: Empty license returns empty
+    raw:
+      license: {}
+    normalized: {}
+    warnings: 1
+  - title: Empty content returns empty
+    raw:
+      license:
+        content: {}
+    normalized: {}
+    warnings: 1
   - title: Valid License
     raw:
       license: CC-BY-4.0
@@ -11,7 +39,127 @@ cases:
           url: https://creativecommons.org/licenses/by/4.0/
           CC: true
           free: true
-  - title: Correct license (cc-by)
+  - title: Valid License under content
+    raw:
+      license:
+        content: CC-BY-4.0
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: Valid License under code
+    raw:
+      license:
+        code: CC-BY-4.0
+    normalized:
+      license:
+        code:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: Matching code and content coerces
+    raw:
+      license:
+        content: CC-BY-4.0
+        code: CC-BY-4.0
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: Code and content coerce individually
+    raw:
+      license:
+        content: CC-BY-4.0
+        code: CC-BY-3.0
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+        code:
+          id: CC-BY-3.0
+          name: Creative Commons Attribution 3.0 Unported
+          url: https://creativecommons.org/licenses/by/3.0/
+          CC: true
+  - title: Note passes with coerced license
+    raw:
+      license:
+        content:
+          id: CC-BY-4.0
+          note: I love CC licenses!
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+          note: I love CC licenses!
+  - title: Valid object passes to content
+    raw:
+      license:
+        id: CC-BY-4.0
+        name: Creative Commons Attribution 4.0 International
+        url: https://creativecommons.org/licenses/by/4.0/
+        CC: true
+        free: true
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: Valid content object passes
+    raw:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: Valid code object passes
+    raw:
+      license:
+        code:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+    normalized:
+      license:
+        code:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: Correct license (cc-by) coerces
     raw:
       license: cc-by
     normalized:
@@ -23,7 +171,7 @@ cases:
           CC: true
           free: true
     warnings: 1
-  - title: Correct licenses (gpl)
+  - title: Correct licenses (gpl) coerces
     raw:
       license: gpl
     normalized:
@@ -31,7 +179,132 @@ cases:
         content:
           id: GPL-3.0-or-later
           name: GNU General Public License v3.0 or later
-          url: https://opensource.org/licenses/GPL-3.0-or-later
+          url: https://opensource.org/licenses/GPL-3.0
           osi: true
           free: true
+    warnings: 1
+  - title: Correct licenses (apache 2) coerces
+    raw:
+      license: apache 2
+    normalized:
+      license:
+        content:
+          id: Apache-2.0
+          name: Apache License 2.0
+          url: https://opensource.org/licenses/Apache-2.0
+          free: true
+          osi: true
+    warnings: 1
+  - title: Invalid license content under correct id warns
+    raw:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 Wrong Name
+          url: https://example.com
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 Wrong Name
+          url: https://example.com
+          CC: true
+          free: true
+    warnings: 2
+  - title: Id not in spdx warns
+    raw:
+      license:
+        content:
+          id: my-custom-license
+    normalized:
+      license:
+        content:
+          id: my-custom-license
+    warnings: 1
+  - title: Non-spdx validates as custom license
+    raw:
+      license:
+        id: my-custom-license
+        url: https://example.com
+        note: I just made up this license!
+    normalized:
+      license:
+        content:
+          id: my-custom-license
+          url: https://example.com
+          note: I just made up this license!
+    warnings: 1
+  - title: OSI/free/CC fields warn for custom license if true
+    raw:
+      license:
+        content:
+          id: my-content-license
+          osi: true
+          free: true
+          cc: true
+        code:
+          id: my-code-license
+          osi: false
+          free: false
+          cc: false
+    normalized:
+      license:
+        content:
+          id: my-content-license
+        code:
+          id: my-code-license
+          osi: false
+          free: false
+          CC: false
+    warnings: 5
+  - title: CC passes for custom creativecommons license
+    raw:
+      license:
+        id: CC-BY-3.14
+        name: Creative Commons Pi License
+        url: http://creativecommons.org/licenses/pi
+        cc: true
+    normalized:
+      license:
+        content:
+          id: CC-BY-3.14
+          name: Creative Commons Pi License
+          url: http://creativecommons.org/licenses/pi
+          CC: true
+    warnings: 1
+  - title: url coerces to license (and warns)
+    raw:
+      license: https://example.com
+    normalized:
+      license:
+        content:
+          url: https://example.com
+    warnings: 1
+  - title: string with no spaces coerces to unknown id (and warns)
+    raw:
+      license: my-custom-license
+    normalized:
+      license:
+        content:
+          id: my-custom-license
+    warnings: 1
+  - title: Other short string coerces to note (and warns)
+    raw:
+      license: |
+        my custom license but this is really long, like, more than one hundred characters long.
+        clearly if it is this long it cannot be a name but must be a note.
+    normalized:
+      license:
+        content:
+          note: |
+            my custom license but this is really long, like, more than one hundred characters long.
+            clearly if it is this long it cannot be a name but must be a note.
+    warnings: 1
+  - title: Other long string coerces to name (and warns)
+    raw:
+      license: my custom license
+    normalized:
+      license:
+        content:
+          name: my custom license
     warnings: 1
