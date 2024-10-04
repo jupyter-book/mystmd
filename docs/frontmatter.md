@@ -154,6 +154,12 @@ The following table lists the available frontmatter fields, a brief description 
 * - `arxiv`
   - a valid arXiv reference, either URL or id
   - page can override project
+* - `pmid`
+  - a valid PubMed ID, an integer
+  - page can override project
+* - `pmcid`
+  - a valid PubMed Central ID, a string 'PMC' followed by numeric digits
+  - page can override project
 * - `open_access`
   - boolean (true/false)
   - page can override project

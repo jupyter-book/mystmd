@@ -24,6 +24,8 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
   'doi',
   'arxiv',
+  'pmid',
+  'pmcid',
   'open_access',
   'license',
   'binder',
@@ -62,6 +64,8 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   date?: string;
   doi?: string;
   arxiv?: string;
+  pmid?: number;
+  pmcid?: string;
   open_access?: boolean;
   license?: Licenses;
   binder?: string;
