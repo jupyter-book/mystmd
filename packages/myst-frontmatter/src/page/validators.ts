@@ -20,6 +20,8 @@ export const USE_PROJECT_FALLBACK = [
   'date',
   'doi',
   'arxiv',
+  'pmid',
+  'pmcid',
   'open_access',
   'license',
   'github',
