@@ -236,3 +236,28 @@ cases:
         A: Abbreviation
     normalized: {}
     errors: 1
+  - title: pmcid validates
+    raw:
+      pmcid: PMC123
+    normalized:
+      pmcid: PMC123
+  - title: invalid pmcid errors
+    raw:
+      pmcid: '123'
+    normalized: {}
+    errors: 1
+  - title: pmid string validates
+    raw:
+      pmid: '123'
+    normalized:
+      pmid: 123
+  - title: pmid number validates
+    raw:
+      pmid: 123
+    normalized:
+      pmid: 123
+  - title: invalid pmid errors
+    raw:
+      pmid: 'abc'
+    normalized: {}
+    errors: 1

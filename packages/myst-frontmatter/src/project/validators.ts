@@ -5,6 +5,7 @@ import {
   validateBoolean,
   validateDate,
   validateList,
+  validateNumber,
   validateObject,
   validateObjectKeys,
   validateString,
@@ -42,6 +43,19 @@ export function validateProjectAndPageFrontmatterKeys(
     output.arxiv = validateUrl(value.arxiv, {
       ...incrementOptions('arxiv', opts),
       includes: 'arxiv.org',
+    });
+  }
+  if (defined(value.pmid)) {
+    output.pmid = validateNumber(value.pmid, {
+      ...incrementOptions('pmid', opts),
+      integer: true,
+      min: 1,
+    });
+  }
+  if (defined(value.pmcid)) {
+    output.pmcid = validateString(value.pmcid, {
+      ...incrementOptions('pmcid', opts),
+      regex: '^PMC[0-9]+$',
     });
   }
   if (defined(value.open_access)) {
