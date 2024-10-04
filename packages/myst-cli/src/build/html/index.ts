@@ -81,10 +81,9 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
     }
     if (!['.html', '.js', '.json'].includes(path.extname(file))) return;
     const data = fs.readFileSync(file).toString();
-    const modified = data.replace(
-      new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'),
-      `${baseurl || ''}/build/`,
-    );
+    const modified = data
+      .replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`)
+      .replace('href="/favicon.ico"', `href="${baseurl || ''}/favicon.ico"`);
     fs.writeFileSync(file, modified);
   });
 }
