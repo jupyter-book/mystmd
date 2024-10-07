@@ -1,5 +1,17 @@
 # myst-cli
 
+## 1.3.13
+
+### Patch Changes
+
+- 91b85911: Bump action versions.
+- 40ea2dd1: Fix favicon writing
+- Updated dependencies [918223b8]
+  - myst-frontmatter@1.7.2
+  - myst-common@1.7.2
+  - myst-config@1.7.2
+  - myst-spec-ext@1.7.2
+
 ## 1.3.12
 
 ### Patch Changes
