@@ -60,7 +60,6 @@ jtex parse arxiv_two_column/template.tex
 >     preprint                      line 2
 >     lipsum                        line 3
 >     amsthm                        line 19
->     fontenc                       line 20
 ```
 
 ```{warning}
