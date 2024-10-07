@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.7.2
+
+### Patch Changes
+
+- 918223b8: Add pubmed identifiers to frontmatter
+
 ## 1.7.1
 
 ### Patch Changes
