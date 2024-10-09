@@ -13,7 +13,10 @@ export function clirun(
     | ((session: ISession, ...args: any[]) => Promise<void>)
     | ((session: ISession, ...args: any[]) => void),
   program: Command,
-  nArgs?: number,
+  runOptions?: {
+    nArgs?: number;
+    forceExit?: boolean | ((...args: any[]) => boolean);
+  },
 ) {
   return async (...args: any[]) => {
     const opts = program.opts() as SessionOpts;
@@ -25,7 +28,7 @@ export function clirun(
     const versionsInstalled = await checkNodeVersion(session);
     if (!versionsInstalled) process.exit(1);
     try {
-      await func(session, ...args.slice(0, nArgs));
+      await func(session, ...args.slice(0, runOptions?.nArgs));
     } catch (error) {
       session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
       session.log.error((error as Error).message);
@@ -33,5 +36,10 @@ export function clirun(
       process.exit(1);
     }
     session.showUpgradeNotice?.();
+    if (typeof runOptions?.forceExit === 'function') {
+      if (runOptions?.forceExit(...args)) process.exit(0);
+    } else if (runOptions?.forceExit) {
+      process.exit(0);
+    }
   };
 }

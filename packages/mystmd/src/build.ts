@@ -3,6 +3,12 @@ import { build, Session, makeBuildCommand } from 'myst-cli';
 import { clirun } from './clirun.js';
 
 export function makeBuildCLI(program: Command) {
-  const command = makeBuildCommand().action(clirun(Session, build, program));
+  const command = makeBuildCommand().action(
+    clirun(Session, build, program, {
+      forceExit: (_, opts) => {
+        return !opts.watch;
+      },
+    }),
+  );
   return command;
 }
