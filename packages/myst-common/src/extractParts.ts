@@ -131,7 +131,9 @@ export function extractImplicitPart(
 }
 
 /**
- * Returns a copy of the block parts and removes them from the tree.
+ * Returns a copy of block parts, if defined in the tree, and removes them from the tree.
+ *
+ * This does not look at parts defined in frontmatter.
  */
 export function extractPart(
   tree: GenericParent,

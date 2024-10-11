@@ -50,6 +50,23 @@ export function selectCurrentProjectConfig(state: RootState): ProjectConfig | un
   return mutableCopy(state.local.config.projects[resolve(state.local.config.currentProjectPath)]);
 }
 
+export function selectProjectParts(state: RootState, path: string): string[] {
+  return [...(state.local.config.projectParts[resolve(path)] ?? [])];
+}
+
+export function selectFileParts(state: RootState, file: string): string[] {
+  return [...(state.local.config.fileParts[resolve(file)] ?? [])];
+}
+
+export function selectFileFromPart(state: RootState, partFile: string): string | undefined {
+  let file: string | undefined;
+  Object.entries(state.local.config.fileParts).forEach(([key, value]) => {
+    if (file) return;
+    if (value.includes(partFile)) file = key;
+  });
+  return file;
+}
+
 export function selectCurrentProjectPath(state: RootState): string | undefined {
   return state.local.config.currentProjectPath;
 }
