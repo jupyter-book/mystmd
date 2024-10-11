@@ -60,9 +60,17 @@ function mutateEmbedNode(
   if (targetFile && sourceFile) {
     // TODO: Other node types that point to a file?
     selectAll('image', targetNode).forEach((imageNode: GenericNode) => {
-      const absoluteUrl = path.resolve(path.dirname(sourceFile), imageNode.url);
-      if (fs.existsSync(absoluteUrl)) {
-        imageNode.url = path.relative(path.dirname(targetFile), absoluteUrl);
+      if (imageNode.url) {
+        const absoluteUrl = path.resolve(path.dirname(sourceFile), imageNode.url);
+        if (fs.existsSync(absoluteUrl)) {
+          imageNode.url = path.relative(path.dirname(targetFile), absoluteUrl);
+        }
+      }
+      if (imageNode.urlSource) {
+        const absoluteUrlSource = path.resolve(path.dirname(sourceFile), imageNode.urlSource);
+        if (fs.existsSync(absoluteUrlSource)) {
+          imageNode.urlSource = path.relative(path.dirname(targetFile), absoluteUrlSource);
+        }
       }
     });
   }

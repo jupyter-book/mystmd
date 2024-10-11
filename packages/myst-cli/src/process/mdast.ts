@@ -259,7 +259,7 @@ export async function transformMdast(
     url = `/${projectSlug}/${useSlug ? pageSlug : ''}`;
     dataUrl = `/${projectSlug}/${pageSlug}.json`;
   } else if (pageSlug) {
-    url = `/${projectSlug}/${pageSlug}.json`;
+    url = `/${useSlug ? pageSlug : ''}`;
     dataUrl = `/${pageSlug}.json`;
   }
   updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);

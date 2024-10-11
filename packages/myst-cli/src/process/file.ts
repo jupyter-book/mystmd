@@ -333,7 +333,11 @@ export async function loadFrontmatterParts(
           session.log.warn(`Part file does not exist: ${partFile}`);
           return [part, contents];
         }
-        await loadFile(session, partFile, projectPath, undefined, { kind: SourceFileKind.Part });
+        await loadFile(session, partFile, projectPath, undefined, {
+          kind: SourceFileKind.Part,
+          /** Frontmatter from the source page is prioritized over frontmatter from the part file itself */
+          preFrontmatter: pageFrontmatter,
+        });
         session.store.dispatch(
           watch.actions.addLocalDependency({
             path: file,

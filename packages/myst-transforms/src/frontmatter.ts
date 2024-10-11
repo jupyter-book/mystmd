@@ -7,6 +7,7 @@ import { RuleId, fileError, toText, fileWarn, normalizeLabel } from 'myst-common
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
+import { fillPageFrontmatter } from 'myst-frontmatter';
 
 type Options = {
   /**
@@ -17,7 +18,7 @@ type Options = {
   propagateTargets?: boolean;
   /**
    * `preFrontmatter` overrides frontmatter from the file. It must be taken
-   * into account this early so tile is not removed if preFrontmatter.title
+   * into account this early so title is not removed if preFrontmatter.title
    * is defined.
    */
   preFrontmatter?: Record<string, any>;
@@ -68,7 +69,17 @@ export function getFrontmatter(
     }
   }
   if (opts.preFrontmatter) {
-    frontmatter = { ...frontmatter, ...opts.preFrontmatter };
+    frontmatter = fillPageFrontmatter(opts.preFrontmatter, frontmatter, {
+      property: 'frontmatter',
+      file: file.path,
+      messages: {},
+      errorLogFn: (message: string) => {
+        fileError(file, message, { ruleId: RuleId.validPageFrontmatter });
+      },
+      warningLogFn: (message: string) => {
+        fileWarn(file, message, { ruleId: RuleId.validPageFrontmatter });
+      },
+    });
   }
   if (frontmatter.content_includes_title != null) {
     fileWarn(file, `'frontmatter' cannot explicitly set: content_includes_title`, {
