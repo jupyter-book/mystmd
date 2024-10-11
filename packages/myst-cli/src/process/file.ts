@@ -304,13 +304,22 @@ export async function loadFile(
     success = false;
   }
   if (success) session.log.debug(successMessage ?? toc(`loadFile: loaded ${file} in %s.`));
-  if (pre?.frontmatter) await loadFrontmatterParts(session, file, pre.frontmatter, projectPath);
+  if (pre?.frontmatter) {
+    pre.frontmatter.parts = await loadFrontmatterParts(
+      session,
+      file,
+      'parts',
+      pre.frontmatter,
+      projectPath,
+    );
+  }
   return pre;
 }
 
 export async function loadFrontmatterParts(
   session: ISession,
   file: string,
+  property: string,
   frontmatter: PageFrontmatter,
   projectPath?: string,
 ) {
@@ -349,7 +358,7 @@ export async function loadFrontmatterParts(
         }
       } else {
         const cache = castSession(session);
-        partFile = `${path.resolve(file)}#parts.${part}`;
+        partFile = `${path.resolve(file)}#${property}.${part}`;
         if (contents.length !== 1 || contents[0] !== partFile || !cache.$getMdast(contents[0])) {
           const mdast = {
             type: 'root',
@@ -389,7 +398,7 @@ export async function loadFrontmatterParts(
       return [part, [partFile]];
     }),
   );
-  frontmatter.parts = Object.fromEntries(modifiedParts);
+  return Object.fromEntries(modifiedParts);
 }
 
 /**

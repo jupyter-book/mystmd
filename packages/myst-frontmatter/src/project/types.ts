@@ -10,16 +10,6 @@ import type { SiteFrontmatter } from '../site/types.js';
 import { SITE_FRONTMATTER_KEYS } from '../site/types.js';
 import type { ExpandedThebeFrontmatter } from '../thebe/types.js';
 
-export const PAGE_KNOWN_PARTS = [
-  'abstract',
-  'summary',
-  'keypoints',
-  'dedication',
-  'epigraph',
-  'data_availability',
-  'acknowledgments',
-];
-
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
   'doi',
@@ -43,8 +33,6 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'exports',
   'downloads',
   'settings', // We maybe want to move this into site frontmatter in the future
-  'parts',
-  ...PAGE_KNOWN_PARTS,
   // Do not add any project specific keys here!
   ...SITE_FRONTMATTER_KEYS,
 ];
@@ -86,7 +74,6 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   exports?: Export[];
   downloads?: Download[];
   settings?: ProjectSettings;
-  parts?: Record<string, string[]>;
 };
 
 export type ProjectFrontmatter = ProjectAndPageFrontmatter & {

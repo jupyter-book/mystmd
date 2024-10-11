@@ -16,6 +16,7 @@ import {
 } from 'simple-validators';
 import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
+import { loadFrontmatterParts } from './process/file.js';
 import { cachePath, loadFromCache, writeToCache } from './session/cache.js';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
@@ -361,6 +362,7 @@ async function resolveSiteConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
+  file: string,
 ) {
   const resolvedFields: SiteConfig = {};
   if (siteConfig.projects) {
@@ -375,6 +377,15 @@ async function resolveSiteConfigPaths(
   }
   if (siteConfig.favicon) {
     resolvedFields.favicon = await resolutionFn(session, path, siteConfig.favicon);
+  }
+  if (siteConfig.parts) {
+    resolvedFields.parts = await loadFrontmatterParts(
+      session,
+      file,
+      'site.parts',
+      { parts: siteConfig.parts },
+      path,
+    );
   }
   return { ...siteConfig, ...resolvedFields };
 }
@@ -437,7 +448,7 @@ async function validateSiteConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
-  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute);
+  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute, vfile.path);
 }
 
 function saveSiteConfig(session: ISession, path: string, site: SiteConfig) {
@@ -499,7 +510,7 @@ export async function writeConfigs(
   }
   siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
   if (siteConfig) {
-    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative);
+    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
   }
   // Get project config to save
   if (projectConfig) {

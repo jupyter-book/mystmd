@@ -3,10 +3,8 @@ import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
-import type { GenericParent } from 'myst-common';
 import { RuleId, toText, plural } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
-import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Node } from 'myst-spec';
 import type { SearchRecord, MystSearchIndex } from 'myst-spec-ext';
 import {
@@ -22,6 +20,7 @@ import { reloadAllConfigsForCurrentSite } from '../config.js';
 import type { SiteManifestOptions } from '../build/site/manifest.js';
 import {
   getSiteManifest,
+  resolveFrontmatterParts,
   resolvePageDownloads,
   resolvePageExports,
 } from '../build/site/manifest.js';
@@ -235,26 +234,28 @@ export async function writeObjectsInv(
     // TODO: allow a version on the project?!
     version: String((siteConfig as any)?.version),
   });
-  states.forEach((state) => {
-    inv.setEntry({
-      type: Domains.stdDoc,
-      name: (state.url as string).replace(/^\//, ''),
-      location: state.url as string,
-      display: state.title ?? '',
-    });
-    Object.entries(state.targets).forEach(([name, target]) => {
-      if ((target.node as any).implicit) {
-        // Don't include implicit references
-        return;
-      }
+  states
+    .filter((state): state is ReferenceState & { url: string } => !!state.url)
+    .forEach((state) => {
       inv.setEntry({
-        type: Domains.stdLabel,
-        name,
-        location: `${state.url}#${(target.node as any).html_id ?? target.node.identifier}`,
-        display: getReferenceTitleAsText(target.node),
+        type: Domains.stdDoc,
+        name: state.url.replace(/^\//, ''),
+        location: state.url,
+        display: state.title ?? '',
+      });
+      Object.entries(state.targets).forEach(([name, target]) => {
+        if ((target.node as any).implicit) {
+          // Don't include implicit references
+          return;
+        }
+        inv.setEntry({
+          type: Domains.stdLabel,
+          name,
+          location: `${state.url}#${(target.node as any).html_id ?? target.node.identifier}`,
+          display: getReferenceTitleAsText(target.node),
+        });
       });
     });
-  });
   const filename = join(session.sitePath(), 'objects.inv');
   session.log.debug(`Writing objects.inv file: ${filename}`);
   inv.write(filename);
@@ -363,18 +364,6 @@ async function resolvePageSource(session: ISession, file: string) {
     });
   });
   return { format: extname(file).substring(1), filename: basename(file), url: `/${fileHash}` };
-}
-
-function resolveFrontmatterParts(session: ISession, frontmatter: PageFrontmatter) {
-  const { parts } = frontmatter;
-  if (!parts || Object.keys(parts).length === 0) return undefined;
-  const partsMdast: Record<string, GenericParent> = {};
-  Object.entries(parts).forEach(([part, content]) => {
-    if (content.length !== 1) return;
-    const { mdast } = castSession(session).$getMdast(content[0])?.post ?? {};
-    if (mdast) partsMdast[part] = mdast;
-  });
-  return partsMdast;
 }
 
 export async function writeFile(

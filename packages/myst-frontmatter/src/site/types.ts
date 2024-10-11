@@ -3,6 +3,16 @@ import type { Contributor } from '../contributors/types.js';
 import type { Funding } from '../funding/types.js';
 import type { Venue } from '../venues/types.js';
 
+export const PAGE_KNOWN_PARTS = [
+  'abstract',
+  'summary',
+  'keypoints',
+  'dedication',
+  'epigraph',
+  'data_availability',
+  'acknowledgments',
+];
+
 export const SITE_FRONTMATTER_KEYS = [
   'title',
   'subtitle',
@@ -24,6 +34,8 @@ export const SITE_FRONTMATTER_KEYS = [
   'funding',
   'copyright',
   'options',
+  'parts',
+  ...PAGE_KNOWN_PARTS,
 ];
 
 export const FRONTMATTER_ALIASES = {
@@ -82,4 +94,5 @@ export type SiteFrontmatter = {
   copyright?: string;
   contributors?: Contributor[];
   options?: Record<string, any>;
+  parts?: Record<string, string[]>;
 };
