@@ -92,15 +92,13 @@ async function processorFn(
     session.log.warn(`⚠️ File is not in project: ${file}`);
     return;
   }
-  if (pageSlug) {
-    await fastProcessFile(session, {
-      file,
-      projectPath,
-      projectSlug: siteProject.slug,
-      pageSlug,
-      ...opts,
-    });
-  }
+  await fastProcessFile(session, {
+    file,
+    projectPath,
+    projectSlug: siteProject.slug,
+    pageSlug,
+    ...opts,
+  });
   if (dependencies.length) {
     session.log.info(
       `🔄 Updating dependent pages for ${file} ${chalk.dim(`[${dependencies.join(', ')}]`)}`,
