@@ -36,7 +36,13 @@ const DEFAULT_INDEX_WITH_EXT = ['.md', '.ipynb', '.myst.json']
   .map((ext) => DEFAULT_INDEX_FILENAMES.map((file) => `${file}${ext}`))
   .flat();
 
-type EntryWithoutPattern = FileEntry | URLEntry | FileParentEntry | URLParentEntry | ParentEntry;
+type EntryWithoutPattern = (
+  | FileEntry
+  | URLEntry
+  | FileParentEntry
+  | URLParentEntry
+  | ParentEntry
+) & { implicit?: boolean };
 
 export function comparePaths(a: string, b: string): number {
   const aDirName = dirname(a);
@@ -118,6 +124,7 @@ export function patternsToFileEntries(
         const newEntries = matches.map((item) => {
           return {
             file: item,
+            implicit: true,
           };
         });
         if (newEntries.length === 0) {
@@ -168,7 +175,7 @@ function pagesFromEntries(
       });
       if (file && fs.existsSync(file) && !isDirectory(file)) {
         const { slug } = fileInfo(file, pageSlugs);
-        pages.push({ file, level: entryLevel, slug });
+        pages.push({ file, level: entryLevel, slug, implicit: entry.implicit });
       }
     } else if (isURL(entry)) {
       addWarningForFile(

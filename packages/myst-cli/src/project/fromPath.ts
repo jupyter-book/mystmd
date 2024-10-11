@@ -74,6 +74,7 @@ function projectPagesFromPath(
         file,
         level,
         slug: fileInfo(file, pageSlugs).slug,
+        implicit: true,
       } as LocalProjectPage;
     });
   const folders = contents

@@ -20,6 +20,8 @@ export type LocalProjectPage = {
   file: string;
   slug: string;
   level: PageLevels;
+  /** Flag to mark if the page is implied from a TOC pattern or folder structure */
+  implicit?: boolean;
 };
 
 export type LocalProject = {
