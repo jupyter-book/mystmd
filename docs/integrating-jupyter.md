@@ -1,13 +1,11 @@
 ---
-title: Integrate Jupyter-based Computation
-short_title: Live Computation with Jupyter
+title: In-Browser Execution
+subtitle: Connecting Jupyter Kernels to your MyST website
 description: MyST allows you to connect a website directly to a Jupyter Kernel, enabling interactive computation on your page.
 thumbnail: thumbnails/integrating-jupyter.png
 ---
 
-MyST allows you to connect a website directly to a Jupyter Kernel, enabling interactive computation on your page.
-
-This allows you to do some amazing things with your MyST website like:
+MyST allows you to connect a website directly to a Jupyter Kernel, allowing you to do some amazing things with your website like:
 
 - Allow readers to recompute your notebooks for themselves, demonstrating the reproducibility of your work
 - Provide a new level of interactive content via `ipywidgets` and `ipywidgets` backed libraries such as `ipympl`, `ipyleaflet`, etc...
