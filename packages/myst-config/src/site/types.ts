@@ -65,7 +65,8 @@ type ManifestProject = {
   tags?: string[];
   downloads?: SiteAction[];
   exports?: SiteExport[];
-} & Omit<ProjectFrontmatter, 'downloads' | 'exports'>;
+  parts?: Record<string, GenericParent>;
+} & Omit<ProjectFrontmatter, 'downloads' | 'exports' | 'parts'>;
 
 export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
   myst: string;

@@ -174,6 +174,7 @@ export async function localToManifestProject(
   const downloads = projConfigFile
     ? await resolvePageDownloads(session, projConfigFile, projectPath)
     : undefined;
+  const parts = resolveFrontmatterParts(session, projFrontmatter);
   const banner = await transformBanner(
     session,
     path.join(projectPath, 'myst.yml'),
@@ -205,6 +206,7 @@ export async function localToManifestProject(
       undefined,
     exports,
     downloads,
+    parts,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',
     slug: projectSlug,

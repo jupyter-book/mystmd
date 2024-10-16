@@ -403,12 +403,13 @@ async function resolveProjectConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
+  file: string,
 ) {
   const resolvedFields: ProjectConfig = {};
   if (projectConfig.bibliography) {
     resolvedFields.bibliography = await Promise.all(
-      projectConfig.bibliography.map(async (file) => {
-        const resolved = await resolutionFn(session, path, file);
+      projectConfig.bibliography.map(async (f) => {
+        const resolved = await resolutionFn(session, path, f);
         return resolved;
       }),
     );
@@ -428,6 +429,15 @@ async function resolveProjectConfigPaths(
           return info;
         }
       }),
+    );
+  }
+  if (projectConfig.parts) {
+    resolvedFields.parts = await loadFrontmatterParts(
+      session,
+      file,
+      'project.parts',
+      { parts: projectConfig.parts },
+      path,
     );
   }
   return { ...projectConfig, ...resolvedFields };
@@ -470,7 +480,7 @@ async function validateProjectConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
-  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute);
+  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute, vfile.path);
 }
 
 function saveProjectConfig(session: ISession, path: string, project: ProjectConfig) {
@@ -528,6 +538,7 @@ export async function writeConfigs(
       path,
       projectConfig,
       resolveToRelative,
+      file,
     );
   }
   // Return early if nothing new to save
