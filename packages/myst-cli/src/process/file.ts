@@ -324,13 +324,15 @@ export async function loadFrontmatterParts(
   projectPath?: string,
 ) {
   const { parts, ...pageFrontmatter } = frontmatter;
+  const vfile = new VFile();
+  vfile.path = file;
   const modifiedParts: [string, string[]][] = await Promise.all(
     Object.entries(parts ?? {}).map(async ([part, contents]) => {
       let partFile: string;
       if (contents.length === 1 && isValidFile(contents[0])) {
         partFile = path.resolve(path.dirname(file), contents[0]);
         if (!fs.existsSync(partFile)) {
-          session.log.warn(`Part file does not exist: ${partFile}`);
+          fileWarn(vfile, `Part file does not exist: ${partFile}`);
           return [part, contents];
         }
         await loadFile(session, partFile, projectPath, undefined, {
@@ -346,14 +348,14 @@ export async function loadFrontmatterParts(
         );
         const proj = selectors.selectLocalProject(session.store.getState(), projectPath ?? '.');
         if (proj?.index === partFile) {
-          session.log.warn(`index file is also used as a part: ${partFile}`);
+          fileWarn(vfile, `index file is also used as a part: ${partFile}`);
         } else if (proj) {
           const filteredPages = proj.pages.filter((page) => {
             const { file: pageFile, implicit } = page as any;
             if (!pageFile) return true;
             if (pageFile !== partFile) return true;
             if (!implicit) {
-              session.log.warn(`project file is also used as a part: ${partFile}`);
+              fileWarn(vfile, `project file is also used as a part: ${partFile}`);
             }
             return !implicit;
           });
@@ -402,6 +404,7 @@ export async function loadFrontmatterParts(
       return [part, [partFile]];
     }),
   );
+  logMessagesFromVFile(session, vfile);
   return Object.fromEntries(modifiedParts);
 }
 
