@@ -40,18 +40,17 @@ export async function runCffExport(
   let frontmatter: PageFrontmatter | undefined;
   let abstract: string | undefined;
   if (projectPath && selectors.selectLocalConfigFile(state, projectPath) === sourceFile) {
+    // Process the project only, without any files
+    await getFileContent(session, [], {
+      projectPath,
+      imageExtensions: KNOWN_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+    });
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath);
-    // TODO: This uses project-config-level parts which are not yet supported in the same way
-    // as page- and site-level parts. Once those are supported, this needs updating.
-    const rawAbstract = frontmatter?.parts?.abstract?.join('\n\n');
-    if (rawAbstract) {
-      const abstractAst = parseMyst(session, rawAbstract, sourceFile);
-      abstract = toText(abstractAst);
+    const { abstract: frontmatterAbstract } = resolveFrontmatterParts(session, frontmatter) ?? {};
+    if (frontmatterAbstract) {
+      abstract = toText(frontmatterAbstract.mdast);
     }
-    // const { abstract: frontmatterAbstract } = resolveFrontmatterParts(session, frontmatter) ?? {};
-    // if (frontmatterAbstract) {
-    //   abstract = toText(frontmatterAbstract);
-    // }
   } else if (article.file) {
     const [content] = await getFileContent(session, [article.file], {
       projectPath,
