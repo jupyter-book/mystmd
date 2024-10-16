@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { addWarningForFile } from 'myst-cli';
 import { Session } from '../session';
 import { RuleId } from 'myst-common';
+import { addWarningForFile } from '../utils/addWarningForFile';
 
 describe('session warnings', () => {
   it('getAllWarnings returns for single session', async () => {

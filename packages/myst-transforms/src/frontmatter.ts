@@ -4,10 +4,10 @@ import { select } from 'unist-util-select';
 import type { Block, Code, Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
 import { RuleId, fileError, toText, fileWarn, normalizeLabel } from 'myst-common';
+import { fillProjectFrontmatter } from 'myst-frontmatter';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
 import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
-import { fillPageFrontmatter } from 'myst-frontmatter';
 
 type Options = {
   /**
@@ -69,7 +69,7 @@ export function getFrontmatter(
     }
   }
   if (opts.preFrontmatter) {
-    frontmatter = fillPageFrontmatter(opts.preFrontmatter, frontmatter, {
+    frontmatter = fillProjectFrontmatter(opts.preFrontmatter, frontmatter, {
       property: 'frontmatter',
       file: file.path,
       messages: {},

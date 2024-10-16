@@ -38,11 +38,11 @@ describe('patternsToFileEntries', () => {
         fs: memfs,
       }),
     ).toEqual([
-      { file: 'bar/file-2.md' },
-      { file: 'bar/file-9.md' },
-      { file: 'foo/file-1.md' },
-      { file: 'foo/file-3.md' },
-      { file: 'foo/file-10.md' },
+      { file: 'bar/file-2.md', implicit: true },
+      { file: 'bar/file-9.md', implicit: true },
+      { file: 'foo/file-1.md', implicit: true },
+      { file: 'foo/file-3.md', implicit: true },
+      { file: 'foo/file-10.md', implicit: true },
     ]);
   });
   it('files containing natural numbers are sorted correctly', () => {
@@ -57,10 +57,10 @@ describe('patternsToFileEntries', () => {
         fs: memfs,
       }),
     ).toEqual([
-      { file: 'foo/file-01.md' },
-      { file: 'foo/file-2.md' },
-      { file: 'foo/file-3.md' },
-      { file: 'foo/file-10.md' },
+      { file: 'foo/file-01.md', implicit: true },
+      { file: 'foo/file-2.md', implicit: true },
+      { file: 'foo/file-3.md', implicit: true },
+      { file: 'foo/file-10.md', implicit: true },
     ]);
   });
   it('directories with index files are sorted correctly', () => {
@@ -79,14 +79,14 @@ describe('patternsToFileEntries', () => {
         fs: memfs,
       }),
     ).toEqual([
-      { file: 'bar/index.md' },
-      { file: 'bar/file-1.md' },
-      { file: 'bar/file-8.md' },
-      { file: 'bar/file-10.md' },
-      { file: 'foo/index.ipynb' },
-      { file: 'foo/file-2.md' },
-      { file: 'foo/file-3.md' },
-      { file: 'foo/file-10.md' },
+      { file: 'bar/index.md', implicit: true },
+      { file: 'bar/file-1.md', implicit: true },
+      { file: 'bar/file-8.md', implicit: true },
+      { file: 'bar/file-10.md', implicit: true },
+      { file: 'foo/index.ipynb', implicit: true },
+      { file: 'foo/file-2.md', implicit: true },
+      { file: 'foo/file-3.md', implicit: true },
+      { file: 'foo/file-10.md', implicit: true },
     ]);
   });
 });
