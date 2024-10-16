@@ -1,6 +1,6 @@
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
-import type { GenericNode, GenericParent, References } from 'myst-common';
+import type { FrontmatterParts, GenericNode, GenericParent, References } from 'myst-common';
 import { RuleId, fileWarn, plural, selectMdastNodes } from 'myst-common';
 import { computeHash, tic } from 'myst-cli-utils';
 import { addChildrenFromTargetNode } from 'myst-transforms';
@@ -25,7 +25,7 @@ export type MystData = {
   frontmatter?: Omit<PageFrontmatter, 'downloads' | 'exports' | 'parts'> & {
     downloads?: SiteAction[];
     exports?: [{ format: string; filename: string; url: string }, ...SiteExport[]];
-    parts?: Record<string, GenericParent>;
+    parts?: FrontmatterParts;
   };
   widgets?: Record<string, any>;
   mdast?: GenericParent;
@@ -92,9 +92,9 @@ export function nodesFromMystXRefData(
   },
 ) {
   let targetNodes: GenericNode[] | undefined;
-  [data.mdast, ...Object.values(data.frontmatter?.parts ?? {})].forEach((tree) => {
-    if (!tree || targetNodes?.length) return;
-    targetNodes = selectMdastNodes(tree, identifier, opts?.maxNodes).nodes;
+  [data, ...Object.values(data.frontmatter?.parts ?? {})].forEach(({ mdast }) => {
+    if (!mdast || targetNodes?.length) return;
+    targetNodes = selectMdastNodes(mdast, identifier, opts?.maxNodes).nodes;
   });
   if (!targetNodes?.length) {
     fileWarn(vfile, `Unable to resolve content from external MyST reference: ${opts?.urlSource}`, {

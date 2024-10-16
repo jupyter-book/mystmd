@@ -1,5 +1,5 @@
 import type { Block } from 'myst-spec-ext';
-import type { GenericNode, GenericParent } from './types.js';
+import type { FrontmatterParts, GenericNode, GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { copyNode, toText } from './utils.js';
@@ -54,7 +54,7 @@ export function selectBlockParts(tree: GenericParent, part?: string | string[]):
  * Returns array of blocks.
  */
 export function selectFrontmatterParts(
-  frontmatterParts?: Record<string, GenericParent>,
+  frontmatterParts?: FrontmatterParts,
   part?: string | string[],
 ): Block[] {
   if (!frontmatterParts) return [];
@@ -63,7 +63,7 @@ export function selectFrontmatterParts(
   const blockParts: Block[] = [];
   parts.forEach((p) => {
     Object.entries(frontmatterParts).forEach(([key, value]) => {
-      if (p === key.toLowerCase()) blockParts.push(...(value.children as Block[]));
+      if (p === key.toLowerCase()) blockParts.push(...(value.mdast.children as Block[]));
     });
   });
   return blockParts;
@@ -170,7 +170,7 @@ export function extractPart(
     /** Provide an option so implicit section-to-part behavior can be disabled */
     requireExplicitPart?: boolean;
     /** Dictionary of part trees, processed from frontmatter */
-    frontmatterParts?: Record<string, GenericParent>;
+    frontmatterParts?: FrontmatterParts;
   },
 ): GenericParent | undefined {
   const partStrings = coercePart(part);

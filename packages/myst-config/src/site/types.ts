@@ -1,4 +1,4 @@
-import type { GenericParent } from 'myst-common';
+import type { FrontmatterParts } from 'myst-common';
 import type { ExportFormats, ProjectFrontmatter, SiteFrontmatter } from 'myst-frontmatter';
 
 export interface SiteProject {
@@ -65,7 +65,7 @@ type ManifestProject = {
   tags?: string[];
   downloads?: SiteAction[];
   exports?: SiteExport[];
-  parts?: Record<string, GenericParent>;
+  parts?: FrontmatterParts;
 } & Omit<ProjectFrontmatter, 'downloads' | 'exports' | 'parts'>;
 
 export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
@@ -77,5 +77,5 @@ export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
   domains?: string[];
   favicon?: string;
   template?: string;
-  parts?: Record<string, GenericParent>;
+  parts?: FrontmatterParts;
 };

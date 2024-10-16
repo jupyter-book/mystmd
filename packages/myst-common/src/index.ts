@@ -53,4 +53,6 @@ export type {
   PluginOptions,
   PluginUtils,
   TransformSpec,
+  FrontmatterPart,
+  FrontmatterParts,
 } from './types.js';

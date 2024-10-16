@@ -1,4 +1,4 @@
-import type { GenericParent } from 'myst-common';
+import type { FrontmatterParts } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
@@ -8,15 +8,15 @@ import type { ISession } from '../session/types.js';
  */
 export function resolveFrontmatterParts(
   session: ISession,
-  frontmatter?: PageFrontmatter,
-): Record<string, GenericParent> | undefined {
-  const { parts } = frontmatter ?? {};
+  pageFrontmatter?: PageFrontmatter,
+): FrontmatterParts | undefined {
+  const { parts } = pageFrontmatter ?? {};
   if (!parts || Object.keys(parts).length === 0) return undefined;
-  const partsMdast: Record<string, GenericParent> = {};
+  const partsMdast: FrontmatterParts = {};
   Object.entries(parts).forEach(([part, content]) => {
     if (content.length !== 1) return;
-    const { mdast } = castSession(session).$getMdast(content[0])?.post ?? {};
-    if (mdast) partsMdast[part] = mdast;
+    const { mdast, frontmatter } = castSession(session).$getMdast(content[0])?.post ?? {};
+    if (mdast) partsMdast[part] = { mdast, frontmatter };
   });
   return partsMdast;
 }
