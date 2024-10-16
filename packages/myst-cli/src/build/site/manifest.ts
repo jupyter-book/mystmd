@@ -1,10 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
-import type { GenericParent } from 'myst-common';
 import { RuleId, TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
-import type { Download, PageFrontmatter } from 'myst-frontmatter';
+import type { Download } from 'myst-frontmatter';
 import {
   EXT_TO_FORMAT,
   ExportFormats,
@@ -19,12 +18,12 @@ import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { transformBanner, transformThumbnail } from '../../transforms/images.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
+import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import version from '../../version.js';
 import { getSiteTemplate } from './template.js';
 import { collectExportOptions } from '../utils/collectExportOptions.js';
 import { filterPages } from '../../project/load.js';
 import { getRawFrontmatterFromFile } from '../../process/file.js';
-import { castSession } from '../../session/cache.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 
@@ -368,18 +367,6 @@ function resolveSiteAction(
 export type SiteManifestOptions = {
   defaultTemplate?: string;
 };
-
-export function resolveFrontmatterParts(session: ISession, frontmatter: PageFrontmatter) {
-  const { parts } = frontmatter;
-  if (!parts || Object.keys(parts).length === 0) return undefined;
-  const partsMdast: Record<string, GenericParent> = {};
-  Object.entries(parts).forEach(([part, content]) => {
-    if (content.length !== 1) return;
-    const { mdast } = castSession(session).$getMdast(content[0])?.post ?? {};
-    if (mdast) partsMdast[part] = mdast;
-  });
-  return partsMdast;
-}
 
 /**
  * Build site manifest from local redux state

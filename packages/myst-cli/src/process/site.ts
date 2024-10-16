@@ -20,7 +20,6 @@ import { reloadAllConfigsForCurrentSite } from '../config.js';
 import type { SiteManifestOptions } from '../build/site/manifest.js';
 import {
   getSiteManifest,
-  resolveFrontmatterParts,
   resolvePageDownloads,
   resolvePageExports,
 } from '../build/site/manifest.js';
@@ -37,6 +36,7 @@ import type { MystData } from '../transforms/crossReferences.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
+import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
 import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
