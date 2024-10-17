@@ -196,7 +196,7 @@ export async function init(session: ISession, opts: InitOptions) {
       chalk.dim('\nYou can build all content with:'),
       chalk.bold(`${binaryName()} build --all`),
     );
-    return;
+    process.exit(0);
   }
   await startServer(session, {});
 }

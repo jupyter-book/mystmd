@@ -19,6 +19,15 @@ export function clirun<S extends ISession>(
     program: Command;
     getSession: (logger: Logger, opts?: SessionOpts) => S;
   },
+  runOptions?: {
+    /**
+     * Wait for all promises to finish, even if the main command is complete.
+     *
+     * For example, when starting a watch process.
+     * For build commands, this should be `false`, the default, to ensure a speedy exit from the CLI.
+     */
+    keepAlive?: boolean | ((...args: any[]) => boolean);
+  },
 ) {
   return async (...args: any[]) => {
     const opts = cli.program.opts() as SessionOpts;
@@ -32,6 +41,11 @@ export function clirun<S extends ISession>(
       }
       logger.error((error as Error).message);
       process.exit(1);
+    }
+    if (typeof runOptions?.keepAlive === 'function') {
+      if (!runOptions.keepAlive(...args)) process.exit(0);
+    } else if (!runOptions?.keepAlive) {
+      process.exit(0);
     }
   };
 }
