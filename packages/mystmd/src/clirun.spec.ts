@@ -22,6 +22,7 @@ describe('clirun', () => {
         return;
       },
       new Command(),
+      { keepAlive: true },
     )();
     expect(process.exit).not.toHaveBeenCalledWith(1);
   });
@@ -33,6 +34,7 @@ describe('clirun', () => {
           throw new Error();
         },
         new Command(),
+        { keepAlive: true },
       )();
       expect(true).toBe(false);
     } catch {
