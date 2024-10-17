@@ -15,7 +15,13 @@ export function clirun(
   program: Command,
   runOptions?: {
     nArgs?: number;
-    forceExit?: boolean | ((...args: any[]) => boolean);
+    /**
+     * Wait for all promises to finish, even if the main command is complete.
+     *
+     * For example, when starting a watch process.
+     * For build commands, this should be `false`, the default, to ensure a speedy exit from the CLI.
+     */
+    keepAlive?: boolean | ((...args: any[]) => boolean);
   },
 ) {
   return async (...args: any[]) => {
@@ -36,9 +42,9 @@ export function clirun(
       process.exit(1);
     }
     session.showUpgradeNotice?.();
-    if (typeof runOptions?.forceExit === 'function') {
-      if (runOptions?.forceExit(...args)) process.exit(0);
-    } else if (runOptions?.forceExit) {
+    if (typeof runOptions?.keepAlive === 'function') {
+      if (!runOptions.keepAlive(...args)) process.exit(0);
+    } else if (!runOptions?.keepAlive) {
       process.exit(0);
     }
   };

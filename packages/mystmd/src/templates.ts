@@ -187,7 +187,7 @@ function makeDownloadCLI(program: Command) {
     .addOption(makeDocxOption('Download Docx template'))
     .addOption(makeSiteOption('Download Site template'))
     .addOption(makeForceOption())
-    .action(clirun(Session, downloadTemplateCLI, program, { forceExit: true }));
+    .action(clirun(Session, downloadTemplateCLI, program));
   return command;
 }
 
@@ -204,7 +204,7 @@ function makeListCLI(program: Command) {
       '--tag <tag>',
       'Any tags to filter the list by multiple tags can be joined with a comma.',
     )
-    .action(clirun(Session, listTemplatesCLI, program, { forceExit: true }));
+    .action(clirun(Session, listTemplatesCLI, program));
   return command;
 }
 
