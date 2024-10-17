@@ -18,6 +18,7 @@ import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { transformBanner, transformThumbnail } from '../../transforms/images.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
+import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import version from '../../version.js';
 import { getSiteTemplate } from './template.js';
 import { collectExportOptions } from '../utils/collectExportOptions.js';
@@ -173,6 +174,7 @@ export async function localToManifestProject(
   const downloads = projConfigFile
     ? await resolvePageDownloads(session, projConfigFile, projectPath)
     : undefined;
+  const parts = resolveFrontmatterParts(session, projFrontmatter);
   const banner = await transformBanner(
     session,
     path.join(projectPath, 'myst.yml'),
@@ -204,6 +206,7 @@ export async function localToManifestProject(
       undefined,
     exports,
     downloads,
+    parts,
     bibliography: projFrontmatter.bibliography || [],
     title: projectTitle || 'Untitled',
     slug: projectSlug,
@@ -405,8 +408,10 @@ export async function getSiteManifest(
   );
   const resolvedOptions = await resolveTemplateFileOptions(session, mystTemplate, validatedOptions);
   validatedFrontmatter.options = resolvedOptions;
+  const parts = resolveFrontmatterParts(session, validatedFrontmatter);
   const manifest: SiteManifest = {
     ...validatedFrontmatter,
+    parts,
     myst: version,
     nav: nav || [],
     actions: actions || [],

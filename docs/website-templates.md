@@ -58,7 +58,7 @@ Site options allow you to configure a theme's behavior.[^opts]
 These should be placed in the `site.options` in your `myst.yml`.
 For example:
 
-[^opts]: They are generally unique to the theme (and thus in a dediated `site.options` key rather than a top-level option in `site`).
+[^opts]: They are generally unique to the theme (and thus in a dedicated `site.options` key rather than a top-level option in `site`).
 
 ```{code-block} yaml
 :filename: myst.yml

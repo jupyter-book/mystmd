@@ -41,7 +41,7 @@ function triggerProjectReload(
     : selectors.selectCurrentProjectFile(state);
   if (selectors.selectConfigExtensions(state).includes(file)) return true;
   if (file === projectConfigFile || basename(file) === '_toc.yml') return true;
-  // Reload project if file is added or remvoed
+  // Reload project if file is added or removed
   if (['add', 'unlink'].includes(eventType)) return true;
   // Otherwise do not reload project
   return false;
@@ -86,38 +86,46 @@ async function processorFn(
     return;
   }
   const projectPath = siteProject.path;
-  const pageSlug = selectors.selectPageSlug(session.store.getState(), siteProject.path, file);
-  const dependencies = selectors.selectDependentFiles(session.store.getState(), file);
+  const state = session.store.getState();
+  const pageSlug = selectors.selectPageSlug(state, siteProject.path, file);
+  const dependencies = selectors.selectDependentFiles(state, file);
   if (!pageSlug && dependencies.length === 0) {
     session.log.warn(`⚠️ File is not in project: ${file}`);
     return;
   }
-  if (pageSlug) {
-    await fastProcessFile(session, {
-      file,
-      projectPath,
-      projectSlug: siteProject.slug,
-      pageSlug,
-      ...opts,
-    });
-  }
+  await fastProcessFile(session, {
+    file,
+    projectPath,
+    projectSlug: siteProject.slug,
+    pageSlug,
+    ...opts,
+  });
   if (dependencies.length) {
     session.log.info(
       `🔄 Updating dependent pages for ${file} ${chalk.dim(`[${dependencies.join(', ')}]`)}`,
     );
-    await Promise.all([
-      dependencies.map((dep) => {
-        const depSlug = selectors.selectPageSlug(session.store.getState(), projectPath, dep);
-        if (!depSlug) return undefined;
-        return fastProcessFile(session, {
-          file: dep,
-          projectPath,
-          projectSlug: siteProject.slug,
-          pageSlug: depSlug,
-          ...opts,
-        });
-      }),
-    ]);
+    const siteConfig = selectors.selectCurrentSiteFile(state);
+    const projConfig = selectors.selectCurrentProjectFile(state);
+    if (
+      (siteConfig && dependencies.includes(siteConfig)) ||
+      (projConfig && dependencies.includes(projConfig))
+    ) {
+      await processSite(session, { ...opts, reloadProject: true });
+    } else {
+      await Promise.all([
+        dependencies.map(async (dep) => {
+          const depSlug = selectors.selectPageSlug(state, projectPath, dep);
+          if (!depSlug) return undefined;
+          return fastProcessFile(session, {
+            file: dep,
+            projectPath,
+            projectSlug: siteProject.slug,
+            pageSlug: depSlug,
+            ...opts,
+          });
+        }),
+      ]);
+    }
   }
   serverReload();
   // TODO: process full site silently and update if there are any

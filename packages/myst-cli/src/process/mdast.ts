@@ -74,7 +74,6 @@ import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
-import { frontmatterPartsTransform } from '../transforms/parts.js';
 import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
@@ -98,6 +97,14 @@ export type TransformFn = (
   session: ISession,
   opts: Parameters<typeof transformMdast>[1],
 ) => Promise<void>;
+
+function referenceFileFromPartFile(session: ISession, partFile: string) {
+  const state = session.store.getState();
+  const partDeps = selectors.selectDependentFiles(state, partFile);
+  if (partDeps.length > 0) return partDeps[0];
+  const file = selectors.selectFileFromPart(state, partFile);
+  return file ?? partFile;
+}
 
 export async function transformMdast(
   session: ISession,
@@ -164,10 +171,14 @@ export async function transformMdast(
   const references: References = {
     cite: { order: [], data: {} },
   };
-  const state = new ReferenceState(file, { numbering: frontmatter.numbering, identifiers, vfile });
+  const refFile = kind === SourceFileKind.Part ? referenceFileFromPartFile(session, file) : file;
+  const state = new ReferenceState(refFile, {
+    numbering: frontmatter.numbering,
+    identifiers,
+    vfile,
+  });
   cache.$internalReferences[file] = state;
   // Import additional content from mdast or other files
-  frontmatterPartsTransform(session, file, mdast, frontmatter);
   importMdastFromJson(session, file, mdast);
   await includeFilesTransform(session, file, mdast, frontmatter, vfile);
   rawDirectiveTransform(mdast, vfile);
@@ -242,10 +253,15 @@ export async function transformMdast(
   if (isJupytext) transformLiftCodeBlocksInJupytext(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
-  const url = projectSlug
-    ? `/${projectSlug}/${useSlug ? pageSlug : ''}`
-    : `/${useSlug ? pageSlug : ''}`;
-  const dataUrl = projectSlug ? `/${projectSlug}/${pageSlug}.json` : `/${pageSlug}.json`;
+  let url: string | undefined;
+  let dataUrl: string | undefined;
+  if (pageSlug && projectSlug) {
+    url = `/${projectSlug}/${useSlug ? pageSlug : ''}`;
+    dataUrl = `/${projectSlug}/${pageSlug}.json`;
+  } else if (pageSlug) {
+    url = `/${useSlug ? pageSlug : ''}`;
+    dataUrl = `/${pageSlug}.json`;
+  }
   updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
   const data: RendererData = {
     kind: isJupytext ? SourceFileKind.Notebook : kind,

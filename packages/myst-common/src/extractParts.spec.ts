@@ -244,6 +244,81 @@ describe('extractPart', () => {
       ],
     });
   });
+  it('frontmatter part prioritized, tagged block removed, implicit part unchanged', async () => {
+    const tree: GenericParent = {
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          data: { part: 'other_tag' },
+          children: [{ type: 'text', value: 'untagged content' }],
+        },
+        {
+          type: 'block' as any,
+          data: { part: 'test_part' },
+          children: [{ type: 'text', value: 'block part' }],
+        },
+        {
+          type: 'heading',
+          children: [{ type: 'text', value: 'test_part' }],
+        },
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'implicit part' }],
+        },
+      ],
+    };
+    expect(
+      extractPart(tree, 'test_part', {
+        frontmatterParts: {
+          test_part: {
+            mdast: {
+              type: 'root',
+              children: [
+                {
+                  type: 'block',
+                  children: [
+                    { type: 'paragraph', children: [{ type: 'text', value: 'frontmatter part' }] },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      }),
+    ).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          data: {
+            part: 'test_part',
+          },
+          children: [
+            { type: 'paragraph', children: [{ type: 'text', value: 'frontmatter part' }] },
+          ],
+        },
+      ],
+    });
+    expect(tree).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block' as any,
+          data: { part: 'other_tag' },
+          children: [{ type: 'text', value: 'untagged content' }],
+        },
+        {
+          type: 'heading',
+          children: [{ type: 'text', value: 'test_part' }],
+        },
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'implicit part' }],
+        },
+      ],
+    });
+  });
 });
 
 describe('extractImplicitPart', () => {

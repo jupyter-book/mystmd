@@ -10,6 +10,7 @@ export * from './logging.js';
 export * from './nextLevel.js';
 export * from './removeExtension.js';
 export * from './resolveExtension.js';
+export * from './resolveFrontmatterParts.js';
 export * from './shouldIgnoreFile.js';
 export * from './toc.js';
 export * from './uniqueArray.js';

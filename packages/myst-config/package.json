@@ -31,6 +31,7 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
+    "myst-common": "^1.7.1",
     "myst-frontmatter": "^1.7.1",
     "simple-validators": "^1.1.0"
   },

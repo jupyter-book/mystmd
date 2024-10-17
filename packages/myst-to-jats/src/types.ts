@@ -1,4 +1,4 @@
-import type { GenericNode, MessageInfo } from 'myst-common';
+import type { FrontmatterParts, GenericNode, MessageInfo } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
 import type { SourceFileKind } from 'myst-spec-ext';
@@ -34,6 +34,7 @@ export type Options = {
   extractAbstract?: boolean;
   abstractParts?: JatsPart[];
   backSections?: JatsPart[];
+  frontmatterParts?: FrontmatterParts;
 };
 
 export type DocumentOptions = Options &
@@ -51,10 +52,14 @@ export type StateData = {
   acknowledgments?: Element;
 };
 
+export type FrontmatterWithParts = Omit<PageFrontmatter, 'parts'> & {
+  parts?: FrontmatterParts;
+};
+
 export type ArticleContent = {
   mdast: Root;
   kind: SourceFileKind;
-  frontmatter?: PageFrontmatter;
+  frontmatter?: FrontmatterWithParts;
   citations?: CitationRenderer;
   slug?: string;
 };

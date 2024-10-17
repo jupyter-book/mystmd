@@ -32,6 +32,7 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import { getFileContent } from './utils/getFileContent.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { createTempFolder } from '../utils/createTempFolder.js';
+import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
 import version from '../version.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import type { ExportWithOutput, ExportResults, ExportFnOptions } from './types.js';
@@ -90,7 +91,9 @@ export function extractTypstPart(
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
 ): TypstResult | TypstResult[] | undefined {
-  const part = extractPart(mdast, partDefinition.id);
+  const part = extractPart(mdast, partDefinition.id, {
+    frontmatterParts: resolveFrontmatterParts(session, frontmatter),
+  });
   if (!part) return undefined;
   if (!partDefinition.as_list) {
     // Do not build glossaries when extracting parts: references cannot be mapped to definitions

@@ -184,6 +184,7 @@ export type InlineExpression = {
 export enum SourceFileKind {
   Article = 'Article',
   Notebook = 'Notebook',
+  Part = 'Part',
 }
 
 export type Dependency = {

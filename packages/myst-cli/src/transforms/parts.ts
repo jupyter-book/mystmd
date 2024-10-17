@@ -4,6 +4,11 @@ import { parseMyst } from '../process/myst.js';
 import type { GenericParent } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
+/**
+ * Parse frontmatter parts and prepend them as blocks to mdast children
+ *
+ * @deprecated frontmatter parts are now processed separately by MyST
+ */
 export function frontmatterPartsTransform(
   session: ISession,
   file: string,

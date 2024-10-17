@@ -1,20 +1,36 @@
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { FrontmatterParts, GenericNode, GenericParent, References } from 'myst-common';
 import { RuleId, fileWarn, plural, selectMdastNodes } from 'myst-common';
 import { computeHash, tic } from 'myst-cli-utils';
 import { addChildrenFromTargetNode } from 'myst-transforms';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import type { CrossReference, Link } from 'myst-spec-ext';
+import type { CrossReference, Dependency, Link, SourceFileKind } from 'myst-spec-ext';
 import type { ISession } from '../session/types.js';
 import { loadFromCache, writeToCache } from '../session/cache.js';
-import type { RendererData } from './types.js';
+import type { SiteAction, SiteExport } from 'myst-config';
 
 export const XREF_MAX_AGE = 1; // in days
 
 function mystDataFilename(dataUrl: string) {
   return `myst-${computeHash(dataUrl)}.json`;
 }
+
+export type MystData = {
+  kind?: SourceFileKind;
+  sha256?: string;
+  slug?: string;
+  location?: string;
+  dependencies?: Dependency[];
+  frontmatter?: Omit<PageFrontmatter, 'downloads' | 'exports' | 'parts'> & {
+    downloads?: SiteAction[];
+    exports?: [{ format: string; filename: string; url: string }, ...SiteExport[]];
+    parts?: FrontmatterParts;
+  };
+  widgets?: Record<string, any>;
+  mdast?: GenericParent;
+  references?: References;
+};
 
 async function fetchMystData(
   session: ISession,
@@ -27,12 +43,12 @@ async function fetchMystData(
     const filename = mystDataFilename(dataUrl);
     const cacheData = loadFromCache(session, filename, { maxAge: XREF_MAX_AGE });
     if (cacheData) {
-      return JSON.parse(cacheData) as RendererData;
+      return JSON.parse(cacheData) as MystData;
     }
     try {
       const resp = await session.fetch(dataUrl);
       if (resp.ok) {
-        const data = (await resp.json()) as RendererData;
+        const data = (await resp.json()) as MystData;
         writeToCache(session, filename, JSON.stringify(data));
         return data;
       }
@@ -67,7 +83,7 @@ export async function fetchMystXRefData(session: ISession, node: CrossReference,
 }
 
 export function nodesFromMystXRefData(
-  data: RendererData,
+  data: MystData,
   identifier: string,
   vfile: VFile,
   opts?: {
@@ -75,7 +91,11 @@ export function nodesFromMystXRefData(
     urlSource?: string;
   },
 ) {
-  const targetNodes = selectMdastNodes(data.mdast, identifier, opts?.maxNodes).nodes;
+  let targetNodes: GenericNode[] | undefined;
+  [data, ...Object.values(data.frontmatter?.parts ?? {})].forEach(({ mdast }) => {
+    if (!mdast || targetNodes?.length) return;
+    targetNodes = selectMdastNodes(mdast, identifier, opts?.maxNodes).nodes;
+  });
   if (!targetNodes?.length) {
     fileWarn(vfile, `Unable to resolve content from external MyST reference: ${opts?.urlSource}`, {
       ruleId: RuleId.mystLinkValid,

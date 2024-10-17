@@ -22,6 +22,15 @@ abstract: |
 ---
 ```
 
+You may also write your part in a separate file, and point to that file from the frontmatter, for example:
+
+```yaml
+---
+title: My document
+abstract: ../abstract.md
+---
+```
+
 ### Known Frontmatter Parts
 
 The known parts that are recognized as _top-level_ document frontmatter keys are:
@@ -116,4 +125,20 @@ Project-level `parts` are useful, for example, if you have an abstract, acknowle
 
 ```{caution}
 Project-level `parts` are a new feature and may not yet be respected by your chosen MyST template or export format. If the project `part` is not behaving as you expect, try moving it to page frontmatter for now.
+```
+
+(parts:site)=
+
+## Parts in `myst.yml` Site configuration
+
+You may specify `parts` in the site configuration of your `myst.yml` file. These parts will only be used for MyST site builds, and they must correspond to `parts` declared in your [website theme's template](website-templates.md).
+
+```yaml
+version: 1
+site:
+  template: ...
+  parts:
+    footer: |
+      (c) MyST Markdown
+  ...
 ```

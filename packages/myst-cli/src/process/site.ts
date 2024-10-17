@@ -32,9 +32,11 @@ import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { watch } from '../store/reducers.js';
+import type { MystData } from '../transforms/crossReferences.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
+import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
 import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
@@ -118,34 +120,37 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
  * @param states page reference states
  */
 export async function writeMystXRefJson(session: ISession, states: ReferenceState[]) {
+  const references = states
+    .filter((state): state is ReferenceState & { url: string; dataUrl: string } => {
+      return !!state.url && !!state.dataUrl;
+    })
+    .map((state) => {
+      const { url, dataUrl } = state;
+      const data = `/content${dataUrl}`;
+      const pageRef = { kind: 'page', data, url };
+      const pageIdRefs = state.identifiers.map((identifier) => {
+        return { identifier, kind: 'page', data, url };
+      });
+      const targetRefs = Object.values(state.targets).map((target) => {
+        const { identifier, html_id } = target.node ?? {};
+        return {
+          identifier,
+          html_id: html_id !== identifier ? html_id : undefined,
+          kind: target.kind,
+          data,
+          url,
+          implicit: (target.node as any).implicit,
+        };
+      });
+      return [pageRef, ...pageIdRefs, ...targetRefs];
+    })
+    .flat();
   const mystXRefs: MystXRefs = {
     version: '1',
     myst: version,
-    references: states
-      .filter((state): state is ReferenceState & { url: string; dataUrl: string } => {
-        return !!state.url && !!state.dataUrl;
-      })
-      .map((state) => {
-        const { url, dataUrl } = state;
-        const data = `/content${dataUrl}`;
-        const pageRef = { kind: 'page', data, url };
-        const pageIdRefs = state.identifiers.map((identifier) => {
-          return { identifier, kind: 'page', data, url };
-        });
-        const targetRefs = Object.values(state.targets).map((target) => {
-          const { identifier, html_id } = target.node ?? {};
-          return {
-            identifier,
-            html_id: html_id !== identifier ? html_id : undefined,
-            kind: target.kind,
-            data,
-            url,
-            implicit: (target.node as any).implicit,
-          };
-        });
-        return [pageRef, ...pageIdRefs, ...targetRefs];
-      })
-      .flat(),
+    references: [...new Set(references.map((ref) => JSON.stringify(ref)))].map((ref) => {
+      return JSON.parse(ref);
+    }),
   };
   const filename = join(session.sitePath(), 'myst.xref.json');
   session.log.debug(`Writing myst.xref.json file: ${filename}`);
@@ -229,26 +234,28 @@ export async function writeObjectsInv(
     // TODO: allow a version on the project?!
     version: String((siteConfig as any)?.version),
   });
-  states.forEach((state) => {
-    inv.setEntry({
-      type: Domains.stdDoc,
-      name: (state.url as string).replace(/^\//, ''),
-      location: state.url as string,
-      display: state.title ?? '',
-    });
-    Object.entries(state.targets).forEach(([name, target]) => {
-      if ((target.node as any).implicit) {
-        // Don't include implicit references
-        return;
-      }
+  states
+    .filter((state): state is ReferenceState & { url: string } => !!state.url)
+    .forEach((state) => {
       inv.setEntry({
-        type: Domains.stdLabel,
-        name,
-        location: `${state.url}#${(target.node as any).html_id ?? target.node.identifier}`,
-        display: getReferenceTitleAsText(target.node),
+        type: Domains.stdDoc,
+        name: state.url.replace(/^\//, ''),
+        location: state.url,
+        display: state.title ?? '',
+      });
+      Object.entries(state.targets).forEach(([name, target]) => {
+        if ((target.node as any).implicit) {
+          // Don't include implicit references
+          return;
+        }
+        inv.setEntry({
+          type: Domains.stdLabel,
+          name,
+          location: `${state.url}#${(target.node as any).html_id ?? target.node.identifier}`,
+          display: getReferenceTitleAsText(target.node),
+        });
       });
     });
-  });
   const filename = join(session.sitePath(), 'objects.inv');
   session.log.debug(`Writing objects.inv file: ${filename}`);
   inv.write(filename);
@@ -322,7 +329,7 @@ export function selectPageReferenceStates(
     .map((page) => {
       const state = cache.$internalReferences[page.file];
       if (state) {
-        const selectedFile = selectors.selectFileInfo(session.store.getState(), page.file);
+        const selectedFile = selectors.selectFileInfo(session.store.getState(), state.filePath);
         if (selectedFile?.url) state.url = selectedFile.url;
         if (selectedFile?.title) state.title = selectedFile.title;
         if (selectedFile?.dataUrl) state.dataUrl = selectedFile.dataUrl;
@@ -332,11 +339,13 @@ export function selectPageReferenceStates(
     })
     .filter((state): state is ReferenceState => !!state);
   if (!opts?.suppressWarnings) warnOnDuplicateIdentifiers(session, pageReferenceStates);
-  pageReferenceStates.forEach((state) => {
-    const { mdast } = cache.$getMdast(state.filePath)?.post ?? {};
+  pages.forEach((page) => {
+    const state = cache.$internalReferences[page.file];
+    if (!state) return;
+    const { mdast } = cache.$getMdast(page.file)?.post ?? {};
     if (!mdast) return;
     const vfile = new VFile();
-    vfile.path = state.filePath;
+    vfile.path = page.file;
     buildIndexTransform(
       mdast,
       vfile,
@@ -376,24 +385,23 @@ export async function writeFile(
     ...(await resolvePageExports(session, file)),
   ]);
   const downloads = await resolvePageDownloads(session, file, projectPath);
-  const frontmatterWithExports = { ...frontmatter, exports, downloads };
+  const parts = resolveFrontmatterParts(session, frontmatter);
+  const frontmatterWithExports = { ...frontmatter, exports, downloads, parts };
+  const mystData: MystData = {
+    kind,
+    sha256,
+    slug,
+    location,
+    dependencies,
+    frontmatter: frontmatterWithExports,
+    widgets,
+    mdast,
+    references,
+  };
   const jsonFilenameParts = [session.contentPath()];
   if (projectSlug) jsonFilenameParts.push(projectSlug);
   jsonFilenameParts.push(`${pageSlug}.json`);
-  writeFileToFolder(
-    join(...jsonFilenameParts),
-    JSON.stringify({
-      kind,
-      sha256,
-      slug,
-      location,
-      dependencies,
-      frontmatter: frontmatterWithExports,
-      widgets,
-      mdast,
-      references,
-    }),
-  );
+  writeFileToFolder(join(...jsonFilenameParts), JSON.stringify(mystData));
   session.log.debug(toc(`Wrote "${file}" in %s`));
 }
 
@@ -414,7 +422,7 @@ export async function fastProcessFile(
     maxSizeWebp,
   }: {
     file: string;
-    pageSlug: string;
+    pageSlug?: string;
     projectPath: string;
     projectSlug?: string;
   } & ProcessFileOptions &
@@ -423,35 +431,57 @@ export async function fastProcessFile(
   const toc = tic();
   await loadFile(session, file, projectPath);
   const { project, pages } = await loadProject(session, projectPath);
-  await transformMdast(session, {
-    file,
-    imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
-    projectPath,
-    projectSlug,
-    pageSlug,
-    watchMode: true,
-    extraTransforms,
-    index: project.index,
-    execute,
-  });
-  const pageReferenceStates = selectPageReferenceStates(session, pages);
-  await postProcessMdast(session, {
-    file,
-    pageReferenceStates,
-    extraLinkTransformers,
-  });
-  const { mdast, frontmatter } = castSession(session).$getMdast(file)?.post ?? {};
-  if (mdast && frontmatter) {
-    await finalizeMdast(session, mdast, frontmatter, file, {
-      imageWriteFolder: imageWriteFolder ?? session.publicPath(),
-      imageAltOutputFolder: imageAltOutputFolder ?? '/',
-      imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
-      optimizeWebp: true,
-      processThumbnail: true,
-      maxSizeWebp,
-    });
+  const state = session.store.getState();
+  const fileParts = selectors.selectFileParts(state, file);
+  const projectParts = selectors.selectProjectParts(state, projectPath);
+  await Promise.all(
+    [file, ...fileParts].map(async (f) => {
+      return transformMdast(session, {
+        file: f,
+        imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
+        projectPath,
+        projectSlug,
+        pageSlug,
+        watchMode: true,
+        extraTransforms,
+        index: project.index,
+        execute,
+      });
+    }),
+  );
+  const pageReferenceStates = selectPageReferenceStates(session, [
+    ...pages,
+    ...projectParts.map((part) => {
+      return { file: part };
+    }),
+  ]);
+  await Promise.all(
+    [file, ...fileParts].map(async (f) => {
+      return postProcessMdast(session, {
+        file: f,
+        pageReferenceStates,
+        extraLinkTransformers,
+      });
+    }),
+  );
+  await Promise.all(
+    [file, ...fileParts].map(async (f) => {
+      const { mdast, frontmatter } = castSession(session).$getMdast(f)?.post ?? {};
+      if (mdast) {
+        await finalizeMdast(session, mdast, frontmatter ?? {}, f, {
+          imageWriteFolder: imageWriteFolder ?? session.publicPath(),
+          imageAltOutputFolder: imageAltOutputFolder ?? '/',
+          imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
+          optimizeWebp: true,
+          processThumbnail: true,
+          maxSizeWebp,
+        });
+      }
+    }),
+  );
+  if (pageSlug) {
+    await writeFile(session, { file, pageSlug, projectSlug, projectPath });
   }
-  await writeFile(session, { file, pageSlug, projectSlug, projectPath });
   session.log.info(toc(`📖 Built ${file} in %s.`));
   await writeSiteManifest(session, { defaultTemplate });
 }
@@ -502,10 +532,16 @@ export async function processProject(
   // Consolidate all citations onto single project citation renderer
   combineProjectCitationRenderers(session, siteProject.path);
 
+  const projectParts = selectors
+    .selectProjectParts(session.store.getState(), siteProject.path)
+    .map((part) => {
+      return { file: part };
+    });
+  const pagesToTransform: { file: string; slug?: string }[] = [...pages, ...projectParts];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
   // Transform all pages
   await Promise.all(
-    pages.map((page) =>
+    pagesToTransform.map((page) =>
       transformMdast(session, {
         file: page.file,
         projectPath: project.path,
@@ -519,10 +555,10 @@ export async function processProject(
       }),
     ),
   );
-  const pageReferenceStates = selectPageReferenceStates(session, pages);
+  const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
   // Handle all cross references
   await Promise.all(
-    pages.map((page) =>
+    pagesToTransform.map((page) =>
       postProcessMdast(session, {
         file: page.file,
         checkLinks: checkLinks || strict,
@@ -534,10 +570,10 @@ export async function processProject(
   // Write all pages
   if (writeFiles) {
     await Promise.all(
-      pages.map(async (page) => {
+      pagesToTransform.map(async (page) => {
         const { mdast, frontmatter } = castSession(session).$getMdast(page.file)?.post ?? {};
-        if (mdast && frontmatter) {
-          await finalizeMdast(session, mdast, frontmatter, page.file, {
+        if (mdast) {
+          await finalizeMdast(session, mdast, frontmatter ?? {}, page.file, {
             imageWriteFolder: imageWriteFolder ?? session.publicPath(),
             imageAltOutputFolder,
             imageExtensions: usedImageExtensions,
@@ -546,6 +582,10 @@ export async function processProject(
             maxSizeWebp,
           });
         }
+      }),
+    );
+    await Promise.all(
+      pages.map(async (page) => {
         return writeFile(session, {
           file: page.file,
           projectSlug: siteProject.slug as string,
@@ -622,13 +662,19 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
     await writeSiteManifest(session, opts);
     const states: ReferenceState[] = [];
     const allPages: LocalProjectPage[] = [];
+    const sessionState = session.store.getState();
     await Promise.all(
       siteConfig.projects.map(async (project) => {
         if (!project.path) return;
         const { pages } = await loadProject(session, project.path);
         allPages.push(...pages);
+        const projectParts = selectors
+          .selectProjectParts(sessionState, project.path)
+          .map((part) => {
+            return { file: part };
+          });
         states.push(
-          ...selectPageReferenceStates(session, pages, {
+          ...selectPageReferenceStates(session, [...pages, ...projectParts], {
             suppressWarnings: true,
           }),
         );
@@ -636,6 +682,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
     );
     await writeObjectsInv(session, states, siteConfig);
     await writeMystXRefJson(session, states);
+    // Search does not include parts
     await writeMystSearchJson(session, allPages);
   }
   return true;

@@ -1,5 +1,5 @@
 import type { Block } from 'myst-spec-ext';
-import type { GenericNode, GenericParent } from './types.js';
+import type { FrontmatterParts, GenericNode, GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { copyNode, toText } from './utils.js';
@@ -43,6 +43,30 @@ export function selectBlockParts(tree: GenericParent, part?: string | string[]):
       .reduce((a, b) => a || b, false);
   });
   return blockParts as Block[];
+}
+
+/**
+ * Selects the frontmatterParts entries by `part`
+ *
+ * If `part` is a string array, any matching part from the frontmatter will be
+ * returned.
+ *
+ * Returns array of blocks.
+ */
+export function selectFrontmatterParts(
+  frontmatterParts?: FrontmatterParts,
+  part?: string | string[],
+): Block[] {
+  if (!frontmatterParts) return [];
+  const parts = coercePart(part);
+  if (parts.length === 0) return [];
+  const blockParts: Block[] = [];
+  parts.forEach((p) => {
+    Object.entries(frontmatterParts).forEach(([key, value]) => {
+      if (p === key.toLowerCase()) blockParts.push(...(value.mdast.children as Block[]));
+    });
+  });
+  return blockParts;
 }
 
 function createPartBlock(
@@ -131,7 +155,9 @@ export function extractImplicitPart(
 }
 
 /**
- * Returns a copy of the block parts and removes them from the tree.
+ * Returns a copy of block parts, if defined in the tree, and removes them from the tree.
+ *
+ * This does not look at parts defined in frontmatter.
  */
 export function extractPart(
   tree: GenericParent,
@@ -143,38 +169,43 @@ export function extractPart(
     keepVisibility?: boolean;
     /** Provide an option so implicit section-to-part behavior can be disabled */
     requireExplicitPart?: boolean;
+    /** Dictionary of part trees, processed from frontmatter */
+    frontmatterParts?: FrontmatterParts;
   },
 ): GenericParent | undefined {
   const partStrings = coercePart(part);
   if (partStrings.length === 0) return;
+  const frontmatterParts = selectFrontmatterParts(opts?.frontmatterParts, part);
   const blockParts = selectBlockParts(tree, part);
-  if (blockParts.length === 0) {
+  if (frontmatterParts.length === 0 && blockParts.length === 0) {
     if (opts?.requireExplicitPart) return;
     return extractImplicitPart(tree, partStrings);
   }
-  const children = copyNode(blockParts).map((block) => {
-    // Ensure the block always has the `part` defined, as it might be in the tags
-    block.data ??= {};
-    block.data.part = partStrings[0];
-    if (
-      block.data.tags &&
-      Array.isArray(block.data.tags) &&
-      block.data.tags.reduce((a, t) => a || partStrings.includes(t.toLowerCase()), false)
-    ) {
-      block.data.tags = block.data.tags.filter(
-        (tag) => !partStrings.includes(tag.toLowerCase()),
-      ) as string[];
-      if ((block.data.tags as string[]).length === 0) {
-        delete block.data.tags;
+  const children = copyNode(frontmatterParts.length > 0 ? frontmatterParts : blockParts).map(
+    (block) => {
+      // Ensure the block always has the `part` defined, as it might be in the tags
+      block.data ??= {};
+      block.data.part = partStrings[0];
+      if (
+        block.data.tags &&
+        Array.isArray(block.data.tags) &&
+        block.data.tags.reduce((a, t) => a || partStrings.includes(t.toLowerCase()), false)
+      ) {
+        block.data.tags = block.data.tags.filter(
+          (tag) => !partStrings.includes(tag.toLowerCase()),
+        ) as string[];
+        if ((block.data.tags as string[]).length === 0) {
+          delete block.data.tags;
+        }
       }
-    }
-    if (opts?.removePartData) delete block.data.part;
-    // The default is to remove the visibility on the parts
-    if (!opts?.keepVisibility) delete block.visibility;
-    return block;
-  });
+      if (opts?.removePartData) delete block.data.part;
+      // The default is to remove the visibility on the parts
+      if (!opts?.keepVisibility) delete block.visibility;
+      return block;
+    },
+  );
   const partsTree = { type: 'root', children } as GenericParent;
-  // Remove the block parts from the main document
+  // Remove the block parts from the main document, even if frontmatter parts are returned
   blockParts.forEach((block) => {
     (block as any).type = '__delete__';
   });

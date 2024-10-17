@@ -33,6 +33,8 @@ export const config = createSlice({
   initialState: {
     rawConfigs: {},
     projects: {},
+    projectParts: {},
+    fileParts: {},
     sites: {},
     filenames: {},
   } as {
@@ -40,6 +42,8 @@ export const config = createSlice({
     currentSitePath: string | undefined;
     rawConfigs: Record<string, { raw: Record<string, any>; validated: ValidatedRawConfig }>;
     projects: Record<string, Record<string, any>>;
+    projectParts: Record<string, string[]>;
+    fileParts: Record<string, string[]>;
     sites: Record<string, Record<string, any>>;
     filenames: Record<string, string>;
     configExtensions?: string[];
@@ -75,6 +79,20 @@ export const config = createSlice({
     receiveConfigExtension(state, action: PayloadAction<{ file: string }>) {
       state.configExtensions ??= [];
       state.configExtensions.push(action.payload.file);
+    },
+    receiveProjectPart(state, action: PayloadAction<{ partFile: string; path: string }>) {
+      const { path, partFile } = action.payload;
+      const partFiles = state.projectParts[resolve(path)] ?? [];
+      if (!partFiles.includes(partFile)) {
+        state.projectParts[resolve(path)] = [...partFiles, partFile];
+      }
+    },
+    receiveFilePart(state, action: PayloadAction<{ partFile: string; file: string }>) {
+      const { file, partFile } = action.payload;
+      const partFiles = state.fileParts[resolve(file)] ?? [];
+      if (!partFiles.includes(partFile)) {
+        state.fileParts[resolve(file)] = [...partFiles, partFile];
+      }
     },
   },
 });
@@ -115,6 +133,7 @@ export const watch = createSlice({
     },
     addLocalDependency(state, action: PayloadAction<{ path: string; dependency: string }>) {
       const { path, dependency } = action.payload;
+      if (!state.files[resolve(path)]) state.files[resolve(path)] = {};
       const existingDeps = [...(state.files[resolve(path)].localDependencies ?? [])];
       if (!existingDeps.includes(dependency)) {
         state.files[resolve(path)].localDependencies = [...existingDeps, dependency];
@@ -154,6 +173,7 @@ export const watch = createSlice({
         dataUrl,
       } = action.payload;
       const resolvedPath = resolve(path);
+      if (!state.files[resolvedPath]) state.files[resolvedPath] = {};
       if (title) state.files[resolvedPath].title = title;
       if (short_title) state.files[resolvedPath].short_title = short_title;
       if (description) state.files[resolvedPath].description = description;

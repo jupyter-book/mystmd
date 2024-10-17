@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { filter } from 'unist-util-filter';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
@@ -21,15 +23,16 @@ import { selectFile } from '../process/file.js';
 import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
 import { castSession } from '../session/cache.js';
+import type { MystData } from './crossReferences.js';
 import { fetchMystLinkData, fetchMystXRefData, nodesFromMystXRefData } from './crossReferences.js';
 import { fileFromRelativePath } from './links.js';
-import type { RendererData } from './types.js';
 
 function mutateEmbedNode(
   node: Embed,
   targetNode?: GenericNode | null,
-  opts?: { url?: string; dataUrl?: string },
+  opts?: { url?: string; dataUrl?: string; targetFile?: string; sourceFile?: string },
 ) {
+  const { url, dataUrl, targetFile, sourceFile } = opts ?? {};
   if (targetNode && node['remove-output']) {
     targetNode = filter(targetNode, (n: GenericNode) => {
       return n.type !== 'output' && n.data?.type !== 'output';
@@ -49,11 +52,28 @@ function mutateEmbedNode(
   });
   (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
     if (!targetXRef.remote) {
-      targetXRef.url = opts?.url;
-      targetXRef.dataUrl = opts?.dataUrl;
+      targetXRef.url = url;
+      targetXRef.dataUrl = dataUrl;
       targetXRef.remote = true;
     }
   });
+  if (targetFile && sourceFile) {
+    // TODO: Other node types that point to a file?
+    selectAll('image', targetNode).forEach((imageNode: GenericNode) => {
+      if (imageNode.url) {
+        const absoluteUrl = path.resolve(path.dirname(sourceFile), imageNode.url);
+        if (fs.existsSync(absoluteUrl)) {
+          imageNode.url = path.relative(path.dirname(targetFile), absoluteUrl);
+        }
+      }
+      if (imageNode.urlSource) {
+        const absoluteUrlSource = path.resolve(path.dirname(sourceFile), imageNode.urlSource);
+        if (fs.existsSync(absoluteUrlSource)) {
+          imageNode.urlSource = path.relative(path.dirname(targetFile), absoluteUrlSource);
+        }
+      }
+    });
+  }
   if (!targetNode) {
     node.children = [];
   } else if (targetNode.type === 'block') {
@@ -111,7 +131,7 @@ export async function embedTransform(
         const transformed = mystTransformer.transform(referenceLink, vfile);
         const referenceXRef = referenceLink as any as CrossReference;
         if (transformed) {
-          let data: RendererData | undefined;
+          let data: MystData | undefined;
           let targetNodes: GenericNode[] | undefined;
           if (referenceXRef.identifier) {
             data = await fetchMystXRefData(session, referenceXRef, vfile);
@@ -122,7 +142,7 @@ export async function embedTransform(
             });
           } else {
             data = await fetchMystLinkData(session, referenceLink, vfile);
-            if (!data) return;
+            if (!data?.mdast) return;
             targetNodes = data.mdast.children;
           }
           if (!targetNodes?.length) return;
@@ -196,7 +216,7 @@ export async function embedTransform(
         return;
       }
       const { url, dataUrl, filePath } = stateProvider;
-      mutateEmbedNode(node, target, { url, dataUrl });
+      mutateEmbedNode(node, target, { url, dataUrl, targetFile: file, sourceFile: filePath });
       if (!url) return;
       const source: Dependency = { url, label };
       if (filePath) {

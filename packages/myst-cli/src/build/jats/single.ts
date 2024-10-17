@@ -10,6 +10,7 @@ import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
+import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import type { ExportWithOutput, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { getFileContent } from '../utils/getFileContent.js';
@@ -59,7 +60,12 @@ export async function runJatsExport(
       });
     }),
   );
-  const [processedArticle, ...processedSubArticles] = processedContents;
+  const [processedArticle, ...processedSubArticles] = processedContents.map(
+    ({ frontmatter, ...contents }) => {
+      const parts = resolveFrontmatterParts(session, frontmatter);
+      return { frontmatter: { ...frontmatter, parts }, ...contents };
+    },
+  );
   const vfile = new VFile();
   vfile.path = output;
   const jats = writeJats(vfile, processedArticle as any, {

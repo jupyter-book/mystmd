@@ -48,7 +48,7 @@ describe('site section generation', () => {
       path: '.',
       index: 'index',
       implicitIndex: true,
-      pages: [{ file: 'README.md', level: 1, slug: 'readme' }],
+      pages: [{ file: 'README.md', level: 1, slug: 'readme', implicit: true }],
     });
   });
   it('index.md only', async () => {
@@ -83,11 +83,13 @@ describe('site section generation', () => {
           file: 'notebook.ipynb',
           slug: 'notebook',
           level: 1,
+          implicit: true,
         },
         {
           file: 'page.md',
           slug: 'page',
           level: 1,
+          implicit: true,
         },
       ],
     });
@@ -108,11 +110,13 @@ describe('site section generation', () => {
           file: 'folder/notebook.ipynb',
           slug: 'notebook',
           level: 2,
+          implicit: true,
         },
         {
           file: 'folder/page.md',
           slug: 'page',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -145,11 +149,13 @@ describe('site section generation', () => {
           file: 'folder1/01_MySecond_folder-ok/folder3/01_notebook.ipynb',
           slug: 'notebook',
           level: 4,
+          implicit: true,
         },
         {
           file: 'folder1/01_MySecond_folder-ok/folder3/02_page.md',
           slug: 'page',
           level: 4,
+          implicit: true,
         },
       ],
     });
@@ -166,6 +172,7 @@ describe('site section generation', () => {
           file: 'zfile.md',
           slug: 'zfile',
           level: 1,
+          implicit: true,
         },
         {
           title: 'Afolder',
@@ -175,6 +182,7 @@ describe('site section generation', () => {
           file: 'afolder/page.md',
           slug: 'page',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -197,6 +205,7 @@ describe('site section generation', () => {
           file: 'folder1/page1.md',
           slug: 'page1',
           level: 1,
+          implicit: true,
         },
         {
           title: 'Folder2',
@@ -206,6 +215,7 @@ describe('site section generation', () => {
           file: 'folder1/folder2/page2.md',
           slug: 'page2',
           level: 2,
+          implicit: true,
         },
         {
           title: 'Folder3',
@@ -215,6 +225,7 @@ describe('site section generation', () => {
           file: 'folder1/folder2/folder3/page3.md',
           slug: 'page3',
           level: 3,
+          implicit: true,
         },
       ],
     });
@@ -235,6 +246,7 @@ describe('site section generation', () => {
           file: 'folder/notebook.ipynb',
           slug: 'notebook',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -251,6 +263,7 @@ describe('site section generation', () => {
           file: 'page.md',
           slug: 'page',
           level: 1,
+          implicit: true,
         },
       ],
     });
@@ -267,6 +280,7 @@ describe('site section generation', () => {
           file: 'aaa.ipynb',
           slug: 'aaa',
           level: 1,
+          implicit: true,
         },
       ],
     });
@@ -297,11 +311,13 @@ describe('site section generation', () => {
           file: 'index.ipynb',
           slug: 'index',
           level: 1,
+          implicit: true,
         },
         {
           file: 'page.md',
           slug: 'page',
           level: 1,
+          implicit: true,
         },
       ],
     });
@@ -326,11 +342,13 @@ describe('site section generation', () => {
           file: 'folder/index.ipynb',
           slug: 'index',
           level: 2,
+          implicit: true,
         },
         {
           file: 'folder/main.tex',
           slug: 'main',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -355,11 +373,13 @@ describe('site section generation', () => {
           file: 'folder/main.tex',
           slug: 'main',
           level: 2,
+          implicit: true,
         },
         {
           file: 'folder/page.md',
           slug: 'page',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -380,6 +400,7 @@ describe('site section generation', () => {
           file: 'notebook.ipynb',
           slug: 'notebook',
           level: 1,
+          implicit: true,
         },
         {
           title: 'Folder',
@@ -389,6 +410,7 @@ describe('site section generation', () => {
           file: 'folder/main.tex',
           slug: 'main',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -415,11 +437,13 @@ describe('site section generation', () => {
           file: 'folder/notebook.ipynb',
           slug: 'notebook',
           level: 2,
+          implicit: true,
         },
         {
           file: 'folder/page.md',
           slug: 'page',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -441,16 +465,19 @@ describe('site section generation', () => {
           file: 'chapter1.md',
           slug: 'chapter1',
           level: 1,
+          implicit: true,
         },
         {
           file: 'chapter2.ipynb',
           slug: 'chapter2',
           level: 1,
+          implicit: true,
         },
         {
           file: 'chapter10.ipynb',
           slug: 'chapter10',
           level: 1,
+          implicit: true,
         },
       ],
     });
@@ -478,11 +505,13 @@ describe('site section generation', () => {
           file: 'folder/notebook.ipynb',
           slug: 'notebook',
           level: 2,
+          implicit: true,
         },
         {
           file: 'folder/page.md',
           slug: 'page',
           level: 2,
+          implicit: true,
         },
       ],
     });
@@ -822,21 +851,21 @@ describe('pagesFromSphinxTOC', () => {
       'project/c.md': '',
       'project/d.md': '',
     });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       path: '.',
       index: 'readme',
       file: 'readme.md',
       implicitIndex: true,
       pages: [
-        { slug: 'x', file: 'x.md', level: 1 },
+        { slug: 'x', file: 'x.md', level: 1, implicit: true },
         { slug: 'index', file: 'project/index.md', level: 1 },
         { slug: 'a', file: 'project/a.md', level: 2 },
         { title: 'Sections', level: 2 },
         { slug: 'b', file: 'project/b.md', level: 3 },
         { slug: 'c', file: 'project/c.md', level: 3 },
         { title: 'Section', level: 1 },
-        { slug: 'y', file: 'section/y.md', level: 2 },
-        { slug: 'z', file: 'section/z.md', level: 2 },
+        { slug: 'y', file: 'section/y.md', level: 2, implicit: true },
+        { slug: 'z', file: 'section/z.md', level: 2, implicit: true },
       ],
     });
   });
@@ -853,22 +882,22 @@ describe('pagesFromSphinxTOC', () => {
       'project/c.md': '',
       'project/d.md': '',
     });
-    expect(await projectFromPath(session, '.')).toEqual({
+    expect(projectFromPath(session, '.')).toEqual({
       path: '.',
       index: 'readme',
       file: 'readme.md',
       implicitIndex: true,
       pages: [
-        { slug: 'x', file: 'x.md', level: 1 },
+        { slug: 'x', file: 'x.md', level: 1, implicit: true },
         { title: 'Project', level: 1 },
-        { slug: 'index', file: 'project/index.md', level: 2 },
-        { slug: 'a', file: 'project/a.md', level: 2 },
-        { slug: 'b', file: 'project/b.md', level: 2 },
-        { slug: 'c', file: 'project/c.md', level: 2 },
-        { slug: 'd', file: 'project/d.md', level: 2 },
+        { slug: 'index', file: 'project/index.md', level: 2, implicit: true },
+        { slug: 'a', file: 'project/a.md', level: 2, implicit: true },
+        { slug: 'b', file: 'project/b.md', level: 2, implicit: true },
+        { slug: 'c', file: 'project/c.md', level: 2, implicit: true },
+        { slug: 'd', file: 'project/d.md', level: 2, implicit: true },
         { title: 'Section', level: 1 },
-        { slug: 'y', file: 'section/y.md', level: 2 },
-        { slug: 'z', file: 'section/z.md', level: 2 },
+        { slug: 'y', file: 'section/y.md', level: 2, implicit: true },
+        { slug: 'z', file: 'section/z.md', level: 2, implicit: true },
       ],
     });
   });

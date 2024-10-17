@@ -9,6 +9,7 @@ import type { TransformFn } from '../../process/mdast.js';
 import { postProcessMdast, transformMdast } from '../../process/mdast.js';
 import { loadProject, selectPageReferenceStates } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
+import { selectors } from '../../store/index.js';
 import type { ImageExtensions } from '../../utils/resolveExtension.js';
 
 export async function getFileContent(
@@ -37,13 +38,11 @@ export async function getFileContent(
   projectPath = projectPath ?? resolve('.');
   const { project, pages } = await loadProject(session, projectPath);
   const projectFiles = pages.map((page) => page.file).filter((file) => !files.includes(file));
-  // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
-  const allFiles = [...files, ...projectFiles];
   await Promise.all([
     // Load all citations (.bib)
     ...project.bibliography.map((path) => loadFile(session, path, projectPath, '.bib')),
     // Load all content (.md, .tex, .myst.json, or .ipynb)
-    ...allFiles.map((file, ind) => {
+    ...[...files, ...projectFiles].map((file, ind) => {
       const preFrontmatter = Array.isArray(preFrontmatters)
         ? preFrontmatters?.[ind]
         : preFrontmatters;
@@ -56,6 +55,10 @@ export async function getFileContent(
   ]);
   // Consolidate all citations onto single project citation renderer
   combineProjectCitationRenderers(session, projectPath);
+
+  const projectParts = selectors.selectProjectParts(session.store.getState(), projectPath);
+  // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
+  const allFiles = [...files, ...projectFiles, ...projectParts];
 
   await Promise.all(
     allFiles.map(async (file, ind) => {
@@ -80,13 +83,17 @@ export async function getFileContent(
       return { file };
     }),
   );
-  const selectedFiles = await Promise.all(
-    files.map(async (file) => {
+  await Promise.all(
+    [...files, ...projectParts].map(async (file) => {
       await postProcessMdast(session, {
         file,
         extraLinkTransformers,
         pageReferenceStates,
       });
+    }),
+  );
+  const selectedFiles = await Promise.all(
+    files.map(async (file) => {
       const selectedFile = selectFile(session, file);
       if (!selectedFile) throw new Error(`Could not load file information for ${file}`);
       return selectedFile;

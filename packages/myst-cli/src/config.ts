@@ -16,6 +16,7 @@ import {
 } from 'simple-validators';
 import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
+import { loadFrontmatterParts } from './process/file.js';
 import { cachePath, loadFromCache, writeToCache } from './session/cache.js';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
@@ -361,6 +362,7 @@ async function resolveSiteConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
+  file: string,
 ) {
   const resolvedFields: SiteConfig = {};
   if (siteConfig.projects) {
@@ -375,6 +377,15 @@ async function resolveSiteConfigPaths(
   }
   if (siteConfig.favicon) {
     resolvedFields.favicon = await resolutionFn(session, path, siteConfig.favicon);
+  }
+  if (siteConfig.parts) {
+    resolvedFields.parts = await loadFrontmatterParts(
+      session,
+      file,
+      'site.parts',
+      { parts: siteConfig.parts },
+      path,
+    );
   }
   return { ...siteConfig, ...resolvedFields };
 }
@@ -392,12 +403,13 @@ async function resolveProjectConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
+  file: string,
 ) {
   const resolvedFields: ProjectConfig = {};
   if (projectConfig.bibliography) {
     resolvedFields.bibliography = await Promise.all(
-      projectConfig.bibliography.map(async (file) => {
-        const resolved = await resolutionFn(session, path, file);
+      projectConfig.bibliography.map(async (f) => {
+        const resolved = await resolutionFn(session, path, f);
         return resolved;
       }),
     );
@@ -419,6 +431,15 @@ async function resolveProjectConfigPaths(
       }),
     );
   }
+  if (projectConfig.parts) {
+    resolvedFields.parts = await loadFrontmatterParts(
+      session,
+      file,
+      'project.parts',
+      { parts: projectConfig.parts },
+      path,
+    );
+  }
   return { ...projectConfig, ...resolvedFields };
 }
 
@@ -437,7 +458,7 @@ async function validateSiteConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
-  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute);
+  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute, vfile.path);
 }
 
 function saveSiteConfig(session: ISession, path: string, site: SiteConfig) {
@@ -459,7 +480,7 @@ async function validateProjectConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
-  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute);
+  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute, vfile.path);
 }
 
 function saveProjectConfig(session: ISession, path: string, project: ProjectConfig) {
@@ -499,7 +520,7 @@ export async function writeConfigs(
   }
   siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
   if (siteConfig) {
-    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative);
+    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
   }
   // Get project config to save
   if (projectConfig) {
@@ -517,6 +538,7 @@ export async function writeConfigs(
       path,
       projectConfig,
       resolveToRelative,
+      file,
     );
   }
   // Return early if nothing new to save

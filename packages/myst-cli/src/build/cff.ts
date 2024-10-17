@@ -14,6 +14,7 @@ import { KNOWN_IMAGE_EXTENSIONS } from '../utils/resolveExtension.js';
 import type { ExportWithOutput, ExportFnOptions } from './types.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import { getFileContent } from './utils/getFileContent.js';
+import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
 import { parseMyst } from '../process/myst.js';
 
 function exportOptionsToCFF(exportOptions: ExportWithOutput): CFF {
@@ -39,11 +40,16 @@ export async function runCffExport(
   let frontmatter: PageFrontmatter | undefined;
   let abstract: string | undefined;
   if (projectPath && selectors.selectLocalConfigFile(state, projectPath) === sourceFile) {
+    // Process the project only, without any files
+    await getFileContent(session, [], {
+      projectPath,
+      imageExtensions: KNOWN_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+    });
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath);
-    const rawAbstract = frontmatter?.parts?.abstract?.join('\n\n');
-    if (rawAbstract) {
-      const abstractAst = parseMyst(session, rawAbstract, sourceFile);
-      abstract = toText(abstractAst);
+    const { abstract: frontmatterAbstract } = resolveFrontmatterParts(session, frontmatter) ?? {};
+    if (frontmatterAbstract) {
+      abstract = toText(frontmatterAbstract.mdast);
     }
   } else if (article.file) {
     const [content] = await getFileContent(session, [article.file], {
@@ -52,7 +58,9 @@ export async function runCffExport(
       extraLinkTransformers,
     });
     frontmatter = content.frontmatter;
-    const abstractMdast = extractPart(content.mdast, 'abstract');
+    const abstractMdast = extractPart(content.mdast, 'abstract', {
+      frontmatterParts: resolveFrontmatterParts(session, frontmatter),
+    });
     if (abstractMdast) abstract = toText(abstractMdast);
   }
   if (!frontmatter) return { tempFolders: [] };
