@@ -19,6 +19,9 @@ export function clirun<S extends ISession>(
     program: Command;
     getSession: (logger: Logger, opts?: SessionOpts) => S;
   },
+  runOptions?: {
+    forceExit?: boolean | ((...args: any[]) => boolean);
+  },
 ) {
   return async (...args: any[]) => {
     const opts = cli.program.opts() as SessionOpts;
@@ -32,6 +35,11 @@ export function clirun<S extends ISession>(
       }
       logger.error((error as Error).message);
       process.exit(1);
+    }
+    if (typeof runOptions?.forceExit === 'function') {
+      if (runOptions?.forceExit(...args)) process.exit(0);
+    } else if (runOptions?.forceExit) {
+      process.exit(0);
     }
   };
 }
