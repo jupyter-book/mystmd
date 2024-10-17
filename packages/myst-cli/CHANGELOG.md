@@ -1,5 +1,34 @@
 # myst-cli
 
+## 1.3.13
+
+### Patch Changes
+
+- 4a3ee6db: Consume frontmatter parts in static exports
+- 91b85911: Bump action versions.
+- 40ea2dd1: Fix favicon writing
+- 4a3ee6db: Load frontmatter parts as separate files for processing
+- b14e0fb3: Force exit when the task is complete.
+- 4a3ee6db: Fix local image paths for embedded nodes
+- 4a3ee6db: Keep track of implicit vs. explicit pages in project TOC
+- 4a3ee6db: Support parts in site config
+- 4a3ee6db: Parse project-level parts to mdast
+- 4a3ee6db: Update processing to handle parts files
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [897136f]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [918223b8]
+- Updated dependencies [b14e0fb3]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [4a3ee6db]
+  - myst-to-jats@1.0.29
+  - myst-common@1.7.2
+  - myst-frontmatter@1.7.2
+  - myst-cli-utils@2.0.11
+  - myst-spec-ext@1.7.2
+  - myst-config@1.7.2
+
 ## 1.3.12
 
 ### Patch Changes

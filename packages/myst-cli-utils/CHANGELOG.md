@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.11
+
+### Patch Changes
+
+- b14e0fb3: Force exit when the task is complete.
+
 ## 2.0.10
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.7.2
+
+### Patch Changes
+
+- 4a3ee6db: Keep track of implicit vs. explicit pages in project TOC
+
 ## 1.7.1
 
 ## 1.7.0

@@ -1,5 +1,16 @@
 # myst-common
 
+## 1.7.2
+
+### Patch Changes
+
+- 4a3ee6db: Consume frontmatter parts in static exports
+- 4a3ee6db: Load frontmatter parts as separate files for processing
+- Updated dependencies [897136f]
+- Updated dependencies [918223b8]
+- Updated dependencies [4a3ee6db]
+  - myst-frontmatter@1.7.2
+
 ## 1.7.1
 
 ### Patch Changes

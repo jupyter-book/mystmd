@@ -1,5 +1,20 @@
 # myst-to-jats
 
+## 1.0.29
+
+### Patch Changes
+
+- 4a3ee6db: Consume frontmatter parts in static exports
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [897136f]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [918223b8]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [4a3ee6db]
+  - myst-common@1.7.2
+  - myst-frontmatter@1.7.2
+  - myst-spec-ext@1.7.2
+
 ## 1.0.28
 
 ### Patch Changes
