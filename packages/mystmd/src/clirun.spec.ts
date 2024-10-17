@@ -16,6 +16,19 @@ describe('clirun', () => {
     mockExit.mockRestore();
   });
   it('valid function passes', async () => {
+    try {
+      await clirun(
+        Session,
+        () => {
+          return;
+        },
+        new Command(),
+      )();
+    } catch {
+      expect(process.exit).toHaveBeenCalledWith(0);
+    }
+  });
+  it('valid function passes -- keepAlive', async () => {
     await clirun(
       Session,
       () => {
@@ -34,7 +47,6 @@ describe('clirun', () => {
           throw new Error();
         },
         new Command(),
-        { keepAlive: true },
       )();
       expect(true).toBe(false);
     } catch {
