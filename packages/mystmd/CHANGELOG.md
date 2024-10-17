@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.13
+
+### Patch Changes
+
+- b14e0fb3: Force exit when the task is complete.
+
 ## 1.3.12
 
 ## 1.3.11

@@ -1,5 +1,13 @@
 # myst-frontmatter
 
+## 1.7.2
+
+### Patch Changes
+
+- 897136f: Nest external identifiers in frontmatter
+- 918223b8: Add pubmed identifiers to frontmatter
+- 4a3ee6db: Support parts in site config
+
 ## 1.7.1
 
 ### Patch Changes

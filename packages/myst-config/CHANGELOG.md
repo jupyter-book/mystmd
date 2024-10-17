@@ -1,5 +1,19 @@
 # myst-config
 
+## 1.7.2
+
+### Patch Changes
+
+- 4a3ee6db: Support parts in site config
+- 4a3ee6db: Parse project-level parts to mdast
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [897136f]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [918223b8]
+- Updated dependencies [4a3ee6db]
+  - myst-common@1.7.2
+  - myst-frontmatter@1.7.2
+
 ## 1.7.1
 
 ### Patch Changes
