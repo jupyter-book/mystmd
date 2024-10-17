@@ -727,6 +727,17 @@ describe('fillPageFrontmatter', () => {
       options: { a: 'b' },
     });
   });
+  it('project and page identifiers combine', async () => {
+    expect(
+      fillPageFrontmatter(
+        { identifiers: { pmcid: 'PMC123', other: 'abc' } },
+        { identifiers: { other: 'def', arxiv: 'https://arxiv.org/example' } },
+        opts,
+      ),
+    ).toEqual({
+      identifiers: { pmcid: 'PMC123', other: 'abc', arxiv: 'https://arxiv.org/example' },
+    });
+  });
 });
 
 describe('fillSiteFrontmatter', () => {

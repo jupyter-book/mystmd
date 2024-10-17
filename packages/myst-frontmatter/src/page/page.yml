@@ -77,7 +77,8 @@ cases:
           name: University B
       label: example.md
       doi: 10.1000/abcd/efg012
-      arxiv: https://arxiv.org/example
+      identifiers:
+        arxiv: https://arxiv.org/example
       open_access: true
       license:
         content:
