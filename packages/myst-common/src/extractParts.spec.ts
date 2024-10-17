@@ -272,15 +272,17 @@ describe('extractPart', () => {
       extractPart(tree, 'test_part', {
         frontmatterParts: {
           test_part: {
-            type: 'root',
-            children: [
-              {
-                type: 'block',
-                children: [
-                  { type: 'paragraph', children: [{ type: 'text', value: 'frontmatter part' }] },
-                ],
-              },
-            ],
+            mdast: {
+              type: 'root',
+              children: [
+                {
+                  type: 'block',
+                  children: [
+                    { type: 'paragraph', children: [{ type: 'text', value: 'frontmatter part' }] },
+                  ],
+                },
+              ],
+            },
           },
         },
       }),
