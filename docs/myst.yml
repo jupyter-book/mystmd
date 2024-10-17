@@ -103,11 +103,11 @@ project:
         - file: table-of-contents.md
     - title: Executable Content
       children:
-        - file: interactive-notebooks.ipynb
         - file: notebooks-with-markdown.md
-        - file: reuse-jupyter-outputs.md
-        - file: integrating-jupyter.md
         - file: execute-notebooks.md
+        - file: reuse-jupyter-outputs.md
+        - file: interactive-notebooks.ipynb
+        - file: integrating-jupyter.md
     - title: Websites
       children:
         - file: website-templates.md

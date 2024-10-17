@@ -1,12 +1,13 @@
 ---
-title: Execute Notebooks During Your Build
-description: MyST can execute notebooks using Jupyter Server, making it possible to build rich websites and documents from text-based notebooks.
-short_title: Execute Notebooks During Your Build
+title: Execute Notebooks at Build Time
+subtitle: Generate figures and other rich content using Jupyter kernels
+short_title: Execute During Build
+description: MyST can execute Markdown files and Jupyter Notebooks, making it possible to build rich websites from computational documents.
 thumbnail: thumbnails/execute-notebooks.png
 ---
 
-:::{warning} MyST Execution is in Beta
-By default, execution is disabled and code outputs are only inserted if the notebook has already been executed (for text-based notebooks, there are no outputs).
+:::{warning} MyST execution features are in Beta
+By default, execution is disabled and computational outputs are only inserted if the notebook has already been executed (for text-based notebooks, there are no outputs!).
 We are adding support for executing markdown notebooks and ipynb files, including inline execution.
 As we are adding this functionality we appreciate any feedback from the community on how it is working in your environments. Please add [issues](https://github.com/jupyter-book/mystmd/issues/new) or join [Discord](https://discord.mystmd.org/) to give feedback.
 :::
@@ -49,9 +50,9 @@ print("Hello" + 10001)
 
 ## Skip particular code-cells
 
-Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book) use to prevent a cell from being executed. 
+Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book) use to prevent a cell from being executed.
 
-Using the {myst:directive}`code-cell` directive, the `skip-execution` tag can be added as follows:
+For [Markdown notebooks using the {myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), the `skip-execution` tag can be added as follows:
 
 ````markdown
 ```{code-cell}

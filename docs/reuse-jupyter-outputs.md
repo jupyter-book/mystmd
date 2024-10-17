@@ -1,7 +1,7 @@
 ---
 title: Embed and Reuse Jupyter Outputs
-subtitle: Embedding outputs in narrative articles
-short_title: Embed & Reuse Jupyter Outputs
+subtitle: Embedding generated outputs in narrative articles
+short_title: Embed & Reuse Outputs
 description: Embed Jupyter Notebook outputs from any notebook into your website or article.
 thumbnail: thumbnails/reuse-jupyter-outputs.png
 ---
@@ -15,6 +15,7 @@ A scientific article with two figures created in Jupyter Notebooks. Each figure 
 ```
 
 (label-a-notebook-cell)=
+
 ## Label a Notebook Cell
 
 You can label notebook cells in two ways:
@@ -33,7 +34,7 @@ For example, the following comment in a Python cell sets a label[^black]:
 print("Hello world!")
 ```
 
-Note that `#` is the comment symbol for Python, but you'd use whatever symbol is used in the language for the notebook. 
+Note that `#` is the comment symbol for Python, but you'd use whatever symbol is used in the language for the notebook.
 
 **Add the label directly to the cell metadata**. Use a Jupyter interface or text editor to embed the label in the cell's metadata. For example, here's sample JSON that shows what metadata should look like:
 
@@ -120,6 +121,7 @@ For example, to embed **both the cell input and output**, use syntax like:
 ````
 
 % Embed both the input and output
+
 ```{embed} #tbl:data-cars
 :remove-output: false
 :remove-input: false
@@ -176,7 +178,6 @@ Adding alternative text to images allows you to provide context for the image fo
 By default, Jupyter does not support alternative text for image outputs, but you can use MyST to add alternative text with the {myst:directive}`figure` directive.
 See [](figures.md) for more details.
 
-
 Using the {myst:directive}`figure` directive allows you to set one or more captions for your figures, which serve accessibility purposes as well.
 This works for both static outputs (like Matplotlib) as well as interactive ones (like Altair).
 For example, the following {myst:directive}`figure` directive embeds two cell outputs with captions:
@@ -208,12 +209,12 @@ You can use a {myst:directive}`table` directive and **embed** the notebook outpu
 
 For example:
 
-````
+```
 :::{table} This is my table
 :label: mytable
 ![](#tbl:data-cars)
 :::
-````
+```
 
 Results in:
 
@@ -227,13 +228,13 @@ Results in:
 This defines a figure but allows the content to be a table.
 For example, the following syntax:
 
-````
+```
 :::{figure} #tbl:data-cars
 :label: myothertable
 :kind: table
 This is my table caption!
 :::
-````
+```
 
 Results in:
 
