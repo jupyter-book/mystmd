@@ -10,12 +10,12 @@ import type { SiteFrontmatter } from '../site/types.js';
 import { SITE_FRONTMATTER_KEYS } from '../site/types.js';
 import type { ExpandedThebeFrontmatter } from '../thebe/types.js';
 
+export const KNOWN_EXTERNAL_IDENTIFIERS = ['arxiv', 'pmid', 'pmcid', 'zenodo'];
+
 export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'date',
   'doi',
-  'arxiv',
-  'pmid',
-  'pmcid',
+  'identifiers',
   'open_access',
   'license',
   'binder',
@@ -33,6 +33,7 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'exports',
   'downloads',
   'settings', // We maybe want to move this into site frontmatter in the future
+  ...KNOWN_EXTERNAL_IDENTIFIERS,
   // Do not add any project specific keys here!
   ...SITE_FRONTMATTER_KEYS,
 ];
@@ -51,9 +52,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
 export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   date?: string;
   doi?: string;
-  arxiv?: string;
-  pmid?: number;
-  pmcid?: string;
+  identifiers?: Record<string, string | number>;
   open_access?: boolean;
   license?: Licenses;
   binder?: string;

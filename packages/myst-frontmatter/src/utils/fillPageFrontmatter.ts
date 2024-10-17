@@ -211,6 +211,13 @@ export function fillProjectFrontmatter(
     };
   }
 
+  if (filler.identifiers || base.identifiers) {
+    frontmatter.identifiers = {
+      ...(filler.identifiers ?? {}),
+      ...(base.identifiers ?? {}),
+    };
+  }
+
   if (!trimUnused) {
     if (filler.bibliography || base.bibliography) {
       frontmatter.bibliography = [

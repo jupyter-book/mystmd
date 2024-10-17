@@ -83,7 +83,8 @@ cases:
           name: University A
       date: '2021-12-14'
       doi: 10.1000/abcd/efg012
-      arxiv: https://arxiv.org/example
+      identifiers:
+        arxiv: https://arxiv.org/example
       open_access: true
       license:
         content:
@@ -238,26 +239,101 @@ cases:
     errors: 1
   - title: pmcid validates
     raw:
-      pmcid: PMC123
+      identifiers:
+        pmcid: PMC123
     normalized:
-      pmcid: PMC123
+      identifiers:
+        pmcid: PMC123
   - title: invalid pmcid errors
     raw:
-      pmcid: '123'
+      identifiers:
+        pmcid: '123'
     normalized: {}
     errors: 1
   - title: pmid string validates
     raw:
-      pmid: '123'
+      identifiers:
+        pmid: '123'
     normalized:
-      pmid: 123
+      identifiers:
+        pmid: 123
   - title: pmid number validates
     raw:
-      pmid: 123
+      identifiers:
+        pmid: 123
     normalized:
-      pmid: 123
+      identifiers:
+        pmid: 123
   - title: invalid pmid errors
     raw:
-      pmid: 'abc'
+      identifiers:
+        pmid: 'abc'
     normalized: {}
     errors: 1
+  - title: doi is lifted from identifiers
+    raw:
+      identifiers:
+        doi: 10.1000/abc123
+        pmid: 123
+    normalized:
+      doi: 10.1000/abc123
+      identifiers:
+        pmid: 123
+    warnings: 1
+  - title: unknown string identifier passes
+    raw:
+      identifiers:
+        unknown: '123'
+    normalized:
+      identifiers:
+        unknown: '123'
+  - title: unknown numeric identifier passes
+    raw:
+      identifiers:
+        unknown: 123
+    normalized:
+      identifiers:
+        unknown: 123
+  - title: known identifiers nest under identifiers
+    raw:
+      zenodo: https://zenodo.org/records/13942262
+      pmcid: PMC123
+      pmid: 123
+      arxiv: https://arxiv.org/example
+    normalized:
+      identifiers:
+        zenodo: https://zenodo.org/records/13942262
+        pmcid: PMC123
+        pmid: 123
+        arxiv: https://arxiv.org/example
+  - title: invalid zenodo errors
+    raw:
+      identifiers:
+        zenodo: '13942262'
+    normalized: {}
+    errors: 1
+  - title: identifier coerces to identifiers
+    raw:
+      identifier:
+        unknown: 123
+    normalized:
+      identifiers:
+        unknown: 123
+  - title: duplicate identifiers error
+    raw:
+      pmcid: PMC456
+      identifier:
+        pmcid: PMC123
+    normalized:
+      identifiers:
+        pmcid: PMC123
+    errors: 1
+  - title: duplicate dois error
+    raw:
+      doi: 10.1000/abc456
+      identifier:
+        doi: 10.1000/abc123
+    normalized:
+      doi: 10.1000/abc456
+    errors: 1
+

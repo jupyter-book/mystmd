@@ -65,6 +65,7 @@ export const FRONTMATTER_ALIASES = {
   key_points: 'keypoints',
   'key-points': 'keypoints',
   image: 'thumbnail',
+  identifier: 'identifiers',
 };
 
 export type SiteFrontmatter = {

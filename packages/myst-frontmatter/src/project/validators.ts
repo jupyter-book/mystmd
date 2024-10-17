@@ -10,6 +10,8 @@ import {
   validateObjectKeys,
   validateString,
   validateUrl,
+  validationError,
+  validationWarning,
 } from 'simple-validators';
 import { validateTOC } from 'myst-toc';
 import { validatePublicationMeta } from '../biblio/validators.js';
@@ -21,11 +23,52 @@ import { validateExternalReferences } from '../references/validators.js';
 import { validateSiteFrontmatterKeys } from '../site/validators.js';
 import { validateThebe } from '../thebe/validators.js';
 import { validateDoi, validateStringOrNumber } from '../utils/validators.js';
-import { PROJECT_FRONTMATTER_KEYS } from './types.js';
+import { KNOWN_EXTERNAL_IDENTIFIERS, PROJECT_FRONTMATTER_KEYS } from './types.js';
 import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
 import { validateMathMacroObject } from '../math/validators.js';
+
+function getExternalIdentifierValidator(
+  key: string,
+): (value: any, opts: ValidationOptions) => string | number | undefined {
+  if (key === 'arxiv') {
+    return (value: any, opts: ValidationOptions) => {
+      return validateUrl(value, {
+        ...incrementOptions('arxiv', opts),
+        includes: 'arxiv.org',
+      });
+    };
+  }
+  if (key === 'pmid') {
+    return (value: any, opts: ValidationOptions) => {
+      return validateNumber(value, {
+        ...incrementOptions('pmid', opts),
+        integer: true,
+        min: 1,
+      });
+    };
+  }
+  if (key === 'pmcid') {
+    return (value: any, opts: ValidationOptions) => {
+      return validateString(value, {
+        ...incrementOptions('pmcid', opts),
+        regex: '^PMC[0-9]+$',
+      });
+    };
+  }
+  if (key === 'zenodo') {
+    return (value: any, opts: ValidationOptions) => {
+      return validateUrl(value, {
+        ...incrementOptions('zenodo', opts),
+        includes: 'zenodo.org',
+      });
+    };
+  }
+  return (value: any, opts: ValidationOptions) => {
+    return validateStringOrNumber(value, incrementOptions(key, opts));
+  };
+}
 
 export function validateProjectAndPageFrontmatterKeys(
   value: Record<string, any>,
@@ -35,27 +78,50 @@ export function validateProjectAndPageFrontmatterKeys(
   if (defined(value.date)) {
     output.date = validateDate(value.date, incrementOptions('date', opts));
   }
+  const identifiersOpts = incrementOptions('identifiers', opts);
+  let identifiers: Record<string, string | number> | undefined;
+  if (defined(value.identifiers)) {
+    identifiers = validateObjectKeys(
+      value.identifiers,
+      { optional: KNOWN_EXTERNAL_IDENTIFIERS },
+      { keepExtraKeys: true, suppressWarnings: true, ...identifiersOpts },
+    );
+  }
+  KNOWN_EXTERNAL_IDENTIFIERS.forEach((identifierKey) => {
+    if (defined(value[identifierKey])) {
+      identifiers ??= {};
+      if (identifiers[identifierKey]) {
+        validationError(`duplicate value for identifier ${identifierKey}`, identifiersOpts);
+      } else {
+        identifiers[identifierKey] = value[identifierKey];
+      }
+    }
+  });
+  if (identifiers?.doi) {
+    if (defined(value.doi)) {
+      validationError(`duplicate value for DOI`, identifiersOpts);
+    } else {
+      value.doi = identifiers.doi;
+      validationWarning(
+        "DOI should be defined directly on the project frontmatter, not under 'identifiers'",
+        identifiersOpts,
+      );
+    }
+    delete identifiers.doi;
+  }
+  if (identifiers) {
+    const identifiersEntries = Object.entries(identifiers)
+      .map(([k, v]) => {
+        const validator = getExternalIdentifierValidator(k);
+        return [k, validator(v, identifiersOpts)];
+      })
+      .filter((entry): entry is [string, string | number] => entry[1] != null);
+    if (identifiersEntries.length > 0) {
+      output.identifiers = Object.fromEntries(identifiersEntries);
+    }
+  }
   if (defined(value.doi)) {
     output.doi = validateDoi(value.doi, incrementOptions('doi', opts));
-  }
-  if (defined(value.arxiv)) {
-    output.arxiv = validateUrl(value.arxiv, {
-      ...incrementOptions('arxiv', opts),
-      includes: 'arxiv.org',
-    });
-  }
-  if (defined(value.pmid)) {
-    output.pmid = validateNumber(value.pmid, {
-      ...incrementOptions('pmid', opts),
-      integer: true,
-      min: 1,
-    });
-  }
-  if (defined(value.pmcid)) {
-    output.pmcid = validateString(value.pmcid, {
-      ...incrementOptions('pmcid', opts),
-      regex: '^PMC[0-9]+$',
-    });
   }
   if (defined(value.open_access)) {
     output.open_access = validateBoolean(value.open_access, incrementOptions('open_access', opts));
