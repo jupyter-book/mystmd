@@ -36,10 +36,10 @@
   "dependencies": {
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
-    "myst-common": "^1.5.1",
-    "myst-frontmatter": "^1.5.1",
+    "myst-common": "^1.7.2",
+    "myst-frontmatter": "^1.7.2",
     "myst-spec": "^0.0.5",
-    "myst-spec-ext": "^1.5.1",
+    "myst-spec-ext": "^1.7.2",
     "unist-util-select": "^4.0.3"
   }
 }

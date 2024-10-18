@@ -51,7 +51,7 @@
     "markdown-it-myst": "1.0.10",
     "markdown-it-myst-extras": "0.3.0",
     "markdown-it-task-lists": "^2.1.1",
-    "myst-common": "^1.6.0",
+    "myst-common": "^1.7.2",
     "myst-directives": "^1.5.6",
     "myst-roles": "^1.5.6",
     "myst-spec": "^0.0.5",
