@@ -1,6 +1,6 @@
 {
   "name": "myst-directives",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default directive definitions for MyST",

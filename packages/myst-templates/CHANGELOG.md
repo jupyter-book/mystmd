@@ -1,5 +1,11 @@
 # myst-templates
 
+## 1.0.23
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 1.0.22
 
 ### Patch Changes

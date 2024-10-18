@@ -1,5 +1,11 @@
 # myst-directives
 
+## 1.5.7
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 1.5.6
 
 ## 1.5.5

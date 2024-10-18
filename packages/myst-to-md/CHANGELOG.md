@@ -1,5 +1,11 @@
 # myst-to-md
 
+## 1.0.14
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 1.0.13
 
 ### Patch Changes

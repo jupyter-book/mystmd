@@ -1,5 +1,13 @@
 # myst-to-tex
 
+## 1.0.38
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-ext-proof@1.0.11
+
 ## 1.0.37
 
 ### Patch Changes

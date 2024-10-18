@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 1.3.26
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-to-html@1.5.7
+
 ## 1.3.25
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 1.0.30
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-transforms@1.3.26
+
 ## 1.0.29
 
 ### Patch Changes

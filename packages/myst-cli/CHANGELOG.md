@@ -1,5 +1,29 @@
 # myst-cli
 
+## 1.3.14
+
+### Patch Changes
+
+- Updated dependencies [ce3c11c]
+  - myst-ext-exercise@1.0.8
+  - myst-ext-reactive@1.0.9
+  - myst-transforms@1.3.26
+  - myst-ext-proof@1.0.11
+  - myst-templates@1.0.23
+  - myst-ext-card@1.0.9
+  - myst-ext-grid@1.0.8
+  - myst-ext-icon@0.0.2
+  - myst-ext-tabs@1.0.8
+  - myst-to-typst@0.0.24
+  - myst-execute@0.1.1
+  - myst-to-docx@1.0.12
+  - myst-to-jats@1.0.30
+  - myst-parser@1.5.7
+  - myst-to-tex@1.0.38
+  - tex-to-myst@1.0.38
+  - myst-to-md@1.0.14
+  - jtex@1.0.19
+
 ## 1.3.13
 
 ### Patch Changes

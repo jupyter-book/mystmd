@@ -1,5 +1,11 @@
 # myst-execute
 
+## 0.1.1
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 0.1.0
 
 ### Minor Changes
