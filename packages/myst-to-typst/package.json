@@ -37,9 +37,9 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.7.1",
-    "myst-frontmatter": "^1.7.1",
-    "myst-spec-ext": "^1.7.1",
+    "myst-common": "^1.7.2",
+    "myst-frontmatter": "^1.7.2",
+    "myst-spec-ext": "^1.7.2",
     "tex-to-typst": "^0.0.7",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"

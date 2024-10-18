@@ -34,8 +34,8 @@
   "dependencies": {
     "@jupyterlab/services": "^7.0.0",
     "chalk": "^5.2.0",
-    "myst-cli-utils": "^2.0.10",
-    "myst-common": "^1.6.1",
+    "myst-cli-utils": "^2.0.11",
+    "myst-common": "^1.7.2",
     "node-fetch": "^3.3.0",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
