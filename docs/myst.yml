@@ -1,0 +1,21 @@
+version: 1
+project:
+  title: MyST Spec
+  github: https://github.com/executablebooks/myst-spec
+  license:
+    code: MIT
+    content: CC-BY-4.0
+  subject: Specification
+  venue:
+    title: MyST Spec
+site:
+  title: MyST Spec
+  actions:
+    - title: GitHub
+      url: https://github.com/executablebooks/myst-spec
+  domains:
+    - mystmd-spec.curve.space
+  options:
+    twitter: mystmarkdown
+    logo: public/logo.svg
+    logo_text: MyST Spec

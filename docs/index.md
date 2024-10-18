@@ -1,9 +1,5 @@
 # MyST Specification
 
-```{warning}
-`myst-spec` is in development; any structures or features present in the JSON schema may change at any time without notice.
-```
-
 MyST (Markedly Structured Text) is designed to create publication-quality, computational documents written entirely in Markdown. The main use case driving the development and design of MyST is [JupyterBook](https://jupyterbook.org/), which creates educational online textbooks and tutorials with Jupyter Notebooks and narrative content written in MyST.
 
 ## Overview
@@ -12,7 +8,7 @@ There are three components that this documentation and repository aims to formal
 
 1. the MyST markup language, which is a superset of [CommonMark](https://commonmark.org/) (a standard form of Markdown);
 2. the MyST abstract syntax tree (AST), which is the datastructure of a document after it has been parsed, and can be used in transforming and rendering content; and
-3. a set of unittests that can be used to test implementations of MyST (e.g. in Python and Javascript).
+3. a set of unit-tests that can be used to test implementations of MyST (e.g. in Python and Javascript).
 
 ## MyST Markup Language
 
@@ -39,5 +35,9 @@ Test cases are available for download here: https://unpkg.com/browse/myst-spec/d
 ```
 
 ## Working with the MyST AST
+
+```{warning}
+The `myst-spec` AST is in development; any structures or features present in the JSON schema may change at any time without notice.
+```
 
 This documentation contains all the node types used to construct a MyST document. Conventionally, the AST representation of a MyST document represents the state immediately after parsing. This means, for example, references are not resolved, directive/role structures are still present, etc. You may work with AST nodes by either modifying or adding to them to modify and update the corresponding MyST document, or you may transform and reduce them into a simpler structure to consume in other contexts.

@@ -79,7 +79,7 @@ which is used to structurally seperate content.
 ```
 
 ```{seealso}
-These can be used in [](inline-links) and are similar to [](./references.md) in MyST.
+These can be used in [](#inline-links) and are similar to [](./references.md) in MyST.
 This syntax is also similar to [](./footnotes.md).
 ```
 

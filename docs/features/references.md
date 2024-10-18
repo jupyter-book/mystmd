@@ -15,10 +15,10 @@ Targets are custom anchors that you can refer to elsewhere, for example, a figur
 % TODO: name/label redundancy here would nice to be able to simplfy the onboarding (just use label, same as tex and mdast)
 
 ```{note}
-There is different syntax for creating [Section/Header targets](targeting-headers) and ways to [label equations](targeting-equations) when using dollar math.
+There is different syntax for creating [Section/Header targets](#targeting-headers) and ways to [label equations](#targeting-equations) when using dollar math.
 ```
 
-Cross-referencing content is accomplished with markdown link syntax (`[text](link)`) or through specific roles ([ref](ref-role), [numref](numref-role), [eq](eq-role) or [doc](doc-role)), depending on your use-case.
+Cross-referencing content is accomplished with markdown link syntax (`[text](#link)`) or through specific roles ([ref](#ref-role), [numref](#numref-role), [eq](#eq-role) or [doc](#doc-role)), depending on your use-case.
 
 ### Specification
 
@@ -36,17 +36,17 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](lin
 
 ### Using Markdown Links
 
-Using markdown link syntax is one of the most versatile ways to link to content. This uses the standard CommonMark syntax for a link (`[text](link)`), and the link can either be a label or a link to a document. For example:
+Using markdown link syntax is one of the most versatile ways to link to content. This uses the standard CommonMark syntax for a link (`[text](#link)`), and the link can either be a label or a link to a document. For example:
 
 ````{list-table}
 * - MyST Syntax
   - Rendered
 * - ```
     [A **bolded _reference_** to a page](./references.md)
-    [A reference to a header](targeting-headers)
+    [A reference to a header](#targeting-headers)
     ```
   - [A **bolded _reference_** to a page](./references.md)\
-    [A reference to a header](targeting-headers)
+    [A reference to a header](#targeting-headers)
 ````
 
 ```{note}
@@ -85,7 +85,7 @@ The `{numref}` role is exactly the same as the above `{ref}` role, but also allo
 
 ### Using the `{eq}` role
 
-The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](my-equation)` as there is no text content to fill in a title or caption.
+The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](#my-equation)` as there is no text content to fill in a title or caption.
 
 % TODO: I think we should improve the syntax of links and simplify the explination
 % It is annoying that numref and ref don't work for equations.
