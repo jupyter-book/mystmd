@@ -12,7 +12,7 @@ To create a plugin, you will need a single Javascript file[^esm] that exports on
 [^esm]: The format of the Javascript should be an ECMAScript modules, not CommonJS. This means it uses `import` statements rather than `require()` and is the most modern style of Javascript.
 
 :::{literalinclude} unsplash.mjs
-:name: unsplash-js-source
+:label: unsplash-js-source
 :caption: A plugin to add an `unsplash` directive that includes a beautiful, random picture based on a query string.
 :::
 

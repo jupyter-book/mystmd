@@ -158,7 +158,7 @@ As with any link, the text can be overridden using markdown link syntax `[text](
 
 The HTML IDs that are part of the documentation are not always the targets that are used in the documentation. The easiest way to find the target to use is to look at the source documentation in RST or MyST.
 
-Look for the `(target)=` syntax or `:label:` or `:name:` on a directive.
+Look for the `(target)=` syntax or `:label:` on a directive.
 
 MyST will warn you in the console if your target is not found.
 
