@@ -1,5 +1,11 @@
 # tex-to-myst
 
+## 1.0.38
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 1.0.37
 
 ### Patch Changes

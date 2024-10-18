@@ -1,5 +1,14 @@
 # myst-parser
 
+## 1.5.7
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-directives@1.5.7
+  - myst-roles@1.5.7
+
 ## 1.5.6
 
 ### Patch Changes

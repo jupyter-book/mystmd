@@ -1,5 +1,11 @@
 # myst-ext-card
 
+## 1.0.9
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 1.0.8
 
 ### Patch Changes

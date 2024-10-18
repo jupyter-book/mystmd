@@ -1,5 +1,11 @@
 # myst-to-typst
 
+## 0.0.24
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 0.0.23
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "myst-to-typst",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Export from MyST mdast to Typst",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-tex",

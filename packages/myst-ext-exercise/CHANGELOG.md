@@ -1,5 +1,11 @@
 # myst-ext-exercise
 
+## 1.0.8
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
 ## 1.0.7
 
 ### Patch Changes

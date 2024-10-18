@@ -1,5 +1,13 @@
 # jtex
 
+## 1.0.19
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-templates@1.0.23
+
 ## 1.0.18
 
 ### Patch Changes
