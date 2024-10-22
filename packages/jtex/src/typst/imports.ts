@@ -10,9 +10,9 @@ export function renderTypstImports(
   const { macros, commands } = templateImports ?? {};
   const importStatements: string[] = [];
   const hasMacros = macros && macros.length > 0;
-  if (hasMacros) importStatements.push('#import "myst.typ": *');
+  if (hasMacros) importStatements.push('#import "myst-imports.typ": *');
   if (output && hasMacros) {
-    const mystTypst = path.join(path.dirname(output), 'myst.typ');
+    const mystTypst = path.join(path.dirname(output), 'myst-imports.typ');
     writeFileToFolder(mystTypst, macros.join('\n\n'));
   }
   if (commands && Object.keys(commands).length > 0) {
