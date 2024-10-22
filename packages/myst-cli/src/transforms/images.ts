@@ -244,6 +244,7 @@ type ConversionOpts = {
   file: string;
   inkscapeAvailable: boolean;
   imagemagickAvailable: boolean;
+  dwebpAvailable: boolean;
 };
 
 type ConversionFn = (
@@ -335,6 +336,22 @@ async function gifToPng(
 }
 
 /**
+ * webp -> png using dwebp
+ */
+async function webpToPng(
+  session: ISession,
+  source: string,
+  writeFolder: string,
+  opts: ConversionOpts,
+) {
+  const { dwebpAvailable } = opts;
+  if (dwebpAvailable) {
+    return imagemagick.convertWebpToPng(session, source, writeFolder);
+  }
+  return null;
+}
+
+/**
  * These are all the available image conversion functions
  *
  * Get the function to convert from one extension to another with
@@ -352,6 +369,9 @@ const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
   },
   [ImageExtensions.gif]: {
     [ImageExtensions.png]: gifToPng,
+  },
+  [ImageExtensions.webp]: {
+    [ImageExtensions.png]: webpToPng,
   },
   [ImageExtensions.eps]: {
     // Currently the inkscape CLI has a bug which prevents EPS conversions;
@@ -418,8 +438,9 @@ export async function transformImageFormats(
   });
   if (Object.keys(invalidImages).length === 0) return;
 
-  const inkscapeAvailable = !!inkscape.isInkscapeAvailable();
-  const imagemagickAvailable = !!imagemagick.isImageMagickAvailable();
+  const inkscapeAvailable = inkscape.isInkscapeAvailable();
+  const imagemagickAvailable = imagemagick.isImageMagickAvailable();
+  const dwebpAvailable = imagemagick.isDwebpAvailable();
 
   /**
    * convert runs the input conversion functions on the image
@@ -437,6 +458,7 @@ export async function transformImageFormats(
           file,
           inkscapeAvailable,
           imagemagickAvailable,
+          dwebpAvailable,
         });
       }
     }
