@@ -27,8 +27,8 @@ function createInkscpapeLogger(session: ISession): LoggerDE {
   return logger;
 }
 
-export function isInkscapeAvailable() {
-  return which.sync('inkscape', { nothrow: true });
+export function isInkscapeAvailable(): boolean {
+  return !!which.sync('inkscape', { nothrow: true });
 }
 
 export async function convert(
