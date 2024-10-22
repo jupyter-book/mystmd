@@ -41,6 +41,12 @@ function renderFigureChild(node: GenericNode, state: ITypstSerializer) {
   if (useBrackets) state.write('\n]');
 }
 
+function getDefaultCaptionSupplement(kind: CaptionKind | string) {
+  if (kind === 'code') kind = 'program';
+  const domain = kind.includes(':') ? kind.split(':')[1] : kind;
+  return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)}`;
+}
+
 export const containerHandler: Handler = (node, state) => {
   if (state.data.isInTable) {
     fileError(state.file, 'Unable to render typst figure inside table', {
@@ -117,8 +123,9 @@ export const containerHandler: Handler = (node, state) => {
     state.write('\n],');
   }
   if (kind) {
+    const supplement = getDefaultCaptionSupplement(kind);
     state.write(`\n  kind: "${kind}",`);
-    state.write(`\n  supplement: [${kind[0].toUpperCase() + kind.substring(1)}],`);
+    state.write(`\n  supplement: [${supplement}],`);
   }
   state.write('\n)');
   if (label) state.write(` <${label}>`);
