@@ -239,7 +239,7 @@
               "kind": "Notebook",
               "slug": "interactive-notebooks",
               "location": "/interactive-notebooks.ipynb",
-              "title": "Interactive Notebooks with MyST"
+              "title": "Generate and Display Rich Outputs"
             }
           },
           {
@@ -273,7 +273,7 @@
               "kind": "Notebook",
               "slug": "interactive-notebooks",
               "location": "/interactive-notebooks.ipynb",
-              "title": "Interactive Notebooks with MyST"
+              "title": "Generate and Display Rich Outputs"
             },
             "children": [
               {
