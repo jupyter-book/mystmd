@@ -269,9 +269,9 @@ Here are some things to try for next steps:
 Check out the following tutorials for more step-by-step guides:
 
 ::::{grid} 1 1 2 2
-:::{card} Author enriched MyST documents ✨
+:::{card} Author enriched MyST articles ✨
 :link: ./quickstart-myst-documents.md
-Enhance your MyST documents with interactivity, open scholarship, and reproducibility.
+Write scientific articles using MyST Markdown with easy-to-use citations, metadata, and cross-references.
 :::
 
 :::{card} Executable Documents with MyST 🐍
