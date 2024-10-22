@@ -1,12 +1,12 @@
 ---
-title: Enriched MyST Documents
+title: Scientific Articles
 subject: MyST Quickstart Tutorial
-subtitle: Enhance your MyST project with more interactivity, scholarly metadata, and advanced functionality.
+subtitle: Write scientific articles using MyST Markdown with easy-to-use citations, scholarly metadata, cross-references, and advanced functionality.
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
 
 :::{note} Goals and prerequisites
-**Goals**: This tutorial covers how to take advantage of MyST features and customizability to create enriched, interactive documents.
+**Goals**: This tutorial covers how to take advantage of MyST features and customizability to create enriched, interactive scientific articles.
 
 **Prerequisites**: This assumes you've completed [](./quickstart.md) and have MyST installed locally, as well as a local version of the [MyST quickstart content](https://github.com/jupyter-book/mystmd-quickstart).
 :::
@@ -18,6 +18,7 @@ The following video covers this tutorial as well as [](./quickstart-static-expor
 ```{iframe} https://www.youtube.com/embed/NxSNVt9XsCI
 :width: 100%
 ```
+
 ::::
 
 ![](#lookout-for-tutorial-actions)
