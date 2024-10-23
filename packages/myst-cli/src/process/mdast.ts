@@ -262,6 +262,7 @@ export async function transformMdast(
     url = `/${useSlug ? pageSlug : ''}`;
     dataUrl = `/${pageSlug}.json`;
   }
+  url = url?.replace('.', '/');
   updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
   const data: RendererData = {
     kind: isJupytext ? SourceFileKind.Notebook : kind,

@@ -516,6 +516,88 @@ describe('site section generation', () => {
       ],
     });
   });
+  it('urlFolders puts folders in slugs', async () => {
+    memfs.vol.fromJSON({
+      'ignore.md': '',
+      'folder1/page1.md': '',
+      'folder1/folder2/readme.md': '',
+      'folder1/folder2/page2.md': '',
+      'folder1/folder2/folder3/page3.md': '',
+    });
+    expect(projectFromPath(session, 'folder1', undefined, { urlFolders: true })).toEqual({
+      file: 'folder1/page1.md',
+      path: 'folder1',
+      index: 'page1',
+      implicitIndex: true,
+      pages: [
+        {
+          title: 'Folder2',
+          level: 1,
+        },
+        {
+          file: 'folder1/folder2/readme.md',
+          slug: 'folder2.readme',
+          level: 2,
+          implicit: true,
+        },
+        {
+          file: 'folder1/folder2/page2.md',
+          slug: 'folder2.page2',
+          level: 2,
+          implicit: true,
+        },
+        {
+          title: 'Folder3',
+          level: 2,
+        },
+        {
+          file: 'folder1/folder2/folder3/page3.md',
+          slug: 'folder2.folder3.page3',
+          level: 3,
+          implicit: true,
+        },
+      ],
+    });
+  });
+  it('matching file and folder-with-index deduplicate', async () => {
+    memfs.vol.fromJSON({
+      'ignore.md': '',
+      'folder1/index.md': '',
+      'folder1/page1.md': '',
+      'folder1/page1/index.md': '',
+      'folder1/page1/page2.md': '',
+    });
+    expect(projectFromPath(session, 'folder1', undefined, { urlFolders: true })).toEqual({
+      file: 'folder1/index.md',
+      path: 'folder1',
+      index: 'index',
+      implicitIndex: true,
+      pages: [
+        {
+          file: 'folder1/page1.md',
+          slug: 'page1',
+          level: 1,
+          implicit: true,
+        },
+        {
+          title: 'Page1',
+          level: 1,
+        },
+        {
+          file: 'folder1/page1/index.md',
+          slug: 'page1-1.index',
+          level: 2,
+          implicit: true,
+        },
+        {
+          file: 'folder1/page1/page2.md',
+          slug: 'page1.page2',
+          level: 2,
+          implicit: true,
+        },
+      ],
+    });
+  });
 });
 
 describe('tocFromProject', () => {
@@ -898,6 +980,95 @@ describe('pagesFromSphinxTOC', () => {
         { title: 'Section', level: 1 },
         { slug: 'y', file: 'section/y.md', level: 2, implicit: true },
         { slug: 'z', file: 'section/z.md', level: 2, implicit: true },
+      ],
+    });
+  });
+  it('urlFolders puts folders in slugs', async () => {
+    memfs.vol.fromJSON({
+      '_toc.yml': `
+format: jb-book
+root: index
+chapters:
+  - file: a
+  - title: Sections
+    sections:
+      - file: folder1/b
+      - file: folder2/folder3/c
+`,
+      'index.md': '',
+      'a.md': '',
+      'folder1/b.md': '',
+      'folder2/folder3/c.md': '',
+    });
+    expect(projectFromSphinxTOC(session, '.', 1, { urlFolders: true })).toEqual({
+      index: 'index',
+      file: 'index.md',
+      path: '.',
+      pages: [
+        { slug: 'a', file: 'a.md', level: 1 },
+        { title: 'Sections', level: 1 },
+        { slug: 'folder1.b', file: 'folder1/b.md', level: 2 },
+        { slug: 'folder2.folder3.c', file: 'folder2/folder3/c.md', level: 2 },
+      ],
+    });
+  });
+  it('file outside project path warns for urlFolders', async () => {
+    memfs.vol.fromJSON({
+      'folder1/_toc.yml': `
+format: jb-book
+root: index
+chapters:
+  - file: a
+  - title: Sections
+    sections:
+      - file: folder2/b
+      - file: ../folder3/folder4/c
+`,
+      'folder1/index.md': '',
+      'folder1/a.md': '',
+      'folder1/folder2/b.md': '',
+      'folder3/folder4/c.md': '',
+    });
+    expect(projectFromSphinxTOC(session, 'folder1', 1, { urlFolders: true })).toEqual({
+      index: 'index',
+      file: 'folder1/index.md',
+      path: 'folder1',
+      pages: [
+        { slug: 'a', file: 'folder1/a.md', level: 1 },
+        { title: 'Sections', level: 1 },
+        { slug: 'folder2.b', file: 'folder1/folder2/b.md', level: 2 },
+        { slug: 'c', file: 'folder3/folder4/c.md', level: 2 },
+      ],
+    });
+  });
+  it('urlFolders for nested toc', async () => {
+    memfs.vol.fromJSON({
+      'readme.md': '',
+      'x.md': '',
+      'section/y.md': '',
+      'section/z.md': '',
+      'project/_toc.yml': TOC_FILE,
+      'project/index.md': '',
+      'project/a.md': '',
+      'project/b.md': '',
+      'project/c.md': '',
+      'project/d.md': '',
+    });
+    expect(projectFromPath(session, '.', undefined, { urlFolders: true })).toEqual({
+      path: '.',
+      index: 'readme',
+      file: 'readme.md',
+      implicitIndex: true,
+      pages: [
+        { slug: 'x', file: 'x.md', level: 1, implicit: true },
+        { slug: 'project.index', file: 'project/index.md', level: 1 },
+        { slug: 'project.a', file: 'project/a.md', level: 2 },
+        { title: 'Sections', level: 2 },
+        { slug: 'project.b', file: 'project/b.md', level: 3 },
+        { slug: 'project.c', file: 'project/c.md', level: 3 },
+        { title: 'Section', level: 1 },
+        { slug: 'section.y', file: 'section/y.md', level: 2, implicit: true },
+        { slug: 'section.z', file: 'section/z.md', level: 2, implicit: true },
       ],
     });
   });

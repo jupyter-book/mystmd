@@ -4,7 +4,7 @@ import { isDirectory } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
-import { fileInfo } from '../utils/fileInfo.js';
+import { fileInfo, fileTitle } from '../utils/fileInfo.js';
 import { nextLevel } from '../utils/nextLevel.js';
 import { VALID_FILE_EXTENSIONS, isValidFile } from '../utils/resolveExtension.js';
 import { shouldIgnoreFile } from '../utils/shouldIgnoreFile.js';
@@ -20,9 +20,10 @@ import type {
   LocalProjectPage,
   LocalProject,
   PageSlugs,
+  SlugOptions,
 } from './types.js';
 
-type Options = {
+type Options = SlugOptions & {
   ignore?: string[];
   suppressWarnings?: boolean;
 };
@@ -54,7 +55,7 @@ function projectPagesFromPath(
     try {
       // TODO: We don't yet have a way to do nested tocs with new-style toc
       session.log.debug(`Respecting legacy TOC in subdirectory: ${join(path, '_toc.yml')}`);
-      return pagesFromSphinxTOC(session, path, prevLevel);
+      return pagesFromSphinxTOC(session, path, prevLevel, opts);
     } catch {
       if (!suppressWarnings) {
         addWarningForFile(
@@ -73,7 +74,7 @@ function projectPagesFromPath(
       return {
         file,
         level,
-        slug: fileInfo(file, pageSlugs).slug,
+        slug: fileInfo(file, pageSlugs, opts).slug,
         implicit: true,
       } as LocalProjectPage;
     });
@@ -81,7 +82,10 @@ function projectPagesFromPath(
     .filter((file) => isDirectory(file))
     .sort(comparePaths)
     .map((dir) => {
-      const projectFolder: LocalProjectFolder = { title: fileInfo(dir, pageSlugs).title, level };
+      const projectFolder: LocalProjectFolder = {
+        title: fileTitle(dir),
+        level,
+      };
       const pages = projectPagesFromPath(session, dir, nextLevel(level), pageSlugs, opts);
       if (!pages.length) {
         return [];
@@ -145,6 +149,7 @@ export function projectFromPath(
   session: ISession,
   path: string,
   indexFile?: string,
+  opts?: SlugOptions,
 ): Omit<LocalProject, 'bibliography'> {
   const ext_string = VALID_FILE_EXTENSIONS.join(' or ');
   if (indexFile) {
@@ -152,6 +157,7 @@ export function projectFromPath(
       throw Error(`Index file ${indexFile} has invalid extension; must be ${ext_string}}`);
     if (!fs.existsSync(indexFile)) throw Error(`Index file ${indexFile} not found`);
   }
+  if (opts?.urlFolders && !opts.projectPath) opts.projectPath = path;
   const ignoreFiles = getIgnoreFiles(session, path);
   let implicitIndex = false;
   if (!indexFile) {
@@ -160,7 +166,7 @@ export function projectFromPath(
       path,
       1,
       {},
-      { ignore: ignoreFiles, suppressWarnings: true },
+      { ...opts, ignore: ignoreFiles, suppressWarnings: true },
     );
     if (!searchPages.length) {
       throw Error(`No valid files with extensions ${ext_string} found in path "${path}"`);
@@ -170,8 +176,9 @@ export function projectFromPath(
     implicitIndex = true;
   }
   const pageSlugs: PageSlugs = {};
-  const { slug } = fileInfo(indexFile, pageSlugs);
+  const { slug } = fileInfo(indexFile, pageSlugs, { ...opts, session });
   const pages = projectPagesFromPath(session, path, 1, pageSlugs, {
+    ...opts,
     ignore: [indexFile, ...ignoreFiles],
   });
   return { file: indexFile, index: slug, path, pages, implicitIndex };

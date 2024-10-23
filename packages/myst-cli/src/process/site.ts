@@ -172,14 +172,14 @@ export async function writeMystSearchJson(session: ISession, pages: LocalProject
     .map((page) => selectFile(session, page.file))
     .map((file) => {
       const { mdast, slug, frontmatter } = file ?? {};
-      if (!mdast || !frontmatter) {
+      if (!mdast || !frontmatter || !slug) {
         return [];
       }
       const title = frontmatter.title ?? '';
 
       // Group by section (simple running accumulator)
       const sections = toSectionedParts(mdast);
-      const pageURL = slug && DEFAULT_INDEX_FILENAMES.includes(slug) ? '/' : `/${slug}`;
+      const pageURL = DEFAULT_INDEX_FILENAMES.includes(slug) ? '/' : `/${slug.replace('.', '/')}`;
       // Build sections into search records
       return sections
         .map((section, index) => {

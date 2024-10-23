@@ -57,9 +57,13 @@ export async function loadProjectFromDisk(
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
   let { index, writeTOC } = opts || {};
   let legacyToc = false;
+  const siteConfig = selectors.selectLocalSiteConfig(state, path);
+  const urlFolders = !!siteConfig?.options?.url_folders;
   const sphinxTOCFile = validateSphinxTOC(session, path) ? tocFile(path) : undefined;
   if (projectConfig?.toc !== undefined) {
-    newProject = projectFromTOC(session, path, projectConfig.toc, 1, projectConfigFile);
+    newProject = projectFromTOC(session, path, projectConfig.toc, 1, projectConfigFile, {
+      urlFolders,
+    });
     if (sphinxTOCFile) {
       addWarningForFile(
         session,
@@ -94,14 +98,14 @@ export async function loadProjectFromDisk(
       //   },
       // );
     }
-    newProject = projectFromSphinxTOC(session, path);
+    newProject = projectFromSphinxTOC(session, path, undefined, { urlFolders });
   } else {
     const project = selectors.selectLocalProject(state, path);
     if (!index && !project?.implicitIndex && project?.file) {
       // If there is no new index, keep the original unless it was implicit previously
       index = project.file;
     }
-    newProject = projectFromPath(session, path, index);
+    newProject = projectFromPath(session, path, index, { urlFolders });
   }
   if (!newProject) {
     throw new Error(`Could not load project from ${path}`);

@@ -16,6 +16,7 @@ import type {
   LocalProjectPage,
   LocalProject,
   PageSlugs,
+  SlugOptions,
 } from './types.js';
 import type {
   TOC,
@@ -160,6 +161,7 @@ function pagesFromEntries(
   pages: (LocalProjectFolder | LocalProjectPage)[] = [],
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
+  opts?: SlugOptions,
 ): (LocalProjectFolder | LocalProjectPage)[] {
   const configFile = selectors.selectLocalConfigFile(session.store.getState(), path);
   for (const entry of entries) {
@@ -174,7 +176,7 @@ function pagesFromEntries(
         });
       });
       if (file && fs.existsSync(file) && !isDirectory(file)) {
-        const { slug } = fileInfo(file, pageSlugs);
+        const { slug } = fileInfo(file, pageSlugs, { ...opts, session });
         pages.push({ file, level: entryLevel, slug, implicit: entry.implicit });
       }
     } else if (isURL(entry)) {
@@ -203,6 +205,7 @@ function pagesFromEntries(
         pages,
         nextLevel(entryLevel),
         pageSlugs,
+        opts,
       );
     }
   }
@@ -240,6 +243,7 @@ export function projectFromTOC(
   toc: TOC,
   level: PageLevels = 1,
   file?: string,
+  opts?: SlugOptions,
 ): Omit<LocalProject, 'bibliography'> {
   const pageSlugs: PageSlugs = {};
   const ignoreFiles = [...getIgnoreFiles(session, path), ...listExplicitFiles(toc, path)];
@@ -268,9 +272,10 @@ export function projectFromTOC(
   if (!indexFile) {
     throw Error(`Could not resolve project index file: ${root.file}`);
   }
-  const { slug } = fileInfo(indexFile, pageSlugs);
+  if (opts?.urlFolders && !opts.projectPath) opts.projectPath = path;
+  const { slug } = fileInfo(indexFile, pageSlugs, { ...opts, session });
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
-  pagesFromEntries(session, path, entries, pages, level, pageSlugs);
+  pagesFromEntries(session, path, entries, pages, level, pageSlugs, opts);
   return { path: path || '.', file: indexFile, index: slug, pages };
 }
 
@@ -281,6 +286,7 @@ function pagesFromSphinxChapters(
   pages: (LocalProjectFolder | LocalProjectPage)[] = [],
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
+  opts?: SlugOptions,
 ): (LocalProjectFolder | LocalProjectPage)[] {
   const filename = tocFile(path);
   const { dir } = parse(filename);
@@ -288,7 +294,7 @@ function pagesFromSphinxChapters(
     // TODO: support globs and urls
     const file = chapter.file ? resolveExtension(join(dir, chapter.file)) : undefined;
     if (file) {
-      const { slug } = fileInfo(file, pageSlugs);
+      const { slug } = fileInfo(file, pageSlugs, { ...opts, session });
       pages.push({ file, level, slug });
     }
     if (!file && chapter.file) {
@@ -304,7 +310,15 @@ function pagesFromSphinxChapters(
       pages.push({ level, title: chapter.title });
     }
     if (chapter.sections) {
-      pagesFromSphinxChapters(session, path, chapter.sections, pages, nextLevel(level), pageSlugs);
+      pagesFromSphinxChapters(
+        session,
+        path,
+        chapter.sections,
+        pages,
+        nextLevel(level),
+        pageSlugs,
+        opts,
+      );
     }
   });
   return pages;
@@ -323,6 +337,7 @@ export function projectFromSphinxTOC(
   session: ISession,
   path: string,
   level: PageLevels = 1,
+  opts?: SlugOptions,
 ): Omit<LocalProject, 'bibliography'> {
   const filename = tocFile(path);
   if (!fs.existsSync(filename)) {
@@ -342,16 +357,17 @@ export function projectFromSphinxTOC(
       ).join('\n- ')}\n`,
     );
   }
-  const { slug } = fileInfo(indexFile, pageSlugs);
+  if (opts?.urlFolders && !opts.projectPath) opts.projectPath = path;
+  const { slug } = fileInfo(indexFile, pageSlugs, { ...opts, session });
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
   if (toc.sections) {
     // Do not allow sections to have level < 1
     if (level < 1) level = 1;
-    pagesFromSphinxChapters(session, path, toc.sections, pages, level, pageSlugs);
+    pagesFromSphinxChapters(session, path, toc.sections, pages, level, pageSlugs, opts);
   } else if (toc.chapters) {
     // Do not allow chapters to have level < 0
     if (level < 0) level = 0;
-    pagesFromSphinxChapters(session, path, toc.chapters, pages, level, pageSlugs);
+    pagesFromSphinxChapters(session, path, toc.chapters, pages, level, pageSlugs, opts);
   } else if (toc.parts) {
     // Do not allow parts to have level < -1
     if (level < -1) level = -1;
@@ -360,7 +376,15 @@ export function projectFromSphinxTOC(
         pages.push({ title: part.caption || `Part ${index + 1}`, level });
       }
       if (part.chapters) {
-        pagesFromSphinxChapters(session, path, part.chapters, pages, nextLevel(level), pageSlugs);
+        pagesFromSphinxChapters(
+          session,
+          path,
+          part.chapters,
+          pages,
+          nextLevel(level),
+          pageSlugs,
+          opts,
+        );
       }
     });
   }
@@ -377,8 +401,16 @@ export function pagesFromTOC(
   path: string,
   toc: TOC,
   level: PageLevels,
+  opts?: SlugOptions,
 ): (LocalProjectFolder | LocalProjectPage)[] {
-  const { file, index, pages } = projectFromTOC(session, path, toc, nextLevel(level));
+  const { file, index, pages } = projectFromTOC(
+    session,
+    path,
+    toc,
+    nextLevel(level),
+    undefined,
+    opts,
+  );
   pages.unshift({ file, slug: index, level });
   return pages;
 }
@@ -392,8 +424,9 @@ export function pagesFromSphinxTOC(
   session: ISession,
   path: string,
   level: PageLevels,
+  opts?: SlugOptions,
 ): (LocalProjectFolder | LocalProjectPage)[] {
-  const { file, index, pages } = projectFromSphinxTOC(session, path, nextLevel(level));
+  const { file, index, pages } = projectFromSphinxTOC(session, path, nextLevel(level), opts);
   pages.unshift({ file, slug: index, level });
   return pages;
 }

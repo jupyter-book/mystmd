@@ -1,0 +1,10 @@
+version: 1
+project:
+  exclude: outputs
+site:
+  template: ../templates/site/myst/book-theme
+  options:
+    url_folders: true
+  projects:
+    - slug: my-proj
+      path: '.'
