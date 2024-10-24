@@ -4,7 +4,7 @@ project:
 site:
   template: ../templates/site/myst/book-theme
   options:
-    url_folders: true
+    folders: true
   projects:
     - slug: my-proj
       path: '.'

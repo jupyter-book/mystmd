@@ -80,7 +80,7 @@ Below is a table of options for each theme bundled with MyST.
 
 ### Site URL Options
 
-By default, MyST URLs only contain the file name for each page; folder structure is respected in the table of contents but is not reflected in URLs. If you would like to maintain nested folder structure in the URLs, you may provide the site option `url_folders: true`. This causes each folder in your MyST directory to become a path segment. For this feature to work correctly, your chosen theme must also support `url_folders` as an option. Both `book-theme` and `article-theme` bundled with MyST support this.
+By default, MyST URLs only contain the file name for each page; folder structure is respected in the table of contents but is not reflected in URLs. If you would like to maintain nested folder structure in the URLs, you may provide the site option `folders: true`. This causes each folder in your MyST directory to become a path segment. For this feature to work correctly, your chosen theme must also support `folders` as an option. Both `book-theme` and `article-theme` bundled with MyST support this.
 
 ### Page Options
 
