@@ -230,3 +230,14 @@ export function getMetadataTags(node: GenericNode) {
   });
   return tags.map((tag) => tag.toLowerCase());
 }
+
+/**
+ * Change from a slug such as `folder.subfolder.index` to a URL (`folder/subfolder`).
+ *
+ * @param slug
+ * @returns url
+ */
+export function slugToUrl<T extends string | undefined>(slug: T): T {
+  if (slug == null) return undefined as T;
+  return slug.replace(/\.index$/, '').replace(/\./g, '/') as T;
+}

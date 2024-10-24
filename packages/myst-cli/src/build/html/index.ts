@@ -8,6 +8,7 @@ import { getSiteManifest } from '../site/manifest.js';
 import type { StartOptions } from '../site/start.js';
 import { startServer } from '../site/start.js';
 import { getSiteTemplate } from '../site/template.js';
+import { slugToUrl } from 'myst-common';
 
 export async function currentSiteRoutes(
   session: ISession,
@@ -27,7 +28,7 @@ export async function currentSiteRoutes(
       return [
         { url: `${host}${projSlug}${siteIndex}`, path: path.join(proj.slug ?? '', 'index.html') },
         ...pages.map((page) => {
-          const pageSlug = page.slug?.replace(/\.index$/, '').replaceAll('.', '/');
+          const pageSlug = slugToUrl(page.slug);
           return {
             url: `${host}${projSlug}/${pageSlug}`,
             path: path.join(proj.slug ?? '', `${pageSlug}.html`),

@@ -14,6 +14,7 @@ export {
   mergeTextNodes,
   writeTexLabelledComment,
   getMetadataTags,
+  slugToUrl,
 } from './utils.js';
 export { plural } from './plural.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
