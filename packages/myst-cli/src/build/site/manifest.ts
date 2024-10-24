@@ -18,6 +18,7 @@ import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { transformBanner, transformThumbnail } from '../../transforms/images.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
+import { fileTitle } from '../../utils/fileInfo.js';
 import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import version from '../../version.js';
 import { getSiteTemplate } from './template.js';
@@ -139,7 +140,7 @@ export async function localToManifestProject(
     proj.pages.map(async (page) => {
       if ('file' in page) {
         const fileInfo = selectors.selectFileInfo(state, page.file);
-        const title = fileInfo.title || page.slug;
+        const title = fileInfo.title || fileTitle(page.file);
         const short_title = fileInfo.short_title ?? undefined;
         const description = fileInfo.description ?? '';
         const thumbnail = fileInfo.thumbnail ?? '';
