@@ -34,3 +34,8 @@ export type LocalProject = {
   bibliography: string[];
   pages: (LocalProjectPage | LocalProjectFolder)[];
 };
+
+export type SlugOptions = {
+  projectPath?: string;
+  urlFolders?: boolean;
+};

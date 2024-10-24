@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
 import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
-import { fileError, fileWarn, RuleId } from 'myst-common';
+import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
@@ -262,6 +262,7 @@ export async function transformMdast(
     url = `/${useSlug ? pageSlug : ''}`;
     dataUrl = `/${pageSlug}.json`;
   }
+  url = slugToUrl(url);
   updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
   const data: RendererData = {
     kind: isJupytext ? SourceFileKind.Notebook : kind,

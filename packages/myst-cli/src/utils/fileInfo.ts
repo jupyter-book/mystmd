@@ -1,4 +1,6 @@
+import path from 'node:path';
 import type { PageSlugs } from '../project/types.js';
+import type { ISession } from '../session/types.js';
 import { parseFilePath } from './resolveExtension.js';
 
 function input2name(input: string, allowed: RegExp, join: string) {
@@ -53,15 +55,44 @@ export function createTitle(s: string): string {
   );
 }
 
-export function fileInfo(file: string, pageSlugs: PageSlugs): { slug: string; title: string } {
+export function fileTitle(file: string) {
   const { name } = parseFilePath(file);
+  return createTitle(name);
+}
+
+/**
+ * Create a unique slug for a file
+ *
+ * If opts.urlFolders is true and opts.projectPath is provided, slug will include folders
+ */
+export function fileInfo(
+  file: string,
+  pageSlugs: PageSlugs,
+  opts?: { session?: ISession; projectPath?: string; urlFolders?: boolean },
+): { slug: string; title: string } {
+  const { name, dir } = parseFilePath(file);
   let slug = createSlug(name);
-  const title = createTitle(name);
-  if (pageSlugs[slug]) {
-    pageSlugs[slug] += 1;
-    slug = `${slug}-${pageSlugs[slug] - 1}`;
-  } else {
-    pageSlugs[slug] = 1;
+  if (opts?.urlFolders && opts?.projectPath) {
+    const slugFolders = path
+      .relative(opts.projectPath, dir)
+      .split(path.sep)
+      .filter((folder) => folder !== '');
+    if (slugFolders.includes('..')) {
+      opts.session?.log.warn(
+        `URL path will not match folder structure for file outside project: ${file}`,
+      );
+    } else {
+      slug = [...slugFolders.map((folder) => createSlug(folder)), slug].join('.');
+    }
   }
+  const folderIndexSlug = slug.endsWith('.index');
+  const slugKey = folderIndexSlug ? slug.slice(0, -6) : slug;
+  if (pageSlugs[slugKey]) {
+    pageSlugs[slugKey] += 1;
+    slug = `${slugKey}-${pageSlugs[slugKey] - 1}${folderIndexSlug ? '.index' : ''}`;
+  } else {
+    pageSlugs[slugKey] = 1;
+  }
+  const title = fileTitle(file);
   return { slug, title };
 }

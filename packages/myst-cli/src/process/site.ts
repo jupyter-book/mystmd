@@ -3,7 +3,7 @@ import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
-import { RuleId, toText, plural } from 'myst-common';
+import { RuleId, toText, plural, slugToUrl } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
 import type { SearchRecord, MystSearchIndex } from 'myst-spec-ext';
@@ -172,14 +172,14 @@ export async function writeMystSearchJson(session: ISession, pages: LocalProject
     .map((page) => selectFile(session, page.file))
     .map((file) => {
       const { mdast, slug, frontmatter } = file ?? {};
-      if (!mdast || !frontmatter) {
+      if (!mdast || !frontmatter || !slug) {
         return [];
       }
       const title = frontmatter.title ?? '';
 
       // Group by section (simple running accumulator)
       const sections = toSectionedParts(mdast);
-      const pageURL = slug && DEFAULT_INDEX_FILENAMES.includes(slug) ? '/' : `/${slug}`;
+      const pageURL = DEFAULT_INDEX_FILENAMES.includes(slug) ? '/' : `/${slugToUrl(slug)}`;
       // Build sections into search records
       return sections
         .map((section, index) => {

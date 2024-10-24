@@ -286,3 +286,15 @@ cases:
         content: raw/outputs/out.typ
       - path: raw/_build/site/content/index.json
         content: raw/outputs/index.json
+  - title: URL folder structure
+    cwd: url-folders
+    command: myst build
+    outputs:
+      - path: url-folders/_build/site/config.json
+        content: url-folders/outputs/config.json
+      - path: url-folders/_build/site/myst.search.json
+        content: url-folders/outputs/myst.search.json
+      - path: url-folders/_build/site/myst.xref.json
+        content: url-folders/outputs/myst.xref.json
+      - path: url-folders/_build/site/content/my-proj/readme.json
+        content: url-folders/outputs/readme.json
