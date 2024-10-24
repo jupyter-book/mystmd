@@ -59,14 +59,14 @@
     {
       "hierarchy": { "lvl1": "Index in subfolder" },
       "type": "lvl1",
-      "url": "/two-1/index",
+      "url": "/two-1",
       "position": 0
     },
     {
       "hierarchy": { "lvl1": "Index in subfolder" },
       "content": "",
       "type": "content",
-      "url": "/two-1/index",
+      "url": "/two-1",
       "position": 1
     },
     {
