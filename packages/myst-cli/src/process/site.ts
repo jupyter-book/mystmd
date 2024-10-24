@@ -179,7 +179,9 @@ export async function writeMystSearchJson(session: ISession, pages: LocalProject
 
       // Group by section (simple running accumulator)
       const sections = toSectionedParts(mdast);
-      const pageURL = DEFAULT_INDEX_FILENAMES.includes(slug) ? '/' : `/${slug.replace('.', '/')}`;
+      const pageURL = DEFAULT_INDEX_FILENAMES.includes(slug)
+        ? '/'
+        : `/${slug.replace(/\.index$/, '').replaceAll('.', '/')}`;
       // Build sections into search records
       return sections
         .map((section, index) => {
