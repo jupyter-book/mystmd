@@ -27,9 +27,10 @@ export async function currentSiteRoutes(
       return [
         { url: `${host}${projSlug}${siteIndex}`, path: path.join(proj.slug ?? '', 'index.html') },
         ...pages.map((page) => {
+          const pageSlug = page.slug?.replace(/\.index$/, '').replaceAll('.', '/');
           return {
-            url: `${host}${projSlug}/${page.slug}`,
-            path: path.join(proj.slug ?? '', `${page.slug}.html`),
+            url: `${host}${projSlug}/${pageSlug}`,
+            path: path.join(proj.slug ?? '', `${pageSlug}.html`),
           };
         }),
         // Download all of the configured JSON
