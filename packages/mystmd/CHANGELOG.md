@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.15
+
+### Patch Changes
+
+- 2bce565: Add site option to include folder structure in url paths
+
 ## 1.3.14
 
 ## 1.3.13

@@ -1,5 +1,21 @@
 # myst-cli
 
+## 1.3.15
+
+### Patch Changes
+
+- 02a8c3a9: Add webp-->png conversion
+- 2bce565: Add site option to include folder structure in url paths
+- Updated dependencies [2bce565]
+- Updated dependencies [b9de3469]
+- Updated dependencies [7547b1dd]
+  - myst-common@1.7.3
+  - jtex@1.0.20
+  - myst-to-typst@0.0.25
+  - myst-config@1.7.3
+  - myst-frontmatter@1.7.3
+  - myst-spec-ext@1.7.3
+
 ## 1.3.14
 
 ### Patch Changes

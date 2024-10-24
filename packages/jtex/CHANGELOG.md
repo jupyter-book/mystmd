@@ -1,5 +1,14 @@
 # jtex
 
+## 1.0.20
+
+### Patch Changes
+
+- b9de3469: Change typst exports to be less- conflict prone.
+- Updated dependencies [2bce565]
+  - myst-common@1.7.3
+  - myst-frontmatter@1.7.3
+
 ## 1.0.19
 
 ### Patch Changes

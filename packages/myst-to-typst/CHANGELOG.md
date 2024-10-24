@@ -1,5 +1,15 @@
 # myst-to-typst
 
+## 0.0.25
+
+### Patch Changes
+
+- 7547b1dd: Typst program vs code.
+- Updated dependencies [2bce565]
+  - myst-common@1.7.3
+  - myst-frontmatter@1.7.3
+  - myst-spec-ext@1.7.3
+
 ## 0.0.24
 
 ### Patch Changes

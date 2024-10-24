@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.7.3
+
+### Patch Changes
+
+- 2bce565: Add `slugToUrl` function that changes from a myst slug to an equivalent url
+  - myst-frontmatter@1.7.3
+
 ## 1.7.2
 
 ### Patch Changes
