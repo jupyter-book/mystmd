@@ -33,7 +33,7 @@ function coercePart(part?: string | string[]): string[] {
 export function selectBlockParts(tree: GenericParent, part?: string | string[]): Block[] {
   const parts = coercePart(part);
   if (parts.length === 0) return [];
-  const blockParts = selectAll('block', tree).filter((block) => {
+  const blockParts = (selectAll('block', tree) as Block[]).filter((block) => {
     const blockTags: string[] = (
       block.data?.tags && Array.isArray(block.data.tags) ? block.data.tags : []
     ).map((tag) => tag?.toLowerCase());

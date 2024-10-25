@@ -195,8 +195,8 @@ const TABLE_KEYS = ['headerRows', 'label', 'class', 'width', 'align'];
  * kind "table" with table/caption children.
  */
 function container(node: any, _: Parent, state: NestedState, info: Info): string {
-  const captionNode: GenericNode | null = select('caption', node);
-  const legendNode: GenericNode | null = select('legend', node);
+  const captionNode: GenericNode | undefined = select('caption', node);
+  const legendNode: GenericNode | undefined = select('legend', node);
   const children = [...(captionNode?.children || []), ...(legendNode?.children || [])];
   if (node.kind === 'figure') {
     const imageNodes: GenericNode[] = selectAll('image', node);
@@ -220,7 +220,7 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
     const args = argsFromNode(combinedNode, options);
     return writeFlowDirective('figure', args, options)(combinedNode, _, state, info);
   } else if (node.kind === 'table') {
-    const tableNode: GenericNode | null = select('table', node);
+    const tableNode: GenericNode | undefined = select('table', node);
     if (!tableNode) return '';
     let headerRows = 0;
     let inHeader = true;
@@ -264,7 +264,7 @@ function container(node: any, _: Parent, state: NestedState, info: Info): string
     };
     return writeFlowDirective('list-table', args, options)(combinedNode, _, state, info);
   } else if (node.kind === 'code') {
-    const codeNode: GenericNode | null = select('code', node);
+    const codeNode: GenericNode | undefined = select('code', node);
     if (!codeNode) return '';
     const combinedNode: Record<string, any> = { ...codeNode };
     CODE_BLOCK_KEYS.forEach((key) => {

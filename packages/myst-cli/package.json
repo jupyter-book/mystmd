@@ -102,7 +102,7 @@
     "unified": "^10.1.2",
     "unist-util-filter": "^4.0.0",
     "unist-util-remove": "^3.1.0",
-    "unist-util-select": "^4.0.3",
+    "unist-util-select": "^5.0.0",
     "unist-util-visit": "^4.0.0",
     "uuid": "^8.3.2",
     "vfile": "^5.3.5",

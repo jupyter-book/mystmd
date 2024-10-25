@@ -42,7 +42,7 @@
     "myst-spec-ext": "^1.7.4",
     "unist-builder": "^3.0.0",
     "unist-util-remove": "^3.1.0",
-    "unist-util-select": "^4.0.3",
+    "unist-util-select": "^5.0.0",
     "vfile-reporter": "^7.0.4"
   }
 }
