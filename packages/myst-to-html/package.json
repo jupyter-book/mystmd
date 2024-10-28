@@ -38,12 +38,10 @@
   },
   "dependencies": {
     "classnames": "^2.3.2",
-    "hast": "^1.0.0",
     "hast-util-to-mdast": "^10.0.0",
     "markdown-it": "^13.0.1",
-    "mdast": "^3.0.0",
     "mdast-util-find-and-replace": "^3.0.0",
-    "mdast-util-to-hast": "^12.3.0",
+    "mdast-util-to-hast": "^13.0.0",
     "myst-common": "^1.7.4",
     "rehype-format": "^4.0.1",
     "rehype-parse": "^8.0.4",
