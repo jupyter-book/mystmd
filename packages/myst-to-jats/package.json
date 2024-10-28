@@ -57,7 +57,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
     "@types/katex": "^0.14.0",
-    "@types/mdast": "^3.0.10",
+    "@types/mdast": "^4.0.0",
     "jats-xml": "^1.0.7",
     "js-yaml": "^4.1.0",
     "myst-cli-utils": "^2.0.11"
