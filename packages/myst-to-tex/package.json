@@ -43,7 +43,7 @@
     "myst-ext-proof": "^1.0.11",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^5.0.0",
-    "vfile-reporter": "^7.0.4"
+    "vfile-reporter": "^8.0.0"
   },
   "devDependencies": {
     "myst-parser": "^1.5.8"

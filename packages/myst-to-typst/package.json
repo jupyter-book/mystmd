@@ -42,6 +42,6 @@
     "myst-spec-ext": "^1.7.4",
     "tex-to-typst": "^0.0.9",
     "unist-util-select": "^5.0.0",
-    "vfile-reporter": "^7.0.4"
+    "vfile-reporter": "^8.0.0"
   }
 }
