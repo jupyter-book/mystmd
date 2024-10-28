@@ -24,7 +24,7 @@
     "intersphinx": "^1.0.2",
     "js-yaml": "^4.1.0",
     "katex": "^0.15.2",
-    "hast-util-to-mdast": "^8.3.1",
+    "hast-util-to-mdast": "^9.0.0",
     "mdast-util-find-and-replace": "^3.0.0",
     "myst-common": "^1.7.4",
     "myst-frontmatter": "^1.7.4",
