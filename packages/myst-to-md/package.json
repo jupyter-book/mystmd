@@ -39,7 +39,7 @@
     "js-yaml": "^4.1.0",
     "mdast-util-gfm-footnote": "^2.0.0",
     "mdast-util-gfm-table": "^2.0.0",
-    "mdast-util-to-markdown": "^1.5.0",
+    "mdast-util-to-markdown": "^2.0.0",
     "myst-common": "^1.7.2",
     "myst-frontmatter": "^1.7.2",
     "unist-util-select": "^5.0.0",
