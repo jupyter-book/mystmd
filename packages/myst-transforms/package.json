@@ -37,7 +37,7 @@
     "unist-builder": "^4.0.0",
     "unist-util-find-after": "^4.0.0",
     "unist-util-modify-children": "^4.0.0",
-    "unist-util-map": "^3.0.0",
+    "unist-util-map": "^4.0.0",
     "unist-util-remove": "^4.0.0",
     "unist-util-select": "^5.0.0",
     "unist-util-visit": "^4.1.0",
