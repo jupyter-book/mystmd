@@ -28,7 +28,7 @@
     "unist-util-select": "^5.0.0",
     "unist-util-visit": "^4.1.2",
     "vfile": "^6.0.0",
-    "vfile-message": "^3.0.0"
+    "vfile-message": "^4.0.0"
   },
   "devDependencies": {
     "myst-spec-ext": "^1.7.4",

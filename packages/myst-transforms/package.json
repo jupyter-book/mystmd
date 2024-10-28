@@ -42,7 +42,7 @@
     "unist-util-select": "^5.0.0",
     "unist-util-visit": "^4.1.0",
     "vfile": "^6.0.0",
-    "vfile-message": "^3.1.2"
+    "vfile-message": "^4.0.0"
   },
   "devDependencies": {
     "@types/katex": "^0.14.0"
