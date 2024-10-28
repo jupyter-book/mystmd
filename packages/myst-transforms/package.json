@@ -33,7 +33,7 @@
     "myst-to-html": "1.5.8",
     "rehype-parse": "^8.0.4",
     "rehype-remark": "^9.1.2",
-    "unified": "^10.0.0",
+    "unified": "^11.0.0",
     "unist-builder": "^4.0.0",
     "unist-util-find-after": "^4.0.0",
     "unist-util-modify-children": "^3.1.0",

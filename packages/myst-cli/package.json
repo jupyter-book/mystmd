@@ -99,7 +99,7 @@
     "simple-validators": "^1.1.0",
     "strip-ansi": "^7.0.1",
     "tex-to-myst": "^1.0.40",
-    "unified": "^10.1.2",
+    "unified": "^11.0.0",
     "unist-util-filter": "^4.0.0",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^5.0.0",
