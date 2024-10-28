@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^9.1.0",
-    "@types/hast": "^2.3.4",
+    "@types/hast": "^3.0.0",
     "@types/he": "^1.1.2",
     "@types/js-yaml": "^4.0.5",
     "@types/markdown-it": "^12.2.3",
