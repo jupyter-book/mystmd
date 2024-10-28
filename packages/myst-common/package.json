@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "myst-spec-ext": "^1.7.4",
-    "unist-builder": "3.0.0",
+    "unist-builder": "4.0.0",
     "@jupyterlab/nbformat": "^3.5.2",
     "@lumino/coreutils": "^2.0.0"
   }
