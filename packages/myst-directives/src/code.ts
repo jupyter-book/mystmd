@@ -26,7 +26,7 @@ export function getCodeBlockOptions(
   const { options, node } = data;
   if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
     fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
-      node: select('mystDirectiveOption[name="number-lines"]', node) ?? node,
+      node: (select('mystDirectiveOption[name="number-lines"]', node) ?? node) as GenericNode,
       source: 'code-block:options',
       ruleId: RuleId.directiveOptionsCorrect,
     });
@@ -101,7 +101,7 @@ export function parseTags(input: any, vfile: VFile, node: GenericNode): string[]
       return parseTags(yaml.load(input) as string[], vfile, node);
     } catch (error) {
       fileError(vfile, 'Could not load tags for code-cell directive', {
-        node: select('mystDirectiveOption[name="tags"]', node) ?? node,
+        node: (select('mystDirectiveOption[name="tags"]', node) ?? node) as GenericNode,
         source: 'code-cell:tags',
         ruleId: RuleId.directiveOptionsCorrect,
       });
@@ -124,7 +124,7 @@ export function parseTags(input: any, vfile: VFile, node: GenericNode): string[]
     }
   } else if (tags) {
     fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
-      node: select('mystDirectiveOption[name="tags"]', node) ?? node,
+      node: (select('mystDirectiveOption[name="tags"]', node) ?? node) as GenericNode,
       source: 'code-cell:tags',
       ruleId: RuleId.directiveOptionsCorrect,
     });
