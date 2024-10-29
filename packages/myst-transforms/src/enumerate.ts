@@ -521,7 +521,7 @@ export function addChildrenFromTargetNode(
       select('definitionTerm', targetNode);
     // Ensure we are getting the first paragraph
     const captionParagraph = (
-      caption ? select('paragraph', caption) ?? caption : caption
+      caption ? (select('paragraph', caption) ?? caption) : caption
     ) as Paragraph | null;
     const title = captionParagraph
       ? (copyNode(captionParagraph)?.children as PhrasingContent[])
@@ -729,7 +729,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
       if (!opts.state.vfile || !link.url.startsWith('#')) return;
       // Only warn on explicit internal URLs
       fileWarn(opts.state.vfile, `No target for internal reference "${link.url}" was found.`, {
-        node,
+        node: node as GenericNode,
         source: TRANSFORM_NAME,
         ruleId: RuleId.referenceTargetResolves,
       });
@@ -740,7 +740,8 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
         opts.state.vfile,
         `Legacy syntax used for link target, please prepend a '#' to your link url: "${link.url}"`,
         {
-          node,
+          node: node as GenericNode,
+
           note: 'The link target should be of the form `[](#target)`, including the `#` sign.\nThis may be deprecated in the future.',
           source: TRANSFORM_NAME,
           ruleId: RuleId.referenceSyntaxValid,
@@ -792,7 +793,7 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateResolve
     }
     if (!opts.state.vfile) return;
     fileWarn(opts.state.vfile, `Could not link citation with label "${cite.label}".`, {
-      node,
+      node: node as GenericParent,
       source: TRANSFORM_NAME,
       ruleId: RuleId.referenceTargetResolves,
     });

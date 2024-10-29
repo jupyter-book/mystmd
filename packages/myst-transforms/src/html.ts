@@ -188,7 +188,7 @@ export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) 
     }
   });
   liftChildren(tree, 'htmlParsed');
-  selectAll('_break', tree).forEach((node: any) => {
+  selectAll('_break', tree).forEach((node) => {
     node.type = 'break';
   });
   return tree;
