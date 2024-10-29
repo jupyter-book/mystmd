@@ -158,24 +158,36 @@ function fillReferenceEnumerators(
     number: false,
     name: false,
   };
-  findAndReplace(node as any, {
-    '%s': () => {
-      used.s = true;
-      return num;
-    },
-    '{subEnumerator}': () => {
-      used.number = true;
-      return target?.enumerator ?? UNKNOWN_REFERENCE_ENUMERATOR;
-    },
-    '{number}': () => {
-      used.number = true;
-      return num;
-    },
-    '{name}': () => {
-      used.name = true;
-      return title || node.label || node.identifier;
-    },
-  });
+  findAndReplace(node as any, [
+    [
+      '%s',
+      () => {
+        used.s = true;
+        return num;
+      },
+    ],
+    [
+      '{subEnumerator}',
+      () => {
+        used.number = true;
+        return target?.enumerator ?? UNKNOWN_REFERENCE_ENUMERATOR;
+      },
+    ],
+    [
+      '{number}',
+      () => {
+        used.number = true;
+        return num;
+      },
+    ],
+    [
+      '{name}',
+      () => {
+        used.name = true;
+        return title || node.label || node.identifier;
+      },
+    ],
+  ]);
   if (num === UNKNOWN_REFERENCE_ENUMERATOR && (used.number || used.s) && file) {
     const numberType =
       used.number && used.s ? '"{number}" and "%s"' : `${used.number ? '"number"' : '"%s"'}`;

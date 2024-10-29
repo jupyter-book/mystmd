@@ -31,7 +31,7 @@
     "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.7.4",
     "myst-to-html": "1.5.8",
-    "rehype-parse": "^8.0.4",
+    "rehype-parse": "^9.0.0",
     "rehype-remark": "^10.0.0",
     "unified": "^11.0.0",
     "unist-builder": "^4.0.0",
