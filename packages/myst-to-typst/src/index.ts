@@ -21,7 +21,7 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
-import type { Admonition, Code, CrossReference, FootnoteDefinition } from 'myst-spec-ext';
+import type { Admonition, Code, CrossReference, FootnoteDefinition, TabItem } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
 
 export type { TypstResult } from './types.js';
@@ -61,6 +61,22 @@ const blockquote = `#let blockquote(node, color: gray) = {
   let stroke = (left: 2pt + color.darken(20%))
   set text(fill: black.lighten(40%), style: "oblique")
   block(width: 100%, inset: 8pt, stroke: stroke)[#node]
+}`;
+
+const tabSet = `
+#let tabSet(body) = {
+  block(width: 100%, stroke: luma(240), [#body])
+}`;
+const tabItem = `
+#let tabItem(body, heading: none) = {
+  let title
+  if heading != none {
+    title = block(width: 100%, inset: (x: 8pt, y: 4pt), fill: luma(250))[#text(9pt, weight: "bold")[#heading]]
+  }
+  block(width: 100%, [
+    #title
+    #block(width: 100%, inset: (x: 8pt, bottom: 8pt))[#body]
+  ])
 }`;
 
 const INDENT = '  ';
@@ -372,6 +388,20 @@ const handlers: Record<string, Handler> = {
     } else if (node.children?.length) {
       state.renderChildren(node, undefined, { trimEnd: false });
     }
+  },
+  tabSet(node, state) {
+    state.useMacro(tabSet);
+    state.write('#tabSet[\n');
+    state.renderChildren(node);
+    state.write('\n]\n\n');
+  },
+  tabItem(node: TabItem, state) {
+    state.useMacro(tabItem);
+    state.ensureNewLine();
+    const title = node.title;
+    state.write(`#tabItem(heading: [${title}])[\n`);
+    state.renderChildren(node);
+    state.write('\n]\n\n');
   },
 };
 
