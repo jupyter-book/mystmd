@@ -125,6 +125,7 @@ export type Iframe = Target & {
   width?: string;
   align?: Image['align'];
   class?: Image['class'];
+  children?: Image[];
 };
 
 export type Admonition = SpecAdmonition & {

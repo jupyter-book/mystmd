@@ -309,6 +309,19 @@ const handlers: Record<string, Handler> = {
     }
     state.write(')\n\n');
   },
+  iframe(node, state) {
+    const image = node.children?.[0];
+    if (!image || image.placeholder !== true) return;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { width: nodeWidth, url: nodeSrc, align } = image;
+    const src = nodeSrc;
+    const width = getLatexImageWidth(nodeWidth);
+    state.write(`#image("${src}"`);
+    if (!state.data.isInTable) {
+      state.write(`, width: ${width}`);
+    }
+    state.write(')\n\n');
+  },
   container: containerHandler,
   caption: captionHandler,
   legend: captionHandler,
