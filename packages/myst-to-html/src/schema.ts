@@ -1,11 +1,10 @@
 import type { Handler, Options } from 'mdast-util-to-hast';
 import { defaultHandlers, toHast } from 'mdast-util-to-hast';
-import { u } from 'unist-builder';
 import { h } from 'hastscript';
 import classNames from 'classnames';
 import type { Plugin } from 'unified';
-import type { Element, Properties } from 'hast';
-import type { GenericParent } from 'myst-common';
+import type { Element, Properties, Root as HastRoot } from 'hast';
+import type { Root } from 'mdast';
 
 const abbreviation: Handler = (state, node) => {
   const result = h('abbr', { title: node.title }, state.all(node));
@@ -175,7 +174,11 @@ const block: Handler = (state, node) => {
   return state.applyData(node, result);
 };
 
-const comment: Handler = (state, node) => u('comment', node.value);
+const comment: Handler = (state, node) => {
+  const result = h('comment', node.value);
+  state.patch(node, result);
+  return state.applyData(node, result);
+};
 
 const heading: Handler = (state, node) => {
   const result = h(`h${node.depth}`, { id: node.identifier || undefined }, state.all(node));
@@ -285,47 +288,47 @@ const output: Handler = (state, node) => {
   return state.applyData(node, result);
 };
 
-export const mystToHast: Plugin<[Options?], string, GenericParent> =
-  (opts) => (tree: GenericParent) => {
-    return toHast(tree as any, {
-      ...opts,
-      handlers: {
-        admonition,
-        admonitionTitle,
-        container,
-        image,
-        caption,
-        captionNumber,
-        legend,
-        abbreviation,
-        subscript,
-        superscript,
-        math,
-        inlineMath,
-        definitionList,
-        definitionTerm,
-        definitionDescription,
-        mystRole,
-        mystDirective,
-        block,
-        comment,
-        heading,
-        crossReference,
-        code,
-        table,
-        iframe,
-        bibliography,
-        details,
-        summary,
-        embed,
-        include,
-        linkBlock,
-        margin,
-        mdast,
-        mermaid,
-        myst,
-        output,
-        ...opts?.handlers,
-      },
-    });
-  };
+export const mystToHast: Plugin<[Options?], Root, HastRoot> = (opts) => (tree) => {
+  return toHast(tree, {
+    ...opts,
+    handlers: {
+      // @ts-expect-error: mdast spec doesn't include node
+      admonition,
+      admonitionTitle,
+      container,
+      image,
+      caption,
+      captionNumber,
+      legend,
+      abbreviation,
+      subscript,
+      superscript,
+      math,
+      inlineMath,
+      definitionList,
+      definitionTerm,
+      definitionDescription,
+      mystRole,
+      mystDirective,
+      block,
+      comment,
+      heading,
+      crossReference,
+      code,
+      table,
+      iframe,
+      bibliography,
+      details,
+      summary,
+      embed,
+      include,
+      linkBlock,
+      margin,
+      mdast,
+      mermaid,
+      myst,
+      output,
+      ...opts?.handlers,
+    },
+  }) as HastRoot;
+};
