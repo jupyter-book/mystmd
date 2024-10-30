@@ -1,5 +1,15 @@
 # tex-to-myst
 
+## 1.0.39
+
+### Patch Changes
+
+- 3ce5404c: Update width of image
+- Updated dependencies [eb411d0b]
+  - myst-spec-ext@1.7.4
+  - myst-common@1.7.4
+  - myst-frontmatter@1.7.4
+
 ## 1.0.38
 
 ### Patch Changes

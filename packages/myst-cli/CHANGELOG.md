@@ -1,5 +1,25 @@
 # myst-cli
 
+## 1.3.16
+
+### Patch Changes
+
+- Updated dependencies [eb411d0b]
+- Updated dependencies [3ce5404c]
+- Updated dependencies [6ded5d1]
+- Updated dependencies [fd78758e]
+- Updated dependencies [f7e83852]
+- Updated dependencies [dd4569b9]
+  - myst-spec-ext@1.7.4
+  - myst-to-typst@0.0.26
+  - tex-to-myst@1.0.39
+  - myst-common@1.7.4
+  - myst-config@1.7.4
+  - myst-frontmatter@1.7.4
+  - myst-to-tex@1.0.39
+  - myst-parser@1.5.8
+  - myst-transforms@1.3.27
+
 ## 1.3.15
 
 ### Patch Changes

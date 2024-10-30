@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.7.4
+
+### Patch Changes
+
+- eb411d0b: Allow for iframe to have a placeholder
+
 ## 1.7.3
 
 ## 1.7.2

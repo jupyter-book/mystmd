@@ -1,5 +1,19 @@
 # myst-to-typst
 
+## 0.0.26
+
+### Patch Changes
+
+- eb411d0b: Allow for iframe to have a placeholder
+- 6ded5d1: Update deps
+- fd78758e: Tabs in typst
+- f7e83852: add proof and change blockquote
+- dd4569b9: Add captions for sub figures
+- Updated dependencies [eb411d0b]
+  - myst-spec-ext@1.7.4
+  - myst-common@1.7.4
+  - myst-frontmatter@1.7.4
+
 ## 0.0.25
 
 ### Patch Changes
