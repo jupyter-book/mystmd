@@ -74,7 +74,7 @@ const tabItem = `
 }`;
 
 const proof = `
-#let proof(body, heading: none, kind: "proof", supplement: "Proof", labelName: none, color: blue, float: true) = {
+#let proof(body, heading: [], kind: "proof", supplement: "Proof", labelName: none, color: blue, float: true) = {
   let stroke = 1pt + color.lighten(90%)
   let fill = color.lighten(90%)
   let title
