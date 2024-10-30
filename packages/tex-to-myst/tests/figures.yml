@@ -19,6 +19,7 @@ cases:
           children:
             - type: image
               url: figures/my_pic.png
+              width: 100%
             - type: caption
               children:
                 - type: paragraph
@@ -50,6 +51,7 @@ cases:
           children:
             - type: image
               url: fig.jpg
+              width: 95%
         - type: paragraph
           children:
             - type: text
@@ -78,6 +80,7 @@ cases:
           children:
             - type: image
               url: img/Figure 4.png
+              width: 80%
             - type: caption
               children:
                 - type: paragraph
@@ -98,6 +101,7 @@ cases:
           children:
             - type: image
               url: figures/wiki-complex.png
+              width: 70%
   - title: subfigure
     tex: |-
       \begin{figure}
@@ -207,6 +211,7 @@ cases:
           children:
             - type: image
               url: figures/my_pic.png
+              width: 100%
             - type: caption
               children:
                 - type: paragraph

@@ -44,8 +44,19 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
   macro_includegraphics(node, state) {
     state.closeParagraph();
     const url = texToText(getArguments(node, 'group'));
-    // TODO: width, placement, etc.
-    state.pushNode(u('image', { url }));
+    const args = getArguments(node, 'argument')?.[0].content;
+    // TODO: better width, placement, etc.
+    if (
+      args.length === 4 &&
+      args[0].content === 'width' &&
+      args[1].content === '=' &&
+      Number.isFinite(Number.parseFloat(args[2].content))
+    ) {
+      const width = `${Math.round(Number.parseFloat(args[2].content) * 100)}%`;
+      state.pushNode(u('image', { url, width }));
+    } else {
+      state.pushNode(u('image', { url }));
+    }
   },
   macro_caption: renderCaption,
   macro_captionof: renderCaption,
