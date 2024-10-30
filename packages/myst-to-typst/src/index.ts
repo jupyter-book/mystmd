@@ -3,7 +3,7 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
 import { fileError, fileWarn, toText, getMetadataTags } from 'myst-common';
-import { captionHandler, containerHandler } from './container.js';
+import { captionHandler, containerHandler, getDefaultCaptionSupplement } from './container.js';
 import type {
   Handler,
   ITypstSerializer,
@@ -57,12 +57,6 @@ const admonitionMacros = {
     '#let warningBlock(body, heading: [Warning]) = admonition(body, heading: heading, color: yellow)',
 };
 
-const blockquote = `#let blockquote(node, color: gray) = {
-  let stroke = (left: 2pt + color.darken(20%))
-  set text(fill: black.lighten(40%), style: "oblique")
-  block(width: 100%, inset: 8pt, stroke: stroke)[#node]
-}`;
-
 const tabSet = `
 #let tabSet(body) = {
   block(width: 100%, stroke: luma(240), [#body])
@@ -77,6 +71,26 @@ const tabItem = `
     #title
     #block(width: 100%, inset: (x: 8pt, bottom: 8pt))[#body]
   ])
+}`;
+
+const proof = `
+#let proof(body, heading: none, kind: "proof", supplement: "Proof", labelName: none, color: blue, float: true) = {
+  let stroke = 1pt + color.lighten(90%)
+  let fill = color.lighten(90%)
+  let title
+  set figure.caption(position: top)
+  set figure(placement: none)
+  show figure.caption.where(body: heading): (it) => {
+    block(width: 100%, stroke: stroke, fill: fill, inset: 8pt, it)
+  }
+  place(auto, float: float, block(width: 100%, [
+    #figure(kind: kind, supplement: supplement, gap: 0pt, [
+      #set align(left);
+      #set figure.caption(position: bottom)
+      #block(width: 100%, fill: luma(253), stroke: stroke, inset: 8pt)[#body]
+    ], caption: heading)
+    #if(labelName != none){label(labelName)}
+  ]))
 }`;
 
 const INDENT = '  ';
@@ -128,8 +142,13 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 2);
   },
   blockquote(node, state) {
-    state.useMacro(blockquote);
-    state.renderEnvironment(node, 'blockquote');
+    if (state.data.isInBlockquote) {
+      state.renderChildren(node);
+      return;
+    }
+    state.write('#quote(block: true)[');
+    state.renderChildren(node);
+    state.write(']');
   },
   definitionList(node, state) {
     let dedent = false;
@@ -282,7 +301,7 @@ const handlers: Record<string, Handler> = {
     }
     state.useMacro(admonitionMacros[node.kind]);
     state.write(`#${node.kind}Block`);
-    if (title && toText(title).toLowerCase().replace(' ', '') !== node.kind) {
+    if (title && toText(title).toLowerCase().replaceAll(' ', '') !== node.kind) {
       state.write('(heading: [');
       state.renderChildren(title);
       state.write('])');
@@ -416,6 +435,25 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
     state.write('\n]\n\n');
   },
+  proof(node: GenericNode, state) {
+    state.useMacro(proof);
+    const title = select('admonitionTitle', node);
+    const kind = node.kind || 'proof';
+    const supplement = getDefaultCaptionSupplement(kind);
+    state.write(
+      `#proof(kind: "${kind}", supplement: "${supplement}", labelName: ${node.identifier ? `"${node.identifier}"` : 'none'}`,
+    );
+    if (title) {
+      state.write(', heading: [');
+      state.renderChildren(title);
+      state.write('])[');
+    } else {
+      state.write(')[');
+    }
+    state.renderChildren(node);
+    state.write(']');
+    state.ensureNewLine();
+  },
 };
 
 class TypstSerializer implements ITypstSerializer {
@@ -474,10 +512,15 @@ class TypstSerializer implements ITypstSerializer {
   }
 
   renderChildren(
-    node: Partial<Parent>,
+    node: Partial<Parent> | Parent[],
     trailingNewLines = 0,
-    { delim = '', trimEnd = true }: RenderChildrenOptions = {},
+    opts: RenderChildrenOptions = {},
   ) {
+    if (Array.isArray(node)) {
+      this.renderChildren({ children: node }, trailingNewLines, opts);
+      return;
+    }
+    const { delim = '', trimEnd = true } = opts;
     const numChildren = node.children?.length ?? 0;
     node.children?.forEach((child, index) => {
       if (!child) return;

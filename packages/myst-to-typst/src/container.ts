@@ -41,7 +41,7 @@ function renderFigureChild(node: GenericNode, state: ITypstSerializer) {
   if (useBrackets) state.write('\n]');
 }
 
-function getDefaultCaptionSupplement(kind: CaptionKind | string) {
+export function getDefaultCaptionSupplement(kind: CaptionKind | string) {
   if (kind === 'code') kind = 'program';
   const domain = kind.includes(':') ? kind.split(':')[1] : kind;
   return `${domain.slice(0, 1).toUpperCase()}${domain.slice(1)}`;
@@ -55,7 +55,6 @@ export const containerHandler: Handler = (node, state) => {
     });
     return;
   }
-
   state.ensureNewLine();
   const prevState = state.data.isInFigure;
   state.data.isInFigure = true;
@@ -73,6 +72,28 @@ export const containerHandler: Handler = (node, state) => {
       source: 'myst-to-typst',
     });
   }
+  const flatCaptions = captions
+    .map((cap: GenericNode) => cap.children)
+    .filter(Boolean)
+    .flat();
+
+  if (node.kind === 'quote') {
+    const prevIsInBlockquote = state.data.isInBlockquote;
+    state.data.isInBlockquote = true;
+    state.write('#quote(block: true');
+    if (flatCaptions.length > 0) {
+      state.write(', attribution: [');
+      state.renderChildren(flatCaptions);
+      state.write('])[');
+    } else {
+      state.write(')[');
+    }
+    state.renderChildren(nonCaptions);
+    state.write(']');
+    state.data.isInBlockquote = prevIsInBlockquote;
+    return;
+  }
+
   if (nonCaptions && nonCaptions.length > 1) {
     const allSubFigs =
       nonCaptions.filter((item: GenericNode) => item.type === 'container').length ===
@@ -114,12 +135,7 @@ export const containerHandler: Handler = (node, state) => {
   }
   if (captions?.length) {
     state.write('\n  caption: [\n');
-    state.renderChildren({
-      children: captions
-        .map((cap: GenericNode) => cap.children)
-        .filter(Boolean)
-        .flat(),
-    });
+    state.renderChildren(flatCaptions);
     state.write('\n],');
   }
   if (kind) {
