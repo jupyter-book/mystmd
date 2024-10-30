@@ -25,6 +25,7 @@ export type Options = {
 export type StateData = {
   tableColumns?: number;
   isInFigure?: boolean;
+  isInBlockquote?: boolean;
   isInTable?: boolean;
   longFigure?: boolean;
   definitionIndent?: number;
