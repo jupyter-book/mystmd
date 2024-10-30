@@ -101,12 +101,12 @@ export const containerHandler: Handler = (node, state) => {
     state.useMacro('#import "@preview/subpar:0.1.1"');
     state.write(`#show figure: set block(breakable: ${allSubFigs ? 'false' : 'true'})\n`);
     state.write('#subpar.grid(');
-    let columns = 2;
+    let columns = nonCaptions.length <= 3 ? nonCaptions.length : 2; // TODO: allow this to be customized
     nonCaptions.forEach((item: GenericNode) => {
       if (item.type === 'container') {
         state.write('figure(\n');
         state.renderChildren(item);
-        state.write('\n),');
+        state.write('\n, caption:""),'); // TODO: add sub-captions
         if (item.identifier) {
           state.write(` <${item.identifier}>,`);
         }
@@ -117,7 +117,7 @@ export const containerHandler: Handler = (node, state) => {
         columns = 1;
       }
     });
-    state.write(`columns: (${Array(columns).fill('1fr')}),\n`);
+    state.write(`columns: ${columns},\n`);
     if (label) {
       state.write(`label: <${label}>,`);
       label = undefined;
