@@ -106,7 +106,7 @@ export const containerHandler: Handler = (node, state) => {
       if (item.type === 'container') {
         state.write('figure(\n');
         state.renderChildren(item);
-        state.write('\n, caption:""),'); // TODO: add sub-captions
+        state.write('\n, caption: []),'); // TODO: add sub-captions
         if (item.identifier) {
           state.write(` <${item.identifier}>,`);
         }
