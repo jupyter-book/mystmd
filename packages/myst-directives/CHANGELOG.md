@@ -1,5 +1,14 @@
 # myst-directives
 
+## 1.5.8
+
+### Patch Changes
+
+- eb411d0b: Allow for iframe to have a placeholder
+- Updated dependencies [eb411d0b]
+  - myst-spec-ext@1.7.4
+  - myst-common@1.7.4
+
 ## 1.5.7
 
 ### Patch Changes

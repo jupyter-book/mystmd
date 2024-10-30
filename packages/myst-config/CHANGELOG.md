@@ -1,5 +1,12 @@
 # myst-config
 
+## 1.7.4
+
+### Patch Changes
+
+- myst-common@1.7.4
+- myst-frontmatter@1.7.4
+
 ## 1.7.3
 
 ### Patch Changes
