@@ -1,5 +1,17 @@
 # myst-cli
 
+## 1.3.17
+
+### Patch Changes
+
+- f888081: Add page breaks to multipage typst export
+- Updated dependencies [f888081]
+- Updated dependencies [fe236580]
+- Updated dependencies [f888081]
+  - myst-to-typst@0.0.27
+  - tex-to-myst@1.0.40
+  - myst-to-tex@1.0.40
+
 ## 1.3.16
 
 ### Patch Changes

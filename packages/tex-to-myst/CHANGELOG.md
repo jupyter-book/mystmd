@@ -1,5 +1,11 @@
 # tex-to-myst
 
+## 1.0.40
+
+### Patch Changes
+
+- f888081: Fix tex figures with no arguments
+
 ## 1.0.39
 
 ### Patch Changes
