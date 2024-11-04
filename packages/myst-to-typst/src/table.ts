@@ -33,7 +33,7 @@ export const tableHandler: Handler = (node, state) => {
     });
     return;
   }
-  state.useMacro('#import "@preview/tablex:0.0.8": tablex, cellx, hlinex, vlinex');
+  state.useMacro('#import "@preview/tablex:0.0.9": tablex, cellx, hlinex, vlinex');
   state.useMacro('#let tableStyle = (:)');
   state.write(
     `${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)}, repeat-header: true, ..tableStyle,\n`,
@@ -48,13 +48,16 @@ export const tableRowHandler: Handler = (node, state) => {
 };
 
 export const tableCellHandler: Handler = (node, state) => {
-  if (node.rowspan || node.colspan) {
+  if (node.rowspan || node.colspan || node.align) {
     state.write('cellx(');
     if (node.rowspan) {
       state.write(`rowspan: ${node.rowspan}, `);
     }
     if (node.colspan) {
       state.write(`colspan: ${node.colspan}, `);
+    }
+    if (node.align) {
+      state.write(`align: ${node.align}, `);
     }
     state.write(')');
   }
