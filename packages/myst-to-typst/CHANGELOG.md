@@ -1,5 +1,12 @@
 # myst-to-typst
 
+## 0.0.27
+
+### Patch Changes
+
+- f888081: Support card nodes
+- fe236580: Upgrade table functionality in typst
+
 ## 0.0.26
 
 ### Patch Changes
