@@ -185,7 +185,10 @@ export async function localArticleToTypstRaw(
     const { dir, name, ext } = path.parse(output);
     let includeContent = '';
     let fileInd = 0;
+    let addPageBreak = false;
     articles.forEach((article) => {
+      if (addPageBreak) includeContent += '#pagebreak()\n\n';
+      addPageBreak = false;
       if (article.file) {
         const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
         const includeFile = path.format({ dir, ext, base });
@@ -197,12 +200,14 @@ export async function localArticleToTypstRaw(
         writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
         includeContent += `#include "${base}"\n\n`;
         fileInd++;
+        addPageBreak = true;
       } else if (article.title) {
         includeContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }
     });
     writeFileToFolder(output, includeContent);
   }
+  await runTypstExecutable(session, output);
   // TODO: add imports and macros?
   return { tempFolders: [] };
 }
@@ -311,7 +316,10 @@ export async function localArticleToTypstTemplated(
     const { dir, name, ext } = path.parse(output);
     typstContent = '';
     let fileInd = 0;
+    let addPageBreak = false;
     articles.forEach((article) => {
+      if (addPageBreak) typstContent += '#pagebreak()\n\n';
+      addPageBreak = false;
       if (article.file) {
         const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
         const includeFile = path.format({ dir, ext, base });
@@ -327,6 +335,7 @@ export async function localArticleToTypstTemplated(
         );
         typstContent += `#include "${base}"\n\n`;
         fileInd++;
+        addPageBreak = true;
       } else if (article.title) {
         typstContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }
