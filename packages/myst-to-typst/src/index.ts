@@ -115,6 +115,16 @@ function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
   return (next?.type === 'text' && !!next.value.match(/^[a-zA-Z0-9\-_]/)) || false;
 }
 
+const headingHandler = (node: any, state: ITypstSerializer) => {
+  const { depth, identifier, enumerated } = node;
+  state.write(`${Array(depth).fill('=').join('')} `);
+  state.renderChildren(node);
+  if (enumerated !== false && identifier) {
+    state.write(` <${identifier}>`);
+  }
+  state.write('\n\n');
+};
+
 const handlers: Record<string, Handler> = {
   text(node, state) {
     state.text(node.value);
@@ -122,15 +132,7 @@ const handlers: Record<string, Handler> = {
   paragraph(node, state) {
     state.renderChildren(node, 2);
   },
-  heading(node, state) {
-    const { depth, identifier, enumerated } = node;
-    state.write(`${Array(depth).fill('=').join('')} `);
-    state.renderChildren(node);
-    if (enumerated !== false && identifier) {
-      state.write(` <${identifier}>`);
-    }
-    state.write('\n\n');
-  },
+  heading: headingHandler,
   block(node, state) {
     const metadataTags = getMetadataTags(node);
     if (metadataTags.includes('no-typst')) return;
@@ -453,6 +455,23 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
     state.write(']');
     state.ensureNewLine();
+  },
+  card(node, state) {
+    if (node.url) {
+      node.children?.push({ type: 'paragraph', children: [{ type: 'text', value: node.url }] });
+    }
+    state.renderChildren(node);
+    state.ensureNewLine();
+    state.write('\n');
+  },
+  cardTitle(node, state) {
+    headingHandler({ ...node, depth: 3 }, state);
+  },
+  root(node, state) {
+    state.renderChildren(node);
+  },
+  footer() {
+    return;
   },
 };
 
