@@ -454,6 +454,27 @@ const handlers: Record<string, Handler> = {
     state.write(']');
     state.ensureNewLine();
   },
+  card(node, state) {
+    if (node.url) {
+      node.children?.push({ type: 'paragraph', children: [{ type: 'text', value: node.url }] });
+    }
+    state.renderChildren(node);
+    state.ensureNewLine();
+    state.write('\n');
+  },
+  cardTitle(node, state) {
+    state.write('*');
+    state.renderChildren(node);
+    state.write('*');
+    state.ensureNewLine();
+    state.write('\n');
+  },
+  root(node, state) {
+    state.renderChildren(node);
+  },
+  footer() {
+    return;
+  },
 };
 
 class TypstSerializer implements ITypstSerializer {
