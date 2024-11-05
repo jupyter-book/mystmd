@@ -3,8 +3,9 @@ import { defaultHandlers, toHast } from 'mdast-util-to-hast';
 import { h } from 'hastscript';
 import classNames from 'classnames';
 import type { Plugin } from 'unified';
-import type { Element, Properties, Root as HastRoot } from 'hast';
+import type { Element, Comment, Properties, Root as HastRoot } from 'hast';
 import type { Root } from 'mdast';
+import { u } from 'unist-builder';
 
 const abbreviation: Handler = (state, node) => {
   const result = h('abbr', { title: node.title }, state.all(node));
@@ -86,7 +87,7 @@ const admonition: Handler = (state, node) => {
 const captionNumber: Handler = (state, node) => {
   const captionKind = node.kind?.charAt(0).toUpperCase() + node.kind?.slice(1);
   const result = h('span', { class: 'caption-number' }, [
-    h('text', `${captionKind} ${node.value}`),
+    u('text', `${captionKind} ${node.value}`),
   ]);
   state.patch(node, result);
   return state.applyData(node, result);
@@ -100,7 +101,7 @@ const math: Handler = (state, node) => {
     type: 'element',
     properties: attrs,
     tagName: 'div',
-    children: [h('text', value)],
+    children: [u('text', value)],
   };
   if (isPre) {
     result = {
@@ -115,7 +116,7 @@ const math: Handler = (state, node) => {
 
 const inlineMath: Handler = (state, node) => {
   const result = h('span', { class: 'math-inline' }, [
-    h('text', node.value.replace(/\r?\n|\r/g, ' ')),
+    u('text', node.value.replace(/\r?\n|\r/g, ' ')),
   ]);
   state.patch(node, result);
   return state.applyData(node, result);
@@ -138,9 +139,9 @@ const definitionDescription: Handler = (state, node) => {
 };
 
 const mystRole: Handler = (state, node) => {
-  const children = [h('code', { class: 'kind' }, [h('text', `{${node.name}}`)])];
+  const children = [h('code', { class: 'kind' }, [u('text', `{${node.name}}`)])];
   if (node.value) {
-    children.push(h('code', {}, [h('text', node.value)]));
+    children.push(h('code', {}, [u('text', node.value)]));
   }
   const result = h('span', { class: 'role unhandled' }, children);
   state.patch(node, result);
@@ -148,18 +149,18 @@ const mystRole: Handler = (state, node) => {
 };
 
 const mystDirective: Handler = (state, node) => {
-  const directiveHeader: Element[] = [h('code', { class: 'kind' }, [h('text', `{${node.name}}`)])];
+  const directiveHeader: Element[] = [h('code', { class: 'kind' }, [u('text', `{${node.name}}`)])];
   if (node.args) {
-    directiveHeader.push(h('code', { class: 'args' }, [h('text', node.args)]));
+    directiveHeader.push(h('code', { class: 'args' }, [u('text', node.args)]));
   }
   const directiveBody: Element[] = [];
   if (node.options) {
     const optionsString = Object.keys(node.options)
       .map((k) => `:${k}: ${node.options[k]}`)
       .join('\n');
-    directiveBody.push(h('pre', [h('code', { class: 'options' }, [h('text', optionsString)])]));
+    directiveBody.push(h('pre', [h('code', { class: 'options' }, [u('text', optionsString)])]));
   }
-  directiveBody.push(h('pre', [h('code', [h('text', node.value)])]));
+  directiveBody.push(h('pre', [h('code', [u('text', node.value)])]));
   const result = h('div', { class: 'directive unhandled' }, [
     h('p', {}, directiveHeader),
     ...directiveBody,
@@ -175,7 +176,7 @@ const block: Handler = (state, node) => {
 };
 
 const comment: Handler = (state, node) => {
-  const result = h('comment', node.value);
+  const result: Comment = { type: 'comment', value: node.value };
   state.patch(node, result);
   return state.applyData(node, result);
 };
@@ -197,8 +198,8 @@ const crossReference: Handler = (state, node) => {
     return state.applyData(node, result);
   } else {
     const result = h('span', { class: 'reference role unhandled' }, [
-      h('code', { class: 'kind' }, [h('text', `{${node.kind}}`)]),
-      h('code', {}, [h('text', node.identifier)]),
+      h('code', { class: 'kind' }, [u('text', `{${node.kind}}`)]),
+      h('code', {}, [u('text', node.identifier)]),
     ]);
     state.patch(node, result);
     return state.applyData(node, result);
@@ -221,7 +222,7 @@ const code: Handler = (state, node) => {
     props.id = node.identifier;
   }
   props.className = classNames({ ['language-' + node.lang]: node.lang }, node.class) || undefined;
-  const codeHast = h('code', props, [h('text', value)]);
+  const codeHast = h('code', props, [u('text', value)]);
   const result = h('pre', {}, [codeHast]);
   state.patch(node.position, result);
   return state.applyData(node.position, result);

@@ -54,7 +54,7 @@ const defaultHtmlToMdastOptions: HtmlToMdastOptions = {
       return result as any;
     },
     _brKeep(state, node) {
-      const result = { type: '_break', children: [] } as Parent;
+      const result = { type: '_break' } as Parent;
       state.patch(node, result as any);
       return result as any;
     },
