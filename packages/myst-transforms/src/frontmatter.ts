@@ -113,6 +113,6 @@ export function getFrontmatter(
       }
     }
   }
-  remove(tree, '__delete__');
+  remove(tree, { cascade: false }, '__delete__');
   return { tree, frontmatter, identifiers };
 }
