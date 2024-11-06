@@ -1,4 +1,4 @@
-import YAML from 'js-yaml';
+import { dump as dumpYAML } from 'js-yaml';
 import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
 import type { GenericNode } from 'myst-common';
@@ -41,7 +41,7 @@ function optionsFromNode(node: any, options?: DirectiveOptions) {
       opts[optString] = optValue;
     });
   if (yaml && Object.keys(opts).length) {
-    return `---\n${YAML.dump(opts)}---`.split('\n');
+    return `---\n${dumpYAML(opts)}---`.split('\n');
   }
   const optionsLines = Object.entries(opts).map(([key, value]) => {
     if (value === true) return `:${key}:`;
