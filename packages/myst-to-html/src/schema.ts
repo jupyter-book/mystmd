@@ -224,8 +224,8 @@ const code: Handler = (state, node) => {
   props.className = classNames({ ['language-' + node.lang]: node.lang }, node.class) || undefined;
   const codeHast = h('code', props, [u('text', value)]);
   const result = h('pre', {}, [codeHast]);
-  state.patch(node.position, result);
-  return state.applyData(node.position, result);
+  state.patch(node, result);
+  return state.applyData(node, result);
 };
 
 const iframe: Handler = (state, node) => {
