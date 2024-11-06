@@ -1,7 +1,7 @@
 import type { Caption, Container } from 'myst-spec';
 import type { Code } from 'myst-spec-ext';
 import { nanoid } from 'nanoid';
-import yaml from 'js-yaml';
+import { load as loadYAML } from 'js-yaml';
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
 import { fileError, fileWarn, NotebookCell, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
@@ -98,7 +98,7 @@ export function parseTags(input: any, vfile: VFile, node: GenericNode): string[]
   if (!input) return undefined;
   if (typeof input === 'string' && input.startsWith('[') && input.endsWith(']')) {
     try {
-      return parseTags(yaml.load(input) as string[], vfile, node);
+      return parseTags(loadYAML(input) as string[], vfile, node);
     } catch (error) {
       fileError(vfile, 'Could not load tags for code-cell directive', {
         node: (select('mystDirectiveOption[name="tags"]', node) ?? node) as GenericNode,
