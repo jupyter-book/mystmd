@@ -115,6 +115,7 @@ project:
         - file: website-metadata.md
         # - file: themes-and-extensions.md
         - file: seo-and-social.md
+        - file: website-style.md
         - file: accessibility-and-performance.md
         # - file: search.md
         - file: analytics.md
