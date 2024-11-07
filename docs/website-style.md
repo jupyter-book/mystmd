@@ -51,6 +51,7 @@ This works with `style` properties as well.
 For example:
 
 <div class="col-gutter-right" style="font-weight: bold;">Here's my div</div>
+
 Here's some <span class="col-gutter-right" style="font-weight:bold;">Span</span> content
 
 ## Add CSS classes to directives
