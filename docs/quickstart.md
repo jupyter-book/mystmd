@@ -5,7 +5,7 @@ subject: MyST Quickstart Tutorial
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-These quickstart tutorials are to get you up and running on your local computer 👩‍💻:
+These quickstart tutorials are here to get you up and running on your local computer 👩‍💻. Thus, you will then be able to:
 
 - learn how to write MyST Markdown 🖊
 - export PDF, Word and $\LaTeX$ documents 📑
@@ -140,11 +140,11 @@ The example site in this tutorial only has three pages and by default the `01-pa
 The myst theme for the `01-paper.md` page without any changes made.
 :::
 
-🎉 **Congratulations**, you just build your first MyST site!
+🎉 **Congratulations**, you just built your first MyST site!
 
 ## Configuration and structure
 
-The final section of this tutorial takes a closer look at the files that we just created, and aspects of your MyST project can be customized.
+The final section of this tutorial takes a closer look at the files that we just created, and aspects of your MyST project that can be customized.
 
 ### Folder Structure
 
@@ -222,6 +222,11 @@ site:
       url: https://mystmd.org/guide
   domains: []
 ```
+% 2024-11-09 | @sugan-reden : I added the following note because the .yaml file I got with the quickstart was different than the one shown above. Feel free to edit/delete it (along with this comment) if not approved.
+
+:::{note}
+As this is a rapidly-evolving project, the actual generated `myst.yaml` file that you will see may look a bit different.
+:::
 
 There are two important parts to the `myst.yml`:
 
