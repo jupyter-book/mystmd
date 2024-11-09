@@ -116,14 +116,14 @@ keywords: myst, markdown, open-science
 ```
 
 In this case, we are also adding additional metadata like an ORCID, as well as ensuring the license is an SPDX compatible code.
-Once these are added, the myst theme (in this case the `book-theme` template) can make it look pretty, this can also be customized by other themes, including $\LaTeX$ and Microsoft Word templates!
+Once these are added, the MyST theme (in this case the `book-theme` template) can make it look pretty, this can also be customized by other themes, including $\LaTeX$ and Microsoft Word templates!
 
 :::{figure} ./images/frontmatter-after.png
 :width: 80%
 :label: frontmatter-after
 :class: framed
 
-The myst theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
+The MyST theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
 :::
 
 ### Add an abstract part
