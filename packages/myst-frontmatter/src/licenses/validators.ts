@@ -104,7 +104,7 @@ export function validateLicense(input: any, opts: ValidationOptions): License | 
     const value = validateString(input, opts);
     if (value === undefined) return undefined;
     // Do not try to coerce long values into SPDX licenses
-    const valueSpdx = value.length < 50 ? correctLicense(value) : undefined;
+    const valueSpdx = value.length < 15 ? correctLicense(value) : undefined;
     if (URL_ID_LOOKUP[cleanUrl(value)]) {
       input = { id: URL_ID_LOOKUP[cleanUrl(value)] };
     } else if (isUrl(value)) {
