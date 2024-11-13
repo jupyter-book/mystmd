@@ -103,9 +103,6 @@ export class Session implements ISession {
       })
       .catch(() => null);
   }
-  /**
-18:export function isWhiteLabelled(): boolean {
- */
   showUpgradeNotice() {
     if (
       this._shownUpgrade ||
