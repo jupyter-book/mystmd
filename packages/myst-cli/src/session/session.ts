@@ -22,6 +22,7 @@ import type { RootState } from '../store/reducers.js';
 import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
+import { isWhiteLabelled } from '../utils/whiteLabelling.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
 import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
@@ -104,7 +105,13 @@ export class Session implements ISession {
   }
 
   showUpgradeNotice() {
-    if (this._shownUpgrade || !this._latestVersion || version === this._latestVersion) return;
+    if (
+      this._shownUpgrade ||
+      !this._latestVersion ||
+      version === this._latestVersion ||
+      isWhiteLabelled()
+    )
+      return;
     this.log.info(
       logUpdateAvailable({
         current: version,
