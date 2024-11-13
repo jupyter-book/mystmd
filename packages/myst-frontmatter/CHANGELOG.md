@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.7.5
+
+### Patch Changes
+
+- 8ea9365: Improvements to spdx license validation
+
 ## 1.7.4
 
 ## 1.7.3

@@ -1,5 +1,16 @@
 # myst-cli
 
+## 1.3.18
+
+### Patch Changes
+
+- 6f23a6ec: Do not report version updates for whitelabelled binaries
+- Updated dependencies [8ea9365]
+  - myst-frontmatter@1.7.5
+  - myst-common@1.7.5
+  - myst-config@1.7.5
+  - myst-spec-ext@1.7.5
+
 ## 1.3.17
 
 ### Patch Changes
