@@ -103,7 +103,8 @@ export function validateLicense(input: any, opts: ValidationOptions): License | 
   if (typeof input === 'string') {
     const value = validateString(input, opts);
     if (value === undefined) return undefined;
-    const valueSpdx = correctLicense(value);
+    // Do not try to coerce long values into SPDX licenses
+    const valueSpdx = value.length < 15 ? correctLicense(value) : undefined;
     if (URL_ID_LOOKUP[cleanUrl(value)]) {
       input = { id: URL_ID_LOOKUP[cleanUrl(value)] };
     } else if (isUrl(value)) {
@@ -144,10 +145,20 @@ export function validateLicense(input: any, opts: ValidationOptions): License | 
     }
     output.id = idSpdx ?? id;
   } else {
-    validationWarning(
-      `no license ID - using a SPDX license ID is recommended, see https://spdx.org/licenses/`,
-      opts,
-    );
+    if (value.url) {
+      const url = validateUrl(value.url, { property: '', messages: {} }) ?? '';
+      const idFromUrl = URL_ID_LOOKUP[cleanUrl(url)];
+      if (idFromUrl) {
+        output.id = idFromUrl;
+        value.url = ID_LICENSE_LOOKUP[idFromUrl].url;
+      }
+    }
+    if (!output.id) {
+      validationWarning(
+        `no license ID - using a SPDX license ID is recommended, see https://spdx.org/licenses/`,
+        opts,
+      );
+    }
   }
   const expected = output.id ? ID_LICENSE_LOOKUP[output.id] : undefined;
   if (value.url != null) {
