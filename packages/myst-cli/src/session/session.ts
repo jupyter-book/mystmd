@@ -103,6 +103,7 @@ export class Session implements ISession {
       })
       .catch(() => null);
   }
+
   showUpgradeNotice() {
     if (
       this._shownUpgrade ||
