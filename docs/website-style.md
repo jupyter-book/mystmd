@@ -46,9 +46,8 @@ Normal-styled
 ## Use `div` and `span` elements
 
 You can attach classes directly to [`div` and `span` elements](#div-and-span).
-This works with `style` properties as well.
 
-For example:
+{myst:directive}`div` and {myst:role}`span` are analogous to their HTML counterparts. The HTML elements can also be given `style` options, e.g.
 
 <div class="col-gutter-right" style="font-weight: bold;">Here's my div</div>
 
