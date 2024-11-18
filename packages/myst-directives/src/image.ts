@@ -11,10 +11,6 @@ export const imageDirective: DirectiveSpec = {
   },
   options: {
     ...commonDirectiveOptions('image'),
-    class: {
-      type: String,
-      // class_option: list of strings?
-    },
     height: {
       type: String,
       doc: 'The image height, in CSS units, for example `4em` or `300px`.',
@@ -46,13 +42,12 @@ export const imageDirective: DirectiveSpec = {
     },
   },
   run(data: DirectiveData): GenericNode[] {
-    const { alt, class: c, height, width, align, title } = data.options || {};
+    const { alt, height, width, align, title } = data.options || {};
     const image = {
       type: 'image',
       url: data.arg as string,
       alt: alt ?? (data.body ? toText(data.body as GenericNode[]) : undefined),
       title,
-      class: c,
       height,
       width,
       align: align ?? 'center',

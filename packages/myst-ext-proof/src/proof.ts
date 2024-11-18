@@ -1,5 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from 'myst-directives';
 
 export const proofDirective: DirectiveSpec = {
   name: 'proof',
@@ -24,13 +24,7 @@ export const proofDirective: DirectiveSpec = {
     type: 'myst',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
-    class: {
-      type: String,
-    },
+    ...commonDirectiveOptions('proof'),
     nonumber: {
       type: Boolean,
     },
@@ -51,17 +45,13 @@ export const proofDirective: DirectiveSpec = {
       children.push(...(data.body as GenericNode[]));
     }
     const nonumber = (data.options?.nonumber as boolean) ?? false;
-    const rawLabel = data.options?.label as string;
-    const { label, identifier } = normalizeLabel(rawLabel) || {};
     const proof = {
       type: 'proof',
       kind: data.name !== 'proof' ? data.name.replace('prf:', '') : undefined,
-      label,
-      identifier,
-      class: data.options?.class as string,
       enumerated: !nonumber,
       children: children as any[],
     };
+    addCommonDirectiveOptions(data, proof);
     return [proof];
   },
 };

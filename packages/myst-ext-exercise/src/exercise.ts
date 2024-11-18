@@ -1,5 +1,6 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { createId, normalizeLabel } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from 'myst-directives';
 
 export const exerciseDirective: DirectiveSpec = {
   name: 'exercise',
@@ -8,12 +9,7 @@ export const exerciseDirective: DirectiveSpec = {
     type: 'myst',
   },
   options: {
-    label: {
-      type: String,
-    },
-    class: {
-      type: String,
-    },
+    ...commonDirectiveOptions('exercise'),
     nonumber: {
       type: Boolean,
     },
@@ -36,19 +32,21 @@ export const exerciseDirective: DirectiveSpec = {
       children.push(...(data.body as GenericNode[]));
     }
     const nonumber = (data.options?.nonumber as boolean) ?? false;
-    // Numbered, unlabeled exercises still need a label
-    const backupLabel = nonumber ? undefined : `exercise-${createId()}`;
-    const rawLabel = (data.options?.label as string) || backupLabel;
-    const { label, identifier } = normalizeLabel(rawLabel) || {};
     const exercise: GenericNode = {
       type: 'exercise',
-      label,
-      identifier,
-      class: data.options?.class as string,
       hidden: data.options?.hidden as boolean,
       enumerated: !nonumber,
       children: children as any[],
     };
+    addCommonDirectiveOptions(data, exercise);
+
+    // Numbered, unlabeled exercises still need a label
+    const backupLabel = nonumber ? undefined : `exercise-${createId()}`;
+    const rawLabel = (data.options?.label as string) || backupLabel;
+    const { label, identifier } = normalizeLabel(rawLabel) || {};
+    exercise.label = label;
+    exercise.identifier = identifier;
+
     if (data.name.endsWith('-start')) {
       exercise.gate = 'start';
     }

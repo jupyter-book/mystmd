@@ -142,10 +142,6 @@ export const codeDirective: DirectiveSpec = {
   },
   options: {
     ...commonDirectiveOptions('code'),
-    class: {
-      type: String,
-      // class_option: list of strings?
-    },
     ...CODE_DIRECTIVE_OPTIONS,
   },
   body: {
@@ -157,7 +153,6 @@ export const codeDirective: DirectiveSpec = {
     const code: Code = {
       type: 'code',
       lang: data.arg as string,
-      class: data.options?.class as string,
       ...opts,
       value: data.body as string,
     };
