@@ -94,6 +94,7 @@ More Coming Soon™
 
 ---
 
+(inline-expressions)=
 ## Inline Expressions
 
 JupyterLab MyST allows you to create and evaluate inline expressions using the {myst:role}`eval` role.
