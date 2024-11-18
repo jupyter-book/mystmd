@@ -42,16 +42,22 @@ The default MyST
 (div-and-span)=
 ### `div` and `span` elements
 
-You can add `<div>` and `<span>` elements to serve a similar purpose.
+You can add `div` and `span` elements to serve a similar purpose.
 Any classes and content that you add will be attached to the AST of your document.
 
 For example, here's a div that uses [the HTML theme grid classes](https://jupyter-book.github.io/myst-theme/?path=/docs/components-grid-system--docs) to snap a div to the right:
 
-```html
-<div class="col-gutter-right">I'm off to the right!</div>
+```markdown
+:::{div}
+:class: col-gutter-right
+I'm off to the right!
+:::
 ```
 
-<div class="col-gutter-right">I'm off to the right!</div>
+:::{div}
+:class: col-gutter-right
+I'm off to the right!
+:::
 
 ## Comments
 
