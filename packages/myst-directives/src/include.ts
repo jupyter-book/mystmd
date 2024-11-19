@@ -4,6 +4,7 @@ import { CODE_DIRECTIVE_OPTIONS, getCodeBlockOptions } from './code.js';
 import type { Include } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import { select } from 'unist-util-select';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 /**
  * RST documentation:
@@ -22,10 +23,7 @@ export const includeDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('include'),
     literal: {
       type: Boolean,
       doc: 'Flag the include block as literal, and show the contents as a code block. This can also be set automatically by setting the `language` or using the `literalinclude` directive.',
@@ -70,21 +68,18 @@ export const includeDirective: DirectiveSpec = {
     },
   },
   run(data, vfile): Include[] {
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const literal =
       data.name === 'literalinclude' || !!data.options?.literal || !!data.options?.lang;
 
     const file = data.arg as string;
     if (!literal) {
       // TODO: warn on unused options
-      return [
-        {
-          type: 'include',
-          file,
-          label,
-          identifier,
-        },
-      ];
+      const include: Include = {
+        type: 'include',
+        file,
+      };
+      addCommonDirectiveOptions(data, include);
+      return [include];
     }
     const lang = (data.options?.lang as string) ?? extToLanguage(file.split('.').pop());
     const opts = getCodeBlockOptions(
@@ -122,19 +117,17 @@ export const includeDirective: DirectiveSpec = {
         ];
       }
     }
-    return [
-      {
-        type: 'include',
-        file,
-        literal,
-        lang,
-        label,
-        identifier,
-        caption: data.options?.caption as any[],
-        filter: Object.keys(filter).length > 0 ? filter : undefined,
-        ...opts,
-      },
-    ];
+    const include: Include = {
+      type: 'include',
+      file,
+      literal,
+      lang,
+      caption: data.options?.caption as any[],
+      filter: Object.keys(filter).length > 0 ? filter : undefined,
+      ...opts,
+    };
+    addCommonDirectiveOptions(data, include);
+    return [include];
   },
 };
 
