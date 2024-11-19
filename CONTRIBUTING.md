@@ -105,6 +105,12 @@ Running in live-changes mode: depending on the package you are working in we hav
 
 `mystmd` uses [changesets](https://github.com/changesets/changesets) to document changes to this monorepo, call `npm run changeset` and follow the prompts. Later, `npm run version` will be called and then `npm run publish`.
 
+Our current versioning procedure is a little loose compared to strict semantic versioning; as `mystmd` continues to mature, this policy may need to update. For now, we try to abide by the following rules for version bumps:
+
+- **major**: Backwards incompatible change to the underlying supported MyST data. These would be cases where a non-developer MyST user's project or site built with major version _N_ would not work with major version _N+1_. Currently, we never intentionally make these changes.
+- **minor**: Backwards incompatible change to the Javascript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
+- **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
+
 ### Packages in the mystmd repository
 
 All packages for `mystmd` are included in this repository (a monorepo!).
