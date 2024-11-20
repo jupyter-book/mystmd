@@ -158,7 +158,7 @@ In the event that the directive being referenced is unenumerable, the reference 
 
 ```{exercise} $n!$ Factorial
 :label: nfactorial
-:nonumber:
+:enumerated: false
 
 Write a function `factorial` such that `factorial(int n)` returns $n!$
 for any positive integer $n$.
@@ -189,7 +189,7 @@ If the title of the linked directive being reference does not exist, it will def
 
 ```{exercise}
 :label: nfactorial-notitle
-:nonumber:
+:enumerated: false
 
 Write a function `factorial` such that `factorial(int n)` returns $n!$
 for any positive integer $n$.
