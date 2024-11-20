@@ -7,16 +7,6 @@ thumbnail: ./thumbnails/exercise.png
 
 There are two directives available to add exercises and solutions to your documents: (1) an `exercise` directive; and (2) a `solution` directive. The exercises are enumerated by default and can take in an optional title argument as well as be "gated" around Jupyter Notebook cells.
 
-:::{note} Same as Sphinx Exercise 🎉
-:class: dropdown
-
-The implementation and documentation for exercises and solutions is based on [Sphinx Exercise](https://ebp-sphinx-exercise.readthedocs.io), the syntax can be used interchangeably. We have reused the examples in that extension here to show off the various parts of the MyST extension.
-
-Changes to the original extension include being able to click on the exercise label (e.g. "Exercise 1"), and having a link to that exercise anchor. We have also updated the styles from both Sphinx and Jupyter Book to be more distinct from admonitions.
-
-You can also reference exercises with any cross-reference syntax (including the {myst:role}`ref` and {myst:role}`numref` roles). We recommend the markdown link syntax.
-:::
-
 ## Exercise Directive
 
 ::::{tab-set}
