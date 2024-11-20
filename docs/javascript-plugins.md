@@ -7,13 +7,13 @@ JavaScript plugins are native MyST plugins, which are loaded as modules into the
 
 ## Defining a new directive
 
-To create a plugin, you will need a single Javascript file[^esm] that exports one or more of the objects above. For example, a simple directive that pulls a random image from [Unsplash](https://unsplash.com/) can be created with a single file that exports an `unsplash` directive.
+To create a plugin, you will need a single Javascript file[^esm] that exports one or more of the objects above. For example, a simple directive that pulls a random image from [Unsplash](https://picsum.photos/) can be created with a single file that exports an `picsum` directive.
 
 [^esm]: The format of the Javascript should be an ECMAScript modules, not CommonJS. This means it uses `import` statements rather than `require()` and is the most modern style of Javascript.
 
-:::{literalinclude} unsplash.mjs
-:label: unsplash-js-source
-:caption: A plugin to add an `unsplash` directive that includes a beautiful, random picture based on a query string.
+:::{literalinclude} picsum.mjs
+:label: picsum-js-source
+:caption: A plugin to add an `picsum` directive that includes a beautiful, random picture based on a size and optional ID string.
 :::
 
 This code should be referenced from your `myst.yml` under the `projects.plugins`:
@@ -22,7 +22,7 @@ This code should be referenced from your `myst.yml` under the `projects.plugins`
 :filename: myst.yml
 project:
   plugins:
-    - unsplash.mjs
+    - picsum.mjs
 ```
 
 Then start or build your document using `myst start` or `myst build`, and you will see that the plugin is loaded.
@@ -30,18 +30,19 @@ Then start or build your document using `myst start` or `myst build`, and you wi
 ```text
 myst start
 ...
-🔌 Unsplash Images (unsplash.mjs) loaded: 1 directive
+🔌 Lorem Picsum Images (picsum.mjs) loaded: 1 directive
 ...
 ```
 
 You can now use the directive, for example:
 
 ```markdown
-:::{unsplash} misty,mountains
+:::{picsum}
+:size: 600x250
 :::
 ```
 
-:::{unsplash} misty,mountains
+:::{picsum}
 :size: 600x250
 :::
 
@@ -107,7 +108,7 @@ Below is the contents of each file for reference.
 
 ::::{dropdown} Plugin: Display an image
 
-```{literalinclude} unsplash.mjs
+```{literalinclude} picsum.mjs
 
 ```
 
