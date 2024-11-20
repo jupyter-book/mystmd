@@ -71,12 +71,7 @@ export const solutionDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    label: {
-      type: String,
-    },
-    class: {
-      type: String,
-    },
+    ...commonDirectiveOptions('solution'),
     hidden: {
       type: Boolean,
     },
@@ -99,16 +94,12 @@ export const solutionDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const rawLabel = data.options?.label as string;
-    const { label, identifier } = normalizeLabel(rawLabel) || {};
     const solution: GenericNode = {
       type: 'solution',
-      label,
-      identifier,
-      class: data.options?.class as string,
       hidden: data.options?.hidden as boolean,
       children: children as any[],
     };
+    addCommonDirectiveOptions(data, solution);
     if (data.name.endsWith('-start')) {
       solution.gate = 'start';
     }
