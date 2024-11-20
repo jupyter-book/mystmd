@@ -32,17 +32,24 @@ export const exerciseDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const nonumber = (data.options?.nonumber as boolean) ?? false;
+
+    // Let `nonumber` take precedence over enumerated
+    let enumerated: boolean;
+    if (data.options?.nonumber !== undefined) {
+      enumerated = !data.options.nonumber as boolean;
+    } else {
+      enumerated = data.options?.enumerated as boolean;
+    }
     const exercise: GenericNode = {
       type: 'exercise',
       hidden: data.options?.hidden as boolean,
-      enumerated: !nonumber,
+      enumerated,
       children: children as any[],
     };
     addCommonDirectiveOptions(data, exercise);
 
     // Numbered, unlabeled exercises still need a label
-    const backupLabel = nonumber ? undefined : `exercise-${createId()}`;
+    const backupLabel = enumerated ? `exercise-${createId()}` : undefined;
     const rawLabel = (data.options?.label as string) || backupLabel;
     const { label, identifier } = normalizeLabel(rawLabel) || {};
     exercise.label = label;

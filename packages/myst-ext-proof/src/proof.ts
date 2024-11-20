@@ -45,11 +45,18 @@ export const proofDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const nonumber = (data.options?.nonumber as boolean) ?? false;
+
+    // Let `nonumber` take precedence over enumerated
+    let enumerated: boolean;
+    if (data.options?.nonumber !== undefined) {
+      enumerated = !data.options.nonumber as boolean;
+    } else {
+      enumerated = data.options?.enumerated as boolean;
+    }
     const proof = {
       type: 'proof',
       kind: data.name !== 'proof' ? data.name.replace('prf:', '') : undefined,
-      enumerated: !nonumber,
+      enumerated,
       children: children as any[],
     };
     addCommonDirectiveOptions(data, proof);
