@@ -69,7 +69,6 @@ export const admonitionDirective: DirectiveSpec = {
         data.name !== 'admonition'
           ? (data.name.replace('.callout-', '') as Admonition['kind'])
           : undefined,
-      class: data.options?.class as string,
       children: children as any[],
     };
     if (data.options?.icon === false) {

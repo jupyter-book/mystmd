@@ -5,6 +5,15 @@ import {
   type GenericNode,
 } from 'myst-common';
 
+export function classDirectiveOption(nodeType = 'node') {
+  return {
+    class: {
+      type: String,
+      doc: `Annotate the ${nodeType} with a set of space-delimited class names.`,
+    },
+  };
+}
+
 export function labelDirectiveOption(nodeType = 'node') {
   return {
     label: {
@@ -31,13 +40,21 @@ export function enumerationDirectiveOptions(nodeType = 'node'): Required<Directi
 }
 
 /**
- * Adds `label`, `enumerated` and `enumerator`.
+ * Adds `class`, `label`, `enumerated`, and `enumerator`.
  */
 export function commonDirectiveOptions(nodeType = 'node'): Required<DirectiveSpec>['options'] {
   return {
+    ...classDirectiveOption(nodeType),
     ...labelDirectiveOption(nodeType),
     ...enumerationDirectiveOptions(nodeType),
   };
+}
+
+export function addClassOptions(data: DirectiveData, node: GenericNode): GenericNode {
+  if (typeof data.options?.class === 'string') {
+    node.class = data.options.class;
+  }
+  return node;
 }
 
 export function addLabelOptions(data: DirectiveData, node: GenericNode): GenericNode {
@@ -58,6 +75,7 @@ export function addEnumerationOptions(data: DirectiveData, node: GenericNode): G
 }
 
 export function addCommonDirectiveOptions(data: DirectiveData, node: GenericNode) {
+  addClassOptions(data, node);
   addLabelOptions(data, node);
   addEnumerationOptions(data, node);
   return node;
