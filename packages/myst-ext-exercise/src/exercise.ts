@@ -12,6 +12,7 @@ export const exerciseDirective: DirectiveSpec = {
     ...commonDirectiveOptions('exercise'),
     nonumber: {
       type: Boolean,
+      doc: 'Legacy flag to disable numbering of exercises; equivalent to `enumerated: false`',
     },
     hidden: {
       type: Boolean,
