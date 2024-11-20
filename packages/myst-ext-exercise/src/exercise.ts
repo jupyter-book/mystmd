@@ -38,7 +38,7 @@ export const exerciseDirective: DirectiveSpec = {
     if (data.options?.nonumber !== undefined) {
       enumerated = !data.options.nonumber as boolean;
     } else {
-      enumerated = data.options?.enumerated as boolean;
+      enumerated = (data.options?.enumerated as boolean) ?? true;
     }
     const exercise: GenericNode = {
       type: 'exercise',
