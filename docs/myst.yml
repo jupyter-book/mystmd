@@ -49,11 +49,11 @@ project:
     TOC: table of contents
   plugins:
     - directives.mjs
-    - unsplash.mjs
+    - picsum.mjs
     - latex.mjs
     - templates.mjs
     - type: executable
-      path: unsplash.py
+      path: picsum.py
     - type: executable
       path: markup.py
     - type: javascript
