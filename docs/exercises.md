@@ -104,7 +104,7 @@ _Source:_ [QuantEcon](https://python-programming.quantecon.org/functions.html#Ex
 
 The following options for solution directives are supported:
 
-:::{myst:directive} exercise
+:::{myst:directive} solution
 :::
 
 ## Referencing Exercises & Solutions
