@@ -27,6 +27,7 @@ export const proofDirective: DirectiveSpec = {
     ...commonDirectiveOptions('proof'),
     nonumber: {
       type: Boolean,
+      doc: 'Legacy flag to disable numbering of proofs; equivalent to `enumerated: false`',
     },
   },
   body: {
