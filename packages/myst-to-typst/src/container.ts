@@ -99,7 +99,10 @@ export const containerHandler: Handler = (node, state) => {
       nonCaptions.filter((item: GenericNode) => item.type === 'container').length ===
       nonCaptions.length;
     state.useMacro('#import "@preview/subpar:0.1.1"');
-    state.write(`#show figure: set block(breakable: ${allSubFigs ? 'false' : 'true'})\n`);
+    state.useMacro('#let breakableDefault = true');
+    state.write(
+      `#show figure: set block(breakable: ${allSubFigs ? 'false' : 'breakableDefault'})\n`,
+    );
     state.write('#subpar.grid(');
     let columns = nonCaptions.length <= 3 ? nonCaptions.length : 2; // TODO: allow this to be customized
     nonCaptions.forEach((item: GenericNode) => {
@@ -123,12 +126,14 @@ export const containerHandler: Handler = (node, state) => {
       label = undefined;
     }
   } else if (nonCaptions && nonCaptions.length === 1) {
-    state.write('#show figure: set block(breakable: true)\n');
+    state.useMacro('#let breakableDefault = true');
+    state.write('#show figure: set block(breakable: breakableDefault)\n');
     state.write('#figure(');
     renderFigureChild(nonCaptions[0], state);
     state.write(',');
   } else {
-    state.write('#show figure: set block(breakable: true)\n');
+    state.useMacro('#let breakableDefault = true');
+    state.write('#show figure: set block(breakable: breakableDefault)\n');
     state.write('#figure([\n  ');
     state.renderChildren(node, 1);
     state.write('],');
