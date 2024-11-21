@@ -352,7 +352,7 @@ const handlers: Record<string, Handler> = {
   caption: captionHandler,
   legend: captionHandler,
   captionNumber: () => undefined,
-  crossReference(node: CrossReference, state, parent) {
+  crossReference(node: CrossReference, state) {
     if (node.remote) {
       // We don't want to handle remote references, treat them as links
       const url =
@@ -362,13 +362,10 @@ const handlers: Record<string, Handler> = {
       linkHandler({ ...node, url: url }, state);
       return;
     }
-    // Look up reference and add the text
-    // const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
-    // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
     const id = node.identifier;
-    // state.write(text.replace(/%s/g, `@${id}`));
-    const next = nextCharacterIsText(parent, node);
-    state.write(next ? `#[@${id}]` : `@${id}`);
+    state.write(`#link(<${id}>)[`);
+    state.renderChildren(node);
+    state.write(']');
   },
   citeGroup(node, state) {
     state.renderChildren(node, 0, { delim: ' ' });
