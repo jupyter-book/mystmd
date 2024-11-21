@@ -34,6 +34,8 @@ export const tableHandler: Handler = (node, state) => {
     return;
   }
   state.useMacro('#import "@preview/tablex:0.0.9": tablex, cellx, hlinex, vlinex');
+  // These two separate style hooks are somewhat redundant, but they allow defining
+  // article-wide styles and single-table styles separately
   state.useMacro('#let tableStyle = (:)');
   state.useMacro('#let columnStyle = (:)');
   state.write(
