@@ -35,6 +35,11 @@ export function determineCaptionKind(node: GenericNode): CaptionKind | null {
 
 function renderFigureChild(node: GenericNode, state: ITypstSerializer) {
   const useBrackets = node.type !== 'image' && node.type !== 'table';
+  if (node.type === 'legend') {
+    state.useMacro('#let legendStyle = (fill: black.lighten(20%), size: 8pt, style: "italic")');
+    state.write('text(..legendStyle)');
+    node.type = 'paragraph';
+  }
   if (useBrackets) state.write('[\n');
   else state.write('\n  ');
   state.renderChildren({ children: [node] });
@@ -60,12 +65,17 @@ export const containerHandler: Handler = (node, state) => {
   state.data.isInFigure = true;
   const { identifier, kind } = node;
   let label: string | undefined = identifier;
-  const captions = node.children?.filter(
-    (child: GenericNode) => child.type === 'caption' || child.type === 'legend',
-  );
-  const nonCaptions = node.children?.filter(
-    (child: GenericNode) => child.type !== 'caption' && child.type !== 'legend',
-  );
+  const captionTypes = node.kind === 'table' ? ['caption'] : ['caption', 'legend'];
+  const captions: GenericNode[] = node.children?.filter((child: GenericNode) => {
+    return captionTypes.includes(child.type);
+  });
+  let nonCaptions: GenericNode[] = node.children?.filter((child: GenericNode) => {
+    return !captionTypes.includes(child.type);
+  });
+  nonCaptions = [
+    ...nonCaptions.filter((child) => child.type !== 'legend'),
+    ...nonCaptions.filter((child) => child.type === 'legend'),
+  ];
   if (!nonCaptions || nonCaptions.length === 0) {
     fileError(state.file, `Figure with no non-caption content: ${label}`, {
       node,
