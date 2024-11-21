@@ -189,10 +189,17 @@ const handlers: Record<string, Handler> = {
     state.addNewLine();
   },
   list(node, state) {
+    const setStart = node.ordered && node.start && node.start !== 1;
+    if (setStart) {
+      state.write(`#set enum(start: ${node.start})`);
+    }
     state.data.list ??= { env: [] };
     state.data.list.env.push(node.ordered ? '+' : '-');
-    state.renderChildren(node, 2);
+    state.renderChildren(node, setStart ? 1 : 2);
     state.data.list.env.pop();
+    if (setStart) {
+      state.write('#set enum(start: 1)\n\n');
+    }
   },
   listItem(node, state) {
     const listEnv = state.data.list?.env ?? [];
