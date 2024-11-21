@@ -35,8 +35,9 @@ export const tableHandler: Handler = (node, state) => {
   }
   state.useMacro('#import "@preview/tablex:0.0.9": tablex, cellx, hlinex, vlinex');
   state.useMacro('#let tableStyle = (:)');
+  state.useMacro('#let columnStyle = (:)');
   state.write(
-    `${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)}, repeat-header: true, ..tableStyle,\n`,
+    `${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)}, repeat-header: true, ..tableStyle, ..columnStyle,\n`,
   );
   state.renderChildren(node, 1);
   state.write(')\n');
