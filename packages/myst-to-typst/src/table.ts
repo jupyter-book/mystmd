@@ -48,7 +48,7 @@ export const tableRowHandler: Handler = (node, state) => {
 };
 
 export const tableCellHandler: Handler = (node, state) => {
-  if (node.rowspan || node.colspan || node.align) {
+  if (node.rowspan || node.colspan || node.align || node.style?.backgroundColor) {
     state.write('cellx(');
     if (node.rowspan) {
       state.write(`rowspan: ${node.rowspan}, `);
@@ -58,6 +58,9 @@ export const tableCellHandler: Handler = (node, state) => {
     }
     if (node.align) {
       state.write(`align: ${node.align}, `);
+    }
+    if (node.style?.backgroundColor) {
+      state.write(`fill: rgb("${node.style.backgroundColor}"), `);
     }
     state.write(')');
   }
