@@ -1,7 +1,7 @@
 import type { VFile } from 'vfile';
 import type { Plugin } from 'unified';
 import type { Node } from 'myst-spec';
-import { selectAll } from 'unist-util-select';
+import { selectAll, select } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { NotebookCell, RuleId, fileError, normalizeLabel } from 'myst-common';
 import type { Code } from 'myst-spec-ext';
@@ -89,15 +89,18 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
           child.identifier = `${block.identifier}-code-${index}`;
         }
       });
-      const outputChildren = selectAll('output', block) as GenericNode[];
-      outputChildren.forEach((child, index) => {
-        if (child.identifier) return;
-        if (outputChildren.length === 1) {
-          child.identifier = `${block.identifier}-output`;
-        } else {
-          child.identifier = `${block.identifier}-output-${index}`;
-        }
-      });
+      const outputsNode = select('outputs', block) as GenericNode | undefined;
+      if (outputsNode && !outputsNode.identifier) {
+        // Label outputs node
+        outputsNode.identifier = `${block.identifier}-output`;
+        // Enumerate outputs
+        const outputs = selectAll('output', outputsNode) as GenericNode[];
+        outputs.forEach((outputNode, index) => {
+          if (outputNode && !outputNode.identifier) {
+            outputNode.identifier = `${block.identifier}-output-${index}`;
+          }
+        });
+      }
     }
   });
 }

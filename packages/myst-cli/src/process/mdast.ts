@@ -450,5 +450,6 @@ export async function finalizeMdast(
     postData.widgets = cache.$getMdast(file)?.pre.widgets;
     updateFileInfoFromFrontmatter(session, file, frontmatter);
   }
+
   logMessagesFromVFile(session, vfile);
 }
