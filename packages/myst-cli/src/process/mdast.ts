@@ -68,6 +68,7 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
+  internalASTToExternal,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -429,5 +430,6 @@ export async function finalizeMdast(
     postData.widgets = cache.$getMdast(file)?.pre.widgets;
     updateFileInfoFromFrontmatter(session, file, frontmatter);
   }
+  internalASTToExternal(mdast);
   logMessagesFromVFile(session, vfile);
 }

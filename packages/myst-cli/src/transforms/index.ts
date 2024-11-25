@@ -9,5 +9,6 @@ export * from './include.js';
 export * from './links.js';
 export * from './mdast.js';
 export * from './outputs.js';
+export * from './schema.js';
 export * from './inlineExpressions.js';
 export * from './types.js';

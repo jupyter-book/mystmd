@@ -251,6 +251,12 @@ export type Container = Omit<SpecContainer, 'kind'> & {
   parentEnumerator?: string;
 };
 
+export type Outputs = Node &
+  Target & {
+    type: 'outputs';
+    children: Output[];
+  };
+
 export type Output = Node &
   Target & {
     type: 'output';
