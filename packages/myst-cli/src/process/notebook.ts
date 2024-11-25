@@ -165,17 +165,16 @@ export async function processNotebookFull(
           value: ensureString(cell.source),
         };
 
-        // Embed outputs in an output block
-        const output: { type: 'output'; id: string; data: IOutput[] } = {
-          type: 'output',
-          id: nanoid(),
-          data: [],
-        };
-
-        if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
-          output.data = cell.outputs as IOutput[];
-        }
-        return acc.concat(blockParent(cell, [code, output]));
+        const outputs = (cell.outputs as IOutput[]).map((output) => {
+          // TODO: output-refactoring -- embed this in an `outputs node` in future
+          const result: { type: 'output'; id: string; data: IOutput[] } = {
+            type: 'output',
+            id: nanoid(),
+            data: [output],
+          };
+          return result;
+        });
+        return acc.concat(blockParent(cell, [code, ...outputs]));
       }
       return acc;
     },

@@ -1,7 +1,8 @@
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
+import { visit, SKIP } from 'unist-util-visit';
 import type { FrontmatterParts, GenericNode, GenericParent, References } from 'myst-common';
-import { RuleId, fileWarn, plural, selectMdastNodes } from 'myst-common';
+import { RuleId, fileWarn, plural, selectMdastNodes, liftChildren } from 'myst-common';
 import { computeHash, tic } from 'myst-cli-utils';
 import { addChildrenFromTargetNode } from 'myst-transforms';
 import type { PageFrontmatter } from 'myst-frontmatter';
@@ -9,6 +10,7 @@ import type { CrossReference, Dependency, Link, SourceFileKind } from 'myst-spec
 import type { ISession } from '../session/types.js';
 import { loadFromCache, writeToCache } from '../session/cache.js';
 import type { SiteAction, SiteExport } from 'myst-config';
+import type { IOutput } from '@jupyterlab/nbformat';
 
 export const XREF_MAX_AGE = 1; // in days
 
@@ -32,6 +34,104 @@ export type MystData = {
   references?: References;
 };
 
+/**
+ * Convert between MyST AST versions either side of the `output` refactoring work
+ *
+ * "past" AST is upgraded to "contemporary" AST.
+ * "future" AST is downgraded to "contemporary AST".
+ *
+ * where "contemporary` AST is immediately after #1661 merges"
+ *
+ * These two changes allow us to continue to publish AST that will mostly work with old mystmd/myst-theme deployments, whilst being ready for a future breaking change that we can anticipate.
+ *
+ * After these upgrades/downgrades, we ensure that we have the following pseudo-schema:
+ *
+ * type CodeBlock = {
+ *   type: "block";
+ *   kind: "notebook-code",
+ *   children: [
+ *     Code,
+ *     Output,
+ *     ...,
+ *     Output
+ *   ]
+ * }
+ * type Output = {
+ *   type: "output";
+ *   children: GenericNode[];
+ *   visibility: ...;
+ *   data: IOutput[1];
+ * }
+ *
+ */
+function upgradeAndDowngradeMystData(data: MystData): MystData {
+  const makeUniqueLabel = (label: string | undefined, index: number): string | undefined => {
+    if (label === undefined) {
+      return undefined;
+    }
+    if (index === 0) {
+      return label;
+    } else {
+      return `${label}_${index}`;
+    }
+  };
+
+  // TODO: output-refactoring -- rewrite this function
+  visit(
+    data.mdast as any,
+    'output',
+    (node: GenericNode, index: number | null, parent: GenericParent | null) => {
+      // Case 1: "old" schema with >1 data per Output
+      // Upgrade old schema to have >1 data per output
+      if (parent && node.data && node.data.length > 1) {
+        const outputs = node.data.map((outputData: IOutput, idx: number) => {
+          // Take the unique ID from the first node
+          const auxData = {
+            identifier: makeUniqueLabel(node.identifier, idx),
+            html_id: makeUniqueLabel(node.html_id, idx),
+            id: makeUniqueLabel(node.id, idx),
+          };
+          return {
+            type: 'output',
+            visibility: node.visibility,
+            data: [outputData],
+            children: [], // FIXME: ignoring children here
+            ...auxData,
+          };
+        });
+        parent.children[index!] = outputs;
+        return SKIP;
+      }
+      // Case 2: "future" AST
+      // 1. delete new `jupyter_output` field of `Output`
+      // 2. restore `Output.data`
+      // 3. duplicate `Outputs.visibility` to `Output`, with `Output` taking precedence
+      // 4. erase `Outputs` type
+      else if (parent && parent.type === 'outputs' && 'jupyter_output' in node) {
+        // Erase the `Outputs` node
+        parent.type = '__lift__';
+
+        // Downgrade `jupyter_output` (1) and (2)
+        node.data = [node.jupyter_output];
+        node.jupyter_output = undefined;
+
+        // Duplicate `visibility` onto `Output` children (3)
+        node.visibility = node.visibility ?? parent.visibility;
+
+        // Take unique ID from parent
+        if (index === 0) {
+          node.identifier = parent.identifier;
+          node.html_id = parent.html_id;
+        }
+      }
+    },
+  );
+
+  // Erase lifted outputs
+  liftChildren(data.mdast as any, '__lift__');
+  return data;
+}
+
 async function fetchMystData(
   session: ISession,
   dataUrl: string | undefined,
@@ -48,7 +148,8 @@ async function fetchMystData(
     try {
       const resp = await session.fetch(dataUrl);
       if (resp.ok) {
-        const data = (await resp.json()) as MystData;
+        const data = upgradeAndDowngradeMystData((await resp.json()) as MystData);
+
         writeToCache(session, filename, JSON.stringify(data));
         return data;
       }

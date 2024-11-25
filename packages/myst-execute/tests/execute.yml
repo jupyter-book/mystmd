@@ -67,9 +67,6 @@ cases:
                   enumerator: 1
                   html_id: nb-cell-0-code
                 - type: output
-                  id: T7FMDqDm8dM2bOT1tKeeM
-                  identifier: nb-cell-0-output
-                  html_id: nb-cell-0-output
                   data:
                     - output_type: stream
                       name: stdout
@@ -171,9 +168,6 @@ cases:
               enumerator: 1
               html_id: nb-cell-0-code
             - type: output
-              id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
               data:
                 - output_type: stream
                   name: stdout
@@ -195,9 +189,6 @@ cases:
               enumerator: 1
               html_id: nb-cell-0-code
             - type: output
-              id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
               data:
                 - output_type: error
                   # Note this traceback can be different on various machines
@@ -254,9 +245,6 @@ cases:
               enumerator: 1
               html_id: nb-cell-0-code
             - type: output
-              id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
               data:
                 - output_type: error
                   # Note this traceback can be different on various machines
@@ -313,7 +301,4 @@ cases:
               enumerator: 1
               html_id: nb-cell-0-code
             - type: output
-              id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
               data:

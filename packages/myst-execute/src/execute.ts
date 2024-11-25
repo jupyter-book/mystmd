@@ -1,4 +1,5 @@
 import { select, selectAll } from 'unist-util-select';
+import { remove } from 'unist-util-remove';
 import type { Logger } from 'myst-cli-utils';
 import type { PageFrontmatter, KernelSpec } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
@@ -282,10 +283,19 @@ function applyComputedOutputsToNodes(
     const thisResult = computedResult.shift();
 
     if (isCellBlock(matchedNode)) {
-      // Pull out output to set data
-      const output = select('output', matchedNode) as unknown as { data: IOutput[] };
-      // Set the output array to empty if we don't have a result (e.g. due to a kernel error)
-      output.data = thisResult === undefined ? [] : (thisResult as IOutput[]);
+      // Pull out code node
+      const code = select('code', matchedNode);
+
+      // Remove outputs
+      remove(matchedNode, { cascade: false }, 'output');
+
+      // Generate outputs
+      const outputs = ((thisResult as IOutput[]) ?? []).map((data) => {
+        return { type: 'output', children: [], data: [data] as any };
+      });
+      // Ensure that whether this fails or succeeds, we write to `children` (e.g. due to a kernel error)
+      // TODO: output-refactoring -- contain these nodes in `outputs`
+      matchedNode.children = [code as any, ...outputs];
     } else if (isInlineExpression(matchedNode)) {
       // Set data of expression to the result, or empty if we don't have one
       matchedNode.result = // TODO: FIXME .data

@@ -41,6 +41,7 @@ export async function transformOutputsToCache(
     outputs
       .filter((output) => output.visibility !== 'remove')
       .map(async (output) => {
+        // TODO: output-refactoring -- drop to single output in future
         output.data = await minifyCellOutput(output.data as IOutput[], cache.$outputs, {
           computeHash,
           maxCharacters: opts?.minifyMaxCharacters,
@@ -77,6 +78,7 @@ export function transformFilterOutputStreams(
     const outputs = selectAll('output', block) as GenericNode[];
     // There should be only one output in the block
     outputs.forEach((output) => {
+      // TODO: output-refactoring -- drop to single output in future
       output.data = output.data.filter((data: IStream | MinifiedMimeOutput) => {
         if (
           (stderr !== 'show' || blockRemoveStderr) &&
@@ -193,6 +195,7 @@ export function transformOutputsToFile(
   const cache = castSession(session);
 
   outputs.forEach((node) => {
+    // TODO: output-refactoring -- drop to single output in future
     walkOutputs(node.data, (obj) => {
       const { hash } = obj;
       if (!hash || !cache.$outputs[hash]) return undefined;
@@ -236,6 +239,7 @@ export function reduceOutputs(
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
   outputs.forEach((node) => {
+    // TODO: output-refactoring -- drop to single output in future
     if (!node.data?.length && !node.children?.length) {
       node.type = '__delete__';
       return;
@@ -243,6 +247,7 @@ export function reduceOutputs(
     node.type = '__lift__';
     if (node.children?.length) return;
     const selectedOutputs: { content_type: string; hash: string }[] = [];
+    // TODO: output-refactoring -- drop to single output in future
     node.data.forEach((output: MinifiedOutput) => {
       let selectedOutput: { content_type: string; hash: string } | undefined;
       walkOutputs([output], (obj: any) => {
