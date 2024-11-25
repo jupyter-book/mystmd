@@ -21,7 +21,7 @@ cases:
     typst: |-
       = My Heading <section-one>
 
-      Please see @section-one for more information!
+      Please see #link(<section-one>)[] for more information!
   - title: references followed by text
     mdast:
       type: root
@@ -35,4 +35,4 @@ cases:
             - type: text
               value: 'a for the first part of the figure!'
     typst: |-
-      See #[@fig1]a for the first part of the figure!
+      See #link(<fig1>)[]a for the first part of the figure!
