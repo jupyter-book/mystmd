@@ -161,6 +161,7 @@ const mdast: Handler = (h, node) => h(node, 'div', { id: node.id });
 const mermaid: Handler = (h, node) => h(node, 'div', { class: 'margin' });
 const myst: Handler = (h, node) => h(node, 'div', { class: 'margin' });
 const output: Handler = (h, node) => h(node, 'div', { class: 'output' });
+const keyboard: Handler = (h, node) => h(node, 'kbd', all(h, node));
 
 export const mystToHast: Plugin<[Options?], string, GenericParent> =
   (opts) => (tree: GenericParent) => {
@@ -202,6 +203,7 @@ export const mystToHast: Plugin<[Options?], string, GenericParent> =
         mermaid,
         myst,
         output,
+	keyboard,
         ...opts?.handlers,
       },
     });
