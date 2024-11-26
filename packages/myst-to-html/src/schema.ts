@@ -203,7 +203,7 @@ export const mystToHast: Plugin<[Options?], string, GenericParent> =
         mermaid,
         myst,
         output,
-	keyboard,
+        keyboard,
         ...opts?.handlers,
       },
     });
