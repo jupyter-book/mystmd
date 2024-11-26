@@ -3,7 +3,6 @@ import { mystToHast } from '../src/schema';
 import { u } from 'unist-builder';
 import { h } from 'hastscript';
 
-// @ts-expect-error this
 const toHast: (node: any) => any = mystToHast();
 
 describe('mystToHast', () => {
