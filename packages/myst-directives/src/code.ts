@@ -207,7 +207,7 @@ export const codeCellDirective: DirectiveSpec = {
     };
     const output = {
       type: 'output',
-      id: nanoid(),
+      children: [],
       data: [],
     };
     const block: GenericNode = {
