@@ -189,10 +189,17 @@ const handlers: Record<string, Handler> = {
     state.addNewLine();
   },
   list(node, state) {
+    const setStart = node.ordered && node.start && node.start !== 1;
+    if (setStart) {
+      state.write(`#set enum(start: ${node.start})`);
+    }
     state.data.list ??= { env: [] };
     state.data.list.env.push(node.ordered ? '+' : '-');
-    state.renderChildren(node, 2);
+    state.renderChildren(node, setStart ? 1 : 2);
     state.data.list.env.pop();
+    if (setStart) {
+      state.write('#set enum(start: 1)\n\n');
+    }
   },
   listItem(node, state) {
     const listEnv = state.data.list?.env ?? [];
@@ -355,13 +362,15 @@ const handlers: Record<string, Handler> = {
       linkHandler({ ...node, url: url }, state);
       return;
     }
-    // Look up reference and add the text
-    // const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
-    // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
     const id = node.identifier;
-    // state.write(text.replace(/%s/g, `@${id}`));
-    const next = nextCharacterIsText(parent, node);
-    state.write(next ? `#[@${id}]` : `@${id}`);
+    if (node.children && node.children.length > 0) {
+      state.write(`#link(<${id}>)[`);
+      state.renderChildren(node);
+      state.write(']');
+    } else {
+      const next = nextCharacterIsText(parent, node);
+      state.write(next ? `#[@${id}]` : `@${id}`);
+    }
   },
   citeGroup(node, state) {
     state.renderChildren(node, 0, { delim: ' ' });
