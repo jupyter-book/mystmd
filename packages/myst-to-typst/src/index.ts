@@ -352,7 +352,7 @@ const handlers: Record<string, Handler> = {
   caption: captionHandler,
   legend: captionHandler,
   captionNumber: () => undefined,
-  crossReference(node: CrossReference, state) {
+  crossReference(node: CrossReference, state, parent) {
     if (node.remote) {
       // We don't want to handle remote references, treat them as links
       const url =
@@ -363,9 +363,14 @@ const handlers: Record<string, Handler> = {
       return;
     }
     const id = node.identifier;
-    state.write(`#link(<${id}>)[`);
-    state.renderChildren(node);
-    state.write(']');
+    if (node.children && node.children.length > 0) {
+      state.write(`#link(<${id}>)[`);
+      state.renderChildren(node);
+      state.write(']');
+    } else {
+      const next = nextCharacterIsText(parent, node);
+      state.write(next ? `#[@${id}]` : `@${id}`);
+    }
   },
   citeGroup(node, state) {
     state.renderChildren(node, 0, { delim: ' ' });
