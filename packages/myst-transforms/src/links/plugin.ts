@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import type { Plugin } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
@@ -15,7 +16,7 @@ type Options = {
  * Uses a zero-width space, same as a `<wbr>` but no fancy rendering required.
  * https://css-tricks.com/better-line-breaks-for-long-urls/
  */
-function formatLinkText(link: Link) {
+export function formatLinkText(link: Link) {
   if (link.children?.length !== 1 || link.children[0].type !== 'text') return;
   const url = link.children[0].value;
   // Add an exception for wiki transforms links.
@@ -34,7 +35,8 @@ function formatLinkText(link: Link) {
           .replace(/([=&])/giu, '​$1​'),
       // Reconnect the strings with word break opportunities after double slashes
     )
-    .join('//​');
+    .join('//​')
+    .replace(/​(.{1,2})$/, '$1');
   link.children[0].value = formatted;
 }
 
