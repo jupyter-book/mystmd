@@ -48,6 +48,7 @@ export enum RuleId {
   imageFormatConverts = 'image-format-converts',
   imageCopied = 'image-copied',
   imageFormatOptimizes = 'image-format-optimizes',
+  mermaidDiagramConverted = 'mermaid-diagram-converted',
   // Math rules
   mathLabelLifted = 'math-label-lifted',
   mathEquationEnvRemoved = 'math-equation-env-removed',
