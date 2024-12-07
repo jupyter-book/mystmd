@@ -1,5 +1,13 @@
 # myst-transforms
 
+## 1.3.28
+
+### Patch Changes
+
+- 3aa40b03: No trailing slash for end of links
+- Updated dependencies [a27bd886]
+  - myst-to-html@1.5.9
+
 ## 1.3.27
 
 ### Patch Changes
