@@ -49,11 +49,11 @@ project:
     TOC: table of contents
   plugins:
     - directives.mjs
-    - unsplash.mjs
+    - picsum.mjs
     - latex.mjs
     - templates.mjs
     - type: executable
-      path: unsplash.py
+      path: picsum.py
     - type: executable
       path: markup.py
     - type: javascript
@@ -115,6 +115,7 @@ project:
         - file: website-metadata.md
         # - file: themes-and-extensions.md
         - file: seo-and-social.md
+        - file: website-style.md
         - file: accessibility-and-performance.md
         # - file: search.md
         - file: analytics.md

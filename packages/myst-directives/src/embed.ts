@@ -1,6 +1,7 @@
 import type { DirectiveSpec, DirectiveData } from 'myst-common';
 import { normalizeLabel } from 'myst-common';
 import type { Embed } from 'myst-spec-ext';
+import { commonDirectiveOptions, addCommonDirectiveOptions } from './utils.js';
 
 export const embedDirective: DirectiveSpec = {
   name: 'embed',
@@ -11,6 +12,7 @@ export const embedDirective: DirectiveSpec = {
     required: true,
   },
   options: {
+    ...commonDirectiveOptions('embed'),
     'remove-input': {
       type: Boolean,
       doc: 'If embedding a Jupyter Notebook cell, remove the input of the cell.',
@@ -26,13 +28,13 @@ export const embedDirective: DirectiveSpec = {
     const arg = argString.startsWith('#') ? argString.substring(1) : argString;
     const { label } = normalizeLabel(arg) || {};
     if (!label) return [];
-    return [
-      {
-        type: 'embed',
-        source: { label },
-        'remove-input': data.options?.['remove-input'] as boolean | undefined,
-        'remove-output': data.options?.['remove-output'] as boolean | undefined,
-      },
-    ];
+    const embed: Embed = {
+      type: 'embed',
+      source: { label },
+      'remove-input': data.options?.['remove-input'] as boolean | undefined,
+      'remove-output': data.options?.['remove-output'] as boolean | undefined,
+    };
+    addCommonDirectiveOptions(data, embed);
+    return [embed];
   },
 };

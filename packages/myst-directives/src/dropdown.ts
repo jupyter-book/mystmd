@@ -1,5 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { addCommonDirectiveOptions, labelDirectiveOption } from './utils.js';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const dropdownDirective: DirectiveSpec = {
   name: 'dropdown',
@@ -7,7 +7,7 @@ export const dropdownDirective: DirectiveSpec = {
     type: 'myst',
   },
   options: {
-    ...labelDirectiveOption('dropdown'),
+    ...commonDirectiveOptions('dropdown'),
     // TODO: Add enumeration in future
     open: {
       type: Boolean,

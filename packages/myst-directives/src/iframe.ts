@@ -11,10 +11,6 @@ export const iframeDirective: DirectiveSpec = {
   },
   options: {
     ...commonDirectiveOptions('iframe'),
-    class: {
-      type: String,
-      // class_option: list of strings?
-    },
     width: {
       type: String,
       doc: 'The iframe width, in CSS units, for example `50%` or `300px`.',
@@ -50,14 +46,12 @@ export const iframeDirective: DirectiveSpec = {
       ];
     }
     if (!data.body) {
-      iframe.class = data.options?.class as string;
       addCommonDirectiveOptions(data, iframe);
       return [iframe];
     }
     const container = {
       type: 'container',
       kind: 'figure',
-      class: data.options?.class,
       children: [iframe, { type: 'caption', children: data.body as GenericNode[] }],
     };
     addCommonDirectiveOptions(data, container);

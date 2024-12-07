@@ -4,6 +4,7 @@ import {
   type GenericNode,
   normalizeLabel,
 } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from 'myst-directives';
 
 function getColumns(columnString?: string) {
   const columns = (columnString ?? '1 2 2 3')
@@ -29,18 +30,21 @@ export const gridDirective: DirectiveSpec = {
   // padding
   // reverse
   // outline
+  options: {
+    ...commonDirectiveOptions('grid'),
+  },
   body: {
     type: 'myst',
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {
-    return [
-      {
-        type: 'grid',
-        columns: getColumns(data.arg as string | undefined),
-        children: data.body as GenericNode[],
-      },
-    ];
+    const grid = {
+      type: 'grid',
+      columns: getColumns(data.arg as string | undefined),
+      children: data.body as GenericNode[],
+    };
+    addCommonDirectiveOptions(data, grid);
+    return [grid];
   },
 };
 

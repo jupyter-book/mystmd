@@ -8,18 +8,18 @@ MyST is able to invoke plugins written in different languages through standard I
 ## Defining a new directive
 
 :::{note}
-There are many different ways to create an executable plugin. Here we'll use Python to implement an `unsplash-py` directive, but any programming language that can read and write from stdin, stdout, and stderr, and define a command line interface would work.
+There are many different ways to create an executable plugin. Here we'll use Python to implement an `picsum-py` directive, but any programming language that can read and write from stdin, stdout, and stderr, and define a command line interface would work.
 :::
 
-First, we'll declare the plugin _specification_ that allows MyST to discover the directives, transforms, and/or roles that the plugin implements. This specification looks very similar to [the definition of a JavaScript plugin](javascript-plugins.md#unsplash-js-source), except the implementation logic (e.g. the directive `run` method) is not defined.
+First, we'll declare the plugin _specification_ that allows MyST to discover the directives, transforms, and/or roles that the plugin implements. This specification looks very similar to [the definition of a JavaScript plugin](javascript-plugins.md#picsum-js-source), except the implementation logic (e.g. the directive `run` method) is not defined.
 
-:::{literalinclude} unsplash.py
-:caption: a plugin to add an `unsplash-py` directive that includes a beautiful, random picture based on a query string.
+:::{literalinclude} picsum.py
+:caption: A plugin to add an `picsum-py` directive that includes a beautiful, random picture based on a size and optional ID string.
 :::
 this file should be executable, e.g.
 
 ```{code} shell
-chmod +x ./unsplash.py
+chmod +x ./picsum.py
 ```
 
 and should be referenced from your `myst.yml` under the `projects.plugins`:
@@ -29,7 +29,7 @@ and should be referenced from your `myst.yml` under the `projects.plugins`:
 project:
   plugins:
     - type: executable
-      path: unsplash.py
+      path: picsum.py
 ```
 
 then start or build your document using `myst start` or `myst build`, and you will see that the plugin is loaded.
@@ -37,18 +37,19 @@ then start or build your document using `myst start` or `myst build`, and you wi
 ```text
 myst start
 ...
-🔌 unsplash images (unsplash.py) loaded: 1 directive
+🔌 Lorem Picsum Images (picsum.py) loaded: 1 directive
 ...
 ```
 
 you can now use the directive, for example:
 
 ```markdown
-:::{unsplash-py} misty,mountains
+:::{picsum-py}
+:size: 600x250
 :::
 ```
 
-:::{unsplash-py} misty,mountains
+:::{picsum-py}
 :size: 600x250
 :::
 

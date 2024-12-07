@@ -36,3 +36,20 @@ cases:
               value: 'a for the first part of the figure!'
     typst: |-
       See #[@fig1]a for the first part of the figure!
+  - title: references followed by text with children
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'See '
+            - type: crossReference
+              identifier: fig1
+              children:
+                - type: text
+                  value: 'Figure 56'
+            - type: text
+              value: 'a for the first part of the figure!'
+    typst: |-
+      See #link(<fig1>)[Figure 56]a for the first part of the figure!

@@ -1,24 +1,22 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from 'myst-directives';
 
 export const tabSetDirective: DirectiveSpec = {
   name: 'tab-set',
   alias: ['tabSet'],
   options: {
-    class: {
-      type: String,
-    },
+    ...commonDirectiveOptions('tab-set'),
   },
   body: {
     type: 'myst',
   },
   run(data: DirectiveData): GenericNode[] {
-    return [
-      {
-        type: 'tabSet',
-        class: data.options?.class,
-        children: (data.body || []) as GenericNode[],
-      },
-    ];
+    const tabSet = {
+      type: 'tabSet',
+      children: (data.body || []) as GenericNode[],
+    };
+    addCommonDirectiveOptions(data, tabSet);
+    return [tabSet];
   },
 };
 
@@ -29,6 +27,7 @@ export const tabItemDirective: DirectiveSpec = {
     type: String,
   },
   options: {
+    ...commonDirectiveOptions('tab-item'),
     sync: {
       type: String,
     },
@@ -40,15 +39,15 @@ export const tabItemDirective: DirectiveSpec = {
     type: 'myst',
   },
   run(data: DirectiveData): GenericNode[] {
-    return [
-      {
-        type: 'tabItem',
-        title: data.arg ?? 'Tab Title',
-        sync: data.options?.sync,
-        selected: data.options?.selected,
-        children: (data.body || []) as GenericNode[],
-      },
-    ];
+    const tabItem = {
+      type: 'tabItem',
+      title: data.arg ?? 'Tab Title',
+      sync: data.options?.sync,
+      selected: data.options?.selected,
+      children: (data.body || []) as GenericNode[],
+    };
+    addCommonDirectiveOptions(data, tabItem);
+    return [tabItem];
   },
 };
 

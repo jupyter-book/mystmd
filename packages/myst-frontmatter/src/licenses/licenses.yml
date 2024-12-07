@@ -280,6 +280,53 @@ cases:
         content:
           url: https://example.com
     warnings: 1
+  - title: url string coerces to license from spdx list
+    raw:
+      license: https://creativecommons.org/licenses/by/4.0/
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: url coerces to license from spdx list
+    raw:
+      license:
+        url: https://creativecommons.org/licenses/by/4.0/
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: url coerces to license from spdx list with http
+    raw:
+      license:
+        url: http://creativecommons.org/licenses/by/4.0/
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+  - title: url coerces to license from spdx list without trailing slash
+    raw:
+      license:
+        url: https://creativecommons.org/licenses/by/4.0
+    normalized:
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
   - title: string with no spaces coerces to unknown id (and warns)
     raw:
       license: my-custom-license
@@ -288,7 +335,7 @@ cases:
         content:
           id: my-custom-license
     warnings: 1
-  - title: Other short string coerces to note (and warns)
+  - title: Other long string coerces to note (and warns)
     raw:
       license: |
         my custom license but this is really long, like, more than one hundred characters long.
@@ -300,11 +347,21 @@ cases:
             my custom license but this is really long, like, more than one hundred characters long.
             clearly if it is this long it cannot be a name but must be a note.
     warnings: 1
-  - title: Other long string coerces to name (and warns)
+  - title: Other short string coerces to name (and warns)
     raw:
       license: my custom license
     normalized:
       license:
         content:
           name: my custom license
+    warnings: 1
+  - title: Long string with "mit" buried in it is not coerced to MIT license
+    raw:
+      license: |
+        This is an open access article. Unrestricted non-commercial use is permitted provided the original work is properly cited
+    normalized:
+      license:
+        content:
+          note: |
+            This is an open access article. Unrestricted non-commercial use is permitted provided the original work is properly cited
     warnings: 1

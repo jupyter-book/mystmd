@@ -47,7 +47,6 @@ export const tableDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'table',
-      class: data.options?.class,
       children,
     };
     addCommonDirectiveOptions(data, container);
@@ -156,7 +155,6 @@ export const listTableDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'table',
-      class: data.options?.class,
       children,
     };
     addCommonDirectiveOptions(data, container);
@@ -324,7 +322,6 @@ export const csvTableDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'table',
-      class: data.options?.class,
       children: [...captions, table],
     };
     addCommonDirectiveOptions(data, container);
