@@ -39,7 +39,7 @@ The `kernelspec` configuration should be defined in the _page-level_ frontmatter
   - human-readable name for the kernel, e.g. "Python 3.12"
 ```
 
-The following contents is a frontmatter defines a document that uses the `python` kernel:
+The following content is a frontmatter that defines a document that uses the `python` kernel:
 
 ```yaml
 kernelspec:
