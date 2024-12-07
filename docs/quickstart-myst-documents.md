@@ -73,7 +73,7 @@ Next we will improve the contents of the `01-paper.md`, including:
 The start of the file includes information about the title, subtitle, author, affiliations and license.
 Unfortunately, this way of including this information is not easily machine-readable[^fair], and focuses more on style/typography than on metadata.
 
-[^fair]: [FAIR principles](https://www.go-fair.org/fair-principles/) are at the heart of open-science, and aim to **F**indability, **A**ccessibility, **I**nteroperability, and **R**euse of digital assets. For a resource to be findable, it must be machine-readable!
+[^fair]: [FAIR principles](https://www.go-fair.org/fair-principles/) are at the heart of open-science, and aims for the **F**indability, **A**ccessibility, **I**nteroperability, and **R**euse of digital assets. For a resource to be findable, it must be machine-readable!
 
 ```markdown
 # How to MyST, without being mystified 🧙
