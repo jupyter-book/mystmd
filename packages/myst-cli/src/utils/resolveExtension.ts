@@ -15,8 +15,11 @@ export enum ImageExtensions {
   webp = '.webp',
   mp4 = '.mp4', // A moving image!
   mov = '.mov',
+  avi = '.avi',
 }
+
 export const KNOWN_IMAGE_EXTENSIONS = Object.values(ImageExtensions);
+export const KNOWN_VIDEO_EXTENSIONS = ['.mp4', '.mov', '.avi'];
 
 export const VALID_FILE_EXTENSIONS = ['.md', '.ipynb', '.tex', '.myst.json'];
 export const KNOWN_FAST_BUILDS = new Set(['.ipynb', '.md', '.tex', '.myst.json']);

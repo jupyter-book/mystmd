@@ -44,7 +44,7 @@ export async function convert(
   if (fs.existsSync(output)) {
     session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
   } else {
-    const ffmpegCommand = `ffmpeg -i ${input} -crf 18 -vf format=yuv420p ${output}`;
+    const ffmpegCommand = `ffmpeg -i ${input} -crf 18 -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" ${output}`;
     session.log.debug(`Executing: ${ffmpegCommand}`);
     const exec = makeExecutable(ffmpegCommand, createFfmpegLogger(session));
     try {

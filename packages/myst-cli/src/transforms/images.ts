@@ -15,7 +15,11 @@ import { castSession } from '../session/cache.js';
 import { watch } from '../store/index.js';
 import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
-import { ImageExtensions, KNOWN_IMAGE_EXTENSIONS } from '../utils/resolveExtension.js';
+import {
+  ImageExtensions,
+  KNOWN_IMAGE_EXTENSIONS,
+  KNOWN_VIDEO_EXTENSIONS,
+} from '../utils/resolveExtension.js';
 import { ffmpeg, imagemagick, inkscape } from '../utils/index.js';
 
 export const BASE64_HEADER_SPLIT = ';base64,';
@@ -403,6 +407,9 @@ const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
   [ImageExtensions.mov]: {
     [ImageExtensions.mp4]: ffmpegConvert(ImageExtensions.mov, ImageExtensions.mp4),
   },
+  [ImageExtensions.avi]: {
+    [ImageExtensions.mp4]: ffmpegConvert(ImageExtensions.avi, ImageExtensions.mp4),
+  },
 };
 
 /**
@@ -559,7 +566,7 @@ export async function transformThumbnail(
   if (!thumbnail && mdast) {
     // The thumbnail isn't found, grab it from the mdast, excluding videos
     const [image] = (selectAll('image', mdast) as Image[]).filter((n) => {
-      return !n.url.endsWith('.mp4') && !n.url.endsWith('.mov');
+      return !KNOWN_VIDEO_EXTENSIONS.find((ext) => n.url.endsWith(ext));
     });
     if (!image) {
       session.log.debug(`${file}#frontmatter.thumbnail is not set, and there are no images.`);
