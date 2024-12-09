@@ -14,6 +14,7 @@ export enum ImageExtensions {
   eps = '.eps',
   webp = '.webp',
   mp4 = '.mp4', // A moving image!
+  mov = '.mov',
 }
 export const KNOWN_IMAGE_EXTENSIONS = Object.values(ImageExtensions);
 

@@ -16,7 +16,7 @@ import { watch } from '../store/index.js';
 import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { ImageExtensions, KNOWN_IMAGE_EXTENSIONS } from '../utils/resolveExtension.js';
-import { imagemagick, inkscape } from '../utils/index.js';
+import { ffmpeg, imagemagick, inkscape } from '../utils/index.js';
 
 export const BASE64_HEADER_SPLIT = ';base64,';
 
@@ -245,6 +245,7 @@ type ConversionOpts = {
   inkscapeAvailable: boolean;
   imagemagickAvailable: boolean;
   dwebpAvailable: boolean;
+  ffmpegAvailable: boolean;
 };
 
 type ConversionFn = (
@@ -258,14 +259,27 @@ type ConversionFn = (
  * Factory function for all simple imagemagick conversions
  */
 function imagemagickConvert(
-  to: ImageExtensions,
   from: ImageExtensions,
+  to: ImageExtensions,
   options?: { trim?: boolean },
 ) {
   return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
     const { imagemagickAvailable } = opts;
     if (imagemagickAvailable) {
-      return imagemagick.convert(to, from, session, source, writeFolder, options);
+      return imagemagick.convert(from, to, session, source, writeFolder, options);
+    }
+    return null;
+  };
+}
+
+/**
+ * Factory function for all simple ffmpeg conversions
+ */
+function ffmpegConvert(from: ImageExtensions, to: ImageExtensions) {
+  return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
+    const { ffmpegAvailable } = opts;
+    if (ffmpegAvailable) {
+      return ffmpeg.convert(from, to, session, source, writeFolder);
     }
     return null;
   };
@@ -386,6 +400,9 @@ const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
   [ImageExtensions.tif]: {
     [ImageExtensions.png]: imagemagickConvert(ImageExtensions.tif, ImageExtensions.png),
   },
+  [ImageExtensions.mov]: {
+    [ImageExtensions.mp4]: ffmpegConvert(ImageExtensions.mov, ImageExtensions.mp4),
+  },
 };
 
 /**
@@ -441,6 +458,7 @@ export async function transformImageFormats(
   const inkscapeAvailable = inkscape.isInkscapeAvailable();
   const imagemagickAvailable = imagemagick.isImageMagickAvailable();
   const dwebpAvailable = imagemagick.isDwebpAvailable();
+  const ffmpegAvailable = ffmpeg.isFfmpegAvailable();
 
   /**
    * convert runs the input conversion functions on the image
@@ -459,6 +477,7 @@ export async function transformImageFormats(
           inkscapeAvailable,
           imagemagickAvailable,
           dwebpAvailable,
+          ffmpegAvailable,
         });
       }
     }
@@ -539,7 +558,9 @@ export async function transformThumbnail(
   }
   if (!thumbnail && mdast) {
     // The thumbnail isn't found, grab it from the mdast, excluding videos
-    const [image] = (selectAll('image', mdast) as Image[]).filter((n) => !n.url.endsWith('.mp4'));
+    const [image] = (selectAll('image', mdast) as Image[]).filter((n) => {
+      return !n.url.endsWith('.mp4') && !n.url.endsWith('.mov');
+    });
     if (!image) {
       session.log.debug(`${file}#frontmatter.thumbnail is not set, and there are no images.`);
       return;
