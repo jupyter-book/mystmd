@@ -1,5 +1,11 @@
 # myst-ext-proof
 
+## 1.0.12
+
+### Patch Changes
+
+- d7a6fddd: Add support for commonDirectiveOptions in all directives
+
 ## 1.0.11
 
 ### Patch Changes

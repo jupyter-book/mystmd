@@ -1,5 +1,27 @@
 # myst-cli
 
+## 1.3.19
+
+### Patch Changes
+
+- 416fc41: Add support for avi -> mp4
+- 416fc41: Add mov -> mp4 conversion with ffmpeg
+- Updated dependencies [0dc62c76]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [3aa40b03]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [d7a6fddd]
+- Updated dependencies [0dc62c76]
+  - myst-to-typst@0.0.28
+  - myst-transforms@1.3.28
+  - myst-ext-exercise@1.0.9
+  - myst-ext-proof@1.0.12
+  - myst-ext-grid@1.0.9
+  - myst-ext-tabs@1.0.9
+  - myst-parser@1.5.9
+
 ## 1.3.18
 
 ### Patch Changes

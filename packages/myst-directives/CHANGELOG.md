@@ -1,5 +1,11 @@
 # myst-directives
 
+## 1.5.9
+
+### Patch Changes
+
+- d7a6fddd: Add support for commonDirectiveOptions in all directives
+
 ## 1.5.8
 
 ### Patch Changes

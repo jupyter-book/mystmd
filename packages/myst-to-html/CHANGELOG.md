@@ -1,5 +1,11 @@
 # myst-to-html
 
+## 1.5.9
+
+### Patch Changes
+
+- a27bd886: Support keyboard nodes in HTML export
+
 ## 1.5.8
 
 ### Patch Changes

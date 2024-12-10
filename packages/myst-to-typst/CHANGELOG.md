@@ -1,5 +1,16 @@
 # myst-to-typst
 
+## 0.0.28
+
+### Patch Changes
+
+- 0dc62c76: Allow overriding default breakable value for typst figures
+- 0dc62c76: Add hook for customizing table columns in typst
+- 0dc62c76: Render table legends below tables in typst
+- 0dc62c76: Support lists that do not start at 1 in typst
+- 0dc62c76: Render cross-references with correct text in typst
+- 0dc62c76: Support table cell background color in typst
+
 ## 0.0.27
 
 ### Patch Changes
