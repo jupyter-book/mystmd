@@ -1,5 +1,11 @@
 # myst-ext-grid
 
+## 1.0.9
+
+### Patch Changes
+
+- d7a6fddd: Add support for commonDirectiveOptions in all directives
+
 ## 1.0.8
 
 ### Patch Changes
