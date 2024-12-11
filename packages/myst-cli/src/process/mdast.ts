@@ -6,16 +6,10 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
-  basicTransformationsPlugin,
-  htmlPlugin,
-  footnotesPlugin,
   ReferenceState,
   MultiPageReferenceResolver,
   resolveLinksAndCitationsTransform,
   resolveReferencesTransform,
-  mathPlugin,
-  codePlugin,
-  enumerateTargetsPlugin,
   keysTransform,
   linksTransform,
   MystTransformer,
@@ -25,13 +19,19 @@ import {
   RRIDTransformer,
   RORTransformer,
   DOITransformer,
-  joinGatesPlugin,
-  glossaryPlugin,
-  abbreviationPlugin,
-  reconstructHtmlPlugin,
-  inlineMathSimplificationPlugin,
   checkLinkTextTransform,
-  indexIdentifierPlugin,
+  reconstructHtmlTransform,
+  htmlTransform,
+  basicTransformations,
+  inlineMathSimplificationTransform,
+  mathTransform,
+  glossaryTransform,
+  abbreviationTransform,
+  indexIdentifierTransform,
+  enumerateTargetsTransform,
+  joinGatesTransform,
+  codeTransform,
+  footnotesTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -106,6 +106,86 @@ function referenceFileFromPartFile(session: ISession, partFile: string) {
   return file ?? partFile;
 }
 
+type TransformFunction = (mdast: GenericParent) => void;
+
+type TransformSorting = {
+  after?: string;
+  before?: string;
+};
+type TransformObject = {
+  name: string;
+  transform: TransformFunction;
+} & TransformSorting;
+
+class TransformPipeline {
+  transforms: TransformFunction[];
+  constructor(transforms: TransformFunction[]) {
+    this.transforms = transforms;
+  }
+
+  async run(mdast: GenericParent) {
+    for (const transform of this.transforms) {
+      await Promise.resolve(transform(mdast));
+    }
+  }
+}
+
+class TransformPipelineBuilder {
+  transforms: TransformObject[];
+  constructor() {
+    this.transforms = [];
+  }
+
+  build() {
+    const transformNames = new Set(this.transforms.map((transform) => transform.name));
+    this.transforms.forEach((transform) => {
+      // Prohibit transforms from defining multiple relationship constraints
+      // This assumption avoids a class of insertion conflicts
+      if (transform.before && transform.after) {
+        throw new Error('Transform cannot both define before and after');
+      }
+      const comparison = transform.before ?? transform.after;
+      if (!comparison) return;
+      if (comparison === transform.name) {
+        throw new Error('Transform cannot refer to itself in before or after');
+      }
+
+      if (!transformNames.has(comparison)) {
+        throw new Error('Transform must refer to valid transform in before or after');
+      }
+    });
+    const namedTransforms = new Map(
+      this.transforms.map((transform) => [transform.name, transform]),
+    );
+    const transformOrder = this.transforms
+      .filter((t) => !t.before && !t.after)
+      .map(({ name }) => name);
+    while (transformOrder.length !== namedTransforms.size) {
+      this.transforms.forEach((t) => {
+        // Have we handled this yet?
+        if (transformOrder.includes(t.name)) return;
+        // Otherwise, can we handle it?
+        if (t.before && transformOrder.includes(t.before)) {
+          transformOrder.splice(transformOrder.indexOf(t.before), 0, t.name);
+        } else if (t.after && transformOrder.includes(t.after)) {
+          transformOrder.splice(transformOrder.indexOf(t.after) + 1, 0, t.name);
+        }
+      });
+    }
+    console.log(namedTransforms);
+    const transforms = transformOrder.map((name) => namedTransforms.get(name)!.transform);
+    return new TransformPipeline(transforms);
+  }
+
+  addTransform(name: string, transform: TransformFunction, sorting?: TransformSorting) {
+    this.transforms.push({
+      name,
+      transform,
+      ...sorting,
+    });
+  }
+}
+
 export async function transformMdast(
   session: ISession,
   opts: {
@@ -178,79 +258,114 @@ export async function transformMdast(
     vfile,
   });
   cache.$internalReferences[file] = state;
-  // Import additional content from mdast or other files
-  importMdastFromJson(session, file, mdast);
-  await includeFilesTransform(session, file, mdast, frontmatter, vfile);
-  rawDirectiveTransform(mdast, vfile);
-  // This needs to come before basic transformations since it may add labels to blocks
-  liftCodeMetadataToBlock(session, vfile, mdast);
 
-  const pipe = unified()
-    .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
-    .use(basicTransformationsPlugin, {
+  const builder = new TransformPipelineBuilder();
+  // <START>
+  // Import additional content from mdast or other files
+  builder.addTransform('import-mdast-json', (tree) => importMdastFromJson(session, file, tree)); // after=START
+  builder.addTransform('include-files', (tree) =>
+    includeFilesTransform(session, file, tree, frontmatter, vfile),
+  );
+  builder.addTransform('raw-directive', (tree) => rawDirectiveTransform(tree, vfile));
+  // This needs to come before basic transformations since it may add labels to blocks
+  builder.addTransform('lift-code-metadata', (tree) =>
+    liftCodeMetadataToBlock(session, vfile, tree),
+  );
+
+  builder.addTransform('reconstruct-html', reconstructHtmlTransform); // We need to group and link the HTML first
+  builder.addTransform('html', (tree) => htmlTransform(tree, { htmlHandlers })); // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
+  builder.addTransform('basic', (tree) =>
+    basicTransformations(tree, vfile, {
       parser: (content: string) => parseMyst(session, content, file),
       firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
-    })
-    .use(inlineMathSimplificationPlugin)
-    .use(mathPlugin, { macros: frontmatter.math })
-    .use(glossaryPlugin) // This should be before the enumerate plugins
-    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
-    .use(indexIdentifierPlugin)
-    .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
-    .use(joinGatesPlugin);
+    }),
+  );
+  builder.addTransform('inline-math', (tree) => inlineMathSimplificationTransform(tree));
+  builder.addTransform('math', (tree) => mathTransform(tree, vfile, { macros: frontmatter.math }));
+  builder.addTransform('glossary', (tree) => glossaryTransform(tree, vfile)); // This should be before the enumerate plugins
+  builder.addTransform('abbreviation', (tree) =>
+    abbreviationTransform(tree, { abbreviations: frontmatter.abbreviations }),
+  );
+  builder.addTransform('index-identifier', (tree) => indexIdentifierTransform(tree));
+  builder.addTransform('enumerate-targets', (tree) => enumerateTargetsTransform(tree, { state })); // This should be after math/container transforms
+  builder.addTransform('join-gates', (tree) => joinGatesTransform(tree, vfile));
   // Load custom transform plugins
+  const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
     pipe.use(t.plugin, undefined, pluginUtils);
   });
-  await pipe.run(mdast, vfile);
+  builder.addTransform('legacy-plugins', (tree) => pipe.run(tree, vfile));
 
   // This needs to come after basic transformations since meta tags are added there
-  propagateBlockDataToCode(session, vfile, mdast);
+  builder.addTransform('propagate-block-data', (tree) =>
+    propagateBlockDataToCode(session, vfile, tree),
+  );
 
   // Initialize citation renderers for this (non-bib) file
-  cache.$citationRenderers[file] = await transformLinkedDOIs(
-    session,
-    vfile,
-    mdast,
-    cache.$doiRenderers,
-    file,
+  const citationState: { fileRenderer?: ReturnType<typeof combineCitationRenderers> } = {};
+  const registerCitations = async (tree: GenericParent) => {
+    cache.$citationRenderers[file] = await transformLinkedDOIs(
+      session,
+      vfile,
+      tree,
+      cache.$doiRenderers,
+      file,
+    );
+    const rendererFiles = [file];
+    if (projectPath) {
+      rendererFiles.unshift(projectPath);
+    } else {
+      const localFiles = (await bibFilesInDir(session, path.dirname(file))) || [];
+      rendererFiles.push(...localFiles);
+    }
+    // Combine file-specific citation renderers with project renderers from bib files
+    citationState.fileRenderer = combineCitationRenderers(cache, ...rendererFiles);
+  };
+  builder.addTransform('register-citations', registerCitations);
+  builder.addTransform('kernel-execution', (tree) => {
+    if (execute) {
+      const cachePath = path.join(session.buildPath(), 'execute');
+      kernelExecutionTransform(tree, vfile, {
+        basePath: session.sourcePath(),
+        cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+        sessionFactory: () => session.jupyterSessionManager(),
+        frontmatter: frontmatter,
+        ignoreCache: false,
+        errorIsFatal: false,
+        log: session.log,
+      });
+    }
+  });
+  builder.addTransform('render-inline-expressions', (tree) =>
+    transformRenderInlineExpressions(tree, vfile),
   );
-  const rendererFiles = [file];
-  if (projectPath) {
-    rendererFiles.unshift(projectPath);
-  } else {
-    const localFiles = (await bibFilesInDir(session, path.dirname(file))) || [];
-    rendererFiles.push(...localFiles);
-  }
-  // Combine file-specific citation renderers with project renderers from bib files
-  const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
+  builder.addTransform('cache-outputs', (tree) =>
+    transformOutputsToCache(session, tree, kind, { minifyMaxCharacters }),
+  );
+  builder.addTransform('filter-output', (tree) =>
+    transformFilterOutputStreams(tree, vfile, frontmatter.settings),
+  );
+  builder.addTransform('citations', (tree) => {
+    if (citationState.fileRenderer) {
+      transformCitations(session, file, tree, citationState.fileRenderer, references);
+    }
+  });
 
-  if (execute) {
-    const cachePath = path.join(session.buildPath(), 'execute');
-    await kernelExecutionTransform(mdast, vfile, {
-      basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
-      sessionFactory: () => session.jupyterSessionManager(),
-      frontmatter: frontmatter,
-      ignoreCache: false,
-      errorIsFatal: false,
-      log: session.log,
-    });
-  }
-  transformRenderInlineExpressions(mdast, vfile);
-  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
-  transformCitations(session, file, mdast, fileCitationRenderer, references);
-  await unified()
-    .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
-    .use(footnotesPlugin) // Needs to happen near the end
-    .run(mdast, vfile);
-  transformImagesToEmbed(mdast);
-  transformImagesWithoutExt(session, mdast, file, { imageExtensions });
+  builder.addTransform('code', (tree) =>
+    codeTransform(tree, vfile, { lang: frontmatter?.kernelspec?.language }),
+  );
+  builder.addTransform('footnotes', (tree) => footnotesTransform(tree, vfile)); // Needs to happen near the end
+  builder.addTransform('images-to-embed', transformImagesToEmbed);
+  builder.addTransform('image-extensions', (tree) =>
+    transformImagesWithoutExt(session, tree, file, { imageExtensions }),
+  );
   const isJupytext = frontmatter.kernelspec || frontmatter.jupytext;
-  if (isJupytext) transformLiftCodeBlocksInJupytext(mdast);
+  if (isJupytext) {
+    builder.addTransform('jupytext-lift-code-blocks', transformLiftCodeBlocksInJupytext);
+  }
+  const pipeline = builder.build();
+  pipeline.run(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const useSlug = pageSlug !== index;
   let url: string | undefined;
