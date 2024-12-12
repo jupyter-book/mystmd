@@ -442,9 +442,11 @@ export async function transformMdast(
       }),
     transformOptions,
   );
-  builder.addTransform('ror', (tree) => transformLinkedRORs(session, vfile, tree, file), {
-    skip: !runPostProcess,
-  });
+  builder.addTransform(
+    'ror',
+    (tree) => transformLinkedRORs(session, vfile, tree, file),
+    transformOptions,
+  );
   builder.addTransform(
     'resolve-references',
     (tree) =>
