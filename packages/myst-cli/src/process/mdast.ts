@@ -182,6 +182,9 @@ class TransformPipelineBuilder {
   }
 
   addTransform(name: string, transform?: TransformFunction, options?: TransformOptions) {
+    if (this.transforms.map((t) => t.name).includes(name)) {
+      throw new Error(`Duplicate transforms with name "${name}"`);
+    }
     this.transforms.push({
       name,
       transform,
@@ -312,7 +315,7 @@ export async function transformMdast(
 
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
-    if (t.stage && t.stage !== 'document') return;
+    if (t.stage !== 'document') return;
     builder.addTransform(
       t.name,
       async (tree) => {
@@ -418,7 +421,7 @@ export async function transformMdast(
       slug: pageSlug,
       dependencies,
       frontmatter,
-      tree,
+      mdast: tree,
       references,
       widgets,
     } as any;
@@ -499,7 +502,7 @@ export async function transformMdast(
     transformOptions,
   );
   session.plugins?.transforms.forEach((t) => {
-    if (t.stage && t.stage !== 'project') return;
+    if (t.stage === 'document') return;
     builder.addTransform(
       t.name,
       async (tree) => {
@@ -527,7 +530,6 @@ export async function transformMdast(
   await pipeline.run(mdast);
   logMessagesFromVFile(session, vfile);
 
-  console.log(JSON.stringify(mdast, null, 2));
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
   if (checkLinks) await checkLinksTransform(session, file, mdast);
 }
@@ -578,7 +580,7 @@ export async function finalizeMdast(
     }),
   );
   builder.addTransform(
-    '',
+    'write-images',
     !useExistingImages
       ? (tree) =>
           transformImagesToDisk(session, tree, file, imageWriteFolder, {
@@ -589,7 +591,7 @@ export async function finalizeMdast(
   );
   // Must happen after transformImages
   builder.addTransform(
-    '',
+    'image-formats',
     !useExistingImages
       ? (tree) =>
           transformImageFormats(session, tree, file, imageWriteFolder, {
@@ -599,7 +601,7 @@ export async function finalizeMdast(
       : undefined,
   );
   builder.addTransform(
-    '',
+    'webp',
     !useExistingImages && optimizeWebp
       ? () => transformWebp(session, { file, imageWriteFolder, maxSizeWebp })
       : undefined,
@@ -607,7 +609,7 @@ export async function finalizeMdast(
 
   // Note, the thumbnail transform must be **after** images, as it may read the images
   builder.addTransform(
-    '',
+    'thumbnails',
     !useExistingImages && processThumbnail
       ? (tree) =>
           transformThumbnail(session, tree, file, frontmatter, imageWriteFolder, {
@@ -618,7 +620,7 @@ export async function finalizeMdast(
       : undefined,
   );
   builder.addTransform(
-    '',
+    'banner',
     !useExistingImages && processThumbnail
       ? () =>
           transformBanner(session, file, frontmatter, imageWriteFolder, {

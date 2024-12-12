@@ -459,7 +459,7 @@ export async function fastProcessFile(
     });
   });
   await Promise.all(
-    allFiles.map(async (f) => {
+    allFiles.map((f) => {
       const referenceResolutionBlocker = async () => {
         dispatchReferencing(file);
         await Promise.all(referencingPromises);
@@ -647,7 +647,7 @@ export async function processProject(
       }),
     );
     await Promise.all(
-      pages.map(async (page) => {
+      pages.map((page) => {
         return writeFile(session, {
           file: page.file,
           projectSlug: siteProject.slug as string,
