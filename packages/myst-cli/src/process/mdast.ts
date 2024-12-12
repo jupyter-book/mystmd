@@ -3,6 +3,7 @@ import { tic } from 'myst-cli-utils';
 import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import type { Dependency } from 'myst-spec-ext';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
 import {
@@ -73,7 +74,7 @@ import {
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
-import { bibFilesInDir, selectFile } from './file.js';
+import { bibFilesInDir } from './file.js';
 import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
@@ -108,14 +109,15 @@ function referenceFileFromPartFile(session: ISession, partFile: string) {
 
 type TransformFunction = (mdast: GenericParent) => void;
 
-type TransformSorting = {
+type TransformOptions = {
   after?: string;
   before?: string;
+  skip?: boolean;
 };
 type TransformObject = {
   name: string;
-  transform: TransformFunction;
-} & TransformSorting;
+  transform?: TransformFunction;
+} & TransformOptions;
 
 class TransformPipeline {
   transforms: TransformFunction[];
@@ -172,16 +174,18 @@ class TransformPipelineBuilder {
         }
       });
     }
-    console.log(namedTransforms);
-    const transforms = transformOrder.map((name) => namedTransforms.get(name)!.transform);
+    const transforms = transformOrder
+      .map((name) => namedTransforms.get(name)!)
+      .filter(({ skip, transform }) => !skip && !!transform)
+      .map(({ transform }) => transform) as TransformFunction[];
     return new TransformPipeline(transforms);
   }
 
-  addTransform(name: string, transform: TransformFunction, sorting?: TransformSorting) {
+  addTransform(name: string, transform?: TransformFunction, options?: TransformOptions) {
     this.transforms.push({
       name,
       transform,
-      ...sorting,
+      ...options,
     });
   }
 }
@@ -189,6 +193,7 @@ class TransformPipelineBuilder {
 export async function transformMdast(
   session: ISession,
   opts: {
+    referenceResolutionBlocker: () => void;
     file: string;
     projectPath?: string;
     projectSlug?: string;
@@ -197,9 +202,15 @@ export async function transformMdast(
     watchMode?: boolean;
     execute?: boolean;
     extraTransforms?: TransformFn[];
+    extraLinkTransformers?: LinkTransformer[];
     minifyMaxCharacters?: number;
     index?: string;
     titleDepth?: number;
+    runPostProcess?: boolean;
+    referenceStateContext: {
+      referenceStates: ReferenceState[];
+    };
+    checkLinks?: boolean;
   },
 ) {
   const {
@@ -211,9 +222,13 @@ export async function transformMdast(
     extraTransforms,
     watchMode = false,
     minifyMaxCharacters,
+    extraLinkTransformers,
     index,
     titleDepth,
     execute,
+    runPostProcess,
+    referenceStateContext,
+    checkLinks,
   } = opts;
   const toc = tic();
   const { store, log } = session;
@@ -231,6 +246,8 @@ export async function transformMdast(
   log.debug(`Processing "${file}"`);
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
+
+  const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
   const mdast = structuredClone(mdastPre);
   const frontmatter = processPageFrontmatter(
     session,
@@ -248,6 +265,7 @@ export async function transformMdast(
     },
     projectPath,
   );
+  const isJupytext = frontmatter.kernelspec || frontmatter.jupytext;
   const references: References = {
     cite: { order: [], data: {} },
   };
@@ -260,7 +278,6 @@ export async function transformMdast(
   cache.$internalReferences[file] = state;
 
   const builder = new TransformPipelineBuilder();
-  // <START>
   // Import additional content from mdast or other files
   builder.addTransform('import-mdast-json', (tree) => importMdastFromJson(session, file, tree)); // after=START
   builder.addTransform('include-files', (tree) =>
@@ -289,13 +306,20 @@ export async function transformMdast(
   builder.addTransform('index-identifier', (tree) => indexIdentifierTransform(tree));
   builder.addTransform('enumerate-targets', (tree) => enumerateTargetsTransform(tree, { state })); // This should be after math/container transforms
   builder.addTransform('join-gates', (tree) => joinGatesTransform(tree, vfile));
+
   // Load custom transform plugins
-  const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
-    if (t.stage !== 'document') return;
-    pipe.use(t.plugin, undefined, pluginUtils);
+    if (t.stage && t.stage !== 'document') return;
+    builder.addTransform(
+      t.name,
+      async (tree) => {
+        const pipe = unified();
+        pipe.use(t.plugin, undefined, pluginUtils);
+        await pipe.run(tree, vfile);
+      },
+      { after: t.after, before: t.before },
+    );
   });
-  builder.addTransform('legacy-plugins', (tree) => pipe.run(tree, vfile));
 
   // This needs to come after basic transformations since meta tags are added there
   builder.addTransform('propagate-block-data', (tree) =>
@@ -303,7 +327,9 @@ export async function transformMdast(
   );
 
   // Initialize citation renderers for this (non-bib) file
-  const citationState: { fileRenderer?: ReturnType<typeof combineCitationRenderers> } = {};
+  const citationState: { fileRenderer: ReturnType<typeof combineCitationRenderers> } = {
+    fileRenderer: {},
+  };
   const registerCitations = async (tree: GenericParent) => {
     cache.$citationRenderers[file] = await transformLinkedDOIs(
       session,
@@ -323,8 +349,9 @@ export async function transformMdast(
     citationState.fileRenderer = combineCitationRenderers(cache, ...rendererFiles);
   };
   builder.addTransform('register-citations', registerCitations);
-  builder.addTransform('kernel-execution', (tree) => {
-    if (execute) {
+  builder.addTransform(
+    'kernel-execution',
+    (tree) => {
       const cachePath = path.join(session.buildPath(), 'execute');
       kernelExecutionTransform(tree, vfile, {
         basePath: session.sourcePath(),
@@ -335,8 +362,9 @@ export async function transformMdast(
         errorIsFatal: false,
         log: session.log,
       });
-    }
-  });
+    },
+    { skip: !execute },
+  );
   builder.addTransform('render-inline-expressions', (tree) =>
     transformRenderInlineExpressions(tree, vfile),
   );
@@ -347,9 +375,7 @@ export async function transformMdast(
     transformFilterOutputStreams(tree, vfile, frontmatter.settings),
   );
   builder.addTransform('citations', (tree) => {
-    if (citationState.fileRenderer) {
-      transformCitations(session, file, tree, citationState.fileRenderer, references);
-    }
+    transformCitations(session, file, tree, citationState.fileRenderer, references);
   });
 
   builder.addTransform('code', (tree) =>
@@ -360,13 +386,108 @@ export async function transformMdast(
   builder.addTransform('image-extensions', (tree) =>
     transformImagesWithoutExt(session, tree, file, { imageExtensions }),
   );
-  const isJupytext = frontmatter.kernelspec || frontmatter.jupytext;
-  if (isJupytext) {
-    builder.addTransform('jupytext-lift-code-blocks', transformLiftCodeBlocksInJupytext);
+  builder.addTransform(
+    'jupytext-lift-code-blocks',
+    isJupytext ? transformLiftCodeBlocksInJupytext : undefined,
+  );
+  const cachedMdast = cache.$getMdast(file);
+  if (cachedMdast) cachedMdast.post = data;
+  if (extraTransforms) {
+    await Promise.all(
+      extraTransforms.map(async (transform) => {
+        await transform(session, opts);
+      }),
+    );
   }
+  const dependencies: Dependency[] = [];
+  const sharedStateContext: {
+    sharedState?: any;
+    externalReferences?: any;
+    transformers: LinkTransformer[];
+  } = { transformers: [] };
+  builder.addTransform('set-shared-state', () => {
+    sharedStateContext.sharedState = referenceStateContext.referenceStates
+      ? new MultiPageReferenceResolver(referenceStateContext.referenceStates, file, vfile)
+      : state;
+    sharedStateContext.externalReferences = Object.values(cache.$externalReferences);
+    // NOTE: This is doing things in place, we should potentially make this a different state?
+    sharedStateContext.transformers = [
+      ...(extraLinkTransformers || []),
+      new WikiTransformer(),
+      new GithubTransformer(),
+      new RRIDTransformer(),
+      new RORTransformer(),
+      new DOITransformer(), // This also is picked up in the next transform
+      new MystTransformer(sharedStateContext.externalReferences),
+      new SphinxTransformer(sharedStateContext.externalReferences),
+      new StaticFileTransformer(session, file), // Links static files and internally linked files
+    ];
+  });
+  const transformOptions = { skip: !runPostProcess };
+  builder.addTransform(
+    'resolve-links-and-citations',
+    (tree) =>
+      resolveLinksAndCitationsTransform(tree, {
+        state: sharedStateContext.sharedState,
+        transformers: sharedStateContext.transformers,
+      }),
+    transformOptions,
+  );
+  builder.addTransform(
+    'links',
+    (tree) =>
+      linksTransform(tree, sharedStateContext.sharedState.vfile as VFile, {
+        transformers: sharedStateContext.transformers,
+        selector: LINKS_SELECTOR,
+      }),
+    transformOptions,
+  );
+  builder.addTransform('ror', (tree) => transformLinkedRORs(session, vfile, tree, file), {
+    skip: !runPostProcess,
+  });
+  builder.addTransform(
+    'resolve-references',
+    (tree) =>
+      resolveReferencesTransform(tree, sharedStateContext.sharedState.vfile as VFile, {
+        state: sharedStateContext.sharedState,
+        transformers: sharedStateContext.transformers,
+      }),
+    transformOptions,
+  );
+  builder.addTransform(
+    'myst-xrefs',
+    (tree) => transformMystXRefs(session, vfile, tree, frontmatter),
+    transformOptions,
+  );
+  builder.addTransform(
+    'embed',
+    (tree) => embedTransform(session, tree, file, dependencies, sharedStateContext.sharedState),
+    transformOptions,
+  );
+
+  session.plugins?.transforms.forEach((t) => {
+    if (t.stage && t.stage !== 'project') return;
+    builder.addTransform(
+      t.name,
+      async (tree) => {
+        const pipe = unified();
+        pipe.use(t.plugin, undefined, pluginUtils);
+        await pipe.run(tree, vfile);
+      },
+      { ...transformOptions, after: t.after, before: t.before },
+    );
+  });
+
+  // Ensure there are keys on every node after post processing
+  builder.addTransform('keys', keysTransform, transformOptions);
+  builder.addTransform(
+    'check-link-text',
+    (tree) => checkLinkTextTransform(tree, sharedStateContext.externalReferences, vfile),
+    transformOptions,
+  );
   const pipeline = builder.build();
-  pipeline.run(mdast);
-  const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
+  await pipeline.run(mdast);
+
   const useSlug = pageSlug !== index;
   let url: string | undefined;
   let dataUrl: string | undefined;
@@ -379,6 +500,7 @@ export async function transformMdast(
   }
   url = slugToUrl(url);
   updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
+
   const data: RendererData = {
     kind: isJupytext ? SourceFileKind.Notebook : kind,
     file,
@@ -391,80 +513,8 @@ export async function transformMdast(
     references,
     widgets,
   } as any;
-  const cachedMdast = cache.$getMdast(file);
-  if (cachedMdast) cachedMdast.post = data;
-  if (extraTransforms) {
-    await Promise.all(
-      extraTransforms.map(async (transform) => {
-        await transform(session, opts);
-      }),
-    );
-  }
   logMessagesFromVFile(session, vfile);
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
-}
-
-export async function postProcessMdast(
-  session: ISession,
-  {
-    file,
-    checkLinks,
-    pageReferenceStates,
-    extraLinkTransformers,
-  }: {
-    file: string;
-    checkLinks?: boolean;
-    pageReferenceStates?: ReferenceState[];
-    extraLinkTransformers?: LinkTransformer[];
-  },
-) {
-  const toc = tic();
-  const { log } = session;
-  const cache = castSession(session);
-  const mdastPost = selectFile(session, file);
-  if (!mdastPost) return;
-  const vfile = new VFile(); // Collect errors on this file
-  vfile.path = file;
-  const { mdast, dependencies, frontmatter } = mdastPost;
-  const fileState = cache.$internalReferences[file];
-  const state = pageReferenceStates
-    ? new MultiPageReferenceResolver(pageReferenceStates, file, vfile)
-    : fileState;
-  const externalReferences = Object.values(cache.$externalReferences);
-  // NOTE: This is doing things in place, we should potentially make this a different state?
-  const transformers = [
-    ...(extraLinkTransformers || []),
-    new WikiTransformer(),
-    new GithubTransformer(),
-    new RRIDTransformer(),
-    new RORTransformer(),
-    new DOITransformer(), // This also is picked up in the next transform
-    new MystTransformer(externalReferences),
-    new SphinxTransformer(externalReferences),
-    new StaticFileTransformer(session, file), // Links static files and internally linked files
-  ];
-  resolveLinksAndCitationsTransform(mdast, { state, transformers });
-  linksTransform(mdast, state.vfile as VFile, {
-    transformers,
-    selector: LINKS_SELECTOR,
-  });
-  await transformLinkedRORs(session, vfile, mdast, file);
-  resolveReferencesTransform(mdast, state.vfile as VFile, { state, transformers });
-  await transformMystXRefs(session, vfile, mdast, frontmatter);
-  await embedTransform(session, mdast, file, dependencies, state);
-  const pipe = unified();
-  session.plugins?.transforms.forEach((t) => {
-    if (t.stage !== 'project') return;
-    pipe.use(t.plugin, undefined, pluginUtils);
-  });
-  await pipe.run(mdast, vfile);
-
-  // Ensure there are keys on every node after post processing
-  keysTransform(mdast);
-  checkLinkTextTransform(mdast, externalReferences, vfile);
-  logMessagesFromVFile(session, fileState.vfile);
-  logMessagesFromVFile(session, vfile);
-  log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
   if (checkLinks) await checkLinksTransform(session, file, mdast);
 }
 
@@ -495,48 +545,84 @@ export async function finalizeMdast(
 ) {
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
-  if (simplifyFigures) {
-    // Transform output nodes to images / text
-    reduceOutputs(session, mdast, file, imageWriteFolder, {
+  const builder = new TransformPipelineBuilder();
+  builder.addTransform(
+    'reduce-outputs',
+    simplifyFigures
+      ? (tree) => {
+          reduceOutputs(session, tree, file, imageWriteFolder, {
+            altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
+          });
+        }
+      : undefined,
+  );
+  // Transform output nodes to images / text
+  builder.addTransform('write-outputs', (tree) =>
+    transformOutputsToFile(session, tree, imageWriteFolder, {
       altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    });
-  }
-  transformOutputsToFile(session, mdast, imageWriteFolder, {
-    altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    vfile,
-  });
-  if (!useExistingImages) {
-    await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    // Must happen after transformImages
-    await transformImageFormats(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    if (optimizeWebp) {
-      await transformWebp(session, { file, imageWriteFolder, maxSizeWebp });
-    }
-    if (processThumbnail) {
-      // Note, the thumbnail transform must be **after** images, as it may read the images
-      await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
-        altOutputFolder: imageAltOutputFolder,
-        webp: optimizeWebp,
-        maxSizeWebp,
-      });
-      await transformBanner(session, file, frontmatter, imageWriteFolder, {
-        altOutputFolder: imageAltOutputFolder,
-        webp: optimizeWebp,
-        maxSizeWebp,
-      });
-    }
-  }
-  await transformDeleteBase64UrlSource(mdast);
-  if (simplifyFigures) {
-    // This must happen after embedded content is resolved so all children are present on figures
-    transformPlaceholderImages(mdast, { imageExtensions });
-  }
+      vfile,
+    }),
+  );
+  builder.addTransform(
+    '',
+    !useExistingImages
+      ? (tree) =>
+          transformImagesToDisk(session, tree, file, imageWriteFolder, {
+            altOutputFolder: imageAltOutputFolder,
+            imageExtensions,
+          })
+      : undefined,
+  );
+  // Must happen after transformImages
+  builder.addTransform(
+    '',
+    !useExistingImages
+      ? (tree) =>
+          transformImageFormats(session, tree, file, imageWriteFolder, {
+            altOutputFolder: imageAltOutputFolder,
+            imageExtensions,
+          })
+      : undefined,
+  );
+  builder.addTransform(
+    '',
+    !useExistingImages && optimizeWebp
+      ? () => transformWebp(session, { file, imageWriteFolder, maxSizeWebp })
+      : undefined,
+  );
+
+  // Note, the thumbnail transform must be **after** images, as it may read the images
+  builder.addTransform(
+    '',
+    !useExistingImages && processThumbnail
+      ? (tree) =>
+          transformThumbnail(session, tree, file, frontmatter, imageWriteFolder, {
+            altOutputFolder: imageAltOutputFolder,
+            webp: optimizeWebp,
+            maxSizeWebp,
+          })
+      : undefined,
+  );
+  builder.addTransform(
+    '',
+    !useExistingImages && processThumbnail
+      ? () =>
+          transformBanner(session, file, frontmatter, imageWriteFolder, {
+            altOutputFolder: imageAltOutputFolder,
+            webp: optimizeWebp,
+            maxSizeWebp,
+          })
+      : undefined,
+  );
+
+  builder.addTransform('delete-base64', transformDeleteBase64UrlSource);
+  // This must happen after embedded content is resolved so all children are present on figures
+  builder.addTransform(
+    'placeholder-images',
+    simplifyFigures ? (tree) => transformPlaceholderImages(tree, { imageExtensions }) : undefined,
+  );
+  const pipeline = builder.build();
+  await pipeline.run(mdast);
   const cache = castSession(session);
   const postData = cache.$getMdast(file)?.post;
   if (postData) {

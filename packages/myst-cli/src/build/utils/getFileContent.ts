@@ -1,4 +1,4 @@
-import { resolve } from 'node:path';
+import path from 'node:path';
 import { plural } from 'myst-common';
 import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
@@ -6,11 +6,31 @@ import { combineProjectCitationRenderers } from '../../process/citations.js';
 import { loadFile, selectFile } from '../../process/file.js';
 import { loadReferences } from '../../process/loadReferences.js';
 import type { TransformFn } from '../../process/mdast.js';
-import { postProcessMdast, transformMdast } from '../../process/mdast.js';
+import { transformMdast } from '../../process/mdast.js';
 import { loadProject, selectPageReferenceStates } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import type { ImageExtensions } from '../../utils/resolveExtension.js';
+
+function makeSyncPoint(clients: string[]): {
+  promises: Promise<void>[];
+  dispatch: (client: string) => void;
+} {
+  const promiseResolvers = new Map<string, () => void>();
+  const promises: Promise<void>[] = [];
+
+  clients.forEach((name) => {
+    const promise = new Promise<void>((resolve) => {
+      promiseResolvers.set(name, resolve);
+    });
+    promises.push(promise);
+  });
+  const dispatch = (client: string) => {
+    const resolve = promiseResolvers.get(client)!;
+    resolve();
+  };
+  return { promises, dispatch };
+}
 
 export async function getFileContent(
   session: ISession,
@@ -34,13 +54,13 @@ export async function getFileContent(
   },
 ) {
   const toc = tic();
-  files = files.map((file) => resolve(file));
-  projectPath = projectPath ?? resolve('.');
+  files = files.map((file) => path.resolve(file));
+  projectPath = projectPath ?? path.resolve('.');
   const { project, pages } = await loadProject(session, projectPath);
   const projectFiles = pages.map((page) => page.file).filter((file) => !files.includes(file));
   await Promise.all([
     // Load all citations (.bib)
-    ...project.bibliography.map((path) => loadFile(session, path, projectPath, '.bib')),
+    ...project.bibliography.map((bib) => loadFile(session, bib, projectPath, '.bib')),
     // Load all content (.md, .tex, .myst.json, or .ipynb)
     ...[...files, ...projectFiles].map((file, ind) => {
       const preFrontmatter = Array.isArray(preFrontmatters)
@@ -60,11 +80,31 @@ export async function getFileContent(
   // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
   const allFiles = [...files, ...projectFiles, ...projectParts];
 
+  const { dispatch, promises: filePromises } = makeSyncPoint(allFiles);
+
+  // TODO: maybe move transformMdast into a multi-file function
+  const referenceStateContext: {
+    referenceStates: ReturnType<typeof selectPageReferenceStates>;
+  } = { referenceStates: [] };
+  Promise.all(filePromises).then(() => {
+    const pageReferenceStates = selectPageReferenceStates(
+      session,
+      allFiles.map((file) => {
+        return { file };
+      }),
+    );
+    referenceStateContext.referenceStates.push(...pageReferenceStates);
+  });
   await Promise.all(
     allFiles.map(async (file, ind) => {
+      const referenceResolutionBlocker = async () => {
+        dispatch(file);
+        await Promise.all(filePromises);
+      };
       const pageSlug = pages.find((page) => page.file === file)?.slug;
       const titleDepth = typeof titleDepths === 'number' ? titleDepths : titleDepths?.[ind];
       await transformMdast(session, {
+        referenceResolutionBlocker,
         file,
         imageExtensions,
         projectPath,
@@ -74,24 +114,13 @@ export async function getFileContent(
         titleDepth,
         extraTransforms,
         execute,
-      });
-    }),
-  );
-  const pageReferenceStates = selectPageReferenceStates(
-    session,
-    allFiles.map((file) => {
-      return { file };
-    }),
-  );
-  await Promise.all(
-    [...files, ...projectParts].map(async (file) => {
-      await postProcessMdast(session, {
-        file,
         extraLinkTransformers,
-        pageReferenceStates,
+        runPostProcess: [...files, ...projectParts].includes(file),
+        referenceStateContext,
       });
     }),
   );
+
   const selectedFiles = await Promise.all(
     files.map(async (file) => {
       const selectedFile = selectFile(session, file);
