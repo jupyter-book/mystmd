@@ -8,11 +8,15 @@ import { loadReferences } from '../../process/loadReferences.js';
 import type { TransformFn } from '../../process/mdast.js';
 import { transformMdast } from '../../process/mdast.js';
 import { loadProject, selectPageReferenceStates } from '../../process/site.js';
+import { buildIndexTransform, MultiPageReferenceResolver } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import type { ImageExtensions } from '../../utils/resolveExtension.js';
+import { castSession } from '../../session/cache.js';
+import { VFile } from 'vfile';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 
-function makeSyncPoint(clients: string[]): {
+export function makeSyncPoint(clients: string[]): {
   promises: Promise<void>[];
   dispatch: (client: string) => void;
 } {
@@ -80,8 +84,8 @@ export async function getFileContent(
   // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
   const allFiles = [...files, ...projectFiles, ...projectParts];
 
-  const { dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
-  const { dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
+  const { dispatch: dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
+  const { dispatch: dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
 
   // TODO: maybe move transformMdast into a multi-file function
   const referenceStateContext: {

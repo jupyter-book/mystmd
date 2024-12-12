@@ -194,6 +194,7 @@ export async function transformMdast(
   session: ISession,
   opts: {
     referenceResolutionBlocker: () => void;
+    indexGenerationBlocker: () => void;
     file: string;
     projectPath?: string;
     projectSlug?: string;
@@ -228,6 +229,8 @@ export async function transformMdast(
     execute,
     runPostProcess,
     referenceStateContext,
+    referenceResolutionBlocker,
+    indexGenerationBlocker,
     checkLinks,
   } = opts;
   const toc = tic();
@@ -429,6 +432,11 @@ export async function transformMdast(
       );
     }
   });
+
+  // Blocking cross-project resolution
+  builder.addTransform('reference-resolution', referenceResolutionBlocker);
+  builder.addTransform('index-generation', indexGenerationBlocker);
+
   const sharedStateContext: {
     sharedState?: any;
     externalReferences?: any;
@@ -518,6 +526,8 @@ export async function transformMdast(
   const pipeline = builder.build();
   await pipeline.run(mdast);
   logMessagesFromVFile(session, vfile);
+
+  console.log(JSON.stringify(mdast, null, 2));
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
   if (checkLinks) await checkLinksTransform(session, file, mdast);
 }

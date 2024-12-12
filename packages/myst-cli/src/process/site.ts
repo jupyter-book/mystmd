@@ -423,8 +423,8 @@ export async function fastProcessFile(
   const projectParts = selectors.selectProjectParts(state, projectPath);
 
   const allFiles = [file, ...fileParts];
-  const { dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
-  const { dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
+  const { dispatch: dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
+  const { dispatch: dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
 
   // TODO: maybe move transformMdast into a multi-file function
   const referenceStateContext: {
@@ -562,10 +562,54 @@ export async function processProject(
     });
   const pagesToTransform: { file: string; slug?: string }[] = [...pages, ...projectParts];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
-  // Transform all pages
+
+  ////
+  const { dispatch: dispatchReferencing, promises: referencingPromises } = makeSyncPoint(
+    pagesToTransform.map((f) => f.file),
+  );
+  const { dispatch: dispatchIndexing, promises: indexingPromises } = makeSyncPoint(
+    pagesToTransform.map((f) => f.file),
+  );
+
+  // TODO: maybe move transformMdast into a multi-file function
+  const referenceStateContext: {
+    referenceStates: ReturnType<typeof selectPageReferenceStates>;
+  } = { referenceStates: [] };
+  Promise.all(referencingPromises).then(() => {
+    const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
+    referenceStateContext.referenceStates.push(...pageReferenceStates);
+  });
+  Promise.all(indexingPromises).then(() => {
+    const cache = castSession(session);
+    pagesToTransform.forEach((page) => {
+      const fileState = cache.$internalReferences[page.file];
+      if (!fileState) return;
+      const { mdast } = cache.$getMdast(page.file)?.post ?? {};
+      if (!mdast) return;
+      const vfile = new VFile();
+      vfile.path = page.file;
+      buildIndexTransform(
+        mdast,
+        vfile,
+        fileState,
+        new MultiPageReferenceResolver(referenceStateContext.referenceStates, fileState.filePath),
+      );
+      logMessagesFromVFile(session, vfile);
+    });
+  });
   await Promise.all(
-    pagesToTransform.map((page) =>
-      transformMdast(session, {
+    pagesToTransform.map(async (page) => {
+      const referenceResolutionBlocker = async () => {
+        dispatchReferencing(page.file);
+        await Promise.all(referencingPromises);
+      };
+      const indexGenerationBlocker = async () => {
+        dispatchIndexing(page.file);
+        await Promise.all(indexingPromises);
+      };
+      await transformMdast(session, {
+        referenceResolutionBlocker,
+        indexGenerationBlocker,
         file: page.file,
         projectPath: project.path,
         projectSlug: siteProject.slug,
@@ -574,22 +618,17 @@ export async function processProject(
         watchMode,
         execute,
         extraTransforms,
-        index: project.index,
-      }),
-    ),
-  );
-  const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
-  // Handle all cross references
-  await Promise.all(
-    pagesToTransform.map((page) =>
-      postProcessMdast(session, {
-        file: page.file,
-        checkLinks: checkLinks || strict,
-        pageReferenceStates,
         extraLinkTransformers,
-      }),
-    ),
+        checkLinks: checkLinks || strict,
+        index: project.index,
+        runPostProcess: true,
+        referenceStateContext,
+      });
+    }),
   );
+
+  ///////
+
   // Write all pages
   if (writeFiles) {
     await Promise.all(
