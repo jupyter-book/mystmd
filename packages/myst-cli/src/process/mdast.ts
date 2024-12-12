@@ -390,16 +390,45 @@ export async function transformMdast(
     'jupytext-lift-code-blocks',
     isJupytext ? transformLiftCodeBlocksInJupytext : undefined,
   );
-  const cachedMdast = cache.$getMdast(file);
-  if (cachedMdast) cachedMdast.post = data;
-  if (extraTransforms) {
-    await Promise.all(
-      extraTransforms.map(async (transform) => {
-        await transform(session, opts);
-      }),
-    );
-  }
   const dependencies: Dependency[] = [];
+  builder.addTransform('write-post-mdast', async (tree) => {
+    // This writes the frontmatter to the file, so its position is important
+    // We might need to rethink its location
+    const useSlug = pageSlug !== index;
+    let url: string | undefined;
+    let dataUrl: string | undefined;
+    if (pageSlug && projectSlug) {
+      url = `/${projectSlug}/${useSlug ? pageSlug : ''}`;
+      dataUrl = `/${projectSlug}/${pageSlug}.json`;
+    } else if (pageSlug) {
+      url = `/${useSlug ? pageSlug : ''}`;
+      dataUrl = `/${pageSlug}.json`;
+    }
+    url = slugToUrl(url);
+    updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
+
+    const data: RendererData = {
+      kind: isJupytext ? SourceFileKind.Notebook : kind,
+      file,
+      location,
+      sha256,
+      slug: pageSlug,
+      dependencies,
+      frontmatter,
+      tree,
+      references,
+      widgets,
+    } as any;
+    const cachedMdast = cache.$getMdast(file);
+    if (cachedMdast) cachedMdast.post = data;
+    if (extraTransforms) {
+      await Promise.all(
+        extraTransforms.map(async (transform) => {
+          await transform(session, opts);
+        }),
+      );
+    }
+  });
   const sharedStateContext: {
     sharedState?: any;
     externalReferences?: any;
@@ -461,12 +490,6 @@ export async function transformMdast(
     (tree) => transformMystXRefs(session, vfile, tree, frontmatter),
     transformOptions,
   );
-  builder.addTransform(
-    'embed',
-    (tree) => embedTransform(session, tree, file, dependencies, sharedStateContext.sharedState),
-    transformOptions,
-  );
-
   session.plugins?.transforms.forEach((t) => {
     if (t.stage && t.stage !== 'project') return;
     builder.addTransform(
@@ -479,6 +502,11 @@ export async function transformMdast(
       { ...transformOptions, after: t.after, before: t.before },
     );
   });
+  builder.addTransform(
+    'embed',
+    (tree) => embedTransform(session, tree, file, dependencies, sharedStateContext.sharedState),
+    transformOptions,
+  );
 
   // Ensure there are keys on every node after post processing
   builder.addTransform('keys', keysTransform, transformOptions);
@@ -489,32 +517,6 @@ export async function transformMdast(
   );
   const pipeline = builder.build();
   await pipeline.run(mdast);
-
-  const useSlug = pageSlug !== index;
-  let url: string | undefined;
-  let dataUrl: string | undefined;
-  if (pageSlug && projectSlug) {
-    url = `/${projectSlug}/${useSlug ? pageSlug : ''}`;
-    dataUrl = `/${projectSlug}/${pageSlug}.json`;
-  } else if (pageSlug) {
-    url = `/${useSlug ? pageSlug : ''}`;
-    dataUrl = `/${pageSlug}.json`;
-  }
-  url = slugToUrl(url);
-  updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
-
-  const data: RendererData = {
-    kind: isJupytext ? SourceFileKind.Notebook : kind,
-    file,
-    location,
-    sha256,
-    slug: pageSlug,
-    dependencies: [],
-    frontmatter,
-    mdast,
-    references,
-    widgets,
-  } as any;
   logMessagesFromVFile(session, vfile);
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
   if (checkLinks) await checkLinksTransform(session, file, mdast);

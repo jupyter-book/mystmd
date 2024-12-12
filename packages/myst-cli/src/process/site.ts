@@ -24,6 +24,7 @@ import {
   resolvePageExports,
 } from '../build/site/manifest.js';
 import { writeRemoteDOIBibtex } from '../build/utils/bibtex.js';
+import { makeSyncPoint } from '../build/utils/getFileContent.js';
 import { MYST_DOI_BIB_FILE } from '../cli/options.js';
 import { filterPages, loadProjectFromDisk } from '../project/load.js';
 import { DEFAULT_INDEX_FILENAMES } from '../project/fromTOC.js';
@@ -42,7 +43,7 @@ import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
 import { loadReferences } from './loadReferences.js';
 import type { TransformFn } from './mdast.js';
-import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
+import { finalizeMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
 
 const WEB_IMAGE_EXTENSIONS = [
@@ -339,21 +340,7 @@ export function selectPageReferenceStates(
     })
     .filter((state): state is ReferenceState => !!state);
   if (!opts?.suppressWarnings) warnOnDuplicateIdentifiers(session, pageReferenceStates);
-  pages.forEach((page) => {
-    const state = cache.$internalReferences[page.file];
-    if (!state) return;
-    const { mdast } = cache.$getMdast(page.file)?.post ?? {};
-    if (!mdast) return;
-    const vfile = new VFile();
-    vfile.path = page.file;
-    buildIndexTransform(
-      mdast,
-      vfile,
-      state,
-      new MultiPageReferenceResolver(pageReferenceStates, state.filePath),
-    );
-    logMessagesFromVFile(session, vfile);
-  });
+
   return pageReferenceStates;
 }
 
@@ -434,9 +421,56 @@ export async function fastProcessFile(
   const state = session.store.getState();
   const fileParts = selectors.selectFileParts(state, file);
   const projectParts = selectors.selectProjectParts(state, projectPath);
+
+  const allFiles = [file, ...fileParts];
+  const { dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
+  const { dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
+
+  // TODO: maybe move transformMdast into a multi-file function
+  const referenceStateContext: {
+    referenceStates: ReturnType<typeof selectPageReferenceStates>;
+  } = { referenceStates: [] };
+  const referencingPages = [
+    ...pages,
+    ...projectParts.map((part) => {
+      return { file: part };
+    }),
+  ];
+  Promise.all(referencingPromises).then(() => {
+    const pageReferenceStates = selectPageReferenceStates(session, referencingPages);
+    referenceStateContext.referenceStates.push(...pageReferenceStates);
+  });
+  Promise.all(indexingPromises).then(() => {
+    const cache = castSession(session);
+    referencingPages.forEach((page) => {
+      const fileState = cache.$internalReferences[page.file];
+      if (!fileState) return;
+      const { mdast } = cache.$getMdast(page.file)?.post ?? {};
+      if (!mdast) return;
+      const vfile = new VFile();
+      vfile.path = page.file;
+      buildIndexTransform(
+        mdast,
+        vfile,
+        fileState,
+        new MultiPageReferenceResolver(referenceStateContext.referenceStates, fileState.filePath),
+      );
+      logMessagesFromVFile(session, vfile);
+    });
+  });
   await Promise.all(
-    [file, ...fileParts].map(async (f) => {
+    allFiles.map(async (f) => {
+      const referenceResolutionBlocker = async () => {
+        dispatchReferencing(file);
+        await Promise.all(referencingPromises);
+      };
+      const indexGenerationBlocker = async () => {
+        dispatchIndexing(file);
+        await Promise.all(indexingPromises);
+      };
       return transformMdast(session, {
+        referenceResolutionBlocker,
+        indexGenerationBlocker,
         file: f,
         imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
         projectPath,
@@ -446,26 +480,15 @@ export async function fastProcessFile(
         extraTransforms,
         index: project.index,
         execute,
-      });
-    }),
-  );
-  const pageReferenceStates = selectPageReferenceStates(session, [
-    ...pages,
-    ...projectParts.map((part) => {
-      return { file: part };
-    }),
-  ]);
-  await Promise.all(
-    [file, ...fileParts].map(async (f) => {
-      return postProcessMdast(session, {
-        file: f,
-        pageReferenceStates,
         extraLinkTransformers,
+        runPostProcess: true,
+        referenceStateContext,
       });
     }),
   );
+
   await Promise.all(
-    [file, ...fileParts].map(async (f) => {
+    allFiles.map(async (f) => {
       const { mdast, frontmatter } = castSession(session).$getMdast(f)?.post ?? {};
       if (mdast) {
         await finalizeMdast(session, mdast, frontmatter ?? {}, f, {

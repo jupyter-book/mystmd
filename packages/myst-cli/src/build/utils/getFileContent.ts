@@ -80,31 +80,53 @@ export async function getFileContent(
   // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
   const allFiles = [...files, ...projectFiles, ...projectParts];
 
-  const { dispatch, promises: filePromises } = makeSyncPoint(allFiles);
+  const { dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
+  const { dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
 
   // TODO: maybe move transformMdast into a multi-file function
   const referenceStateContext: {
     referenceStates: ReturnType<typeof selectPageReferenceStates>;
   } = { referenceStates: [] };
-  Promise.all(filePromises).then(() => {
-    const pageReferenceStates = selectPageReferenceStates(
-      session,
-      allFiles.map((file) => {
-        return { file };
-      }),
-    );
+  const referencingPages = allFiles.map((file) => {
+    return { file };
+  });
+  Promise.all(referencingPromises).then(() => {
+    const pageReferenceStates = selectPageReferenceStates(session, referencingPages);
     referenceStateContext.referenceStates.push(...pageReferenceStates);
+  });
+  Promise.all(indexingPromises).then(() => {
+    const cache = castSession(session);
+    referencingPages.forEach((page) => {
+      const fileState = cache.$internalReferences[page.file];
+      if (!fileState) return;
+      const { mdast } = cache.$getMdast(page.file)?.post ?? {};
+      if (!mdast) return;
+      const vfile = new VFile();
+      vfile.path = page.file;
+      buildIndexTransform(
+        mdast,
+        vfile,
+        fileState,
+        new MultiPageReferenceResolver(referenceStateContext.referenceStates, fileState.filePath),
+      );
+      logMessagesFromVFile(session, vfile);
+    });
   });
   await Promise.all(
     allFiles.map(async (file, ind) => {
       const referenceResolutionBlocker = async () => {
-        dispatch(file);
-        await Promise.all(filePromises);
+        dispatchReferencing(file);
+        await Promise.all(referencingPromises);
+      };
+      const indexGenerationBlocker = async () => {
+        dispatchIndexing(file);
+        await Promise.all(indexingPromises);
       };
       const pageSlug = pages.find((page) => page.file === file)?.slug;
       const titleDepth = typeof titleDepths === 'number' ? titleDepths : titleDepths?.[ind];
       await transformMdast(session, {
         referenceResolutionBlocker,
+        indexGenerationBlocker,
         file,
         imageExtensions,
         projectPath,
