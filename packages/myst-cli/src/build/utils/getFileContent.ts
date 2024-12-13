@@ -16,6 +16,11 @@ import { castSession } from '../../session/cache.js';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 
+/**
+ * A barrier synchronization primitive that blocks until a fixed number clients are waiting
+ *
+ * @param nClients - number of clients that must wait before unblocking
+ */
 export function makeBarrier(nClients: number): {
   promise: Promise<void>;
   wait: () => Promise<number>;
