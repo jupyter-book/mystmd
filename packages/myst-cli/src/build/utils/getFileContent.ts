@@ -16,24 +16,25 @@ import { castSession } from '../../session/cache.js';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 
-export function makeSyncPoint(clients: string[]): {
-  promises: Promise<void>[];
-  dispatch: (client: string) => void;
+export function makeBarrier(nClients: number): {
+  promise: Promise<void>;
+  wait: () => Promise<number>;
 } {
-  const promiseResolvers = new Map<string, () => void>();
-  const promises: Promise<void>[] = [];
-
-  clients.forEach((name) => {
-    const promise = new Promise<void>((resolve) => {
-      promiseResolvers.set(name, resolve);
-    });
-    promises.push(promise);
+  const ctx: { resolve?: () => void | undefined } = {};
+  const promise = new Promise<void>((resolve) => {
+    ctx.resolve = resolve;
   });
-  const dispatch = (client: string) => {
-    const resolve = promiseResolvers.get(client)!;
-    resolve();
+
+  let nWaiting = nClients;
+  const wait = async () => {
+    nWaiting--;
+    if (!nWaiting) {
+      ctx.resolve!();
+    }
+    await promise;
+    return nWaiting;
   };
-  return { promises, dispatch };
+  return { promise, wait };
 }
 
 export async function getFileContent(
@@ -84,8 +85,8 @@ export async function getFileContent(
   // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
   const allFiles = [...files, ...projectFiles, ...projectParts];
 
-  const { dispatch: dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
-  const { dispatch: dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
+  const { wait: waitReferencing, promise: referencingPromise } = makeBarrier(allFiles.length);
+  const { wait: waitIndexing, promise: indexingPromise } = makeBarrier(allFiles.length);
 
   // TODO: maybe move transformMdast into a multi-file function
   const referenceStateContext: {
@@ -94,11 +95,11 @@ export async function getFileContent(
   const referencingPages = allFiles.map((file) => {
     return { file };
   });
-  Promise.all(referencingPromises).then(() => {
+  referencingPromise.then(() => {
     const pageReferenceStates = selectPageReferenceStates(session, referencingPages);
     referenceStateContext.referenceStates.push(...pageReferenceStates);
   });
-  Promise.all(indexingPromises).then(() => {
+  indexingPromise.then(() => {
     const cache = castSession(session);
     referencingPages.forEach((page) => {
       const fileState = cache.$internalReferences[page.file];
@@ -118,19 +119,11 @@ export async function getFileContent(
   });
   await Promise.all(
     allFiles.map(async (file, ind) => {
-      const referenceResolutionBlocker = async () => {
-        dispatchReferencing(file);
-        await Promise.all(referencingPromises);
-      };
-      const indexGenerationBlocker = async () => {
-        dispatchIndexing(file);
-        await Promise.all(indexingPromises);
-      };
       const pageSlug = pages.find((page) => page.file === file)?.slug;
       const titleDepth = typeof titleDepths === 'number' ? titleDepths : titleDepths?.[ind];
       await transformMdast(session, {
-        referenceResolutionBlocker,
-        indexGenerationBlocker,
+        referenceResolutionBlocker: waitReferencing,
+        indexGenerationBlocker: waitIndexing,
         file,
         imageExtensions,
         projectPath,

@@ -24,7 +24,7 @@ import {
   resolvePageExports,
 } from '../build/site/manifest.js';
 import { writeRemoteDOIBibtex } from '../build/utils/bibtex.js';
-import { makeSyncPoint } from '../build/utils/getFileContent.js';
+import { makeBarrier } from '../build/utils/getFileContent.js';
 import { MYST_DOI_BIB_FILE } from '../cli/options.js';
 import { filterPages, loadProjectFromDisk } from '../project/load.js';
 import { DEFAULT_INDEX_FILENAMES } from '../project/fromTOC.js';
@@ -423,8 +423,8 @@ export async function fastProcessFile(
   const projectParts = selectors.selectProjectParts(state, projectPath);
 
   const allFiles = [file, ...fileParts];
-  const { dispatch: dispatchReferencing, promises: referencingPromises } = makeSyncPoint(allFiles);
-  const { dispatch: dispatchIndexing, promises: indexingPromises } = makeSyncPoint(allFiles);
+  const { wait: waitReferencing, promise: referencingPromise } = makeBarrier(allFiles.length);
+  const { wait: waitIndexing, promise: indexingPromise } = makeBarrier(allFiles.length);
 
   // TODO: maybe move transformMdast into a multi-file function
   const referenceStateContext: {
@@ -436,11 +436,11 @@ export async function fastProcessFile(
       return { file: part };
     }),
   ];
-  Promise.all(referencingPromises).then(() => {
+  referencingPromise.then(() => {
     const pageReferenceStates = selectPageReferenceStates(session, referencingPages);
     referenceStateContext.referenceStates.push(...pageReferenceStates);
   });
-  Promise.all(indexingPromises).then(() => {
+  indexingPromise.then(() => {
     const cache = castSession(session);
     referencingPages.forEach((page) => {
       const fileState = cache.$internalReferences[page.file];
@@ -459,18 +459,10 @@ export async function fastProcessFile(
     });
   });
   await Promise.all(
-    allFiles.map((f) => {
-      const referenceResolutionBlocker = async () => {
-        dispatchReferencing(file);
-        await Promise.all(referencingPromises);
-      };
-      const indexGenerationBlocker = async () => {
-        dispatchIndexing(file);
-        await Promise.all(indexingPromises);
-      };
+    allFiles.map(async (f) => {
       return transformMdast(session, {
-        referenceResolutionBlocker,
-        indexGenerationBlocker,
+        referenceResolutionBlocker: waitReferencing,
+        indexGenerationBlocker: waitIndexing,
         file: f,
         imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
         projectPath,
@@ -563,23 +555,19 @@ export async function processProject(
   const pagesToTransform: { file: string; slug?: string }[] = [...pages, ...projectParts];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
 
-  ////
-  const { dispatch: dispatchReferencing, promises: referencingPromises } = makeSyncPoint(
-    pagesToTransform.map((f) => f.file),
+  const { wait: waitReferencing, promise: referencingPromise } = makeBarrier(
+    pagesToTransform.length,
   );
-  const { dispatch: dispatchIndexing, promises: indexingPromises } = makeSyncPoint(
-    pagesToTransform.map((f) => f.file),
-  );
+  const { wait: waitIndexing, promise: indexingPromise } = makeBarrier(pagesToTransform.length);
 
-  // TODO: maybe move transformMdast into a multi-file function
   const referenceStateContext: {
     referenceStates: ReturnType<typeof selectPageReferenceStates>;
   } = { referenceStates: [] };
-  Promise.all(referencingPromises).then(() => {
+  referencingPromise.then(() => {
     const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
     referenceStateContext.referenceStates.push(...pageReferenceStates);
   });
-  Promise.all(indexingPromises).then(() => {
+  indexingPromise.then(() => {
     const cache = castSession(session);
     pagesToTransform.forEach((page) => {
       const fileState = cache.$internalReferences[page.file];
@@ -599,17 +587,9 @@ export async function processProject(
   });
   await Promise.all(
     pagesToTransform.map(async (page) => {
-      const referenceResolutionBlocker = async () => {
-        dispatchReferencing(page.file);
-        await Promise.all(referencingPromises);
-      };
-      const indexGenerationBlocker = async () => {
-        dispatchIndexing(page.file);
-        await Promise.all(indexingPromises);
-      };
       await transformMdast(session, {
-        referenceResolutionBlocker,
-        indexGenerationBlocker,
+        referenceResolutionBlocker: waitReferencing,
+        indexGenerationBlocker: waitIndexing,
         file: page.file,
         projectPath: project.path,
         projectSlug: siteProject.slug,
