@@ -29,6 +29,10 @@ export class TransformPipeline {
   }
 }
 
+/**
+ * Builder for assembling an asynchronous sequential pipeline for
+ * processing MyST AST
+ */
 export class TransformPipelineBuilder {
   transforms: TransformObject[];
   constructor() {
@@ -36,7 +40,14 @@ export class TransformPipelineBuilder {
   }
 
   build() {
-    const transformNames = new Set(this.transforms.map((transform) => transform.name));
+    const namedTransforms = new Map(
+      this.transforms.map((transform) => [transform.name, transform]),
+    );
+
+    // Check the following invariants:
+    // 1. Transform has _at most_ one of `before` or `after`, but not both
+    // 2. Transform does not refer to itself
+    // 3. Transform refers to another transform that exists
     this.transforms.forEach((transform) => {
       // Prohibit transforms from defining multiple relationship constraints
       // This assumption avoids a class of insertion conflicts
@@ -49,13 +60,13 @@ export class TransformPipelineBuilder {
         throw new Error('Transform cannot refer to itself in before or after');
       }
 
-      if (!transformNames.has(comparison)) {
+      if (!namedTransforms.has(comparison)) {
         throw new Error('Transform must refer to valid transform in before or after');
       }
     });
-    const namedTransforms = new Map(
-      this.transforms.map((transform) => [transform.name, transform]),
-    );
+
+    // Perform `after` and `before` handling
+    // Cyclic references will not be handled specially
     const transformOrder = this.transforms
       .filter((t) => !t.before && !t.after)
       .map(({ name }) => name);
@@ -71,6 +82,7 @@ export class TransformPipelineBuilder {
         }
       });
     }
+    // Pull out transform functions for non-skipped transforms
     const transforms = transformOrder
       .map((name) => namedTransforms.get(name)!)
       .filter(({ skip, transform }) => !skip && !!transform)
@@ -78,6 +90,10 @@ export class TransformPipelineBuilder {
     return new TransformPipeline(transforms);
   }
 
+  /**
+   * Add AST transform function with `name`.
+   * @param options - options to control the insertion point
+   */
   addTransform(name: string, transform?: TransformFunction, options?: TransformOptions) {
     if (this.transforms.map((t) => t.name).includes(name)) {
       throw new Error(`Duplicate transforms with name "${name}"`);
