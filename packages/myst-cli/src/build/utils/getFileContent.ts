@@ -7,7 +7,7 @@ import { loadFile, selectFile } from '../../process/file.js';
 import { loadReferences } from '../../process/loadReferences.js';
 import type { TransformFn } from '../../process/mdast.js';
 import { transformMdast } from '../../process/mdast.js';
-import { loadProject, selectPageReferenceStates } from '../../process/site.js';
+import { loadProject, selectPageReferenceStates, makeBarrier } from '../../process/site.js';
 import { buildIndexTransform, MultiPageReferenceResolver } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
@@ -15,32 +15,6 @@ import type { ImageExtensions } from '../../utils/resolveExtension.js';
 import { castSession } from '../../session/cache.js';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../../utils/logging.js';
-
-/**
- * A barrier synchronization primitive that blocks until a fixed number clients are waiting
- *
- * @param nClients - number of clients that must wait before unblocking
- */
-export function makeBarrier(nClients: number): {
-  promise: Promise<void>;
-  wait: () => Promise<number>;
-} {
-  const ctx: { resolve?: () => void | undefined } = {};
-  const promise = new Promise<void>((resolve) => {
-    ctx.resolve = resolve;
-  });
-
-  let nWaiting = nClients;
-  const wait = async () => {
-    nWaiting--;
-    if (!nWaiting) {
-      ctx.resolve!();
-    }
-    await promise;
-    return nWaiting;
-  };
-  return { promise, wait };
-}
 
 export async function getFileContent(
   session: ISession,
