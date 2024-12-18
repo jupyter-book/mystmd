@@ -104,6 +104,11 @@ export const containerHandler: Handler = (node, state) => {
     return;
   }
 
+  if (node.enumerator?.endsWith('.1')) {
+    state.write(`#set figure(numbering: "${node.enumerator}")\n`);
+    state.write(`#counter(figure.where(kind: "${kind}")).update(0)\n\n`);
+  }
+
   if (nonCaptions && nonCaptions.length > 1) {
     const allSubFigs =
       nonCaptions.filter((item: GenericNode) => item.type === 'container').length ===
