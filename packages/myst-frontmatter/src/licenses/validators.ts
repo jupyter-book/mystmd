@@ -22,7 +22,7 @@ function correctLicense(license?: string): string | undefined {
 
 function createURL(id: string, cc?: boolean, osi?: boolean): string {
   if (cc) {
-    const match = /^([CBYSAND0ZEROPD-]+)(?:(?:-)([0-9].[0-9]))?(?:(?:-)([A-Z]{2,3}))?$/.exec(id);
+    const match = /^([CBYSAND0ZEROPDM-]+)(?:(?:-)([0-9].[0-9]))?(?:(?:-)([A-Z]{2,3}))?$/.exec(id);
     if (!match) {
       throw new Error('Creative Commons license not found');
     }
@@ -56,6 +56,9 @@ function createURL(id: string, cc?: boolean, osi?: boolean): string {
         break;
       case 'CC-PDDC':
         link = '/publicdomain/';
+        break;
+      case 'CC-PDM':
+        link = '/publicdomain/mark/1.0/';
         break;
       default:
         break;
