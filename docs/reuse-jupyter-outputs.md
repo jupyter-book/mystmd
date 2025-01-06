@@ -18,12 +18,12 @@ A scientific article with two figures created in Jupyter Notebooks. Each figure 
 
 ## Label a Notebook Cell
 
-You can label notebook cells in two ways:
+You can label notebook cells in a few ways:
 
 **Use cell metadata comment syntax at the top of the cell**. Use a comment, followed by the pipe (`|`) operator at the top of a cell to set cell metadata.
 For example, the following comment in a Python cell sets a label[^black]:
 
-```{code-block} python
+```{code} python
 :linenos:
 :emphasize-lines: 1,
 :filename: myfile.ipynb, content of one cell
@@ -38,7 +38,7 @@ Note that `#` is the comment symbol for Python, but you'd use whatever symbol is
 
 **Add the label directly to the cell metadata**. Use a Jupyter interface or text editor to embed the label in the cell's metadata. For example, here's sample JSON that shows what metadata should look like:
 
-```{code-block} json
+```{code} json
 :linenos:
 :emphasize-lines: 5,
 :filename: myfile.ipynb, metadata for one cell
@@ -51,6 +51,20 @@ Note that `#` is the comment symbol for Python, but you'd use whatever symbol is
 ```
 
 [^black]: If your code formatter changes this to a `# | label:` with an extra space that is fine too! 🎉
+
+If you are working with [](./notebooks-with-markdown.md), you can also use standard directive options for the {myst:directive}`code-cell`.
+
+````{code} python
+:linenos:
+:emphasize-lines: 2,3
+:filename: myfile.md, code-cell in a markdown file
+```{code-cell} python
+:label: mycelllabel
+:caption: My Notebook Cell Caption
+
+print("Hello world!")
+```
+````
 
 ## Cross Reference a Cell
 
@@ -197,6 +211,8 @@ For example, the following {myst:directive}`figure` directive embeds two cell ou
 
 ![An Altair visualization of the cars data!](#img:altair-horsepower)
 ```
+
+If captions are already defined on the source cells (e.g. in [this one](#img:mpl)), these will be overridden.
 
 ## Outputs as Tables
 
