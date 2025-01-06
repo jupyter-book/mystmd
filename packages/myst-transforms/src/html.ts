@@ -126,8 +126,7 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     },
     iframe(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
-      attrs.url = String(node.properties.src || '');
-      if (node.properties.src) attrs.src = node.properties.src;
+      attrs.src = String(node.properties.src || '');
       attrs.width = '100%';
       return h(node, 'iframe', attrs);
     },

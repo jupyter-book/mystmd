@@ -461,7 +461,6 @@ describe('Test reconstructHtmlTransform', () => {
       children: [
         {
           type: 'iframe',
-          url: 'https://example.com',
           src: 'https://example.com',
           class: 'my-iframe',
           width: '100%',
