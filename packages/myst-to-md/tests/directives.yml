@@ -222,6 +222,26 @@ cases:
        ```
        ```
       ````
+  - title: code directive - null options
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          meta: null
+          showLineNumbers: null
+          value: |-
+            5+5
+            print("hello world")
+             ```
+             ```
+    markdown: |-
+      ````python
+      5+5
+      print("hello world")
+       ```
+       ```
+      ````
   - title: image directive
     mdast:
       type: root
