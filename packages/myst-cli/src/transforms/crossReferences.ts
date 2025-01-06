@@ -86,7 +86,17 @@ export async function fetchMystXRefData(session: ISession, node: CrossReference,
   const rawData = await fetchMystData(session, dataUrl, node.urlSource, vfile);
   let data: MystData | undefined;
   if (node.remoteBaseUrl) {
-    // TODO
+    const cachePath = mystXRefsCacheFilename(node.remoteBaseUrl);
+    const mystXRefData = loadFromCache(session, cachePath, {
+      maxAge: XREF_MAX_AGE,
+    });
+    if (!mystXRefData) {
+      fileWarn(vfile, `Unable to load external MyST reference data: ${node.remoteBaseUrl}`);
+    } else {
+      const { version } = JSON.parse(mystXRefData) as { version: string };
+      console.log(`Loading xref ${node.urlSource} with version ${version}`);
+    }
+    data = rawData;
   } else {
     fileWarn(
       vfile,
