@@ -25,7 +25,6 @@ import {
   RRIDTransformer,
   RORTransformer,
   DOITransformer,
-  joinGatesPlugin,
   glossaryPlugin,
   abbreviationPlugin,
   reconstructHtmlPlugin,
@@ -197,8 +196,7 @@ export async function transformMdast(
     .use(glossaryPlugin) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(indexIdentifierPlugin)
-    .use(enumerateTargetsPlugin, { state }) // This should be after math/container transforms
-    .use(joinGatesPlugin);
+    .use(enumerateTargetsPlugin, { state }); // This should be after math/container transforms
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
