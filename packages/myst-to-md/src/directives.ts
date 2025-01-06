@@ -98,7 +98,9 @@ const CODE_BLOCK_KEYS = [
  * non-directive code fence.
  */
 function code(node: any, _: Parent, state: NestedState, info: Info): string {
-  const nodeCodeBlockKeys = Object.keys(node).filter((k) => CODE_BLOCK_KEYS.includes(k));
+  const nodeCodeBlockKeys = Object.entries(node).filter(
+    ([k, v]) => CODE_BLOCK_KEYS.includes(k) && v != null,
+  );
   if (!nodeCodeBlockKeys.length) {
     return defaultHandlers.code(node, _, state, info);
   }
