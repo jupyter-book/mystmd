@@ -8,7 +8,7 @@ import { addChildrenFromTargetNode } from 'myst-transforms';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { CrossReference, Dependency, Link, SourceFileKind } from 'myst-spec-ext';
 import type { ISession } from '../session/types.js';
-import { loadFromCache, writeToCache, checkCache } from '../session/cache.js';
+import { loadFromCache, writeToCache, checkCache, cachePath } from '../session/cache.js';
 import type { SiteAction, SiteExport } from 'myst-config';
 
 export const XREF_MAX_AGE = 1; // in days
@@ -89,6 +89,7 @@ async function stepwiseDowngrade(
   session: ISession,
   fromVersion: string,
   toVersion: string,
+  vfile: VFile,
   data: any,
 ): Promise<any> {
   const downgradeCachePath = `myst-downgrade-${fromVersion}-${toVersion}.mjs`;
@@ -97,20 +98,33 @@ async function stepwiseDowngrade(
       maxAge: 7, // days
     })
   ) {
-    const response = await fetch(`http://localhost:9000/${downgradeCachePath}`);
-    const body = await response.text();
-    fs.writeFileSync(downgradeCachePath, body);
+    try {
+      const response = await fetch(`http://localhost:9000/${downgradeCachePath}`);
+      const body = await response.text();
+      fs.writeFileSync(cachePath(session, downgradeCachePath), body);
+    } catch (err) {
+      fileWarn(
+        vfile,
+        `Unable to load utility for downgrading XRef from ${fromVersion} to ${toVersion}`,
+      );
+      return data;
+    }
   }
 
-  const module = await import(downgradeCachePath);
-  return module(data);
+  const module = await import(cachePath(session, downgradeCachePath));
+  return module.default(data);
 }
 
-async function downgradeMystData(session: ISession, version: string, data: any): Promise<MystData> {
+async function downgradeMystData(
+  session: ISession,
+  version: string,
+  vfile: VFile,
+  data: any,
+): Promise<MystData> {
   const fromVersion = parseInt(version);
   const toVersion = parseInt(MYST_SPEC_VERSION);
   for (let stepVersion = fromVersion; stepVersion !== toVersion; stepVersion--) {
-    data = await stepwiseDowngrade(session, `${version}`, `${stepVersion - 1}`, data);
+    data = await stepwiseDowngrade(session, `${version}`, `${stepVersion - 1}`, vfile, data);
   }
   return data;
 }
@@ -140,7 +154,7 @@ export async function fetchMystXRefData(session: ISession, node: CrossReference,
         data = upgradeMystData(version, rawData);
       } else {
         console.log(`Upgrading xref ${node.urlSource} with version ${version}`);
-        data = await downgradeMystData(session, version, rawData);
+        data = await downgradeMystData(session, version, vfile, rawData);
       }
     }
     data = rawData;
