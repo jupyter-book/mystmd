@@ -90,8 +90,13 @@ export function createHtmlId(identifier?: string): string | undefined {
  */
 export function transferTargetAttrs(sourceNode: GenericNode, destNode: GenericNode, vfile?: VFile) {
   if (sourceNode.label) {
-    if (destNode.label && vfile) {
+    if (destNode.label && vfile && destNode.label !== sourceNode.label) {
       fileWarn(vfile, `label "${destNode.label}" replaced with "${sourceNode.label}"`, {
+        node: destNode,
+      });
+    }
+    if (destNode.label && vfile && destNode.label === sourceNode.label) {
+      fileWarn(vfile, `duplicate label "${destNode.label}" replacement`, {
         node: destNode,
       });
     }
