@@ -7,13 +7,17 @@ import { addChildrenFromTargetNode } from 'myst-transforms';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { CrossReference, Dependency, Link, SourceFileKind } from 'myst-spec-ext';
 import type { ISession } from '../session/types.js';
-import { loadFromCache, writeToCache } from '../session/cache.js';
+import { loadFromCache, writeToCache, checkCache } from '../session/cache.js';
 import type { SiteAction, SiteExport } from 'myst-config';
 
 export const XREF_MAX_AGE = 1; // in days
 
 function mystDataFilename(dataUrl: string) {
   return `myst-${computeHash(dataUrl)}.json`;
+}
+
+export function mystXRefsCacheFilename(url: string) {
+  return `xrefs-myst-${computeHash(url)}.json`;
 }
 
 export type MystData = {
