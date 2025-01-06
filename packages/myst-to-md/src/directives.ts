@@ -361,12 +361,33 @@ function tabItem(node: any, _: Parent, state: NestedState, info: Info): string {
   return handler(node, _, state, info);
 }
 
+function iframe(node: any, _: Parent, state: NestedState, info: Info): string {
+  const handler = writeStaticDirective('iframe', { argsKey: 'src', keys: IMAGE_DIRECTIVE_OPTS });
+  return handler(node, _, state, info);
+}
+
+function aside(node: any, _: Parent, state: NestedState, info: Info): string {
+  const name = node.kind ?? 'aside';
+  const admonitionTitle = select('admonitionTitle', node);
+  const args = admonitionTitle ? state.containerPhrasing(admonitionTitle as any, info) : '';
+  const nodeCopy = {
+    ...node,
+    children: node.children.filter((n: GenericNode) => n.type !== 'admonitionTitle'),
+  };
+  const options = {
+    keys: ['class'],
+  };
+  return writeFlowDirective(name, args, options)(nodeCopy, _, state, info);
+}
+
 export const directiveHandlers: Record<string, Handle> = {
   code,
   image,
   container,
   admonition,
   details,
+  iframe,
+  aside,
   card,
   grid: writeFlowDirective('grid', undefined, {
     keys: ['columns'],

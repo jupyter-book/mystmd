@@ -877,3 +877,46 @@ cases:
       Tab two
       :::
       ::::
+  - title: iframe
+    mdast:
+      type: root
+      children:
+        - type: iframe
+          src: https://example.com
+          width: 10%
+    markdown: |-
+      ```{iframe} https://example.com
+      :width: 10%
+      ```
+  - title: aside
+    mdast:
+      type: root
+      children:
+        - type: aside
+          class: my-class
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Aside content
+    markdown: |-
+      :::{aside}
+      :class: my-class
+
+      Aside content
+      :::
+  - title: topic
+    mdast:
+      type: root
+      children:
+        - type: aside
+          kind: topic
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Topic content
+    markdown: |-
+      :::{topic}
+      Topic content
+      :::
