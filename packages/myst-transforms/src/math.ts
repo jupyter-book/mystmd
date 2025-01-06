@@ -150,6 +150,7 @@ function tryRender(file: VFile, node: Node, value: string, opts?: Options): Rend
       output: opts?.mathML ? 'mathml' : undefined,
       macros: { ...builtInMacros, ...simplifiedMacros },
       strict: (f: string, m: string) => {
+        if (f === 'newLineInDisplayMode') return;
         warnings.push(`${f}, ${m}`);
       },
     });
