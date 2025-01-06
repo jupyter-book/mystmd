@@ -107,6 +107,14 @@ const linkHandler = (node: any, state: ITypstSerializer) => {
   }
 };
 
+function prevCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
+  const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
+  if (!ind) return false;
+  const prev = parent?.children?.[ind - 1];
+  if (!prev?.value) return false;
+  return (prev?.type === 'text' && !!prev.value.match(/[a-zA-Z0-9\-_]$/)) || false;
+}
+
 function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
   const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
   if (!ind) return false;
@@ -230,8 +238,9 @@ const handlers: Record<string, Handler> = {
     }
   },
   strong(node, state, parent) {
+    const prev = prevCharacterIsText(parent, node);
     const next = nextCharacterIsText(parent, node);
-    if (nodeOnlyHasTextChildren(node) && !next) {
+    if (nodeOnlyHasTextChildren(node) && !(prev || next)) {
       state.write('*');
       state.renderChildren(node);
       state.write('*');
@@ -240,8 +249,9 @@ const handlers: Record<string, Handler> = {
     }
   },
   emphasis(node, state, parent) {
+    const prev = prevCharacterIsText(parent, node);
     const next = nextCharacterIsText(parent, node);
-    if (nodeOnlyHasTextChildren(node) && !next) {
+    if (nodeOnlyHasTextChildren(node) && !prev && !next) {
       state.write('_');
       state.renderChildren(node);
       state.write('_');
@@ -368,6 +378,7 @@ const handlers: Record<string, Handler> = {
       state.renderChildren(node);
       state.write(']');
     } else {
+      // Note that we don't need to protect against the previous character as text
       const next = nextCharacterIsText(parent, node);
       state.write(next ? `#[@${id}]` : `@${id}`);
     }
