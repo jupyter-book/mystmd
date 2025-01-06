@@ -361,12 +361,24 @@ function tabItem(node: any, _: Parent, state: NestedState, info: Info): string {
   return handler(node, _, state, info);
 }
 
+function iframe(node: any, _: Parent, state: NestedState, info: Info): string {
+  const handler = writeStaticDirective('iframe', { argsKey: 'src', keys: ['width'] });
+  return handler(node, _, state, info);
+}
+
+function aside(node: any, _: Parent, state: NestedState, info: Info): string {
+  const handler = writeFlowDirective('aside');
+  return handler(node, _, state, info);
+}
+
 export const directiveHandlers: Record<string, Handle> = {
   code,
   image,
   container,
   admonition,
   details,
+  iframe,
+  aside,
   card,
   grid: writeFlowDirective('grid', undefined, {
     keys: ['columns'],
