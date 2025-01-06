@@ -32,6 +32,10 @@ export type MystData = {
   references?: References;
 };
 
+async function maybeDowngradeMystData(rawData: MystData): Promise<MystData> {
+  return rawData;
+}
+
 async function fetchMystData(
   session: ISession,
   dataUrl: string | undefined,
@@ -48,7 +52,8 @@ async function fetchMystData(
     try {
       const resp = await session.fetch(dataUrl);
       if (resp.ok) {
-        const data = (await resp.json()) as MystData;
+        const rawData = (await resp.json()) as MystData;
+        const data = await maybeDowngradeMystData(rawData);
         writeToCache(session, filename, JSON.stringify(data));
         return data;
       }
