@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
 import type { FrontmatterParts, GenericNode, GenericParent, References } from 'myst-common';
@@ -78,6 +79,42 @@ export async function fetchMystLinkData(session: ISession, node: Link, vfile: VF
   return fetchMystData(session, node.dataUrl, node.urlSource, vfile);
 }
 
+const MYST_SPEC_VERSION = '0';
+
+function upgradeMystData(version: string, data: any): MystData {
+  return data;
+}
+
+async function stepwiseDowngrade(
+  session: ISession,
+  fromVersion: string,
+  toVersion: string,
+  data: any,
+): Promise<any> {
+  const downgradeCachePath = `myst-downgrade-${fromVersion}-${toVersion}.mjs`;
+  if (
+    !checkCache(session, downgradeCachePath, {
+      maxAge: 7, // days
+    })
+  ) {
+    const response = await fetch(`http://localhost:9000/${downgradeCachePath}`);
+    const body = await response.text();
+    fs.writeFileSync(downgradeCachePath, body);
+  }
+
+  const module = await import(downgradeCachePath);
+  return module(data);
+}
+
+async function downgradeMystData(session: ISession, version: string, data: any): Promise<MystData> {
+  const fromVersion = parseInt(version);
+  const toVersion = parseInt(MYST_SPEC_VERSION);
+  for (let stepVersion = fromVersion; stepVersion !== toVersion; stepVersion--) {
+    data = await stepwiseDowngrade(session, `${version}`, `${stepVersion - 1}`, data);
+  }
+  return data;
+}
+
 export async function fetchMystXRefData(session: ISession, node: CrossReference, vfile: VFile) {
   let dataUrl: string | undefined;
   if (node.remoteBaseUrl && node.dataUrl) {
@@ -85,16 +122,26 @@ export async function fetchMystXRefData(session: ISession, node: CrossReference,
   }
   const rawData = await fetchMystData(session, dataUrl, node.urlSource, vfile);
   let data: MystData | undefined;
-  if (node.remoteBaseUrl) {
+  if (node.remoteBaseUrl && !!rawData) {
+    // Retrieve the external xref information to determine the spec version
     const cachePath = mystXRefsCacheFilename(node.remoteBaseUrl);
     const mystXRefData = loadFromCache(session, cachePath, {
       maxAge: XREF_MAX_AGE,
     });
     if (!mystXRefData) {
       fileWarn(vfile, `Unable to load external MyST reference data: ${node.remoteBaseUrl}`);
-    } else {
+    }
+    // Bring potentially incompatible schema into-alignment
+    else {
       const { version } = JSON.parse(mystXRefData) as { version: string };
-      console.log(`Loading xref ${node.urlSource} with version ${version}`);
+      if (version === MYST_SPEC_VERSION) {
+        data = rawData;
+      } else if (parseInt(version) < parseInt(MYST_SPEC_VERSION)) {
+        data = upgradeMystData(version, rawData);
+      } else {
+        console.log(`Upgrading xref ${node.urlSource} with version ${version}`);
+        data = await downgradeMystData(session, version, rawData);
+      }
     }
     data = rawData;
   } else {
