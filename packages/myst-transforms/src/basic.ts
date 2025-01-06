@@ -14,6 +14,7 @@ import { codeBlockToDirectiveTransform, inlineCodeFlattenTransform } from './cod
 import { removeUnicodeTransform } from './removeUnicode.js';
 import { containerChildrenTransform } from './containers.js';
 import { headingDepthTransform } from './headings.js';
+import { joinGatesTransform } from './joinGates.js';
 
 export function basicTransformations(tree: GenericParent, file: VFile, opts?: Record<string, any>) {
   // lifting roles and directives must happen before the mystTarget transformation
@@ -31,6 +32,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts?: Re
   headingLabelTransform(tree);
   admonitionBlockquoteTransform(tree); // Must be before header transforms
   admonitionHeadersTransform(tree);
+  joinGatesTransform(tree, file); // This should be before block nesting
   blockNestingTransform(tree);
   // Block metadata may contain labels/html_ids
   blockMetadataTransform(tree, file);
