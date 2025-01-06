@@ -32,10 +32,6 @@ export type MystData = {
   references?: References;
 };
 
-async function maybeDowngradeMystData(rawData: MystData): Promise<MystData> {
-  return rawData;
-}
-
 async function fetchMystData(
   session: ISession,
   dataUrl: string | undefined,
@@ -52,8 +48,7 @@ async function fetchMystData(
     try {
       const resp = await session.fetch(dataUrl);
       if (resp.ok) {
-        const rawData = (await resp.json()) as MystData;
-        const data = await maybeDowngradeMystData(rawData);
+        const data = (await resp.json()) as MystData;
         writeToCache(session, filename, JSON.stringify(data));
         return data;
       }
@@ -84,7 +79,18 @@ export async function fetchMystXRefData(session: ISession, node: CrossReference,
   if (node.remoteBaseUrl && node.dataUrl) {
     dataUrl = `${node.remoteBaseUrl}${node.dataUrl}`;
   }
-  return fetchMystData(session, dataUrl, node.urlSource, vfile);
+  const rawData = await fetchMystData(session, dataUrl, node.urlSource, vfile);
+  let data: MystData | undefined;
+  if (node.remoteBaseUrl) {
+    // TODO
+  } else {
+    fileWarn(
+      vfile,
+      `Unable to determine XRef AST version for external MyST reference: ${node.urlSource}`,
+    );
+    data = rawData;
+  }
+  return data;
 }
 
 export function nodesFromMystXRefData(
