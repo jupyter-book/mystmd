@@ -124,6 +124,13 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       if (node.properties.alt) attrs.alt = node.properties.alt;
       return h(node, 'image', attrs);
     },
+    iframe(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      attrs.url = String(node.properties.src || '');
+      if (node.properties.src) attrs.src = node.properties.src;
+      attrs.width = '100%';
+      return h(node, 'iframe', attrs);
+    },
     figure(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
       return h(node, 'container', attrs, all(h, node));
