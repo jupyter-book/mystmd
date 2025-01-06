@@ -280,9 +280,10 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   math_inline_double: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t) {
       return {
+        value: t.content.trim(),
         enumerated: t.meta?.enumerated,
       };
     },
@@ -290,10 +291,11 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   math_block: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t) {
       const name = t.info || undefined;
       return {
+        value: t.content.trim(),
         ...normalizeLabel(name),
         enumerated: t.meta?.enumerated,
       };
@@ -302,10 +304,11 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   math_block_label: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t) {
       const name = t.info || undefined;
       return {
+        value: t.content.trim(),
         ...normalizeLabel(name),
         enumerated: t.meta?.enumerated,
       };
@@ -314,10 +317,11 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   amsmath: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t, tokens, index, state) {
       const tight = computeAmsmathTightness(state.src, t.map);
       const attrs = {
+        value: t.content.trim(),
         enumerated: t.meta?.enumerated,
       } as Record<string, any>;
       if (tight) attrs.tight = tight;
