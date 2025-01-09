@@ -104,6 +104,15 @@ export const containerHandler: Handler = (node, state) => {
     return;
   }
 
+  // This resets the typst counter to match MyST numbering.
+  // However, it is dependent on the resolved enumerator value. This will work given
+  // default enumerators, but if the user sets numbering 'template' it will not work.
+  // TODO: persist `numbering` metadata in a way that typst can reset based on that.
+  if (node.enumerator?.endsWith('.1')) {
+    state.write(`#set figure(numbering: "${node.enumerator}")\n`);
+    state.write(`#counter(figure.where(kind: "${kind}")).update(0)\n\n`);
+  }
+
   if (nonCaptions && nonCaptions.length > 1) {
     const allSubFigs =
       nonCaptions.filter((item: GenericNode) => item.type === 'container').length ===

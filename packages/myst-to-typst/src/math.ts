@@ -67,6 +67,13 @@ const math: Handler = (node, state) => {
   const { identifier: label } = normalizeLabel(node.label) ?? {};
   addMacrosToState(value, state);
   state.ensureNewLine();
+  // This resets the typst counter to match MyST numbering.
+  // However, it is dependent on the resolved enumerator value. This will work given
+  // default enumerators, but if the user sets numbering 'template' it will not work.
+  if (node.enumerator?.endsWith('.1')) {
+    state.write(`#set math.equation(numbering: "(${node.enumerator})")\n`);
+    state.write(`#counter(math.equation).update(0)\n\n`);
+  }
   // Note: must have spaces $ math $ for the block!
   state.write(`$ ${value} $${label ? ` <${label}>` : ''}\n\n`);
   state.ensureNewLine(true);
