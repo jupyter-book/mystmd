@@ -145,7 +145,7 @@ const handlers: Record<string, Handler> = {
     const metadataTags = getMetadataTags(node);
     if (metadataTags.includes('no-typst')) return;
     if (metadataTags.includes('no-pdf')) return;
-    if (node.visibility === 'remove') return;
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     if (metadataTags.includes('page-break') || metadataTags.includes('new-page')) {
       state.write('#pagebreak(weak: true)\n');
     }
@@ -183,9 +183,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
   },
   code(node: Code, state) {
-    if (node.visibility === 'remove') {
-      return;
-    }
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     let ticks = '```';
     while (node.value.includes(ticks)) {
       ticks += '`';

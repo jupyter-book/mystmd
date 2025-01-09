@@ -5,7 +5,7 @@ import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab
 import type { Block, Code, InlineExpression, Output } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent, IExpressionResult, IExpressionError } from 'myst-common';
-import { NotebookCell, fileError } from 'myst-common';
+import { NotebookCell, NotebookCellTags, fileError } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
@@ -175,7 +175,7 @@ function isCellBlock(node: GenericNode): node is CodeBlock {
  * @param node block to test
  */
 function codeBlockRaisesException(node: CodeBlock) {
-  return !!node.data?.tags?.includes?.('raises-exception');
+  return !!node.data?.tags?.includes?.(NotebookCellTags.raisesException);
 }
 /**
  * Return true if the given code block should not be executed
@@ -183,7 +183,7 @@ function codeBlockRaisesException(node: CodeBlock) {
  * @param node block to test
  */
 function codeBlockSkipsExecution(node: CodeBlock) {
-  return !!node.data?.tags?.includes?.('skip-execution');
+  return !!node.data?.tags?.includes?.(NotebookCellTags.skipExecution);
 }
 
 /**

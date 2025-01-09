@@ -108,6 +108,7 @@ project:
         - file: reuse-jupyter-outputs.md
         - file: interactive-notebooks.ipynb
         - file: integrating-jupyter.md
+        - file: notebook-configuration.md
     - title: Websites
       children:
         - file: website-templates.md
