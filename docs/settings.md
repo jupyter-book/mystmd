@@ -5,6 +5,8 @@ description: Project and page settings for MyST
 
 The `settings` field in the project or page frontmatter allows you to change how the parsing, transforms, plugins, or other behaviors of mystmd.
 
+(project-settings)=
+
 ## Available settings fields
 
 (setting:output_stderr)=
