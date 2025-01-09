@@ -53,3 +53,28 @@ cases:
               value: 'a for the first part of the figure!'
     typst: |-
       See #link(<fig1>)[Figure 56]a for the first part of the figure!
+  - title: labeled paragraphs
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: This is a paragraph.
+          label: para
+          identifier: para
+        - type: paragraph
+          children:
+            - type: text
+              value: 'With a reference '
+            - type: crossReference
+              children:
+                - type: text
+                  value: Paragraph
+              identifier: para
+              label: para
+              kind: paragraph
+    typst: |-
+      This is a paragraph. <para>
+
+      With a reference #link(<para>)[Paragraph]
