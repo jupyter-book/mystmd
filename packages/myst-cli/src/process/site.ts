@@ -383,20 +383,16 @@ export function selectPageReferenceStates(
     })
     .filter((state): state is ReferenceState => !!state);
   if (!opts?.suppressWarnings) warnOnDuplicateIdentifiers(session, pageReferenceStates);
-  pages.forEach((page) => {
-    const state = cache.$internalReferences[page.file];
-    if (!state) return;
-    const { mdast } = cache.$getMdast(page.file)?.post ?? {};
+  pageReferenceStates.forEach((state) => {
+    const { mdast } = cache.$getMdast(state.filePath)?.post ?? {};
     if (!mdast) return;
-    const vfile = new VFile();
-    vfile.path = page.file;
     buildIndexTransform(
       mdast,
-      vfile,
+      state.vfile,
       state,
       new MultiPageReferenceResolver(pageReferenceStates, state.filePath),
     );
-    logMessagesFromVFile(session, vfile);
+    logMessagesFromVFile(session, state.vfile);
   });
   return pageReferenceStates;
 }
@@ -500,7 +496,7 @@ export async function fastProcessFile(
     }),
   ]);
   await Promise.all(
-    [...pages.map(({ file }) => file), ...fileParts].map(async (f) => {
+    [...pages.map((p) => p.file), ...fileParts].map(async (f) => {
       return postProcessMdast(session, {
         file: f,
         pageReferenceStates,
@@ -509,7 +505,7 @@ export async function fastProcessFile(
     }),
   );
   await Promise.all(
-    [...pages.map(({ file }) => file), ...fileParts].map(async (f) => {
+    [...pages.map((p) => p.file), ...fileParts].map(async (f) => {
       const { mdast, frontmatter } = castSession(session).$getMdast(f)?.post ?? {};
       if (mdast && frontmatter) {
         await finalizeMdast(session, mdast, frontmatter, f, {
