@@ -3,7 +3,6 @@ import { cardDirective } from 'myst-ext-card';
 import { gridDirectives } from 'myst-ext-grid';
 import { proofDirective } from 'myst-ext-proof';
 import { exerciseDirectives } from 'myst-ext-exercise';
-import { reactiveDirective, reactiveRole } from 'myst-ext-reactive';
 import { tabDirectives } from 'myst-ext-tabs';
 import { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
@@ -40,7 +39,6 @@ export function parseMyst(
     directives: [
       cardDirective,
       ...gridDirectives,
-      reactiveDirective,
       proofDirective,
       ...exerciseDirectives,
       ...tabDirectives,
@@ -49,7 +47,7 @@ export function parseMyst(
     extensions: {
       frontmatter: !opts?.ignoreFrontmatter,
     },
-    roles: [reactiveRole, ...(session.plugins?.roles ?? [])],
+    roles: [...(session.plugins?.roles ?? [])],
     vfile,
   });
   logMessagesFromVFile(session, vfile);
