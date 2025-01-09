@@ -16,6 +16,8 @@ output_stderr
     - `"remove-warn"` or `"remove-error"`: remove all stderr, and log a warning or error
     - `"warn"` or "error": log a warning or error if a stderr is found
 
+: Can be controlled or overridden by a [notebook cell tag](#tbl:notebook-cell-tags).
+
 (setting:output_stdout)=
 output_stdout
 : Remove, warn or error on stdout outputs. (e.g. long text outputs, like text-based progress bars)
@@ -24,6 +26,8 @@ output_stdout
     - `"remove"`: remove all stdout outputs
     - `"remove-warn"` or `"remove-error"`: remove all stdout, and log a warning or error
     - `"warn"` or "error": log a warning or error if a stdout is found
+
+: Can be controlled or overridden by a [notebook cell tag](#tbl:notebook-cell-tags).
 
 (setting:output_matplotlib_strings)=
 output_matplotlib_strings

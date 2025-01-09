@@ -54,7 +54,7 @@ After we declare the frontmatter, the contents of each {myst:directive}`code-cel
 Furthermore, you can build MyST Markdown content with other programming languages like JavaScript, R, and Julia by installing the corresponding kernel. For example, to build a page that uses JavaScript in the {myst:directive}`code-cell`, we could:
 
 1. Install a JavaScript kernel, e.g. [ijavascript](https://github.com/n-riesco/ijavascript).
-2. Retrieve the kernel name with `jupyter kernelspec list`.  
+2. Retrieve the kernel name with `jupyter kernelspec list`.
    In the default installation, the kernel name is `javascript`.
 3. Set the kernelspec in your document's frontmatter:
    ```yaml
@@ -112,7 +112,7 @@ print(phrase)
 You can add tags to the {myst:directive}`code-cell` directive.
 They will be parsed and used in the same way that cell tag metadata is used in `.ipynb` files.
 
-For example, the following code defines a `remove-input` tag:
+For example, the following code defines a `remove-input` tag (See all [notebook tag options](#tbl:notebook-cell-tags)):
 
 ````markdown
 ```{code-cell} python
