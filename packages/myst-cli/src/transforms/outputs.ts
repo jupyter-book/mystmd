@@ -279,6 +279,9 @@ export function reduceOutputs(
             ],
           };
           htmlTransform(htmlTree);
+          if ((selectAll('image', htmlTree) as GenericNode[]).find((htmlImage) => !htmlImage.url)) {
+            return undefined;
+          }
           return htmlTree.children;
         } else if (content_type.startsWith('image/')) {
           const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
