@@ -363,10 +363,10 @@ const handlers: Record<string, Handler> = {
   legend: captionHandler,
   captionNumber: () => undefined,
   crossReference(node: CrossReference, state, parent) {
-    if (node.remote) {
+    if (node.remoteBaseUrl) {
       // We don't want to handle remote references, treat them as links
       const url =
-        (node.remoteBaseUrl ?? '') +
+        node.remoteBaseUrl +
         (node.url === '/' ? '' : node.url ?? '') +
         (node.html_id ? `#${node.html_id}` : '');
       linkHandler({ ...node, url: url }, state);
