@@ -128,7 +128,9 @@ const handlers: Record<string, Handler> = {
     state.text(node.value);
   },
   paragraph(node, state) {
-    state.renderChildren(node, 2);
+    const { identifier } = node;
+    const after = identifier ? ` <${identifier}>` : undefined;
+    state.renderChildren(node, 2, { after });
   },
   heading(node, state) {
     const { depth, identifier, enumerated } = node;
@@ -561,7 +563,7 @@ class TypstSerializer implements ITypstSerializer {
       this.renderChildren({ children: node }, trailingNewLines, opts);
       return;
     }
-    const { delim = '', trimEnd = true } = opts;
+    const { delim = '', trimEnd = true, after } = opts;
     const numChildren = node.children?.length ?? 0;
     node.children?.forEach((child, index) => {
       if (!child) return;
@@ -577,6 +579,7 @@ class TypstSerializer implements ITypstSerializer {
       if (delim && index + 1 < numChildren) this.write(delim);
     });
     if (trimEnd) this.trimEnd();
+    if (after) this.write(after);
     for (let i = trailingNewLines; i--; ) this.addNewLine();
   }
 
