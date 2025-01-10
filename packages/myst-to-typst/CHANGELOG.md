@@ -1,5 +1,25 @@
 # myst-to-typst
 
+## 0.0.29
+
+### Patch Changes
+
+- 6f77bda2: Enable labeling of paragraphs
+- cd69d47: Add exercise and solution handlers
+- a6575fa9: Do not label implicit heading nodes in typst
+- ea19e66c: Support additional greek characters in typst
+- 7afc6917: 𝐁 Bold text in typst in line fixed
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- 9457a8de: Support restarting counter for each typst article in multi-article export
+- 2c8fa97d: Fix typst crossreferences to other pages
+- 4979d3c3: tex-to-typst updates
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
 ## 0.0.28
 
 ### Patch Changes

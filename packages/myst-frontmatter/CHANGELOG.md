@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.7.6
+
+### Patch Changes
+
+- 6f6032b7: OSI updates
+
 ## 1.7.5
 
 ### Patch Changes

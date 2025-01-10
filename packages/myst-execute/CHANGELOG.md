@@ -1,5 +1,14 @@
 # myst-execute
 
+## 0.1.2
+
+### Patch Changes
+
+- 67bc9b8d: Use NotebookCellTags for raises-exception and skip-execution
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+  - myst-common@1.7.6
+
 ## 0.1.1
 
 ### Patch Changes

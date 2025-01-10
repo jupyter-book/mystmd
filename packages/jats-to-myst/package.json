@@ -1,6 +1,6 @@
 {
   "name": "jats-to-myst",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "Read JATS and convert to MyST AST",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/jats-to-myst",
@@ -38,11 +38,11 @@
     "doi-utils": "^2.0.0",
     "jats-tags": "^1.0.8",
     "jats-xml": "^1.0.8",
-    "myst-common": "^1.7.2",
-    "myst-frontmatter": "^1.7.2",
+    "myst-common": "^1.7.6",
+    "myst-frontmatter": "^1.7.6",
     "myst-spec": "^0.0.5",
-    "myst-spec-ext": "^1.7.2",
-    "myst-transforms": "^1.3.26",
+    "myst-spec-ext": "^1.7.6",
+    "myst-transforms": "^1.3.29",
     "unified": "^10.0.0",
     "unist-builder": "^3.0.0",
     "unist-util-select": "^4.0.3",
@@ -51,6 +51,6 @@
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
-    "myst-to-tex": "^1.0.38"
+    "myst-to-tex": "^1.0.41"
   }
 }
