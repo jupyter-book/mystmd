@@ -365,10 +365,6 @@ export function selectPageReferenceStates(
       if (frontmatter && !frontmatter.enumerator) {
         frontmatter.enumerator = state.enumerator;
       }
-      if (frontmatter && frontmatter.enumerator) {
-        // It would be better to handle enumerator at the theme / template level rather than baking into title
-        frontmatter.title = `${frontmatter.enumerator}${frontmatter.title ? ` ${frontmatter.title}` : ''}`;
-      }
       if (mdast) enumerateTargetsTransform(mdast, { state });
       previousCounts = state.targetCounts;
       logMessagesFromVFile(session, vfile);
