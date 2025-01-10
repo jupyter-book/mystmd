@@ -25,7 +25,7 @@ import type { ISession } from './types.js';
 import { isWhiteLabelled } from '../utils/whiteLabelling.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
-import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
+import { launchJupyterServer } from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 
@@ -229,16 +229,10 @@ export class Session implements ISession {
           token: process.env.JUPYTER_TOKEN,
         };
       } else {
-        // Load existing running server
-        const existing = await findExistingJupyterServer(this);
-        if (existing) {
-          this.log.debug(`Found existing server on: ${existing.appUrl}`);
-          partialServerSettings = existing;
-        } else {
-          this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
-          // Create and load new server
-          partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
-        }
+        // Note: To use an existing Jupyter server use `findExistingJupyterServer`, see #1716
+        this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
+        // Create and load new server
+        partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
       }
 
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);

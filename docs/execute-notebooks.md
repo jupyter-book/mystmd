@@ -32,12 +32,13 @@ In order to execute your MyST content, you must install a Jupyter Server and the
 ## Expect a code-cell to fail
 
 By default, MyST will stop executing a notebook if a cell raises an error.
-If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell (see [all cell tags](#tbl:notebook-cell-tags)).
 If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
+
+## Adding Tags to Notebook Cells
 
 The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
 Additionally, you can specify tags (and other cell metadata) with markdown using the {myst:directive}`code-cell` directive.
-
 Here's an example of adding this tag with a {myst:directive}`code-cell` directive:
 
 ````markdown
@@ -61,6 +62,8 @@ For [Markdown notebooks using the {myst:directive}`code-cell` directive](noteboo
 name = input("What is your name?")
 ```
 ````
+
+Additional [cell tags](#tbl:notebook-cell-tags) to hide, remove, or raise exceptions are also possible.
 
 ## Cache execution outputs
 
@@ -98,7 +101,7 @@ Jupyter Server is only responsible for orchestrating execution of your code. To 
 pip install ipykernel
 ```
 
-If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find a healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
+If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build` MyST will attempt to launch a Jupyter Server using `python -m jupyter_server`.
 
 ## Manually launch a Jupyter server
 
