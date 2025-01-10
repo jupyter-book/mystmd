@@ -23,6 +23,7 @@ import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
 import type { Admonition, Code, CrossReference, FootnoteDefinition, TabItem } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
+import { proofHandlers } from './proofs.js';
 
 export type { TypstResult } from './types.js';
 
@@ -71,26 +72,6 @@ const tabItem = `
     #title
     #block(width: 100%, inset: (x: 8pt, bottom: 8pt))[#body]
   ])
-}`;
-
-const proof = `
-#let proof(body, heading: [], kind: "proof", supplement: "Proof", labelName: none, color: blue, float: true) = {
-  let stroke = 1pt + color.lighten(90%)
-  let fill = color.lighten(90%)
-  let title
-  set figure.caption(position: top)
-  set figure(placement: none)
-  show figure.caption.where(body: heading): (it) => {
-    block(width: 100%, stroke: stroke, fill: fill, inset: 8pt, it)
-  }
-  place(auto, float: float, block(width: 100%, [
-    #figure(kind: kind, supplement: supplement, gap: 0pt, [
-      #set align(left);
-      #set figure.caption(position: bottom)
-      #block(width: 100%, fill: luma(253), stroke: stroke, inset: 8pt)[#body]
-    ], caption: heading)
-    #if(labelName != none){label(labelName)}
-  ]))
 }`;
 
 const INDENT = '  ';
@@ -456,25 +437,6 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
     state.write('\n]\n\n');
   },
-  proof(node: GenericNode, state) {
-    state.useMacro(proof);
-    const title = select('admonitionTitle', node);
-    const kind = node.kind || 'proof';
-    const supplement = getDefaultCaptionSupplement(kind);
-    state.write(
-      `#proof(kind: "${kind}", supplement: "${supplement}", labelName: ${node.identifier ? `"${node.identifier}"` : 'none'}`,
-    );
-    if (title) {
-      state.write(', heading: [');
-      state.renderChildren(title);
-      state.write('])[');
-    } else {
-      state.write(')[');
-    }
-    state.renderChildren(node);
-    state.write(']');
-    state.ensureNewLine();
-  },
   card(node, state) {
     if (node.url) {
       node.children?.push({ type: 'paragraph', children: [{ type: 'text', value: node.url }] });
@@ -496,6 +458,7 @@ const handlers: Record<string, Handler> = {
   footer() {
     return;
   },
+  ...proofHandlers,
 };
 
 class TypstSerializer implements ITypstSerializer {
