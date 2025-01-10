@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.7.6
+
+### Patch Changes
+
+- 67bc9b8d: Use NotebookCellTags for raises-exception and skip-execution
+- 0d82810f: Improve label duplication warning
+- Updated dependencies [6f6032b7]
+  - myst-frontmatter@1.7.6
+
 ## 1.7.5
 
 ### Patch Changes

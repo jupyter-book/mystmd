@@ -1,5 +1,51 @@
 # myst-cli
 
+## 1.3.20
+
+### Patch Changes
+
+- 93af5a1c: Prevent html outputs that translate to empty images
+- 1127a5a7: Prioritize project-level parts for project-level typst export
+- cefb2a15: join gates plugin moved before blocks
+- 1f3ff1e4: Do not findExistingJupyterServer when using execute
+- 7ed91dac: Remove hidden output nodes from PDF exports
+- 479db78c: Remove broken and unused reactive roles.
+- Updated dependencies [6f77bda2]
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [cd69d47]
+- Updated dependencies [a6575fa9]
+- Updated dependencies [ea19e66c]
+- Updated dependencies [7afc6917]
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [9457a8de]
+- Updated dependencies [2ab9bfdf]
+- Updated dependencies [2c8fa97d]
+- Updated dependencies [e3309c24]
+- Updated dependencies [9717b067]
+- Updated dependencies [cefb2a15]
+- Updated dependencies [4979d3c3]
+- Updated dependencies [71018741]
+- Updated dependencies [c5e51589]
+- Updated dependencies [6f6032b7]
+- Updated dependencies [3b05051d]
+- Updated dependencies [a11731a1]
+- Updated dependencies [3950dcaa]
+- Updated dependencies [7d6dff27]
+  - myst-to-typst@0.0.29
+  - myst-execute@0.1.2
+  - myst-common@1.7.6
+  - myst-to-docx@1.0.13
+  - myst-to-jats@1.0.31
+  - myst-to-tex@1.0.41
+  - myst-to-md@1.0.15
+  - myst-parser@1.5.10
+  - myst-transforms@1.3.29
+  - myst-frontmatter@1.7.6
+  - myst-config@1.7.6
+  - myst-spec-ext@1.7.6
+  - tex-to-myst@1.0.41
+
 ## 1.3.19
 
 ### Patch Changes

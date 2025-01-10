@@ -1,5 +1,18 @@
 # myst-parser
 
+## 1.5.10
+
+### Patch Changes
+
+- 2ab9bfdf: Remove .es linkify
+- 3b05051d: Explicitly trim math strings
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [9717b067]
+  - myst-common@1.7.6
+  - myst-directives@1.5.10
+  - myst-roles@1.5.10
+
 ## 1.5.9
 
 ### Patch Changes

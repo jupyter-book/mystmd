@@ -1,5 +1,21 @@
 # myst-transforms
 
+## 1.3.29
+
+### Patch Changes
+
+- e3309c24: Quiet warning about newLineInDisplayMode
+- 9717b067: Add caption to code-block options
+- cefb2a15: join gates plugin moved before blocks
+- 71018741: Read iframe from html source
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+  - myst-to-html@1.5.10
+
 ## 1.3.28
 
 ### Patch Changes
