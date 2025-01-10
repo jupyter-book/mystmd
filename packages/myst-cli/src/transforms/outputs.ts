@@ -236,6 +236,11 @@ export function reduceOutputs(
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
   outputs.forEach((node) => {
+    if (node.visibility === 'remove' || node.visibility === 'hide') {
+      // Hidden nodes should not show up in simplified outputs for static export
+      node.type = '__delete__';
+      return;
+    }
     if (!node.data?.length && !node.children?.length) {
       node.type = '__delete__';
       return;
