@@ -133,10 +133,11 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 2, { after });
   },
   heading(node, state) {
-    const { depth, identifier, enumerated } = node;
+    const { depth, identifier, enumerated, implicit } = node;
     state.write(`${Array(depth).fill('=').join('')} `);
     state.renderChildren(node);
-    if (enumerated !== false && identifier) {
+    if (enumerated !== false && identifier && !implicit) {
+      // Implicit labels can have duplicates and stop typst from compiling
       state.write(` <${identifier}>`);
     }
     state.write('\n\n');

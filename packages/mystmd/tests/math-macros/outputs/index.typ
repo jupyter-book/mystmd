@@ -31,10 +31,10 @@
 #let six = $d = d$
 #let seven = $d = d = d$
 
-= No plugins <no-plugins>
+= No plugins
 
 $ a^2 + b^2 = c^2 $
-= Simple plugin <simple-plugin>
+= Simple plugin
 
 Project frontmatter should give us `d`
 
@@ -42,7 +42,7 @@ $ d = three $
 Page should override and we should see `x`
 
 $ x = one $
-= Macros should recurse <macros-should-recurse>
+= Macros should recurse
 
 Page frontmatter should fill in this project macro
 
