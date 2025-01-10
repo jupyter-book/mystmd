@@ -211,39 +211,12 @@ URL nesting that matches the folder structure is a requested feature that is bei
 
 (toc-format-legacy)=
 
-## Defining a `_toc.yml` using Jupyter Book’s format
+## Defining a `_toc.yml` using Jupyter Book v1 format
 
 :::{warning}
 Support for `_toc.yml` exists only for compatibility reasons, and will be removed in future.
 New users should use `myst.yml` instead.
 :::
 
-Site table of contents may be defined with a `_toc.yml` file, following the Jupyter Book format. The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html). Briefly, it defines a `format` as `jb-book` and can list a number of `chapters` with files. The file paths are relative to your `_toc.yml` file and can optionally include the extension.
-
-```yaml
-format: jb-book
-root: index
-chapters:
-  - file: path/to/chapter1
-  - file: path/to/chapter2
-```
-
-For larger books, you can group the content into `parts`. Each `part` has a `caption` and a list of `chapters` files can define children using a list of `sections`.
-
-```yaml
-format: jb-book
-root: index
-parts:
-  - caption: Name of Part 1
-    chapters:
-      - file: path/to/part1/chapter1
-      - file: path/to/part1/chapter2
-        sections:
-          - file: path/to/part1/chapter2/section1
-  - caption: Name of Part 2
-    chapters:
-      - file: path/to/part2/chapter1
-      - file: path/to/part2/chapter2
-```
-
+Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Juypter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
 ::::

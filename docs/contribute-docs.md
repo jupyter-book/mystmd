@@ -80,3 +80,19 @@ Configuration for our Netlify build exists in the [`netlify.toml` configuration 
 
 Any team members can have `Developer` access to our shared Netlify account, and Steering Council members can have `Owner` access.
 If you'd like access, please ask a maintainer.
+
+## Documenting in jupyterbook.org vs. mystmd.org
+
+:::{warning} We're still figuring this out!
+This is a best-effort description of our approach to documentation, based on some conversations we had in https://github.com/jupyter-book/jupyter-book/issues/2239. We'll re-assess this as the documentation of each project evolves.
+:::
+
+Jupyter Book and the MyST Document Engine have heavily overlapping functionality, so it may be unclear whether something should be documented at mystmd.org or jupyterbook.org. That's OK and expected - here are some guidelines for where to document things:
+
+- The MyST document engine will be a **power user tool**. It will be more flexible and modular, with an extensive plugin ecosysytem. It will be agnostic to build output, and single- or multi-page documents.
+   - MyST should have the complete reference documentation for the MyST engine, as well as longer explanatory content about the MyST ecosystem.
+   - As functionaliy is moved into plugins, we similarly prioritize reference documentation and explanation in those spaces.
+   - MyST should be a standalone tool and have enough information for a power user to use on its own.
+- Jupyter Book will be a **tool for typical users** focused around multi-page documents and websites. It will be opinionated, focused around the "book themes", and be more accessible to a new user or someone unfamiliar with JavaScript workflows.
+   - Jupyter Book should focus on **How-Tos** and **Tutorials** that are driven by use-cases in multi-page workflows (e.g., documentation, books, community websites, etc).
+   - Focus on keeping documentation outcome-oriented, and link heavily to the MyST engine docs for more complete reference information and explanation.

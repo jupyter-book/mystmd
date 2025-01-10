@@ -52,7 +52,7 @@ MyST is cool!
 
 ## Defining a Role
 
-The core specification for the MyST markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book software stack) agree on the manner in which the content should be parsed and rendered. The process of adding features to the MyST Spec is more formalized, and is described in the [MyST Enhancement Proposals](https://mep.mystmd.org). This tutorial does not cover updating the MyST Spec.
+The core specification for the MyST markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book V1 software stack) agree on the manner in which the content should be parsed and rendered. The process of adding features to the MyST Spec is more formalized, and is described in the [MyST Enhancement Proposals](https://mep.mystmd.org). This tutorial does not cover updating the MyST Spec.
 
 We should begin by asking the question "What is a role?" The spec [defines roles](https://mystmd.org/spec/overview#roles) as:
 

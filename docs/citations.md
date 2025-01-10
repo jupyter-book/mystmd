@@ -99,7 +99,7 @@ This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#
 
 ## Citation Roles
 
-MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book. To create a citation role in Markdown, use either a parenthetical or textual citation:
+MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1. To create a citation role in Markdown, use either a parenthetical or textual citation:
 
 ```md
 This is a parenthetical citation {cite:p}`cockett2015`.

@@ -49,7 +49,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 :::{seealso}
 :class: dropdown
 
-# Coming from Jupyter Book or Sphinx?
+# Coming from Jupyter Book V1 or Sphinx?
 
 👋 We are glad you are here! 💚
 
