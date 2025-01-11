@@ -43,25 +43,33 @@ const NPM_COMMAND = 'npm i -g mystmd@latest';
 const PIP_COMMAND = 'pip install -U mystmd';
 const LOCALHOSTS = ['localhost', '127.0.0.1', '::1'];
 
+function socialLink({ twitter, bsky }: { twitter?: string; bsky?: string }): string {
+  if (bsky) {
+    return `Follow ${chalk.yellowBright(`@${bsky}`)} for updates!\nhttps://bsky.app/profile/${bsky}`;
+  }
+  if (twitter) {
+    return `Follow ${chalk.yellowBright(`@${twitter}`)} for updates!\nhttps://x.com/${twitter}`;
+  }
+  return '';
+}
+
 export function logUpdateAvailable({
   current,
   latest,
   upgradeCommand,
   twitter,
+  bsky,
 }: {
   current: string;
   latest: string;
   upgradeCommand: string;
-  twitter: string;
+  twitter?: string;
+  bsky?: string;
 }) {
   return boxen(
     `Update available! ${chalk.dim(`v${current}`)} ≫ ${chalk.green.bold(
       `v${latest}`,
-    )}\n\nRun \`${chalk.cyanBright.bold(
-      upgradeCommand,
-    )}\` to update.\n\nFollow ${chalk.yellowBright(
-      `@${twitter}`,
-    )} for updates!\nhttps://twitter.com/${twitter}`,
+    )}\n\nRun \`${chalk.cyanBright.bold(upgradeCommand)}\` to update.\n\n${socialLink({ bsky, twitter })}`,
     {
       padding: 1,
       margin: 1,
@@ -117,7 +125,7 @@ export class Session implements ISession {
         current: version,
         latest: this._latestVersion,
         upgradeCommand: process.env.MYST_LANG === 'PYTHON' ? PIP_COMMAND : NPM_COMMAND,
-        twitter: 'MystMarkdown',
+        bsky: 'mystmd.org',
       }),
     );
     this._shownUpgrade = true;
