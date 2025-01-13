@@ -1,5 +1,4 @@
 import { admonitionDirective } from './admonition.js';
-import { buttonDirective } from './button.js';
 import { bibliographyDirective } from './bibliography.js';
 import { codeDirective, codeCellDirective } from './code.js';
 import { dropdownDirective } from './dropdown.js';
@@ -22,7 +21,6 @@ import { divDirective } from './div.js';
 
 export const defaultDirectives = [
   admonitionDirective,
-  buttonDirective,
   bibliographyDirective,
   csvTableDirective,
   codeDirective,
@@ -52,7 +50,6 @@ export const defaultDirectives = [
 
 export * from './utils.js';
 export { admonitionDirective } from './admonition.js';
-export { buttonDirective } from './button.js';
 export { bibliographyDirective } from './bibliography.js';
 export { codeDirective } from './code.js';
 export { dropdownDirective } from './dropdown.js';
