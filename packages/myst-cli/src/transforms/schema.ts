@@ -46,7 +46,6 @@ import type { IOutput } from '@jupyterlab/nbformat';
  *
  */
 export function externalASTToInternal(ast: GenericParent) {
-  // TODO: output-refactoring -- rewrite this function
   visit(
     ast as any,
     'output',
