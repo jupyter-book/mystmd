@@ -79,8 +79,7 @@ export function externalASTToInternal(ast: GenericParent) {
       }
       // Case 2: "compatible" AST
       else if (parent && parent.type !== 'outputs' && '_future_ast' in node) {
-        const outputs = JSON.parse(node._future_ast);
-        parent.children[index!] = outputs;
+        parent.children[index!] = node._future_ast;
         return SKIP;
       }
       // Case 3: "future" AST
@@ -109,7 +108,7 @@ export function externalASTToInternal(ast: GenericParent) {
 export function internalASTToExternal(ast: GenericParent) {
   const outputsNodes = selectAll('outputs', ast) as GenericParent[];
   outputsNodes.forEach((outputsNode) => {
-    outputsNode._future_ast = JSON.stringify(outputsNode);
+    outputsNode._future_ast = structuredClone(outputsNode);
 
     outputsNode.type = 'output';
     outputsNode.data = outputsNode.children
