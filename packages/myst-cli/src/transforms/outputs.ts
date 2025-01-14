@@ -88,10 +88,10 @@ export function transformFilterOutputStreams(
     const blockRemoveStdout = tags.includes('remove-stdout');
     const outputs = selectAll('output', block) as GenericNode[];
     // There should be only one output in the block
-    outputs.forEach((output) => {
-      const shouldKeepOutput = (
-        data: IStream | MinifiedMimeOutput, // TODO: output-refactoring -- drop to single output in future
-      ) => {
+    outputs
+      .filter((output) => {
+        const data = output.jupyter_data;
+
         if (
           (stderr !== 'show' || blockRemoveStderr) &&
           data.output_type === 'stream' &&
@@ -110,7 +110,7 @@ export function transformFilterOutputStreams(
               },
             );
           }
-          return !doRemove;
+          return doRemove;
         }
         if (
           (stdout !== 'show' || blockRemoveStdout) &&
@@ -130,7 +130,7 @@ export function transformFilterOutputStreams(
               },
             );
           }
-          return !doRemove;
+          return doRemove;
         }
         if (
           mpl !== 'show' &&
@@ -155,15 +155,13 @@ export function transformFilterOutputStreams(
               },
             );
           }
-          return !doRemove;
+          return doRemove;
         }
-        return true;
-      };
-      const keepData = shouldKeepOutput(output.jupyter_data);
-      if (!keepData) {
+        return false;
+      })
+      .forEach((output) => {
         output.type = '__delete__';
-      }
-    });
+      });
   });
   remove(mdast, { cascade: false }, '__delete__');
 }
