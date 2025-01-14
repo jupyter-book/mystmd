@@ -261,6 +261,11 @@ export function reduceOutputs(
     const outputs = outputsNode.children as GenericNode[];
 
     outputs.forEach((outputNode) => {
+      if (outputNode.visibility === 'remove' || outputNode.visibility === 'hide') {
+        // Hidden nodes should not show up in simplified outputs for static export
+        outputNode.type = '__delete__';
+        return;
+      }
       // TODO: output-refactoring -- drop to single output in future
       if (!outputNode.jupyter_data && !outputNode.children?.length) {
         outputNode.type = '__delete__';
