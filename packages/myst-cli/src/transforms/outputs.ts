@@ -264,7 +264,6 @@ export function reduceOutputs(
         outputNode.type = '__delete__';
         return;
       }
-      // TODO: output-refactoring -- drop to single output in future
       if (!outputNode.jupyter_data && !outputNode.children?.length) {
         outputNode.type = '__delete__';
         return;
@@ -272,8 +271,9 @@ export function reduceOutputs(
       outputNode.type = '__lift__';
       if (outputNode.children?.length) return;
       const selectedOutputs: { content_type: string; hash: string }[] = [];
-      // TODO: output-refactoring -- drop to single output in future
-      const selectOutput = (output: MinifiedOutput) => {
+      if (outputNode.jupyter_data) {
+        const output = outputNode.jupyter_data;
+
         let selectedOutput: { content_type: string; hash: string } | undefined;
         walkOutputs([output], (obj: any) => {
           const { output_type, content_type, hash } = obj;
@@ -293,9 +293,6 @@ export function reduceOutputs(
           }
         });
         if (selectedOutput) selectedOutputs.push(selectedOutput);
-      };
-      if (outputNode.jupyter_data) {
-        selectOutput(outputNode.jupyter_data);
       }
       const children: (Image | GenericNode)[] = selectedOutputs
         .map((output): Image | GenericNode | GenericNode[] | undefined => {
