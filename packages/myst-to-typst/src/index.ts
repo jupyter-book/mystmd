@@ -106,7 +106,9 @@ function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
-    state.text(node.value);
+    // We do not want markdown formatting to be carried over to typst
+    // As the meaning in lists, etc. is different
+    state.text(node.value.replaceAll('\n', ' '));
   },
   paragraph(node, state) {
     const { identifier } = node;
