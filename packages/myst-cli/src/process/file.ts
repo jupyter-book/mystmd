@@ -15,6 +15,7 @@ import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/cache.js';
 import { config, projects, warnings, watch } from '../store/reducers.js';
 import type { PreRendererData, RendererData } from '../transforms/types.js';
+import { externalASTToInternal } from '../transforms/schema.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { isValidFile, parseFilePath } from '../utils/resolveExtension.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
@@ -155,6 +156,9 @@ function validateMySTJSON(
   }
 
   const { mdast } = value;
+
+  // Ingest "legacy" mdast and upgrade it
+  externalASTToInternal(mdast);
 
   let kind: undefined | SourceFileKind;
   if (defined(value.kind)) {
