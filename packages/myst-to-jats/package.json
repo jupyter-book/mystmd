@@ -37,7 +37,7 @@
   "dependencies": {
     "citation-js-utils": "^1.2.3",
     "credit-roles": "^2.1.0",
-    "doi-utils": "^2.0.1",
+    "doi-utils": "^2.0.4",
     "jats-tags": "^1.0.8",
     "jats-utils": "^1.0.8",
     "katex": "^0.15.2",
