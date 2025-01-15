@@ -72,7 +72,7 @@ this code should be referenced from your `myst.yml` under the `projects.plugins`
 project:
   plugins:
     - type: executable
-      path: markup.mjs
+      path: markup.py
 ```
 
 then start or build your document using `myst start` or `myst build`, and you will see that the plugin is loaded.
