@@ -124,7 +124,7 @@ const SIMPLE_V1_AST_WITH_OUTPUT: Parent = {
             children: [
               {
                 type: 'output',
-		children: [],
+                children: [],
                 jupyter_data: {
                   output_type: 'display_data',
                   execution_count: 3,
