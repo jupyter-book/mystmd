@@ -1,17 +1,16 @@
 import type { VFile } from 'vfile';
 import { selectAll } from 'unist-util-select';
-import { visit, SKIP } from 'unist-util-visit';
 import type { FrontmatterParts, GenericNode, GenericParent, References } from 'myst-common';
 import { RuleId, fileWarn, plural, selectMdastNodes } from 'myst-common';
 import { computeHash, tic } from 'myst-cli-utils';
 import { addChildrenFromTargetNode } from 'myst-transforms';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import type { CrossReference, Dependency, Link, SourceFileKind } from 'myst-spec-ext';
+import { VERSION } from 'myst-spec-ext';
 import type { ISession } from '../session/types.js';
 import { loadFromCache, writeToCache } from '../session/cache.js';
 import type { SiteAction, SiteExport } from 'myst-config';
-import type { IOutput } from '@jupyterlab/nbformat';
-import { externalASTToInternal } from './schema.js';
+import { makeCompatible } from 'myst-compat';
 
 export const XREF_MAX_AGE = 1; // in days
 
@@ -33,11 +32,12 @@ export type MystData = {
   widgets?: Record<string, any>;
   mdast?: GenericParent;
   references?: References;
+  version?: '1';
 };
 
-function upgradeAndDowngradeMystData(data: MystData) {
+function enforceCompatibilityMystData(data: MystData) {
   if (data.mdast) {
-    externalASTToInternal(data.mdast);
+    makeCompatible(data.version ?? '1', VERSION, data.mdast as any);
   }
 }
 
@@ -58,7 +58,7 @@ async function fetchMystData(
       const resp = await session.fetch(dataUrl);
       if (resp.ok) {
         const data = (await resp.json()) as MystData;
-        upgradeAndDowngradeMystData(data);
+        enforceCompatibilityMystData(data);
         writeToCache(session, filename, JSON.stringify(data));
         return data;
       }

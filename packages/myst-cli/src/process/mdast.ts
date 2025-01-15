@@ -3,8 +3,9 @@ import { tic } from 'myst-cli-utils';
 import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { SourceFileKind } from 'myst-spec-ext';
+import { SourceFileKind, VERSION } from 'myst-spec-ext';
 import type { LinkTransformer } from 'myst-transforms';
+import { downgrade as downgradeAST } from 'myst-compat';
 import {
   basicTransformationsPlugin,
   htmlPlugin,
@@ -68,7 +69,6 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
-  internalASTToExternal,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -274,6 +274,7 @@ export async function transformMdast(
     mdast,
     references,
     widgets,
+    version: VERSION,
   } as any;
   const cachedMdast = cache.$getMdast(file);
   if (cachedMdast) cachedMdast.post = data;
@@ -430,6 +431,9 @@ export async function finalizeMdast(
     postData.widgets = cache.$getMdast(file)?.pre.widgets;
     updateFileInfoFromFrontmatter(session, file, frontmatter);
   }
-  internalASTToExternal(mdast);
+  // TODO[ast-downgrade]: remove this once AST downgrade support is widespread
+  // i.e. once VERSION from myst-spec-ext is 2
+  downgradeAST('2', '1', mdast as any);
+
   logMessagesFromVFile(session, vfile);
 }
