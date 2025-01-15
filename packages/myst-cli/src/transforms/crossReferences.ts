@@ -35,11 +35,10 @@ export type MystData = {
   references?: References;
 };
 
-function upgradeAndDowngradeMystData(data: MystData): MystData {
+function upgradeAndDowngradeMystData(data: MystData) {
   if (data.mdast) {
     externalASTToInternal(data.mdast);
   }
-  return data;
 }
 
 async function fetchMystData(
@@ -58,8 +57,8 @@ async function fetchMystData(
     try {
       const resp = await session.fetch(dataUrl);
       if (resp.ok) {
-        const data = upgradeAndDowngradeMystData((await resp.json()) as MystData);
-
+        const data = (await resp.json()) as MystData;
+        upgradeAndDowngradeMystData(data);
         writeToCache(session, filename, JSON.stringify(data));
         return data;
       }
