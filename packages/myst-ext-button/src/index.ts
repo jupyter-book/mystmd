@@ -7,9 +7,9 @@ export const buttonRole: RoleSpec = {
   name: 'button',
   doc: 'Button to navigate to external or internal links.',
   body: {
-        type: String,
-        doc: 'The body of the button.',
-        required: true,
+    type: String,
+    doc: 'The body of the button.',
+    required: true,
   },
   run(data: RoleData): GenericNode[] {
     const body = data.body as string;
@@ -23,8 +23,6 @@ export const buttonRole: RoleSpec = {
       children: [],
     };
     if (modified) node.children = [{ type: 'text', value: modified.trim() }];
-    return [
-      node
-    ];
+    return [node];
   },
 };

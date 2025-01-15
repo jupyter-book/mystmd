@@ -48,10 +48,7 @@ export function parseMyst(
     extensions: {
       frontmatter: !opts?.ignoreFrontmatter,
     },
-    roles: [
-      buttonRole,
-      ...(session.plugins?.roles ?? [])
-    ],
+    roles: [buttonRole, ...(session.plugins?.roles ?? [])],
     vfile,
   });
   logMessagesFromVFile(session, vfile);
