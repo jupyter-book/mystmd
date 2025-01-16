@@ -45,7 +45,7 @@ export async function transformOutputsToCache(
       .map((outputs) => outputs.children as Output[])
       .flat()
       // Filter outputs with no data
-      // TODO: fix type
+      // TODO: can this ever occur?
       .filter((output) => (output as any).jupyter_data !== undefined)
       // Minify output data
       .map(async (output) => {
@@ -87,7 +87,6 @@ export function transformFilterOutputStreams(
     const blockRemoveStderr = tags.includes('remove-stderr');
     const blockRemoveStdout = tags.includes('remove-stdout');
     const outputs = selectAll('output', block) as GenericNode[];
-    // There should be only one output in the block
     outputs
       .filter((output) => {
         const data = output.jupyter_data;
