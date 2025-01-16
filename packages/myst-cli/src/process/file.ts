@@ -191,7 +191,7 @@ function validateMySTJSON(
   version = version ?? '1';
 
   // Ingest "legacy" mdast and upgrade it
-  makeCompatible(version, VERSION, mdast);
+  makeCompatible(version, '2', mdast);
 
   return {
     mdast,

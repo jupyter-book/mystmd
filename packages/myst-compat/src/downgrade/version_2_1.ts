@@ -6,7 +6,7 @@ import { squeeze } from '../utils.js';
 
 export function downgrade(ast: Parent) {
   visit(ast as any, 'outputs', (node: Outputs2, index: number | null, parent: Parent | null) => {
-    const { label, identifier, html_id, id } = node;
+    const { label, identifier, html_id, id, visibility } = node;
     const data = (node.children as Output2[])
       .map((output) => output.jupyter_data)
       .filter((datum) => !!datum);
@@ -19,6 +19,7 @@ export function downgrade(ast: Parent) {
       label,
       identifier,
       id,
+      visibility,
       _future_ast: structuredClone(node),
     };
     // Drop any undefined members (assume all members are optional if undefined)

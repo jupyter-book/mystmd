@@ -2,6 +2,7 @@ import type { Parent } from 'mdast';
 import type { Outputs as Outputs2, Output as Output2 } from '../types/v2.js';
 import type { Output as Output1 } from '../types/v1.js';
 import { visit, SKIP } from 'unist-util-visit';
+import { squeeze } from '../utils.js';
 
 export function upgrade(ast: Parent) {
   visit(ast as any, 'output', (node: Output1, index: number | null, parent: Parent | null) => {
@@ -18,16 +19,22 @@ export function upgrade(ast: Parent) {
       };
       return result;
     });
+
+    const { visibility, identifier, label, html_id, id } = node;
+
     // Nest `output` under `outputs` (1)
     const outputs: Outputs2 = {
       type: 'outputs',
       children: outputsChildren as Parent[],
       // Lift `Output.visibility` to `Outputs` (3)
-      visibility: node.visibility,
+      visibility,
       // Lift `Output.identifier` and `Output.html_id` to `Outputs` (2)
-      identifier: node.identifier,
-      html_id: node.html_id,
+      identifier,
+      html_id,
+      label,
+      id,
     };
+    squeeze(outputs);
     if (parent) {
       parent.children[index!] = outputs as any;
     }

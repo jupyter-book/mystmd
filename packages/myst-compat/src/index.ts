@@ -9,10 +9,10 @@ export function makeCompatible(from: string, to: string, ast: Parent) {
   if (fromVersion === toVersion) {
     return;
   } else if (fromVersion < toVersion) {
-    downgrade(from, to, ast);
+    upgrade(from, to, ast);
     return;
   } else {
-    upgrade(from, to, ast);
+    downgrade(from, to, ast);
     return;
   }
 }

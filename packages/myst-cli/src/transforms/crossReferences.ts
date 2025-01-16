@@ -37,7 +37,7 @@ export type MystData = {
 
 function enforceCompatibilityMystData(data: MystData) {
   if (data.mdast) {
-    makeCompatible(data.version ?? '1', VERSION, data.mdast as any);
+    makeCompatible(data.version ?? '1', '2', data.mdast as any);
   }
 }
 
