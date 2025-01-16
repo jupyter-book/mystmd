@@ -170,6 +170,7 @@ export async function processNotebookFull(
           const result = {
             type: 'output',
             jupyter_data: output,
+            children: [],
           };
           return result;
         });
