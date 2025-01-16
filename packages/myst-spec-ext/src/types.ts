@@ -251,19 +251,18 @@ export type Container = Omit<SpecContainer, 'kind'> & {
   parentEnumerator?: string;
 };
 
+export type Output = Node & {
+  type: 'output';
+  children: (FlowContent | ListContent | PhrasingContent)[];
+  jupyter_data: any; // TODO: set this to IOutput
+};
+
 export type Outputs = Node &
   Target & {
     type: 'outputs';
-    children: Output[];
-  };
-
-export type Output = Node &
-  Target & {
-    type: 'output';
-    id?: string;
-    data?: any[]; // MinifiedOutput[]
+    children: (Output | FlowContent | ListContent | PhrasingContent)[]; // Support placeholders in addition to outputs
     visibility?: Visibility;
-    children?: (FlowContent | ListContent | PhrasingContent)[];
+    id?: string;
   };
 
 export type Aside = Node &

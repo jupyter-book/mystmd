@@ -1,6 +1,6 @@
 import type { GenericNode, GenericParent } from 'myst-common';
 import { NotebookCellTags, RuleId, fileError, fileWarn } from 'myst-common';
-import type { Image, Output } from 'myst-spec-ext';
+import type { Image, Outputs } from 'myst-spec-ext';
 import { select, selectAll } from 'unist-util-select';
 import yaml from 'js-yaml';
 import type { VFile } from 'vfile';
@@ -156,7 +156,7 @@ export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast:
   const blocks = selectAll('block', mdast) as GenericNode[];
   blocks.forEach((block) => {
     if (!block.data) return;
-    const outputNode = select('output', block) as Output | null;
+    const outputNode = select('outputs', block) as Outputs | null;
     if (block.data.placeholder && outputNode) {
       if (!outputNode.children) outputNode.children = [];
       outputNode.children.push({
