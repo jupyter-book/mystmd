@@ -337,11 +337,11 @@ export function selectPageReferenceStates(
   const headingDepths = new Set(
     pages
       .map(({ file }) => {
-        const { mdast } = cache.$getMdast(file)?.post ?? {};
+        const { frontmatter, mdast } = cache.$getMdast(file)?.post ?? {};
         const headingNodes = selectAll('heading', mdast).filter(
           (node) => (node as Heading).enumerated !== false,
         );
-        return headingNodes.map((node) => (node as Heading).depthSource ?? (node as Heading).depth);
+        return headingNodes.map((node) => (node as Heading).depth + (frontmatter?.offset ?? 0));
       })
       .flat(),
   );
@@ -472,6 +472,7 @@ export async function fastProcessFile(
   const projectParts = selectors.selectProjectParts(state, projectPath);
   await Promise.all(
     [file, ...fileParts].map(async (f) => {
+      const level = pages.find((page) => page.file === file)?.level;
       return transformMdast(session, {
         file: f,
         imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
@@ -482,6 +483,7 @@ export async function fastProcessFile(
         extraTransforms,
         index: project.index,
         execute,
+        offset: level ? level - 1 : undefined,
       });
     }),
   );
@@ -580,7 +582,10 @@ export async function processProject(
     .map((part) => {
       return { file: part };
     });
-  const pagesToTransform: { file: string; slug?: string }[] = [...pages, ...projectParts];
+  const pagesToTransform: { file: string; slug?: string; level?: number }[] = [
+    ...pages,
+    ...projectParts,
+  ];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
   // Transform all pages
   await Promise.all(
@@ -595,6 +600,7 @@ export async function processProject(
         execute,
         extraTransforms,
         index: project.index,
+        offset: page.level ? page.level - 1 : undefined,
       }),
     ),
   );

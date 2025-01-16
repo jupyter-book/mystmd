@@ -109,6 +109,7 @@ export async function transformMdast(
     minifyMaxCharacters?: number;
     index?: string;
     titleDepth?: number;
+    offset?: number;
   },
 ) {
   const {
@@ -121,7 +122,8 @@ export async function transformMdast(
     watchMode = false,
     minifyMaxCharacters,
     index,
-    titleDepth,
+    titleDepth, // Related to title set in markdown, rather than frontmatter
+    offset, // Related to multi-page nesting
     execute,
   } = opts;
   const toc = tic();
@@ -156,6 +158,9 @@ export async function transformMdast(
     },
     projectPath,
   );
+  if (offset && frontmatter.offset == null) {
+    frontmatter.offset = offset;
+  }
   const references: References = {
     cite: { order: [], data: {} },
   };

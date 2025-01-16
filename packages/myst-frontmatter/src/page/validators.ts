@@ -39,6 +39,7 @@ export const USE_PROJECT_FALLBACK = [
   'funding',
   'copyright',
   'affiliations',
+  'offset',
 ];
 
 export function validatePageFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {

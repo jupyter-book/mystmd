@@ -82,12 +82,13 @@ function getReferenceTemplate(
   numbering: Numbering,
   numbered: boolean,
   hasTitle: boolean,
+  offset?: number,
 ) {
   const { kind, node } = target;
   let template: string | undefined;
   if (numbered) {
     if (kind === TargetKind.heading && node.type === 'heading') {
-      template = numbering[`heading_${node.depthSource ?? node.depth}`]?.template;
+      template = numbering[`heading_${node.depth + (offset ?? 0)}`]?.template;
     } else if (node.subcontainer) {
       template = numbering.subfigure?.template;
     } else {
@@ -210,19 +211,16 @@ function shouldEnumerateNode(
   node: TargetNodes,
   kind: TargetKind | string,
   numbering: Numbering,
+  offset?: number,
 ): boolean {
   // Node may override enumeration from numbering frontmatter
   if (node.enumerated != null) return node.enumerated;
   const enabledDefault = numbering.all?.enabled ?? false;
   if (kind === 'heading' && node.type === 'heading') {
-    return numbering[`heading_${node.depthSource ?? node.depth}`]?.enabled ?? enabledDefault;
+    return numbering[`heading_${node.depth + (offset ?? 0)}`]?.enabled ?? enabledDefault;
   }
   if (node.subcontainer) return numbering.subfigure?.enabled ?? enabledDefault;
   return numbering[kind]?.enabled ?? enabledDefault;
-}
-
-function shouldEnumerateFile(titleDepth: number, numbering: Numbering) {
-  return numbering[`heading_${titleDepth}`]?.enabled ?? numbering.all?.enabled;
 }
 
 /**
@@ -266,12 +264,22 @@ export function formatHeadingEnumerator(counts: (number | null)[], prefix?: stri
 export function initializeTargetCounts(
   numbering: Numbering,
   previousCounts?: TargetCounts,
-  titleDepth?: number,
+  offset?: number,
   headingDepths?: Set<number>,
 ): TargetCounts {
   const heading = [1, 2, 3, 4, 5, 6].map((depth, ind) => {
-    if (headingDepths && !headingDepths.has(depth)) return null;
-    if (numbering[`heading_${depth}`]?.continue && previousCounts?.heading?.[ind]) {
+    if (
+      headingDepths &&
+      !headingDepths.has(depth - (offset ?? 0)) &&
+      (!numbering.title?.enabled || depth - 1 > (offset ?? 0))
+    ) {
+      return null;
+    }
+    if (
+      (numbering[`heading_${depth}`]?.continue ||
+        (numbering.title?.enabled && depth - 1 <= (offset ?? 0))) &&
+      previousCounts?.heading?.[ind]
+    ) {
       return previousCounts?.heading?.[ind];
     }
     return 0;
@@ -292,7 +300,7 @@ export function initializeTargetCounts(
       ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6'].includes(key)
     ) {
       const headingIndex = Number.parseInt(key.slice(-1), 10) - 1;
-      if (val.enabled === false) {
+      if (val.enabled === false && (!numbering.title?.enabled || headingIndex > (offset ?? 0))) {
         targetCounts.heading[headingIndex] = null;
       } else if (val.start) {
         targetCounts.heading[headingIndex] = val.start - 1;
@@ -301,9 +309,6 @@ export function initializeTargetCounts(
       targetCounts[key] = { main: val.start - 1, sub: 0 };
     }
   });
-  if (titleDepth && shouldEnumerateFile(titleDepth, numbering)) {
-    targetCounts.heading = incrementHeadingCounts(titleDepth, targetCounts.heading);
-  }
   return targetCounts;
 }
 
@@ -331,6 +336,7 @@ export class ReferenceState implements IReferenceStateResolver {
   targetCounts: TargetCounts;
   identifiers: string[];
   enumerator?: string;
+  offset?: number;
 
   constructor(
     filePath: string,
@@ -348,22 +354,18 @@ export class ReferenceState implements IReferenceStateResolver {
     this.targetCounts = initializeTargetCounts(
       this.numbering,
       opts?.previousCounts,
-      opts?.frontmatter?.titleDepth,
+      opts?.frontmatter?.offset,
       opts?.headingDepths,
     );
-    if (
-      opts?.frontmatter?.titleDepth &&
-      shouldEnumerateFile(opts.frontmatter.titleDepth, this.numbering)
-    ) {
+    if (this.numbering.title?.enabled && !opts?.frontmatter?.content_includes_title) {
+      this.targetCounts.heading = incrementHeadingCounts(
+        1 + (opts?.frontmatter?.offset ?? 0),
+        this.targetCounts.heading,
+      );
       this.enumerator = formatHeadingEnumerator(
         this.targetCounts.heading,
         this.numbering.enumerator?.template,
       );
-    } else if (this.numbering.title?.enabled && !opts?.frontmatter?.content_includes_title) {
-      this.targetCounts.title ??= { main: 0, sub: 0 };
-      this.targetCounts.title.main += 1;
-      this.targetCounts.title.sub = 0;
-      this.enumerator = this.resolveEnumerator(this.targetCounts.title.main);
     }
     this.identifiers = opts?.identifiers ?? [];
     this.targets = {};
@@ -372,12 +374,13 @@ export class ReferenceState implements IReferenceStateResolver {
     this.url = opts?.url;
     this.dataUrl = opts?.dataUrl;
     this.title = opts?.frontmatter?.title;
+    this.offset = opts?.frontmatter?.offset;
   }
 
   addTarget(node: TargetNodes) {
     if (!isTargetIdentifierNode(node)) return;
     const kind = kindFromNode(node);
-    const numberNode = shouldEnumerateNode(node, kind, this.numbering);
+    const numberNode = shouldEnumerateNode(node, kind, this.numbering, this.offset);
     // if (numberNode && !node.enumerator) { // Is this change a problem?
     if (numberNode) {
       this.incrementCount(node, kind as TargetKind);
@@ -424,7 +427,7 @@ export class ReferenceState implements IReferenceStateResolver {
     let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
       this.targetCounts.heading = incrementHeadingCounts(
-        node.depthSource ?? node.depth,
+        node.depth + (this.offset ?? 0),
         this.targetCounts.heading,
       );
       enumerator = formatHeadingEnumerator(
@@ -502,7 +505,7 @@ export class ReferenceState implements IReferenceStateResolver {
     }
     // Put the kind on the node so we can use that later
     node.kind = target.kind;
-    addChildrenFromTargetNode(node, target.node, this.numbering, this.vfile);
+    addChildrenFromTargetNode(node, target.node, this.numbering, this.vfile, this.offset);
   }
 }
 
@@ -511,6 +514,7 @@ export function addChildrenFromTargetNode(
   targetNode: TargetNodes,
   numbering?: Numbering,
   vfile?: VFile,
+  offset?: number,
 ) {
   numbering = fillNumbering(numbering, DEFAULT_NUMBERING);
   const kind = kindFromNode(targetNode);
@@ -522,6 +526,7 @@ export function addChildrenFromTargetNode(
       numbering,
       numberHeading,
       true,
+      offset,
     );
     fillReferenceEnumerators(
       vfile,
@@ -551,6 +556,7 @@ export function addChildrenFromTargetNode(
       numbering,
       !!targetNode.enumerator,
       !!title,
+      offset,
     );
     fillReferenceEnumerators(vfile, node, template, targetNode, title);
   }
