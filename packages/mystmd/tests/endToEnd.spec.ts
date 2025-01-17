@@ -26,6 +26,12 @@ function resolve(relative: string) {
   return path.resolve(__dirname, relative);
 }
 
+function cleanHashes(text: string) {
+  return text
+    .replace(/-[a-f0-9]{32}\./g, '.')
+    .replace(/"key":\s*"[a-zA-Z0-9]{10}"/g, '"key": "keyABC0123"');
+}
+
 const only = '';
 
 describe.concurrent('End-to-end cli export tests', { timeout: 15000 }, () => {
@@ -48,13 +54,13 @@ describe.concurrent('End-to-end cli export tests', { timeout: 15000 }, () => {
       expect(fs.existsSync(resolve(output.path))).toBeTruthy();
       if (path.extname(output.content) === '.json') {
         expect(
-          JSON.parse(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' })),
+          JSON.parse(cleanHashes(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' }))),
         ).toMatchObject(
-          JSON.parse(fs.readFileSync(resolve(output.content), { encoding: 'utf-8' })),
+          JSON.parse(cleanHashes(fs.readFileSync(resolve(output.content), { encoding: 'utf-8' }))),
         );
       } else {
-        expect(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' })).toEqual(
-          fs.readFileSync(resolve(output.content), { encoding: 'utf-8' }),
+        expect(cleanHashes(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' }))).toEqual(
+          cleanHashes(fs.readFileSync(resolve(output.content), { encoding: 'utf-8' })),
         );
       }
     });
