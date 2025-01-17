@@ -88,7 +88,9 @@ function getReferenceTemplate(
   let template: string | undefined;
   if (numbered) {
     if (kind === TargetKind.heading && node.type === 'heading') {
-      template = numbering[`heading_${node.depth + (offset ?? 0)}`]?.template;
+      template =
+        numbering[`heading_${node.depth - (numbering?.title?.enabled ? 0 : 1) + (offset ?? 0)}`]
+          ?.template;
     } else if (node.subcontainer) {
       template = numbering.subfigure?.template;
     } else {
@@ -145,11 +147,6 @@ function fillReferenceEnumerators(
   target?: TargetNodes,
   title?: string | PhrasingContent[],
 ) {
-  // If the node children have no position, they were probably computed so recompute
-  // (this is sketchy...)
-  if (!node.children?.[0]?.position) {
-    node.children = [];
-  }
   const noNodeChildren = !node.children?.length;
   if (noNodeChildren) {
     setTextAsChild(node, template);
@@ -217,7 +214,10 @@ function shouldEnumerateNode(
   if (node.enumerated != null) return node.enumerated;
   const enabledDefault = numbering.all?.enabled ?? false;
   if (kind === 'heading' && node.type === 'heading') {
-    return numbering[`heading_${node.depth + (offset ?? 0)}`]?.enabled ?? enabledDefault;
+    return (
+      numbering[`heading_${node.depth - (numbering?.title?.enabled ? 0 : 1) + (offset ?? 0)}`]
+        ?.enabled ?? enabledDefault
+    );
   }
   if (node.subcontainer) return numbering.subfigure?.enabled ?? enabledDefault;
   return numbering[kind]?.enabled ?? enabledDefault;
@@ -268,19 +268,21 @@ export function initializeTargetCounts(
   headingDepths?: Set<number>,
 ): TargetCounts {
   const heading = [1, 2, 3, 4, 5, 6].map((depth, ind) => {
+    const cont = numbering[`heading_${depth}`]?.continue ?? numbering.all?.continue ?? false;
+    const enabled = numbering[`heading_${depth}`]?.enabled ?? numbering.all?.enabled ?? true;
+    const prevCount = previousCounts?.heading?.[ind];
+    if (cont && enabled && prevCount !== undefined) {
+      return prevCount;
+    }
+    if (numbering.title?.enabled && depth - 1 <= (offset ?? 0) && prevCount != null) {
+      return prevCount;
+    }
     if (
       headingDepths &&
       !headingDepths.has(depth - (offset ?? 0)) &&
       (!numbering.title?.enabled || depth - 1 > (offset ?? 0))
     ) {
       return null;
-    }
-    if (
-      (numbering[`heading_${depth}`]?.continue ||
-        (numbering.title?.enabled && depth - 1 <= (offset ?? 0))) &&
-      previousCounts?.heading?.[ind]
-    ) {
-      return previousCounts?.heading?.[ind];
     }
     return 0;
   });
@@ -289,7 +291,7 @@ export function initializeTargetCounts(
   // Update with other initial values
   Object.entries(previousCounts ?? {})
     .filter(([key]) => key !== 'heading')
-    .filter(([key]) => numbering[key]?.continue)
+    .filter(([key]) => !numbering[key] || numbering[key]?.continue || numbering.all?.continue)
     .forEach(([key, val]) => {
       targetCounts[key] = { ...(val as { main: number; sub: number }) };
     });
@@ -427,7 +429,7 @@ export class ReferenceState implements IReferenceStateResolver {
     let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
       this.targetCounts.heading = incrementHeadingCounts(
-        node.depth + (this.offset ?? 0),
+        node.depth - (this.numbering?.title?.enabled ? 0 : 1) + (this.offset ?? 0),
         this.targetCounts.heading,
       );
       enumerator = formatHeadingEnumerator(

@@ -350,32 +350,6 @@ cases:
         content: multi-page-headings-typ-site/outputs/out-c.typ
       - path: multi-page-headings-typ-site/_build/out-d.typ
         content: multi-page-headings-typ-site/outputs/out-d.typ
-  - title: Multi page project with headings numbered except 2
-    cwd: multi-page-heading-2-false-typ-site
-    command: myst build --all
-    outputs:
-      - path: multi-page-heading-2-false-typ-site/_build/site/config.json
-        content: multi-page-heading-2-false-typ-site/outputs/config.json
-      - path: multi-page-heading-2-false-typ-site/_build/site/content/index.json
-        content: multi-page-heading-2-false-typ-site/outputs/index.json
-      - path: multi-page-heading-2-false-typ-site/_build/site/content/a.json
-        content: multi-page-heading-2-false-typ-site/outputs/a.json
-      - path: multi-page-heading-2-false-typ-site/_build/site/content/b.json
-        content: multi-page-heading-2-false-typ-site/outputs/b.json
-      - path: multi-page-heading-2-false-typ-site/_build/site/content/c.json
-        content: multi-page-heading-2-false-typ-site/outputs/c.json
-      - path: multi-page-heading-2-false-typ-site/_build/site/content/d.json
-        content: multi-page-heading-2-false-typ-site/outputs/d.json
-      - path: multi-page-heading-2-false-typ-site/_build/out.typ
-        content: multi-page-heading-2-false-typ-site/outputs/out.typ
-      - path: multi-page-heading-2-false-typ-site/_build/out-a.typ
-        content: multi-page-heading-2-false-typ-site/outputs/out-a.typ
-      - path: multi-page-heading-2-false-typ-site/_build/out-b.typ
-        content: multi-page-heading-2-false-typ-site/outputs/out-b.typ
-      - path: multi-page-heading-2-false-typ-site/_build/out-c.typ
-        content: multi-page-heading-2-false-typ-site/outputs/out-c.typ
-      - path: multi-page-heading-2-false-typ-site/_build/out-d.typ
-        content: multi-page-heading-2-false-typ-site/outputs/out-d.typ
   - title: Single page project with no numbering specified
     cwd: single-page-typ-site
     command: myst build --all

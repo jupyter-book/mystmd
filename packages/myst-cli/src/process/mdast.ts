@@ -135,6 +135,7 @@ export async function transformMdast(
     kind,
     frontmatter: preFrontmatter,
     location,
+    identifiers,
     widgets,
   } = cache.$getMdast(file)?.pre ?? {};
   if (!mdastPre || !kind || !location) throw new Error(`Expected mdast to be parsed for ${file}`);
@@ -261,6 +262,7 @@ export async function transformMdast(
     frontmatter,
     mdast,
     references,
+    identifiers,
     widgets,
   } as any;
   const cachedMdast = cache.$getMdast(file);

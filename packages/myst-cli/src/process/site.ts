@@ -341,7 +341,12 @@ export function selectPageReferenceStates(
         const headingNodes = selectAll('heading', mdast).filter(
           (node) => (node as Heading).enumerated !== false,
         );
-        return headingNodes.map((node) => (node as Heading).depth + (frontmatter?.offset ?? 0));
+        return headingNodes.map(
+          (node) =>
+            (node as Heading).depth -
+            (frontmatter?.numbering?.title?.enabled ? 0 : 1) +
+            (frontmatter?.offset ?? 0),
+        );
       })
       .flat(),
   );

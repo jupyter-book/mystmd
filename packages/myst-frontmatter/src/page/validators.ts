@@ -67,13 +67,6 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     // At this point, they just need to be an object
     output.site = validateObject(value.site, incrementOptions('site', opts));
   }
-  if (defined(value.titleDepth)) {
-    output.titleDepth = validateNumber(value.titleDepth, {
-      integer: true,
-      min: 0,
-      ...incrementOptions('titleDepth', opts),
-    });
-  }
   return output;
 }
 

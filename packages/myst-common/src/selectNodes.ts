@@ -20,6 +20,7 @@ export function isTargetIdentifierNode(node: { type: string }) {
     'footnoteDefinition',
     'footnoteReference',
     'captionNumber',
+    'link',
   ];
   return !nonTargetTypes.includes(node.type);
 }
