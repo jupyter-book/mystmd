@@ -356,12 +356,12 @@ export class ReferenceState implements IReferenceStateResolver {
     this.targetCounts = initializeTargetCounts(
       this.numbering,
       opts?.previousCounts,
-      opts?.frontmatter?.offset,
+      opts?.frontmatter?.numbering?.title?.offset,
       opts?.headingDepths,
     );
     if (this.numbering.title?.enabled && !opts?.frontmatter?.content_includes_title) {
       this.targetCounts.heading = incrementHeadingCounts(
-        1 + (opts?.frontmatter?.offset ?? 0),
+        1 + (opts?.frontmatter?.numbering?.title?.offset ?? 0),
         this.targetCounts.heading,
       );
       this.enumerator = formatHeadingEnumerator(
@@ -376,7 +376,7 @@ export class ReferenceState implements IReferenceStateResolver {
     this.url = opts?.url;
     this.dataUrl = opts?.dataUrl;
     this.title = opts?.frontmatter?.title;
-    this.offset = opts?.frontmatter?.offset;
+    this.offset = opts?.frontmatter?.numbering?.title?.offset;
   }
 
   addTarget(node: TargetNodes) {

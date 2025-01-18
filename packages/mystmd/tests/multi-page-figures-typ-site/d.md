@@ -1,5 +1,7 @@
 ---
 title: This is page D
+numbering:
+  figure: 6
 ---
 
 # Heading one on page D
@@ -13,5 +15,5 @@ More text
 ```{figure} image.png
 :label: fig-d
 
-I would like this to be figure 4
+I would like this to be figure 6
 ```

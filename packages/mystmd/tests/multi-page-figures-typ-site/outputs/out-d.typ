@@ -12,7 +12,7 @@ More text
 #figure(
   image("files/image-1eb130443794fcf914583282b20c2f71.png", width: 90%),
   caption: [
-I would like this to be figure 4
+I would like this to be figure 6
 ],
   kind: "figure",
   supplement: [Figure],

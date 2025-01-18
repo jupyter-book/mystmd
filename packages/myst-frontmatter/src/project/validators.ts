@@ -235,14 +235,6 @@ export function validateProjectAndPageFrontmatterKeys(
     );
     if (settings) output.settings = settings;
   }
-  if (defined(value.offset)) {
-    output.offset = validateNumber(value.offset, {
-      integer: true,
-      min: 0,
-      max: 5,
-      ...incrementOptions('offset', opts),
-    });
-  }
   return output;
 }
 

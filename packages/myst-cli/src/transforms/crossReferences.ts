@@ -150,7 +150,7 @@ export async function transformMystXRefs(
             targets[0] as any,
             frontmatter.numbering,
             vfile,
-            frontmatter.offset,
+            frontmatter.numbering?.title?.offset,
           );
         }
       }

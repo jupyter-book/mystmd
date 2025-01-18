@@ -159,8 +159,10 @@ export async function transformMdast(
     },
     projectPath,
   );
-  if (offset && frontmatter.offset == null) {
-    frontmatter.offset = offset;
+  if (offset) {
+    if (!frontmatter.numbering) frontmatter.numbering = {};
+    if (!frontmatter.numbering.title) frontmatter.numbering.title = {};
+    if (frontmatter.numbering.title.offset == null) frontmatter.numbering.title.offset = offset;
   }
   const references: References = {
     cite: { order: [], data: {} },

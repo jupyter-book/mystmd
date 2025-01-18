@@ -21,4 +21,5 @@ project:
     figures:
       continue: true
 site:
-  template: ../templates/site/myst/book-theme
+  # template: ../templates/site/myst/book-theme
+  template: book-theme

@@ -345,7 +345,7 @@ export function selectPageReferenceStates(
           (node) =>
             (node as Heading).depth -
             (frontmatter?.numbering?.title?.enabled ? 0 : 1) +
-            (frontmatter?.offset ?? 0),
+            (frontmatter?.numbering?.title?.offset ?? 0),
         );
       })
       .flat(),

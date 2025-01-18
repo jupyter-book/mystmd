@@ -17,9 +17,8 @@ project:
     - format: typst
       output: _build/out.typ
       template: null
-  offset: 0
   numbering:
-    title: true
+    title: 0
     headings: true
 site:
   template: ../templates/site/myst/book-theme
