@@ -28,7 +28,8 @@ function resolve(relative: string) {
 
 function cleanHashes(text: string) {
   return text
-    .replace(/\/image-[a-f0-9]{32}\.webp/g, '')
+    .replace(/"urlOptimized":\s*"\/image-[a-f0-9]{32}\.webp",/g, '')
+    .replace(/"thumbnailOptimized":\s*"\/image-[a-f0-9]{32}\.webp",/g, '')
     .replace(/-[a-f0-9]{32}\./g, '.')
     .replace(/"key":\s*"[a-zA-Z0-9]{10}"/g, '"key": "keyABC0123"');
 }
