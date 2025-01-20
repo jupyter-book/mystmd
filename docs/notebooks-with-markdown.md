@@ -116,7 +116,7 @@ For example, the following code defines a `remove-input` tag (See all [notebook 
 
 ````markdown
 ```{code-cell} python
-:tag: remove-input
+:tags: [remove-input]
 print("This will show output with no input!")
 ```
 ````
@@ -131,7 +131,7 @@ and results in the following:
 This can be particularly helpful for showing the output of a calculation or plot, which is reproducible in the {download}`source code <./notebooks-with-markdown.md>`, but not shown to the user like this `matplotlib` plot:
 
 ```{code-cell} python
-:tag: remove-input
+:tags: [remove-input]
 # Data for plotting
 t = np.arange(0.0, 2.0, 0.01)
 s = 1 + np.sin(2 * np.pi * t)

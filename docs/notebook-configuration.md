@@ -27,7 +27,7 @@ In Markdown of a jupyter notebook these look like:
 
 ````markdown
 ```{code-cell} python
-:tag: remove-input
+:tags: [remove-input]
 print("This will show output with no input!")
 ```
 ````

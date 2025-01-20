@@ -43,7 +43,7 @@ Here's an example of adding this tag with a {myst:directive}`code-cell` directiv
 
 ````markdown
 ```{code-cell}
-:tag: raises-exception
+:tags: [raises-exception]
 
 print("Hello" + 10001)
 ```
@@ -57,7 +57,7 @@ For [Markdown notebooks using the {myst:directive}`code-cell` directive](noteboo
 
 ````markdown
 ```{code-cell}
-:tag: skip-execution
+:tags: [skip-execution]
 
 name = input("What is your name?")
 ```
