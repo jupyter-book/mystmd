@@ -34,7 +34,8 @@ export function determineCaptionKind(node: GenericNode): CaptionKind | null {
 }
 
 function renderFigureChild(node: GenericNode, state: ITypstSerializer) {
-  const useBrackets = node.type !== 'image' && node.type !== 'table';
+  const bracketNode = node.type === 'div' && node.children?.length === 1 ? node.children[0] : node;
+  const useBrackets = bracketNode.type !== 'image' && bracketNode.type !== 'table';
   if (node.type === 'legend') {
     state.useMacro('#let legendStyle = (fill: black.lighten(20%), size: 8pt, style: "italic")');
     state.write('text(..legendStyle)');

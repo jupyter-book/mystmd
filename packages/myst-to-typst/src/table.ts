@@ -63,7 +63,9 @@ export const tableCellHandler: Handler = (node, state) => {
       state.write(`align: ${node.align}, `);
     }
     if (node.style?.backgroundColor) {
-      state.write(`fill: rgb("${node.style.backgroundColor}"), `);
+      const fill = node.style.backgroundColor as string;
+      const rgb = fill.startsWith('#');
+      state.write(`fill: ${rgb ? `rgb("${fill}")` : fill}, `);
     }
     state.write(')');
   }
