@@ -124,7 +124,7 @@ print("This will show output with no input!")
 and results in the following:
 
 > ```{code-cell} python
-> :tag: remove-input
+> :tags: [remove-input]
 > print("This will show output with no input!")
 > ```
 
