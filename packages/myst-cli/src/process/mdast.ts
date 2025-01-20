@@ -208,6 +208,20 @@ export async function transformMdast(
   // This needs to come after basic transformations since meta tags are added there
   propagateBlockDataToCode(session, vfile, mdast);
 
+  if (execute) {
+    const cachePath = path.join(session.buildPath(), 'execute');
+    await kernelExecutionTransform(mdast, vfile, {
+      basePath: session.sourcePath(),
+      cache: new LocalDiskCache(cachePath),
+      sessionFactory: () => session.jupyterSessionManager(),
+      frontmatter: frontmatter,
+      ignoreCache: false,
+      errorIsFatal: false,
+      log: session.log,
+    });
+  }
+  transformRenderInlineExpressions(mdast, vfile);
+
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(
     session,
@@ -225,20 +239,6 @@ export async function transformMdast(
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
-
-  if (execute) {
-    const cachePath = path.join(session.buildPath(), 'execute');
-    await kernelExecutionTransform(mdast, vfile, {
-      basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
-      sessionFactory: () => session.jupyterSessionManager(),
-      frontmatter: frontmatter,
-      ignoreCache: false,
-      errorIsFatal: false,
-      log: session.log,
-    });
-  }
-  transformRenderInlineExpressions(mdast, vfile);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(session, file, mdast, fileCitationRenderer, references);
