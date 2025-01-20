@@ -232,7 +232,7 @@ export function transformLiftCodeBlocksInJupytext(mdast: GenericParent) {
         child.type === 'block' &&
         child.children?.length === 2 &&
         child.children?.[0].type === 'code' &&
-        child.children?.[1].type === 'output'
+        child.children?.[1].type === 'outputs'
       ) {
         newBlocks.push(child as GenericParent);
         newBlocks.push({ type: 'block', children: [] });
