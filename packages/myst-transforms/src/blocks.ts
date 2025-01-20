@@ -74,7 +74,15 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
       });
       const outputsNode = select('outputs', block) as GenericNode | undefined;
       if (outputsNode && !outputsNode.identifier) {
+        // Label outputs node
         outputsNode.identifier = `${block.identifier}-output`;
+        // Enumerate outputs
+        const outputs = selectAll('output', outputsNode) as GenericNode[];
+        outputs.forEach((outputNode, index) => {
+          if (outputNode && !outputNode.identifier) {
+            outputNode.identifier = `${block.identifier}-output-${index}`;
+          }
+        });
       }
     }
   });

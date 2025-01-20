@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { downgrade } from './version_2_1.js';
 import type { Parent } from 'mdast';
-import { warn } from 'console';
 
 const SIMPLE_AST: Parent = {
   type: 'root',

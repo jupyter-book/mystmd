@@ -251,11 +251,12 @@ export type Container = Omit<SpecContainer, 'kind'> & {
   parentEnumerator?: string;
 };
 
-export type Output = Node & {
-  type: 'output';
-  children: (FlowContent | ListContent | PhrasingContent)[];
-  jupyter_data: any; // TODO: set this to IOutput
-};
+export type Output = Node &
+  Target & {
+    type: 'output';
+    children: (FlowContent | ListContent | PhrasingContent)[];
+    jupyter_data: any; // TODO: set this to IOutput
+  };
 
 export type Outputs = Node &
   Target & {
