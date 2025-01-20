@@ -267,8 +267,15 @@ export function reduceOutputs(
         outputNode.type = '__delete__';
         return;
       }
+      // Lift the `output` node into `Outputs`
       outputNode.type = '__lift__';
-      if (outputNode.children?.length) return;
+
+      // If the output already has children, we don't need to do anything
+      if (outputNode.children?.length) {
+        return;
+      }
+
+      // Find a preferred IOutput type to render into the AST
       const selectedOutputs: { content_type: string; hash: string }[] = [];
       if (outputNode.jupyter_data) {
         const output = outputNode.jupyter_data;
@@ -336,7 +343,7 @@ export function reduceOutputs(
         .filter((output): output is Image | GenericNode => !!output);
       outputNode.children = children;
     });
-    // Erase the outputs node
+    // Lift the `outputs` node
     outputsNode.type = '__lift__';
   });
   remove(mdast, '__delete__');
