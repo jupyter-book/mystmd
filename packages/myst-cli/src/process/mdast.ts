@@ -198,11 +198,6 @@ export async function transformMdast(
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(indexIdentifierPlugin)
     .use(enumerateTargetsPlugin, { state }); // This should be after math/container transforms
-  // Load custom transform plugins
-  session.plugins?.transforms.forEach((t) => {
-    if (t.stage !== 'document') return;
-    pipe.use(t.plugin, undefined, pluginUtils);
-  });
   await pipe.run(mdast, vfile);
 
   // This needs to come after basic transformations since meta tags are added there
@@ -221,6 +216,15 @@ export async function transformMdast(
     });
   }
   transformRenderInlineExpressions(mdast, vfile);
+
+  // Run document plugins
+  const pluginPipe = unified();
+  // Load custom transform plugins
+  session.plugins?.transforms.forEach((t) => {
+    if (t.stage !== 'document') return;
+    pluginPipe.use(t.plugin, undefined, pluginUtils);
+  });
+  await pluginPipe.run(mdast, vfile);
 
   // Initialize citation renderers for this (non-bib) file
   cache.$citationRenderers[file] = await transformLinkedDOIs(
