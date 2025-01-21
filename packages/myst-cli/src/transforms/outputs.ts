@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
-import type { Image, SourceFileKind, Output } from 'myst-spec-ext';
+import type { Image, SourceFileKind } from 'myst-spec-ext';
 import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
@@ -25,6 +25,53 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
   return join(writeFolder, getFilename(hash, contentType));
 }
 
+const MARKDOWN_MIME_TYPE = 'text/markdown';
+const SUPPORTED_MARKDOWN_VARIANTS = ['Original', 'GFM', 'CommonMark', 'myst'];
+const MIME_OUTPUT_TYPES = ['display_data', 'update_display_data', 'execute_result'];
+
+/**
+ * Extract the `variant` parameter from a Markdown MIME type
+ *
+ * @param mimeType MIME type of the form `text/markdown;FOO=BAR`
+ */
+function extractVariantParameter(mimeType: string): string | undefined {
+  const [variant] = Array.from(mimeType.matchAll(/;([^;]+)=([^;]+)/g))
+    .filter(([name]) => name === 'variant')
+    .map((pair) => pair[1]);
+  return variant;
+}
+
+export async function transformMarkdownOutputs(
+  mdast: GenericParent,
+  opts: {
+    parser: (content: string) => GenericParent;
+  },
+) {
+  const outputs = selectAll('output', mdast) as GenericNode[];
+  outputs.forEach((output) => {
+    const rawOutput = output.data;
+    if (!MIME_OUTPUT_TYPES.includes(rawOutput?.output_type)) {
+      return;
+    }
+    // Find the most MyST-like Markdown (if any)
+    const [preferredEntry] = Object.entries(rawOutput.data as Record<string, any>)
+      // Find only markdown outputs
+      .filter(([mimeType]) => mimeType.startsWith(MARKDOWN_MIME_TYPE))
+      // Determine the Markdown variant
+      .map(([mimeType, data]) => [extractVariantParameter(mimeType), data])
+      // Filter out non-MyST or plan Markdown
+      .filter(([variant]) => SUPPORTED_MARKDOWN_VARIANTS.includes(variant))
+      .sort((left) => (left[0] === undefined ? +1 : -1));
+
+    // Process Markdown
+    if (preferredEntry !== undefined) {
+      const data = preferredEntry[1];
+      const outputMdast = opts.parser(data as string);
+      output.children = outputMdast.children;
+    }
+  });
+}
+
 /**
  * Traverse all output nodes, minify their content, and cache on the session
  */
@@ -34,28 +81,18 @@ export async function transformOutputsToCache(
   kind: SourceFileKind,
   opts?: { minifyMaxCharacters?: number },
 ) {
-  const outputsNodes = selectAll('outputs', mdast) as GenericNode[];
+  const outputs = selectAll('output', mdast) as GenericNode[];
+  if (!outputs.length) return;
   const cache = castSession(session);
   await Promise.all(
-    outputsNodes
-      // Ignore outputs that are hidden
-      .filter((outputs) => outputs.visibility !== 'remove')
-      // Pull out children
-      .map((outputs) => outputs.children as Output[])
-      .flat()
-      // Filter outputs with no data
-      // TODO: can this ever occur?
-      .filter((output) => (output as any).jupyter_data !== undefined)
-      // Minify output data
+    outputs
+      .filter((output) => output.visibility !== 'remove')
       .map(async (output) => {
-        [(output as any).jupyter_data] = await minifyCellOutput(
-          [(output as any).jupyter_data] as IOutput[],
-          cache.$outputs,
-          {
-            computeHash,
-            maxCharacters: opts?.minifyMaxCharacters,
-          },
-        );
+        const [tmpData] = await minifyCellOutput([output.data] as IOutput[], cache.$outputs, {
+          computeHash,
+          maxCharacters: opts?.minifyMaxCharacters,
+        });
+        output.data = tmpData;
       }),
   );
 }
@@ -86,10 +123,13 @@ export function transformFilterOutputStreams(
     const blockRemoveStderr = tags.includes('remove-stderr');
     const blockRemoveStdout = tags.includes('remove-stdout');
     const outputs = selectAll('output', block) as GenericNode[];
-    outputs
-      .filter((output) => {
-        const data = output.jupyter_data;
-
+    // There should be only one output in the block
+    outputs.forEach((output) => {
+      if (!output.data) {
+        return;
+      }
+      console.log(JSON.stringify(output.data, null, 2));
+      output.data = [output.data].filter((data: IStream | MinifiedMimeOutput) => {
         if (
           (stderr !== 'show' || blockRemoveStderr) &&
           data.output_type === 'stream' &&
@@ -108,7 +148,7 @@ export function transformFilterOutputStreams(
               },
             );
           }
-          return doRemove;
+          return !doRemove;
         }
         if (
           (stdout !== 'show' || blockRemoveStdout) &&
@@ -128,7 +168,7 @@ export function transformFilterOutputStreams(
               },
             );
           }
-          return doRemove;
+          return !doRemove;
         }
         if (
           mpl !== 'show' &&
@@ -153,15 +193,12 @@ export function transformFilterOutputStreams(
               },
             );
           }
-          return doRemove;
+          return !doRemove;
         }
-        return false;
-      })
-      .forEach((output) => {
-        output.type = '__delete__';
-      });
+        return true;
+      })[0];
+    });
   });
-  remove(mdast, { cascade: false }, '__delete__');
 }
 
 function writeCachedOutputToFile(
@@ -207,19 +244,17 @@ export function transformOutputsToFile(
   const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
 
-  outputs
-    .filter((output) => !!output.jupyter_data)
-    .forEach((node) => {
-      // TODO: output-refactoring -- drop to single output in future
-      walkOutputs([node.jupyter_data], (obj) => {
-        const { hash } = obj;
-        if (!hash || !cache.$outputs[hash]) return undefined;
-        obj.path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
-          ...opts,
-          node,
-        });
+  outputs.forEach((node) => {
+    const rawOutputs = node.data === undefined ? [] : [node.data];
+    walkOutputs(rawOutputs, (obj) => {
+      const { hash } = obj;
+      if (!hash || !cache.$outputs[hash]) return undefined;
+      obj.path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
+        ...opts,
+        node,
       });
     });
+  });
 }
 
 /**
@@ -237,114 +272,105 @@ function isPreferredOutputType(newType: string, existingType: string) {
   if (newType === 'text/html') return true;
   return false;
 }
-
+/**
+ * Lift the children of outputs nodes into their parents
+ */
+export function transformLiftOutputs(mdast: GenericParent) {
+  const outputsNodes = selectAll('outputs', mdast) as GenericNode[];
+  outputsNodes.forEach((node) => {
+    // Lift all output nodes
+    const outputNodes = selectAll('output', node) as GenericNode[];
+    outputNodes.forEach((outputNode) => {
+      outputNode.type = '__lift__';
+    });
+    // Lift the outputs node
+    node.type = '__lift__';
+  });
+  liftChildren(mdast, '__lift__');
+}
 /**
  * Convert output nodes with minified content to image or code
  *
  * This writes outputs of type image to file, modifies outputs of type
  * text to a code node, and removes other output types.
  */
-export function reduceOutputs(
+export function transformReduceOutputs(
   session: ISession,
   mdast: GenericParent,
   file: string,
   writeFolder: string,
   opts?: { altOutputFolder?: string; vfile?: VFile },
 ) {
-  const outputsNodes = selectAll('outputs', mdast) as GenericNode[];
+  const outputs = selectAll('output', mdast) as GenericNode[];
   const cache = castSession(session);
-  outputsNodes.forEach((outputsNode) => {
-    const outputs = outputsNode.children as GenericNode[];
-
-    outputs.forEach((outputNode) => {
-      if (outputNode.visibility === 'remove' || outputNode.visibility === 'hide') {
-        // Hidden nodes should not show up in simplified outputs for static export
-        outputNode.type = '__delete__';
-        return;
-      }
-      if (!outputNode.jupyter_data && !outputNode.children?.length) {
-        outputNode.type = '__delete__';
-        return;
-      }
-      // Lift the `output` node into `Outputs`
-      outputNode.type = '__lift__';
-
-      // If the output already has children, we don't need to do anything
-      if (outputNode.children?.length) {
-        return;
-      }
-
-      // Find a preferred IOutput type to render into the AST
-      const selectedOutputs: { content_type: string; hash: string }[] = [];
-      if (outputNode.jupyter_data) {
-        const output = outputNode.jupyter_data;
-
-        let selectedOutput: { content_type: string; hash: string } | undefined;
-        walkOutputs([output], (obj: any) => {
-          const { output_type, content_type, hash } = obj;
-          if (!hash) return undefined;
-          if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
-            if (['error', 'stream'].includes(output_type)) {
-              selectedOutput = { content_type: 'text/plain', hash };
-            } else if (typeof content_type === 'string') {
-              if (
-                content_type.startsWith('image/') ||
-                content_type === 'text/plain' ||
-                content_type === 'text/html'
-              ) {
-                selectedOutput = { content_type, hash };
-              }
+  outputs.forEach((node) => {
+    if (!node.data) {
+      return;
+    }
+    const selectedOutputs: { content_type: string; hash: string }[] = [];
+    const rawOutputs = node.data === undefined ? [] : [node.data];
+    rawOutputs.forEach((output: MinifiedOutput) => {
+      let selectedOutput: { content_type: string; hash: string } | undefined;
+      walkOutputs([output], (obj: any) => {
+        const { output_type, content_type, hash } = obj;
+        if (!hash) return undefined;
+        if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
+          if (['error', 'stream'].includes(output_type)) {
+            selectedOutput = { content_type: 'text/plain', hash };
+          } else if (typeof content_type === 'string') {
+            if (
+              content_type.startsWith('image/') ||
+              content_type === 'text/plain' ||
+              content_type === 'text/html'
+            ) {
+              selectedOutput = { content_type, hash };
             }
           }
-        });
-        if (selectedOutput) selectedOutputs.push(selectedOutput);
-      }
-      const children: (Image | GenericNode)[] = selectedOutputs
-        .map((output): Image | GenericNode | GenericNode[] | undefined => {
-          const { content_type, hash } = output ?? {};
-          if (!hash || !cache.$outputs[hash]) return undefined;
-          if (content_type === 'text/html') {
-            const htmlTree = {
-              type: 'root',
-              children: [
-                {
-                  type: 'html',
-                  value: cache.$outputs[hash][0],
-                },
-              ],
-            };
-            htmlTransform(htmlTree);
-            return htmlTree.children;
-          } else if (content_type.startsWith('image/')) {
-            const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
-              ...opts,
-              node: outputNode,
-            });
-            if (!path) return undefined;
-            const relativePath = relative(dirname(file), path);
-            return {
-              type: 'image',
-              data: { type: 'output' },
-              url: relativePath,
-              urlSource: relativePath,
-            };
-          } else if (content_type === 'text/plain' && cache.$outputs[hash]) {
-            const [content] = cache.$outputs[hash];
-            return {
-              type: 'code',
-              data: { type: 'output' },
-              value: stripAnsi(content),
-            };
-          }
-          return undefined;
-        })
-        .flat()
-        .filter((output): output is Image | GenericNode => !!output);
-      outputNode.children = children;
+        }
+      });
+      if (selectedOutput) selectedOutputs.push(selectedOutput);
     });
-    // Lift the `outputs` node
-    outputsNode.type = '__lift__';
+    const children: (Image | GenericNode)[] = selectedOutputs
+      .map((output): Image | GenericNode | GenericNode[] | undefined => {
+        const { content_type, hash } = output ?? {};
+        if (!hash || !cache.$outputs[hash]) return undefined;
+        if (content_type === 'text/html') {
+          const htmlTree = {
+            type: 'root',
+            children: [
+              {
+                type: 'html',
+                value: cache.$outputs[hash][0],
+              },
+            ],
+          };
+          htmlTransform(htmlTree);
+          return htmlTree.children;
+        } else if (content_type.startsWith('image/')) {
+          const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
+            ...opts,
+            node,
+          });
+          if (!path) return undefined;
+          const relativePath = relative(dirname(file), path);
+          return {
+            type: 'image',
+            data: { type: 'output' },
+            url: relativePath,
+            urlSource: relativePath,
+          };
+        } else if (content_type === 'text/plain' && cache.$outputs[hash]) {
+          const [content] = cache.$outputs[hash];
+          return {
+            type: 'code',
+            data: { type: 'output' },
+            value: stripAnsi(content),
+          };
+        }
+        return undefined;
+      })
+      .flat()
+      .filter((output): output is Image | GenericNode => !!output);
+    node.children = children;
   });
-  remove(mdast, '__delete__');
-  liftChildren(mdast, '__lift__');
 }
