@@ -41,35 +41,21 @@ function extractVariantParameter(mimeType: string): string | undefined {
   return variant;
 }
 
-export async function transformMarkdownOutputs(
-  mdast: GenericParent,
-  opts: {
-    parser: (content: string) => GenericParent;
-  },
-) {
-  const outputs = selectAll('output', mdast) as GenericNode[];
-  outputs.forEach((output) => {
-    const rawOutput = output.data;
-    if (!MIME_OUTPUT_TYPES.includes(rawOutput?.output_type)) {
-      return;
-    }
-    // Find the most MyST-like Markdown (if any)
-    const [preferredEntry] = Object.entries(rawOutput.data as Record<string, any>)
-      // Find only markdown outputs
-      .filter(([mimeType]) => mimeType.startsWith(MARKDOWN_MIME_TYPE))
-      // Determine the Markdown variant
-      .map(([mimeType, data]) => [extractVariantParameter(mimeType), data])
-      // Filter out non-MyST or plan Markdown
-      .filter(([variant]) => SUPPORTED_MARKDOWN_VARIANTS.includes(variant))
-      .sort((left) => (left[0] === undefined ? +1 : -1));
+function preferredMarkdownMIMEType(
+  mimeType: string,
+): { variant?: string; mimeType: string } | undefined {
+  if (!mimeType.startsWith(MARKDOWN_MIME_TYPE)) {
+    return;
+  }
+  const variant = extractVariantParameter(mimeType);
+  if (!variant) {
+    return { mimeType };
+  }
+  if (SUPPORTED_MARKDOWN_VARIANTS.includes(variant)) {
+    return { mimeType, variant };
+  }
 
-    // Process Markdown
-    if (preferredEntry !== undefined) {
-      const data = preferredEntry[1];
-      const outputMdast = opts.parser(data as string);
-      output.children = outputMdast.children;
-    }
-  });
+  return;
 }
 
 /**
@@ -266,11 +252,15 @@ export function transformOutputsToFile(
  * If the new and existing types are the same, always just keep existing.
  */
 function isPreferredOutputType(newType: string, existingType: string) {
-  if (existingType.startsWith('image/')) return false;
-  if (newType.startsWith('image')) return true;
-  if (existingType === 'text/html') return false;
-  if (newType === 'text/html') return true;
-  return false;
+  const newIndex = PREFERRED_MIME_TYPES.findIndex((fn) => fn(newType));
+  const existingIndex = PREFERRED_MIME_TYPES.findIndex((fn) => fn(existingType));
+  if (newIndex === -1) {
+    return false;
+  } else if (existingIndex === -1) {
+    return true;
+  } else {
+    return newIndex < existingIndex;
+  }
 }
 /**
  * Lift the children of outputs nodes into their parents
@@ -288,6 +278,18 @@ export function transformLiftOutputs(mdast: GenericParent) {
   });
   liftChildren(mdast, '__lift__');
 }
+
+type TestFunction = (mime: string) => boolean;
+
+export const PREFERRED_MIME_TYPES: TestFunction[] = [
+  // Markdown (any variant)
+  (mime) => !!preferredMarkdownMIMEType(mime),
+  // Image (any type)
+  (mime) => mime.startsWith('image'),
+  (mime) => mime === 'text/html',
+  (mime) => mime === 'text/plain',
+];
+
 /**
  * Convert output nodes with minified content to image or code
  *
@@ -315,14 +317,14 @@ export function transformReduceOutputs(
         const { output_type, content_type, hash } = obj;
         if (!hash) return undefined;
         if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
+          // Check output type
           if (['error', 'stream'].includes(output_type)) {
             selectedOutput = { content_type: 'text/plain', hash };
-          } else if (typeof content_type === 'string') {
-            if (
-              content_type.startsWith('image/') ||
-              content_type === 'text/plain' ||
-              content_type === 'text/html'
-            ) {
+          }
+          // Check content type
+          else if (typeof content_type === 'string') {
+            const preferredMime = PREFERRED_MIME_TYPES.some((matcher) => !!matcher(content_type));
+            if (preferredMime) {
               selectedOutput = { content_type, hash };
             }
           }

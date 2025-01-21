@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, PluginUtils, References } from 'myst-common';
+import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind, VERSION } from 'myst-spec-ext';
@@ -59,7 +59,6 @@ import {
   propagateBlockDataToCode,
   transformBanner,
   transformReduceOutputs,
-  transformLiftOutputs,
   transformPlaceholderImages,
   transformDeleteBase64UrlSource,
   transformWebp,
@@ -386,12 +385,10 @@ export async function finalizeMdast(
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
   if (simplifyFigures) {
-    // Render out IOutput objects
+    // Transform output nodes to images / text
     transformReduceOutputs(session, mdast, file, imageWriteFolder, {
       altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     });
-    // Lift rendered IOutput children
-    transformLiftOutputs(mdast);
   }
   transformOutputsToFile(session, mdast, imageWriteFolder, {
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
