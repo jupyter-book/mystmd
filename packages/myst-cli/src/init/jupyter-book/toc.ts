@@ -10,7 +10,7 @@ const TOCTreeOptions = z
     caption: z.string(),
     hidden: z.boolean(),
     maxdepth: z.number(),
-    numberted: z.boolean(),
+    numbered: z.boolean(),
     reversed: z.boolean(),
     titlesonly: z.boolean(),
   })
