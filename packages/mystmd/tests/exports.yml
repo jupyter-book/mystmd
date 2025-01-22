@@ -484,3 +484,39 @@ cases:
         content: single-page-titles-typ-site/outputs/index.json
       - path: single-page-titles-typ-site/_build/out.typ
         content: single-page-titles-typ-site/outputs/out.typ
+  - title: Multi page project with h2 level as only folder in the toc
+    cwd: multi-page-with-pageless-folder
+    command: myst build --all
+    outputs:
+      - path: multi-page-with-pageless-folder/_build/site/config.json
+        content: multi-page-with-pageless-folder/outputs/config.json
+      - path: multi-page-with-pageless-folder/_build/site/content/index.json
+        content: multi-page-with-pageless-folder/outputs/index.json
+      - path: multi-page-with-pageless-folder/_build/site/content/b.json
+        content: multi-page-with-pageless-folder/outputs/b.json
+      - path: multi-page-with-pageless-folder/_build/site/content/c.json
+        content: multi-page-with-pageless-folder/outputs/c.json
+      - path: multi-page-with-pageless-folder/_build/out.typ
+        content: multi-page-with-pageless-folder/outputs/out.typ
+      - path: multi-page-with-pageless-folder/_build/out-b.typ
+        content: multi-page-with-pageless-folder/outputs/out-b.typ
+      - path: multi-page-with-pageless-folder/_build/out-c.typ
+        content: multi-page-with-pageless-folder/outputs/out-c.typ
+  - title: Multi page project with h2 level as only folder in the toc and h2/h3 disabled
+    cwd: multi-page-with-pageless-folder-and-headings-off
+    command: myst build --all
+    outputs:
+      - path: multi-page-with-pageless-folder-and-headings-off/_build/site/config.json
+        content: multi-page-with-pageless-folder-and-headings-off/outputs/config.json
+      - path: multi-page-with-pageless-folder-and-headings-off/_build/site/content/index.json
+        content: multi-page-with-pageless-folder-and-headings-off/outputs/index.json
+      - path: multi-page-with-pageless-folder-and-headings-off/_build/site/content/b.json
+        content: multi-page-with-pageless-folder-and-headings-off/outputs/b.json
+      - path: multi-page-with-pageless-folder-and-headings-off/_build/site/content/c.json
+        content: multi-page-with-pageless-folder-and-headings-off/outputs/c.json
+      - path: multi-page-with-pageless-folder-and-headings-off/_build/out.typ
+        content: multi-page-with-pageless-folder-and-headings-off/outputs/out.typ
+      - path: multi-page-with-pageless-folder-and-headings-off/_build/out-b.typ
+        content: multi-page-with-pageless-folder-and-headings-off/outputs/out-b.typ
+      - path: multi-page-with-pageless-folder-and-headings-off/_build/out-c.typ
+        content: multi-page-with-pageless-folder-and-headings-off/outputs/out-c.typ
