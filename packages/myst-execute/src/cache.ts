@@ -36,11 +36,13 @@ export class LocalDiskCache<T> implements ICache<T> {
     if (!existsSync(keyPath)) {
       return undefined;
     }
-    return JSON.parse(readFileSync(keyPath, { encoding: 'utf8' }));
+    const data = readFileSync(keyPath, { encoding: 'utf8' });
+    return JSON.parse(data);
   }
 
   set(key: string, item: T) {
+    const data = JSON.stringify(item);
     const keyPath = this._makeKeyPath(key);
-    return writeFileSync(keyPath, JSON.stringify(item), { encoding: 'utf8' });
+    return writeFileSync(keyPath, data, { encoding: 'utf8' });
   }
 }
