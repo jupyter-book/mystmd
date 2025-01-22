@@ -32,12 +32,12 @@ const DEFAULT_NUMBERING: Numbering = {
   subfigure: { enabled: true, template: 'Figure %s' },
   table: { enabled: true, template: 'Table %s' },
   code: { enabled: true, template: 'Program %s' },
-  heading_1: { enabled: false, template: 'Section %s' },
-  heading_2: { enabled: false, template: 'Section %s' },
-  heading_3: { enabled: false, template: 'Section %s' },
-  heading_4: { enabled: false, template: 'Section %s' },
-  heading_5: { enabled: false, template: 'Section %s' },
-  heading_6: { enabled: false, template: 'Section %s' },
+  heading_1: { template: 'Section %s' },
+  heading_2: { template: 'Section %s' },
+  heading_3: { template: 'Section %s' },
+  heading_4: { template: 'Section %s' },
+  heading_5: { template: 'Section %s' },
+  heading_6: { template: 'Section %s' },
 };
 
 type ResolvableCrossReference = Omit<CrossReference, 'kind'> & {
@@ -265,7 +265,6 @@ export function initializeTargetCounts(
   numbering: Numbering,
   previousCounts?: TargetCounts,
   offset?: number,
-  headingDepths?: Set<number>,
 ): TargetCounts {
   const heading = [1, 2, 3, 4, 5, 6].map((depth, ind) => {
     const cont = numbering[`heading_${depth}`]?.continue ?? numbering.all?.continue ?? false;
@@ -277,11 +276,7 @@ export function initializeTargetCounts(
     if (numbering.title?.enabled && depth - 1 <= (offset ?? 0) && prevCount != null) {
       return prevCount;
     }
-    if (
-      headingDepths &&
-      !headingDepths.has(depth - (offset ?? 0)) &&
-      (!numbering.title?.enabled || depth - 1 > (offset ?? 0))
-    ) {
+    if (!numbering.title?.enabled && depth <= (offset ?? 0)) {
       return null;
     }
     return 0;
@@ -302,7 +297,7 @@ export function initializeTargetCounts(
       ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6'].includes(key)
     ) {
       const headingIndex = Number.parseInt(key.slice(-1), 10) - 1;
-      if (val.enabled === false && (!numbering.title?.enabled || headingIndex > (offset ?? 0))) {
+      if (val.enabled === false) {
         targetCounts.heading[headingIndex] = null;
       } else if (val.start) {
         targetCounts.heading[headingIndex] = val.start - 1;
@@ -338,7 +333,7 @@ export class ReferenceState implements IReferenceStateResolver {
   targetCounts: TargetCounts;
   identifiers: string[];
   enumerator?: string;
-  offset?: number;
+  offset: number;
 
   constructor(
     filePath: string,
@@ -348,20 +343,19 @@ export class ReferenceState implements IReferenceStateResolver {
       dataUrl?: string;
       previousCounts?: TargetCounts;
       identifiers?: string[];
-      headingDepths?: Set<number>;
       vfile: VFile;
     },
   ) {
     this.numbering = fillNumbering(opts?.frontmatter?.numbering, DEFAULT_NUMBERING);
-    this.targetCounts = initializeTargetCounts(
-      this.numbering,
-      opts?.previousCounts,
-      opts?.frontmatter?.numbering?.title?.offset,
-      opts?.headingDepths,
-    );
-    if (this.numbering.title?.enabled && !opts?.frontmatter?.content_includes_title) {
+    this.offset = this.numbering?.title?.offset ?? 0;
+    this.targetCounts = initializeTargetCounts(this.numbering, opts?.previousCounts, this.offset);
+    if (
+      (this.numbering.title?.enabled || this.numbering.all?.enabled) &&
+      !opts?.frontmatter?.content_includes_title &&
+      this.numbering[`heading_${this.offset + 1}`]?.enabled !== false
+    ) {
       this.targetCounts.heading = incrementHeadingCounts(
-        1 + (opts?.frontmatter?.numbering?.title?.offset ?? 0),
+        this.offset + 1,
         this.targetCounts.heading,
       );
       this.enumerator = formatHeadingEnumerator(
@@ -376,7 +370,6 @@ export class ReferenceState implements IReferenceStateResolver {
     this.url = opts?.url;
     this.dataUrl = opts?.dataUrl;
     this.title = opts?.frontmatter?.title;
-    this.offset = opts?.frontmatter?.numbering?.title?.offset;
   }
 
   addTarget(node: TargetNodes) {
@@ -429,7 +422,7 @@ export class ReferenceState implements IReferenceStateResolver {
     let enumerator: string | number;
     if (kind === TargetKind.heading && node.type === 'heading') {
       this.targetCounts.heading = incrementHeadingCounts(
-        node.depth - (this.numbering?.title?.enabled ? 0 : 1) + (this.offset ?? 0),
+        node.depth - (this.numbering?.title?.enabled ? 0 : 1) + this.offset,
         this.targetCounts.heading,
       );
       enumerator = formatHeadingEnumerator(

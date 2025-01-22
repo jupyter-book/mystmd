@@ -14,7 +14,6 @@ type TestCase = {
   before: GenericParent;
   after: GenericParent;
   opts?: Record<string, boolean>;
-  headingDepths?: number[];
 };
 
 const fixtures = path.join('tests', 'enumerators.yml');
@@ -25,10 +24,9 @@ const cases = (yaml.load(testYaml) as TestFile).cases;
 describe('enumerateTargets', () => {
   test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
     '%s',
-    (_, { before, after, opts, headingDepths }) => {
+    (_, { before, after, opts }) => {
       const state = new ReferenceState('my-file.md', {
         frontmatter: opts,
-        headingDepths: headingDepths ? new Set(headingDepths) : undefined,
         vfile: new VFile(),
       });
       const transformed = enumerateTargetsTransform(before, { state });

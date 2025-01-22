@@ -7,9 +7,9 @@ import { RuleId, toText, plural, slugToUrl } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
 import type { Node } from 'myst-spec';
 import { SourceFileKind } from 'myst-spec-ext';
-import type { Heading, SearchRecord, MystSearchIndex } from 'myst-spec-ext';
+import type { SearchRecord, MystSearchIndex } from 'myst-spec-ext';
 import type { TargetCounts, LinkTransformer, MystXRefs } from 'myst-transforms';
-import { select, selectAll } from 'unist-util-select';
+import { select } from 'unist-util-select';
 import {
   enumerateTargetsTransform,
   ReferenceState,
@@ -334,22 +334,6 @@ export function selectPageReferenceStates(
   opts?: { suppressWarnings?: boolean },
 ) {
   const cache = castSession(session);
-  const headingDepths = new Set(
-    pages
-      .map(({ file }) => {
-        const { frontmatter, mdast } = cache.$getMdast(file)?.post ?? {};
-        const headingNodes = selectAll('heading', mdast).filter(
-          (node) => (node as Heading).enumerated !== false,
-        );
-        return headingNodes.map(
-          (node) =>
-            (node as Heading).depth -
-            (frontmatter?.numbering?.title?.enabled ? 0 : 1) +
-            (frontmatter?.numbering?.title?.offset ?? 0),
-        );
-      })
-      .flat(),
-  );
   let previousCounts: TargetCounts | undefined;
   const pageReferenceStates: ReferenceState[] = pages
     .map(({ file }) => {
@@ -363,7 +347,6 @@ export function selectPageReferenceStates(
       const state = new ReferenceState(refFile, {
         frontmatter,
         identifiers,
-        headingDepths,
         previousCounts,
         vfile,
       });

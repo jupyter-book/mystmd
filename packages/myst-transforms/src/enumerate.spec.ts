@@ -133,12 +133,7 @@ describe('initializeTargetCounts', () => {
       other: { main: 7, sub: 0 },
     });
   });
-  test('tree headings are respected', () => {
-    expect(initializeTargetCounts({}, undefined, undefined, new Set([1, 3, 4]))).toEqual({
-      heading: [0, null, 0, 0, null, null],
-    });
-  });
-  test('previousCounts override tree headings', () => {
+  test('previousCounts override are prioritized', () => {
     const previousCounts = {
       heading: [5, 3, 1, 0, null, null],
       figure: { main: 7, sub: 2 },
@@ -158,7 +153,6 @@ describe('initializeTargetCounts', () => {
         },
         previousCounts as any,
         undefined,
-        new Set([1, 3, 4]),
       ),
     ).toEqual(previousCounts);
   });

@@ -103,10 +103,6 @@ cases:
           enabled: true
         heading_6:
           enabled: true
-    headingDepths:
-      - 1
-      - 2
-      - 4
     before:
       type: root
       children:
@@ -166,13 +162,13 @@ cases:
           children:
             - type: text
               value: one.one.one
-          enumerator: '1.1.1'
+          enumerator: '1.1.0.1'
         - type: heading
           depth: 5
           children:
             - type: text
               value: one.one.two
-          enumerator: '1.1.2'
+          enumerator: '1.1.0.2'
         - type: heading
           depth: 2
           children:
@@ -190,7 +186,7 @@ cases:
           children:
             - type: text
               value: two.zero.one
-          enumerator: '2.0.1'
+          enumerator: '2.0.0.1'
   - title: heading numbering - disabled
     opts:
       numbering:
