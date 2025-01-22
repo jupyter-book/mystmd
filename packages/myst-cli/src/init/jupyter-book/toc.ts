@@ -282,7 +282,10 @@ function convertNoFormat(session: ISession, dir: string, data: z.infer<typeof No
  *
  * @param data - validated TOC
  */
-function convertBookToNoFormat(data: z.infer<typeof BookTOC>, session: ISession): z.infer<typeof NoFormatTOC> {
+function convertBookToNoFormat(
+  data: z.infer<typeof BookTOC>,
+  session: ISession,
+): z.infer<typeof NoFormatTOC> {
   const convertEntry = (item: z.infer<typeof BookEntry>): z.infer<typeof NoFormatEntry> => {
     // Drop subtrees and sections
     // eslint-disable-next-line prefer-const, @typescript-eslint/no-unused-vars
@@ -326,9 +329,7 @@ function convertBookToNoFormat(data: z.infer<typeof BookTOC>, session: ISession)
   ): z.infer<typeof NoFormatShorthandSubtree> | z.infer<typeof NoFormatHasSubtrees> => {
     if ('parts' in item) {
       if ('options' in item) {
-        session.log.warn(
-          'The "options" key in your _toc.yml has no effect and will be ignored.'
-        )
+        session.log.warn('The "options" key in your _toc.yml has no effect and will be ignored.');
         delete item.options;
       }
       const { parts, ...rest } = item;
