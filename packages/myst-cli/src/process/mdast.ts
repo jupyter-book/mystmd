@@ -58,6 +58,7 @@ import {
   propagateBlockDataToCode,
   transformBanner,
   transformReduceOutputs,
+  transformLiftOutputs,
   transformPlaceholderImages,
   transformDeleteBase64UrlSource,
   transformWebp,
@@ -388,6 +389,7 @@ export async function finalizeMdast(
     transformReduceOutputs(session, mdast, file, imageWriteFolder, {
       altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     });
+    transformLiftOutputs(mdast);
   }
   transformOutputsToFile(session, mdast, imageWriteFolder, {
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
