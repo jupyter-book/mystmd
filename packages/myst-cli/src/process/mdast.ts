@@ -76,7 +76,6 @@ import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
-import type { IOutput } from '@jupyterlab/nbformat';
 import { rawDirectiveTransform } from '../transforms/raw.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
@@ -213,6 +212,8 @@ export async function transformMdast(
       ignoreCache: false,
       errorIsFatal: false,
       log: session.log,
+      outputCache: cache.$outputs,
+      minifyMaxCharacters,
     });
   }
   transformRenderInlineExpressions(mdast, vfile);

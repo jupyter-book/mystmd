@@ -20,6 +20,7 @@ import type {
   CrossReference as SpecCrossReference,
   Link as SpecLink,
 } from 'myst-spec';
+import type { MinifiedOutput } from 'nbtx';
 
 type Visibility = 'show' | 'hide' | 'remove';
 
@@ -255,7 +256,7 @@ export type Output = Node &
   Target & {
     type: 'output';
     children: (FlowContent | ListContent | PhrasingContent)[];
-    jupyter_data: any; // TODO: set this to IOutput
+    jupyter_data: MinifiedOutput;
   };
 
 export type Outputs = Node &

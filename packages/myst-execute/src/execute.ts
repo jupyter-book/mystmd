@@ -1,4 +1,5 @@
 import { select, selectAll } from 'unist-util-select';
+import { computeHash } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { PageFrontmatter, KernelSpec } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
@@ -12,6 +13,8 @@ import assert from 'node:assert';
 import { createHash } from 'node:crypto';
 import type { Plugin } from 'unified';
 import type { ICache } from './cache.js';
+import { minifyCellOutput } from 'nbtx';
+import type { MinifiedContentCache } from 'nbtx';
 
 /**
  * Interpret an IOPub message as an IOutput object
@@ -206,7 +209,7 @@ function isInlineExpression(node: GenericNode): node is InlineExpression {
 async function computeExecutableNodes(
   kernel: Kernel.IKernelConnection,
   nodes: (CodeBlock | InlineExpression)[],
-  opts: { vfile: VFile },
+  vfile: VFile,
 ): Promise<{
   results: (IOutput[] | IExpressionResult)[];
   errorOccurred: boolean;
@@ -215,9 +218,11 @@ async function computeExecutableNodes(
 
   const results: (IOutput[] | IExpressionResult)[] = [];
   for (const matchedNode of nodes) {
+    // An executable cell
     if (isCellBlock(matchedNode)) {
       // Pull out code to execute
       const code = select('code', matchedNode) as Code;
+      // Invoke kernel
       const { status, outputs } = await executeCode(kernel, code.value);
       // Cache result
       results.push(outputs);
@@ -225,12 +230,14 @@ async function computeExecutableNodes(
       // Check for errors
       const allowErrors = codeBlockRaisesException(matchedNode);
       if (status === 'error' && !allowErrors) {
+        // Join all error tracebacks into a single newline-delimited string
         const errorMessage = outputs
           .map((item) => item.traceback)
+          .filter((item) => !!item)
           .flat()
           .join('\n');
         fileError(
-          opts.vfile,
+          vfile,
           `An exception occurred during code execution, halting further execution:\n\n${errorMessage}`,
           {
             node: matchedNode,
@@ -248,7 +255,7 @@ async function computeExecutableNodes(
       if (status === 'error') {
         const errorMessage = (result as IExpressionError).traceback.join('\n');
         fileError(
-          opts.vfile,
+          vfile,
           `An exception occurred during expression evaluation, halting further execution:\n\n${errorMessage}`,
           { node: matchedNode },
         );
@@ -273,9 +280,11 @@ async function computeExecutableNodes(
  * @param nodes executable MDAST nodes
  * @param computedResult computed results for each node
  */
-function applyComputedOutputsToNodes(
+async function applyComputedOutputsToNodes(
   nodes: (CodeBlock | InlineExpression)[],
   computedResult: (IOutput[] | IExpressionResult)[],
+  outputCache: MinifiedContentCache,
+  minifyMaxCharacters?: number,
 ) {
   for (const matchedNode of nodes) {
     // Pull out the result for this node
@@ -286,9 +295,17 @@ function applyComputedOutputsToNodes(
       // Pull out outputs to set data
       const outputs = select('outputs', matchedNode) as Outputs;
       // Ensure that whether this fails or succeeds, we write to `children` (e.g. due to a kernel error)
-      outputs.children = rawOutputData.map((data) => {
-        return { type: 'output', children: [], jupyter_data: data as any };
-      });
+      outputs.children = await Promise.all(
+        rawOutputData.map(async (data) => {
+          // Minify the output
+          const [minifiedOutput] = await minifyCellOutput([data], outputCache, {
+            computeHash,
+            maxCharacters: minifyMaxCharacters,
+          });
+          const output: Output = { type: 'output', children: [], jupyter_data: minifiedOutput };
+          return output;
+        }),
+      );
     } else if (isInlineExpression(matchedNode)) {
       const rawOutputData = thisResult as Record<string, unknown> | undefined;
       // Set data of expression to the result, or empty if we don't have one
@@ -303,11 +320,14 @@ function applyComputedOutputsToNodes(
 export type Options = {
   basePath: string;
   cache: ICache<(IExpressionResult | IOutput[])[]>;
+  outputCache: MinifiedContentCache;
   sessionFactory: () => Promise<SessionManager | undefined>;
   frontmatter: PageFrontmatter;
+  // Ignore output cache and forcibly re-execute
   ignoreCache?: boolean;
   errorIsFatal?: boolean;
   log?: Logger;
+  minifyMaxCharacters?: number;
 };
 
 /**
@@ -318,6 +338,8 @@ export type Options = {
  * @param opts
  */
 export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile, opts: Options) {
+  const { basePath, cache, sessionFactory, frontmatter, outputCache, minifyMaxCharacters } = opts;
+
   const log = opts.log ?? console;
 
   // Pull out code-like nodes
@@ -336,7 +358,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
 
   // We need the kernelspec to proceed
-  if (opts.frontmatter.kernelspec === undefined) {
+  if (frontmatter.kernelspec === undefined) {
     return fileError(
       vfile,
       `Notebook does not declare the necessary 'kernelspec' frontmatter key required for execution`,
@@ -344,8 +366,8 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
 
   // See if we already cached this execution
-  const cacheKey = buildCacheKey(opts.frontmatter.kernelspec, executableNodes);
-  let cachedResults: (IExpressionResult | IOutput[])[] | undefined = opts.cache.get(cacheKey);
+  const cacheKey = buildCacheKey(frontmatter.kernelspec, executableNodes);
+  let cachedResults: (IExpressionResult | IOutput[])[] | undefined = cache.get(cacheKey);
 
   // Do we need to re-execute notebook?
   if (opts.ignoreCache || cachedResults === undefined) {
@@ -354,7 +376,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
         opts.ignoreCache ? '[cache ignored]' : '[no execution cache found]'
       }`,
     );
-    const sessionManager = await opts.sessionFactory();
+    const sessionManager = await sessionFactory();
     // Do we not have a working session?
     if (sessionManager === undefined) {
       fileError(vfile, `Could not load Jupyter session manager to run executable nodes`, {
@@ -365,11 +387,11 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
     else {
       let sessionConnection: Session.ISessionConnection | undefined;
       const sessionOpts = {
-        path: path.relative(opts.basePath, vfile.path),
+        path: path.relative(basePath, vfile.path),
         type: 'notebook',
         name: path.basename(vfile.path),
         kernel: {
-          name: opts.frontmatter.kernelspec.name,
+          name: frontmatter.kernelspec.name,
         },
       };
       await sessionManager
@@ -387,11 +409,11 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
           const { results, errorOccurred } = await computeExecutableNodes(
             conn.kernel,
             executableNodes,
-            { vfile },
+            vfile,
           );
           // Populate cache if things were successful
           if (!errorOccurred) {
-            opts.cache.set(cacheKey, results);
+            cache.set(cacheKey, results);
           }
           // Refer to these computed results
           cachedResults = results;
@@ -406,7 +428,12 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
 
   if (cachedResults) {
     // Apply results to tree
-    applyComputedOutputsToNodes(executableNodes, cachedResults);
+    await applyComputedOutputsToNodes(
+      executableNodes,
+      cachedResults,
+      outputCache,
+      minifyMaxCharacters,
+    );
   }
 }
 

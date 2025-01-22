@@ -36,6 +36,7 @@ type LoadFileOptions = {
   preFrontmatter?: Record<string, any>;
   keepTitleNode?: boolean;
   kind?: SourceFileKind;
+  minifyMaxCharacters?: number;
 };
 
 export type LoadFileResult = {
@@ -85,7 +86,7 @@ export async function loadNotebookFile(
     mdast,
     frontmatter: nbFrontmatter,
     widgets,
-  } = await processNotebookFull(session, file, content);
+  } = await processNotebookFull(session, file, content, opts?.minifyMaxCharacters);
   const { frontmatter: cellFrontmatter, identifiers } = getPageFrontmatter(
     session,
     mdast,

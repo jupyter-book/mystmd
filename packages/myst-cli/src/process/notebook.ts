@@ -7,14 +7,15 @@ import type {
   ICell,
   IMimeBundle,
   INotebookContent,
-  INotebookMetadata,
   IOutput,
   MultilineString,
 } from '@jupyterlab/nbformat';
-import { CELL_TYPES, ensureString } from 'nbtx';
+import { CELL_TYPES, ensureString, minifyCellOutput } from 'nbtx';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import type { ISession } from '../session/types.js';
+import { castSession } from '../session/cache.js';
+import { computeHash } from 'myst-cli-utils';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
@@ -88,8 +89,10 @@ export async function processNotebookFull(
   session: ISession,
   file: string,
   content: string,
+  minifyMaxCharacters?: number,
 ): Promise<{ mdast: GenericParent; frontmatter: PageFrontmatter; widgets: Record<string, any> }> {
   const { log } = session;
+  const cache = castSession(session);
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
 
@@ -165,15 +168,22 @@ export async function processNotebookFull(
           value: ensureString(cell.source),
         };
 
-        const outputsChildren = (cell.outputs as IOutput[]).map((output) => {
-          // Embed outputs in an output block
-          const result = {
-            type: 'output',
-            jupyter_data: output,
-            children: [],
-          };
-          return result;
-        });
+        const outputsChildren = await Promise.all(
+          (cell.outputs as IOutput[]).map(async (output) => {
+            // Minify the output
+            const [minifiedOutput] = await minifyCellOutput([output] as IOutput[], cache.$outputs, {
+              computeHash,
+              maxCharacters: minifyMaxCharacters,
+            });
+            // Embed outputs in an output block
+            const result = {
+              type: 'output',
+              jupyter_data: minifiedOutput,
+              children: [],
+            };
+            return result;
+          }),
+        );
         const outputs = {
           type: 'outputs',
           id: nanoid(),

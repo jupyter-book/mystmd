@@ -7,7 +7,6 @@ import type { GenericNode, GenericParent } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
 import { htmlTransform } from 'myst-transforms';
 import stripAnsi from 'strip-ansi';
-import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { IOutput, IStream } from '@jupyterlab/nbformat';
@@ -27,7 +26,6 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
 
 const MARKDOWN_MIME_TYPE = 'text/markdown';
 const SUPPORTED_MARKDOWN_VARIANTS = ['Original', 'GFM', 'CommonMark', 'myst'];
-const MIME_OUTPUT_TYPES = ['display_data', 'update_display_data', 'execute_result'];
 
 /**
  * Extract the `variant` parameter from a Markdown MIME type
@@ -279,9 +277,7 @@ export function transformLiftOutputs(mdast: GenericParent) {
   liftChildren(mdast, '__lift__');
 }
 
-type TestFunction = (mime: string) => boolean;
-
-export const PREFERRED_MIME_TYPES: TestFunction[] = [
+export const PREFERRED_MIME_TYPES: Array<(mime: string) => boolean> = [
   // Markdown (any variant)
   (mime) => !!preferredMarkdownMIMEType(mime),
   // Image (any type)
