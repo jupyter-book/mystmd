@@ -52,7 +52,6 @@ import {
   transformImageFormats,
   transformLinkedDOIs,
   transformLinkedRORs,
-  transformOutputsToCache,
   transformRenderInlineExpressions,
   transformThumbnail,
   StaticFileTransformer,
@@ -244,7 +243,6 @@ export async function transformMdast(
   }
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
-  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(session, file, mdast, fileCitationRenderer, references);
   await unified()
