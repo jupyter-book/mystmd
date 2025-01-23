@@ -401,10 +401,7 @@ export class ReferenceState implements IReferenceStateResolver {
 
   resolveEnumerator(val: any, enumerator?: string): string {
     const prefix = enumerator ?? this.numbering.enumerator?.enumerator;
-    const heading = formatHeadingEnumerator(this.targetCounts.heading);
-    return prefix
-      ? prefix.replace(/%s/g, String(val)).replace(/\{heading\}/g, heading)
-      : String(val);
+    return prefix ? prefix.replace(/%s/g, String(val)) : String(val);
   }
 
   /**

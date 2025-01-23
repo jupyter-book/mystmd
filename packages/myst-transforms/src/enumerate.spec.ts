@@ -47,13 +47,13 @@ describe('enumeration', () => {
         numbering: {
           heading_1: { enabled: true },
           heading_2: { enabled: true },
-          figure: { enumerator: '{heading}.%s' },
+          figure: { enumerator: 'FancyTemplateSoon.%s' },
         },
       },
       vfile: new VFile(),
     });
     enumerateTargetsTransform(tree, { state });
-    expect(state.getTarget('fig1')?.node.enumerator).toBe('1.2.1');
+    expect(state.getTarget('fig1')?.node.enumerator).toBe('FancyTemplateSoon.1');
   });
   test('sub-equations', () => {
     const tree = u('root', [
