@@ -31,7 +31,8 @@ function cleanHashes(text: string) {
     .replace(/,\s*"urlOptimized":\s*"[-./a-z0-9]{0,50}"/g, '')
     .replace(/,\s*"thumbnailOptimized":\s*"[-./a-z0-9]{0,50}"/g, '')
     .replace(/-[a-f0-9]{32}\./g, '.')
-    .replace(/"key":\s*"[a-zA-Z0-9]{10}"/g, '"key": "keyABC0123"');
+    .replace(/"key":\s*"[a-zA-Z0-9]{10}"/g, '"key": "keyABC0123"')
+    .replace(/"myst":\s*"[0-9]+\.[0-9]+\.[0-9]+"/g, '"myst": "0.0.0"');
 }
 
 const only = '';
