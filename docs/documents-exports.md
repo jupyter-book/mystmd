@@ -32,6 +32,34 @@ Below are supported export types and links to documentation for further reading:
 You can also explore the [MyST templating](xref:jtex) documentation for a deeper dive into defining templates.
 ```
 
+## Configuring Exports
+
+There are two places to configure exports, you can do this directly in your markdown of your article that you are exporting:
+
+```{code-block} yaml
+:filename: article.md
+---
+title: My PDF
+exports:
+  - format: pdf
+    template: arxiv_two_column
+    output: exports/my-document.pdf
+---
+```
+
+Alternatively you can configure your export in your `myst.yml`, in this case you will need to specify the `article` (or `articles`) that you are targeting.
+
+```{code-block} yaml
+:filename: myst.yml
+version: 1
+project:
+  exports:
+    - format: pdf
+      template: arxiv_two_column
+      article: my-markdown-file.md
+      output: exports/my-document.pdf
+```
+
 ## Building Exports
 
 After defining `exports` in your frontmatter, you may build them with the `myst build` command, by default this only builds the site.
