@@ -1,5 +1,11 @@
 # myst-cli
 
+## 1.3.22
+
+### Patch Changes
+
+- 92676f7: Remove quotes around plain text for eval outputs
+
 ## 1.3.21
 
 ### Patch Changes
