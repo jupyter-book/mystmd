@@ -1,5 +1,36 @@
 # myst-cli
 
+## 1.3.21
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 884bd8d4: Change from twitter to bluesky
+- d9d7386f: Retry html pages build and limit initial outgoing connections.
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- 614ed0ec: Enable title numbering
+- 00a47c4: Add edit url to file frontmatter
+- a4b5d484: Update comment in gh action
+- 614ed0ec: Remove some heading depth magic
+- 614ed0ec: Add enumerator to project config
+- Updated dependencies [74e96e10]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [74e96e10]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [7f29af8a]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+  - myst-to-typst@0.0.30
+  - myst-frontmatter@1.7.7
+  - myst-transforms@1.3.30
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+  - myst-to-jats@1.0.32
+  - myst-config@1.7.7
+
 ## 1.3.20
 
 ### Patch Changes
