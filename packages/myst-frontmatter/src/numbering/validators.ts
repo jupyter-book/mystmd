@@ -24,7 +24,7 @@ export const NUMBERING_KEYS = [
   ...HEADING_KEYS,
 ];
 
-const NUMBERING_ITEM_KEYS = ['enabled', 'start', 'template', 'continue'];
+const NUMBERING_ITEM_KEYS = ['enabled', 'start', 'enumerator', 'template', 'continue'];
 
 const CONTINUE_STRINGS = ['continue', 'next'];
 
@@ -111,6 +111,13 @@ export function validateNumberingItem(
       output.enabled = output.enabled ?? true;
     }
   }
+  if (defined(value.enumerator)) {
+    const enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
+    if (defined(enumerator)) {
+      output.enumerator = enumerator;
+      output.enabled = output.enabled ?? true;
+    }
+  }
   if (defined(value.continue)) {
     const cont = validateBoolean(value.continue, incrementOptions('continue', opts));
     if (defined(cont)) {
@@ -121,15 +128,16 @@ export function validateNumberingItem(
   if (Object.keys(output).length === 0) return undefined;
   return output;
 }
+
 export function validateTitleItem(input: any, opts: ValidationOptions): NumberingItem | undefined {
   if (isBoolean(input)) {
     input = { enabled: input };
   } else if (typeof input === 'number') {
     input = { offset: input };
   }
-  const value = validateObjectKeys(input, { optional: ['enabled', 'offset'] }, opts);
+  const value = validateObjectKeys(input, { optional: ['enabled', 'offset', 'enumerator'] }, opts);
   if (value === undefined) return undefined;
-  const output: { enabled?: boolean; offset?: number } = {};
+  const output: { enabled?: boolean; offset?: number; enumerator?: string } = {};
   if (defined(value.enabled)) {
     const enabled = validateBoolean(value.enabled, incrementOptions('enabled', opts));
     if (defined(enabled)) output.enabled = enabled;
@@ -143,6 +151,13 @@ export function validateTitleItem(input: any, opts: ValidationOptions): Numberin
     });
     if (defined(offset)) {
       output.offset = offset;
+      output.enabled = output.enabled ?? true;
+    }
+  }
+  if (defined(value.enumerator)) {
+    const enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
+    if (defined(enumerator)) {
+      output.enumerator = enumerator;
       output.enabled = output.enabled ?? true;
     }
   }
@@ -167,6 +182,9 @@ export function validateNumbering(input: any, opts: ValidationOptions): Numberin
   let headings: NumberingItem | undefined;
   if (defined(value.enumerator)) {
     const enumeratorOpts = incrementOptions('enumerator', opts);
+    if (typeof value.enumerator === 'string') {
+      value.enumerator = { enumerator: value.enumerator };
+    }
     output.enumerator = validateNumberingItem(value.enumerator, enumeratorOpts);
     if (output.enumerator?.enabled != null) {
       if (output.enumerator.enabled !== true) {

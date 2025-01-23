@@ -360,7 +360,7 @@ export class ReferenceState implements IReferenceStateResolver {
       );
       this.enumerator = formatHeadingEnumerator(
         this.targetCounts.heading,
-        this.numbering.enumerator?.template,
+        this.numbering.title?.enumerator ?? this.numbering.enumerator?.enumerator,
       );
     }
     this.identifiers = opts?.identifiers ?? [];
@@ -376,7 +376,6 @@ export class ReferenceState implements IReferenceStateResolver {
     if (!isTargetIdentifierNode(node)) return;
     const kind = kindFromNode(node);
     const numberNode = shouldEnumerateNode(node, kind, this.numbering, this.offset);
-    // if (numberNode && !node.enumerator) { // Is this change a problem?
     if (numberNode) {
       this.incrementCount(node, kind as TargetKind);
     }
@@ -400,8 +399,8 @@ export class ReferenceState implements IReferenceStateResolver {
     };
   }
 
-  resolveEnumerator(val: any): string {
-    const prefix = this.numbering.enumerator?.template;
+  resolveEnumerator(val: any, enumerator?: string): string {
+    const prefix = enumerator ?? this.numbering.enumerator?.enumerator;
     return prefix ? prefix.replace(/%s/g, String(val)) : String(val);
   }
 
@@ -427,7 +426,9 @@ export class ReferenceState implements IReferenceStateResolver {
       );
       enumerator = formatHeadingEnumerator(
         this.targetCounts.heading,
-        this.numbering.enumerator?.template,
+        this.numbering[
+          `heading_${node.depth - (this.numbering?.title?.enabled ? 0 : 1) + this.offset}`
+        ]?.enumerator ?? this.numbering.enumerator?.enumerator,
       );
       node.enumerator = enumerator;
       return enumerator;
@@ -442,15 +443,24 @@ export class ReferenceState implements IReferenceStateResolver {
         ((this.targetCounts[countKind].sub - 1) % 26) + 'a'.charCodeAt(0),
       );
       if (node.subcontainer) {
-        node.parentEnumerator = this.resolveEnumerator(this.targetCounts[countKind].main);
+        node.parentEnumerator = this.resolveEnumerator(
+          this.targetCounts[countKind].main,
+          this.numbering[countKind]?.enumerator,
+        );
         enumerator = letter;
       } else {
-        enumerator = this.resolveEnumerator(this.targetCounts[countKind].main + letter);
+        enumerator = this.resolveEnumerator(
+          this.targetCounts[countKind].main + letter,
+          this.numbering[countKind]?.enumerator,
+        );
       }
     } else {
       this.targetCounts[kind].main += 1;
       this.targetCounts[kind].sub = 0;
-      enumerator = this.resolveEnumerator(this.targetCounts[kind].main);
+      enumerator = this.resolveEnumerator(
+        this.targetCounts[kind].main,
+        this.numbering[kind]?.enumerator,
+      );
     }
     node.enumerator = enumerator;
     return enumerator;

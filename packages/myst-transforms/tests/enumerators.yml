@@ -717,7 +717,7 @@ cases:
     opts:
       numbering:
         enumerator:
-          template: A%s
+          enumerator: A%s
         heading_1:
           enabled: true
     before:
