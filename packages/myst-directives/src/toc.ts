@@ -3,7 +3,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const tocDirective: DirectiveSpec = {
   name: 'toc',
-  alias: ['tableofcontents', 'table-of-contents'],
+  alias: ['tableofcontents', 'table-of-contents', 'toctree'],
   arg: {
     type: 'myst',
     doc: 'Heading to be included with table of contents',
