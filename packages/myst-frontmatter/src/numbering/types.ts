@@ -1,14 +1,15 @@
 export type NumberingItem = {
   enabled?: boolean;
   start?: number;
+  enumerator?: string;
   template?: string;
   continue?: boolean;
   offset?: number; // only applies to title
 };
 
 export type Numbering = {
-  enumerator?: NumberingItem; // start, enabled, and continue ignored
-  all?: NumberingItem; // start and template ignored
+  enumerator?: NumberingItem; // start, enabled, continue, and template ignored
+  all?: NumberingItem; // start, template, enumerator ignored
   title?: NumberingItem; // start, continue, and template ignored
   figure?: NumberingItem;
   subfigure?: NumberingItem;

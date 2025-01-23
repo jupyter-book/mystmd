@@ -42,7 +42,7 @@ cases:
     normalized:
       numbering:
         enumerator:
-          template: ''
+          enumerator: ''
         all:
           enabled: true
         figure:
@@ -268,3 +268,18 @@ cases:
         all:
           enabled: true
     warnings: 3
+  - title: enumerator validates
+    raw:
+      numbering:
+        title:
+          enumerator: '{number}'
+        figure:
+          enumerator: '{number}'
+    normalized:
+      numbering:
+        title:
+          enumerator: '{number}'
+          enabled: true
+        figure:
+          enumerator: '{number}'
+          enabled: true

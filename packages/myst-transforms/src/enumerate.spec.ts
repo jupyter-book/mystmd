@@ -35,6 +35,26 @@ describe('Heading counts and formatting', () => {
 });
 
 describe('enumeration', () => {
+  test('figure enumerators', () => {
+    const tree = u('root', [
+      u('heading', { identifier: 'ha', depth: 2 }),
+      u('heading', { identifier: 'hb', depth: 3 }),
+      u('heading', { identifier: 'hc', depth: 3 }),
+      u('container', { kind: 'figure', identifier: 'fig1' }),
+    ]);
+    const state = new ReferenceState('my-file.md', {
+      frontmatter: {
+        numbering: {
+          heading_1: { enabled: true },
+          heading_2: { enabled: true },
+          figure: { enumerator: '{heading}.%s' },
+        },
+      },
+      vfile: new VFile(),
+    });
+    enumerateTargetsTransform(tree, { state });
+    expect(state.getTarget('fig1')?.node.enumerator).toBe('1.2.1');
+  });
   test('sub-equations', () => {
     const tree = u('root', [
       u('mathGroup', { identifier: 'eq:1' }, [
@@ -51,7 +71,7 @@ describe('enumeration', () => {
       ]),
     ]);
     const state = new ReferenceState('my-file.md', {
-      frontmatter: { numbering: { enumerator: { template: 'A.%s' } } },
+      frontmatter: { numbering: { enumerator: { enumerator: 'A.%s' } } },
       vfile: new VFile(),
     });
     enumerateTargetsTransform(tree, { state });
@@ -91,7 +111,7 @@ describe('enumeration', () => {
       u('container', { identifier: 'fig:2', kind: 'figure' }, []),
     ]);
     const state = new ReferenceState('my-file.md', {
-      frontmatter: { numbering: { enumerator: { template: 'A.%s' } } },
+      frontmatter: { numbering: { enumerator: { enumerator: 'A.%s' } } },
       vfile: new VFile(),
     });
     enumerateTargetsTransform(tree, { state });
