@@ -1,15 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { buttonRole } from '../src';
-import type { RoleData } from 'myst-common';
+import { VFile } from 'vfile';
 
 describe('Button component', () => {
   it('should process button role correctly', () => {
-    const data: RoleData = { body: 'Click me<http://example.com>' };
-    const result = buttonRole.run(data);
+    const result = buttonRole.run(
+      { name: 'button', body: 'Click me<http://example.com>' },
+      new VFile(),
+    );
+
     expect(result).toEqual([
       {
         type: 'link',
-        kind: 'button',
+        class: 'button',
         url: 'http://example.com',
         children: [{ type: 'text', value: 'Click me' }],
       },
@@ -17,12 +20,11 @@ describe('Button component', () => {
   });
 
   it('should process button role without label correctly', () => {
-    const data: RoleData = { body: 'http://example.com' };
-    const result = buttonRole.run(data);
+    const result = buttonRole.run({ name: 'button', body: 'http://example.com' }, new VFile());
     expect(result).toEqual([
       {
         type: 'link',
-        kind: 'button',
+        class: 'button',
         url: 'http://example.com',
         children: [],
       },

@@ -18,9 +18,9 @@ export const buttonRole: RoleSpec = {
     const url = rawLabel ?? body;
     const node: Link = {
       type: 'link',
-      kind: 'button',
       url,
       children: [],
+      class: 'button', // TODO: allow users to extend this
     };
     if (modified) node.children = [{ type: 'text', value: modified.trim() }];
     return [node];
