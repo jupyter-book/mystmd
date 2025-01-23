@@ -175,6 +175,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `github`
   - a valid GitHub URL or `owner/reponame`
   - page can override project
+* - `edit`
+  - URL to edit the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific github URL for the page. You may disable this behavior by explicitly setting `edit` to `null`.
+  - page can override project
 * - `binder`
   - any valid URL
   - page can override project

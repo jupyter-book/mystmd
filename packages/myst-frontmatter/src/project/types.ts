@@ -33,6 +33,7 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'exports',
   'downloads',
   'settings', // We maybe want to move this into site frontmatter in the future
+  'edit',
   ...KNOWN_EXTERNAL_IDENTIFIERS,
   // Do not add any project specific keys here!
   ...SITE_FRONTMATTER_KEYS,
@@ -73,6 +74,7 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   exports?: Export[];
   downloads?: Download[];
   settings?: ProjectSettings;
+  edit?: string | null;
 };
 
 export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
