@@ -75,6 +75,7 @@ import { parseMyst } from './myst.js';
 import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { rawDirectiveTransform } from '../transforms/raw.js';
+import { addEditUrl } from '../utils/addEditUrl.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -164,6 +165,7 @@ export async function transformMdast(
     if (!frontmatter.numbering.title) frontmatter.numbering.title = {};
     if (frontmatter.numbering.title.offset == null) frontmatter.numbering.title.offset = offset;
   }
+  await addEditUrl(session, frontmatter, file);
   const references: References = {
     cite: { order: [], data: {} },
   };
