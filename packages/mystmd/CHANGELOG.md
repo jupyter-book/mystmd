@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.21
+
+### Patch Changes
+
+- 614ed0ec: Enable title numbering
+
 ## 1.3.20
 
 ## 1.3.19

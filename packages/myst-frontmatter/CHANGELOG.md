@@ -1,5 +1,15 @@
 # myst-frontmatter
 
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator customization to numbering items
+- 00a47c4: Add edit url to file frontmatter
+
 ## 1.7.6
 
 ### Patch Changes

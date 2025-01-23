@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+
 ## 1.7.6
 
 ## 1.7.5

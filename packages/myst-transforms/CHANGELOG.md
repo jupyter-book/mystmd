@@ -1,5 +1,23 @@
 # myst-transforms
 
+## 1.3.30
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator customization to numbering items
+- 614ed0ec: Remove some heading depth magic
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+
 ## 1.3.29
 
 ### Patch Changes
