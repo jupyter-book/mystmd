@@ -3,7 +3,9 @@ import type { Container, Paragraph, PhrasingContent, Image } from 'myst-spec';
 import type { VFile} from 'vfile';
 import { select, selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
-import { fileWarn, toText } from 'myst-common';
+import { fileWarn, toText, RuleId } from 'myst-common';
+
+const TRANSFORM_SOURCE = 'myst-transforms:images';
 
 /**
  * Generate image alt text from figure caption
@@ -37,6 +39,7 @@ export function imageNoAltTextTransform(tree: GenericParent, file: VFile) {
             fileWarn(
                 file,
                 `missing alt text for ${image.url}`,
+                {ruleId: RuleId.imageHasAltText, node: image, source: TRANSFORM_SOURCE},
             );
         }
     });
