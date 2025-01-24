@@ -98,16 +98,12 @@ Note that, card headers and footers are optional. If you don’t include ^^^ or 
 
 A button is an element with text content that triggers an action to navigate to an internal or external reference upon a user click. Use the {myst:role}`button` role followed by the text content and target path to create a button.
 
-{button}`MyST Role Spec <roles.md>`
-
-{button}`MyST-MD GitHub <https://github.com/jupyter-book/>`
-
 ```{myst}
 {button}`MyST Role Spec <roles.md>`
 ```
 
 ```{myst}
-{button}`MyST-MD GitHub <https://github.com/jupyter-book/>
+{button}`MyST-MD GitHub <https://github.com/jupyter-book/mystmd>`
 ```
 
 ### Grids
