@@ -5,7 +5,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/;
 
 export const buttonRole: RoleSpec = {
   name: 'button',
-  doc: 'Button to navigate to external or internal links.',
+  doc: 'Button element with an action to navigate to internal or external links.',
   body: {
     type: String,
     doc: 'The body of the button.',
