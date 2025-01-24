@@ -41,7 +41,7 @@ describe('transformRenderInlineExpressions', () => {
     } as InlineExpression;
     const tree = { type: 'root', children: [expr] };
     transformRenderInlineExpressions(tree, vfile);
-    // Children are added and quotes are removed
+    // Children are added and quotes are preserved
     expect(expr.children).toEqual([{ type: 'text', value: "'hello there'" }]);
   });
 });
