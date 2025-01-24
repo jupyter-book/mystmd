@@ -7,7 +7,7 @@ import { captionParagraphTransform } from './caption.js';
 import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './admonitions.js';
 import { blockMetadataTransform, blockNestingTransform, blockToFigureTransform } from './blocks.js';
 import { htmlIdsTransform } from './htmlIds.js';
-import { imageAltTextTransform } from './images.js';
+import { imageAltTextTransform, imageNoAltTextTransform } from './images.js';
 import { mathLabelTransform, mathNestingTransform, subequationTransform } from './math.js';
 import { blockquoteTransform } from './blockquote.js';
 import { codeBlockToDirectiveTransform, inlineCodeFlattenTransform } from './code.js';
@@ -40,6 +40,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts?: Re
   containerChildrenTransform(tree, file);
   htmlIdsTransform(tree);
   imageAltTextTransform(tree);
+  imageNoAltTextTransform(tree, file);
   blockquoteTransform(tree);
   removeUnicodeTransform(tree);
   headingDepthTransform(tree, file, opts);
