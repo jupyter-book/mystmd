@@ -47,7 +47,7 @@ export function imageNoAltTextTransform(tree: GenericParent, file: VFile) {
         ruleId: RuleId.imageAltTextGenerated,
         node: image,
         source: TRANSFORM_SOURCE,
-        note: 'You can remove this warning by writing your own altxtext',
+        note: 'You can remove this warning by writing your own alt text',
       });
     }
   });
