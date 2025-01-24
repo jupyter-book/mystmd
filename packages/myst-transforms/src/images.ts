@@ -1,8 +1,9 @@
 import type { Plugin } from 'unified';
 import type { Container, Paragraph, PhrasingContent, Image } from 'myst-spec';
+import type { VFile} from 'vfile';
 import { select, selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
-import { toText } from 'myst-common';
+import { fileWarn, toText } from 'myst-common';
 
 /**
  * Generate image alt text from figure caption
@@ -29,6 +30,19 @@ export function imageAltTextTransform(tree: GenericParent) {
   });
 }
 
-export const imageAltTextPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
+export function imageNoAltTextTransform(tree: GenericParent, file: VFile) {
+    const imageNodes = selectAll("image", tree) as Image[];
+    imageNodes.forEach((image, index) => {
+        if (image.alt == null) {
+            fileWarn(
+                file,
+                `missing alt text for ${image.url}`,
+            );
+        }
+    });
+}
+
+export const imageAltTextPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, file) => {
   imageAltTextTransform(tree);
+  imageNoAltTextTransform(tree, file);
 };
