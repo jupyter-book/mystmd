@@ -103,7 +103,7 @@ A button is an element with text content that triggers an action to navigate to 
 ```
 
 ```{myst}
-{button}`MyST-MD GitHub <https://github.com/jupyter-book/
+{button}`MyST-MD GitHub <https://github.com/jupyter-book/>
 ```
 
 ### Grids
