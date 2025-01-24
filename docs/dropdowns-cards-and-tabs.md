@@ -77,7 +77,7 @@ Footer
 Note that, card headers and footers are optional. If you don’t include ^^^ or +++ in your card, they will not show up.
 ````
 
-### `card` reference
+#### `card` reference
 
 **Arguments** _(optional, markdown)_
 : The `card` can take a single argument that is the title as a string.
@@ -93,6 +93,18 @@ Note that, card headers and footers are optional. If you don’t include ^^^ or 
 
     link _(optional, string)_
     : If given, clicking the card will direct you to the URL given here.
+
+### Buttons
+
+A button is an element with text content that triggers an action to navigate to an internal or external reference upon a user click. Use the {myst:role}`button` role followed by the text content and target path to create a button.
+
+```{myst}
+{button}`MyST Role Spec <roles.md>`
+```
+
+```{myst}
+{button}`MyST-MD GitHub <https://github.com/jupyter-book/
+```
 
 ### Grids
 
