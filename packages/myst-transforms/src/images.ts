@@ -46,7 +46,7 @@ export function imageNoAltTextTransform(tree: GenericParent, file: VFile) {
             fileWarn(
                 file,
                 `alt text for ${image.url} was auto-generated`,
-                {ruleId: RuleId.imageAltTextGenerated, node: image, source: TRANSFORM_SOURCE},
+                {ruleId: RuleId.imageAltTextGenerated, node: image, source: TRANSFORM_SOURCE, note: 'You can remove this warning by writing your own alt-text'},
             );
         }
     });
