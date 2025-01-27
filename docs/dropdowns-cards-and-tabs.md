@@ -43,14 +43,14 @@ Card content
 
 You can also add a `link` option to the card, which will allow you to make the entire card clickable:
 
-````{myst}
+```{myst}
 
 :::{card} Clickable Card
 :link: https://mystmd.org
 
 The entire card can be clicked to navigate to `mystmd.org`.
 :::
-````
+```
 
 ````{note} Compatibility with Sphinx design
 :class: dropdown
@@ -76,6 +76,7 @@ Footer
 
 Note that, card headers and footers are optional. If you don’t include ^^^ or +++ in your card, they will not show up.
 ````
+
 :::{myst:directive} card
 :::
 
@@ -90,6 +91,7 @@ A button is an element with text content that triggers an action to navigate to 
 ```{myst}
 {button}`MyST-MD GitHub <https://github.com/jupyter-book/mystmd>`
 ```
+
 :::{myst:role} button
 :::
 
@@ -99,7 +101,7 @@ Grids allow you to structure arbitrary chunks of content in a grid-like system.
 
 To generate a grid, use the ` ```{grid} ` wrapper directive along with ` ```{card} ` directives inside.
 
-The numbers supplied in the argument are column counts to be used on different screen sizes e.g. `1 1 2 3` corresponding to extra-small (<576px), small (768px), medium (992px) and large screens (>1200px).
+The numbers supplied in the argument are column counts to be used on different screen sizes e.g. `1 1 2 3` corresponding to smallest (<768px), medium (768px – 1024px), large (1024px – 1280px), and extra-large screens (>1280px). These pixel widths are determined by the theme (e.g. the book theme), which uses the default Tailwind CSS breakpoints.
 
 For example:
 
