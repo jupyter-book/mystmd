@@ -27,7 +27,7 @@ You can also hide the body of your admonition blocks so that users must click a 
 To turn an admonition into a dropdown, add the option `:class: dropdown` to them. See [](#admonition-dropdown) for more information.
 ```
 
-### Cards
+## Cards
 
 Cards provide an easy way for you to content into a standard “header”, “body”, “footer” structure that has a similar alignment and visual style. It is useful for creating galleries or high-visibility collections of links and information.
 For example, a card with a header, title, body, and footer:
@@ -76,25 +76,24 @@ Footer
 
 Note that, card headers and footers are optional. If you don’t include ^^^ or +++ in your card, they will not show up.
 ````
+:::{myst:directive} card
+:::
 
-### `card` reference
+## Buttons
 
-**Arguments** _(optional, markdown)_
-: The `card` can take a single argument that is the title as a string.
+A button is an element with text content that triggers an action to navigate to an internal or external reference upon a user click. Use the {myst:role}`button` role followed by the text content and target path to create a button.
 
-**Options**
-: No options for the `card` are required
+```{myst}
+{button}`MyST Role Spec <roles.md>`
+```
 
-    header _(optional, markdown)_
-    : Styled content at the top of the card
+```{myst}
+{button}`MyST-MD GitHub <https://github.com/jupyter-book/mystmd>`
+```
+:::{myst:role} button
+:::
 
-    footer _(optional, markdown)_
-    : Styled content at the bottom of the card
-
-    link _(optional, string)_
-    : If given, clicking the card will direct you to the URL given here.
-
-### Grids
+## Grids
 
 Grids allow you to structure arbitrary chunks of content in a grid-like system.
 
@@ -123,6 +122,9 @@ Execute notebook cells, store results, and insert outputs across pages.
 :::
 ::::
 ```
+
+:::{myst:directive} grid
+:::
 
 ## Tabs
 
@@ -154,23 +156,8 @@ Synced content for tab 2
 ```
 ````
 
-### `tab-item` reference
+:::{myst:directive} tab-set
+:::
 
-**Arguments** _(required: `1`, string)_
-: The `tab-item` requires a single argument that is the title as a string.
-
-    ```{warning}
-    :class: dropdown
-    # Note: the `tab-item` title is not currently not parsed
-
-    The current implementation does not parse the tab title properly, and markup in this field will not be parsed.
-    ```
-
-**Options**
-: No options for the `tab-item` are required
-
-    sync _(optional, string)_
-    : A key that is used to sync the selected tab across multiple tab-sets.
-
-    selected _(flag, no-value)_
-    : a flag indicating whether the tab should be selected by default.
+:::{myst:directive} tab-item
+:::

@@ -275,6 +275,7 @@ export type CrossReference = SpecCrossReference & {
   dataUrl?: string;
   remoteBaseUrl?: string;
   html_id?: string;
+  class?: Image['class'];
 };
 
 export type Link = SpecLink & {
@@ -284,6 +285,7 @@ export type Link = SpecLink & {
   static?: true;
   protocol?: string;
   error?: true;
+  class?: Image['class'];
 };
 
 // Search types
