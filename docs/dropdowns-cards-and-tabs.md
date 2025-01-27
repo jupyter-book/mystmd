@@ -27,7 +27,7 @@ You can also hide the body of your admonition blocks so that users must click a 
 To turn an admonition into a dropdown, add the option `:class: dropdown` to them. See [](#admonition-dropdown) for more information.
 ```
 
-### Cards
+## Cards
 
 Cards provide an easy way for you to content into a standard “header”, “body”, “footer” structure that has a similar alignment and visual style. It is useful for creating galleries or high-visibility collections of links and information.
 For example, a card with a header, title, body, and footer:
@@ -79,7 +79,7 @@ Note that, card headers and footers are optional. If you don’t include ^^^ or 
 :::{myst:directive} card
 :::
 
-### Buttons
+## Buttons
 
 A button is an element with text content that triggers an action to navigate to an internal or external reference upon a user click. Use the {myst:role}`button` role followed by the text content and target path to create a button.
 
@@ -93,7 +93,7 @@ A button is an element with text content that triggers an action to navigate to 
 :::{myst:role} button
 :::
 
-### Grids
+## Grids
 
 Grids allow you to structure arbitrary chunks of content in a grid-like system.
 
