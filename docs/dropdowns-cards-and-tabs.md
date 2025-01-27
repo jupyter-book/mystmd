@@ -76,23 +76,8 @@ Footer
 
 Note that, card headers and footers are optional. If you don’t include ^^^ or +++ in your card, they will not show up.
 ````
-
-#### `card` reference
-
-**Arguments** _(optional, markdown)_
-: The `card` can take a single argument that is the title as a string.
-
-**Options**
-: No options for the `card` are required
-
-    header _(optional, markdown)_
-    : Styled content at the top of the card
-
-    footer _(optional, markdown)_
-    : Styled content at the bottom of the card
-
-    link _(optional, string)_
-    : If given, clicking the card will direct you to the URL given here.
+:::{myst:directive} card
+:::
 
 ### Buttons
 
@@ -105,6 +90,8 @@ A button is an element with text content that triggers an action to navigate to 
 ```{myst}
 {button}`MyST-MD GitHub <https://github.com/jupyter-book/mystmd>`
 ```
+:::{myst:directive} button
+:::
 
 ### Grids
 
@@ -136,6 +123,9 @@ Execute notebook cells, store results, and insert outputs across pages.
 ::::
 ```
 
+:::{myst:directive} grid
+:::
+
 ## Tabs
 
 You can also produce tabbed content. This allows you to display a variety of tabbed content blocks that users can click on.
@@ -166,23 +156,8 @@ Synced content for tab 2
 ```
 ````
 
-### `tab-item` reference
+:::{myst:directive} tab-set
+:::
 
-**Arguments** _(required: `1`, string)_
-: The `tab-item` requires a single argument that is the title as a string.
-
-    ```{warning}
-    :class: dropdown
-    # Note: the `tab-item` title is not currently not parsed
-
-    The current implementation does not parse the tab title properly, and markup in this field will not be parsed.
-    ```
-
-**Options**
-: No options for the `tab-item` are required
-
-    sync _(optional, string)_
-    : A key that is used to sync the selected tab across multiple tab-sets.
-
-    selected _(flag, no-value)_
-    : a flag indicating whether the tab should be selected by default.
+:::{myst:directive} tab-item
+:::
