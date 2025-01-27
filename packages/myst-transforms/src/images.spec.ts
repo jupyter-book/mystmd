@@ -124,4 +124,40 @@ describe('Test imageNoAltTextTransform', () => {
     expect(file.messages.length).toBe(1);
     expect(file.messages[0].message.includes('was auto-generated')).toBe(true);
   });
+  test('image inside output does not generate warning', () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'output',
+          children: [
+            {
+              type: 'image',
+              url: 'https://images.com/cats',
+              align: 'center',
+            },
+          ],
+        },
+      ],
+    };
+    const file = new VFile();
+    imageNoAltTextTransform(mdast, file);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'output',
+          children: [
+            {
+              type: 'image',
+              url: 'https://images.com/cats',
+              align: 'center',
+            },
+          ],
+        },
+      ],
+    });
+    // A warning was created
+    expect(file.messages.length).toBe(0);
+  });
 });
