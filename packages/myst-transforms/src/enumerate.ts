@@ -735,7 +735,8 @@ export function addContainerCaptionNumbersTransform(
  * Raise a warning if `target` linked by `node` has an implicit reference
  */
 function implicitTargetWarning(target: Target, node: GenericNode, opts: StateResolverOptions) {
-  if ((target.node as GenericNode).implicit && opts.state.vfile) {
+  // suppressImplicitWarning is used, for example, in the table of contents directive
+  if ((target.node as GenericNode).implicit && opts.state.vfile && !node.suppressImplicitWarning) {
     fileWarn(
       opts.state.vfile,
       `Linking "${target.node.identifier}" to an implicit ${target.kind} reference, best practice is to create an explicit reference.`,
@@ -747,6 +748,7 @@ function implicitTargetWarning(target: Target, node: GenericNode, opts: StateRes
       },
     );
   }
+  delete node.suppressImplicitWarning;
 }
 
 export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateResolverOptions) => {
