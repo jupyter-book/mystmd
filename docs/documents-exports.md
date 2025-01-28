@@ -37,7 +37,7 @@ You can also explore the [MyST templating](xref:jtex) documentation for a deeper
 There are two places to configure exports, you can do this directly in the markdown of your article that you are exporting:
 
 ```{code-block} yaml
-:filename: article.md
+:filename: my-markdown-file.md
 ---
 title: My PDF
 exports:
