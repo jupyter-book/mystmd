@@ -1,5 +1,22 @@
 # myst-cli
 
+## 1.3.23
+
+### Patch Changes
+
+- fad8f673: Add new button role
+- 3b4a5f8d: Add support for `strip-quotes` metadata
+- Updated dependencies [7d24862a]
+- Updated dependencies [fad8f673]
+- Updated dependencies [eacacd95]
+  - myst-parser@1.5.11
+  - myst-ext-button@0.0.1
+  - myst-spec-ext@1.7.8
+  - myst-transforms@1.3.31
+  - myst-common@1.7.8
+  - myst-config@1.7.8
+  - myst-frontmatter@1.7.8
+
 ## 1.3.22
 
 ### Patch Changes
