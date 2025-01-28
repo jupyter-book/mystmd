@@ -1,5 +1,14 @@
 # myst-parser
 
+## 1.5.11
+
+### Patch Changes
+
+- 7d24862a: Remove java and zip from linkified TLDs.
+  - myst-common@1.7.8
+  - myst-roles@1.5.11
+  - myst-directives@1.5.11
+
 ## 1.5.10
 
 ### Patch Changes

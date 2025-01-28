@@ -1,5 +1,11 @@
 # myst-to-html
 
+## 1.5.11
+
+### Patch Changes
+
+- myst-common@1.7.8
+
 ## 1.5.10
 
 ### Patch Changes

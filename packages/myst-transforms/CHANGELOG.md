@@ -1,5 +1,16 @@
 # myst-transforms
 
+## 1.3.31
+
+### Patch Changes
+
+- eacacd95: Fix unwanted continuous numbering for some enumerated types
+- Updated dependencies [fad8f673]
+  - myst-spec-ext@1.7.8
+  - myst-common@1.7.8
+  - myst-frontmatter@1.7.8
+  - myst-to-html@1.5.11
+
 ## 1.3.30
 
 ### Patch Changes
