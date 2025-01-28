@@ -77,7 +77,11 @@ import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { rawDirectiveTransform } from '../transforms/raw.js';
 import { addEditUrl } from '../utils/addEditUrl.js';
-import { localToManifestProject } from '../build/index.js';
+import {
+  indexFrontmatterFromProject,
+  manifestPagesFromProject,
+  manifestTitleFromProject,
+} from '../build/utils/projectManifest.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -314,20 +318,19 @@ export async function postProcessMdast(
   const projectPath = selectors.selectCurrentProjectPath(storeState);
   const siteConfig = selectors.selectCurrentSiteConfig(storeState);
   const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
-  const manifestProject = await localToManifestProject(session, projectPath, projectSlug);
   if (site) {
     buildTocTransform(
       mdast,
       vfile,
-      manifestProject
+      projectPath
         ? [
             {
-              title: manifestProject.title,
+              title: manifestTitleFromProject(session, projectPath),
               level: 1,
               slug: '',
-              enumerator: manifestProject.enumerator,
+              enumerator: indexFrontmatterFromProject(session, projectPath).enumerator,
             },
-            ...manifestProject.pages,
+            ...(await manifestPagesFromProject(session, projectPath)),
           ]
         : undefined,
       projectSlug,
