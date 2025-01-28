@@ -286,7 +286,7 @@ export function initializeTargetCounts(
   // Update with other initial values
   Object.entries(previousCounts ?? {})
     .filter(([key]) => key !== 'heading')
-    .filter(([key]) => !numbering[key] || numbering[key]?.continue || numbering.all?.continue)
+    .filter(([key]) => numbering[key]?.continue || numbering.all?.continue)
     .forEach(([key, val]) => {
       targetCounts[key] = { ...(val as { main: number; sub: number }) };
     });
