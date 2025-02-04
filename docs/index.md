@@ -61,6 +61,10 @@ TL;DR
 : Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
 :::
 
+## Cite `mystmd`
+
+To cite or read more references about the `mystmd` project and related tools, see [](./cite.md).
+
 ## Project Goals
 
 MyST is part of the [Project Jupyter](https://jupyter.org/) organization, and is an open-source, community-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
