@@ -160,6 +160,7 @@ project:
         - file: contribute-docs.md
         - file: contribute-build-locally.md
         - file: contribute-add-feature.md
+    - file: cite.md
 
 site:
   title: MyST Markdown Guide
