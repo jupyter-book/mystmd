@@ -84,7 +84,7 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
           return { path, module: { plugin } };
         }
         case 'javascript': {
-          if (!fs.statSync(path, {throwIfNoEntry: false})?.isFile() || !path.endsWith('.mjs')) {
+          if (!fs.statSync(path, { throwIfNoEntry: false })?.isFile() || !path.endsWith('.mjs')) {
             addWarningForFile(
               session,
               path,
