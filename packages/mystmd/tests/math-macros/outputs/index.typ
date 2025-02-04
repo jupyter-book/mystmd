@@ -1,14 +1,6 @@
 #import "lapreprint.typ": *
 #show: template.with(
   title: "Testing Math Plugins",
-  abstract: (
-    (
-      title: "Abstract",
-      content: [
-
-      ]
-    ),
-  ),
   date: datetime(
     year: 2024,
     month: 1,

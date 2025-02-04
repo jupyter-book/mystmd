@@ -46,7 +46,7 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
       switch (type) {
         case 'executable': {
           // Ensure the plugin is a file
-          if (!fs.statSync(path).isFile) {
+          if (!fs.statSync(path, { throwIfNoEntry: false })?.isFile()) {
             addWarningForFile(
               session,
               path,
@@ -84,7 +84,7 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
           return { path, module: { plugin } };
         }
         case 'javascript': {
-          if (!fs.statSync(path).isFile || !path.endsWith('.mjs')) {
+          if (!fs.statSync(path, { throwIfNoEntry: false })?.isFile() || !path.endsWith('.mjs')) {
             addWarningForFile(
               session,
               path,
