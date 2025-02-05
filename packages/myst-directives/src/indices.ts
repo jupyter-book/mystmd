@@ -95,7 +95,8 @@ export const genIndexDirective: DirectiveSpec = {
       } else {
         children.push({
           type: 'heading',
-          depth: 1,
+          depth: 2,
+          enumerated: false,
           children: parsedArg,
         });
       }

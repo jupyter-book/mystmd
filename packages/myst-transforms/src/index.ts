@@ -59,6 +59,7 @@ export { abbreviationPlugin, abbreviationTransform } from './abbreviations.js';
 export { includeDirectivePlugin, includeDirectiveTransform } from './include.js';
 export { containerChildrenPlugin, containerChildrenTransform } from './containers.js';
 export { headingDepthPlugin, headingDepthTransform } from './headings.js';
+export { buildTocTransform } from './toc.js';
 
 // Enumeration
 export type { IReferenceStateResolver, ReferenceKind, TargetCounts } from './enumerate.js';

@@ -18,6 +18,7 @@ import { mystdemoDirective } from './mystdemo.js';
 import { blockquoteDirective } from './blockquote.js';
 import { rawDirective, rawLatexDirective, rawTypstDirective } from './raw.js';
 import { divDirective } from './div.js';
+import { tocDirective } from './toc.js';
 
 export const defaultDirectives = [
   admonitionDirective,
@@ -46,6 +47,7 @@ export const defaultDirectives = [
   rawLatexDirective,
   rawTypstDirective,
   divDirective,
+  tocDirective,
 ];
 
 export * from './utils.js';
@@ -68,3 +70,4 @@ export { mystdemoDirective } from './mystdemo.js';
 export { blockquoteDirective } from './blockquote.js';
 export { rawDirective, rawLatexDirective, rawTypstDirective } from './raw.js';
 export { divDirective } from './div.js';
+export { tocDirective } from './toc.js';
