@@ -229,6 +229,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `kernelspec`
   - configuration for the kernel (see [](#kernel-specification))
   - page only
+* - `skip_execution`
+  - opt-out of execution for a particular document (see [](./execute-notebooks))
+  - page only
 ```
 
 +++
