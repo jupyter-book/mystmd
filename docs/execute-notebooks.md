@@ -65,6 +65,24 @@ name = input("What is your name?")
 
 Additional [cell tags](#tbl:notebook-cell-tags) to hide, remove, or raise exceptions are also possible.
 
+## Skip entire notebooks
+
+You may wish to disable execution for certain notebooks. This can be done by setting the top-level `skip_execution` frontmatter option to `true`, e.g.
+
+````markdown
+---
+kernelspec:
+  name: python3
+  display_name: Python 3
+
+skip_execution: true
+---
+
+```{code-cell}
+print("This will never be executed!")
+```
+````
+
 ## Cache execution outputs
 
 When MyST executes your notebook, it will store the outputs in a cache in a folder called `execute/` in your MyST build folder.

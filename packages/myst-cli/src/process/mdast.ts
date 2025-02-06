@@ -219,7 +219,7 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  if (execute) {
+  if (execute && !frontmatter.skip_execution) {
     const cachePath = path.join(session.buildPath(), 'execute');
     await kernelExecutionTransform(mdast, vfile, {
       basePath: session.sourcePath(),
