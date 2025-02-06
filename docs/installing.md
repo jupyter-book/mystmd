@@ -9,15 +9,23 @@ To install the MyST CLI, choose your preferred package manager. If you do not kn
 
 (installing-myst-tabs)=
 :::::{tab-set}
-(installing-with-mamba)=
+(installing-conda-forge)=
 ::::{tab-item} conda-forge
 
-Install `mamba` (<https://mamba.readthedocs.io>), see [Getting started with Miniforge](xref:biapol#ref:miniforge_python).
+You can install using `mamba` (<https://mamba.readthedocs.io>), see [Getting started with Miniforge](xref:biapol#ref:miniforge_python).
 
 🛠 Then install `mystmd` from `conda-forge`:
 
 ```shell
 mamba install -c conda-forge mystmd
+```
+
+You may also use [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html) which comes packaged with the [Anaconda](https://www.anaconda.com/download/success) python distribution.
+
+🛠 Then install `mystmd` from `conda-forge`:
+
+```shell
+conda install -c conda-forge mystmd
 ```
 
 ::::
