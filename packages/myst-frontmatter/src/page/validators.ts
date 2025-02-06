@@ -51,6 +51,12 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
   }
+  if (defined(value.skip_execution)) {
+    output.skip_execution = validateBoolean(
+      value.skip_execution,
+      incrementOptions('skip_execution', opts),
+    );
+  }
   if (defined(value.enumerator)) {
     output.enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
   }
