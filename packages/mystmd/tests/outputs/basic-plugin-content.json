@@ -1,0 +1,128 @@
+{
+  "kind": "Article",
+  "sha256": "900eec73ecdfd1641367698dab8e7727ce2a81122ba0cd641c61c4f0f3b30694",
+  "slug": "index",
+  "location": "/index.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Basic Test",
+    "github": "https://github.com/jupyter-book/mystmd",
+    "keywords": [],
+    "exports": [
+      {
+        "format": "md",
+        "filename": "index.md",
+        "url": "/index-827a0078d531c946c69925141436e783.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": {
+                "line": 5,
+                "column": 1
+              },
+              "end": {
+                "line": 5,
+                "column": 1
+              }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Lorem Ipsum",
+                "position": {
+                  "start": {
+                    "line": 5,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 5,
+                    "column": 1
+                  }
+                }
+              }
+            ],
+            "identifier": "lorem-ipsum",
+            "label": "Lorem Ipsum",
+            "html_id": "lorem-ipsum",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": {
+                "line": 7,
+                "column": 1
+              },
+              "end": {
+                "line": 7,
+                "column": 1
+              }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Set ",
+                "position": {
+                  "start": {
+                    "line": 7,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 1
+                  }
+                }
+              },
+              {
+                "type": "text",
+                "value": "this text",
+                "position": {
+                  "start": {
+                    "line": 7,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 1
+                  }
+                },
+                "class": "red"
+              },
+              {
+                "type": "text",
+                "value": " to a class of red.",
+                "position": {
+                  "start": {
+                    "line": 7,
+                    "column": 1
+                  },
+                  "end": {
+                    "line": 7,
+                    "column": 1
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": {
+    "cite": {
+      "order": [],
+      "data": {}
+    }
+  },
+  "version": "1"
+}
