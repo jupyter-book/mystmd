@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
 import { RuleId, plural, type MystPlugin, type ValidatedMystPlugin } from 'myst-common';
@@ -97,8 +98,9 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
             return null;
           }
           let module: any;
+          const pathURL = pathToFileURL(path);
           try {
-            module = await import(path);
+            module = await import(pathURL);
           } catch (error) {
             session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
             addWarningForFile(session, path, `Error reading plugin: ${error}`, 'error', {
