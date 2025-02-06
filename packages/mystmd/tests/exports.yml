@@ -190,6 +190,13 @@ cases:
         content: outputs/basic-site-config.json
       - path: basic-site/_build/site/myst.xref.json
         content: outputs/basic-site-myst.xref.json
+  - title: Basic plugin build
+    cwd: basic-plugin
+    command: myst build
+    outputs:
+      - path: basic-plugin/_build/site/content/index.json
+        # Keys and file hashes are removed from this output file
+        content: outputs/basic-plugin-content.json
   - title: XRef site build
     cwd: site-xrefs
     command: myst build
