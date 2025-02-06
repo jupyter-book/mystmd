@@ -100,7 +100,7 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
           let module: any;
           const pathURL = pathToFileURL(path);
           try {
-            module = await import(pathURL);
+            module = await import(pathURL.toString());
           } catch (error) {
             session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
             addWarningForFile(session, path, `Error reading plugin: ${error}`, 'error', {
