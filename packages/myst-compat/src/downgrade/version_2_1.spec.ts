@@ -54,7 +54,7 @@ const SIMPLE_AST: Parent = {
   ],
 };
 
-const SIMPLE_V2_AST_WITH_OUTPUT: Parent = {
+const SIMPLE_V2_AST_WITH_FOOTNOTE: Parent = {
   type: 'root',
   children: [
     {
@@ -62,35 +62,47 @@ const SIMPLE_V2_AST_WITH_OUTPUT: Parent = {
       type: 'block',
       children: [
         {
-          // @ts-expect-error: invalid child type
-          type: 'outputs',
-          id: 'abc123',
+          // @ts-expect-error: unknown type
+          type: 'paragraph',
           children: [
             {
-              // @ts-expect-error: invalid child type
-              type: 'output',
-              children: [],
-              jupyter_data: {
-                output_type: 'display_data',
-                execution_count: 3,
-                metadata: {},
-                data: {
-                  'application/octet-stream': {
-                    content_type: 'application/octet-stream',
-                    hash: 'def456',
-                    path: '/my/path/def456.png',
-                  },
-                },
-              },
+              type: 'text',
+              value: 'See the footnote',
+            },
+            {
+              type: 'footnoteReference',
+              identifier: '1',
+              label: '1',
+              // @ts-expect-error: unknown type
+              enumerator: '1',
             },
           ],
+        },
+        {
+          // @ts-expect-error: unknown type
+          type: 'footnoteDefinition',
+          identifier: '1',
+          label: '1',
+          children: [
+            {
+              // @ts-expect-error: unknown type
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'A footnote',
+                },
+              ],
+            },
+          ],
+          enumerator: '1',
         },
       ],
     },
   ],
 };
 
-const SIMPLE_V1_AST_WITH_OUTPUT: Parent = {
+const SIMPLE_V1_AST_WITH_FOOTNOTE: Parent = {
   type: 'root',
   children: [
     {
@@ -98,62 +110,151 @@ const SIMPLE_V1_AST_WITH_OUTPUT: Parent = {
       type: 'block',
       children: [
         {
-          // @ts-expect-error: invalid child type
-          type: 'output',
-          id: 'abc123',
-          // @ts-expect-error: invalid type
-          data: [
+          // @ts-expect-error: unknown type
+          type: 'paragraph',
+          children: [
             {
-              output_type: 'display_data',
-              execution_count: 3,
-              metadata: {},
-              data: {
-                'application/octet-stream': {
-                  content_type: 'application/octet-stream',
-                  hash: 'def456',
-                  path: '/my/path/def456.png',
-                },
-              },
+              type: 'text',
+              value: 'See the footnote',
+            },
+            {
+              type: 'footnoteReference',
+              identifier: '1',
+              label: '1',
+              // @ts-expect-error: unknown type
+              number: 1,
             },
           ],
-          children: [],
-          _future_ast: {
-            type: 'outputs',
-            id: 'abc123',
-            children: [
-              {
-                type: 'output',
-                children: [],
-                jupyter_data: {
-                  output_type: 'display_data',
-                  execution_count: 3,
-                  metadata: {},
-                  data: {
-                    'application/octet-stream': {
-                      content_type: 'application/octet-stream',
-                      hash: 'def456',
-                      path: '/my/path/def456.png',
-                    },
-                  },
+        },
+        {
+          // @ts-expect-error: unknown type
+          type: 'footnoteDefinition',
+          identifier: '1',
+          label: '1',
+          children: [
+            {
+              // @ts-expect-error: unknown type
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'A footnote',
                 },
-              },
-            ],
-          },
+              ],
+            },
+          ],
+          number: 1,
+        },
+      ],
+    },
+  ],
+};
+const SIMPLE_V2_AST_WITH_INVALID_FOOTNOTE: Parent = {
+  type: 'root',
+  children: [
+    {
+      // @ts-expect-error: unknown type
+      type: 'block',
+      children: [
+        {
+          // @ts-expect-error: unknown type
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See the footnote',
+            },
+            {
+              type: 'footnoteReference',
+              identifier: '1',
+              label: '1',
+              // @ts-expect-error: unknown type
+              enumerator: '%s.1',
+            },
+          ],
+        },
+        {
+          // @ts-expect-error: unknown type
+          type: 'footnoteDefinition',
+          identifier: '1',
+          label: '1',
+          children: [
+            {
+              // @ts-expect-error: unknown type
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'A footnote',
+                },
+              ],
+            },
+          ],
+          enumerator: '%s.1',
         },
       ],
     },
   ],
 };
 
+const SIMPLE_V1_AST_WITH_INVALID_FOOTNOTE: Parent = {
+  type: 'root',
+  children: [
+    {
+      // @ts-expect-error: unknown type
+      type: 'block',
+      children: [
+        {
+          // @ts-expect-error: unknown type
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value: 'See the footnote',
+            },
+            {
+              type: 'footnoteReference',
+              identifier: '1',
+              label: '1',
+            },
+          ],
+        },
+        {
+          // @ts-expect-error: unknown type
+          type: 'footnoteDefinition',
+          identifier: '1',
+          label: '1',
+          children: [
+            {
+              // @ts-expect-error: unknown type
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'A footnote',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
 describe('downgrade 2->1', () => {
   it('leaves a simple AST unchanged', () => {
     const ast = structuredClone(SIMPLE_AST);
     downgrade(ast);
     expect(ast).toStrictEqual(SIMPLE_AST);
   });
-  it('downgrades a v2 AST with outputs', () => {
-    const ast = structuredClone(SIMPLE_V2_AST_WITH_OUTPUT);
+  it('downgrades a v2 AST with footnotes', () => {
+    const ast = structuredClone(SIMPLE_V2_AST_WITH_FOOTNOTE);
     downgrade(ast);
-    expect(ast).toStrictEqual(SIMPLE_V1_AST_WITH_OUTPUT);
+    expect(ast).toStrictEqual(SIMPLE_V1_AST_WITH_FOOTNOTE);
+  });
+  it('downgrades a v2 AST with invalid footnotes', () => {
+    const ast = structuredClone(SIMPLE_V2_AST_WITH_INVALID_FOOTNOTE);
+    downgrade(ast);
+    expect(ast).toStrictEqual(SIMPLE_V1_AST_WITH_INVALID_FOOTNOTE);
   });
 });

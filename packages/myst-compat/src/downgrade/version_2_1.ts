@@ -9,7 +9,10 @@ import type {
 } from '../types/v1.js';
 import { visit, CONTINUE, SKIP } from 'unist-util-visit';
 
-function maybeParseInt(value: string): number | undefined {
+function maybeParseInt(value: string | undefined): number | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
   const result = parseInt(value);
   if (String(result) === value) {
     return result;
@@ -32,19 +35,21 @@ export function downgrade(ast: Parent) {
         switch (node.type) {
           case 'footnoteDefinition': {
             const { enumerator, ...rest } = node;
-            const nextNode: FootnoteDefinition1 = {
-              ...rest,
-              number: enumerator ? maybeParseInt(enumerator) : undefined,
-            };
+            const nextNode: FootnoteDefinition1 = rest;
+            const maybeNumber = maybeParseInt(enumerator);
+            if (maybeNumber !== undefined) {
+              nextNode.number = maybeNumber;
+            }
             parent.children[index!] = nextNode as any;
             return CONTINUE;
           }
           case 'footnoteReference': {
             const { enumerator, ...rest } = node;
-            const nextNode: FootnoteReference1 = {
-              ...rest,
-              number: enumerator ? maybeParseInt(enumerator) : undefined,
-            };
+            const nextNode: FootnoteReference1 = rest;
+            const maybeNumber = maybeParseInt(enumerator);
+            if (maybeNumber !== undefined) {
+              nextNode.number = maybeNumber;
+            }
             parent.children[index!] = nextNode as any;
             return SKIP;
           }

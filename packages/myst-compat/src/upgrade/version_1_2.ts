@@ -23,19 +23,19 @@ export function upgrade(ast: Parent) {
         switch (node.type) {
           case 'footnoteDefinition': {
             const { number, ...rest } = node;
-            const nextNode: FootnoteDefinition2 = {
-              ...rest,
-              enumerator: number ? String(number) : undefined,
-            };
+            const nextNode: FootnoteDefinition2 = rest;
+            if (number !== undefined) {
+              nextNode.enumerator = String(number);
+            }
             parent.children[index!] = nextNode as any;
             return CONTINUE;
           }
           case 'footnoteReference': {
             const { number, ...rest } = node;
-            const nextNode: FootnoteReference2 = {
-              ...rest,
-              enumerator: number ? String(number) : undefined,
-            };
+            const nextNode: FootnoteReference2 = rest;
+            if (number !== undefined) {
+              nextNode.enumerator = String(number);
+            }
             parent.children[index!] = nextNode as any;
             return SKIP;
           }
