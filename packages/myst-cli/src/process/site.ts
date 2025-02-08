@@ -45,7 +45,7 @@ import { loadReferences } from './loadReferences.js';
 import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
-import { SPEC_VERSION } from '../spec-version.js'
+import { SPEC_VERSION } from '../spec-version.js';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -422,7 +422,7 @@ export async function writeFile(
     widgets,
     mdast,
     references,
-    version: SPEC_VERSION
+    version: SPEC_VERSION,
   };
   const jsonFilenameParts = [session.contentPath()];
   if (projectSlug) jsonFilenameParts.push(projectSlug);
