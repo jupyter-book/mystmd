@@ -17,6 +17,7 @@ function mystDataFilename(dataUrl: string) {
 }
 
 export type MystData = {
+  version: number;
   kind?: SourceFileKind;
   sha256?: string;
   slug?: string;

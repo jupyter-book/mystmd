@@ -83,8 +83,6 @@ export type MathGroup = Target & {
 };
 
 export type FootnoteDefinition = FND & {
-  /** @deprecated this should be enumerator */
-  number?: number;
   enumerator?: string;
 };
 

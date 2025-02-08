@@ -45,6 +45,7 @@ import { loadReferences } from './loadReferences.js';
 import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
+import { SPEC_VERSION } from '../spec-version.js';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -412,6 +413,7 @@ export async function writeFile(
   const parts = resolveFrontmatterParts(session, frontmatter);
   const frontmatterWithExports = { ...frontmatter, exports, downloads, parts };
   const mystData: MystData = {
+    version: SPEC_VERSION,
     kind,
     sha256,
     slug,

@@ -26,6 +26,7 @@ import { collectExportOptions } from '../utils/collectExportOptions.js';
 import { filterPages } from '../../project/load.js';
 import { getRawFrontmatterFromFile } from '../../process/file.js';
 import { castSession } from '../../session/cache.js';
+import { SPEC_VERSION } from '../../spec-version.js';
 
 type ManifestProject = Required<SiteManifest>['projects'][0];
 
@@ -417,9 +418,10 @@ export async function getSiteManifest(
   validatedFrontmatter.options = resolvedOptions;
   const parts = resolveFrontmatterParts(session, validatedFrontmatter);
   const manifest: SiteManifest = {
+    version: SPEC_VERSION,
+    myst: version,
     ...validatedFrontmatter,
     parts,
-    myst: version,
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,
