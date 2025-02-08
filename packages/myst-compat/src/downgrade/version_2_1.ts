@@ -2,6 +2,7 @@ import type { Parent } from 'mdast';
 import type { Outputs as Outputs2, Output as Output2 } from '../types/v2.js';
 import type { Output as Output1 } from '../types/v1.js';
 import { visit, SKIP } from 'unist-util-visit';
+import { squeeze } from '../utils.js';
 
 export function downgrade(ast: Parent) {
   visit(ast as any, 'outputs', (node: Outputs2, index: number | null, parent: Parent | null) => {
@@ -20,6 +21,9 @@ export function downgrade(ast: Parent) {
       id,
       _future_ast: structuredClone(node),
     };
+    // Drop any undefined members (assume all members are optional if undefined)
+    squeeze(nextOutput);
+
     if (parent) {
       parent.children[index!] = nextOutput as any;
     }
