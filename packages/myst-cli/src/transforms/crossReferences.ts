@@ -30,6 +30,7 @@ export type MystData = {
   widgets?: Record<string, any>;
   mdast?: GenericParent;
   references?: References;
+  version?: string;
 };
 
 async function fetchMystData(
