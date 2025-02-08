@@ -243,18 +243,18 @@ const SIMPLE_V1_AST_WITH_INVALID_FOOTNOTE: Parent = {
 };
 describe('downgrade 2->1', () => {
   it('leaves a simple AST unchanged', () => {
-    const ast = structuredClone(SIMPLE_AST);
-    downgrade(ast);
-    expect(ast).toStrictEqual(SIMPLE_AST);
+    const mdast = structuredClone(SIMPLE_AST);
+    downgrade({ version: '2', mdast });
+    expect(mdast).toStrictEqual(SIMPLE_AST);
   });
   it('downgrades a v2 AST with footnotes', () => {
-    const ast = structuredClone(SIMPLE_V2_AST_WITH_FOOTNOTE);
-    downgrade(ast);
-    expect(ast).toStrictEqual(SIMPLE_V1_AST_WITH_FOOTNOTE);
+    const mdast = structuredClone(SIMPLE_V2_AST_WITH_FOOTNOTE);
+    downgrade({ version: '2', mdast });
+    expect(mdast).toStrictEqual(SIMPLE_V1_AST_WITH_FOOTNOTE);
   });
   it('downgrades a v2 AST with invalid footnotes', () => {
-    const ast = structuredClone(SIMPLE_V2_AST_WITH_INVALID_FOOTNOTE);
-    downgrade(ast);
-    expect(ast).toStrictEqual(SIMPLE_V1_AST_WITH_INVALID_FOOTNOTE);
+    const mdast = structuredClone(SIMPLE_V2_AST_WITH_INVALID_FOOTNOTE);
+    downgrade({ version: '2', mdast });
+    expect(mdast).toStrictEqual(SIMPLE_V1_AST_WITH_INVALID_FOOTNOTE);
   });
 });

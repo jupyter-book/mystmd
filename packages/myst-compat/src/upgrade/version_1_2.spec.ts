@@ -151,13 +151,13 @@ const SIMPLE_V1_AST_WITH_FOOTNOTE: Parent = {
 };
 describe('update 1->2', () => {
   it('leaves a simple AST unchanged', () => {
-    const ast = structuredClone(SIMPLE_AST);
-    upgrade(ast);
-    expect(ast).toStrictEqual(SIMPLE_AST);
+    const mdast = structuredClone(SIMPLE_AST);
+    upgrade({ version: '1', mdast });
+    expect(mdast).toStrictEqual(SIMPLE_AST);
   });
   it('upgrades a v1 AST with footnotes', () => {
-    const ast = structuredClone(SIMPLE_V1_AST_WITH_FOOTNOTE);
-    upgrade(ast);
-    expect(ast).toStrictEqual(SIMPLE_V2_AST_WITH_FOOTNOTE);
+    const mdast = structuredClone(SIMPLE_V1_AST_WITH_FOOTNOTE);
+    upgrade({ version: '1', mdast });
+    expect(mdast).toStrictEqual(SIMPLE_V2_AST_WITH_FOOTNOTE);
   });
 });
