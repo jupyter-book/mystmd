@@ -418,6 +418,16 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
     type: 'mystDirectiveError',
     noCloseToken: true,
   },
+  myst_option: {
+    type: 'mystOption',
+    getAttrs(t) {
+      return {
+        name: t.info,
+        location: t.meta.location,
+        value: t.meta.value,
+      };
+    },
+  },
   parsed_role: {
     type: 'mystRole',
     getAttrs(t) {
