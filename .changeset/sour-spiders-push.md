@@ -1,5 +1,5 @@
 ---
-"myst-compat": patch
+'myst-migrate': patch
 ---
 
-Add myst-compat package
+Add myst-migrate package
