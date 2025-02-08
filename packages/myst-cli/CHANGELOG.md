@@ -1,5 +1,25 @@
 # myst-cli
 
+## 1.3.24
+
+### Patch Changes
+
+- 7448083f: Add support for skipping execution of individual notebooks
+- 75bbb18: Change footnotes to use enumerator over number
+- 1a18e4f4: Fix typo in upgrade routine
+- 75bbb18: Add version to site content outputs
+- 2a6db555: Fix imports of plugins on Windows
+- b516d4fe: Improve error message for missing javascript plugins
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb18]
+- Updated dependencies [75bbb18]
+  - myst-frontmatter@1.7.9
+  - myst-transforms@1.3.32
+  - myst-spec-ext@1.7.9
+  - myst-to-docx@1.0.14
+  - myst-config@1.7.9
+  - myst-common@1.7.9
+
 ## 1.3.23
 
 ### Patch Changes
