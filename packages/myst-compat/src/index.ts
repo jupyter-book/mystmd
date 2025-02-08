@@ -1,18 +1,19 @@
 import { downgrade } from './downgrade/index.js';
 import { upgrade } from './upgrade/index.js';
-import type { Parent } from 'mdast';
+import type { IFile } from './types/index.js';
 
-export function makeCompatible(from: string, to: string, ast: Parent) {
+export function makeCompatible(src: IFile, to: string) {
+  const { version: from } = src;
   const fromVersion = parseInt(from);
   const toVersion = parseInt(to);
 
   if (fromVersion === toVersion) {
     return;
   } else if (fromVersion < toVersion) {
-    upgrade(from, to, ast);
+    upgrade(src, to);
     return;
   } else {
-    downgrade(from, to, ast);
+    downgrade(src, to);
     return;
   }
 }

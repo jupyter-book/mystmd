@@ -6,13 +6,16 @@ import type {
 import type {
   FootnoteDefinition as FootnoteDefinition1,
   FootnoteReference as FootnoteReference1,
+  IFile as IFile1,
 } from '../types/v1.js';
 import { visit, CONTINUE, SKIP } from 'unist-util-visit';
 
-export function upgrade(ast: Parent) {
+export function upgrade(file: IFile1) {
+  const { mdast } = file;
+
   // Walk over footnote nodes
   visit(
-    ast as any,
+    mdast as any,
     ['footnoteDefinition', 'footnoteReference'],
     (
       node: FootnoteDefinition1 | FootnoteReference1,

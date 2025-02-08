@@ -1,4 +1,8 @@
 // TODO: use mdast once we rely on mdast types
+export interface IFile {
+  version: '1';
+  mdast: any[];
+}
 
 export type FootnoteDefinition = {
   type: 'footnoteDefinition';

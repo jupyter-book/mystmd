@@ -2,6 +2,7 @@ import type { Parent } from 'mdast';
 import type {
   FootnoteDefinition as FootnoteDefinition2,
   FootnoteReference as FootnoteReference2,
+  IFile as IFile2,
 } from '../types/v2.js';
 import type {
   FootnoteDefinition as FootnoteDefinition1,
@@ -21,10 +22,11 @@ function maybeParseInt(value: string | undefined): number | undefined {
   }
 }
 
-export function downgrade(ast: Parent) {
+export function downgrade(file: IFile2) {
+  const { mdast } = file;
   // Walk over footnote nodes
   visit(
-    ast as any,
+    mdast as any,
     ['footnoteDefinition', 'footnoteReference'],
     (
       node: FootnoteDefinition2 | FootnoteReference2,
