@@ -6,21 +6,24 @@ import { squeeze } from '../utils.js';
 
 export function upgrade(ast: Parent) {
   visit(ast as any, 'output', (node: Output1, index: number | null, parent: Parent | null) => {
-    // Case 1: convert "classic" AST to "future" AST
-    // 1. nest `Output` under `Outputs`
-    // 2. lift `identifier` and `html_id` labels to `Outputs`
-    // 3. lift `visibility` to `Outputs`
-    // assert node.children.length === 1
+    // We can only correlate output children with the IOutput objects if there's only one IOutput
+    // Additionally, there may be placeholders that need to be removed
     const children = node.data?.length === 1 ? [...((node.children ?? []) as any[])] : [];
+    const placeholders = children.filter((child) => !!child.placeholder);
+    const notPlaceholders = children.filter((child) => !child.placeholder);
+
     const outputsChildren = (node.data ?? []).map((outputData) => {
       const result: Output2 = {
         type: 'output',
         jupyter_data: outputData,
-        children, // FIXME: ignoring children here
+        children: notPlaceholders, // FIXME: ignoring children here
       };
-      children.length = 0;
+      notPlaceholders.length = 0;
       return result;
     });
+
+    // Restore placeholders at the end
+    outputsChildren.push(...placeholders);
 
     const { visibility, identifier, label, html_id, id } = node;
 
