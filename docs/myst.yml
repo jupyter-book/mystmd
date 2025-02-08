@@ -153,6 +153,7 @@ project:
         - file: document-parts.md
         - file: settings.md
         - file: glossary.md
+        - file: versions.md
     - title: Contribute
       children:
         - file: contributing.md

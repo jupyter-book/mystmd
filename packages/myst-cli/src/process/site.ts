@@ -413,6 +413,7 @@ export async function writeFile(
   const parts = resolveFrontmatterParts(session, frontmatter);
   const frontmatterWithExports = { ...frontmatter, exports, downloads, parts };
   const mystData: MystData = {
+    version: SPEC_VERSION,
     kind,
     sha256,
     slug,
@@ -422,7 +423,6 @@ export async function writeFile(
     widgets,
     mdast,
     references,
-    version: SPEC_VERSION,
   };
   const jsonFilenameParts = [session.contentPath()];
   if (projectSlug) jsonFilenameParts.push(projectSlug);

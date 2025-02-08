@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { downgrade } from './version_2_1.js';
+import { migrate } from '../index';
 import type { Parent } from 'mdast';
 
 const SIMPLE_AST: Parent = {
@@ -241,20 +241,23 @@ const SIMPLE_V1_AST_WITH_INVALID_FOOTNOTE: Parent = {
     },
   ],
 };
-describe('downgrade 2->1', () => {
-  it('leaves a simple AST unchanged', () => {
+describe('downgrade 1->0', () => {
+  it('leaves a simple AST unchanged', async () => {
     const mdast = structuredClone(SIMPLE_AST);
-    downgrade({ version: '2', mdast });
+    const result = await migrate({ version: 1, mdast }, { to: 0 });
+    expect(result.version).toBe(0);
     expect(mdast).toStrictEqual(SIMPLE_AST);
   });
-  it('downgrades a v2 AST with footnotes', () => {
+  it('downgrades a v1 AST with footnotes', async () => {
     const mdast = structuredClone(SIMPLE_V2_AST_WITH_FOOTNOTE);
-    downgrade({ version: '2', mdast });
+    const result = await migrate({ version: 1, mdast }, { to: 0 });
+    expect(result.version).toBe(0);
     expect(mdast).toStrictEqual(SIMPLE_V1_AST_WITH_FOOTNOTE);
   });
-  it('downgrades a v2 AST with invalid footnotes', () => {
+  it('downgrades a v1 AST with invalid footnotes', async () => {
     const mdast = structuredClone(SIMPLE_V2_AST_WITH_INVALID_FOOTNOTE);
-    downgrade({ version: '2', mdast });
+    const result = await migrate({ version: 1, mdast }, { to: 0 });
+    expect(result.version).toBe(0);
     expect(mdast).toStrictEqual(SIMPLE_V1_AST_WITH_INVALID_FOOTNOTE);
   });
 });

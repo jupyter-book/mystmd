@@ -437,7 +437,7 @@ const caption: Handler<Caption> = (state, node) => {
 };
 
 function getFootnoteNumber(node: FootnoteReference | FootnoteDefinition): number {
-  return node.number ?? Number(node.identifier);
+  return Number.parseInt(node.enumerator as string, 10) ?? Number(node.identifier);
 }
 
 const footnoteDefinition: Handler<FootnoteDefinition> = (state, node) => {

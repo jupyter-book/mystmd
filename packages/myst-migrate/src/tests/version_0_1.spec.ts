@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { upgrade } from './version_1_2.js';
+import { migrate } from '../index';
 import type { Parent } from 'mdast';
 
 const SIMPLE_AST: Parent = {
@@ -149,15 +149,17 @@ const SIMPLE_V1_AST_WITH_FOOTNOTE: Parent = {
     },
   ],
 };
-describe('update 1->2', () => {
-  it('leaves a simple AST unchanged', () => {
+describe('update 0->1', () => {
+  it('leaves a simple AST unchanged', async () => {
     const mdast = structuredClone(SIMPLE_AST);
-    upgrade({ version: '1', mdast });
+    const result = await migrate({ version: 0, mdast }, { to: 1 });
+    expect(result.version).toBe(1);
     expect(mdast).toStrictEqual(SIMPLE_AST);
   });
-  it('upgrades a v1 AST with footnotes', () => {
+  it('upgrades a v0 AST with footnotes', async () => {
     const mdast = structuredClone(SIMPLE_V1_AST_WITH_FOOTNOTE);
-    upgrade({ version: '1', mdast });
+    const result = await migrate({ version: 0, mdast }, { to: 1 });
+    expect(result.version).toBe(1);
     expect(mdast).toStrictEqual(SIMPLE_V2_AST_WITH_FOOTNOTE);
   });
 });

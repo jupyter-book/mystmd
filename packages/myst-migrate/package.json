@@ -1,5 +1,5 @@
 {
-  "name": "myst-compat",
+  "name": "myst-migrate",
   "sideEffects": false,
   "version": "0.0.0",
   "type": "module",

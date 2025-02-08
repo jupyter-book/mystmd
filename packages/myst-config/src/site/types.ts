@@ -71,6 +71,7 @@ type ManifestProject = {
 } & Omit<ProjectFrontmatter, 'downloads' | 'exports' | 'parts'>;
 
 export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
+  version: number;
   myst: string;
   id?: string;
   projects?: ManifestProject[];
