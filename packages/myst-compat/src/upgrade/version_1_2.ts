@@ -5,6 +5,7 @@ import { visit, SKIP } from 'unist-util-visit';
 import { squeeze } from '../utils.js';
 
 export function upgrade(ast: Parent) {
+  // Walk over `output` nodes, assuming there are no more than one per block
   visit(ast as any, 'output', (node: Output1, index: number | null, parent: Parent | null) => {
     // We can only correlate output children with the IOutput objects if there's only one IOutput
     // Additionally, there may be placeholders that need to be removed
