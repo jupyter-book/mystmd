@@ -6,7 +6,10 @@ export function upgrade(from: string, to: string, ast: Parent): void {
   if (from === '1' && to === '2') {
     upgrade1To2(ast);
     return;
+  } else if (to === from) {
+    return;
   } else {
     throw new Error(`Unable to upgrade between ${from} and ${to}`);
   }
 }
+export { upgrade1To2 };
