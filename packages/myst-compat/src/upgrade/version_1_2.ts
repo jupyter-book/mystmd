@@ -11,7 +11,7 @@ export function upgrade(ast: Parent) {
     // 2. lift `identifier` and `html_id` labels to `Outputs`
     // 3. lift `visibility` to `Outputs`
     // assert node.children.length === 1
-    const children = node.data?.length === 1 ? [...(node.children as any[])] : [];
+    const children = node.data?.length === 1 ? [...((node.children ?? []) as any[])] : [];
     const outputsChildren = (node.data ?? []).map((outputData) => {
       const result: Output2 = {
         type: 'output',
