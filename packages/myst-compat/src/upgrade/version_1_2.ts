@@ -1,49 +1,46 @@
 import type { Parent } from 'mdast';
-import type { Outputs as Outputs2, Output as Output2 } from '../types/v2.js';
-import type { Output as Output1 } from '../types/v1.js';
-import { visit, SKIP } from 'unist-util-visit';
-import { squeeze } from '../utils.js';
+import type {
+  FootnoteDefinition as FootnoteDefinition2,
+  FootnoteReference as FootnoteReference2,
+} from '../types/v2.js';
+import type {
+  FootnoteDefinition as FootnoteDefinition1,
+  FootnoteReference as FootnoteReference1,
+} from '../types/v1.js';
+import { visit, CONTINUE, SKIP } from 'unist-util-visit';
 
 export function upgrade(ast: Parent) {
-  // Walk over `output` nodes, assuming there are no more than one per block
-  visit(ast as any, 'output', (node: Output1, index: number | null, parent: Parent | null) => {
-    // We can only correlate output children with the IOutput objects if there's only one IOutput
-    // Additionally, there may be placeholders that need to be removed
-    const children = node.data?.length === 1 ? [...((node.children ?? []) as any[])] : [];
-    const placeholders = children.filter((child) => !!child.placeholder);
-    const notPlaceholders = children.filter((child) => !child.placeholder);
-
-    const outputsChildren = (node.data ?? []).map((outputData) => {
-      const result: Output2 = {
-        type: 'output',
-        jupyter_data: outputData,
-        children: notPlaceholders, // FIXME: ignoring children here
-      };
-      notPlaceholders.length = 0;
-      return result;
-    });
-
-    // Restore placeholders at the end
-    outputsChildren.push(...placeholders);
-
-    const { visibility, identifier, label, html_id, id } = node;
-
-    // Nest `output` under `outputs` (1)
-    const outputs: Outputs2 = {
-      type: 'outputs',
-      children: outputsChildren as Parent[],
-      // Lift `Output.visibility` to `Outputs` (3)
-      visibility,
-      // Lift `Output.identifier` and `Output.html_id` to `Outputs` (2)
-      identifier,
-      html_id,
-      label,
-      id,
-    };
-    squeeze(outputs);
-    if (parent) {
-      parent.children[index!] = outputs as any;
-    }
-    return SKIP;
-  });
+  // Walk over footnote nodes
+  visit(
+    ast as any,
+    ['footnoteDefinition', 'footnoteReference'],
+    (
+      node: FootnoteDefinition1 | FootnoteReference1,
+      index: number | null,
+      parent: Parent | null,
+    ) => {
+      if (parent) {
+        switch (node.type) {
+          case 'footnoteDefinition': {
+            const { number, ...rest } = node;
+            const nextNode: FootnoteDefinition2 = {
+              ...rest,
+              enumerator: number ? String(number) : undefined,
+            };
+            parent.children[index!] = nextNode as any;
+            return CONTINUE;
+          }
+          case 'footnoteReference': {
+            const { number, ...rest } = node;
+            const nextNode: FootnoteReference2 = {
+              ...rest,
+              enumerator: number ? String(number) : undefined,
+            };
+            parent.children[index!] = nextNode as any;
+            return SKIP;
+          }
+        }
+      }
+    },
+  );
 }

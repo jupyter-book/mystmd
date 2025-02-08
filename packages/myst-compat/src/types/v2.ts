@@ -1,28 +1,18 @@
-import type { IOutput } from '@jupyterlab/nbformat';
-import type { Parent, Literal } from 'mdast';
+// TODO: use mdast once we rely on mdast types
 
-export type Visibility = 'show' | 'hide' | 'remove';
-
-export type Output = {
-  type: 'output';
-  children: (Parent | Literal)[];
-
-  jupyter_data?: IOutput;
-
+export type FootnoteDefinition = {
+  type: 'footnoteDefinition';
+  children: any[];
+  html_id?: string;
   label?: string;
   identifier?: string;
-  html_id?: string;
+  enumerator?: string;
 };
 
-export type Outputs = {
-  type: 'outputs';
-  children: (Parent | Literal)[];
-
-  visibility?: Visibility;
-
+export type FootnoteReference = {
+  type: 'footnoteReference';
+  html_id?: string;
   label?: string;
   identifier?: string;
-  html_id?: string;
-
-  id?: string;
+  enumerator?: string;
 };

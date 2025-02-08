@@ -1,23 +1,18 @@
-import type { IOutput } from '@jupyterlab/nbformat';
-import type { Outputs as Outputs2 } from './v2.js';
-import type { Parent, Literal } from 'mdast';
+// TODO: use mdast once we rely on mdast types
 
-export type Visibility = 'show' | 'hide' | 'remove';
-
-export type Output = {
-  type: 'output';
-  children?: (Parent | Literal)[];
-
-  data?: IOutput[];
-  visibility?: Visibility;
-
+export type FootnoteDefinition = {
+  type: 'footnoteDefinition';
+  children: any[];
   html_id?: string;
   label?: string;
   identifier?: string;
+  number?: number;
+};
 
-  id?: string;
-
-  // v1 introduces v2 syntax early, through a new attribute
-  // in v2, this attribute is removed
-  _future_ast?: Outputs2;
+export type FootnoteReference = {
+  type: 'footnoteReference';
+  html_id?: string;
+  label?: string;
+  identifier?: string;
+  number?: number;
 };
