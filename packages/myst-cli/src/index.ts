@@ -11,3 +11,5 @@ export * from './store/index.js';
 export * from './transforms/index.js';
 export * from './utils/index.js';
 export { default as version } from './version.js';
+
+export const SPEC_VERSION = '1';
