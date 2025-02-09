@@ -8,7 +8,7 @@ In the [default MyST templates](./website-templates.md) there are several sectio
 Here's how you can configure them.
 
 :::{seealso} For all theme options
-See [](site-options) for a list of all site options in both of the default themes.
+See [](#site-options) for a list of all site options in both of the default themes.
 :::
 
 ## Website Layout
@@ -29,6 +29,7 @@ Other themes may have slightly different structure.
 - **[Footer](#navigation:footer)**: (work in progress) Contains more in-depth site navigation.
 
 (navigation:header)=
+
 ## Header
 
 (site-navigation)=
@@ -51,7 +52,7 @@ site:
 
 There are a few types of entries you can define:
 
-:::{list-table}
+````{list-table}
 :header-rows: 1
 - * Type
   * Pattern
@@ -65,7 +66,7 @@ There are a few types of entries you can define:
 - * **External URLs**
   * ```yaml
     - title: Custom title
-      url: https://somelink.org`
+      url: https://somelink.org
     ```
   * Direct links to an external website. This should be a fully-specified URL.
 - * **Dropdowns**
@@ -76,8 +77,7 @@ There are a few types of entries you can define:
       - url: pagetwo
     ```
   * Becomes a dropdown with other entries inside.
-:::
-
+````
 
 ### Action Buttons
 
@@ -95,11 +95,9 @@ site:
       url: https://mystmd.org
 ```
 
-
 There are two types of actions:
 
-
-:::{list-table}
+````{list-table}
 :header-rows: 1
 - * Type
   * Pattern
@@ -116,9 +114,10 @@ There are two types of actions:
       url: https://somelink.org`
     ```
   * Direct links to an external website. This should be a fully-specified URL.
-:::
+````
 
 (navigation:sidebar-primary)=
+
 ## Primary sidebar (Table of Contents)
 
 Is defined by your [MyST Project Table of Contents](./table-of-contents.md).
@@ -135,12 +134,14 @@ site:
 ```
 
 (navigation:content-window)=
+
 ## Content window
 
 Is populated with page-level metadata and your page's content.
 See [](./frontmatter.md) for many kinds of metadata that configure this section.
 
 (navigation:sidebar-secondary)=
+
 ## Secondary sidebar
 
 Contains the in-page navigation of the page, autopopulated by the page's header structure.
@@ -157,11 +158,10 @@ site:
 ```
 
 (navigation:footer)=
+
 ## Footer
 
 :::{warning} Work in progress
 Default footer support is not yet avialable.
 See https://github.com/jupyter-book/myst-theme/issues/448 to provide feedback on this feature.
 :::
-+++
-
