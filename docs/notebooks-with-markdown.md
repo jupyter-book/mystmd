@@ -19,6 +19,11 @@ Execution information can be added to MyST Markdown files, which allows you to p
 - [Code cells](#code-cell) for block-level content.
 - [Inline expressions](#inline-expressions) for content inline with surrounding text.
 
+:::{tip} Install Jupyter Server
+:class: dropdown
+To execute your code you will need to [](#install-jupyter-server).
+:::
+
 (kernel-specification)=
 
 ## Kernel specification
@@ -41,10 +46,13 @@ The `kernelspec` configuration should be defined in the _page-level_ frontmatter
 
 The following content is a frontmatter that defines a document that uses the `python` kernel:
 
-```yaml
+```{code} yaml
+:filename: markdown-notebook.md
+---
 kernelspec:
   name: python3
   display_name: 'Python 3'
+---
 ```
 
 After we declare the frontmatter, the contents of each {myst:directive}`code-cell` directive and {myst:role}`eval` role will be executed by the `python` kernel during the building process.

@@ -104,7 +104,9 @@ Alternatively, you can manually delete the `execute/` folder in your build folde
 rm -rf _build/execute
 ```
 
-## How MyST executes your code
+(install-jupyter-server)=
+
+## Install Jupyter Server
 
 MyST uses a [Jupyter Server](https://jupyter-server.readthedocs.io/) to execute your code.
 Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.
