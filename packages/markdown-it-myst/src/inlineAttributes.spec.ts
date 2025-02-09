@@ -37,6 +37,7 @@ describe('parseRoleHeader', () => {
         { kind: 'attr', key: 'data', value: 'some "escaped" text' },
       ],
     ],
+    ['.className', [{ kind: 'class', value: 'className' }]],
   ])('parses valid header: %s', (header, expected) => {
     const result = tokenizeInlineAttributes(header);
     expect(result).toEqual(expected);
@@ -44,7 +45,6 @@ describe('parseRoleHeader', () => {
 
   // Error test cases
   test.each([
-    ['Missing name', '.classOnly', 'Missing mandatory role name as the first token'],
     [
       'Extra bare token after name',
       'myRole anotherWord',

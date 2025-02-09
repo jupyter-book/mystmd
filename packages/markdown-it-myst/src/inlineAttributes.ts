@@ -56,24 +56,26 @@ export function inlineOptionsToTokens(
   header: string,
   lineNumber: number,
   state: StateCore,
-): { name: string; tokens: Token[] } {
-  let name = '';
-  // 1) Tokenize
+): { name?: string; tokens: Token[]; options: [string, string][] } {
+  // Tokenize
   const tokens = tokenizeInlineAttributes(header);
 
-  // 2) The first token must be a “bare” token => the role name
-  if (tokens.length === 0 || tokens[0].kind !== 'bare') {
-    throw new Error('Missing mandatory role name as the first token');
+  if (tokens.length === 0) {
+    throw new Error('No inline tokens found');
   }
-  name = tokens[0].value;
-  tokens.shift();
+
+  // The first token should be a “bare” token => the name
+  // If no bare token is included, then the name is undefined
+  let name = undefined;
+  if (tokens[0].kind === 'bare') {
+    name = tokens[0].value;
+    tokens.shift();
+  }
 
   if (tokens.filter(({ kind }) => kind === 'id').length > 1) {
-    // TODO: change this to a warning and take the last ID
     throw new Error('Cannot have more than one ID defined');
   }
   if (tokens.some(({ kind }) => kind === 'bare')) {
-    // TODO: Choose to open this up to boolean attributes
     throw new Error('No additional bare tokens allowed after the first token');
   }
 
@@ -93,8 +95,6 @@ export function inlineOptionsToTokens(
       return classTokens;
     }
 
-    // lineNumber mapping assumes each option is only one line;
-    // not necessarily true for yaml options.
     const optTokens = nestedPartToTokens(
       'myst_option',
       opt.value,
@@ -110,5 +110,9 @@ export function inlineOptionsToTokens(
     }
     return optTokens;
   });
-  return { name, tokens: markdownItTokens.flat() };
+  const options = tokens.map((t): [string, string] => [
+    t.kind === 'attr' ? t.key : t.kind === 'id' ? 'label' : t.kind,
+    t.value,
+  ]);
+  return { name, tokens: markdownItTokens.flat(), options };
 }
