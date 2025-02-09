@@ -15,6 +15,8 @@ const UNHIDDEN_TOKENS = new Set([
   'directive_option_close',
   'directive_body_open',
   'directive_body_close',
+  'myst_option_open',
+  'myst_option_close',
   'parsed_role_open',
   'parsed_role_close',
   'role_body_open',
