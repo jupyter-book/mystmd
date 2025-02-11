@@ -1,5 +1,15 @@
 # myst-config
 
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+- 75bbb180: Add version to config file
+- Updated dependencies [7448083f]
+  - myst-frontmatter@1.7.9
+  - myst-common@1.7.9
+
 ## 1.7.8
 
 ### Patch Changes
