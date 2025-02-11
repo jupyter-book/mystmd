@@ -501,7 +501,7 @@ export async function fastProcessFile(
           imageAltOutputFolder: imageAltOutputFolder ?? '/',
           imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
           optimizeWebp: true,
-          processThumbnail: true,
+          processThumbnail: f === file,
           maxSizeWebp,
         });
       }
