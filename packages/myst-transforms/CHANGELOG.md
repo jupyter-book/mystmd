@@ -1,5 +1,16 @@
 # myst-transforms
 
+## 1.3.32
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+
 ## 1.3.31
 
 ### Patch Changes
