@@ -397,15 +397,6 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       };
     },
   },
-  directive_option: {
-    type: 'mystDirectiveOption',
-    getAttrs(t) {
-      return {
-        name: t.info,
-        value: t.meta.value,
-      };
-    },
-  },
   directive_body: {
     type: 'mystDirectiveBody',
     getAttrs(t) {
@@ -417,6 +408,21 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   directive_error: {
     type: 'mystDirectiveError',
     noCloseToken: true,
+    getAttrs(t) {
+      return {
+        message: t.meta?.error_message,
+      };
+    },
+  },
+  myst_option: {
+    type: 'mystOption',
+    getAttrs(t) {
+      return {
+        name: t.info,
+        location: t.meta.location,
+        value: t.meta.value,
+      };
+    },
   },
   parsed_role: {
     type: 'mystRole',
