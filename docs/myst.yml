@@ -126,6 +126,8 @@ project:
             - file: deployment-github-pages.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
+        - file: website-landing-pages.md
+
         # - file: publishing.md
     - title: Documents
       children:
