@@ -41,6 +41,14 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
     (config as any).project.toc = upgradeTOC(session, tocData);
   }
 
+  config.site = config.site ?? {};
+  config.site.options = config.site.options ?? {};
+
+  // Ensure we enable folders
+  session.log.debug(
+    chalk.dim(`Setting ${chalk.blue('site.options.folders')} to ${chalk.blue('true')}`),
+  );
+  config.site.options.folders = true;
 
   // Upgrade legacy syntax
   await upgradeProjectSyntax(session);
