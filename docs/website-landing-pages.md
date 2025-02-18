@@ -90,8 +90,7 @@ Subtitle
 
 A CTA that is justified to the left. At smaller screen sizes, buttons and links are placed below the description, whilst for large displays they float to right of the heading.
 
-{button}`Go to Wiki <https://wikipedia.org>`
-[MyST](https://mystmd.org/)
+{button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
 
 +++ { "class": "centered col-body"}
 
@@ -103,8 +102,7 @@ Subtitle
 
 A CTA that is centered in the middle of the page. Buttons and links are placed below the description.
 
-{button}`Go to Wiki <https://wikipedia.org>`
-[MyST](https://mystmd.org/)
+{button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
 
 +++ { "class": "logo-cloud col-body"}
 
@@ -128,5 +126,4 @@ Cameras LLC
 :::
 ::::
 
-{button}`Go to Wiki <https://wikipedia.org>`
-[MyST](https://mystmd.org/)
+{button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
