@@ -30,15 +30,17 @@ export async function upgradeJupyterBook(session: ISession, configFile: string) 
   }
 
   // Does TOC exist?
-  if (await fsExists('_toc.yml')) {
-    const tocContent = await fs.readFile('_toc.yml', { encoding: 'utf-8' });
-    const tocData = validateSphinxExternalTOC(yaml.load(tocContent));
-    if (defined(tocData)) {
-      session.log.info(`Migrating TOC to ${chalk.blue('myst.yml')}`);
-
-      (config as any).project.toc = upgradeTOC(session, tocData);
-    }
+  if (!(await fsExists('_toc.yml'))) {
+    throw new Error(`${chalk.blue('_toc.yml')} is a required Jupyter Book configuration file`);
   }
+  const tocContent = await fs.readFile('_toc.yml', { encoding: 'utf-8' });
+  const tocData = validateSphinxExternalTOC(yaml.load(tocContent));
+  if (defined(tocData)) {
+    session.log.info(`Migrating TOC to ${chalk.blue('myst.yml')}`);
+
+    (config as any).project.toc = upgradeTOC(session, tocData);
+  }
+
 
   // Upgrade legacy syntax
   await upgradeProjectSyntax(session);
