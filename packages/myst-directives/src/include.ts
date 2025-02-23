@@ -1,5 +1,5 @@
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
-import { RuleId, fileWarn, normalizeLabel } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import { CODE_DIRECTIVE_OPTIONS, getCodeBlockOptions } from './code.js';
 import type { Include } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
@@ -73,7 +73,13 @@ export const includeDirective: DirectiveSpec = {
 
     const file = data.arg as string;
     if (!literal) {
-      // TODO: warn on unused options
+      for (const key in data.options) {
+        if (key) {
+          fileWarn(vfile, `Option "${key}" is not supported for non-literal include.`, {
+            node: data.node,
+          });
+        }
+      }
       const include: Include = {
         type: 'include',
         file,
