@@ -67,10 +67,6 @@ Here's some <span class="text-gradient" style="font-weight:bold;">span <em>style
 
 ### Add CSS classes to directives
 
-:::{note} Not all directives support the `:class:` option
-If you wish to attach classes to a directive that doesn't seem to support it, please [open an issue](https://github.com/jupyter-book/mystmd/issues)
-:::
-
 Many directives and content blocks have a `:class:` option that can be used to add arbitrary CSS classes.
 For example, below we add a CSS class to an admonition directive to snap it to the right:
 
