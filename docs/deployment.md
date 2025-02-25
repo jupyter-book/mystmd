@@ -23,7 +23,7 @@ The high-level differences between these approaches are outlined in [](#deployme
 :::{note} MyST was designed to be deployed as an application
 Deploying MyST as an application has many benefits. For example, [performance enhancements](./accessibility-and-performance.md) (like pre-fetching for instant page-transitions, loading indicators, and smaller network payloads) and easier upgrades as new MyST versions are released.
 
-The [default themes](website-templates.md#themes-bundled-with-myst) for MyST are designed to be MyST applications rather than static sites, but the core functionality is equally shared between the two options.
+The [default themes](#default-web-themes) for MyST are designed to be MyST applications rather than static sites, but the core functionality is equally shared between the two options.
 :::
 
 % - Static deployments are MPA (each page own HTML document), SSG (rendered ahead of time)
