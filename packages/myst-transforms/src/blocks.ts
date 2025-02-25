@@ -51,6 +51,11 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         });
       }
     }
+    const className = block.data?.class;
+    if (typeof className === 'string') {
+      block.class = className;
+      delete block.data.class;
+    }
     const label = block.data?.label ?? block.data?.id;
     if (typeof label === 'string') {
       const normalized = normalizeLabel(label);
