@@ -11,49 +11,61 @@ We're still building out custom CSS functionality with the MyST engine.
 Follow and comment on the issues linked below to help us improve it!
 :::
 
-## Use content blocks
+## Defining a Style Sheet
 
-:::{warning} CSS class support is very limited
-Currently, you can only use CSS classes that are pre-loaded by MyST from Tailwind CSS, or defined in the HTML theme (see below for examples of both).
-See these issues to track some of this:
+Default MyST themes like the book theme and article theme support bundling a custom [style-sheet](https://en.wikipedia.org/wiki/CSS). This can be used to introduce custom CSS styling to your website. To include a custom CSS file as part of your website build, you can define the @template-site-myst-book-theme-style option, e.g.
 
-- Defining your own CSS classes: https://github.com/jupyter-book/mystmd/issues/857
-- Load extra Tailwind CSS classes when they're used on a page: https://github.com/jupyter-book/mystmd/issues/1617
-:::
+```{code} yaml
+:filename: myst.yml
+:linenos:
+:emphasize-lines: 3
+site:
+  options:
+    style: ./my-style.css
+```
+
+For example, the style-sheet could contain styling for `em` elements nested below a particular `text-gradient` class:
+
+```css
+.text-gradient em {
+  background: -webkit-linear-gradient(#eee, #333);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+```
+
+## Adding CSS Classes
+
+The intended way to apply custom styling to your MyST website is to use CSS classes to connect your content to the style sheet. There are several ways to do this.
+
+### Use content blocks
 
 [Content blocks](../blocks.md) allow you to attach arbitrary metadata to chunks of content.
 You can attach one or more CSS classes by defining a `class` attribute for a block.
 For example the following:
 
-```md
-+++ {"class": "col-gutter-right"}
-Right-styled
+```{myst}
++++ {"class": "text-gradient"}
+This is _emphasized_. This is not emphasized.
 
 +++
 
-Normal-styled
+This is not emphasized.
 ```
 
-Results in:
-
-+++ {"class": "col-gutter-right"}
-Right-styled
-
-+++
-
-Normal-styled
-
-## Use `div` and `span` elements
+### Use `div` and `span` elements
 
 You can attach classes directly to [`div` and `span` elements](#div-and-span).
 
 {myst:directive}`div` and {myst:role}`span` are analogous to their HTML counterparts. Unlike their directive/role, the HTML elements can also be given `style` options, e.g.
 
-<div class="col-gutter-right" style="font-weight: bold;">Here's my div</div>
+```{myst}
+<div class="text-gradient" style="font-weight: bold;">Here's my <em>div</em></div>
 
-Here's some <span class="col-gutter-right" style="font-weight:bold;">Span</span> content
+Here's some <span class="text-gradient" style="font-weight:bold;">span <em>styled</em></span> content
+```
 
-## Add CSS classes to directives
+### Add CSS classes to directives
 
 :::{note} Not all directives support the `:class:` option
 If you wish to attach classes to a directive that doesn't seem to support it, please [open an issue](https://github.com/jupyter-book/mystmd/issues)
@@ -62,32 +74,13 @@ If you wish to attach classes to a directive that doesn't seem to support it, pl
 Many directives and content blocks have a `:class:` option that can be used to add arbitrary CSS classes.
 For example, below we add a CSS class to an admonition directive to snap it to the right:
 
-````md
+````{myst}
 ```{note}
-:class: col-gutter-right
-I'm on the right!
+:class: text-gradient
+I'm _very stylish_.
 ```
 ````
 
-```{note}
-:class: col-gutter-right
-I'm on the right!
-```
+## Built-in CSS Classes
 
-## Use the HTML theme grid system classes to position content
-
-The HTML themes come with [a grid system of CSS classes](https://jupyter-book.github.io/myst-theme/?path=/docs/components-grid-system--docs).
-You can use these to position content according to the link above.
-
-## Use Tailwind CSS classes
-
-:::{note} Provide feedback
-This issue tracks loading extra Tailwind CSS classes when they're used on a page:
-
-- https://github.com/jupyter-book/mystmd/issues/1617
-:::
-
-You can use any [Tailwind CSS class](https://tailwindcss.com/docs/installation) that's loaded on a page to style your content.
-See the Tailwind documentation for examples of how to do this.
-If a class seems to have no effect, it is likely not loaded on the page by MyST.
-Currently, it's not possible to customize which classes are included on a page (see above for an issue tracking this).
+The HTML themes come with [a grid system of CSS classes](https://jupyter-book.github.io/myst-theme/?path=/docs/components-grid-system--docs), which can be used out-of-the-box to position content.
