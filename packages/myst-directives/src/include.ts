@@ -74,12 +74,14 @@ export const includeDirective: DirectiveSpec = {
 
     const file = data.arg as string;
     const lang = (data.options?.lang as string) ?? extToLanguage(file.split('.').pop());
-    const opts = getCodeBlockOptions(
-      data,
-      vfile,
-      // Set the filename in the literal include by default
-      file.split(/\/|\\/).pop(),
-    );
+    const opts = literal
+      ? getCodeBlockOptions(
+          data,
+          vfile,
+          // Set the filename in the literal include by default
+          file.split(/\/|\\/).pop(),
+        )
+      : {};
     const filter: Include['filter'] = {};
     ensureOnlyOneOf(data, vfile, ['start-at', 'start-line', 'start-after', 'lines']);
     ensureOnlyOneOf(data, vfile, ['end-at', 'end-line', 'end-before', 'lines']);
