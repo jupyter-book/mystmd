@@ -82,6 +82,7 @@ export const includeDirective: DirectiveSpec = {
           file.split(/\/|\\/).pop(),
         )
       : {};
+    const caption = literal ? (data.options?.caption as any[]) : undefined;
     const filter: Include['filter'] = {};
     ensureOnlyOneOf(data, vfile, ['start-at', 'start-line', 'start-after', 'lines']);
     ensureOnlyOneOf(data, vfile, ['end-at', 'end-line', 'end-before', 'lines']);
@@ -118,7 +119,7 @@ export const includeDirective: DirectiveSpec = {
       file,
       literal,
       lang,
-      caption: data.options?.caption as any[],
+      caption,
       filter: usesFilter ? filter : undefined,
       ...opts,
     };
