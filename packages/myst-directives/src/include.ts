@@ -68,25 +68,11 @@ export const includeDirective: DirectiveSpec = {
     },
   },
   run(data, vfile): Include[] {
+    // Make a literal include if any of "literal", "lang" are defined or "literalinclude" directive is used
     const literal =
       data.name === 'literalinclude' || !!data.options?.literal || !!data.options?.lang;
 
     const file = data.arg as string;
-    if (!literal) {
-      for (const key in data.options) {
-        if (key) {
-          fileWarn(vfile, `Option "${key}" is not supported for non-literal include.`, {
-            node: data.node,
-          });
-        }
-      }
-      const include: Include = {
-        type: 'include',
-        file,
-      };
-      addCommonDirectiveOptions(data, include);
-      return [include];
-    }
     const lang = (data.options?.lang as string) ?? extToLanguage(file.split('.').pop());
     const opts = getCodeBlockOptions(
       data,
