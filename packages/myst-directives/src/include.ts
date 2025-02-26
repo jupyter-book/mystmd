@@ -111,13 +111,15 @@ export const includeDirective: DirectiveSpec = {
         ];
       }
     }
+    // Are any filter properties set?
+    const usesFilter = Object.values(filter).some((value) => value !== undefined);
     const include: Include = {
       type: 'include',
       file,
       literal,
       lang,
       caption: data.options?.caption as any[],
-      filter: Object.keys(filter).length > 0 ? filter : undefined,
+      filter: usesFilter ? filter : undefined,
       ...opts,
     };
     addCommonDirectiveOptions(data, include);
