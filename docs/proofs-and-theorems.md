@@ -58,20 +58,8 @@ The vector $\hat y$ is called the **orthogonal projection** of $y$ onto $S$.
   - `prf:theorem`
   -
 ```
-
-The following options for proof directives are supported:
-
-- `label`: text
-
-  A unique identifier for your theorem that you can use to reference it with a Markdown link or the {myst:role}`prf:ref` role. Cannot contain spaces or special characters.
-
-- `class`: text
-
-  Value of the theorem’s class attribute which can be used to add custom CSS or JavaScript. This can also be the optional `dropdown` class to initially hide the proof.
-
-- `nonumber`: flag (empty)
-
-  Turns off auto numbering.
+:::{myst:directive} proof
+:::
 
 ## Referencing Proofs
 
