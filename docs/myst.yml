@@ -167,3 +167,5 @@ site:
   title: MyST Markdown Guide
   domains:
     - mystmd-guide.curve.space
+  options:
+    style: public/style.css
