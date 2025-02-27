@@ -56,12 +56,14 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
     const kind = block.data?.kind;
     if (kind) {
       block.kind = kind;
+      delete block.data.kind;
     }
 
     // Customiseable class
     const className = block.data?.class;
     if (className) {
       block.class = className;
+      delete block.data.class;
     }
 
     const label = block.data?.label ?? block.data?.id;
