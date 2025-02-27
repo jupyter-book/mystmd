@@ -9,10 +9,10 @@ The MyST [book-theme](#template-site-myst-book-theme) template provides out-of-t
 
 ## Defining a Block
 
-The landing-page feature uses MyST [](#blocks) to annotate sections of a page. Each landing-page block-type has a distinct `class` that can be defined using the `+++` block syntax as follows:
+The landing-page feature uses MyST [](#blocks) to annotate sections of a page. Each landing-page block-type has a distinct `kind` that can be defined using the `+++` block syntax as follows:
 
 ```markdown
-+++ {"class": "justified"}
++++ {"kind": "justified"}
 
 I am a\
 Subtitle
@@ -66,7 +66,7 @@ I follow the heading. {button}`I am a button<https://mystmd.org>`
 
 ## Examples
 
-+++ { "class": "split-image col-body" }
++++ { "kind": "split-image", "class": "col-body" }
 Subtitle
 
 (split-image-cta)=
@@ -79,7 +79,7 @@ A helpful description in the body of the CTA. {button}`Go to Wiki <https://wikip
 
 [MyST](https://mystmd.org/)
 
-+++ { "class": "justified col-body"}
++++ { "kind": "justified", "class": col-body"}
 
 I am a\
 Subtitle
@@ -92,7 +92,7 @@ A CTA that is justified to the left. At smaller screen sizes, buttons and links 
 
 {button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
 
-+++ { "class": "centered col-body"}
++++ { "kind": "centered", "class": "col-body"}
 
 Subtitle
 
@@ -104,7 +104,7 @@ A CTA that is centered in the middle of the page. Buttons and links are placed b
 
 {button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
 
-+++ { "class": "logo-cloud col-body"}
++++ { "kind": "logo-cloud", "class": "col-body"}
 
 (logo-cloud-cta)=
 

@@ -58,6 +58,12 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
       block.kind = kind;
     }
 
+    // Customiseable class
+    const className = block.data?.class;
+    if (className) {
+      block.class = className;
+    }
+
     const label = block.data?.label ?? block.data?.id;
     if (typeof label === 'string') {
       const normalized = normalizeLabel(label);
