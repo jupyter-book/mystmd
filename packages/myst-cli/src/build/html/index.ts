@@ -89,7 +89,8 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
     const data = fs.readFileSync(file).toString();
     const modified = data
       .replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`)
-      .replace('href="/favicon.ico"', `href="${baseurl || ''}/favicon.ico"`);
+      .replace('href="/favicon.ico"', `href="${baseurl || ''}/favicon.ico"`)
+      .replace('href="/myst-theme.css"', `href="${baseurl || ''}/myst-theme.css"`);
     fs.writeFileSync(file, modified);
   });
 }
