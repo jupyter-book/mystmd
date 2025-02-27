@@ -51,9 +51,11 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         });
       }
     }
-    const className = block.data?.class;
-    if (className) {
-      block.class = className;
+
+    // Customiseable kind
+    const kind = block.data?.kind;
+    if (kind) {
+      block.kind = kind;
     }
 
     const label = block.data?.label ?? block.data?.id;
