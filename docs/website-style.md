@@ -26,13 +26,8 @@ site:
 
 For example, the style-sheet could contain styling for `em` elements nested below a particular `text-gradient` class:
 
-```css
-.text-gradient em {
-  background: -webkit-linear-gradient(#eee, #333);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-```
+:::{literalinclude} public/style.css
+:::
 
 ## Adding CSS Classes
 
