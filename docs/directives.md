@@ -62,3 +62,6 @@ description: A full list of the directives included in MyST Markdown by default.
 
 :::{myst:directive} table
 :::
+
+:::{myst:directive} toc
+:::
