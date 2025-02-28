@@ -3,7 +3,7 @@ import { fileError, fileWarn, RuleId } from 'myst-common';
 import { type VFile } from 'vfile';
 import { contentFromNode } from './utils.js';
 
-export function parseInlineOptions(
+export function parseOptions(
   name: string,
   node: GenericNode,
   vfile: VFile,
@@ -21,7 +21,7 @@ export function parseInlineOptions(
       optionNodeLookup.label = optionNode;
       return;
     }
-    if (optionNode.name === 'class' && optionNode.location === 'inline') {
+    if (optionNode.name === 'class') {
       if (optionNodeLookup.class) {
         // Combine the option class nodes
         // Note: This results in an position error for additional classes

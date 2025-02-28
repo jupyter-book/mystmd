@@ -4,7 +4,7 @@ import type { Role } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import { contentFromNode } from './utils.js';
-import { parseInlineOptions } from './inlineAttributes.js';
+import { parseOptions } from './inlineAttributes.js';
 
 type MystRoleNode = GenericNode & {
   name: string;
@@ -41,7 +41,7 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
     const { body, options: optionsSpec, validate, run } = spec;
     let data: RoleData = { name, node: node as Role, options: {} };
 
-    const { valid: validOptions, options } = parseInlineOptions(name, node, vfile, optionsSpec);
+    const { valid: validOptions, options } = parseOptions(name, node, vfile, optionsSpec);
     let validationError = validOptions;
     data.options = options;
 
