@@ -6,6 +6,7 @@ const CONTEXTS = ['project', 'page', 'section'];
 
 export const tocDirective: DirectiveSpec = {
   name: 'toc',
+  doc: 'Inserts table of contents in the page. This may be for the project (each page has an entry), the current page (each heading has an entry), or the current section (only headings in the section have an entry).',
   alias: ['tableofcontents', 'table-of-contents', 'toctree', 'contents'],
   arg: {
     type: 'myst',
