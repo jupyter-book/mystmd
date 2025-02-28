@@ -29,6 +29,7 @@ import {
   inlineMathSimplificationPlugin,
   checkLinkTextTransform,
   indexIdentifierPlugin,
+  buildTocTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -76,6 +77,7 @@ import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { rawDirectiveTransform } from '../transforms/raw.js';
 import { addEditUrl } from '../utils/addEditUrl.js';
+import { localToManifestProject } from '../build/index.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -306,6 +308,14 @@ export async function postProcessMdast(
   const { mdast, dependencies, frontmatter } = mdastPost;
   const state = new MultiPageReferenceResolver(pageReferenceStates, file, vfile);
   const externalReferences = Object.values(cache.$externalReferences);
+  const storeState = session.store.getState();
+  const projectPath = selectors.selectCurrentProjectPath(storeState);
+  if (projectPath) {
+    const siteConfig = selectors.selectCurrentSiteConfig(storeState);
+    const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
+    const manifestProject = await localToManifestProject(session, projectPath, projectSlug);
+    if (manifestProject) buildTocTransform(mdast, vfile, manifestProject?.pages, projectSlug);
+  }
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
     ...(extraLinkTransformers || []),
