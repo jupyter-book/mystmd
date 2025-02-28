@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.7.9
+
+### Patch Changes
+
+- 7448083f: Add support for skipping execution of individual notebooks
+
 ## 1.7.8
 
 ## 1.7.7

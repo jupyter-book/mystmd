@@ -1,5 +1,16 @@
 # myst-parser
 
+## 1.5.12
+
+### Patch Changes
+
+- aa49c51c: Added support for include directive options when not using the literal option.
+- Updated dependencies [0052853]
+- Updated dependencies [aa49c51c]
+  - myst-directives@1.5.12
+  - myst-common@1.7.9
+  - myst-roles@1.5.12
+
 ## 1.5.11
 
 ### Patch Changes

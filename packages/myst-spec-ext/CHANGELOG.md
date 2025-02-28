@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+
 ## 1.7.8
 
 ### Patch Changes

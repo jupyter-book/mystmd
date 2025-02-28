@@ -1,6 +1,6 @@
 {
   "name": "myst-frontmatter",
-  "version": "1.7.8",
+  "version": "1.7.9",
   "sideEffects": false,
   "license": "MIT",
   "description": "Frontmatter types and validation for the mystmd ecosystem",

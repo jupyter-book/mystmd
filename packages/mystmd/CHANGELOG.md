@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.24
+
+### Patch Changes
+
+- 2a6db555: Fix imports of plugins on Windows
+
 ## 1.3.23
 
 ## 1.3.22

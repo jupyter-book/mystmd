@@ -1,5 +1,32 @@
 # myst-cli
 
+## 1.3.24
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- 7448083f: Add support for skipping execution of individual notebooks
+- 75bbb180: Change footnotes to use enumerator over number
+- 0ca2c679: Set site.options.folders in JB2 upgrade
+- 1a18e4f4: Fix typo in upgrade routine
+- 75bbb180: Add version to site content outputs
+- 2a6db555: Fix imports of plugins on Windows
+- 491d134e: Fix errors about missing images on non-first builds
+- b516d4fe: Improve error message for missing javascript plugins
+- Updated dependencies [0052853]
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+- Updated dependencies [75bbb180]
+- Updated dependencies [aa49c51c]
+- Updated dependencies [92839fba]
+  - myst-transforms@1.3.32
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-to-docx@1.0.14
+  - myst-config@1.7.9
+  - myst-parser@1.5.12
+  - myst-common@1.7.9
+
 ## 1.3.23
 
 ### Patch Changes
