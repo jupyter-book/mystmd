@@ -1,3 +1,4 @@
+import { spanRole } from './span.js';
 import { abbreviationRole } from './abbreviation.js';
 import { chemRole } from './chem.js';
 import { citeRole } from './cite.js';
@@ -18,6 +19,7 @@ import { keyboardRole } from './keyboard.js';
 import { rawLatexRole, rawTypstRole } from './raw.js';
 
 export const defaultRoles = [
+  spanRole,
   abbreviationRole,
   chemRole,
   citeRole,
@@ -38,6 +40,7 @@ export const defaultRoles = [
   rawLatexRole,
   rawTypstRole,
 ];
+export { spanRole } from './span.js';
 export { abbreviationRole } from './abbreviation.js';
 export { chemRole } from './chem.js';
 export { citeRole } from './cite.js';
