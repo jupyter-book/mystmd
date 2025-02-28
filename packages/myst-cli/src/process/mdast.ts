@@ -291,11 +291,13 @@ export async function postProcessMdast(
     checkLinks,
     pageReferenceStates,
     extraLinkTransformers,
+    site,
   }: {
     file: string;
     checkLinks?: boolean;
     pageReferenceStates: ReferenceState[];
     extraLinkTransformers?: LinkTransformer[];
+    site?: boolean;
   },
 ) {
   const toc = tic();
@@ -310,11 +312,26 @@ export async function postProcessMdast(
   const externalReferences = Object.values(cache.$externalReferences);
   const storeState = session.store.getState();
   const projectPath = selectors.selectCurrentProjectPath(storeState);
-  if (projectPath) {
-    const siteConfig = selectors.selectCurrentSiteConfig(storeState);
-    const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
-    const manifestProject = await localToManifestProject(session, projectPath, projectSlug);
-    if (manifestProject) buildTocTransform(mdast, vfile, manifestProject?.pages, projectSlug);
+  const siteConfig = selectors.selectCurrentSiteConfig(storeState);
+  const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
+  const manifestProject = await localToManifestProject(session, projectPath, projectSlug);
+  if (site) {
+    buildTocTransform(
+      mdast,
+      vfile,
+      manifestProject
+        ? [
+            {
+              title: manifestProject.title,
+              level: 1,
+              slug: '',
+              enumerator: manifestProject.enumerator,
+            },
+            ...manifestProject.pages,
+          ]
+        : undefined,
+      projectSlug,
+    );
   }
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [

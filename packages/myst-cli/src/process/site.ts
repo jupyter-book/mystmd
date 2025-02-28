@@ -489,6 +489,7 @@ export async function fastProcessFile(
         file: f,
         pageReferenceStates,
         extraLinkTransformers,
+        site: true,
       });
     }),
   );
@@ -603,6 +604,7 @@ export async function processProject(
         checkLinks: checkLinks || strict,
         pageReferenceStates,
         extraLinkTransformers,
+        site: true,
       }),
     ),
   );
