@@ -1,5 +1,15 @@
 # myst-directives
 
+## 1.5.12
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- aa49c51c: Added support for include directive options when not using the literal option.
+- Updated dependencies [75bbb180]
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+
 ## 1.5.11
 
 ### Patch Changes

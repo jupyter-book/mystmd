@@ -1,5 +1,19 @@
 # myst-transforms
 
+## 1.3.32
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- 75bbb180: Change footnotes to use enumerator over number
+- 92839fba: Add support for `class` in block data
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+  - myst-to-html@1.5.12
+
 ## 1.3.31
 
 ### Patch Changes
