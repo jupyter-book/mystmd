@@ -91,6 +91,10 @@ npm run build
 npm run link
 ```
 
+> [!NOTE]
+> The build process uses unix commands that might not work properly on Windows.
+> When building on Windows, either use WSL, or a unix like shell (such as Git Bash or MSYS2) and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
+
 These commands allow you to use the `myst` CLI in any directory as usual, and updates to the build are picked up when you rebuild. After making changes, you must rebuild the packages (via `npm run build` in the top-level directory), which is done efficiently depending on how deep your change is in the dependency tree. After the build is complete, you can reuse the myst client.
 
 Tests are also a helpful development tool, which don't require full rebuilding. You can run the entire test suite using `npm run test`. If you are working in a particular package, change your working directory and run the tests there, to run in watch mode use `npm run test:watch`.
