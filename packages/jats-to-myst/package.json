@@ -35,7 +35,7 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "doi-utils": "^2.0.4",
+    "doi-utils": "^2.0.5",
     "jats-tags": "^1.0.8",
     "jats-xml": "^1.0.8",
     "myst-common": "^1.7.7",
