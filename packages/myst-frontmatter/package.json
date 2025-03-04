@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "credit-roles": "^2.1.0",
-    "doi-utils": "^2.0.4",
+    "doi-utils": "^2.0.5",
     "orcid": "^1.0.0",
     "simple-validators": "^1.1.0",
     "spdx-correct": "^3.2.0",
