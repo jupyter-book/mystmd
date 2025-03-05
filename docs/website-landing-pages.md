@@ -5,6 +5,11 @@ abbreviations:
   CTA: Call To Action
 ---
 
+:::{warning} Landing Pages are Experimental
+
+Landing pages are experimental, and the syntax and/or supported block-types are likely to change. Keep up-to-date with this page to ensure you stay abreast of these changes.
+:::
+
 The MyST [book-theme](#template-site-myst-book-theme) template provides out-of-the-box support for high-level landing-page blocks. By adding a small amount of annotation to your landing page, you can increase the approachability of your home page by composing it from visually-appealing blocks.
 
 ## Defining a Block
