@@ -8,6 +8,10 @@ The version is a string integer (i.e. `'1'` or `'2'`) and is incremented with ev
 
 # MyST Versions
 
+## Version 2 - 2025-03-05 - Block classes
+
+Blocks could previously define class on `block.data?.class`, this has been explicitly moved to `block.class`.
+
 ## Version 1 - 2025-02-07 - Footnote Numbering
 
 The footnotes have dropped backwards compatibility with `number`, instead using `enumerator` on both the `FootnoteReference` and `FootnoteDefinition` nodes.
