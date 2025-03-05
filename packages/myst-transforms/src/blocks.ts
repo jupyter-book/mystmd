@@ -60,11 +60,13 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
     }
 
     // Customiseable class
-    const className = block.data?.class;
-    if (className) {
-      block.class = className;
+    if (typeof block.data?.class === 'string') {
+      block.class = `${block.class ?? ''} ${block.data.class}`.trim();
       delete block.data.class;
     }
+
+    // Minor cleanup
+    if (block.data && Object.keys(block.data).length === 0) delete block.data;
 
     const label = block.data?.label ?? block.data?.id;
     if (typeof label === 'string') {
