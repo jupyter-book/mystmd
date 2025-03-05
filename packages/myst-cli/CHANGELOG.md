@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.3.26
+
+### Patch Changes
+
+- 7d68c88: block data class
+- Updated dependencies [7d68c88]
+  - myst-transforms@1.3.34
+
 ## 1.3.25
 
 ### Patch Changes

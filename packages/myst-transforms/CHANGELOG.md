@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 1.3.34
+
+### Patch Changes
+
+- 7d68c88: block data class
+
 ## 1.3.33
 
 ### Patch Changes
