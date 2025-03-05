@@ -9,7 +9,7 @@ import type {
 import { RuleId, fileError, fileWarn } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import { contentFromNode } from './roles.js';
+import { contentFromNode } from './utils.js';
 import type { Directive } from 'myst-spec';
 
 type MystDirectiveNode = GenericNode & {
