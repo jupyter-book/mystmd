@@ -6,11 +6,14 @@ abbreviations:
 ---
 
 :::{warning} Landing Pages are Experimental
-
 Landing pages are experimental, and the syntax and/or supported block-types are likely to change. Keep up-to-date with this page to ensure you stay abreast of these changes.
 :::
 
 The MyST [book-theme](#template-site-myst-book-theme) template provides out-of-the-box support for high-level landing-page blocks. By adding a small amount of annotation to your landing page, you can increase the approachability of your home page by composing it from visually-appealing blocks.
+
+:::{tip} Landing Page Example
+You can find a full working example at [`myst-examples/landing-pages`](https://github.com/myst-examples/landing-pages).
+:::
 
 ## Defining a Block
 
@@ -27,7 +30,7 @@ Subtitle
 A CTA that is justified to the left. At smaller screen sizes, buttons and links are placed below the description, whilst for large displays they float to right of the heading.
 
 {button}`Go to Wiki <https://wikipedia.org>`
-[MyST](https://mystmd.org/)
+[MyST](https://mystmd.org)
 ```
 
 See [](#justified-cta) to see how this CTA is rendered.
@@ -66,12 +69,27 @@ I occur before the heading.
 ## I am a heading!
 
 I am a description, [I am a link!](https://wikipedia.org).
-I follow the heading. {button}`I am a button<https://mystmd.org>`
+I follow the heading. {button}`I am a button <https://mystmd.org>`
+```
+
+## Turning off elements on the landing page
+
+It can be helpful to turn off the outline and table of contents on landing pages as well as hide the default title-block, this can be completed through the frontmatter block at the top of your index page:
+
+```yaml
+---
+title: Welcome to My Landing Page
+site:
+  hide_outline: true
+  hide_toc: true
+  hide_title_block: true
+---
 ```
 
 ## Examples
 
 +++ { "kind": "split-image", "class": "col-body" }
+
 Subtitle
 
 (split-image-cta)=
@@ -82,12 +100,11 @@ A helpful description in the body of the CTA. {button}`Go to Wiki <https://wikip
 
 ![An image.](https://fastly.picsum.photos/id/1045/512/512.jpg?hmac=xSX-hQcOc9AVckDyczqSvsXTDAJqpF8WBgEWAYGN0AI)
 
-[MyST](https://mystmd.org/)
+[MyST](https://mystmd.org)
 
-+++ { "kind": "justified", "class": col-body"}
++++ { "kind": "justified"}
 
-I am a\
-Subtitle
+I am a Subtitle
 
 (justified-cta)=
 
@@ -95,7 +112,7 @@ Subtitle
 
 A CTA that is justified to the left. At smaller screen sizes, buttons and links are placed below the description, whilst for large displays they float to right of the heading.
 
-{button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
+{button}`Go to Wiki <https://wikipedia.org>`
 
 +++ { "kind": "centered", "class": "col-body"}
 
@@ -107,7 +124,7 @@ Subtitle
 
 A CTA that is centered in the middle of the page. Buttons and links are placed below the description.
 
-{button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
+{button}`Go to Wiki <https://wikipedia.org>`
 
 +++ { "kind": "logo-cloud", "class": "col-body"}
 
@@ -131,4 +148,4 @@ Cameras LLC
 :::
 ::::
 
-{button}`Go to Wiki <https://wikipedia.org>` [MyST](https://mystmd.org/)
+{button}`Go to Wiki <https://wikipedia.org>`
