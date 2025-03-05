@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.7.10
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+
 ## 1.7.9
 
 ### Patch Changes
