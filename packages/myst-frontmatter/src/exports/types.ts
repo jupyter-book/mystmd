@@ -8,6 +8,7 @@ export enum ExportFormats {
   docx = 'docx',
   xml = 'xml',
   md = 'md',
+  ipynb = 'ipynb',
   meca = 'meca',
   cff = 'cff',
 }

@@ -28,6 +28,10 @@ export function makeMdOption(description: string) {
   return new Option('--md', description).default(false);
 }
 
+export function makeIpynbOption(description: string) {
+  return new Option('--ipynb', description).default(false);
+}
+
 export function makeJatsOption(description: string) {
   return new Option('--jats, --xml', description).default(false);
 }

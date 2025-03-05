@@ -6,6 +6,7 @@
     ["myst-common", "myst-config", "myst-frontmatter", "myst-spec-ext"],
     ["myst-to-jats", "jats-to-myst"],
     ["myst-to-tex", "tex-to-myst"],
+    ["myst-to-md", "myst-to-ipynb"],
     ["myst-parser", "myst-roles", "myst-directives", "myst-to-html"],
     ["mystmd", "myst-cli", "myst-migrate"]
   ],
