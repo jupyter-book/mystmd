@@ -3,10 +3,10 @@ import { normalizeLabel, type GenericNode, type RoleData, type RoleSpec } from '
 import { mystParse } from '../../src';
 import { position, positionFn } from '../position';
 
-describe('custom role extensions', () => {
-  test('test role with string body', () => {
+describe('role spec with options', () => {
+  test('complex inline role with options', () => {
     const TestRole: RoleSpec = {
-      name: 'span',
+      name: 'widget',
       body: {
         type: 'myst',
       },
@@ -33,7 +33,7 @@ describe('custom role extensions', () => {
           normalizeLabel(data.options?.label as string | undefined) || {};
         return [
           {
-            type: 'span',
+            type: 'widget',
             label,
             identifier,
             class: data.options?.class,
@@ -44,7 +44,7 @@ describe('custom role extensions', () => {
         ] as GenericNode[];
       },
     };
-    const parsed = mystParse('{span #label .something .another open="true" max="5"}`_a_`', {
+    const parsed = mystParse('{widget #label .something .another open="true" max="5"}`_a_`', {
       roles: [TestRole],
     }) as any;
     expect(parsed).toEqual({
@@ -56,12 +56,12 @@ describe('custom role extensions', () => {
           children: [
             {
               type: 'mystRole',
-              position: positionFn(1, 1, 1, 59),
-              name: 'span',
+              position: positionFn(1, 1, 1, 61),
+              name: 'widget',
               value: '_a_',
               children: [
                 {
-                  type: 'span',
+                  type: 'widget',
                   label: 'label',
                   identifier: 'label',
                   class: 'something another',

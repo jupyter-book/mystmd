@@ -72,7 +72,7 @@ function runRoles(state: StateCore): boolean {
           try {
             const { map } = token;
             const { content, col } = child as any;
-            const { name, tokens: optTokens } = inlineOptionsToTokens(
+            const { name = 'span', tokens: optTokens } = inlineOptionsToTokens(
               child.info,
               map?.[0] ?? 0,
               state,
