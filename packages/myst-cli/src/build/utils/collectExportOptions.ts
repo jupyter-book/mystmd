@@ -271,6 +271,7 @@ export function resolveArticles(
 export const ALLOWED_EXTENSIONS: Record<ExportFormats, string[]> = {
   [ExportFormats.docx]: ['.doc', '.docx'],
   [ExportFormats.md]: ['.md'],
+  [ExportFormats.ipynb]: ['.ipynb'],
   [ExportFormats.meca]: ['.zip', '.meca'],
   [ExportFormats.pdf]: ['.pdf'],
   [ExportFormats.pdftex]: ['.pdf', '.tex', '.zip'],
