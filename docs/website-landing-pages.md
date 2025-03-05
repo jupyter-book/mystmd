@@ -103,7 +103,7 @@ A helpful description in the body of the CTA. {button}`Go to Wiki <https://wikip
 
 [MyST](https://mystmd.org)
 
-+++ { "kind": "justified"}
++++ { "kind": "justified", "class": "col-body"}
 
 I am a Subtitle
 
