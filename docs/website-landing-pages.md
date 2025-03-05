@@ -3,6 +3,7 @@ title: Landing Pages
 subtitle: Add visually appealing landing pages to your project
 abbreviations:
   CTA: Call To Action
+thumbnail: ./thumbnails/landing-pages.png
 ---
 
 :::{warning} Landing Pages are Experimental
