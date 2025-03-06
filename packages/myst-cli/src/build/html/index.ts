@@ -87,10 +87,10 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
     }
     if (!['.html', '.js', '.json'].includes(path.extname(file))) return;
     const data = fs.readFileSync(file).toString();
-    const modified = data
-      .replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`)
-      .replace('href="/favicon.ico"', `href="${baseurl || ''}/favicon.ico"`)
-      .replace('href="/myst-theme.css"', `href="${baseurl || ''}/myst-theme.css"`);
+    const modified = data.replace(
+      new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'),
+      `${baseurl || ''}/build/`,
+    );
     fs.writeFileSync(file, modified);
   });
 }
