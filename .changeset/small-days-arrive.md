@@ -2,4 +2,4 @@
 "myst-cli": patch
 ---
 
-Ensure that javascript and html bunble match.
+Ensure that javascript and html bundle match.
