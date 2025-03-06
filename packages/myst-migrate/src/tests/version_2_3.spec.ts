@@ -137,3 +137,18 @@ describe('downgrade 3->2', () => {
     expect(mdast).toStrictEqual(SIMPLE_V2_AST_WITH_OUTPUT);
   });
 });
+
+describe('upgrade 3->2', () => {
+  it('leaves a simple AST unchanged', async () => {
+    const mdast = structuredClone(SIMPLE_AST) as any;
+    const result = await migrate({ version: 2, mdast }, { to: 3 });
+    expect(result.version).toBe(3);
+    expect(mdast).toStrictEqual(SIMPLE_AST);
+  });
+  it('upgrades an AST with output', async () => {
+    const mdast = structuredClone(SIMPLE_V2_AST_WITH_OUTPUT);
+    const result = await migrate({ version: 2, mdast }, { to: 3 });
+    expect(result.version).toBe(3);
+    expect(mdast).toStrictEqual(SIMPLE_V3_AST_WITH_OUTPUT);
+  });
+});
