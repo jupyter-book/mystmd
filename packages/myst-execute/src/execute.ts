@@ -286,8 +286,9 @@ function applyComputedOutputsToNodes(
       // Pull out outputs to set data
       const outputs = select('outputs', matchedNode) as Outputs;
       // Ensure that whether this fails or succeeds, we write to `children` (e.g. due to a kernel error)
-      outputs.children = rawOutputData.map((data) => {
-        return { type: 'output', children: [], jupyter_data: data as any };
+      outputs.children = rawOutputData.map((data, index) => {
+        const identifier = outputs.identifier ? `${outputs.identifier}-${index}` : undefined;
+        return { type: 'output', children: [], jupyter_data: data as any, identifier };
       });
     } else if (isInlineExpression(matchedNode)) {
       const rawOutputData = thisResult as Record<string, unknown> | undefined;
