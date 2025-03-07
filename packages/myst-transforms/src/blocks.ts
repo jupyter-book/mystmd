@@ -80,17 +80,12 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
       }
     }
     if (block.identifier) {
-      const codeChildren = selectAll('code', block) as Code[];
-      codeChildren.forEach((child, index) => {
-        if (child.identifier) return;
-        if (codeChildren.length === 1) {
-          child.identifier = `${block.identifier}-code`;
-        } else {
-          child.identifier = `${block.identifier}-code-${index}`;
-        }
-      });
+      const codeNode = selectAll('code', block) as any as Code | null;
+      if (codeNode !== null && !codeNode.identifier) {
+        codeNode.identifier = `${block.identifier}-code`;
+      }
       const outputsNode = select('outputs', block) as GenericNode | undefined;
-      if (outputsNode && !outputsNode.identifier) {
+      if (outputsNode !== undefined && !outputsNode.identifier) {
         // Label outputs node
         outputsNode.identifier = `${block.identifier}-output`;
         // Enumerate outputs
