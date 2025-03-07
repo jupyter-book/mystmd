@@ -80,7 +80,7 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
       }
     }
     if (block.identifier) {
-      const codeNode = selectAll('code', block) as any as Code | null;
+      const codeNode = select('code', block) as any as Code | null;
       if (codeNode !== null && !codeNode.identifier) {
         codeNode.identifier = `${block.identifier}-code`;
       }
