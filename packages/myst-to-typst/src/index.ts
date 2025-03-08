@@ -23,6 +23,7 @@ import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
 import type { Admonition, Code, CrossReference, FootnoteDefinition, TabItem } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
+import { proofHandlers } from './proofs.js';
 
 export type { TypstResult } from './types.js';
 
@@ -73,26 +74,6 @@ const tabItem = `
   ])
 }`;
 
-const proof = `
-#let proof(body, heading: [], kind: "proof", supplement: "Proof", labelName: none, color: blue, float: true) = {
-  let stroke = 1pt + color.lighten(90%)
-  let fill = color.lighten(90%)
-  let title
-  set figure.caption(position: top)
-  set figure(placement: none)
-  show figure.caption.where(body: heading): (it) => {
-    block(width: 100%, stroke: stroke, fill: fill, inset: 8pt, it)
-  }
-  place(auto, float: float, block(width: 100%, [
-    #figure(kind: kind, supplement: supplement, gap: 0pt, [
-      #set align(left);
-      #set figure.caption(position: bottom)
-      #block(width: 100%, fill: luma(253), stroke: stroke, inset: 8pt)[#body]
-    ], caption: heading)
-    #if(labelName != none){label(labelName)}
-  ]))
-}`;
-
 const INDENT = '  ';
 
 const linkHandler = (node: any, state: ITypstSerializer) => {
@@ -107,6 +88,14 @@ const linkHandler = (node: any, state: ITypstSerializer) => {
   }
 };
 
+function prevCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
+  const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
+  if (!ind) return false;
+  const prev = parent?.children?.[ind - 1];
+  if (!prev?.value) return false;
+  return (prev?.type === 'text' && !!prev.value.match(/[a-zA-Z0-9\-_]$/)) || false;
+}
+
 function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
   const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
   if (!ind) return false;
@@ -117,16 +106,21 @@ function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
-    state.text(node.value);
+    // We do not want markdown formatting to be carried over to typst
+    // As the meaning in lists, etc. is different
+    state.text(node.value.replaceAll('\n', ' '));
   },
   paragraph(node, state) {
-    state.renderChildren(node, 2);
+    const { identifier } = node;
+    const after = identifier ? ` <${identifier}>` : undefined;
+    state.renderChildren(node, 2, { after });
   },
   heading(node, state) {
-    const { depth, identifier, enumerated } = node;
+    const { depth, identifier, enumerated, implicit } = node;
     state.write(`${Array(depth).fill('=').join('')} `);
     state.renderChildren(node);
-    if (enumerated !== false && identifier) {
+    if (enumerated !== false && identifier && !implicit) {
+      // Implicit labels can have duplicates and stop typst from compiling
       state.write(` <${identifier}>`);
     }
     state.write('\n\n');
@@ -135,7 +129,7 @@ const handlers: Record<string, Handler> = {
     const metadataTags = getMetadataTags(node);
     if (metadataTags.includes('no-typst')) return;
     if (metadataTags.includes('no-pdf')) return;
-    if (node.visibility === 'remove') return;
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     if (metadataTags.includes('page-break') || metadataTags.includes('new-page')) {
       state.write('#pagebreak(weak: true)\n');
     }
@@ -173,9 +167,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
   },
   code(node: Code, state) {
-    if (node.visibility === 'remove') {
-      return;
-    }
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     let ticks = '```';
     while (node.value.includes(ticks)) {
       ticks += '`';
@@ -189,10 +181,17 @@ const handlers: Record<string, Handler> = {
     state.addNewLine();
   },
   list(node, state) {
+    const setStart = node.ordered && node.start && node.start !== 1;
+    if (setStart) {
+      state.write(`#set enum(start: ${node.start})`);
+    }
     state.data.list ??= { env: [] };
     state.data.list.env.push(node.ordered ? '+' : '-');
-    state.renderChildren(node, 2);
+    state.renderChildren(node, setStart ? 1 : 2);
     state.data.list.env.pop();
+    if (setStart) {
+      state.write('#set enum(start: 1)\n\n');
+    }
   },
   listItem(node, state) {
     const listEnv = state.data.list?.env ?? [];
@@ -223,8 +222,9 @@ const handlers: Record<string, Handler> = {
     }
   },
   strong(node, state, parent) {
+    const prev = prevCharacterIsText(parent, node);
     const next = nextCharacterIsText(parent, node);
-    if (nodeOnlyHasTextChildren(node) && !next) {
+    if (nodeOnlyHasTextChildren(node) && !(prev || next)) {
       state.write('*');
       state.renderChildren(node);
       state.write('*');
@@ -233,8 +233,9 @@ const handlers: Record<string, Handler> = {
     }
   },
   emphasis(node, state, parent) {
+    const prev = prevCharacterIsText(parent, node);
     const next = nextCharacterIsText(parent, node);
-    if (nodeOnlyHasTextChildren(node) && !next) {
+    if (nodeOnlyHasTextChildren(node) && !prev && !next) {
       state.write('_');
       state.renderChildren(node);
       state.write('_');
@@ -346,22 +347,25 @@ const handlers: Record<string, Handler> = {
   legend: captionHandler,
   captionNumber: () => undefined,
   crossReference(node: CrossReference, state, parent) {
-    if (node.remote) {
+    if (node.remoteBaseUrl) {
       // We don't want to handle remote references, treat them as links
       const url =
-        (node.remoteBaseUrl ?? '') +
+        node.remoteBaseUrl +
         (node.url === '/' ? '' : node.url ?? '') +
         (node.html_id ? `#${node.html_id}` : '');
       linkHandler({ ...node, url: url }, state);
       return;
     }
-    // Look up reference and add the text
-    // const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
-    // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
     const id = node.identifier;
-    // state.write(text.replace(/%s/g, `@${id}`));
-    const next = nextCharacterIsText(parent, node);
-    state.write(next ? `#[@${id}]` : `@${id}`);
+    if (node.children && node.children.length > 0) {
+      state.write(`#link(<${id}>)[`);
+      state.renderChildren(node);
+      state.write(']');
+    } else {
+      // Note that we don't need to protect against the previous character as text
+      const next = nextCharacterIsText(parent, node);
+      state.write(next ? `#[@${id}]` : `@${id}`);
+    }
   },
   citeGroup(node, state) {
     state.renderChildren(node, 0, { delim: ' ' });
@@ -435,25 +439,28 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
     state.write('\n]\n\n');
   },
-  proof(node: GenericNode, state) {
-    state.useMacro(proof);
-    const title = select('admonitionTitle', node);
-    const kind = node.kind || 'proof';
-    const supplement = getDefaultCaptionSupplement(kind);
-    state.write(
-      `#proof(kind: "${kind}", supplement: "${supplement}", labelName: ${node.identifier ? `"${node.identifier}"` : 'none'}`,
-    );
-    if (title) {
-      state.write(', heading: [');
-      state.renderChildren(title);
-      state.write('])[');
-    } else {
-      state.write(')[');
+  card(node, state) {
+    if (node.url) {
+      node.children?.push({ type: 'paragraph', children: [{ type: 'text', value: node.url }] });
     }
     state.renderChildren(node);
-    state.write(']');
     state.ensureNewLine();
+    state.write('\n');
   },
+  cardTitle(node, state) {
+    state.write('*');
+    state.renderChildren(node);
+    state.write('*');
+    state.ensureNewLine();
+    state.write('\n');
+  },
+  root(node, state) {
+    state.renderChildren(node);
+  },
+  footer() {
+    return;
+  },
+  ...proofHandlers,
 };
 
 class TypstSerializer implements ITypstSerializer {
@@ -520,7 +527,7 @@ class TypstSerializer implements ITypstSerializer {
       this.renderChildren({ children: node }, trailingNewLines, opts);
       return;
     }
-    const { delim = '', trimEnd = true } = opts;
+    const { delim = '', trimEnd = true, after } = opts;
     const numChildren = node.children?.length ?? 0;
     node.children?.forEach((child, index) => {
       if (!child) return;
@@ -536,6 +543,7 @@ class TypstSerializer implements ITypstSerializer {
       if (delim && index + 1 < numChildren) this.write(delim);
     });
     if (trimEnd) this.trimEnd();
+    if (after) this.write(after);
     for (let i = trailingNewLines; i--; ) this.addNewLine();
   }
 

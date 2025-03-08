@@ -1,5 +1,19 @@
 # myst-to-tex
 
+## 1.0.41
+
+### Patch Changes
+
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.0.40
+
 ## 1.0.39
 
 ### Patch Changes

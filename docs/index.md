@@ -49,7 +49,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 :::{seealso}
 :class: dropdown
 
-# Coming from Jupyter Book or Sphinx?
+# Coming from Jupyter Book V1 or Sphinx?
 
 👋 We are glad you are here! 💚
 
@@ -60,6 +60,10 @@ TL;DR
 : **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in Javascript not Python!
 : Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
 :::
+
+## Cite `mystmd`
+
+To cite or read more references about the `mystmd` project and related tools, see [](./cite.md).
 
 ## Project Goals
 

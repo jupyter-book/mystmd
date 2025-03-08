@@ -2,7 +2,23 @@ import { u } from 'unist-builder';
 import { mystParse } from 'myst-parser';
 import { defaultDirectives } from 'myst-directives';
 import { defaultRoles } from 'myst-roles';
+import { cardDirective } from 'myst-ext-card';
+import { buttonRole } from 'myst-ext-button';
+import { gridDirectives } from 'myst-ext-grid';
+import { proofDirective } from 'myst-ext-proof';
+import { exerciseDirectives } from 'myst-ext-exercise';
+import { tabDirectives } from 'myst-ext-tabs';
 import { fileError } from 'myst-common';
+
+const allDirectives = [
+  ...defaultDirectives,
+  ...gridDirectives,
+  ...exerciseDirectives,
+  ...tabDirectives,
+  cardDirective,
+  proofDirective,
+];
+const allRoles = [...defaultRoles, buttonRole];
 
 /**
  * @param {import('myst-common').OptionDefinition} option
@@ -74,7 +90,7 @@ const mystDirective = {
   },
   run(data, vfile) {
     const name = data.arg;
-    const directive = defaultDirectives.find((d) => d.name === name);
+    const directive = allDirectives.find((d) => d.name === name);
     if (!directive) {
       fileError(vfile, `myst:directive: Unknown myst directive "${name}"`);
       return [];
@@ -130,7 +146,7 @@ const mystRole = {
   },
   run(data, vfile) {
     const name = data.arg;
-    const role = defaultRoles.find((d) => d.name === name);
+    const role = allRoles.find((d) => d.name === name);
     if (!role) {
       fileError(vfile, `myst:role: Unknown myst role "${name}"`);
       return [];
@@ -178,7 +194,7 @@ const mystDirectiveRole = {
     const [, modified, rawLabel] = match ?? [];
     const label = rawLabel ?? data.body;
     const [name, opt] = label?.split('.') ?? [];
-    const directive = defaultDirectives.find((d) => d.name === name || d.alias?.includes(name));
+    const directive = allDirectives.find((d) => d.name === name || d.alias?.includes(name));
     const identifier = opt
       ? `directive-${directive?.name ?? name}-${opt}`
       : `directive-${directive?.name ?? name}`;
@@ -186,9 +202,7 @@ const mystDirectiveRole = {
     if (opt) {
       textToDisplay = `${textToDisplay}.${opt}`;
     }
-    return [
-      u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)]),
-    ];
+    return [u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)])];
   },
 };
 
@@ -208,15 +222,13 @@ const mystRoleRole = {
     const [, modified, rawLabel] = match ?? [];
     const label = rawLabel ?? data.body;
     const [name, opt] = label?.split('.') ?? [];
-    const role = defaultRoles.find((d) => d.name === name || d.alias?.includes(name));
+    const role = allRoles.find((d) => d.name === name || d.alias?.includes(name));
     const identifier = opt ? `role-${role?.name ?? name}-${opt}` : `role-${role?.name ?? name}`;
     var textToDisplay = modified?.trim() || name;
     if (opt) {
       textToDisplay = `${textToDisplay}.${opt}`;
     }
-    return [
-      u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)]),
-    ];
+    return [u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)])];
   },
 };
 

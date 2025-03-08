@@ -450,4 +450,22 @@ describe('Test reconstructHtmlTransform', () => {
       ],
     });
   });
+  test('iframe tags in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<iframe class="my-iframe" src="https://example.com" />' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'iframe',
+          src: 'https://example.com',
+          class: 'my-iframe',
+          width: '100%',
+        },
+      ],
+    });
+  });
 });

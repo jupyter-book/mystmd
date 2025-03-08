@@ -1,5 +1,39 @@
 # myst-directives
 
+## 1.5.12
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- aa49c51c: Added support for include directive options when not using the literal option.
+- Updated dependencies [75bbb180]
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+
+## 1.5.11
+
+### Patch Changes
+
+- Updated dependencies [fad8f673]
+  - myst-spec-ext@1.7.8
+  - myst-common@1.7.8
+
+## 1.5.10
+
+### Patch Changes
+
+- 9717b067: Add caption to code-block options
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+  - myst-common@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.5.9
+
+### Patch Changes
+
+- d7a6fddd: Add support for commonDirectiveOptions in all directives
+
 ## 1.5.8
 
 ### Patch Changes

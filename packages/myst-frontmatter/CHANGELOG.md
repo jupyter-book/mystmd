@@ -1,5 +1,41 @@
 # myst-frontmatter
 
+## 1.7.10
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+
+## 1.7.9
+
+### Patch Changes
+
+- 7448083f: Add support for skipping execution of individual notebooks
+
+## 1.7.8
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator customization to numbering items
+- 00a47c4: Add edit url to file frontmatter
+
+## 1.7.6
+
+### Patch Changes
+
+- 6f6032b7: OSI updates
+
+## 1.7.5
+
+### Patch Changes
+
+- 8ea9365: Improvements to spdx license validation
+
 ## 1.7.4
 
 ## 1.7.3

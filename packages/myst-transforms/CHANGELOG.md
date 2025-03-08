@@ -1,5 +1,83 @@
 # myst-transforms
 
+## 1.3.33
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- 0941552: Blocks can now set `kind` and `class`
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+  - myst-common@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.3.32
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- 75bbb180: Change footnotes to use enumerator over number
+- 92839fba: Add support for `class` in block data
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+  - myst-to-html@1.5.12
+
+## 1.3.31
+
+### Patch Changes
+
+- eacacd95: Fix unwanted continuous numbering for some enumerated types
+- Updated dependencies [fad8f673]
+  - myst-spec-ext@1.7.8
+  - myst-common@1.7.8
+  - myst-frontmatter@1.7.8
+  - myst-to-html@1.5.11
+
+## 1.3.30
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator customization to numbering items
+- 614ed0ec: Remove some heading depth magic
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+
+## 1.3.29
+
+### Patch Changes
+
+- e3309c24: Quiet warning about newLineInDisplayMode
+- 9717b067: Add caption to code-block options
+- cefb2a15: join gates plugin moved before blocks
+- 71018741: Read iframe from html source
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+  - myst-to-html@1.5.10
+
+## 1.3.28
+
+### Patch Changes
+
+- 3aa40b03: No trailing slash for end of links
+- Updated dependencies [a27bd886]
+  - myst-to-html@1.5.9
+
 ## 1.3.27
 
 ### Patch Changes

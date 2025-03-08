@@ -106,7 +106,7 @@ The label implementation does not yet work for `sub-equations` and may not work 
 equation
 : basic equation environment, similar to a math directive or dollar-math
 
-multiline
+multline
 : variation equation, used for equations that don’t fit on a single line
 
 gather

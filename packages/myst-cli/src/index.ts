@@ -10,4 +10,5 @@ export * from './session/index.js';
 export * from './store/index.js';
 export * from './transforms/index.js';
 export * from './utils/index.js';
+export * from './spec-version.js';
 export { default as version } from './version.js';

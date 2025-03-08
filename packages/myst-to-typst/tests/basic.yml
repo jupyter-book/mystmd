@@ -75,6 +75,22 @@ cases:
               value: 'with trailing text!'
     typst: |-
       This is #strong[strong]with trailing text!
+  - title: strong inside a word
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'We say equation'
+            - type: strong
+              children:
+                - type: text
+                  value: 's'
+            - type: text
+              value: ', plural, because there are...'
+    typst: |-
+      We say equation#strong[s], plural, because there are...
   - title: emph with trailing text
     mdast:
       type: root

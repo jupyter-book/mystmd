@@ -8,6 +8,7 @@ import type { Math } from 'myst-spec-ext';
 describe('Test math tightness', () => {
   test.each([
     [true, 'p\n$$Ax=b$$\np'],
+    [true, 'p\n$$\nAx=b\n$$\np'],
     [undefined, 'p\n\n$$Ax=b$$\n\np'],
     ['before', 'p\n$$Ax=b$$\n\np'],
     // ['after', 'p\n\n$$Ax=b$$\np'], // TODO: this is (maybe) a bug in the dollar-math parser
@@ -18,6 +19,7 @@ describe('Test math tightness', () => {
     expect((select('math', tree) as Math).tight).toBe(undefined);
     mathNestingTransform(tree, file);
     expect((select('math', tree) as Math).tight).toBe(tight);
+    expect((select('math', tree) as Math).value).toBe('Ax=b');
   });
   test.each([
     [true, 'p\n:::{math}\nAx=b\n:::\np'],

@@ -306,7 +306,7 @@ const handlers: Handlers = {
     state.renderInline(node, 'title');
   },
   block(node, state) {
-    if (node.visibility === 'remove') return;
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     state.renderChildren(node);
   },
   blockquote(node, state) {

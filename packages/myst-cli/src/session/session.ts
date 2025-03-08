@@ -22,9 +22,10 @@ import type { RootState } from '../store/reducers.js';
 import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
+import { isWhiteLabelled } from '../utils/whiteLabelling.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
-import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
+import { launchJupyterServer } from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 
@@ -42,25 +43,33 @@ const NPM_COMMAND = 'npm i -g mystmd@latest';
 const PIP_COMMAND = 'pip install -U mystmd';
 const LOCALHOSTS = ['localhost', '127.0.0.1', '::1'];
 
+function socialLink({ twitter, bsky }: { twitter?: string; bsky?: string }): string {
+  if (bsky) {
+    return `Follow ${chalk.yellowBright(`@${bsky}`)} for updates!\nhttps://bsky.app/profile/${bsky}`;
+  }
+  if (twitter) {
+    return `Follow ${chalk.yellowBright(`@${twitter}`)} for updates!\nhttps://x.com/${twitter}`;
+  }
+  return '';
+}
+
 export function logUpdateAvailable({
   current,
   latest,
   upgradeCommand,
   twitter,
+  bsky,
 }: {
   current: string;
   latest: string;
   upgradeCommand: string;
-  twitter: string;
+  twitter?: string;
+  bsky?: string;
 }) {
   return boxen(
     `Update available! ${chalk.dim(`v${current}`)} ≫ ${chalk.green.bold(
       `v${latest}`,
-    )}\n\nRun \`${chalk.cyanBright.bold(
-      upgradeCommand,
-    )}\` to update.\n\nFollow ${chalk.yellowBright(
-      `@${twitter}`,
-    )} for updates!\nhttps://twitter.com/${twitter}`,
+    )}\n\nRun \`${chalk.cyanBright.bold(upgradeCommand)}\` to update.\n\n${socialLink({ bsky, twitter })}`,
     {
       padding: 1,
       margin: 1,
@@ -104,13 +113,19 @@ export class Session implements ISession {
   }
 
   showUpgradeNotice() {
-    if (this._shownUpgrade || !this._latestVersion || version === this._latestVersion) return;
+    if (
+      this._shownUpgrade ||
+      !this._latestVersion ||
+      version === this._latestVersion ||
+      isWhiteLabelled()
+    )
+      return;
     this.log.info(
       logUpdateAvailable({
         current: version,
         latest: this._latestVersion,
         upgradeCommand: process.env.MYST_LANG === 'PYTHON' ? PIP_COMMAND : NPM_COMMAND,
-        twitter: 'MystMarkdown',
+        bsky: 'mystmd.org',
       }),
     );
     this._shownUpgrade = true;
@@ -222,16 +237,10 @@ export class Session implements ISession {
           token: process.env.JUPYTER_TOKEN,
         };
       } else {
-        // Load existing running server
-        const existing = await findExistingJupyterServer(this);
-        if (existing) {
-          this.log.debug(`Found existing server on: ${existing.appUrl}`);
-          partialServerSettings = existing;
-        } else {
-          this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
-          // Create and load new server
-          partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
-        }
+        // Note: To use an existing Jupyter server use `findExistingJupyterServer`, see #1716
+        this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
+        // Create and load new server
+        partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
       }
 
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);

@@ -176,7 +176,7 @@ For example, when exporting to $\LaTeX$ the best format is a `.pdf` if it is ava
 
 ## Videos
 
-To embed a video you can either use a video platforms embed script or directly embed an `mp4` video file. For example, the
+To embed a video you can either use a video platforms embed script or directly embed an `mp4` video file. For example:
 
 ```markdown
 :::{figure} ./videos/links.mp4
@@ -188,13 +188,13 @@ or
 ![](./videos/links.mp4)
 ```
 
-Will copy the video to your static files and embed a video in your HTML output.
+will copy the video to your static files and embed a video in your HTML output.
 
 :::{figure} ./videos/links.mp4
 An embedded video with a caption!
 :::
 
-These videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
+If you have [ffmpeg](https://www.ffmpeg.org/) installed, you may also include `.mov` and `.avi` video files, and MyST will convert them to `.mp4` and include them. Videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
 
 ### Use an image in place of a video for static exports
 

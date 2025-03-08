@@ -51,11 +51,13 @@ type ManifestProjectItem = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
+  enumerator?: string;
 };
 
 type ManifestProject = {
   slug?: string;
   index: string;
+  enumerator?: string;
   title: string;
   pages: ManifestProjectItem[];
   thumbnail?: string | null;
@@ -69,6 +71,7 @@ type ManifestProject = {
 } & Omit<ProjectFrontmatter, 'downloads' | 'exports' | 'parts'>;
 
 export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
+  version: number;
   myst: string;
   id?: string;
   projects?: ManifestProject[];

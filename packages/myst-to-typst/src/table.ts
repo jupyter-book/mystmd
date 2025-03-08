@@ -33,10 +33,13 @@ export const tableHandler: Handler = (node, state) => {
     });
     return;
   }
-  state.useMacro('#import "@preview/tablex:0.0.8": tablex, cellx, hlinex, vlinex');
+  state.useMacro('#import "@preview/tablex:0.0.9": tablex, cellx, hlinex, vlinex');
+  // These two separate style hooks are somewhat redundant, but they allow defining
+  // article-wide styles and single-table styles separately
   state.useMacro('#let tableStyle = (:)');
+  state.useMacro('#let columnStyle = (:)');
   state.write(
-    `${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)}, repeat-header: true, ..tableStyle,\n`,
+    `${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)}, repeat-header: true, ..tableStyle, ..columnStyle,\n`,
   );
   state.renderChildren(node, 1);
   state.write(')\n');
@@ -48,13 +51,21 @@ export const tableRowHandler: Handler = (node, state) => {
 };
 
 export const tableCellHandler: Handler = (node, state) => {
-  if (node.rowspan || node.colspan) {
+  if (node.rowspan || node.colspan || node.align || node.style?.backgroundColor) {
     state.write('cellx(');
     if (node.rowspan) {
       state.write(`rowspan: ${node.rowspan}, `);
     }
     if (node.colspan) {
       state.write(`colspan: ${node.colspan}, `);
+    }
+    if (node.align) {
+      state.write(`align: ${node.align}, `);
+    }
+    if (node.style?.backgroundColor) {
+      const fill = node.style.backgroundColor as string;
+      const rgb = fill.startsWith('#');
+      state.write(`fill: ${rgb ? `rgb("${fill}")` : fill}, `);
     }
     state.write(')');
   }

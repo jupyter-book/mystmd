@@ -108,6 +108,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'any-OSI': {
     name: 'Any OSI License',
   },
+  'any-OSI-perl-modules': {
+    name: 'Any OSI License - Perl Modules',
+  },
   'Apache-1.0': {
     name: 'Apache License 1.0',
     free: true,
@@ -212,6 +215,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'Boehm-GC': {
     name: 'Boehm-Demers-Weiser GC License',
+  },
+  'Boehm-GC-without-fee': {
+    name: 'Boehm-Demers-Weiser GC License (without fee)',
   },
   Borceux: {
     name: 'Borceux license',
@@ -575,6 +581,14 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'Creative Commons Public Domain Dedication and Certification',
     CC: true,
   },
+  'CC-PDM-1.0': {
+    name: 'Creative    Commons Public Domain Mark 1.0 Universal',
+    CC: true,
+  },
+  'CC-SA-1.0': {
+    name: 'Creative Commons Share Alike 1.0 Generic',
+    CC: true,
+  },
   'CC0-1.0': {
     name: 'Creative Commons Zero v1.0 Universal',
     free: true,
@@ -747,6 +761,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'DocBook-Schema': {
     name: 'DocBook Schema License',
   },
+  'DocBook-Stylesheet': {
+    name: 'DocBook Stylesheet License',
+  },
   'DocBook-XML': {
     name: 'DocBook XML License',
   },
@@ -890,6 +907,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   GD: {
     name: 'GD License',
+  },
+  'generic-xts': {
+    name: 'Generic XTS License',
   },
   'GFDL-1.1-invariants-only': {
     name: 'GNU Free Documentation License v1.1 only - invariants',
@@ -1137,6 +1157,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'Inner-Net-2.0': {
     name: 'Inner Net License v2.0',
   },
+  InnoSetup: {
+    name: 'Inno Setup License',
+  },
   Intel: {
     name: 'Intel Open Source License',
     osi: true,
@@ -1351,6 +1374,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   Minpack: {
     name: 'Minpack License',
   },
+  MIPS: {
+    name: 'MIPS License',
+  },
   MirOS: {
     name: 'The MirOS Licence',
     osi: true,
@@ -1366,6 +1392,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'MIT-advertising': {
     name: 'Enlightenment License (e16)',
+  },
+  'MIT-Click': {
+    name: 'MIT Click License',
   },
   'MIT-CMU': {
     name: 'CMU License',
@@ -1868,6 +1897,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'Sendmail-8.23': {
     name: 'Sendmail License 8.23',
   },
+  'Sendmail-Open-Source-1.1': {
+    name: 'Sendmail Open Source License v1.1',
+  },
   'SGI-B-1.0': {
     name: 'SGI Free Software License B v1.0',
   },
@@ -1909,6 +1941,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'Sleepycat License',
     osi: true,
     free: true,
+  },
+  'SMAIL-GPL': {
+    name: 'SMAIL General Public License',
   },
   SMLNJ: {
     name: 'Standard ML of New Jersey License',
@@ -1994,6 +2029,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'TGPPL-1.0': {
     name: 'Transitive Grace Period Public Licence 1.0',
   },
+  ThirdEye: {
+    name: 'ThirdEye License',
+  },
   threeparttable: {
     name: 'threeparttable License',
   },
@@ -2011,6 +2049,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'TPL-1.0': {
     name: 'THOR Public License 1.0',
+  },
+  TrustedQSL: {
+    name: 'TrustedQSL License',
   },
   TTWL: {
     name: 'Text-Tabs+Wrap License',
@@ -2109,6 +2150,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   WTFPL: {
     name: 'Do What The F*ck You Want To Public License',
     free: true,
+  },
+  wwl: {
+    name: 'WWL License',
   },
   X11: {
     name: 'X11 License',

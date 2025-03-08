@@ -1,5 +1,31 @@
 # myst-to-html
 
+## 1.5.12
+
+### Patch Changes
+
+- myst-common@1.7.9
+
+## 1.5.11
+
+### Patch Changes
+
+- myst-common@1.7.8
+
+## 1.5.10
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+  - myst-common@1.7.6
+
+## 1.5.9
+
+### Patch Changes
+
+- a27bd886: Support keyboard nodes in HTML export
+
 ## 1.5.8
 
 ### Patch Changes

@@ -164,7 +164,7 @@ const handlers: Record<string, Handler> = {
       state.write('\\end{frame}\n\n');
       return;
     }
-    if (node.visibility === 'remove') return;
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     if (metadataTags.includes('no-tex')) return;
     if (metadataTags.includes('no-pdf')) return;
     if (metadataTags.includes('new-page')) {
@@ -202,9 +202,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true);
   },
   code(node: Code, state) {
-    if (node.visibility === 'remove') {
-      return;
-    }
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     addIndexEntries(node, state);
     let start = '\\begin{verbatim}\n';
     let end = '\n\\end{verbatim}';

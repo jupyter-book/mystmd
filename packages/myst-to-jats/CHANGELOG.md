@@ -1,5 +1,51 @@
 # myst-to-jats
 
+## 1.0.33
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- Updated dependencies [26e8d199]
+- Updated dependencies [0941552]
+  - myst-frontmatter@1.7.10
+  - myst-transforms@1.3.33
+  - myst-common@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.0.32
+
+### Patch Changes
+
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-transforms@1.3.30
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+
+## 1.0.31
+
+### Patch Changes
+
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [e3309c24]
+- Updated dependencies [9717b067]
+- Updated dependencies [cefb2a15]
+- Updated dependencies [71018741]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-transforms@1.3.29
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
 ## 1.0.30
 
 ### Patch Changes

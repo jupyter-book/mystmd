@@ -1,5 +1,31 @@
 # mystmd
 
+## 1.3.25
+
+## 1.3.24
+
+### Patch Changes
+
+- 2a6db555: Fix imports of plugins on Windows
+
+## 1.3.23
+
+## 1.3.22
+
+## 1.3.21
+
+### Patch Changes
+
+- 614ed0ec: Enable title numbering
+
+## 1.3.20
+
+## 1.3.19
+
+## 1.3.18
+
+## 1.3.17
+
 ## 1.3.16
 
 ## 1.3.15

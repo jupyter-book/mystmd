@@ -15,7 +15,6 @@ import type { ExportWithOutput, ExportFnOptions } from './types.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import { getFileContent } from './utils/getFileContent.js';
 import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
-import { parseMyst } from '../process/myst.js';
 
 function exportOptionsToCFF(exportOptions: ExportWithOutput): CFF {
   // Handle overlap of key "format" between CFF and export

@@ -247,7 +247,7 @@ exports:
 ---
 ```
 
-As an alternative to listing articles in MyST frontmatter, you may specify a table of contents using the [Jupyter Book format](#toc-format):
+As an alternative to listing articles in MyST frontmatter, you may specify a table of contents using the [Jupyter Book V1 format](#toc-format):
 
 ```{code-block} yaml
 :filename: article.md

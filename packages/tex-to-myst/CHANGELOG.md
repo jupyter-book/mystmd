@@ -1,5 +1,22 @@
 # tex-to-myst
 
+## 1.0.41
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.0.40
+
+### Patch Changes
+
+- f888081: Fix tex figures with no arguments
+
 ## 1.0.39
 
 ### Patch Changes

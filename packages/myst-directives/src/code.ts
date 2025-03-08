@@ -142,10 +142,6 @@ export const codeDirective: DirectiveSpec = {
   },
   options: {
     ...commonDirectiveOptions('code'),
-    class: {
-      type: String,
-      // class_option: list of strings?
-    },
     ...CODE_DIRECTIVE_OPTIONS,
   },
   body: {
@@ -157,7 +153,6 @@ export const codeDirective: DirectiveSpec = {
     const code: Code = {
       type: 'code',
       lang: data.arg as string,
-      class: data.options?.class as string,
       ...opts,
       value: data.body as string,
     };
@@ -193,6 +188,10 @@ export const codeCellDirective: DirectiveSpec = {
   },
   options: {
     ...commonDirectiveOptions('code-cell'),
+    caption: {
+      type: 'myst',
+      doc: 'A parsed caption for the code output.',
+    },
     tags: {
       type: String,
       alias: ['tag'],
@@ -222,6 +221,12 @@ export const codeCellDirective: DirectiveSpec = {
       data: {},
     };
     addCommonDirectiveOptions(data, block);
+
+    if (data.options?.caption) {
+      // This is changed into a figure/container with a caption in `blockToFigureTransform`
+      // This can also be added using the `#| caption:` metadata in the code directly
+      block.data.caption = [{ type: 'paragraph', children: data.options.caption }];
+    }
 
     const tags = parseTags(data.options?.tags, vfile, data.node);
     if (tags) block.data.tags = tags;

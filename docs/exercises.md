@@ -7,19 +7,10 @@ thumbnail: ./thumbnails/exercise.png
 
 There are two directives available to add exercises and solutions to your documents: (1) an `exercise` directive; and (2) a `solution` directive. The exercises are enumerated by default and can take in an optional title argument as well as be "gated" around Jupyter Notebook cells.
 
-:::{note} Same as Sphinx Exercise 🎉
-:class: dropdown
-
-The implementation and documentation for exercises and solutions is based on [Sphinx Exercise](https://ebp-sphinx-exercise.readthedocs.io), the syntax can be used interchangeably. We have reused the examples in that extension here to show off the various parts of the MyST extension.
-
-Changes to the original extension include being able to click on the exercise label (e.g. "Exercise 1"), and having a link to that exercise anchor. We have also updated the styles from both Sphinx and Jupyter Book to be more distinct from admonitions.
-
-You can also reference exercises with any cross-reference syntax (including the {myst:role}`ref` and {myst:role}`numref` roles). We recommend the markdown link syntax.
-:::
-
 ## Exercise Directive
 
-**Example**
+::::{tab-set}
+:::{tab-item} Example
 
 ```{exercise}
 :label: my-exercise
@@ -34,7 +25,8 @@ In particular, write a function `factorial` such that `factorial(n)` returns $n!
 for any positive integer $n$.
 ```
 
-**MyST Syntax**
+:::
+:::{tab-item} MyST Syntax
 
 ````markdown
 ```{exercise}
@@ -51,31 +43,22 @@ for any positive integer $n$.
 ```
 ````
 
+:::
+::::
+
 _Source:_ [QuantEcon](https://python-programming.quantecon.org/functions.html#Exercise-1)
 
-The following options for exercise and solution directives are supported:
+The following options for exercise directives are supported:
 
-- `label`: text
-
-  A unique identifier for your exercise that you can use to reference it with a Markdown link or {myst:role}`ref` and {myst:role}`numref` roles. Cannot contain spaces or special characters.
-
-- `class`: text
-
-  Value of the exercise’s class attribute which can be used to add custom CSS or JavaScript. This can also be the optional `dropdown` class to initially hide the exercise.
-
-- `nonumber`: flag (empty)
-
-  Turns off exercise auto numbering.
-
-- `hidden` : flag (empty)
-
-  Removes the directive from the final output.
+:::{myst:directive} exercise
+:::
 
 ## Solution Directive
 
 A solution directive can be included using the `solution` pattern. It takes in the label of the directive it wants to link to as a required argument. Unlike the `exercise` directive, the solution directive is not enumerable as it inherits numbering directly from the linked exercise. The argument for a solution is the label of the linked exercise, which is required.
 
-**Example**
+::::{tab-set}
+:::{tab-item} Example
 
 ````{solution} my-exercise
 :label: my-solution
@@ -93,7 +76,8 @@ factorial(4)
 ```
 ````
 
-**MyST Syntax**
+:::
+:::{tab-item} MyST Syntax
 
 `````markdown
 ````{solution} my-exercise
@@ -113,21 +97,15 @@ factorial(4)
 ````
 `````
 
+:::
+::::
+
 _Source:_ [QuantEcon](https://python-programming.quantecon.org/functions.html#Exercise-1)
 
-The following options are also supported:
+The following options for solution directives are supported:
 
-- `label` : text
-
-  A unique identifier for your solution that you can use to reference it with `{ref}`. Cannot contain spaces or special characters.
-
-- `class` : text
-
-  Value of the solution’s class attribute which can be used to add custom CSS or JavaScript.
-
-- `hidden` : flag (empty)
-
-  Removes the directive from the final output.
+:::{myst:directive} solution
+:::
 
 ## Referencing Exercises & Solutions
 
@@ -170,7 +148,7 @@ In the event that the directive being referenced is unenumerable, the reference 
 
 ```{exercise} $n!$ Factorial
 :label: nfactorial
-:nonumber:
+:enumerated: false
 
 Write a function `factorial` such that `factorial(int n)` returns $n!$
 for any positive integer $n$.
@@ -201,7 +179,7 @@ If the title of the linked directive being reference does not exist, it will def
 
 ```{exercise}
 :label: nfactorial-notitle
-:nonumber:
+:enumerated: false
 
 Write a function `factorial` such that `factorial(int n)` returns $n!$
 for any positive integer $n$.
@@ -238,6 +216,30 @@ to include in an exercise or solution admonition.
 ```
 
 **Basic Syntax**
+::::{tab-set}
+:::{tab-item} Example
+
+```{exercise-start}
+:label: ex1
+```
+
+```python
+# Some setup code that needs executing
+```
+
+and maybe you wish to add a figure
+
+```{figure} https://github.com/rowanc1/pics/blob/main/sunset.png
+
+```
+
+```{exercise-end}
+
+```
+
+:::
+
+:::{tab-item} MyST Syntax
 
 ````markdown
 ```{exercise-start}
@@ -259,23 +261,8 @@ and maybe you wish to add a figure
 ```
 ````
 
-```{exercise-start}
-:label: ex1
-```
-
-```python
-# Some setup code that needs executing
-```
-
-and maybe you wish to add a figure
-
-```{figure} https://github.com/rowanc1/pics/blob/main/sunset.png
-
-```
-
-```{exercise-end}
-
-```
+:::
+::::
 
 This can also be completed for solutions with `solution-start` and `solution-end` directives. The `solution-start` and `exercise-start` directives have the same options as original directive.
 
@@ -289,7 +276,8 @@ alongside feedback to diagnose the issue in document structure.
 
 To visually hide the content, simply add `:class: dropdown` as a directive option, similar to an admonition.
 
-**Example**
+::::{tab-set}
+:::{tab-item} Example
 
 ```{exercise}
 :class: dropdown
@@ -304,7 +292,9 @@ In particular, write a function `factorial` such that `factorial(n)` returns $n!
 for any positive integer $n$.
 ```
 
-**MyST Syntax**:
+:::
+
+:::{tab-item} MyST Syntax
 
 ````markdown
 ```{exercise}
@@ -320,24 +310,21 @@ In particular, write a function `factorial` such that `factorial(n)` returns $n!
 for any positive integer $n$.
 ```
 ````
+
+:::
+::::
 
 ### Remove Directives
 
 Any specific directive can be hidden by introducing the `:hidden:` option. For example, the following example will not be displayed
 
-````markdown
+````{myst}
 ```{exercise}
 :hidden:
 
 This is a hidden exercise directive.
 ```
 ````
-
-```{exercise}
-:hidden:
-
-This is a hidden exercise directive.
-```
 
 % TODO: Remove All Solutions
 % TODO: Custom CSS

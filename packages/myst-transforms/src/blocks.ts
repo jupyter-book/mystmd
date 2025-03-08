@@ -51,6 +51,23 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         });
       }
     }
+
+    // Customiseable kind
+    const kind = block.data?.kind;
+    if (kind) {
+      block.kind = kind;
+      delete block.data.kind;
+    }
+
+    // Customiseable class
+    if (typeof block.data?.class === 'string') {
+      block.class = `${block.class ?? ''} ${block.data.class}`.trim();
+      delete block.data.class;
+    }
+
+    // Minor cleanup
+    if (block.data && Object.keys(block.data).length === 0) delete block.data;
+
     const label = block.data?.label ?? block.data?.id;
     if (typeof label === 'string') {
       const normalized = normalizeLabel(label);
@@ -114,7 +131,7 @@ export function blockToFigureTransform(
     const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
     if (caption) {
       const kind = block.data?.kind ?? (block.data?.['tbl-cap'] ? 'table' : 'figure');
-      const children = parser(caption).children ?? [];
+      const children = typeof caption === 'string' ? parser(caption).children ?? [] : caption;
       children.push(...block.children);
       const container: GenericParent = {
         type: 'container',

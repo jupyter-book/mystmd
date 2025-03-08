@@ -1,5 +1,63 @@
 # myst-config
 
+## 1.7.10
+
+### Patch Changes
+
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+  - myst-common@1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+- 75bbb180: Add version to config file
+- Updated dependencies [7448083f]
+  - myst-frontmatter@1.7.9
+  - myst-common@1.7.9
+
+## 1.7.8
+
+### Patch Changes
+
+- myst-common@1.7.8
+- myst-frontmatter@1.7.8
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator to project config
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-common@1.7.7
+
+## 1.7.6
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+
+## 1.7.5
+
+### Patch Changes
+
+- Updated dependencies [8ea9365]
+  - myst-frontmatter@1.7.5
+  - myst-common@1.7.5
+
 ## 1.7.4
 
 ### Patch Changes

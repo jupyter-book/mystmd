@@ -1,9 +1,11 @@
 import yaml from 'js-yaml';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const mystdemoDirective: DirectiveSpec = {
   name: 'myst',
   options: {
+    ...commonDirectiveOptions('myst'),
     numbering: {
       type: String,
     },
@@ -21,12 +23,12 @@ export const mystdemoDirective: DirectiveSpec = {
         //pass
       }
     }
-    return [
-      {
-        type: 'myst',
-        numbering,
-        value: data.body as string,
-      },
-    ];
+    const myst = {
+      type: 'myst',
+      numbering,
+      value: data.body as string,
+    };
+    addCommonDirectiveOptions(data, myst);
+    return [myst];
   },
 };

@@ -17,6 +17,7 @@ function createGithubPagesAction({
   isGithubIO?: boolean;
 }) {
   return `# This file was created automatically with \`myst init --gh-pages\` 🪄 💚
+# Ensure your GitHub Pages settings for this repository are set to deploy with **GitHub Actions**.
 
 name: MyST GitHub Pages Deploy
 on:

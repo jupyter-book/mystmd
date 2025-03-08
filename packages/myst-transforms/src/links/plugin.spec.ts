@@ -3,7 +3,7 @@ import { VFile } from 'vfile';
 import type { Link } from 'myst-spec-ext';
 import type { ResolvedExternalReference } from './types';
 import { MystTransformer } from './myst';
-import { linksTransform } from './plugin';
+import { formatLinkText, linksTransform } from './plugin';
 
 export const TEST_REFERENCES: ResolvedExternalReference[] = [
   {
@@ -45,5 +45,23 @@ describe('Link Plugin Transformer', () => {
     expect((link as any).identifier).toEqual('explicit-figure');
     expect((link as any).label).toEqual('explicit-figure');
     expect(link.children).toEqual([]);
+  });
+});
+
+describe('formatLinkText', () => {
+  test.each([
+    ['https://mystmd.com/guide', 'https://​mystmd​.com​/guide'],
+    ['https://mystmd.com/guide#x', 'https://​mystmd​.com​/guide#x'],
+    ['https://mystmd.com/guide#abc', 'https://​mystmd​.com​/guide​#abc'],
+    ['https://mystmd.com/guide/', 'https://​mystmd​.com​/guide/'],
+    ['https://mystmd.com/guide/', 'https://​mystmd​.com​/guide/'],
+    [
+      'https://mystmd.com/guide/citaion-format?test=1#ok',
+      'https://​mystmd​.com​/guide​/citaion​-format​?test​=​1​#ok',
+    ],
+  ])('Link Text — %s', (url, result) => {
+    const node = { type: 'link', children: [{ type: 'text', value: url }] };
+    formatLinkText(node as any);
+    expect(node.children[0].value).toBe(result);
   });
 });

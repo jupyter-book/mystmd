@@ -39,7 +39,7 @@ export type StateData = {
   };
 };
 
-export type RenderChildrenOptions = { delim?: string; trimEnd?: boolean };
+export type RenderChildrenOptions = { delim?: string; trimEnd?: boolean; after?: string };
 
 export interface ITypstSerializer<D extends Record<string, any> = StateData> {
   file: VFile;

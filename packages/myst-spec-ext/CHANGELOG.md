@@ -1,5 +1,29 @@
 # myst-spec-ext
 
+## 1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+
+## 1.7.8
+
+### Patch Changes
+
+- fad8f673: Add new button role
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+
+## 1.7.6
+
+## 1.7.5
+
 ## 1.7.4
 
 ### Patch Changes

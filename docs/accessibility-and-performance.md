@@ -44,9 +44,9 @@ Some performance and accessibility considerations:
 
 ````{seealso}
 :class: dropdown
-# Comparing to Jupyter Book & Quarto
+# Comparing to Jupyter Book V1 & Quarto
 
-As a comparison to Jupyter Book or Quarto, which are both static site generators for scientific content, and assets built by Sphinx and Pandoc, respectively. There are improvements possible primarily in the bundling of Javascript assets, which is very difficult to do in the Sphinx build process, for example.
+As a comparison to Jupyter Book V1 or Quarto, which are both static site generators for scientific content, and assets built by Sphinx and Pandoc, respectively. There are improvements possible primarily in the bundling of Javascript assets, which is very difficult to do in the Sphinx build process, for example.
 
 ```{figure} ./images/lighthouse-jb-2022_09_15.png
 :label: lighthouse-jb

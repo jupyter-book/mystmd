@@ -1,5 +1,46 @@
 # myst-parser
 
+## 1.5.12
+
+### Patch Changes
+
+- aa49c51c: Added support for include directive options when not using the literal option.
+- Updated dependencies [0052853]
+- Updated dependencies [aa49c51c]
+  - myst-directives@1.5.12
+  - myst-common@1.7.9
+  - myst-roles@1.5.12
+
+## 1.5.11
+
+### Patch Changes
+
+- 7d24862a: Remove java and zip from linkified TLDs.
+  - myst-common@1.7.8
+  - myst-roles@1.5.11
+  - myst-directives@1.5.11
+
+## 1.5.10
+
+### Patch Changes
+
+- 2ab9bfdf: Remove .es linkify
+- 3b05051d: Explicitly trim math strings
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [9717b067]
+  - myst-common@1.7.6
+  - myst-directives@1.5.10
+  - myst-roles@1.5.10
+
+## 1.5.9
+
+### Patch Changes
+
+- Updated dependencies [d7a6fddd]
+  - myst-directives@1.5.9
+  - myst-roles@1.5.9
+
 ## 1.5.8
 
 ### Patch Changes

@@ -44,7 +44,7 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
   macro_includegraphics(node, state) {
     state.closeParagraph();
     const url = texToText(getArguments(node, 'group'));
-    const args = getArguments(node, 'argument')?.[0].content;
+    const args = getArguments(node, 'argument')?.[0]?.content ?? [];
     // TODO: better width, placement, etc.
     if (
       args.length === 4 &&

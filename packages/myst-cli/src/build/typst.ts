@@ -185,7 +185,10 @@ export async function localArticleToTypstRaw(
     const { dir, name, ext } = path.parse(output);
     let includeContent = '';
     let fileInd = 0;
+    let addPageBreak = false;
     articles.forEach((article) => {
+      if (addPageBreak) includeContent += '#pagebreak()\n\n';
+      addPageBreak = false;
       if (article.file) {
         const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
         const includeFile = path.format({ dir, ext, base });
@@ -197,12 +200,14 @@ export async function localArticleToTypstRaw(
         writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
         includeContent += `#include "${base}"\n\n`;
         fileInd++;
+        addPageBreak = true;
       } else if (article.title) {
         includeContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }
     });
     writeFileToFolder(output, includeContent);
   }
+  await runTypstExecutable(session, output);
   // TODO: add imports and macros?
   return { tempFolders: [] };
 }
@@ -262,6 +267,31 @@ export async function localArticleToTypstTemplated(
     macros: [],
     commands: {},
   };
+  const state = session.store.getState();
+  const projectFrontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
+  if (file === selectors.selectCurrentProjectFile(state)) {
+    // If export is defined at the project level, prioritize project parts over page parts
+    partDefinitions.forEach((def) => {
+      const part = extractTypstPart(
+        session,
+        { type: 'root', children: [] },
+        {},
+        def,
+        projectFrontmatter,
+        templateYml,
+      );
+      if (Array.isArray(part)) {
+        // This is the case if def.as_list is true
+        part.forEach((item) => {
+          collected = mergeTypstTemplateImports(collected, item);
+        });
+        parts[def.id] = part.map(({ value }) => value);
+      } else if (part != null) {
+        collected = mergeTypstTemplateImports(collected, part);
+        parts[def.id] = part?.value ?? '';
+      }
+    });
+  }
   const hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
@@ -306,12 +336,14 @@ export async function localArticleToTypstTemplated(
     frontmatter = content[0].frontmatter;
     typstContent = results[0].value;
   } else {
-    const state = session.store.getState();
-    frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
+    frontmatter = projectFrontmatter;
     const { dir, name, ext } = path.parse(output);
     typstContent = '';
     let fileInd = 0;
+    let addPageBreak = false;
     articles.forEach((article) => {
+      if (addPageBreak) typstContent += '#pagebreak()\n\n';
+      addPageBreak = false;
       if (article.file) {
         const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
         const includeFile = path.format({ dir, ext, base });
@@ -327,6 +359,7 @@ export async function localArticleToTypstTemplated(
         );
         typstContent += `#include "${base}"\n\n`;
         fileInd++;
+        addPageBreak = true;
       } else if (article.title) {
         typstContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }

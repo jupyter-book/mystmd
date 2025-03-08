@@ -1,5 +1,192 @@
 # myst-cli
 
+## 1.3.25
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- 0941552: Blocks can now set `kind` and `class`
+- Updated dependencies [26e8d199]
+- Updated dependencies [0941552]
+  - myst-frontmatter@1.7.10
+  - myst-transforms@1.3.33
+  - myst-to-jats@1.0.33
+  - myst-common@1.7.10
+  - myst-config@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.3.24
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- 7448083f: Add support for skipping execution of individual notebooks
+- 75bbb180: Change footnotes to use enumerator over number
+- 0ca2c679: Set site.options.folders in JB2 upgrade
+- 1a18e4f4: Fix typo in upgrade routine
+- 75bbb180: Add version to site content outputs
+- 2a6db555: Fix imports of plugins on Windows
+- 491d134e: Fix errors about missing images on non-first builds
+- b516d4fe: Improve error message for missing javascript plugins
+- Updated dependencies [0052853]
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+- Updated dependencies [75bbb180]
+- Updated dependencies [aa49c51c]
+- Updated dependencies [92839fba]
+  - myst-transforms@1.3.32
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-to-docx@1.0.14
+  - myst-config@1.7.9
+  - myst-parser@1.5.12
+  - myst-common@1.7.9
+
+## 1.3.23
+
+### Patch Changes
+
+- fad8f673: Add new button role
+- 3b4a5f8d: Add support for `strip-quotes` metadata
+- Updated dependencies [7d24862a]
+- Updated dependencies [fad8f673]
+- Updated dependencies [eacacd95]
+  - myst-parser@1.5.11
+  - myst-ext-button@0.0.1
+  - myst-spec-ext@1.7.8
+  - myst-transforms@1.3.31
+  - myst-common@1.7.8
+  - myst-config@1.7.8
+  - myst-frontmatter@1.7.8
+
+## 1.3.22
+
+### Patch Changes
+
+- 92676f7: Remove quotes around plain text for eval outputs
+
+## 1.3.21
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 884bd8d4: Change from twitter to bluesky
+- d9d7386f: Retry html pages build and limit initial outgoing connections.
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- 614ed0ec: Enable title numbering
+- 00a47c4: Add edit url to file frontmatter
+- a4b5d484: Update comment in gh action
+- 614ed0ec: Remove some heading depth magic
+- 614ed0ec: Add enumerator to project config
+- Updated dependencies [74e96e10]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [74e96e10]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [7f29af8a]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+  - myst-to-typst@0.0.30
+  - myst-frontmatter@1.7.7
+  - myst-transforms@1.3.30
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+  - myst-to-jats@1.0.32
+  - myst-config@1.7.7
+
+## 1.3.20
+
+### Patch Changes
+
+- 93af5a1c: Prevent html outputs that translate to empty images
+- 1127a5a7: Prioritize project-level parts for project-level typst export
+- cefb2a15: join gates plugin moved before blocks
+- 1f3ff1e4: Do not findExistingJupyterServer when using execute
+- 7ed91dac: Remove hidden output nodes from PDF exports
+- 479db78c: Remove broken and unused reactive roles.
+- Updated dependencies [6f77bda2]
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [cd69d47]
+- Updated dependencies [a6575fa9]
+- Updated dependencies [ea19e66c]
+- Updated dependencies [7afc6917]
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [9457a8de]
+- Updated dependencies [2ab9bfdf]
+- Updated dependencies [2c8fa97d]
+- Updated dependencies [e3309c24]
+- Updated dependencies [9717b067]
+- Updated dependencies [cefb2a15]
+- Updated dependencies [4979d3c3]
+- Updated dependencies [71018741]
+- Updated dependencies [c5e51589]
+- Updated dependencies [6f6032b7]
+- Updated dependencies [3b05051d]
+- Updated dependencies [a11731a1]
+- Updated dependencies [3950dcaa]
+- Updated dependencies [7d6dff27]
+  - myst-to-typst@0.0.29
+  - myst-execute@0.1.2
+  - myst-common@1.7.6
+  - myst-to-docx@1.0.13
+  - myst-to-jats@1.0.31
+  - myst-to-tex@1.0.41
+  - myst-to-md@1.0.15
+  - myst-parser@1.5.10
+  - myst-transforms@1.3.29
+  - myst-frontmatter@1.7.6
+  - myst-config@1.7.6
+  - myst-spec-ext@1.7.6
+  - tex-to-myst@1.0.41
+
+## 1.3.19
+
+### Patch Changes
+
+- 416fc41: Add support for avi -> mp4
+- 416fc41: Add mov -> mp4 conversion with ffmpeg
+- Updated dependencies [0dc62c76]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [3aa40b03]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [0dc62c76]
+- Updated dependencies [d7a6fddd]
+- Updated dependencies [0dc62c76]
+  - myst-to-typst@0.0.28
+  - myst-transforms@1.3.28
+  - myst-ext-exercise@1.0.9
+  - myst-ext-proof@1.0.12
+  - myst-ext-grid@1.0.9
+  - myst-ext-tabs@1.0.9
+  - myst-parser@1.5.9
+
+## 1.3.18
+
+### Patch Changes
+
+- 6f23a6ec: Do not report version updates for whitelabelled binaries
+- Updated dependencies [8ea9365]
+  - myst-frontmatter@1.7.5
+  - myst-common@1.7.5
+  - myst-config@1.7.5
+  - myst-spec-ext@1.7.5
+
+## 1.3.17
+
+### Patch Changes
+
+- f888081: Add page breaks to multipage typst export
+- Updated dependencies [f888081]
+- Updated dependencies [fe236580]
+- Updated dependencies [f888081]
+  - myst-to-typst@0.0.27
+  - tex-to-myst@1.0.40
+  - myst-to-tex@1.0.40
+
 ## 1.3.16
 
 ### Patch Changes

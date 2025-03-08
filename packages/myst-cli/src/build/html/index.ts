@@ -9,6 +9,10 @@ import type { StartOptions } from '../site/start.js';
 import { startServer } from '../site/start.js';
 import { getSiteTemplate } from '../site/template.js';
 import { slugToUrl } from 'myst-common';
+import pLimit from 'p-limit';
+import { fetchWithRetry } from '../../utils/fetchWithRetry.js';
+
+const limitConnections = pLimit(5);
 
 export async function currentSiteRoutes(
   session: ISession,
@@ -83,9 +87,10 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
     }
     if (!['.html', '.js', '.json'].includes(path.extname(file))) return;
     const data = fs.readFileSync(file).toString();
-    const modified = data
-      .replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`)
-      .replace('href="/favicon.ico"', `href="${baseurl || ''}/favicon.ico"`);
+    const modified = data.replace(
+      new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'),
+      `${baseurl || ''}/build/`,
+    );
     fs.writeFileSync(file, modified);
   });
 }
@@ -141,25 +146,27 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
 
   // Fetch all HTML pages and assets by the template
   await Promise.all(
-    routes.map(async (route) => {
-      const resp = await session.fetch(route.url);
-      if (!resp.ok) {
-        session.log.error(`Error fetching ${route.url}`);
-        return;
-      }
-      if (route.binary && resp.body) {
-        await new Promise<void>((resolve) => {
-          const filename = path.join(htmlDir, route.path);
-          if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
-          const fileWriteStream = fs.createWriteStream(filename);
-          resp.body!.pipe(fileWriteStream);
-          fileWriteStream.on('finish', resolve);
-        });
-      } else {
-        const content = await resp.text();
-        writeFileToFolder(path.join(htmlDir, route.path), content);
-      }
-    }),
+    routes.map(async (route) =>
+      limitConnections(async () => {
+        const resp = await fetchWithRetry(session, route.url);
+        if (!resp.ok) {
+          session.log.error(`Error fetching ${route.url}`);
+          return;
+        }
+        if (route.binary && resp.body) {
+          await new Promise<void>((resolve) => {
+            const filename = path.join(htmlDir, route.path);
+            if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
+            const fileWriteStream = fs.createWriteStream(filename);
+            resp.body!.pipe(fileWriteStream);
+            fileWriteStream.on('finish', resolve);
+          });
+        } else {
+          const content = await resp.text();
+          writeFileToFolder(path.join(htmlDir, route.path), content);
+        }
+      }),
+    ),
   );
   appServer.stop();
 

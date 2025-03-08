@@ -32,17 +32,18 @@ In order to execute your MyST content, you must install a Jupyter Server and the
 ## Expect a code-cell to fail
 
 By default, MyST will stop executing a notebook if a cell raises an error.
-If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell (see [all cell tags](#tbl:notebook-cell-tags)).
 If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
+
+## Adding Tags to Notebook Cells
 
 The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
 Additionally, you can specify tags (and other cell metadata) with markdown using the {myst:directive}`code-cell` directive.
-
 Here's an example of adding this tag with a {myst:directive}`code-cell` directive:
 
 ````markdown
 ```{code-cell}
-:tags: raises-exception
+:tags: [raises-exception]
 
 print("Hello" + 10001)
 ```
@@ -50,15 +51,35 @@ print("Hello" + 10001)
 
 ## Skip particular code-cells
 
-Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book) use to prevent a cell from being executed.
+Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book V1) use to prevent a cell from being executed.
 
 For [Markdown notebooks using the {myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), the `skip-execution` tag can be added as follows:
 
 ````markdown
 ```{code-cell}
-:tags: skip-execution
+:tags: [skip-execution]
 
 name = input("What is your name?")
+```
+````
+
+Additional [cell tags](#tbl:notebook-cell-tags) to hide, remove, or raise exceptions are also possible.
+
+## Skip entire notebooks
+
+You may wish to disable execution for certain notebooks. This can be done by setting the top-level `skip_execution` frontmatter option to `true`, e.g.
+
+````markdown
+---
+kernelspec:
+  name: python3
+  display_name: Python 3
+
+skip_execution: true
+---
+
+```{code-cell}
+print("This will never be executed!")
 ```
 ````
 
@@ -83,7 +104,9 @@ Alternatively, you can manually delete the `execute/` folder in your build folde
 rm -rf _build/execute
 ```
 
-## How MyST executes your code
+(install-jupyter-server)=
+
+## Install Jupyter Server
 
 MyST uses a [Jupyter Server](https://jupyter-server.readthedocs.io/) to execute your code.
 Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.
@@ -98,7 +121,7 @@ Jupyter Server is only responsible for orchestrating execution of your code. To 
 pip install ipykernel
 ```
 
-If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find a healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
+If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build` MyST will attempt to launch a Jupyter Server using `python -m jupyter_server`.
 
 ## Manually launch a Jupyter server
 

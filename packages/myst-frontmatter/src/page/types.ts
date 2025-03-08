@@ -10,8 +10,10 @@ export const PAGE_FRONTMATTER_KEYS = [
   'kernelspec',
   'jupytext',
   'tags',
-  'content_includes_title',
   'site',
+  'enumerator',
+  'content_includes_title',
+  'skip_execution',
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
@@ -19,6 +21,9 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   kernelspec?: KernelSpec;
   jupytext?: Jupytext;
   tags?: string[];
+  enumerator?: string;
+  // Disable execution for this page
+  skip_execution?: boolean;
   /** Flag if frontmatter title is duplicated in content
    *
    * Set during initial file/frontmatter load

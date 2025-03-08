@@ -49,11 +49,11 @@ project:
     TOC: table of contents
   plugins:
     - directives.mjs
-    - unsplash.mjs
+    - picsum.mjs
     - latex.mjs
     - templates.mjs
     - type: executable
-      path: unsplash.py
+      path: picsum.py
     - type: executable
       path: markup.py
     - type: javascript
@@ -108,6 +108,7 @@ project:
         - file: reuse-jupyter-outputs.md
         - file: interactive-notebooks.ipynb
         - file: integrating-jupyter.md
+        - file: notebook-configuration.md
     - title: Websites
       children:
         - file: website-templates.md
@@ -115,6 +116,7 @@ project:
         - file: website-metadata.md
         # - file: themes-and-extensions.md
         - file: seo-and-social.md
+        - file: website-style.md
         - file: accessibility-and-performance.md
         # - file: search.md
         - file: analytics.md
@@ -124,6 +126,8 @@ project:
             - file: deployment-github-pages.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
+        - file: website-landing-pages.md
+
         # - file: publishing.md
     - title: Documents
       children:
@@ -151,6 +155,7 @@ project:
         - file: document-parts.md
         - file: settings.md
         - file: glossary.md
+        - file: versions.md
     - title: Contribute
       children:
         - file: contributing.md
@@ -159,8 +164,11 @@ project:
         - file: contribute-docs.md
         - file: contribute-build-locally.md
         - file: contribute-add-feature.md
+    - file: cite.md
 
 site:
   title: MyST Markdown Guide
   domains:
     - mystmd-guide.curve.space
+  options:
+    style: public/style.css

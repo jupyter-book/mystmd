@@ -213,8 +213,18 @@ The abbreviations are case-sensitive and will replace all instances[^1] in your 
 >
 > - TLA Soup
 
-:::{tip} Order of Abbreviations
-:class: dropdown
+### Order of Abbreviations
+
 Abbreviations defined in your frontmatter are applied in longest-sorted order. If you have two abbreviations with the same suffix (e.g. `RHR` and `HR`), the longer abbreviation will always take precedence.
-To have the longer abbreviations not be transformed, explicitly set them to `null` in your frontmatter (e.g. `RHR: null`).
-:::
+To have longer abbreviations **not** be transformed, or if that string is included in another word, explicitly set them to `null` in your frontmatter. In the following example, `HTML` will not have the letters `ML` as an abbreviation.
+
+```{myst}
+
+---
+abbreviations:
+  ML: Machine Learning
+  HTML: null
+---
+
+We use ML to parse HTML.
+```
