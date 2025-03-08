@@ -130,6 +130,11 @@ Optionally, you can link the built executable as your globally installed `mystmd
 npm run link
 ```
 
+```{warning}
+The build process uses unix commands that might not work properly on Windows.
+When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
+```
+
 These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `npm run build` (executed in the top-level source directory).
 
 ### Developer workflow: myst-theme
@@ -206,26 +211,21 @@ If you are working in a particular package, change your working directory to tha
 
 When contributing code, the continuous integration will run linting and formatting. You can run `npm run lint` and `npm run lint:format` locally to ensure they will pass. If you are using the VSCode editor, it can be setup to show you changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
 
-We use `changesets` for tracking changes to packages and updating versions, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change. Commit the changeset file to the repository as a part of your pull request.
-
 Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
 
 #### Versioning
 
-`mystmd` uses [changesets](https://github.com/changesets/changesets) to document changes to this repo.
+We use [changesets](https://github.com/changesets/changesets) for tracking changes to packages and updating versions.
+Before submitting your Pull Request, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change.
+Commit the changeset file to the repository as a part of your pull request.
+You can use `npm run version` to preview the generated changelog.
 
-Call `npm run changeset` and follow the prompts at least once before submitting your Pull Request for review.
+Our current versioning procedure is a little loose compared to strict semantic versioning; as `mystmd` continues to mature, this policy may need to be updated.
+For now, we try to abide by the following rules for version bumps:
 
-```{error}
-I've never used changeset, so guessing here. Will update to whatever recommended practice is (one per PR, one per commit, etc.).
-
-The changelist [docs](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md) state:
-
-> Not every change requires a changeset
-> Since changesets are focused on releases and changelogs, changes to your repository that don't require these won't need a changeset. As such, we recommend not adding a blocking element to contributions in the absence of a changeset.
-```
-
-You can call `npm run version` to preview the generated changelog.
+- **major**: Backward incompatible change to the underlying supported MyST data. These would be cases where a non-developer MyST user's project or site built with major version _N_ would not work with major version _N+1_. Currently, we never intentionally make these changes.
+- **minor**: Backward incompatible change to the Javascript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
+- **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
 #### Publishing
 
