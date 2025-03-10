@@ -108,17 +108,21 @@ The `mystmd` libraries and command line tools are written in [TypeScript](https:
 The `mystmd-py` package is a thin Python wrapper around the `mystmd` bundle that can be installed using `pip` or `conda`. If you have installed `mystmd` this way, it is recommended that you uninstall it before using the local development instructions below.
 :::
 
-To do local development, you first need to [clone the
-repository](https://github.com/jupyter-book/mystmd) and
-install dependencies via npm:
+To do local development, [clone the repository](https://github.com/jupyter-book/mystmd):
 
 ```shell
 git clone git@github.com:jupyter-book/mystmd.git
 cd mystmd
+```
+
+Then, install dependencies via npm.
+You need to do this each time you pull from upstream, since dependency versions may change:
+
+```shell
 npm install
 ```
 
-Then, build the library:
+Now, build `mystmd`:
 
 ```shell
 npm run build
