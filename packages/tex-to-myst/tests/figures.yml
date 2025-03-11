@@ -225,3 +225,37 @@ cases:
                           value: link to notebook
                     - type: text
                       value: '.'
+  - title: includegraphics specifies the page
+    tex: |-
+      \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=1.0\textwidth,page=3]{figures/my_pic.pdf}
+        \caption{ This is the caption, \href{computations.ipynb}{link to notebook}.}
+        \label{fig:picture}
+      \end{figure}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: fig:picture
+          label: fig:picture
+          align: center
+          children:
+            - type: image
+              url: figures/my_pic.pdf
+              width: 100%
+              page: 2 # start from 0
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'This is the caption, '
+                    - type: link
+                      url: computations.ipynb
+                      children:
+                        - type: text
+                          value: link to notebook
+                    - type: text
+                      value: '.'
