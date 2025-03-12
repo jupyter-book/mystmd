@@ -27,6 +27,7 @@ export type StartOptions = ProcessSiteOptions &
     buildStatic?: boolean;
     headless?: boolean;
     port?: number;
+    template?: string;
     baseurl?: string;
     keepHost?: boolean;
   };

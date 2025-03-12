@@ -65,8 +65,15 @@ class MystTemplate {
     if (!fs.existsSync(templateYmlPath)) {
       throw new Error(`The template yml at "${templateYmlPath}" does not exist`);
     }
+
+    interface TemplateYaml {
+      files: string[];
+      [key: string]: any;
+    };
     const content = fs.readFileSync(templateYmlPath).toString();
-    return yaml.load(content);
+    const yamlData : TemplateYaml = yaml.load(content) as TemplateYaml;
+    const { files, ...filteredYaml } = yamlData;
+    return filteredYaml;
   }
 
   getValidatedTemplateYml() {
