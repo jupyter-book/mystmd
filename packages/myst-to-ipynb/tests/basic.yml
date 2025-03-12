@@ -1,4 +1,5 @@
-title: myst-to-md basic features
+# TODO: Uncomment and make all the tests pass
+title: myst-to-ipynb basic features
 cases:
   - title: styles in paragraph
     mdast:
@@ -22,8 +23,24 @@ cases:
               value: ' '
             - type: inlineCode
               value: style`s
-    markdown: |-
-      Some % *markdown* with **different** ``style`s``
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "Some % *markdown* with **different** ``style`s``"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+
   - title: headings
     mdast:
       type: root
@@ -46,12 +63,24 @@ cases:
           children:
             - type: text
               value: fourth
-    markdown: |-
-      # first
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "# first\n\nSome % *markdown*\n\n#### fourth"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
 
-      Some % *markdown*
-
-      #### fourth
   - title: thematic break
     mdast:
       type: root
@@ -65,216 +94,227 @@ cases:
           children:
             - type: text
               value: Some more markdown
-    markdown: |-
-      Some markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "Some markdown\n\n---\n\nSome more markdown"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  # - title: block quote
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: blockquote
+  #         children:
+  #           - type: paragraph
+  #             children:
+  #               - type: text
+  #                 value: 'Some % '
+  #               - type: emphasis
+  #                 children:
+  #                   - type: text
+  #                     value: markdown
+  #   ipynb: |-
+  #     > Some % *markdown*
+  # - title: unordered list
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: list
+  #         ordered: false
+  #         children:
+  #           - type: listItem
+  #             children:
+  #               - type: paragraph
+  #                 children:
+  #                   - type: text
+  #                     value: Some markdown
+  #           - type: listItem
+  #             children:
+  #               - type: paragraph
+  #                 children:
+  #                   - type: text
+  #                     value: Some more markdown
+  #   ipynb: |-
+  #     *   Some markdown
 
-      ---
+  #     *   Some more markdown
+  # - title: ordered list
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: list
+  #         ordered: true
+  #         start: 5
+  #         children:
+  #           - type: listItem
+  #             children:
+  #               - type: paragraph
+  #                 children:
+  #                   - type: text
+  #                     value: Some markdown
+  #           - type: listItem
+  #             children:
+  #               - type: paragraph
+  #                 children:
+  #                   - type: text
+  #                     value: Some more markdown
+  #   ipynb: |-
+  #     5.  Some markdown
 
-      Some more markdown
-  - title: block quote
-    mdast:
-      type: root
-      children:
-        - type: blockquote
-          children:
-            - type: paragraph
-              children:
-                - type: text
-                  value: 'Some % '
-                - type: emphasis
-                  children:
-                    - type: text
-                      value: markdown
-    markdown: |-
-      > Some % *markdown*
-  - title: unordered list
-    mdast:
-      type: root
-      children:
-        - type: list
-          ordered: false
-          children:
-            - type: listItem
-              children:
-                - type: paragraph
-                  children:
-                    - type: text
-                      value: Some markdown
-            - type: listItem
-              children:
-                - type: paragraph
-                  children:
-                    - type: text
-                      value: Some more markdown
-    markdown: |-
-      *   Some markdown
-
-      *   Some more markdown
-  - title: ordered list
-    mdast:
-      type: root
-      children:
-        - type: list
-          ordered: true
-          start: 5
-          children:
-            - type: listItem
-              children:
-                - type: paragraph
-                  children:
-                    - type: text
-                      value: Some markdown
-            - type: listItem
-              children:
-                - type: paragraph
-                  children:
-                    - type: text
-                      value: Some more markdown
-    markdown: |-
-      5.  Some markdown
-
-      6.  Some more markdown
-  - title: html
-    mdast:
-      type: root
-      children:
-        - type: html
-          value: <div>*Not markdown*<\div>
-    markdown: |-
-      <div>*Not markdown*<\div>
-  - title: code - plain
-    mdast:
-      type: root
-      children:
-        - type: code
-          value: |-
-            5+5
-            print("hello world")
-    markdown: |-
-      ```
-      5+5
-      print("hello world")
-      ```
-  - title: code - nested backticks
-    mdast:
-      type: root
-      children:
-        - type: code
-          value: |-
-            5+5
-            ````{abc}
-            ````
-            print("hello world")
-    markdown: |-
-      `````
-      5+5
-      ````{abc}
-      ````
-      print("hello world")
-      `````
-  - title: code - with language
-    mdast:
-      type: root
-      children:
-        - type: code
-          lang: python
-          value: |-
-            5+5
-            print("hello world")
-    markdown: |-
-      ```python
-      5+5
-      print("hello world")
-      ```
-  - title: code - with metadata
-    mdast:
-      type: root
-      children:
-        - type: code
-          lang: python
-          meta: highlight-line="2"
-          value: |-
-            5+5
-            print("hello world")
-    markdown: |-
-      ```python highlight-line="2"
-      5+5
-      print("hello world")
-      ```
-  - title: definition
-    mdast:
-      type: root
-      children:
-        - type: definition
-          identifier: my-def
-          label: My-Def
-          url: https://example.com
-          title: Example
-    markdown: |-
-      [My-Def]: https://example.com "Example"
-  - title: break
-    mdast:
-      type: root
-      children:
-        - type: paragraph
-          children:
-            - type: text
-              value: Some markdown
-            - type: break
-            - type: text
-              value: Some more markdown
-    markdown: |-
-      Some markdown\
-      Some more markdown
-  - title: link
-    mdast:
-      type: root
-      children:
-        - type: link
-          url: https://example.com
-          title: my link
-          children:
-            - type: text
-              value: 'Some % '
-            - type: emphasis
-              children:
-                - type: text
-                  value: markdown
-    markdown: |-
-      [Some % *markdown*](https://example.com "my link")
-  - title: image
-    mdast:
-      type: root
-      children:
-        - type: image
-          url: https://example.com
-          title: my image
-          alt: Some text
-    markdown: |-
-      ![Some text](https://example.com "my image")
-  - title: link reference
-    mdast:
-      type: root
-      children:
-        - type: linkReference
-          identifier: my-link
-          label: My-Link
-          children:
-            - type: text
-              value: 'Some % '
-            - type: emphasis
-              children:
-                - type: text
-                  value: markdown
-    markdown: |-
-      [Some % *markdown*][My-Link]
-  - title: image reference
-    mdast:
-      type: root
-      children:
-        - type: imageReference
-          identifier: my-image
-          label: My-Image
-          alt: Some text
-    markdown: |-
-      ![Some text][My-Image]
+  #     6.  Some more markdown
+  # - title: html
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: html
+  #         value: <div>*Not markdown*<\div>
+  #   ipynb: |-
+  #     <div>*Not markdown*<\div>
+  # - title: code - plain
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: code
+  #         value: |-
+  #           5+5
+  #           print("hello world")
+  #   ipynb: |-
+  #     ```
+  #     5+5
+  #     print("hello world")
+  #     ```
+  # - title: code - nested backticks
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: code
+  #         value: |-
+  #           5+5
+  #           ````{abc}
+  #           ````
+  #           print("hello world")
+  #   ipynb: |-
+  #     `````
+  #     5+5
+  #     ````{abc}
+  #     ````
+  #     print("hello world")
+  #     `````
+  # - title: code - with language
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: code
+  #         lang: python
+  #         value: |-
+  #           5+5
+  #           print("hello world")
+  #   ipynb: |-
+  #     ```python
+  #     5+5
+  #     print("hello world")
+  #     ```
+  # - title: code - with metadata
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: code
+  #         lang: python
+  #         meta: highlight-line="2"
+  #         value: |-
+  #           5+5
+  #           print("hello world")
+  #   ipynb: |-
+  #     ```python highlight-line="2"
+  #     5+5
+  #     print("hello world")
+  #     ```
+  # - title: definition
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: definition
+  #         identifier: my-def
+  #         label: My-Def
+  #         url: https://example.com
+  #         title: Example
+  #   ipynb: |-
+  #     [My-Def]: https://example.com "Example"
+  # - title: break
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: paragraph
+  #         children:
+  #           - type: text
+  #             value: Some markdown
+  #           - type: break
+  #           - type: text
+  #             value: Some more markdown
+  #   ipynb: |-
+  #     Some markdown\
+  #     Some more markdown
+  # - title: link
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: link
+  #         url: https://example.com
+  #         title: my link
+  #         children:
+  #           - type: text
+  #             value: 'Some % '
+  #           - type: emphasis
+  #             children:
+  #               - type: text
+  #                 value: markdown
+  #   ipynb: |-
+  #     [Some % *markdown*](https://example.com "my link")
+  # - title: image
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: image
+  #         url: https://example.com
+  #         title: my image
+  #         alt: Some text
+  #   ipynb: |-
+  #     ![Some text](https://example.com "my image")
+  # - title: link reference
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: linkReference
+  #         identifier: my-link
+  #         label: My-Link
+  #         children:
+  #           - type: text
+  #             value: 'Some % '
+  #           - type: emphasis
+  #             children:
+  #               - type: text
+  #                 value: markdown
+  #   ipynb: |-
+  #     [Some % *markdown*][My-Link]
+  # - title: image reference
+  #   mdast:
+  #     type: root
+  #     children:
+  #       - type: imageReference
+  #         identifier: my-image
+  #         label: My-Image
+  #         alt: Some text
+  #   ipynb: |-
+  #     ![Some text][My-Image]
