@@ -511,7 +511,7 @@ export function validateTemplateStyle(input: any, opts: ValidationOptions) {
 export function validateTemplateYml(
   session: ISession,
   input: any,
-  opts: ValidationOptions & { templateDir?: string },
+  opts: ValidationOptions & { templateDir?: string, validateFiles?: boolean },
 ) {
   const inputObj = validateObject(input, opts);
   if (inputObj === undefined) return undefined;
@@ -646,7 +646,7 @@ export function validateTemplateYml(
       },
     );
   }
-  if (defined(value.files)) {
+  if (defined(value.files) && (opts?.validateFiles ?? true)) {
     output.files = validateList(value.files, incrementOptions('files', opts), (val, ind) => {
       const fileOpts = incrementOptions(`files.${ind}`, opts);
       const file = validateString(val, fileOpts);

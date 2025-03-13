@@ -26,6 +26,7 @@ class MystTemplate {
   errorLogFn: (message: string) => void;
   warningLogFn: (message: string) => void;
   debugLogFn: (message: string) => void;
+  validateFiles: boolean;
 
   /**
    * MystTemplate class for template download / validation / render preparation
@@ -44,6 +45,7 @@ class MystTemplate {
       errorLogFn?: (message: string) => void;
       warningLogFn?: (message: string) => void;
       debugLogFn?: (message: string) => void;
+      validateFiles?: boolean;
     },
   ) {
     this.session = session;
@@ -54,6 +56,7 @@ class MystTemplate {
     this.warningLogFn = opts?.warningLogFn ?? warningLogger(this.session);
     this.debugLogFn = opts?.debugLogFn ?? debugLogger(this.session);
     this.kind = opts.kind;
+    this.validateFiles = opts?.validateFiles ?? true;
   }
 
   getTemplateYmlPath() {
@@ -65,15 +68,8 @@ class MystTemplate {
     if (!fs.existsSync(templateYmlPath)) {
       throw new Error(`The template yml at "${templateYmlPath}" does not exist`);
     }
-
-    interface TemplateYaml {
-      files: string[];
-      [key: string]: any;
-    };
     const content = fs.readFileSync(templateYmlPath).toString();
-    const yamlData : TemplateYaml = yaml.load(content) as TemplateYaml;
-    const { files, ...filteredYaml } = yamlData;
-    return filteredYaml;
+    return yaml.load(content);
   }
 
   getValidatedTemplateYml() {
@@ -85,10 +81,15 @@ class MystTemplate {
         errorLogFn: this.errorLogFn,
         warningLogFn: this.warningLogFn,
       };
-      const templateYml = validateTemplateYml(this.session, this.getTemplateYml(), {
-        ...opts,
-        templateDir: this.templatePath,
-      });
+      const templateYml = validateTemplateYml(
+        this.session,
+        this.getTemplateYml(),
+        {
+          ...opts,
+          templateDir: this.templatePath,
+          validateFiles: this.validateFiles
+        }
+      );
       if (opts.messages.errors?.length || templateYml === undefined) {
         // Strictly error if template.yml is invalid
         throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);

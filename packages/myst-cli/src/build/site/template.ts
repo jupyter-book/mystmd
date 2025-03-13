@@ -31,6 +31,7 @@ export async function getSiteTemplate(session: ISession, opts?: { template?: str
         ruleId: RuleId.validSiteConfig,
       });
     },
+    validateFiles: false
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   cache.$siteTemplate = mystTemplate;
@@ -41,7 +42,7 @@ export async function installSiteTemplate(
   session: ISession,
   mystTemplate: MystTemplate,
 ): Promise<void> {
-  if (fs.existsSync(mystTemplate.templatePath)) return;
+  if (fs.existsSync((join(mystTemplate.templatePath, 'node_modules')))) return;
   const toc = tic();
   session.log.info('⤵️  Installing web libraries (can take up to 60 s)');
   await makeExecutable(

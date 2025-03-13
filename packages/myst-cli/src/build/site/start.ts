@@ -125,7 +125,7 @@ export async function startServer(
   await session.reload();
   warnOnHostEnvironmentVariable(session, opts);
   const mystTemplate = await getSiteTemplate(session, opts);
-  if (!opts.headless) await installSiteTemplate(session, mystTemplate);
+  if (!opts.headless && !opts.template) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
   const server = await startContentServer(session, opts);
   if (!opts.buildStatic) {
