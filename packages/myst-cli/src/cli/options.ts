@@ -130,9 +130,8 @@ export function makeServerPortOption() {
 export function makeTemplateOption() {
   return new Option(
     '--template <path-to-template>',
-    'Use this template file, instead of the one specified in the myst.yml manifest'
-  )
-    .default(undefined);
+    'Use this template file, instead of the one specified in the myst.yml manifest',
+  ).default(undefined);
 }
 
 export function makeYesOption() {

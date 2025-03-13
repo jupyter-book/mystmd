@@ -11,7 +11,10 @@ import { castSession } from '../../session/cache.js';
 const DEFAULT_TEMPLATE = 'book-theme';
 const DEFAULT_INSTALL_COMMAND = 'npm install';
 
-export async function getSiteTemplate(session: ISession, opts?: { template?: string, defaultTemplate?: string }) {
+export async function getSiteTemplate(
+  session: ISession,
+  opts?: { template?: string; defaultTemplate?: string },
+) {
   const cache = castSession(session);
   const state = cache.store.getState();
   if (cache.$siteTemplate) return cache.$siteTemplate;
@@ -31,7 +34,7 @@ export async function getSiteTemplate(session: ISession, opts?: { template?: str
         ruleId: RuleId.validSiteConfig,
       });
     },
-    validateFiles: false
+    validateFiles: false,
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   cache.$siteTemplate = mystTemplate;
@@ -42,7 +45,7 @@ export async function installSiteTemplate(
   session: ISession,
   mystTemplate: MystTemplate,
 ): Promise<void> {
-  if (fs.existsSync((join(mystTemplate.templatePath, 'node_modules')))) return;
+  if (fs.existsSync(join(mystTemplate.templatePath, 'node_modules'))) return;
   const toc = tic();
   session.log.info('⤵️  Installing web libraries (can take up to 60 s)');
   await makeExecutable(
