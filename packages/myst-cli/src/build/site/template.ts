@@ -34,7 +34,7 @@ export async function getSiteTemplate(
         ruleId: RuleId.validSiteConfig,
       });
     },
-    validateFiles: false,
+    validateFiles: opts?.template ? false : true,
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   cache.$siteTemplate = mystTemplate;
