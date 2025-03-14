@@ -1,5 +1,20 @@
 # myst-cli
 
+## 1.3.26
+
+### Patch Changes
+
+- d35eecf: Add a `--template` flag to `myst` that allows the user to specify a custom location for `template.yml`. When that flag is specified, the template is local, and therefore we do not validate the `files` section of the template.
+- dc90dc94: Bump nbtx to 0.3.0
+- 03d72de9: Ensure that javascript and html bundle match.
+- 7d68c88e: block data class
+- Updated dependencies [d35eecf]
+- Updated dependencies [dc90dc94]
+- Updated dependencies [7d68c88e]
+  - myst-templates@1.0.24
+  - myst-to-jats@1.0.34
+  - myst-transforms@1.3.34
+
 ## 1.3.25
 
 ### Patch Changes
