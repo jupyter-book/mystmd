@@ -511,7 +511,7 @@ export function validateTemplateStyle(input: any, opts: ValidationOptions) {
 export function validateTemplateYml(
   session: ISession,
   input: any,
-  opts: ValidationOptions & { templateDir?: string, validateFiles?: boolean },
+  opts: ValidationOptions & { templateDir?: string; validateFiles?: boolean },
 ) {
   const inputObj = validateObject(input, opts);
   if (inputObj === undefined) return undefined;

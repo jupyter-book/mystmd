@@ -81,15 +81,11 @@ class MystTemplate {
         errorLogFn: this.errorLogFn,
         warningLogFn: this.warningLogFn,
       };
-      const templateYml = validateTemplateYml(
-        this.session,
-        this.getTemplateYml(),
-        {
-          ...opts,
-          templateDir: this.templatePath,
-          validateFiles: this.validateFiles
-        }
-      );
+      const templateYml = validateTemplateYml(this.session, this.getTemplateYml(), {
+        ...opts,
+        templateDir: this.templatePath,
+        validateFiles: this.validateFiles,
+      });
       if (opts.messages.errors?.length || templateYml === undefined) {
         // Strictly error if template.yml is invalid
         throw new Error(`Cannot use invalid ${TEMPLATE_YML}: ${this.getTemplateYmlPath()}`);
