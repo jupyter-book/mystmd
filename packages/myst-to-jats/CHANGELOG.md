@@ -1,5 +1,13 @@
 # myst-to-jats
 
+## 1.0.34
+
+### Patch Changes
+
+- dc90dc94: Bump nbtx to 0.3.0
+- Updated dependencies [7d68c88e]
+  - myst-transforms@1.3.34
+
 ## 1.0.33
 
 ### Patch Changes
