@@ -21,4 +21,3 @@ export function makeStartCommand() {
     .addOption(makeMaxSizeWebpOption());
   return command;
 }
-
