@@ -36,6 +36,7 @@ describe('get export formats', () => {
       ExportFormats.tex,
       ExportFormats.xml,
       ExportFormats.md,
+      ExportFormats.ipynb,
       ExportFormats.meca,
       ExportFormats.cff,
     ]);
