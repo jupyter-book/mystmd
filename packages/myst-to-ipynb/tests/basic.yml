@@ -1,4 +1,3 @@
-# TODO: Uncomment and make all the tests pass
 title: myst-to-ipynb basic features
 cases:
   - title: styles in paragraph
@@ -111,210 +110,402 @@ cases:
         "nbformat": 4,
         "nbformat_minor": 2
       }
-  # - title: block quote
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: blockquote
-  #         children:
-  #           - type: paragraph
-  #             children:
-  #               - type: text
-  #                 value: 'Some % '
-  #               - type: emphasis
-  #                 children:
-  #                   - type: text
-  #                     value: markdown
-  #   ipynb: |-
-  #     > Some % *markdown*
-  # - title: unordered list
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: list
-  #         ordered: false
-  #         children:
-  #           - type: listItem
-  #             children:
-  #               - type: paragraph
-  #                 children:
-  #                   - type: text
-  #                     value: Some markdown
-  #           - type: listItem
-  #             children:
-  #               - type: paragraph
-  #                 children:
-  #                   - type: text
-  #                     value: Some more markdown
-  #   ipynb: |-
-  #     *   Some markdown
-
-  #     *   Some more markdown
-  # - title: ordered list
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: list
-  #         ordered: true
-  #         start: 5
-  #         children:
-  #           - type: listItem
-  #             children:
-  #               - type: paragraph
-  #                 children:
-  #                   - type: text
-  #                     value: Some markdown
-  #           - type: listItem
-  #             children:
-  #               - type: paragraph
-  #                 children:
-  #                   - type: text
-  #                     value: Some more markdown
-  #   ipynb: |-
-  #     5.  Some markdown
-
-  #     6.  Some more markdown
-  # - title: html
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: html
-  #         value: <div>*Not markdown*<\div>
-  #   ipynb: |-
-  #     <div>*Not markdown*<\div>
-  # - title: code - plain
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: code
-  #         value: |-
-  #           5+5
-  #           print("hello world")
-  #   ipynb: |-
-  #     ```
-  #     5+5
-  #     print("hello world")
-  #     ```
-  # - title: code - nested backticks
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: code
-  #         value: |-
-  #           5+5
-  #           ````{abc}
-  #           ````
-  #           print("hello world")
-  #   ipynb: |-
-  #     `````
-  #     5+5
-  #     ````{abc}
-  #     ````
-  #     print("hello world")
-  #     `````
-  # - title: code - with language
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: code
-  #         lang: python
-  #         value: |-
-  #           5+5
-  #           print("hello world")
-  #   ipynb: |-
-  #     ```python
-  #     5+5
-  #     print("hello world")
-  #     ```
-  # - title: code - with metadata
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: code
-  #         lang: python
-  #         meta: highlight-line="2"
-  #         value: |-
-  #           5+5
-  #           print("hello world")
-  #   ipynb: |-
-  #     ```python highlight-line="2"
-  #     5+5
-  #     print("hello world")
-  #     ```
-  # - title: definition
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: definition
-  #         identifier: my-def
-  #         label: My-Def
-  #         url: https://example.com
-  #         title: Example
-  #   ipynb: |-
-  #     [My-Def]: https://example.com "Example"
-  # - title: break
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: paragraph
-  #         children:
-  #           - type: text
-  #             value: Some markdown
-  #           - type: break
-  #           - type: text
-  #             value: Some more markdown
-  #   ipynb: |-
-  #     Some markdown\
-  #     Some more markdown
-  # - title: link
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: link
-  #         url: https://example.com
-  #         title: my link
-  #         children:
-  #           - type: text
-  #             value: 'Some % '
-  #           - type: emphasis
-  #             children:
-  #               - type: text
-  #                 value: markdown
-  #   ipynb: |-
-  #     [Some % *markdown*](https://example.com "my link")
-  # - title: image
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: image
-  #         url: https://example.com
-  #         title: my image
-  #         alt: Some text
-  #   ipynb: |-
-  #     ![Some text](https://example.com "my image")
-  # - title: link reference
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: linkReference
-  #         identifier: my-link
-  #         label: My-Link
-  #         children:
-  #           - type: text
-  #             value: 'Some % '
-  #           - type: emphasis
-  #             children:
-  #               - type: text
-  #                 value: markdown
-  #   ipynb: |-
-  #     [Some % *markdown*][My-Link]
-  # - title: image reference
-  #   mdast:
-  #     type: root
-  #     children:
-  #       - type: imageReference
-  #         identifier: my-image
-  #         label: My-Image
-  #         alt: Some text
-  #   ipynb: |-
-  #     ![Some text][My-Image]
+  - title: block quote
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'Some % '
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "> Some % *markdown*"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: unordered list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some markdown
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some more markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "*   Some markdown\n\n*   Some more markdown"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: ordered list
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: true
+          start: 5
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some markdown
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some more markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "5.  Some markdown\n\n6.  Some more markdown"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: html
+    mdast:
+      type: root
+      children:
+        - type: html
+          value: <div>*Not markdown*</div>
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "<div>*Not markdown*</div>"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: code - plain
+    mdast:
+      type: root
+      children:
+        - type: code
+          value: |-
+            5+5
+            print("hello world")
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "```\n5+5\nprint(\"hello world\")\n```"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: code - nested backticks
+    mdast:
+      type: root
+      children:
+        - type: code
+          value: |-
+            5+5
+            ````{abc}
+            ````
+            print("hello world")
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "`````\n5+5\n````{abc}\n````\nprint(\"hello world\")\n`````"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: code - with language
+    mdast:
+      type: root
+      children:
+        - type: block
+          kind: notebook-code
+          data:
+            id: nb-cell-0
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: print('abc')
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
+        - type: code
+          lang: python
+          value: |-
+            5+5
+            print("hello world")
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [],
+            "source": "print('abc')"
+          },
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "```python\n5+5\nprint(\"hello world\")\n```"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: code - with metadata
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          meta: highlight-line="2"
+          value: |-
+            5+5
+            print("hello world")
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "```python highlight-line=\"2\"\n5+5\nprint(\"hello world\")\n```"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: definition
+    mdast:
+      type: root
+      children:
+        - type: definition
+          identifier: my-def
+          label: My-Def
+          url: https://example.com
+          title: Example
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "[My-Def]: https://example.com \"Example\""
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: break
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Some markdown
+            - type: break
+            - type: text
+              value: Some more markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "Some markdown\\\nSome more markdown"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: link
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          title: my link
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "[Some % *markdown*](https://example.com \"my link\")"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: link reference
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: my-link
+          label: My-Link
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "[Some % *markdown*][My-Link]"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+  - title: image reference
+    mdast:
+      type: root
+      children:
+        - type: imageReference
+          identifier: my-image
+          label: My-Image
+          alt: Some text
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": "![Some text][My-Image]"
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
