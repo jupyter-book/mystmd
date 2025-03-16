@@ -115,6 +115,8 @@ export type Image = SpecImage & {
   urlOptimized?: string;
   height?: string;
   placeholder?: boolean;
+  /** Optional page number for PDF images, this ensure the correct page is extracted when converting to web and translated to LaTeX */
+  page?: boolean;
 };
 
 export type Iframe = Target & {
