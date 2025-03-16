@@ -155,7 +155,7 @@ export async function convert(
       options?.trim ? ' -trim' : ''
     } ${output}`;
 
-    session.log.info(`Executing: ${executable}`);
+    session.log.debug(`Executing: ${executable}`);
     const exec = makeExecutable(executable, createImagemagikLogger(session));
     try {
       await exec();

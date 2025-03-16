@@ -2,7 +2,6 @@ import type { GenericNode } from 'myst-common';
 import { u } from 'unist-builder';
 import type { Handler, ITexParser } from './types.js';
 import { getArguments, extractParams, texToText } from './utils.js';
-import { group } from 'console';
 
 function renderCaption(node: GenericNode, state: ITexParser) {
   state.closeParagraph();
@@ -59,15 +58,15 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
 
     // Convert width to percentage if present
     if (params.width) {
-      if (typeof params.width === 'number') {
+      if (typeof params.width === 'number'  && Number.isFinite(params.width)) {
         params.width = `${Math.round(params.width * 100)}%`;
       } else {
         delete params.width; // If width is a string, we don't know what it is, so we ignore it
       }
     }
     if (params.page) {
-      if (typeof params.page === 'number') {
-        params.page = Number(params.page) - 1; // Convert to 0-based for imagemagick
+      if (typeof params.page === 'number' && Number.isFinite(params.page)) {
+        params.page = Math.round(Number(params.page)) - 1; // Convert to 0-based for imagemagick
       } else {
         delete params.page;
       }
