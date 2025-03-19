@@ -164,9 +164,15 @@ export class Session implements ISession {
   async loadPlugins() {
     // Early return if a promise has already been initiated
     if (this._pluginPromise) return this._pluginPromise;
-    this._pluginPromise = loadPlugins(this);
-    this.plugins = await this._pluginPromise;
-    return this.plugins;
+
+    const state = this.store.getState();
+    const projConfig = selectors.selectCurrentProjectConfig(state);
+
+    if (projConfig) {
+      this._pluginPromise = loadPlugins(this);
+      this.plugins = await this._pluginPromise;
+      return this.plugins;
+    }
   }
 
   sourcePath(): string {
