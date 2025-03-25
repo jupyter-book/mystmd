@@ -26,6 +26,12 @@ on:
     branches: [${defaultBranch}]
 env:
   # \`BASE_URL\` determines the website is served from, including CSS & JS assets
+  #
+  # The code below was automatically set when you first ran \`myst init --gh-pages\`,
+  # but the correct values may change if you update where you deploy your site. 
+  # For repositories served from custom domains (e.g. "you.com"), you may need to set
+  # this value to "BASE_URL: ''".
+  #
   # You may need to change this to \`${
     isGithubIO ? 'BASE_URL: /${{ github.event.repository.name }}' : "BASE_URL: ''"
   }\`
