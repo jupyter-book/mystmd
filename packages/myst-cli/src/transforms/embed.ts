@@ -47,6 +47,7 @@ function mutateEmbedNode(
         index: number | null | undefined,
         parent: GenericNode | undefined | null,
       ) => {
+        // If we have a code cell with a NotebookCell parent, assume its an input cell and remove.
         return (
           !(n.type === 'code' && parent?.type === 'block' && parent?.kind === NotebookCell.code) ||
           n.data?.type === 'output'
