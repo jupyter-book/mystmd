@@ -1,9 +1,16 @@
 ---
-title: Scientific PDFs
+title: Create a PDF
 description: Export to over 400 journal templates from a MyST Markdown file, which uses LaTeX and can create print-ready, multi-column, professional PDF documents.
 ---
 
-You can render your MyST documents as print-ready scientific papers, by converting to $\LaTeX$ and render to over 400 journal templates already available. Alternatively, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
+MyST can create a PDF for print-ready scientific papers or books.
+It does so by first _rendering_ your MyST document into [$\LaTeX$](#render-latex) or [Typst](#render-typst) and then using those engines to create a PDF.
+
+Myst uses **templates** to allow you to control the look and feel of the final PDF output. The [MyST Templates organization](https://github.com/myst-templates) contains templates for rendering MyST documents into the structure of over 400 journals.
+
+:::{seealso}
+In addition to PDF, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
+:::
 
 ```{figure} ./images/pdf-exports.png
 :label: fig-export-to-pdf
@@ -18,9 +25,9 @@ Export to over 400 journal templates from a MyST Markdown file, which uses $\LaT
 See the quickstart tutorial for getting started with exporting to Word documents, $\LaTeX$ and PDFs with various templates.
 :::
 
-## Exporting to PDF
+## How to export to PDF
 
-To create a new `pdf` export type for your MyST document, in your document frontmatter, add an `exports` list:
+To create a new `pdf` export type for your MyST document, add an `exports` list to either your [document frontmatter](./frontmatter.md) or your `myst.yml` configuration file.
 
 (export-frontmatter-pdf)=
 
@@ -102,17 +109,9 @@ Ensure that you download a full distribution with appropriate libraries installe
 Follow [the Typst installation instructions](https://github.com/typst/typst?tab=readme-ov-file#installation) for several options to install Typst.
 We **strongly recommend using the latest releases of Typst**. If you get a confusing Typst error, a good first step is to upgrade your version of Typst.
 
-We recommend installing Typst with Mamba, like so:
-
-```bash
-# With Mamba
-mamba install typst
-
-# Or with conda
-conda install -c conda-forge typst
-```
-
-Alternatively you can [download the latest version from their releases page](https://github.com/typst/typst/releases/).
+:::{warning} Do not use `npm` to install Typst
+The version of Typst on `npm` (or similar community-managed installation services) is often out-of-date, and we recommend [following the Typst instructions directly](https://github.com/typst/typst?tab=readme-ov-file#installation).
+:::
 
 ### How to render PDFs with Typst
 
