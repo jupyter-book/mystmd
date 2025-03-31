@@ -130,6 +130,11 @@ exports:
     output: exports/my-document.pdf
 ---
 ```
+Finally, build the PDF output with Typst using the following command:
+
+```bash
+myst build --typst
+```
 
 You can use [document frontmatter](./frontmatter.md) to control various aspects of your Typst outputs.
 The Typst templates use the [MyST templating library](xref:jtex) and support the same configuration as [$\LaTeX$](#render-latex).
