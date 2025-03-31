@@ -17,6 +17,7 @@ import {
   fileError,
   isTargetIdentifierNode,
   selectMdastNodes,
+  NotebookCell,
 } from 'myst-common';
 import type { Dependency, Embed, Container, CrossReference, Link } from 'myst-spec-ext';
 import { selectFile } from '../process/file.js';
@@ -39,9 +40,19 @@ function mutateEmbedNode(
     });
   }
   if (targetNode && node['remove-input']) {
-    targetNode = filter(targetNode, (n: GenericNode) => {
-      return n.type !== 'code' || n.data?.type === 'output';
-    });
+    targetNode = filter(
+      targetNode,
+      (
+        n: GenericNode,
+        index: number | null | undefined,
+        parent: GenericNode | undefined | null,
+      ) => {
+        return (
+          !(n.type === 'code' && parent?.type === 'block' && parent?.kind === NotebookCell.code) ||
+          n.data?.type === 'output'
+        );
+      },
+    );
   }
   selectAll('[identifier],[label],[html_id]', targetNode).forEach((idNode: GenericNode) => {
     // Non-target nodes may keep these properties
