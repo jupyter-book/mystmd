@@ -94,7 +94,7 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 ## Rendering PDFs with Typst
 
-[Typst](https://typst.app) is a markup-based typesetting language. Compared to $\LaTeX$, syntax is streamlined and consistent, and compile time is significantly faster.
+[Typst](https://typst.app) is a markup-based typesetting language. It is **significantly faster and simpler than using $\LaTeX$** with results of equal or better quality.
 
 (typst:install)=
 ### How to install Typst
