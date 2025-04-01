@@ -132,7 +132,7 @@ exports:
 Finally, build the PDF output with Typst using the following command:
 
 ```bash
-myst build --typst
+myst build article.md --typst
 ```
 
 You can use [document frontmatter](./frontmatter.md) to control various aspects of your Typst outputs.
