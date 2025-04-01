@@ -77,14 +77,11 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
 }
 
 export function transformRenderInlineExpressions(mdast: GenericParent, file: VFile) {
-  let count = 0;
   const inlineNodes = selectAll('inlineExpression', mdast) as InlineExpression[];
   inlineNodes.forEach((inlineExpression) => {
-    count += 1;
     if (!inlineExpression.result) {
       return;
     }
-    inlineExpression.identifier = `eval-${count}`;
     inlineExpression.children = renderExpression(inlineExpression, file);
   });
 }
