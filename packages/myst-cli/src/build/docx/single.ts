@@ -67,6 +67,7 @@ function defaultWordRenderer(
     serializer.render(createReferenceTitle());
     const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
     serializer.renderChildren(referencesRoot);
+    serializer.closeBlock();
   }
   selectAll('footnoteDefinition', mdast).forEach((footnote) => {
     serializer.render(footnote);
