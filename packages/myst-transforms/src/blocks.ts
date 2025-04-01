@@ -87,7 +87,7 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
       const outputsNode = select('outputs', block) as GenericNode | null;
       if (outputsNode !== null && !outputsNode.identifier) {
         // Label outputs node
-        outputsNode.identifier = `${block.identifier}-output`;
+        outputsNode.identifier = `${block.identifier}-outputs`;
         // Enumerate outputs
         const outputs = selectAll('output', outputsNode) as GenericNode[];
         outputs.forEach((outputNode, index) => {
