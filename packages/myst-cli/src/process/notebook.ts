@@ -170,19 +170,14 @@ export async function processNotebookFull(
           value: ensureString(cell.source),
         };
 
-        const outputsChildren = (cell.outputs as IOutput[]).map((output) => {
-          // Embed outputs in an output block
-          const result = {
-            type: 'output',
-            jupyter_data: output,
-            children: [],
-          };
-          return result;
-        });
         const outputs = {
           type: 'outputs',
           id: nanoid(),
-          children: outputsChildren,
+          children: (cell.outputs as IOutput[]).map((output) => ({
+            type: 'output',
+            jupyter_data: output,
+            children: [],
+          })),
         };
         return acc.concat(blockParent(cell, [code, outputs]));
       }
