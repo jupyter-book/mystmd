@@ -1,6 +1,6 @@
 import { select, selectAll } from 'unist-util-select';
 import type { Kernel } from '@jupyterlab/services';
-import type { Code, InlineExpression } from 'myst-spec-ext';
+import type { Code, InlineExpression, Outputs } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericParent, IExpressionError } from 'myst-common';
 import { NotebookCell, fileError, RuleId } from 'myst-common';
@@ -103,14 +103,17 @@ export function applyComputedOutputsToNodes(
     const thisResult = computedResult.shift();
 
     if (isCellBlock(matchedNode)) {
-      // Pull out output to set data
-      const output = select('output', matchedNode) as unknown as { data: IOutput[] };
-      // Set the output array to empty if we don't have a result (e.g. due to a kernel error)
-      output.data = thisResult === undefined ? [] : (thisResult as IOutput[]);
+      const rawOutputData = (thisResult as IOutput[]) ?? [];
+      // Pull out outputs to set data
+      const outputs = select('outputs', matchedNode) as Outputs;
+      // Ensure that whether this fails or succeeds, we write to `children` (e.g. due to a kernel error)
+      outputs.children = rawOutputData.map((data) => {
+        return { type: 'output', children: [], jupyter_data: data as any };
+      });
     } else if (isInlineExpression(matchedNode)) {
+      const rawOutputData = thisResult as Record<string, unknown> | undefined;
       // Set data of expression to the result, or empty if we don't have one
-      matchedNode.result = // TODO: FIXME .data
-        thisResult === undefined ? undefined : (thisResult as unknown as Record<string, unknown>);
+      matchedNode.result = rawOutputData;
     } else {
       // This should never happen
       throw new Error('Node must be either code block or inline expression.');

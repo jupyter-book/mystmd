@@ -9,7 +9,7 @@ import type { CodeBlock } from './types.js';
  * @param node node to test
  */
 export function isCellBlock(node: GenericNode): node is CodeBlock {
-  return node.type === 'block' && select('code', node) !== null && select('output', node) !== null;
+  return node.type === 'block' && select('code', node) !== null && select('outputs', node) !== null;
 }
 
 /**
