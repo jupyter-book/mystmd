@@ -114,7 +114,7 @@ function buildCacheKey(kernelSpec: KernelSpec, nodes: (CodeBlock | InlineExpress
     raisesException: boolean;
   }[] = [];
   for (const node of nodes) {
-    if (isCellBlock(node)) {
+    if (isCodeBlock(node)) {
       hashableItems.push({
         kind: node.type,
         content: (select('code', node) as Code).value,
@@ -165,8 +165,8 @@ type CodeBlock = Block & {
  *
  * @param node node to test
  */
-function isCellBlock(node: GenericNode): node is CodeBlock {
-  return node.type === 'block' && select('code', node) !== null && select('outputs', node) !== null;
+function isCodeBlock(node: GenericNode): node is CodeBlock {
+  return node.type === 'block' && node.kind === NotebookCell.code;
 }
 
 /**
@@ -215,7 +215,7 @@ async function computeExecutableNodes(
 
   const results: (IOutput[] | IExpressionResult)[] = [];
   for (const matchedNode of nodes) {
-    if (isCellBlock(matchedNode)) {
+    if (isCodeBlock(matchedNode)) {
       // Pull out code to execute
       const code = select('code', matchedNode) as Code;
       const { status, outputs } = await executeCode(kernel, code.value);
@@ -281,7 +281,7 @@ function applyComputedOutputsToNodes(
     // Pull out the result for this node
     const thisResult = computedResult.shift();
 
-    if (isCellBlock(matchedNode)) {
+    if (isCodeBlock(matchedNode)) {
       const rawOutputData = (thisResult as IOutput[]) ?? [];
       // Pull out outputs to set data
       const outputs = select('outputs', matchedNode) as Outputs;
@@ -329,7 +329,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
     )[]
   )
     // Filter out nodes that skip execution
-    .filter((node) => !(isCellBlock(node) && codeBlockSkipsExecution(node)));
+    .filter((node) => !(isCodeBlock(node) && codeBlockSkipsExecution(node)));
 
   // Only do something if we have any nodes!
   if (executableNodes.length === 0) {
