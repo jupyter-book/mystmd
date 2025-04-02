@@ -139,8 +139,8 @@ describe('Test blockMetadataTransform', () => {
           },
           [
             u('outputs', { identifier: 'my_label-outputs' }, [
-              u('output', { identifier: 'my_label-output-0' }, 'We know what we are'),
-              u('output', { identifier: 'my_label-output-1' }, 'but know not what we may be.'),
+              u('output', { identifier: 'my_label-outputs-0' }, 'We know what we are'),
+              u('output', { identifier: 'my_label-outputs-1' }, 'but know not what we may be.'),
             ]),
           ],
         ),

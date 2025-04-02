@@ -92,7 +92,8 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         const outputs = selectAll('output', outputsNode) as GenericNode[];
         outputs.forEach((outputNode, index) => {
           if (outputNode && !outputNode.identifier) {
-            outputNode.identifier = `${block.identifier}-output-${index}`;
+            // Label output node
+            outputNode.identifier = `${outputsNode.identifier}-${index}`;
           }
         });
       }
