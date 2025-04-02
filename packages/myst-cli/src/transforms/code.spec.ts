@@ -306,7 +306,7 @@ describe('propagateBlockDataToCode', () => {
       }
     }
   });
-  it('placeholder creates image node child of output', async () => {
+  it('placeholder creates image node child of outputs', async () => {
     const mdast: any = {
       type: 'root',
       children: [
@@ -334,7 +334,7 @@ describe('propagateBlockDataToCode', () => {
     expect(outputsNode.children[0].type).toEqual('image');
     expect(outputsNode.children[0].placeholder).toBeTruthy();
   });
-  it('placeholder passes with no output', async () => {
+  it('placeholder passes with no outputs', async () => {
     const mdast: any = {
       type: 'root',
       children: [
