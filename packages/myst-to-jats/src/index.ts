@@ -638,20 +638,20 @@ const handlers: Handlers = {
   },
   output(node, state) {
     if (state.data.isInContainer) {
-      if (!node.data?.[0]) return;
-      alternativesFromMinifiedOutput(node.data[0], state);
+      if (!node.jupyter_data) return;
+      alternativesFromMinifiedOutput(node.jupyter_data, state);
       return;
     }
     const { identifier } = node;
     const attrs: Attributes = { 'sec-type': 'notebook-output' };
-    node.data?.forEach((output: any, index: number) => {
+    if (node.jupyter_data) {
       state.openNode('sec', {
         ...attrs,
-        id: identifier && !state.data.isNotebookArticleRep ? `${identifier}-${index}` : undefined,
+        id: identifier && !state.data.isNotebookArticleRep ? identifier : undefined,
       });
-      alternativesFromMinifiedOutput(output, state);
+      alternativesFromMinifiedOutput(node.jupyter_data, state);
       state.closeNode();
-    });
+    }
   },
   embed(node, state) {
     if (state.data.isInContainer) {
