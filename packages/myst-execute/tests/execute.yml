@@ -44,7 +44,7 @@ cases:
                   html_id: nb-cell-0-outputs
                   children:
                     - type: output
-                      identifier: nb-cell-0-output-0
+                      identifier: nb-cell-0-outputs-0
                       children: []
 
     after:
@@ -76,7 +76,7 @@ cases:
                   children:
                     - type: output
                       children: []
-                      identifier: nb-cell-0-output-0
+                      identifier: nb-cell-0-outputs-0
                       jupyter_data:
                         output_type: stream
                         name: stdout
@@ -132,7 +132,7 @@ cases:
                   children:
                     - type: output
                       children: []
-                      identifier: nb-cell-0-output-0
+                      identifier: nb-cell-0-outputs-0
                       jupyter_data:
                         output_type: stream
                         name: stdout
@@ -191,7 +191,7 @@ cases:
               html_id: nb-cell-0-outputs
               children:
                 - type: output
-                  identifier: nb-cell-0-output-0
+                  identifier: nb-cell-0-outputs-0
                   jupyter_data:
         - type: block
           kind: notebook-code
@@ -209,7 +209,7 @@ cases:
               html_id: nb-cell-1-outputs
               children:
                 - type: output
-                  identifier: nb-cell-1-output-0
+                  identifier: nb-cell-1-outputs-0
                   jupyter_data:
     after:
       type: root
@@ -230,7 +230,7 @@ cases:
               html_id: nb-cell-0-outputs
               children:
                 - type: output
-                  identifier: nb-cell-0-output-0
+                  identifier: nb-cell-0-outputs-0
                   jupyter_data:
                     output_type: stream
                     name: stdout
@@ -252,7 +252,7 @@ cases:
               html_id: nb-cell-1-outputs
               children:
                 - type: output
-                  identifier: nb-cell-1-output-0
+                  identifier: nb-cell-1-outputs-0
                   jupyter_data:
                     output_type: error
                     # Note this traceback can be different on various machines
@@ -285,7 +285,7 @@ cases:
               html_id: nb-cell-0-outputs
               children:
                 - type: output
-                  identifier: nb-cell-0-output-0
+                  identifier: nb-cell-0-outputs-0
                   jupyter_data:
     after:
       type: root
@@ -307,7 +307,7 @@ cases:
               html_id: nb-cell-0-outputs
               children:
                 - type: output
-                  identifier: nb-cell-0-output-0
+                  identifier: nb-cell-0-outputs-0
                   jupyter_data:
                     output_type: error
                     # Note this traceback can be different on various machines
@@ -339,7 +339,7 @@ cases:
               identifier: nb-cell-0-outputs
               children:
                 - type: output
-                  identifier: nb-cell-0-output-0
+                  identifier: nb-cell-0-outputs-0
                   jupyter_data:
     after:
       type: root
@@ -360,5 +360,5 @@ cases:
               identifier: nb-cell-0-outputs
               children:
                 - type: output
-                  identifier: nb-cell-0-output-0
+                  identifier: nb-cell-0-outputs-0
                   jupyter_data:
