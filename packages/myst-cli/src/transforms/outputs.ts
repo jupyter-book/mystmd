@@ -137,7 +137,7 @@ export function transformFilterOutputStreams(
           data.data['text/plain']
         ) {
           const content = data.data['text/plain'].content;
-          if (!stringIsMatplotlibOutput(content)) return true;
+          if (!stringIsMatplotlibOutput(content)) return false;
           const doRemove = mpl.includes('remove');
           const doWarn = mpl.includes('warn');
           const doError = mpl.includes('error');
