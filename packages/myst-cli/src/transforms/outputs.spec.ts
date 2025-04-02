@@ -119,7 +119,7 @@ describe('reduceOutputs', () => {
       ],
     });
   });
-  it('output is replaced with placeholder image', async () => {
+  it('outputs is replaced with placeholder image', async () => {
     const mdast = {
       type: 'root',
       children: [
