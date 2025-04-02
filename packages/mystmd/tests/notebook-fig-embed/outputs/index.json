@@ -54,19 +54,25 @@
             "kind": "figure",
             "children": [
               {
-                "type": "output",
-                "data": [
+                "type": "outputs",
+                "children": [
                   {
-                    "output_type": "execute_result",
-                    "execution_count": 2,
-                    "metadata": {},
-                    "data": {
-                      "text/html": {
-                        "content_type": "text/html",
-                        "hash": "a16fcedcd26437c820ccfc05d1f48a57",
-                        "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
-                      },
-                      "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
+                    "type": "output",
+                    "jupyter_data": {
+                      "output_type": "execute_result",
+                      "execution_count": 2,
+                      "metadata": {},
+                      "data": {
+                        "text/html": {
+                          "content_type": "text/html",
+                          "hash": "a16fcedcd26437c820ccfc05d1f48a57",
+                          "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
+                        },
+                        "text/plain": {
+                          "content": "alt.Chart(...)",
+                          "content_type": "text/plain"
+                        }
+                      }
                     }
                   }
                 ]
@@ -143,19 +149,22 @@
                 "enumerator": "1"
               },
               {
-                "type": "output",
-                "data": [
+                "type": "outputs",
+                "children": [
                   {
-                    "output_type": "execute_result",
-                    "execution_count": 2,
-                    "metadata": {},
-                    "data": {
-                      "text/html": {
-                        "content_type": "text/html",
-                        "hash": "a16fcedcd26437c820ccfc05d1f48a57",
-                        "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
-                      },
-                      "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
+                    "type": "output",
+                    "jupyter_data": {
+                      "output_type": "execute_result",
+                      "execution_count": 2,
+                      "metadata": {},
+                      "data": {
+                        "text/html": {
+                          "content_type": "text/html",
+                          "hash": "a16fcedcd26437c820ccfc05d1f48a57",
+                          "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
+                        },
+                        "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
+                      }
                     }
                   }
                 ]
