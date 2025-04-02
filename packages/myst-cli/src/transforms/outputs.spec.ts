@@ -26,6 +26,7 @@ describe('reduceOutputs', () => {
                   type: 'output',
                   id: 'abc123',
                   jupyter_data: null,
+                  children: [],
                 },
               ],
             },
@@ -59,6 +60,7 @@ describe('reduceOutputs', () => {
               children: [
                 {
                   type: 'output',
+                  children: [],
                   jupyter_data: {
                     output_type: 'display_data',
                     execution_count: 3,
