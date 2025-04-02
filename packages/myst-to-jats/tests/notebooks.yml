@@ -18,16 +18,20 @@ cases:
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
-            - type: output
+            - type: outputs
               id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
-              data:
-                - name: stdout
-                  output_type: stream
-                  text: abc\n...
-                  hash: a
-                  path: files/a.txt
+              identifier: nb-cell-0-outputs
+              html_id: nb-cell-0-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-0-outputs-0
+                  html_id: nb-cell-0-outputs-0
+                  jupyter_data:
+                    name: stdout
+                    output_type: stream
+                    text: abc\n...
+                    hash: a
+                    path: files/a.txt
         - type: block
           kind: notebook-code
           data:
@@ -43,23 +47,27 @@ cases:
               identifier: nb-cell-1-code
               enumerator: 2
               html_id: nb-cell-1-code
-            - type: output
+            - type: outputs
               id: uE4mPgSow0oyo0dvEH9Lc
-              identifier: nb-cell-1-output
-              html_id: nb-cell-1-output
-              data:
-                - output_type: execute_result
-                  execution_count: 3
-                  metadata: {}
-                  data:
-                    text/plain:
-                      content_type: text/plain
-                      hash: b
-                      path: files/b.txt
-                    text/html:
-                      content_type: text/html
-                      hash: b
-                      path: files/b.html
+              identifier: nb-cell-1-outputs
+              html_id: nb-cell-1-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-1-outputs-0
+                  html_id: nb-cell-1-outputs-0
+                  jupyter_data:
+                    output_type: execute_result
+                    execution_count: 3
+                    metadata: {}
+                    data:
+                      text/plain:
+                        content_type: text/plain
+                        hash: b
+                        path: files/b.txt
+                      text/html:
+                        content_type: text/html
+                        hash: b
+                        path: files/b.html
         - type: block
           kind: notebook-code
           data:
@@ -75,17 +83,21 @@ cases:
               identifier: nb-cell-2-code
               enumerator: 3
               html_id: nb-cell-2-code
-            - type: output
+            - type: outputs
               id: 7Qrwdo-_oq5US1Du2KCLU
-              identifier: nb-cell-2-output
-              html_id: nb-cell-2-output
-              data:
-                - ename: NameError
-                  evalue: name 'a' is not defined
-                  output_type: error
-                  traceback: \u001b[0;31m------------------------------------------------------...
-                  hash: c
-                  path: files/c.txt
+              identifier: nb-cell-2-outputs
+              html_id: nb-cell-2-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-2-outputs-0
+                  html_id: nb-cell-2-outputs-0
+                  jupyter_data:
+                    ename: NameError
+                    evalue: name 'a' is not defined
+                    output_type: error
+                    traceback: \u001b[0;31m------------------------------------------------------...
+                    hash: c
+                    path: files/c.txt
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
@@ -101,7 +113,7 @@ cases:
           <body>
             <sec id="sec-1" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-              <sec sec-type="notebook-output" id="nb-cell-0-output-0">
+              <sec sec-type="notebook-output" id="nb-cell-0-outputs-0">
                 <alternatives>
                   <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
                 </alternatives>
@@ -109,7 +121,7 @@ cases:
             </sec>
             <sec id="sec-2" sec-type="notebook-code">
               <code id="nb-cell-1-code" language="python" executable="yes">'abc'</code>
-              <sec sec-type="notebook-output" id="nb-cell-1-output-0">
+              <sec sec-type="notebook-output" id="nb-cell-1-outputs-0">
                 <alternatives>
                   <media specific-use="text" mimetype="text" mime-subtype="plain" xlink:href="files/b.txt"/>
                   <media specific-use="web" mimetype="text" mime-subtype="html" xlink:href="files/b.html"/>
@@ -118,7 +130,7 @@ cases:
             </sec>
             <sec id="sec-3" sec-type="notebook-code">
               <code id="nb-cell-2-code" language="python" executable="yes">a</code>
-              <sec sec-type="notebook-output" id="nb-cell-2-output-0">
+              <sec sec-type="notebook-output" id="nb-cell-2-outputs-0">
                 <alternatives>
                   <media specific-use="error" mimetype="text" mime-subtype="plain" xlink:href="files/c.txt">
                     <caption>
@@ -151,16 +163,20 @@ cases:
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
-            - type: output
+            - type: outputs
               id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
-              data:
-                - name: stdout
-                  output_type: stream
-                  text: abc\n...
-                  hash: a
-                  path: files/a.txt
+              identifier: nb-cell-0-outputs
+              html_id: nb-cell-0-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-0-outputs-0
+                  html_id: nb-cell-0-outputs-0
+                  jupyter_data:
+                    name: stdout
+                    output_type: stream
+                    text: abc\n...
+                    hash: a
+                    path: files/a.txt
         - type: block
           kind: notebook-content
           data:
@@ -212,7 +228,7 @@ cases:
           <body>
             <sec id="sec-3" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-              <sec sec-type="notebook-output" id="nb-cell-0-output-0">
+              <sec sec-type="notebook-output" id="nb-cell-0-outputs-0">
                 <alternatives>
                   <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
                 </alternatives>
@@ -251,16 +267,21 @@ cases:
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
-            - type: output
+            - type: outputs
               id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
-              data:
-                - name: stdout
-                  output_type: stream
-                  text: abc\n...
-                  hash: a
-                  path: files/a.txt
+              identifier: nb-cell-0-outputs
+              html_id: nb-cell-0-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-0-outputs-0
+                  html_id: nb-cell-0-outputs-0
+
+                  jupyter_data:
+                    name: stdout
+                    output_type: stream
+                    text: abc\n...
+                    hash: a
+                    path: files/a.txt
     jats: |-
       <?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.3 20210610//EN" "http://jats.nlm.nih.gov/publishing/1.3/JATS-archivearticle1-3-mathml3.dtd">
@@ -285,7 +306,7 @@ cases:
           <body>
             <sec id="sec-2" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-              <sec sec-type="notebook-output" id="nb-cell-0-output-0">
+              <sec sec-type="notebook-output" id="nb-cell-0-outputs-0">
                 <alternatives>
                   <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
                 </alternatives>
@@ -313,16 +334,20 @@ cases:
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
-            - type: output
+            - type: outputs
               id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
-              data:
-                - name: stdout
-                  output_type: stream
-                  text: abc\n...
-                  hash: a
-                  path: files/a.txt
+              identifier: nb-cell-0-outputs
+              html_id: nb-cell-0-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-0-outputs-0
+                  html_id: nb-cell-0-outputs-0
+                  jupyter_data:
+                    name: stdout
+                    output_type: stream
+                    text: abc\n...
+                    hash: a
+                    path: files/a.txt
         - type: block
           data:
             part: abstract
@@ -373,7 +398,7 @@ cases:
           <body>
             <sec id="sec-2" sec-type="notebook-code">
               <code id="nb-cell-0-code" language="python" executable="yes">print('abc')</code>
-              <sec sec-type="notebook-output" id="nb-cell-0-output-0">
+              <sec sec-type="notebook-output" id="nb-cell-0-outputs-0">
                 <alternatives>
                   <media specific-use="stream" mimetype="text" mime-subtype="plain" xlink:href="files/a.txt"/>
                 </alternatives>
