@@ -34,9 +34,26 @@ describe('reduceOutputs', () => {
         },
       ],
     };
-    expect(mdast.children[0].children.length).toEqual(2);
     reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast.children[0].children.length).toEqual(1);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'hi',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   });
   it('output with complex data is removed', async () => {
     const mdast = {
@@ -82,7 +99,25 @@ describe('reduceOutputs', () => {
     };
     expect(mdast.children[0].children.length).toEqual(2);
     reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast.children[0].children.length).toEqual(1);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'hi',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   });
   it('output is replaced with placeholder image', async () => {
     const mdast = {
@@ -105,15 +140,9 @@ describe('reduceOutputs', () => {
               id: 'abc123',
               children: [
                 {
-                  type: 'output',
-                  jupyter_data: null,
-                  children: [
-                    {
-                      type: 'image',
-                      placeholder: true,
-                      url: 'placeholder.png',
-                    },
-                  ],
+                  type: 'image',
+                  placeholder: true,
+                  url: 'placeholder.png',
                 },
               ],
             },
@@ -123,11 +152,29 @@ describe('reduceOutputs', () => {
     };
     expect(mdast.children[0].children.length).toEqual(2);
     reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast.children[0].children.length).toEqual(2);
-    expect(mdast.children[0].children[1]).toEqual({
-      type: 'image',
-      placeholder: true,
-      url: 'placeholder.png',
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'hi',
+                },
+              ],
+            },
+            {
+              type: 'image',
+              placeholder: true,
+              url: 'placeholder.png',
+            },
+          ],
+        },
+      ],
     });
   });
   // // These tests now require file IO...
