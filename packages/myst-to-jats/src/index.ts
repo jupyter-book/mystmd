@@ -285,6 +285,7 @@ type Handlers = {
   si: Handler<GenericNode>;
   proof: Handler<GenericNode>;
   algorithmLine: Handler<AlgorithmLine>;
+  outputs: Handler<GenericNode>;
   output: Handler<GenericNode>;
   embed: Handler<GenericNode>;
   supplementaryMaterial: Handler<SupplementaryMaterial>;
@@ -631,6 +632,9 @@ const handlers: Handlers = {
     state.text(Array(node.indent).fill(' ').join(''));
     state.renderChildren(node);
     state.closeNode();
+  },
+  outputs(node, state) {
+    state.renderChildren(node);
   },
   output(node, state) {
     if (state.data.isInContainer) {
