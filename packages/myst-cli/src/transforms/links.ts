@@ -202,6 +202,19 @@ export async function checkLinksTransform(
     linkNodes.map(async (link) =>
       limitOutgoingConnections(async () => {
         const { position, url } = link;
+        if (!url) {
+          addWarningForFile(
+            session,
+            file,
+            `Linkable node (${link.type}) is missing a URL`,
+            'error',
+            {
+              position,
+              ruleId: RuleId.linkResolves,
+            },
+          );
+          return '';
+        }
         const check = await checkLink(session, url);
         if (check.ok || check.skipped) return url as string;
         const status = check.status ? ` (${check.status}, ${check.statusText})` : '';
