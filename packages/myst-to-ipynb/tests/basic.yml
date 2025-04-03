@@ -1,4 +1,4 @@
-title: myst-to-md basic features
+title: myst-to-ipynb basic features
 cases:
   - title: styles in paragraph
     mdast:
@@ -22,8 +22,26 @@ cases:
               value: ' '
             - type: inlineCode
               value: style`s
-    markdown: |-
-      Some % *markdown* with **different** ``style`s``
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "Some % *markdown* with **different** ``style`s``"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
+
   - title: headings
     mdast:
       type: root
@@ -46,12 +64,30 @@ cases:
           children:
             - type: text
               value: fourth
-    markdown: |-
-      # first
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "# first\n",
+              "\n",
+              "Some % *markdown*\n",
+              "\n",
+              "#### fourth"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
 
-      Some % *markdown*
-
-      #### fourth
   - title: thematic break
     mdast:
       type: root
@@ -65,12 +101,29 @@ cases:
           children:
             - type: text
               value: Some more markdown
-    markdown: |-
-      Some markdown
-
-      ---
-
-      Some more markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "Some markdown\n",
+              "\n",
+              "---\n",
+              "\n",
+              "Some more markdown"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: block quote
     mdast:
       type: root
@@ -85,8 +138,25 @@ cases:
                   children:
                     - type: text
                       value: markdown
-    markdown: |-
-      > Some % *markdown*
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "> Some % *markdown*"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: unordered list
     mdast:
       type: root
@@ -106,10 +176,27 @@ cases:
                   children:
                     - type: text
                       value: Some more markdown
-    markdown: |-
-      *   Some markdown
-
-      *   Some more markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "*   Some markdown\n",
+              "\n",
+              "*   Some more markdown"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: ordered list
     mdast:
       type: root
@@ -130,18 +217,52 @@ cases:
                   children:
                     - type: text
                       value: Some more markdown
-    markdown: |-
-      5.  Some markdown
-
-      6.  Some more markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "5.  Some markdown\n",
+              "\n",
+              "6.  Some more markdown"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: html
     mdast:
       type: root
       children:
         - type: html
-          value: <div>*Not markdown*<\div>
-    markdown: |-
-      <div>*Not markdown*<\div>
+          value: <div>*Not markdown*</div>
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "<div>*Not markdown*</div>"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: code - plain
     mdast:
       type: root
@@ -149,12 +270,29 @@ cases:
         - type: code
           value: |-
             5+5
-            print("hello world")
-    markdown: |-
-      ```
-      5+5
-      print("hello world")
-      ```
+            print("hello world\n")
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "```\n",
+              "5+5\n",
+              "print(\"hello world\\n\")\n",
+              "```"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: code - nested backticks
     mdast:
       type: root
@@ -165,27 +303,89 @@ cases:
             ````{abc}
             ````
             print("hello world")
-    markdown: |-
-      `````
-      5+5
-      ````{abc}
-      ````
-      print("hello world")
-      `````
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "`````\n",
+              "5+5\n",
+              "````{abc}\n",
+              "````\n",
+              "print(\"hello world\")\n",
+              "`````"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: code - with language
     mdast:
       type: root
       children:
+        - type: block
+          kind: notebook-code
+          data:
+            id: nb-cell-0
+          identifier: nb-cell-0
+          label: nb-cell-0
+          html_id: nb-cell-0
+          children:
+            - type: code
+              lang: python
+              executable: true
+              value: print('abc\n')
+              identifier: nb-cell-0-code
+              enumerator: 1
+              html_id: nb-cell-0-code
+            - type: output
+              id: T7FMDqDm8dM2bOT1tKeeM
+              identifier: nb-cell-0-output
+              html_id: nb-cell-0-output
         - type: code
           lang: python
           value: |-
             5+5
             print("hello world")
-    markdown: |-
-      ```python
-      5+5
-      print("hello world")
-      ```
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+              "print('abc\\n')"
+            ]
+          },
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "```python\n",
+              "5+5\n",
+              "print(\"hello world\")\n",
+              "```"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: code - with metadata
     mdast:
       type: root
@@ -196,11 +396,28 @@ cases:
           value: |-
             5+5
             print("hello world")
-    markdown: |-
-      ```python highlight-line="2"
-      5+5
-      print("hello world")
-      ```
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "```python highlight-line=\"2\"\n",
+              "5+5\n",
+              "print(\"hello world\")\n",
+              "```"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: definition
     mdast:
       type: root
@@ -210,8 +427,25 @@ cases:
           label: My-Def
           url: https://example.com
           title: Example
-    markdown: |-
-      [My-Def]: https://example.com "Example"
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "[My-Def]: https://example.com \"Example\""
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: break
     mdast:
       type: root
@@ -223,9 +457,26 @@ cases:
             - type: break
             - type: text
               value: Some more markdown
-    markdown: |-
-      Some markdown\
-      Some more markdown
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "Some markdown\\\n",
+              "Some more markdown"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: link
     mdast:
       type: root
@@ -240,18 +491,25 @@ cases:
               children:
                 - type: text
                   value: markdown
-    markdown: |-
-      [Some % *markdown*](https://example.com "my link")
-  - title: image
-    mdast:
-      type: root
-      children:
-        - type: image
-          url: https://example.com
-          title: my image
-          alt: Some text
-    markdown: |-
-      ![Some text](https://example.com "my image")
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "[Some % *markdown*](https://example.com \"my link\")"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: link reference
     mdast:
       type: root
@@ -266,8 +524,25 @@ cases:
               children:
                 - type: text
                   value: markdown
-    markdown: |-
-      [Some % *markdown*][My-Link]
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "[Some % *markdown*][My-Link]"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
   - title: image reference
     mdast:
       type: root
@@ -276,5 +551,22 @@ cases:
           identifier: my-image
           label: My-Image
           alt: Some text
-    markdown: |-
-      ![Some text][My-Image]
+    ipynb: |-
+      {
+        "cells": [
+          {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+              "![Some text][My-Image]"
+            ]
+          }
+        ],
+        "metadata": {
+          "language_info": {
+            "name": "python"
+          }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+      }
