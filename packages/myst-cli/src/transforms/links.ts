@@ -201,18 +201,9 @@ export async function checkLinksTransform(
   const linkResults = await Promise.all(
     linkNodes.map(async (link) =>
       limitOutgoingConnections(async () => {
-        const { position, url } = link;
-        if (!url) {
-          addWarningForFile(
-            session,
-            file,
-            `A linkable node (${link.type}) is missing a URL, skipping...`,
-            'warn',
-            {
-              position,
-              ruleId: RuleId.linkResolves,
-            },
-          );
+        const { position, url, type } = link;
+        // Allow cards to have undefined URLs
+        if (type === 'card' && !url) {
           return '';
         }
         const check = await checkLink(session, url);
