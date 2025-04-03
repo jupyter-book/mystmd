@@ -28,7 +28,9 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "Some % *markdown* with **different** ``style`s``"
+            "source": [
+              "Some % *markdown* with **different** ``style`s``"
+            ]
           }
         ],
         "metadata": {
@@ -68,7 +70,13 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "# first\n\nSome % *markdown*\n\n#### fourth"
+            "source": [
+              "# first\n",
+              "\n",
+              "Some % *markdown*\n",
+              "\n",
+              "#### fourth"
+            ]
           }
         ],
         "metadata": {
@@ -99,7 +107,13 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "Some markdown\n\n---\n\nSome more markdown"
+            "source": [
+              "Some markdown\n",
+              "\n",
+              "---\n",
+              "\n",
+              "Some more markdown"
+            ]
           }
         ],
         "metadata": {
@@ -130,7 +144,9 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "> Some % *markdown*"
+            "source": [
+              "> Some % *markdown*"
+            ]
           }
         ],
         "metadata": {
@@ -166,7 +182,11 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "*   Some markdown\n\n*   Some more markdown"
+            "source": [
+              "*   Some markdown\n",
+              "\n",
+              "*   Some more markdown"
+            ]
           }
         ],
         "metadata": {
@@ -203,7 +223,11 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "5.  Some markdown\n\n6.  Some more markdown"
+            "source": [
+              "5.  Some markdown\n",
+              "\n",
+              "6.  Some more markdown"
+            ]
           }
         ],
         "metadata": {
@@ -226,7 +250,9 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "<div>*Not markdown*</div>"
+            "source": [
+              "<div>*Not markdown*</div>"
+            ]
           }
         ],
         "metadata": {
@@ -244,14 +270,19 @@ cases:
         - type: code
           value: |-
             5+5
-            print("hello world")
+            print("hello world\n")
     ipynb: |-
       {
         "cells": [
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "```\n5+5\nprint(\"hello world\")\n```"
+            "source": [
+              "```\n",
+              "5+5\n",
+              "print(\"hello world\\n\")\n",
+              "```"
+            ]
           }
         ],
         "metadata": {
@@ -278,7 +309,14 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "`````\n5+5\n````{abc}\n````\nprint(\"hello world\")\n`````"
+            "source": [
+              "`````\n",
+              "5+5\n",
+              "````{abc}\n",
+              "````\n",
+              "print(\"hello world\")\n",
+              "`````"
+            ]
           }
         ],
         "metadata": {
@@ -304,7 +342,7 @@ cases:
             - type: code
               lang: python
               executable: true
-              value: print('abc')
+              value: print('abc\n')
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
@@ -325,12 +363,19 @@ cases:
             "execution_count": null,
             "metadata": {},
             "outputs": [],
-            "source": "print('abc')"
+            "source": [
+              "print('abc\\n')"
+            ]
           },
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "```python\n5+5\nprint(\"hello world\")\n```"
+            "source": [
+              "```python\n",
+              "5+5\n",
+              "print(\"hello world\")\n",
+              "```"
+            ]
           }
         ],
         "metadata": {
@@ -357,7 +402,12 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "```python highlight-line=\"2\"\n5+5\nprint(\"hello world\")\n```"
+            "source": [
+              "```python highlight-line=\"2\"\n",
+              "5+5\n",
+              "print(\"hello world\")\n",
+              "```"
+            ]
           }
         ],
         "metadata": {
@@ -383,7 +433,9 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "[My-Def]: https://example.com \"Example\""
+            "source": [
+              "[My-Def]: https://example.com \"Example\""
+            ]
           }
         ],
         "metadata": {
@@ -411,7 +463,10 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "Some markdown\\\nSome more markdown"
+            "source": [
+              "Some markdown\\\n",
+              "Some more markdown"
+            ]
           }
         ],
         "metadata": {
@@ -442,7 +497,9 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "[Some % *markdown*](https://example.com \"my link\")"
+            "source": [
+              "[Some % *markdown*](https://example.com \"my link\")"
+            ]
           }
         ],
         "metadata": {
@@ -473,7 +530,9 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "[Some % *markdown*][My-Link]"
+            "source": [
+              "[Some % *markdown*][My-Link]"
+            ]
           }
         ],
         "metadata": {
@@ -498,7 +557,9 @@ cases:
           {
             "cell_type": "markdown",
             "metadata": {},
-            "source": "![Some text][My-Image]"
+            "source": [
+              "![Some text][My-Image]"
+            ]
           }
         ],
         "metadata": {

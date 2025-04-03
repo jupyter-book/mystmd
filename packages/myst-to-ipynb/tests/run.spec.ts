@@ -53,7 +53,9 @@ describe('myst-to-ipynb frontmatter', () => {
     {
       "cell_type": "markdown",
       "metadata": {},
-      "source": "Hello world!"
+      "source": [
+        "Hello world!"
+      ]
     }
   ],
   "metadata": {
