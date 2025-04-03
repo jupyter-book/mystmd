@@ -206,8 +206,8 @@ export async function checkLinksTransform(
           addWarningForFile(
             session,
             file,
-            `Linkable node (${link.type}) is missing a URL`,
-            'error',
+            `A linkable node (${link.type}) is missing a URL, skipping...`,
+            'warn',
             {
               position,
               ruleId: RuleId.linkResolves,
