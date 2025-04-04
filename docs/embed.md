@@ -60,7 +60,9 @@ For example, the following references the admonitions list in [](admonitions.md)
 
 ### The `![](#embed)` short-hand
 
-The embedding markdown shorthand lets you quickly embed content using the Markdown image syntax (see more about [images](./figures.md)).
+The embedding shorthand lets you embed content using the Markdown image syntax (see more about [images](./figures.md)).
+This **removes the input cell** if you are [embedding from a Jupyter notebook](./reuse-jupyter-outputs.md).
+
 It can be used like so:
 
 ```markdown
