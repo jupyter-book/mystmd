@@ -36,6 +36,7 @@ function mutateEmbedNode(
   const { url, dataUrl, targetFile, sourceFile } = opts ?? {};
   if (targetNode && node['remove-output']) {
     targetNode = filter(targetNode, (n: GenericNode) => {
+      // After reduction, 'output' nodes may be replaced by their children which are then tagged as outputs
       return n.type !== 'output' && n.data?.type !== 'output';
     });
   }
@@ -48,9 +49,10 @@ function mutateEmbedNode(
         parent: GenericNode | undefined | null,
       ) => {
         // If we have a code cell with a NotebookCell parent, assume its an input cell and remove.
-        return (
-          !(n.type === 'code' && parent?.type === 'block' && parent?.kind === NotebookCell.code) ||
-          n.data?.type === 'output'
+        return !(
+          n.type === 'code' &&
+          parent?.type === 'block' &&
+          parent?.kind === NotebookCell.code
         );
       },
     );
