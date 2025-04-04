@@ -48,9 +48,11 @@ function mutateEmbedNode(
         index: number | null | undefined,
         parent: GenericNode | undefined | null,
       ) => {
-        // If we have a code cell with a NotebookCell parent, assume its an input cell and remove.
+        // Code nodes that are children of notebook cells and _not_ tagged as outputs
+        // should be removed
         return !(
           n.type === 'code' &&
+          n.data?.type !== 'output' &&
           parent?.type === 'block' &&
           parent?.kind === NotebookCell.code
         );
