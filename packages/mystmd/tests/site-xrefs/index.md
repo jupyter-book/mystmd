@@ -20,7 +20,11 @@ Embedded section with xref ⬇️
 
 ```
 
-code-block: [](#my-code)
+Embedded code-block with xref
+```{embed} #my-code
+:remove-input: true
+:remove-output: true
+```
 
 ## From external project
 

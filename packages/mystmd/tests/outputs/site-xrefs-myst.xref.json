@@ -1,6 +1,5 @@
 {
   "version": "1",
-  "myst": "1.3.25",
   "references": [
     { "kind": "page", "data": "/content/index.json", "url": "/" },
     {
