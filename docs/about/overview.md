@@ -20,10 +20,14 @@ An overview of some major parts of the MyST stack and how they relate to one ano
 In the most common workflow, a text file written in MyST Markdown is parsed by the [MyST Document Engine](https://mystmd.org/guide) which outputs MyST Document that follows the [MyST Specification](https://mystmd.org/spec) (usually a JSON file). This MyST Document can be rendered into many different kinds of outputs, most-commonly HTML or PDF. This usually done by the MyST Document Engine, but can be done by any application that understands how to parse and use the MyST Document Specification.
 :::
 
-## Other MyST engines
+## Are there other MyST engines?
+
+The [MyST Specification](https://mystmd.org/spec) and [MyST Markdown Syntax](https://mystmd.org/guide) was designed so that others could implement their own parsers, document engines, and renderers using MyST. The best example of another MyST Document Engine is the MyST parser for Sphinx.
 
 The [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) is an extension for [Sphinx](https://sphinx-doc.org) that can parse MyST Markdown into Sphinx's internal document structure. It was created to allow users to parse MyST Markdown syntax into Sphinx for [V1 of Jupyter Book](https://jupyterbook.org). It now exists as an independent extension for the Sphinx community, as Jupyter Book now uses the MyST Document Engine.
 
-## How Jupyter Book relates to MyST
+The MyST Parser for Sphinx does not support all of the functionality that is defined in the MyST Specification - that's OK! Its goal is to be a useful tool for the Sphinx community that only leverages parts of the MyST ecosystem (the markdown flavor).
+
+## How does Jupyter Book relate to MyST?
 
 The [MyST Document Engine](https://mystmd.org/guide) serves as the engine behind Jupyter Book. You can think of Jupyter Book as a _distribution of the MyST Document Engine_. In other words, Jupyter Book wraps the MyST Document Engine application, with out-of-the-box configuration that supports a multi-page community knowledge base or documentation site. MyST is created and maintained by the [Jupyter Book team](https://compass.jupyterbook.org). 
