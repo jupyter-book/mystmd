@@ -143,8 +143,6 @@ project:
         - file: executable-plugins.md
     - title: Reference
       children:
-        - file: background.md
-        - file: guiding-principles.md
         - file: install-node.md
         - file: update-myst.md
         - file: commonmark.md
@@ -156,6 +154,11 @@ project:
         - file: settings.md
         - file: glossary.md
         - file: versions.md
+    - title: About MyST
+      children:
+        - file: about/overview.md
+        - file: guiding-principles.md
+        - file: background.md
     - title: Contribute
       children:
         - file: contributing.md
