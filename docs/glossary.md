@@ -17,18 +17,15 @@ for {term}`MyST Markdown <MyST>` and {term}`Jupyter Book`.
 [Project Jupyter](https://jupyter.org)
 : The project and [team](https://compass.jupyterbook.org/team) that supports {term}`Jupyter Book` and {term}`MyST Markdown <MyST>` and the tools and packages behind them.
 
-[ExecutableBookProject](https://executablebooks.org)
+[Executable Books Project](https://executablebooks.org)
 : The project and [team](https://compass.executablebooks.org/en/latest/team/index.html) that used to support {term}`Jupyter Book` and {term}`MyST Markdown <MyST>`. The project is currently stewarded by {term}`Project Jupyter`.
+
+[MyST](https://mystmd.org)
+: MyST can either refer to {term}`MyST Markdown` or {term}`MyST-CLI`.
 
 [MyST Markdown](https://mystmd.org)
 : A flavour of Markdown that was designed for scientific and technical writing.
 : Sometimes referred to simply as {term}`MyST`.
-
-[MyST](https://mystmd.org)
-: MyST can either refer to the _markup syntax_ or the _command-line interface_.
-: **Markup Syntax**: MyST is a flavour of Markdown that was designed for scientific and technical writing.
-MyST is a combination of {term}`CommonMark Markdown <CommonMark>` and extra syntax to support technical writing, such as cross-references, citations, equations and figures. For clarity in this usage, use {term}`MyST Markdown`.
-: **Command-Line Interface**: MyST is a parser and set of command-line tools for creating websites and documents. For clarity in this usage, use {term}`MyST-CLI`.
 
 [MyST-CLI](https://mystmd.org/guide)
 : The MyST Markdown CLI can be used to create a website, PDF documents, and generally structure and parse a MyST project. You can install across various package managers using `mystmd`.
@@ -64,6 +61,24 @@ users. It can be deployed in the cloud, or on your own hardware.
 : Jupyter Book is a distribution of {term}`Sphinx` that allows you to write content
 in markdown and Jupyter Notebooks, execute content and insert it into your book,
 and build a variety of outputs for interactivity and document publishing.
+
+(myst-markdown)=
+MyST Markdown
+: MyST stands for "Markedly Structured Text". It is a flavor of [markdown](https://en.wikipedia.org/wiki/Markdown) that was designed to make it easy to write content that can be parsed by a [MyST Document Engine](#myst-engine). MyST Markdown syntax was created to support functionality in the MyST specification like extensions, roles and directives, and cross-references. It was originally created for Jupyter Book via the [MyST Parser for Sphinx](https://myst-parser.readthedocs.io), but now serves as a standard markdown syntax across the MyST ecosystem.
+
+(myst-engine)=
+MyST Document Engine
+: A MyST Document Engine builds [MyST AST](#myst-ast) according to the [MyST Specification](#myst-specification)[^myst]. For example, a MyST Document Engine might know how to transform a text file written in [MyST Markdown](#myst-markdown) into JSON output that follows the [MyST Specification](#myst-spec). The official MyST Document Engine is documented at [mystmd.org/guide](https://mystmd.org/guide), and is maintained by the [Jupyter Book team](https://compass.jupyterbook.org)
+
+[^myst]: Often we focus upon a MyST Engine's ability to parse [MyST Markdown](#myst-markdown). However, a MyST Engine may consume _any_ kind of input markup as long as the _result_ is a [MyST AST](#myst-ast) that follows the [MyST specification](#myst-spec). This is why the [official MyST Document Engine](https://mystmd.org) can parse other kinds of markup, such as a subset of LaTeX.
+
+(myst-specification)=
+MyST Specification
+: A specification that describes the structure and function of MyST documents. It provides a framework for defining all of the kinds of content and metadata that a MyST document can contain. For example, the MyST specification defines how sections can contain paragraphs, how paragraphs can contain sentences, and how sentences can contain a "bolded" chunk of text. The specification is [defined at mystmd.org/spec](xref:spec#overview).
+
+(myst-ast)=
+MyST AST
+: A structured representation of a MyST Document, typically built from a markup language (like MyST Markdown) by a MyST Document Engine, that adheres to the MyST Specification. Usually, a MyST [Abstract Syntax Tree (AST)](wiki:Abstract_syntax_tree) is represented as a JSON data structure, with metadata attached to each piece of content that describes its role, relationships with other content, etc. Because MyST AST follows a formal structure, it can be **rendered** into many kinds of outputs (like HTML, PDF, docx, etc).
 :::
 
 (index-page)=
