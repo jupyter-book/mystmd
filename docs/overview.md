@@ -4,7 +4,7 @@ This section provides a high-level overview of the main concepts and tools in th
 
 In a sentence, the {term}`MyST Document Engine` is a program that parses {term}`MyST Markdown` files and builds them into {term}`MyST AST` that conforms to the {term}`MyST Specification`. Here's a diagram showing how these all relate to one another:
 
-:::{figure} ../images/myst-diagram.svg
+:::{figure} images/myst-diagram.svg
 An overview of some major parts of the MyST stack and how they relate to one another.
 In the most common workflow, a text file written in MyST Markdown is parsed by the [MyST Document Engine](https://mystmd.org/guide) which outputs MyST AST that follows the [MyST Specification](https://mystmd.org/spec) (usually a JSON file). This MyST AST can be rendered into many different kinds of outputs, most-commonly HTML or PDF. This usually done by the MyST Document Engine, but can be done by any application that understands how to parse and use the MyST Document Specification.
 :::
