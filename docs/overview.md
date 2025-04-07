@@ -2,6 +2,8 @@
 
 This section provides a high-level overview of the main concepts and tools in the MyST ecosystem. See the [guiding principles of the MyST ecosystem](../guiding-principles.md) for some more high-level context.
 
+## A brief overview of the MyST Stack
+
 In a sentence, the {term}`MyST Document Engine` is a program that parses {term}`MyST Markdown` files and builds them into {term}`MyST AST` that conforms to the {term}`MyST Specification`. Here's a diagram showing how these all relate to one another:
 
 :::{figure} images/myst-diagram.svg
@@ -23,9 +25,27 @@ As the MyST Parser for Sphinx does not support all of the same syntax defined in
 
 The MyST Markdown Syntax was originally created to allow [Jupyter Book V1](https://jupyterbook.org) to use the [Sphinx Document engine](https://sphinx-doc.org) with Markdown content, rather than the less well-known <wiki:ReStructuredText> language.
 
-Over time, the Jupyter Book team decided that the most sustainable path forward was to create its own document engine, the [MyST Document Engine](https://mystmd.org/guide). This new MyST Document Engine was first created by [Curvenote](https://curvenote.com), who subsequently donated their work to the Jupyter Book project and became co-maintainers of the Jupyter Book stack. It serves as the engine behind Jupyter Book V2. 
+Over time, the Jupyter Book team decided that the most sustainable path forward was to create its own document engine, the [MyST Document Engine](https://mystmd.org/guide). This new MyST Document Engine was first created by [Curvenote](https://curvenote.com), who subsequently donated their work to the Jupyter Book project and became co-maintainers of the Jupyter Book stack. It serves as the engine behind Jupyter Book V2.
 
 You can think of Jupyter Book as a _distribution of the MyST Document Engine_. In other words, Jupyter Book wraps the MyST Document Engine application, with out-of-the-box configuration that supports a multi-page community knowledge base or documentation site. MyST is created and maintained by the [Jupyter Book team](https://compass.jupyterbook.org).
 
-Currently, Jupyter Book and the MyST Document Engine share much of the same functionality. Over time, we imagine that the MyST Document Engine will be a more flexible tool that makes fewer assumptions about the end use-case that it's being used for. Jupyter Book will then have "more opinions" above the base configuration of the MyST Document Engine. That said — we are still figuring this out! We aren't sure the exact relationship the two will have, and will revisit this as we learn more.
+Currently, Jupyter Book and the MyST Document Engine share much of the same functionality. Over time, we imagine that the MyST Document Engine will be a more flexible tool that makes fewer assumptions about the end use-case that it's being used for. Jupyter Book will then have "more opinions" above the base configuration of the MyST Document Engine. That said — we are still figuring this out! We aren't sure the exact relationship the two will have, and will revisit this as we learn more. See [next.jupyterbook.org](https://next.jupyterbook.org) for more information.
 
+## How do MyST and Sphinx compare?
+
+[Sphinx] is an open-source documentation system used in many software projects, especially in the Python ecosystem. It builds an internal representation of technical documents as a tree (see [docutils]) similar to the {term}`MyST AST`. Whilst Sphinx partially defines a specification of-sorts for this AST[^docutils], a {term}`MyST Document Engine` explicitly publishes its {term}`MyST AST` for other tools to consume.
+
+The Sphinx ecosystem has excellent support for Python documentation, referencing content, as well as externally providing an inventory of references known as [intersphinx]. You can link to Sphinx documentation with a {term}`MyST Document Engine` by using [intersphinx references](#intersphinx), and the official {term}`MyST Document Engine` automatically exposes the information required to allow Sphinx documentation to reference your MyST project.
+
+At this time, the offical {term}`MyST Document Engine` does not support the authoring of software API documentation[^api-docs]. As such, if your project is documenting Python software we suggest that you use Sphinx. If your project is primarily tutorials, educational textbooks (including with Jupyter Notebooks), a presentation, or scientific paper, we hope that you find a better fit with the MyST stack!
+
+Sphinx and MyST take very different approaches to publishing to the web. In Sphinx, themes are used to customise the generation of HTML and JavaScript. Sites built using these themes can be deployed to static web servers like [ReadTheDocs](https://readthedocs.com/). In the MyST world, the equivalent to a Sphinx theme is a {term}`MyST Renderer` that consumes the {term}`MyST AST` and outputs HTML and JavaScript for your browser. Formally separating the {term}`MyST Document Engine` that generates {term}`MyST AST` and the {term}`MyST Renderer` that consumes it makes it possible to create rich new experiences with MyST, such as the [SciPy Conference Proceedings](https://proceedings.scipy.org/) website that renders {term}`MyST AST` on the fly.
+
+Although the official also supports static HTML outputs, implementing themes as applications means that it is easier to build more powerful and stateful customisations to the MyST viewing experience.
+
+[^api-docs]: In the future, `mystmd` may offer support for Python and Javascript documentation, and if you want to contribute please reach out!
+[^docutils]: The Docutils source-code _is_ the specification.
+
+[docutils]: https://docutils.sourceforge.io/
+[sphinx]: https://www.sphinx-doc.org/
+[intersphinx]: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
