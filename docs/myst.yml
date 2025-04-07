@@ -156,7 +156,7 @@ project:
         - file: versions.md
     - title: About MyST
       children:
-        - file: about/overview.md
+        - file: overview.md
         - file: guiding-principles.md
         - file: background.md
     - title: Contribute
