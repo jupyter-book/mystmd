@@ -78,7 +78,7 @@ MyST Specification
 
 (myst-ast)=
 MyST AST
-: A structured representation of a MyST Document, typically built from a markup language (like MyST Markdown) by a MyST Document Engine, that adheres to the MyST Specification. Usually, a MyST [Abstract Syntax Tree (AST)](wiki:Abstract_syntax_tree) is represented as a JSON data structure, with metadata attached to each piece of content that describes its role, relationships with other content, etc. Because MyST AST follows a formal structure, it can be **rendered** into many kinds of outputs (like HTML, PDF, docx, etc).
+: A structured representation of a MyST Document, typically built from a markup language (like MyST Markdown) by a MyST Document Engine, that adheres to the MyST Specification. Usually, a MyST [Abstract Syntax Tree (AST)](wiki:Abstract_syntax_tree) is represented as a JSON data structure, with metadata attached to each piece of content that describes its role, relationships with other content, etc. The AST allows us to separate the steps of parsing content (such as {term}`MyST Markdown`) from generating output like HTML, PDF, docx, etc.
 :::
 
 (index-page)=
