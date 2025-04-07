@@ -10,23 +10,23 @@ Here are a few key concepts in MyST:
 
 (myst-engine)=
 
-**A MyST Document Engine**. A MyST Document Engine parses text-based documents into [MyST AST](#myst-ast) according to the [MyST Specification](#myst-specification)[^myst]. For example, a MyST Document Engine might know how to transform a text file with [MyST Markdown](#myst-markdown) into a `.json` output that follows the [MyST Specification](#myst-spec). The official MyST Document Engine is documented at [mystmd.org/guide](https://mystmd.org/guide), and is maintained by the [Jupyter Book team](https://compass.jupyterbook.org)
+**A MyST Document Engine**. A MyST Document Engine builds [MyST AST](#myst-ast) according to the [MyST Specification](#myst-specification)[^myst]. For example, a MyST Document Engine might know how to transform a text file written in [MyST Markdown](#myst-markdown) into JSON output that follows the [MyST Specification](#myst-spec). The official MyST Document Engine is documented at [mystmd.org/guide](https://mystmd.org/guide), and is maintained by the [Jupyter Book team](https://compass.jupyterbook.org)
 
-[^myst]: Most commonly, MyST engines parse [MyST Markdown](#myst-markdown). However, a MyST engine can parse any kind of text syntax as long as the _result_ is a [MyST AST](#myst-ast) that follows the [MyST specification](#myst-spec). This is why the [official MyST Document Engine](https://mystmd.org) can parse other kinds of markdown syntax, like some of Pandoc's syntax.
+[^myst]: Often we focus upon a MyST Engine's ability to parse [MyST Markdown](#myst-markdown). However, a MyST Engine may consume _any_ kind of input markup as long as the _result_ is a [MyST AST](#myst-ast) that follows the [MyST specification](#myst-spec). This is why the [official MyST Document Engine](https://mystmd.org) can parse other kinds of markup, such as a subset of LaTeX.
 
 (myst-specification)=
 
-**The MyST Specification**. A specification that describes the structure and function of MyST documents. It provides a framework for defining all of the kinds of content and metadata that a MyST document can contain. For example, the MyST specification defines how sections can contain paragraphs, how paragraphs can contain sentences, and how sentences can contain a "bolded" chunk of text. The specification is [defined at mystmd.org/spec](https://mystmd.org/spec).
+**The MyST Specification**. A specification that describes the structure and function of MyST documents. It provides a framework for defining all of the kinds of content and metadata that a MyST document can contain. For example, the MyST specification defines how sections can contain paragraphs, how paragraphs can contain sentences, and how sentences can contain a "bolded" chunk of text. The specification is [defined at mystmd.org/spec](xref:spec#overview).
 
 (myst-ast)=
 
-**MyST Abstract Syntax Tree (AST)**. A bundle of parsed content that adheres to the MyST Specification. An [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) is a way of structuring information according to a formal specification, so MyST Document Engines know how to parse content and _create_ an AST out of that content. Usually, a MyST AST takes the form of a `.json` data structure, with metadata attached to each piece of content that describes its role, relationships with other content, etc. Because MyST AST follows a formal structure, it can be **rendered** into many kinds of outputs (like HTML, PDF, docx, etc).
+**MyST Abstract Syntax Tree (AST)**. A structured representation of a MyST Document, typically built from a markup language (like MyST Markdown) by a MyST Document Engine, that adheres to the MyST Specification. Usually, a MyST [Abstract Syntax Tree (AST)](wiki:Abstract_syntax_tree) is represented as a JSON data structure, with metadata attached to each piece of content that describes its role, relationships with other content, etc. Because MyST AST follows a formal structure, it can be **rendered** into many kinds of outputs (like HTML, PDF, docx, etc).
 
 Here's a diagram showing how these all relate to one another:
 
 :::{figure} ../images/myst-diagram.svg
 An overview of some major parts of the MyST stack and how they relate to one another.
-In the most common workflow, a text file written in MyST Markdown is parsed by the [MyST Document Engine](https://mystmd.org/guide) which outputs MyST Document that follows the [MyST Specification](https://mystmd.org/spec) (usually a JSON file). This MyST Document can be rendered into many different kinds of outputs, most-commonly HTML or PDF. This usually done by the MyST Document Engine, but can be done by any application that understands how to parse and use the MyST Document Specification.
+In the most common workflow, a text file written in MyST Markdown is parsed by the [MyST Document Engine](https://mystmd.org/guide) which outputs MyST AST that follows the [MyST Specification](https://mystmd.org/spec) (usually a JSON file). This MyST AST can be rendered into many different kinds of outputs, most-commonly HTML or PDF. This usually done by the MyST Document Engine, but can be done by any application that understands how to parse and use the MyST Document Specification.
 :::
 
 ## Are there other MyST engines?
