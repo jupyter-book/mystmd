@@ -21,7 +21,7 @@ As the MyST Parser for Sphinx does not support all of the same syntax defined in
 
 ## How does Jupyter Book relate to MyST?
 
-The MyST Markdown Syntax was originally created to allow [Jupyter Book V1](https://jupyterbook.org) to use the [Sphinx Document engine](https://sphinx-doc.org) with markdown content.
+The MyST Markdown Syntax was originally created to allow [Jupyter Book V1](https://jupyterbook.org) to use the [Sphinx Document engine](https://sphinx-doc.org) with Markdown content, rather than the less well-known <wiki:ReStructuredText> language.
 
 Over time, the Jupyter Book team decided that the most sustainable path forward was to create its own document engine. This became [MyST Document Engine](https://mystmd.org/guide)[^cn]. It serves as the engine behind Jupyter Book V2.
 
