@@ -1,17 +1,26 @@
 # What is the MyST stack?
 
-This section provides a high-level overview of the main concepts in the MyST ecosystem, as well as how it relates to specific tools.
+This section provides a high-level overview of the main concepts and tools in the MyST ecosystem. See the [guiding principles of the MyST ecosystem](../guiding-principles.md) for some more high-level context.
 
-MyST might refer to several things, depending on the context.
 Here are a few key concepts in MyST:
+
+(myst-markdown)=
+
+**MyST Markdown**. MyST stands for "Markedly Structured Text". It is a flavor of [markdown](https://en.wikipedia.org/wiki/Markdown) that was designed to make it easy to write content that can be parsed by a [MyST Document Engine](#myst-engine). MyST Markdown syntax was created to support functionality in the MyST specification like extensions, roles and directives, and cross-references. It was originally created for Jupyter Book via the [MyST Parser for Sphinx](https://myst-parser.readthedocs.io), but now serves as a standard markdown syntax across the MyST ecosystem.
+
+(myst-engine)=
+
+**A MyST Document Engine**. A MyST Document Engine parses text-based documents into [MyST AST](#myst-ast) according to the [MyST Specification](#myst-specification)[^myst]. For example, a MyST Document Engine might know how to transform a text file with [MyST Markdown](#myst-markdown) into a `.json` output that follows the [MyST Specification](#myst-spec). The official MyST Document Engine is documented at [mystmd.org/guide](https://mystmd.org/guide), and is maintained by the [Jupyter Book team](https://compass.jupyterbook.org)
+
+[^myst]: Most commonly, MyST engines parse [MyST Markdown](#myst-markdown). However, a MyST engine can parse any kind of text syntax as long as the _result_ is a [MyST AST](#myst-ast) that follows the [MyST specification](#myst-spec). This is why the [official MyST Document Engine](https://mystmd.org) can parse other kinds of markdown syntax, like some of Pandoc's syntax.
+
+(myst-specification)=
 
 **The MyST Specification**. A specification that describes the structure and function of MyST documents. It provides a framework for defining all of the kinds of content and metadata that a MyST document can contain. For example, the MyST specification defines how sections can contain paragraphs, how paragraphs can contain sentences, and how sentences can contain a "bolded" chunk of text. The specification is [defined at mystmd.org/spec](https://mystmd.org/spec).
 
-**A MyST Document**. A document that adheres to the MyST Specification. It is usually in the form of an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) that is structured in JSON (or some other machine-readable form), where every bit of content has been parsed and tagged according to the MyST Specification.
+(myst-ast)=
 
-**A MyST Document Engine**. The MyST Document Engine is a tool for parsing text-based documents into MyST Documents according to the MyST Specification. For example, a MyST Document Engine might know how to transform a text file with MyST Markdown into a MyST document (outputting a `.json` file that represent that file's AST). The canonical MyST Document Engine is documented at [mystmd.org/guide](https://mystmd.org/guide), and is maintained by the [Jupyter Book team](https://compass.jupyterbook.org)
-
-**MyST Markdown**. MyST stands for "Markedly Structured Text". It is a flavor of markdown that was designed to make it easy to write content that can be parsed by a MyST Document Engine. MyST Markdown syntax was created to support functionality in the MyST specification like extensions, roles and directives, and cross-references.
+**MyST Abstract Syntax Tree (AST)**. A bundle of parsed content that adheres to the MyST Specification. An [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) is a way of structuring information according to a formal specification, so MyST Document Engines know how to parse content and _create_ an AST out of that content. Usually, a MyST AST takes the form of a `.json` data structure, with metadata attached to each piece of content that describes its role, relationships with other content, etc. Because MyST AST follows a formal structure, it can be **rendered** into many kinds of outputs (like HTML, PDF, docx, etc).
 
 Here's a diagram showing how these all relate to one another:
 
@@ -30,4 +39,12 @@ The MyST Parser for Sphinx does not support all of the functionality that is def
 
 ## How does Jupyter Book relate to MyST?
 
-The [MyST Document Engine](https://mystmd.org/guide) serves as the engine behind Jupyter Book. You can think of Jupyter Book as a _distribution of the MyST Document Engine_. In other words, Jupyter Book wraps the MyST Document Engine application, with out-of-the-box configuration that supports a multi-page community knowledge base or documentation site. MyST is created and maintained by the [Jupyter Book team](https://compass.jupyterbook.org). 
+The MyST Markdown Syntax was originally created to allow [Jupyter Book V1](https://jupyterbook.org) to use the [Sphinx Document engine](https://sphinx-doc.org) with markdown content.
+
+Over time, the Jupyter Book team decided that the most sustainable path forward was to create its own document engine. This became [MyST Document Engine](https://mystmd.org/guide)[^cn]. It serves as the engine behind Jupyter Book V2.
+
+You can think of Jupyter Book as a _distribution of the MyST Document Engine_. In other words, Jupyter Book wraps the MyST Document Engine application, with out-of-the-box configuration that supports a multi-page community knowledge base or documentation site. MyST is created and maintained by the [Jupyter Book team](https://compass.jupyterbook.org).
+
+Currently, Jupyter Book and the MyST Document Engine share much of the same functionality. Over time, we imagine that the MyST Document Engine will be a more flexible tool that makes fewer assumptions about the end use-case that it's being used for. Jupyter Book will then have "more opinions" above the base configuration of the MyST Document Engine. That said - we are still figuring this out! We aren't sure the exact relationship the two will have, and will revisit this as we learn more.
+
+[^cn]: The official MyST Document Engine was actually originally created by [Curvenote](https://curvenote.com), which donated their internal document engine to the Jupyter Book project and became co-maintainers of the Jupyter Book stack moving forward.
