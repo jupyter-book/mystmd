@@ -14,6 +14,8 @@ Here is a brief description of the workflow that is involved in the MyST ecosyst
 
 Here's a diagram showing how these all relate to one another:
 
+% NOTE: This is an excalidraw SVG. You can edit it directly in Excalidraw.
+% See the contributing docs for a short guide.
 :::{figure} images/myst-diagram.svg
 An overview of some major parts of the MyST stack and how they relate to one another.
 In the most common workflow, a text file written in MyST Markdown is parsed by the {term}`MyST Document Engine` which outputs {term}`MyST AST` that follows the {term}`MyST Specification` (usually a JSON file). This MyST AST can be rendered into many different kinds of outputs, most-commonly HTML or PDF. This usually done by the MyST Document Engine, but can be done by any application that understands how to parse and use the MyST Specification.
@@ -37,7 +39,7 @@ Over time, the Jupyter Book team decided that the most sustainable path forward 
 
 You can think of Jupyter Book as a _distribution of the MyST Document Engine_. In other words, Jupyter Book wraps the MyST Document Engine application, with out-of-the-box configuration that supports a multi-page community knowledge base or documentation site. MyST is created and maintained by the [Jupyter Book team](https://compass.jupyterbook.org).
 
-Currently, Jupyter Book and the MyST Document Engine share much of the same functionality. Over time, we imagine that the MyST Document Engine will be a more flexible tool that makes fewer assumptions about the end use-case that it's being used for. Jupyter Book will then have "more opinions" above the base configuration of the MyST Document Engine. That said — we are still figuring this out! We aren't sure the exact relationship the two will have, and will revisit this as we learn more. See [next.jupyterbook.org](https://next.jupyterbook.org) for more information.
+Currently, Jupyter Book and the MyST Document Engine share much of the same functionality. Over time, we imagine that the MyST Document Engine will be a more flexible tool that makes fewer assumptions about the end use-case that it's being used for. Jupyter Book will then have "more opinions" above the base configuration of the MyST Document Engine. That said — we are still figuring this out! We aren't sure the exact relationship the two will have, and will revisit this as we learn more. See [next.jupyterbook.org](https://next.jupyterbook.org) for Jupyter Book V2 documentation, and [see this section of the Contributing Guide](#jb-vs-md) for our approach to documenting the two projects.
 
 ## How do MyST and Sphinx compare?
 
