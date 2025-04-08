@@ -3,7 +3,9 @@ title: History and background
 description: High-level discussion of the MyST Markdown ecosystem, history of mystmd, other implementations like Jupyter Book and Sphinx, and explains past decisions.
 ---
 
-This page discusses high-level questions about the MyST Markdown ecosystem, history of `mystmd`, various ecosystem implementations, and explains a few decisions made in the project. The [MyST ecosystem overview](./overview.md) is another excellent high-level source of information.
+This page discusses high-level questions about the MyST Markdown ecosystem, history of `mystmd`, various ecosystem implementations, and explains a few decisions made in the project.[^overview]
+
+[^overview]: The [MyST ecosystem overview](./overview.md) is another excellent high-level source of information.
 
 ## History of MyST Markdown and `mystmd`
 
