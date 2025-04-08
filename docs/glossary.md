@@ -80,7 +80,7 @@ MyST Renderer
 : An application that consumes {term}`MyST AST` and uses it to present the contents in a particular format. For example, the MyST Document Engine has a few built-in renderers. See [the HTML renderer](https://github.com/jupyter-book/mystmd/tree/840265e0c055d29b5d5ce80f391ccb1efba7a87e/packages/myst-to-html) for an example that converts {term}`MyST AST` to HTML.
 
 MyST Theme
-: A template for conerting {term}`MyST AST` into structured output using a {term}`MyST Renderer`. For example, a theme provides the structure and rules by which you could convert {term}`MyST AST` to different kinda of Latex output based on a number of different journal templates. It could also be a way of converting {term}`MyST AST` into different kinds of HTML for various kinds of websites. The [MyST Templates GitHub Organization](https://github.com/myst-templates) is a community-maintained resource for many kinds of themes / templates.
+: A template for converting {term}`MyST AST` into structured output using a {term}`MyST Renderer`. For example, a theme provides the structure and rules by which you could convert {term}`MyST AST` to different kinds of LaTeX output based on a number of different journal templates. It could also be a way of converting {term}`MyST AST` into different kinds of HTML for various kinds of websites. The [MyST Templates GitHub Organization](https://github.com/myst-templates) is a community-maintained resource for many kinds of themes / templates.
 :::
 
 (index-page)=
