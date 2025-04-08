@@ -8,7 +8,7 @@ Here is a brief description of the workflow that is involved in the MyST ecosyst
 
 - An author writes content in {term}`MyST Markdown` in a file.
 - A {term}`MyST Document Engine` parses one or more files and builds them into structured data called the {term}`MyST AST`.
-- The {term}`MyST AST` is a version of the content with a specific structure and with extra metadata added to it (like defining a "type" for each chunk of content, resolved cross-references, etc). It conforms to the {term}`MyST Specification`
+- The {term}`MyST AST` is a version of the content with a specific structure and with extra metadata added to it (like defining a "type" for each chunk of content, resolved cross-references, etc). It conforms to the {term}`MyST Specification`.
 - A {term}`MyST Renderer` can then transform the {term}`MyST AST` into different kinds of outputs (most commonly HTML, or PDF via LaTeX/Typst). It uses a {term}`MyST Theme` to do so.
 - The [official MyST CLI](https://mystmd.org) contains both a parser and a renderer so that you can go from a local file to an output with one application. 
 
@@ -28,7 +28,7 @@ The [MyST Specification](https://mystmd.org/spec) and [MyST Markdown Syntax](htt
 The [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) is an extension for [Sphinx](https://sphinx-doc.org) that can parse MyST Markdown into Sphinx's internal document structure. It was created to allow users to parse MyST Markdown syntax into Sphinx for [V1 of Jupyter Book](https://jupyterbook.org). It now exists as an independent extension for the Sphinx community, as Jupyter Book now uses the MyST Document Engine.
 
 :::{note} MyST Parser for Sphinx Compatibility
-As the MyST Parser for Sphinx does not support all of the syntax defined in the MyST Guide, or output {term}`MyST AST`, it's not a true {term}`MyST Document Engine` as defined by this project. That's OK! Its goal is to be a useful tool for the Sphinx community that only leverages parts of the MyST ecosystem (the markdown flavor), which for many people is "good enough".
+As the MyST Parser for Sphinx does not support all of the syntax defined in the MyST Guide, or output {term}`MyST AST`, it's not a true {term}`MyST Document Engine` as defined by this project. That's OK! Its goal is to be a useful tool for the Sphinx community that only leverages parts of the MyST ecosystem (the markdown flavor), which for many people is "good enough."
 :::
 
 ## How does Jupyter Book relate to MyST?
