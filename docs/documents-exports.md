@@ -101,7 +101,7 @@ See [](#docs:include) for more information.
 ## How can I export MyST Markdown from another document format
 
 MyST can parse some document formats as well.
-This can make it easy to quickly convert something _into MyST Markdown_.
+This makes it possible to convert something _into MyST Markdown_.
 
 For example, to convert LaTeX into MyST Markdown, use the following command:
 
