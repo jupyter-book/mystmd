@@ -33,9 +33,11 @@ As the MyST Parser for Sphinx does not support all of the same syntax defined in
 
 ## How does Jupyter Book relate to MyST?
 
-The MyST Markdown Syntax was originally created to allow [Jupyter Book V1](https://jupyterbook.org) to use the [Sphinx Document engine](https://sphinx-doc.org) with Markdown content, rather than the less well-known <wiki:ReStructuredText> language.
+The MyST Markdown Syntax was originally created to allow [Jupyter Book V1](https://jupyterbook.org) to use the [Sphinx Document engine](https://sphinx-doc.org) with Markdown content[^md], rather than the less well-known <wiki:ReStructuredText> language.
 
-Over time, the Jupyter Book team decided that the most sustainable path forward was to maintain its own document engine, the [MyST Document Engine](https://mystmd.org/guide). This new MyST Document Engine was initially created by [Curvenote](https://curvenote.com) and then developed jointly with the [Executable Books Project](https://executablebooks.org) before being donated to the [Jupyter Book subproject](https://compass.jupyterbook.org). It serves as the engine behind Jupyter Book V2.
+[^md]: Specifically, the [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) was created to move beyond the functionality of the [`recommonmark` project](https://github.com/readthedocs/recommonmark) in order to natively support docutils `roles` and `directives` in markdown.
+
+Over time, the Jupyter Book team decided that the most sustainable path forward was to maintain its own document engine, the [MyST Document Engine](https://mystmd.org/guide). An early version of the MyST Document Engine was created by [Curvenote](https://curvenote.com). To promote its long-term sustainability, the project was open sourced and further developed in collaboration with the Jupyter Book team. It serves as the engine behind Jupyter Book V2.
 
 You can think of Jupyter Book as a _distribution of the MyST Document Engine_. In other words, Jupyter Book wraps the MyST Document Engine application, with out-of-the-box configuration that supports a multi-page community knowledge base or documentation site. MyST is created and maintained by the [Jupyter Book team](https://compass.jupyterbook.org).
 
