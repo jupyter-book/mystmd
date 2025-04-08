@@ -122,3 +122,13 @@ This is a lightweight way to create flow charts and diagrams.
 5. Make your edits in Excalidraw.
 6. Export the new diagram using the [steps described above](export-excalidraw).
 7. Replace the old file with the new one and commit it to `git`. If using an SVG, you can also just copy/paste the new SVG text and replace the old SVG text with it.
+
+## How to enable Pull Request previews on Netlify
+
+Netlify [Deploy Previews](https://docs.netlify.com/site-deploys/deploy-previews/) allow others to preview the documentation for a repository as part of the Pull Request workflow.
+This will add a Documentation Preview to the Status Checks of a pull request.
+To enable it, do the following:
+
+1. Enable Netlify builds for your repository.
+2. Go to the `configuration -> notifications` section and look for **emails and webhooks**.
+3. Ensure that **Deploy Notifications** lists has **deploy state commit checks** for "starts", "succeeds", and "fails".
