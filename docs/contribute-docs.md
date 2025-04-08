@@ -81,6 +81,8 @@ Configuration for our Netlify build exists in the [`netlify.toml` configuration 
 Any team members can have `Developer` access to our shared Netlify account, and Steering Council members can have `Owner` access.
 If you'd like access, please ask a maintainer.
 
+(jb-vs-md)=
+
 ## Documenting in jupyterbook.org vs. mystmd.org
 
 :::{warning} We're still figuring this out!
@@ -96,3 +98,41 @@ Jupyter Book and the MyST Document Engine have heavily overlapping functionality
 - Jupyter Book will be a **tool for typical users** focused around multi-page documents and websites. It will be opinionated, focused around the "book themes", and be more accessible to a new user or someone unfamiliar with JavaScript workflows.
    - Jupyter Book should focus on **How-Tos** and **Tutorials** that are driven by use-cases in multi-page workflows (e.g., documentation, books, community websites, etc).
    - Focus on keeping documentation outcome-oriented, and link heavily to the MyST engine docs for more complete reference information and explanation.
+
+## How to create and edit Excalidraw diagrams
+
+We use [Excalidraw diagrams](https://excalidraw.com) throughout our documentation.
+This is a lightweight way to create flow charts and diagrams.
+
+(export-excalidraw)=
+
+**To create a new Excalidraw diagram**, first create what you wish in Excalidraw. Then, take the following steps:
+
+1. Click the **hamburger menu**, then **export image**.
+2. Ensure that **embed scene** is checked. This will include Excalidraw metadata with the output for future editing.
+3. Click the `SVG` button (or `PNG` if necessary). This will download a local file with the diagram.
+4. Put that in the `images/` folder and link it from your content.
+
+**To make edits to an Excalidraw diagram**, follow these steps:
+
+1. Open [excalidraw.com](https://excalidraw.com).
+2. Find the file that you want to edit.
+3. Confirm that it is a SVG or PNG that was **created with Excalidraw**, and that had **embed scene** checked upon creation.
+4. Drag-and-drop that file into the Excalidraw window. (or, click **hamburger menu** -> **open** and add your file that way).
+5. Make your edits in Excalidraw.
+6. Export the new diagram using the [steps described above](export-excalidraw).
+7. Replace the old file with the new one and commit it to `git`. If using an SVG, you can also just copy/paste the new SVG text and replace the old SVG text with it.
+
+## How to enable Pull Request previews on Netlify
+
+Netlify [Deploy Previews](https://docs.netlify.com/site-deploys/deploy-previews/) allow others to preview the documentation for a repository as part of the Pull Request workflow. This will add a Documentation Preview to the Status Checks of a pull request.
+To enable it, do the following:
+
+1. Enable Netlify builds for your repository.
+2. Go to the `configuration -> notifications` section and look for **emails and webhooks**.
+3. Go to **Deploy Notifications**, which lists the notifications that will post to each PR.
+4. To add a new notification, click **Add Notification** -> **GitHub Commit Status**.
+5. Ensure the following notifications are listed for **deploy state commit checks**:
+   - Add deploy state commit checks when Deploy Preview starts
+   - Add deploy state commit checks when Deploy Preview succeeds
+   - Add deploy state commit checks when Deploy Preview fails
