@@ -125,10 +125,14 @@ This is a lightweight way to create flow charts and diagrams.
 
 ## How to enable Pull Request previews on Netlify
 
-Netlify [Deploy Previews](https://docs.netlify.com/site-deploys/deploy-previews/) allow others to preview the documentation for a repository as part of the Pull Request workflow.
-This will add a Documentation Preview to the Status Checks of a pull request.
+Netlify [Deploy Previews](https://docs.netlify.com/site-deploys/deploy-previews/) allow others to preview the documentation for a repository as part of the Pull Request workflow. This will add a Documentation Preview to the Status Checks of a pull request.
 To enable it, do the following:
 
 1. Enable Netlify builds for your repository.
 2. Go to the `configuration -> notifications` section and look for **emails and webhooks**.
-3. Ensure that **Deploy Notifications** lists has **deploy state commit checks** for "starts", "succeeds", and "fails".
+3. Go to **Deploy Notifications**, which lists the notifications that will post to each PR.
+4. To add a new notification, click **Add Notification** -> **GitHub Commit Status**.
+5. Ensure the following notifications are listed for **deploy state commit checks**:
+   - Add deploy state commit checks when Deploy Preview starts
+   - Add deploy state commit checks when Deploy Preview succeeds
+   - Add deploy state commit checks when Deploy Preview fails
