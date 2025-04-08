@@ -26,6 +26,8 @@ Below are supported export types and links to documentation for further reading:
   * [](./creating-word-documents.md)
 - * `CITATION.cff`
   * [](./creating-citation-cff.md)
+- * `MyST Markdown`
+  * [](#export:myst)
 ```
 
 ```{seealso} The MyST templating engine drives document exports
@@ -93,3 +95,14 @@ When writing longer documents like manuscripts, it's common to write your docume
 You can accomplish this in MyST with the {myst:directive}`include` directive.
 
 See [](#docs:include) for more information.
+
+## How can I export MyST Markdown from another document format
+
+MyST can parse some document formats as well.
+This can make it easy to quickly convert something _into MyST Markdown_.
+
+For example, to convert LaTeX into MyST Markdown, use the following command:
+
+```
+myst build doc.tex --md
+```
