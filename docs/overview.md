@@ -4,7 +4,15 @@ This section provides a high-level overview of the main concepts and tools in th
 
 ## A brief overview of the MyST Stack
 
-In a sentence, the {term}`MyST Document Engine` is a program that parses {term}`MyST Markdown` files and builds them into {term}`MyST AST` that conforms to the {term}`MyST Specification`. Here's a diagram showing how these all relate to one another:
+Here is a brief description of the workflow that is involved in the MyST ecosystem and the technical pieces that are involved at each step. You can hover over (or click) the links in the list below to see more information about each one.
+
+- An author writes content in {term}`MyST Markdown` in a file.
+- A {term}`MyST Document Engine` parses one or more files and builds them into structured data called the {term}`MyST AST`.
+- The {term}`MyST AST` conforms to the {term}`MyST Specification`, which provides a lot more information and metadata.
+- A {term}`MyST Renderer` can then transform the {term}`MyST AST` into different kinds of outputs (most commonly HTML, or PDF via Latex/Typst). It uses a {term}`MyST Theme` to do so.
+- The [official MyST CLI](https://mystmd.org) contains both a parser and a renderer so that you can go from a local file to an output with one application. 
+
+Here's a diagram showing how these all relate to one another:
 
 :::{figure} images/myst-diagram.svg
 An overview of some major parts of the MyST stack and how they relate to one another.
