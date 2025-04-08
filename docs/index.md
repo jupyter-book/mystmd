@@ -53,7 +53,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 
 👋 We are glad you are here! 💚
 
-There are many ways that `mystmd` can be used with Jupyter Book and Sphinx. We recommend that you read [background on `mystmd`](./background.md), which goes over how these projects overlap and work together!
+There are many ways that `mystmd` can be used with Jupyter Book and Sphinx. We recommend that you read [a high-level overview of MyST](./overview.md) as well as [the project background](./background.md), which goes over how these projects overlap and work together!
 
 TL;DR
 : **Yes**, you can use `mystmd` with your Jupyter Book! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
