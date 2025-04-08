@@ -96,6 +96,8 @@ You can accomplish this in MyST with the {myst:directive}`include` directive.
 
 See [](#docs:include) for more information.
 
+(export:myst)=
+
 ## How can I export MyST Markdown from another document format
 
 MyST can parse some document formats as well.
