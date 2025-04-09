@@ -25,14 +25,14 @@ const mystVersionsDirective = {
   run(data, vfile, ctx) {
     const sections = MIGRATIONS.map((migration) => {
       const { DATE, DESCRIPTION, VERSION } = migration;
-      const descriptionNode = select('paragraph', ctx.parseMyst(DESCRIPTION));
+      const descriptionNodes = select('root', ctx.parseMyst(DESCRIPTION)).children;
       return [
         {
           type: 'heading',
           depth: data.options?.['heading-depth'] ?? 2,
           children: [{ type: 'text', value: `Version ${VERSION} — ${isoDate(DATE)}` }],
         },
-        descriptionNode,
+        ...descriptionNodes,
       ];
     });
     sections.reverse();
