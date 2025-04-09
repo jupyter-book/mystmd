@@ -8,6 +8,8 @@ export const DATE = new Date(Date.parse('2025-04-09'));
 export const DESCRIPTION = `
 \`Output\` nodes previously could not represent AST trees for each output. 
 Now, the \`Outputs\` node has \`Output\` children with a 1:1 correspondence to \`IOutput\` bundles.
+
+Existing identifiers for the \`Output\` / \`Outputs\` nodes are not modified, as these are considered "content".
 `;
 
 type OutputV2 = {
