@@ -2,9 +2,12 @@ import { selectAll } from 'unist-util-select';
 import { assert } from 'console';
 import type { IFile } from './types.js';
 
-export const description = `
-Output nodes previously could not represent AST trees for each output. 
-Now, the Outputs node has Output children with a 1:1 correspondence to IOutput bundles.
+export const VERSION = 3;
+export const DATE = new Date(Date.parse('2025-04-09'));
+
+export const DESCRIPTION = `
+\`Output\` nodes previously could not represent AST trees for each output. 
+Now, the \`Outputs\` node has \`Output\` children with a 1:1 correspondence to \`IOutput\` bundles.
 `;
 
 type OutputV2 = {
@@ -34,7 +37,7 @@ type OutputV3 = {
 
 export function upgrade(file: IFile): IFile {
   const { version, mdast } = file;
-  assert(version === 2, 'Version must be 2');
+  assert(version === VERSION, `Version must be ${VERSION}`);
   const nodes = selectAll('output', mdast) as OutputV2[];
   nodes.forEach((node) => {
     // We can only correlate output children with the IOutput objects if there's only one IOutput

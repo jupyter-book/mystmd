@@ -51,6 +51,7 @@ project:
     - directives.mjs
     - picsum.mjs
     - latex.mjs
+    - versions.mjs
     - templates.mjs
     - type: executable
       path: picsum.py
