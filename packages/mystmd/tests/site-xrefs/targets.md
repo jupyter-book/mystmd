@@ -27,3 +27,10 @@ This is a graph
 
 See: [](#explicit-heading)
 
+## My code block
+
+```{code} python
+:label: my-code
+
+import antigravity
+```
