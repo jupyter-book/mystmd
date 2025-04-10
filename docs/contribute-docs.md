@@ -5,7 +5,7 @@ short_title: Write Documentation
 
 The documentation of MyST is inspired by the [Diataxis Documentation Framework](https://diataxis.fr).
 
-## Build the MyST guide documentation locally
+## How to build the MyST guide documentation locally
 
 To build the MyST guide documentation:
 
@@ -30,7 +30,7 @@ To build the MyST guide documentation:
 
 This will build the documentation locally so that you can preview what your changes will look like.
 
-## How this relates to the documentation at mystmd.org
+## How does the MyST guide content relate to the documentation at mystmd.org
 
 The documentation in this repository serves the content that lives [at `mystmd.org/guide`](https://mystmd.org/guide).
 
@@ -38,18 +38,37 @@ The full content and theme for [`mystmd.org`](https://mystmd.org) is [hosted at 
 
 However, the documentation here can be built independently for previewing your changes.
 
-## The documentation theme infrastructure
+See [](#about:mystmd.org) for more information about the mystmd.org deployment.
+
+(about:mystmd.org)=
+
+## About the `mystmd.org` documentation theme and hosting service
 
 The [MyST website at mystmd.org](https://mystmd.org) is a custom MyST theme designed by the community in order to aggregate documentation from many locations into one website.
 
-The custom theme is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/).
+### Where is the mystmd.org theme located?
 
-It is an example of how to generate a custom application/site using MyST components.
-For example, `mystmd.org/guide` is pulled from [`jupyter-book/mystmd: /docs/`](https://github.com/jupyter-book/mystmd/tree/main/docs), and [`mystmd.org/jtex`](https://mystmd.org/jtex) is pulled from [`jupyter-book/mystmd: /jtex/docs/`](https://github.com/jupyter-book/mystmd/tree/main/packages/jtex/docs). It also includes some custom applications like the Sandbox and MyST demo on the landing page.
+The [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) repository has a custom MyST theme that is used to control the content and structure of the site at mystmd.org. It is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/). 
 
-It is **not** how most people build websites with MyST Markdown, but is a good "Advanced Use" example.
+### How update the content at mystmd.org
 
-### Where the mystmd.org theme is located
+The content at mystmd.org is automatically updated with [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
+
+To trigger that action, you can either:
+
+1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
+2. **Push a commit to `main`**. Any new commit to the `main` branch will trigger this action.
+
+In either case, once the action completes the content at `mystmd.org` will be updated.
+
+### How to access the Vercel configuration for mystmd.org
+
+Currently the theme is run on **Rowan's** personal Vercel project.
+If you need to change the configuration reach out to him.
+
+### How does the mystmd.org theme work?
+
+The custom MyST theme at [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) is an example of generating a custom application/site using MyST components. It is **not** how most people build websites with MyST Markdown, but is a good "Advanced Use" example.
 
 The MyST documentation uses a custom theme that inherits from a chain of base themes.
 Here's a brief overview of where to look for things:
@@ -61,16 +80,11 @@ Here's a brief overview of where to look for things:
   - [Book theme source](https://github.com/jupyter-book/myst-theme/tree/main/themes/book) -> [Book theme built version](https://github.com/myst-templates/book-theme)
   - [Article theme source](https://github.com/jupyter-book/myst-theme/tree/main/themes/article) -> [Article theme built version](https://github.com/myst-templates/article-theme)
 
-### Modifying and releasing a theme
+The **content of mystmd.org** is pulled from a number of repositories across the `jupyter-book` organization.
 
-Below is a brief description for how modifications in a theme are released for public consumption.
+For example, `mystmd.org/guide` is pulled from [`jupyter-book/mystmd: /docs/`](https://github.com/jupyter-book/mystmd/tree/main/docs), and [`mystmd.org/jtex`](https://mystmd.org/jtex) is pulled from [`jupyter-book/mystmd: /jtex/docs/`](https://github.com/jupyter-book/mystmd/tree/main/packages/jtex/docs). It also includes some custom applications like the Sandbox and MyST demo on the landing page.
 
-1. **[dev facing]** we make a bunch of changes to the theme, probably changing things in `themes/book/*`, `themes/article/*` and `packages/*`
-2. **[dev facing]** if there were changes in `packages/*` we release the `@myst-theme/*` packages (changesets based ci step)
-3. **[dev facing]** we then run `make deploy-book` and `make deploy-article` which builds and bundles each theme, making commits to the https://github.com/myst-templates/book-theme and https://github.com/myst-templates/article-theme repos.
-4. **[user facing]** at that point those latest bundle commits will be what is pulled by `mystmd` clients - people who already have those downloaded need to `myst clean --all` (as we don't yet auto bump based on version changes, see [#854](https://github.com/jupyter-book/mystmd/issues/854) for updates).
-
-## Deploy previews for pull requests
+## How do I preview content changes in pull requests?
 
 We use [the Netlify service](https://netlify.app) to generate deploy previews of the `mystmd` documentation for all pull requests.
 These build only the `mystmd` guide (hosted at https://mystmd.org/guide), not the entire mystmd.org website.
@@ -83,7 +97,7 @@ If you'd like access, please ask a maintainer.
 
 (jb-vs-md)=
 
-## Documenting in jupyterbook.org vs. mystmd.org
+## How to choose what to document in jupyterbook.org vs. mystmd.org?
 
 :::{warning} We're still figuring this out!
 This is a best-effort description of our approach to documentation, based on some conversations we had in https://github.com/jupyter-book/jupyter-book/issues/2239. We'll re-assess this as the documentation of each project evolves.
@@ -136,3 +150,12 @@ To enable it, do the following:
    - Add deploy state commit checks when Deploy Preview starts
    - Add deploy state commit checks when Deploy Preview succeeds
    - Add deploy state commit checks when Deploy Preview fails
+
+## How to modify and release a MyST theme
+
+Below is a brief description for how modifications in a theme are released for public consumption.
+
+1. **[dev facing]** we make a bunch of changes to the theme, probably changing things in `themes/book/*`, `themes/article/*` and `packages/*`
+2. **[dev facing]** if there were changes in `packages/*` we release the `@myst-theme/*` packages (changesets based ci step)
+3. **[dev facing]** we then run `make deploy-book` and `make deploy-article` which builds and bundles each theme, making commits to the https://github.com/myst-templates/book-theme and https://github.com/myst-templates/article-theme repos.
+4. **[user facing]** at that point those latest bundle commits will be what is pulled by `mystmd` clients - people who already have those downloaded need to `myst clean --all` (as we don't yet auto bump based on version changes, see [#854](https://github.com/jupyter-book/mystmd/issues/854) for updates).
