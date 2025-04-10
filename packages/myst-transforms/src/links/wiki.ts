@@ -31,8 +31,11 @@ export class WikiTransformer implements LinkTransformer {
   test(uri?: string): boolean {
     if (!uri) return false;
     if (uri.startsWith('wiki:')) return true;
-    if (uri.match(ANY_WIKIPEDIA_ORG)) return true;
-    if (withoutHttp(uri).startsWith(withoutHttp(this.wikiUrl))) return true;
+    if (uri.match(ANY_WIKIPEDIA_ORG) || withoutHttp(uri).startsWith(withoutHttp(this.wikiUrl))) {
+      // For now, don't match alternative links of the form /w/index.php?oldid=...&title=...
+      // In future, we should support both normalising non-permalinks with ?title=..., and permalinks with oldid=
+      return !uri.match(/\/w\/index\.php(\?[^/]*)?$/);
+    }
     return false;
   }
 
