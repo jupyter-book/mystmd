@@ -83,6 +83,9 @@ export function liftOutputs(
   const cache = castSession(session);
   selectAll('output', mdast).forEach((output) => {
     let children: GenericNode[] | undefined;
+    // Walk over the outputs, and take the first matching "high-priority" output type
+    // Given that the `IOutput.data` mapping is not ordered, the precedence between sibling
+    // MIME type keys (e.g. LaTeX vs Markdown) is not defined for now.
     walkOutputs([(output as any).jupyter_data], (obj: any) => {
       if (children) {
         return;
