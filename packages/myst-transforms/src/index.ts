@@ -3,6 +3,8 @@ export {
   admonitionHeadersTransform,
   admonitionBlockquotePlugin,
   admonitionBlockquoteTransform,
+  admonitionQmdTransform,
+  admonitionQmdPlugin,
 } from './admonitions.js';
 export { captionParagraphPlugin, captionParagraphTransform } from './caption.js';
 export { footnotesPlugin, footnotesTransform } from './footnotes.js';
