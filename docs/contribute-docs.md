@@ -30,6 +30,19 @@ To build the MyST guide documentation:
 
 This will build the documentation locally so that you can preview what your changes will look like.
 
+## How update the content at mystmd.org
+
+When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. You must take one extra step, described below.
+
+The content at mystmd.org is automatically updated with [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
+
+To trigger that action, you can either:
+
+1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
+2. **Push a commit to `main`**. Any new commit to the `main` branch will trigger this action.
+
+In either case, once the action completes the content at `mystmd.org` will be updated.
+
 ## How does the MyST guide content relate to the documentation at mystmd.org
 
 The documentation in this repository serves the content that lives [at `mystmd.org/guide`](https://mystmd.org/guide).
@@ -49,17 +62,6 @@ The [MyST website at mystmd.org](https://mystmd.org) is a custom MyST theme desi
 ### Where is the mystmd.org theme located?
 
 The [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) repository has a custom MyST theme that is used to control the content and structure of the site at mystmd.org. It is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/). 
-
-### How update the content at mystmd.org
-
-The content at mystmd.org is automatically updated with [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
-
-To trigger that action, you can either:
-
-1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
-2. **Push a commit to `main`**. Any new commit to the `main` branch will trigger this action.
-
-In either case, once the action completes the content at `mystmd.org` will be updated.
 
 ### How to access the Vercel configuration for mystmd.org
 
