@@ -30,7 +30,7 @@ To build the MyST guide documentation:
 
 This will build the documentation locally so that you can preview what your changes will look like.
 
-## How update the content at mystmd.org
+## How to update the content at mystmd.org
 
 When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. You must take one extra step, described below.
 
