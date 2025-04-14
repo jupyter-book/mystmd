@@ -86,6 +86,46 @@ If you want to include a PDF of your document with the downloads, take these ste
 
 An entry for this PDF will now show up in your page's downloads dropdown.
 
+:::{note} Updating your GitHub Pages deployment
+:class: dropdown
+
+If you're [deploying a static site with GitHub pages](./deployment-github-pages.md), then you will need to add a new step that builds the PDF _before_ building the website. For example:
+
+```{code-block} yaml
+:filename: .github/workflows/deploy.yml
+:emphasize-lines: 17, 18
+:linenos:
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Install MyST Markdown
+        run: npm install -g mystmd
+      - name: Build PDF Assets
+        run: myst build --pdf
+      - name: Build HTML Assets
+        run: myst build --html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './_build/html'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+:::
+
 ## Include a raw source file
 
 You may include the raw source of a file as a download by referencing the file itself in the download frontmatter.
