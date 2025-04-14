@@ -30,18 +30,13 @@ To build the MyST guide documentation:
 
 This will build the documentation locally so that you can preview what your changes will look like.
 
-## How to update the content at mystmd.org
+## How to update the live website at mystmd.org
 
-When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. You must take one extra step, described below.
+When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. This is because we use [a custom MyST theme](about:mystmd.org) that aggregates content from several MyST repositories into a single website.
 
-The content at mystmd.org is updated with [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
+The live website mystmd.org is **managed by a Curvenote deployment**. To update mystmd.org, you must make a deployment to Curvenote.
 
-To trigger that action, you can either:
-
-1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
-2. **Push a commit to `main`** (of [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org)). Any new commit to the `main` branch will trigger this action.
-
-In either case, once the action completes the content at `mystmd.org` will be updated.
+Currently, the only way to update MyST's Curvenote deployment is to ask [@rowanc1](https://github.com/rowanc1) to do it. We are working on turning this process into a GitHub Action.
 
 ## How does the MyST guide content relate to the documentation at mystmd.org
 
@@ -63,6 +58,7 @@ The [MyST website at mystmd.org](https://mystmd.org) is a custom MyST theme desi
 
 The [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) repository has a custom MyST theme that is used to control the content and structure of the site at mystmd.org. It is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/). 
 
+(team-vercel-deployment)=
 ### How to access the Vercel configuration for mystmd.org
 
 Currently the theme is run on **Rowan's** personal Vercel project.
@@ -85,6 +81,16 @@ Here's a brief overview of where to look for things:
 The **content of mystmd.org** is pulled from a number of repositories across the `jupyter-book` organization.
 
 For example, `mystmd.org/guide` is pulled from [`jupyter-book/mystmd: /docs/`](https://github.com/jupyter-book/mystmd/tree/main/docs), and [`mystmd.org/jtex`](https://mystmd.org/jtex) is pulled from [`jupyter-book/mystmd: /jtex/docs/`](https://github.com/jupyter-book/mystmd/tree/main/packages/jtex/docs). It also includes some custom applications like the Sandbox and MyST demo on the landing page.
+
+### How do I deploy changes to the mystmd.org theme?
+
+After updating the theme at `mystmd.org`, we must [deploy it to Vercel](#team-vercel-deployment) in order to make it available for use.
+We use [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
+
+To trigger that action, you can either:
+
+1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
+2. **Push a commit to `main`** (of [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org)). Any new commit to the `main` branch will trigger this action.
 
 ## How do I preview content changes in pull requests?
 
