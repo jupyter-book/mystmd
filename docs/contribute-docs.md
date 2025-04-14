@@ -34,7 +34,7 @@ This will build the documentation locally so that you can preview what your chan
 
 When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. You must take one extra step, described below.
 
-The content at mystmd.org is automatically updated with [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
+The content at mystmd.org is updated with [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
 
 To trigger that action, you can either:
 
