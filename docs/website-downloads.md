@@ -9,7 +9,7 @@ Downloads are downloadable files or useful links you want available on your MyST
 - If you specify project-level `downloads:` configuration, it will **append** each item to the source-file download of each page.
 - If you specify page-level `downloads:` configuration, it will **override** project-level configuration as well as page defaults.
 
-## Download links configuration
+## Add a download link
 
 Each download link entry has configuration that modifies its behavior.
 Note that each entry may only specify one of `id`, `file`, or `url`.
@@ -17,40 +17,76 @@ Descriptions of these fields and other available fields are in the table below f
 
 ![](#table-frontmatter-downloads)
 
-## Include a built PDF
-
-If you want to include a PDF of your document with the downloads, take these steps:
-
-1. **Build the PDF**. For examples of how to build PDFs, see [](creating-pdf-documents.md). Let's say the PDF was output to `./mydoc.pdf`.
-2. **Specify the file path in your page's metadata**. The filepath should point to the location of the built PDF relative to the page.
+For example,
 
 ```{code-block} yaml
+:label: config-page-download
 :filename: article.md
 ---
 downloads:
-  - file: ./mydoc.pdf
-    title: A PDF of this document
+  - file: ./interesting-photo.png
+    title: An interesting photograph
 ---
 ```
 
-An entry for this PDF will now show up in your page's downloads dropdown.
-If you do not specify the output location of your export we recommend that you refer to it by an ID,
-rather than linking to the `./_build/exports` folder, as these may change depending on your exports list. See [below](#multiple-downloads) for an example.
-
-## Specify a download for all pages of a MyST site
-
-If you'd like a download link to show up for all pages of a MyST site, use configuration at the `myst.yml` level.
-For example, let's say you used `typst` to generate a PDF of _all documents in your MyST site_, called `mybook.pdf`.
+:::{tip} Define downloads for all pages
+In [the above example](#config-page-download), the download configuration was defined for a single page (article.md). If you want to add downloads to every page, you can set the download information at the project level:
 
 ```{code-block} yaml
+:label: config-proj-download
 :filename: myst.yml
+
 project:
+  ...
   downloads:
-    - file: mybook.pdf
-      title: A PDF of this book
+    - file: ./interesting-photo.png
+      title: An interesting photograph
+
 ```
 
-## Include the raw source file
+:::
+
+## Include an exported PDF
+
+If you want to include a PDF of your document with the downloads, take these steps:
+
+1. **Create a PDF export target**. For examples of how to build PDFs, see [](creating-pdf-documents.md). Let's say the PDF was output to `./mydoc.pdf`, then the following frontmatter would define a PDF export and give it a unique identifier `my-document-export`:
+   ```{code-block} yaml
+   :filename: article.md
+   :linenos:
+   :emphasize-lines: 3,4,5,6
+   ---
+   exports:
+     - format: pdf
+       template: lapreprint-typst
+       output: exports/my-document.pdf
+       id: my-document-export
+   ---
+   ```
+2. **Add a download for that export**. The `id` field should match the one defined for your PDF, e.g.
+   ```{code-block} yaml
+   :filename: article.md
+   :linenos:
+   :emphasize-lines: 8,9
+   ---
+   exports:
+     - format: pdf
+       template: lapreprint-typst
+       output: exports/my-document.pdf
+       id: my-document-export
+   downloads:
+     - id: my-document-export
+       title: A PDF of this document
+   ---
+   ```
+3. **Build the PDF**. Run the `myst build` command to build the PDF, e.g.
+   ```bash
+   myst build --pdf
+   ```
+
+An entry for this PDF will now show up in your page's downloads dropdown.
+
+## Include a raw source file
 
 You may include the raw source of a file as a download by referencing the file itself in the download frontmatter.
 For example inside file `index.md`, you may do:
