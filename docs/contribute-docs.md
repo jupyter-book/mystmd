@@ -32,11 +32,17 @@ This will build the documentation locally so that you can preview what your chan
 
 ## How to update the live website at mystmd.org
 
-When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. This is because we use [a custom MyST theme](about:mystmd.org) that aggregates content from several MyST repositories into a single website.
+When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. This is because we use [a custom MyST theme](#about:mystmd.org) that aggregates content from several MyST repositories into a single website.
 
 The live website mystmd.org is **managed by a Curvenote deployment**. To update mystmd.org, you must make a deployment to Curvenote.
 
 Currently, the only way to update MyST's Curvenote deployment is to ask [@rowanc1](https://github.com/rowanc1) to do it. We are working on turning this process into a GitHub Action.
+
+### Caution: only update the live deployment if we know the theme still works!
+
+If we've only changed content in a repository, then it is usually safe to deploy the change to the live site at mystmd.org.
+
+However, **if MyST or one of its themes has been updated, first confirm that the [mystmd.org theme](#about:mystmd.org) has been updated to reflect these new changes.
 
 ## How does the MyST guide content relate to the documentation at mystmd.org
 
