@@ -86,7 +86,7 @@ If you want to include a PDF of your document with the downloads, take these ste
    ```
 4. **Build your website**. Now that you've built the PDF and added frontmatter for the download button, re-building your site will add a new download dropdown linked to the PDF that you've exported.
 
-### Including exported files with GitHub Pages
+### Include exported files with GitHub Pages
 If you're [deploying a static site with GitHub pages](./deployment-github-pages.md), then you will need _two build steps_ to add exported PDF files to your website. Ensure your content [has the proper PDF export frontmatter](#include-exported-pdf), then follow these two steps in your CI.
 
 1. First, install the PDF build dependencies and build the PDF with `myst build --pdf`. In the example below, we'll show how to install Typst with the [`setup-typst` GitHub action][typst-gha].
@@ -98,7 +98,6 @@ See below for sample configuration that accomplishes this:
 :class: dropdown
 ```{code-block} yaml
 :filename: .github/workflows/deploy.yml
-:emphasize-lines: 17, 18
 :linenos:
 
 jobs:
