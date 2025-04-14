@@ -124,6 +124,8 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
+You will also need to ensure that the PDF typesetter (e.g. Typst) is installed in your CI environment. A useful tool is the [`setup-typst` GitHub action][typst-gha], which automates this:
+
 :::
 
 ## Include a raw source file
@@ -164,3 +166,5 @@ downloads:
     title: More Info
 ---
 ```
+
+[typst-gha]: https://github.com/marketplace/actions/setup-typst
