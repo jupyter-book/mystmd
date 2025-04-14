@@ -113,14 +113,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18.x
+      
+      # Install MyST and PDF dependencies
       - name: Install MyST Markdown
         run: npm install -g mystmd
       - name: Setup Typst
-        uses: typst-community/setup-typst@v4        
+        uses: typst-community/setup-typst@v4
+      
+      # Build PDF and then HTML
       - name: Build PDF Assets
         run: myst build --pdf
       - name: Build HTML Assets
         run: myst build --html
+      
+      # Upload to GitHub Pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -128,7 +134,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-```
 
 
 :::
