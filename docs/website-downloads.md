@@ -46,11 +46,12 @@ project:
 
 :::
 
+(include-exported-pdf)=
 ## Include an exported PDF
 
 If you want to include a PDF of your document with the downloads, take these steps:
 
-1. **Create a PDF export target**. For examples of how to build PDFs, see [](creating-pdf-documents.md). Let's say the PDF was output to `./mydoc.pdf`, then the following frontmatter would define a PDF export and give it a unique identifier `my-document-export`:
+1. **Create a PDF export target**. For example, the following page frontmatter defines a PDF export, gives it the unique identifier `my-document-export`, and will output the file `exports/my-document.pdf`:
    ```{code-block} yaml
    :filename: article.md
    :linenos:
@@ -83,14 +84,18 @@ If you want to include a PDF of your document with the downloads, take these ste
    ```bash
    myst build --pdf
    ```
+4. **Build your website**. Now that you've built the PDF and added frontmatter for the download button, re-building your site will add a new download dropdown linked to the PDF that you've exported.
 
-An entry for this PDF will now show up in your page's downloads dropdown.
+### Including exported files with GitHub Pages
+If you're [deploying a static site with GitHub pages](./deployment-github-pages.md), then you will need _two build steps_ to add exported PDF files to your website. Ensure your content [has the proper PDF export frontmatter](#include-exported-pdf), then follow these two steps in your CI.
 
-:::{note} Updating your GitHub Pages deployment
+1. First, install the PDF build dependencies and build the PDF with `myst build --pdf`. In the example below, we'll show how to install Typst with the [`setup-typst` GitHub action][typst-gha].
+2. Second, build the website with `myst build --html`. Because your PDF has already been generated, your website will now include it.
+
+See below for sample configuration that accomplishes this:
+
+:::{note} Example GitHub Action configuration to include PDF with GitHub Pages
 :class: dropdown
-
-If you're [deploying a static site with GitHub pages](./deployment-github-pages.md), then you will need to add a new step that builds the PDF _before_ building the website. For example:
-
 ```{code-block} yaml
 :filename: .github/workflows/deploy.yml
 :emphasize-lines: 17, 18
@@ -111,6 +116,8 @@ jobs:
           node-version: 18.x
       - name: Install MyST Markdown
         run: npm install -g mystmd
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v4        
       - name: Build PDF Assets
         run: myst build --pdf
       - name: Build HTML Assets
@@ -124,7 +131,6 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-You will also need to ensure that the PDF typesetter (e.g. Typst) is installed in your CI environment. A useful tool is the [`setup-typst` GitHub action][typst-gha], which automates this:
 
 :::
 
