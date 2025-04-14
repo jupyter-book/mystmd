@@ -19,6 +19,8 @@ export class WikiTransformer implements LinkTransformer {
 
   lang?: string;
 
+  formatsText = true;
+
   constructor(opts?: { url?: string; lang?: string }) {
     // Ensure for the link formatting that the URL ends in a "/"
     this.wikiUrl = removeWiki(

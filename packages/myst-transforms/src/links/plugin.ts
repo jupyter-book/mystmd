@@ -49,7 +49,7 @@ export function linksTransform(mdast: GenericParent, file: VFile, opts: Options)
     // The link transform may compare the text
     // Formatting adds no-width spaces to some URLs
     // Don't format text if transform already does this
-    if (!(transform && transform.formatsText)) {
+    if (!transform?.formatsText) {
       formatLinkText(link);
     }
     if (!transform || result === undefined) return;
