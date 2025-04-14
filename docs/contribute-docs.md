@@ -36,7 +36,7 @@ When you change the content here or in most other MyST repositories, it will _no
 
 The live website mystmd.org is **managed by a Curvenote deployment**. To update mystmd.org, you must make a deployment to Curvenote.
 
-Currently, the only way to update MyST's Curvenote deployment is to ask [@rowanc1](https://github.com/rowanc1) to do it. We are working on turning this process into a GitHub Action.
+Currently, the only way to update MyST's Curvenote deployment is to ask [@rowanc1](https://github.com/rowanc1) to do it. See [this issue about standardizing team access to documentation infrastructure](https://github.com/jupyter-book/team-compass/issues/25) for making this easier for our team to use.
 
 ### Caution: only update the live deployment if we know the theme still works!
 
