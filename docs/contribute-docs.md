@@ -39,7 +39,7 @@ The content at mystmd.org is updated with [a GitHub Action to deploy to our Verc
 To trigger that action, you can either:
 
 1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
-2. **Push a commit to `main`**. Any new commit to the `main` branch will trigger this action.
+2. **Push a commit to `main`** (of [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org)). Any new commit to the `main` branch will trigger this action.
 
 In either case, once the action completes the content at `mystmd.org` will be updated.
 
