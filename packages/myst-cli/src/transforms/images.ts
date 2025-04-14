@@ -250,6 +250,7 @@ type ConversionOpts = {
   imagemagickAvailable: boolean;
   dwebpAvailable: boolean;
   ffmpegAvailable: boolean;
+  page?: number;
 };
 
 type ConversionFn = (
@@ -270,7 +271,8 @@ function imagemagickConvert(
   return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
     const { imagemagickAvailable } = opts;
     if (imagemagickAvailable) {
-      return imagemagick.convert(from, to, session, source, writeFolder, options);
+      const optsWithPage = opts.page !== undefined ? { ...options, page: opts.page } : options;
+      return imagemagick.convert(from, to, session, source, writeFolder, optsWithPage);
     }
     return null;
   };
@@ -479,13 +481,18 @@ export async function transformImageFormats(
     let outputFile: string | null = null;
     for (const conversionFn of conversionFns) {
       if (!outputFile) {
-        outputFile = await conversionFn(session, inputFile, writeFolder, {
+        const conversionOpts: ConversionOpts = {
           file,
           inkscapeAvailable,
           imagemagickAvailable,
           dwebpAvailable,
           ffmpegAvailable,
-        });
+        };
+        if (image.page !== undefined) {
+          conversionOpts.page = image.page;
+        }
+
+        outputFile = await conversionFn(session, inputFile, writeFolder, conversionOpts);
       }
     }
     if (outputFile) {
