@@ -109,6 +109,7 @@ project:
         - file: interactive-notebooks.ipynb
         - file: integrating-jupyter.md
         - file: notebook-configuration.md
+        - file: md-vs-ipynb.md
     - title: Websites
       children:
         - file: website-templates.md
