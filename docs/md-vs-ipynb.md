@@ -24,7 +24,7 @@ You can work with Jupyter notebooks in both the `.ipynb` format as well as in a 
 - **Human-focused authoring:** If you prioritize writing and reviewing the **source content** in a highly readable, human-editable format.
 - **Collaborative review:** For workflows involving frequent **reviews of the code and explanations**, where output changes are less critical to the review process.
 - **Integration with text-based workflows:** When you intend to use notebooks with tools that excel with Markdown, such as static site generators or documentation pipelines.
-- **When re-executing your content is important or easy:** When you want to re-execute your content at build-time, markdown-based formats are usually easier to work with. This allows you to ensure your code is reproducible, so long as it isn't extremely complex or costly to do execute.
+- **When re-executing your content is important or easy:** When you want to re-execute your content at build-time, markdown-based formats are usually easier to work with. This allows you to ensure your code is reproducible, so long as it isn't extremely complex or costly to do execute. This is often the preferred case in tutorials for libraries where notebooks are regularly executed in CI to ensure continued functionality.
 
 ## Reminder: there is not a single right answer
 
