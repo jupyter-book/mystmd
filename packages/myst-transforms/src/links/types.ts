@@ -5,6 +5,7 @@ import type { Inventory } from 'intersphinx';
 
 export interface LinkTransformer {
   protocol?: string;
+  formatsText?: boolean;
   test: (uri?: string) => boolean;
   transform: (link: Link, file: VFile) => boolean;
 }
