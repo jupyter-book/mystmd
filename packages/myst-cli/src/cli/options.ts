@@ -127,6 +127,13 @@ export function makeServerPortOption() {
     .default(undefined);
 }
 
+export function makeTemplateOption() {
+  return new Option(
+    '--template <path-to-template>',
+    'Use this template file, instead of the one specified in the myst.yml manifest',
+  ).default(undefined);
+}
+
 export function makeYesOption() {
   return new Option('-y, --yes', 'Automatically respond yes to prompts').default(false);
 }

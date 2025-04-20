@@ -5,13 +5,12 @@ subject: MyST Quickstart Tutorial
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-These quickstart tutorials are here to get you up and running on your local computer 👩‍💻. You will learn how to:
+These quickstart tutorials are here to get you up and running on your local computer 👩‍💻.
+See [this overview of the MyST ecosystem](./overview.md) for a more conceptual introduction. In this tutorial, you will get up and running from scratch. You will learn how to:
 
-- learn how to write MyST Markdown 🖊
-- export PDF, Word and $\LaTeX$ documents 📑
-- and create a website like this one 🌎
-
-The current tutorial will help you get up and running from scratch.
+- **write** MyST Markdown 🖊
+- **export** PDF, Word and $\LaTeX$ documents 📑
+- **create** a website like this one 🌎
 
 :::{note} Goals and Prerequisites
 **Goal**: The goal of this tutorial is to help you **install MyST** on your local computer 👩‍💻, create a local website 🌎, and edit elements of the theme to improve the website style 🎨.

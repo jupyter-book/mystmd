@@ -26,6 +26,7 @@ class MystTemplate {
   errorLogFn: (message: string) => void;
   warningLogFn: (message: string) => void;
   debugLogFn: (message: string) => void;
+  validateFiles: boolean;
 
   /**
    * MystTemplate class for template download / validation / render preparation
@@ -44,6 +45,7 @@ class MystTemplate {
       errorLogFn?: (message: string) => void;
       warningLogFn?: (message: string) => void;
       debugLogFn?: (message: string) => void;
+      validateFiles?: boolean;
     },
   ) {
     this.session = session;
@@ -54,6 +56,7 @@ class MystTemplate {
     this.warningLogFn = opts?.warningLogFn ?? warningLogger(this.session);
     this.debugLogFn = opts?.debugLogFn ?? debugLogger(this.session);
     this.kind = opts.kind;
+    this.validateFiles = opts?.validateFiles ?? true;
   }
 
   getTemplateYmlPath() {
@@ -81,6 +84,7 @@ class MystTemplate {
       const templateYml = validateTemplateYml(this.session, this.getTemplateYml(), {
         ...opts,
         templateDir: this.templatePath,
+        validateFiles: this.validateFiles,
       });
       if (opts.messages.errors?.length || templateYml === undefined) {
         // Strictly error if template.yml is invalid

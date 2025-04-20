@@ -201,7 +201,11 @@ export async function checkLinksTransform(
   const linkResults = await Promise.all(
     linkNodes.map(async (link) =>
       limitOutgoingConnections(async () => {
-        const { position, url } = link;
+        const { position, url, type } = link;
+        // Allow cards to have undefined URLs
+        if (type === 'card' && !url) {
+          return '';
+        }
         const check = await checkLink(session, url);
         if (check.ok || check.skipped) return url as string;
         const status = check.status ? ` (${check.status}, ${check.statusText})` : '';

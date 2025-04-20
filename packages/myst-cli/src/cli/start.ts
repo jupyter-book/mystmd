@@ -4,6 +4,7 @@ import {
   makeHeadlessOption,
   makePortOption,
   makeServerPortOption,
+  makeTemplateOption,
   makeExecuteOption,
   makeMaxSizeWebpOption,
 } from './options.js';
@@ -16,6 +17,7 @@ export function makeStartCommand() {
     .addOption(makeHeadlessOption())
     .addOption(makePortOption())
     .addOption(makeServerPortOption())
+    .addOption(makeTemplateOption())
     .addOption(makeMaxSizeWebpOption());
   return command;
 }
