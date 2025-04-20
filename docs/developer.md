@@ -160,7 +160,7 @@ These commands allow you to use the `myst` CLI from any directory; source code c
 
 ### Developer workflow: myst-theme
 
-the [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
+The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
 Recall from the [architecture overview](#architecture) that `myst-theme` is a React web application. It provides theming, and requires a separate content server for data. When developing, the steps are therefore to:
 
