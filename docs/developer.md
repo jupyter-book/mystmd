@@ -24,7 +24,7 @@ However, for a developer it is important to understand that `mystmd` consists of
 1. An engine that converts input documents into an AST (abstract syntax tree).
 2. A renderer, that converts that AST into a given output format.
 
-This model is as applicable to static document conversion:
+This model is equally applicable to exporting/converting static documents and rich web applications. Here's a workfklow for static documents:
 
 ```{mermaid}
 flowchart LR
@@ -33,7 +33,7 @@ flowchart LR
   end
 ```
 
-As it is to producing a rich web application:
+Here's a workflow for producing a rich web application:
 
 ```{mermaid}
 flowchart TB
@@ -55,8 +55,8 @@ flowchart TB
   end
 ```
 
-Walking through this last example, we see that invoking `myst start --headless` converts a set of input files into an AST, and serves up that AST via a content server.
-The theme server is a React app that knows how to style data, which it pulls in from the content server.
+Walking through this last example, we see that invoking `myst start --headless` converts a set of input files into an AST, and serves the resulting AST via a content server.
+The **theme server** is a React app that knows how to style data, which it pulls in from the content server.
 The user interacts with the React app, which may trigger new fetches from the content server.
 
 #### Project-specific concepts
@@ -85,6 +85,24 @@ Missing:
 I know nothing yet about what this section should say, or whether it should exist.
 :::
 
+(develop:transforms)=
+#### Concepts: MyST Transformers
+
+MyST Transformers are a way to convert an AST node into another type of node. Transformers operate on AST rather than on raw markdown because AST has more standardized structure to work with. For example, consider a markdown link like `[some text](#a-label)`. In MyST Markdown, this defines a **cross-reference** to `#a-label`, but it uses markdown link syntax. We use a MyST Transformer to convert that markdown to a cross-reference AST node like so:
+
+- First parse the markdown `[some text](#a-label)`.
+- The result is a MyST AST node for a markdown link.
+- Next, search the document AST for any markdown link nodes with a target that starts with `#`. Assume each one is actually meant to be a cross reference.
+- For each, run a **Transformer** that converts the Markdown Link node into a Cross Reference node.
+
+Some other uses for Transformers include:
+
+- Lifting metadata from `code-cells` to their parent structures
+- Check that figures have alt-texts
+- Convert non-standard AST nodes (e.g., ones generated from a custom user directive) into ones that MyST knows how to render[^ex-transform-node].
+
+[^ex-transform-node]: This is a pattern used in e.g. https://github.com/projectpythia-mystmd/cookbook-gallery/blob/main/pythia-gallery.py where an `executable transform` (non-JS transform that communicates over `STDIO` with `JSON`) takes custom `pythia-cookbooks` nodes and converts them (via some HTTP fetch) to a grid of cards by outputting the relevant grid and card AST nodes.
+
 ### Tools
 
 `mystmd` is built and developed using:
@@ -97,7 +115,7 @@ I know nothing yet about what this section should say, or whether it should exis
 
 ```{note}
 Below you will see several `npm run x` commands.
-These are simply aliases for other commands, defined in the `package.json` file under "scripts".
+These are simply aliases for other commands, defined in the [`package.json` file](https://github.com/jupyter-book/mystmd/blob/main/package.json) under "scripts".
 ```
 
 ### Developer workflow: myst CLI
@@ -105,7 +123,7 @@ These are simply aliases for other commands, defined in the `package.json` file 
 The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
 
 :::{warning}
-The `mystmd-py` package is a thin Python wrapper around the `mystmd` bundle that can be installed using `pip` or `conda`. If you have installed `mystmd` this way, it is recommended that you uninstall it before using the local development instructions below.
+The [`mystmd-py` package](https://github.com/jupyter-book/mystmd/tree/main/packages/mystmd-py/src/mystmd_py) is a thin Python wrapper around the `mystmd` bundle that can be installed using `pip` or `conda`. If you have installed `mystmd` this way, uninstall it before using the local development instructions below.
 :::
 
 To do local development, [clone the repository](https://github.com/jupyter-book/mystmd):
@@ -153,7 +171,7 @@ Recall from the [architecture overview](#architecture) that `myst-md` is a React
 
 #### Content server
 
-We need some example data to test our theme against, such as [the example landing page](https://github.com/myst-examples/landing-pages) or ... Clone our data repository and start the content server:
+We need some example data to test our theme against, such as [the example landing page](https://github.com/myst-examples/landing-pages). Clone this example content repository and start the content server:
 
 ```shell
 git clone https://github.com/myst-examples/landing-pages
@@ -161,15 +179,13 @@ cd landing-pages
 myst start --headless
 ```
 
-(The `--headless` flag tells `myst` not to start up the theme server; we want to do that ourselves in the next step.)
+The `--headless` flag tells `myst` not to start up the theme server; we want to do that ourselves in the next step.
+When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that a _theme server_ uses to render a website.
 
-```{error}
-Can you help me with other good content site examples?
-```
 
 #### myst-theme server
 
-We now fire up the `myst-theme` React app, which will "hydrate" itself from the content server.
+We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](https://en.wikipedia.org/wiki/Hydration_(web_development)).
 
 First, clone the repository and install dependencies:
 
@@ -185,7 +201,7 @@ Then, see if you can build the package:
 npm run build
 ```
 
-Good. Now let's launch the theme server:
+After the build succeeds, launch the theme server:
 
 ```shell
 npm run theme:book
@@ -193,11 +209,15 @@ npm run theme:book
 
 After a while, it should tell you that the server has been started at http://localhost:3000. Browse there, and confirm that you can see the landing-page content.
 
-Each time after making changes to the myst-theme source, you'll need to recompile. You can do that using `npm run build`, but it may be easier to watch for changes and do that automatically:
+Each time after making changes to the myst-theme source, you'll need to recompile. You can do that using `npm run build`.
+
+To automatically watch for changes and reload, use the following command:
 
 ```shell
 npm run dev
 ```
+
+Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
 ### Practices
 
@@ -232,6 +252,8 @@ For now, we try to abide by the following rules for version bumps:
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
 #### Publishing
+
+We use [this GitHub action for releases](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml). Below is a description of some of the major steps to making a release.
 
 When it's time to make a release, we'll call `npm run version` and review the changelog.
 If all looks good, we call `npm run publish` (an alias for `changeset publish`), which pushes updated packages to the [npm registry](https://www.npmjs.com/) and adds a git version tag.
@@ -279,11 +301,8 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 **Transformers**
 
-- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions
+- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more information](#develop:transforms)). 
 
-```{error}
-Transform them to what?
-```
 
 **Export Tools**
 
