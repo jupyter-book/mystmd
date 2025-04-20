@@ -65,7 +65,7 @@ The user interacts with the React app, which may trigger new fetches from the co
 
 If you are familiar with these tools, you should not find many surprises in the codebase.
 
-That said, there are a coupld of concepts used *only* in this project, that won't be familiar. These are detailed below:
+That said, there are a couple of concepts used *only* in this project, that won't be familiar. These are detailed below:
 
 #### Concepts: theme server
 
