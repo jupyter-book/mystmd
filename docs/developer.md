@@ -61,7 +61,7 @@ The user interacts with the React app, which may trigger new fetches from the co
 
 #### Project-specific concepts
 
-`mystmd` is built on top of well known tools in the JavaScript ecosystem, such as A, B, and C for the `myst` CLI or [React](https://reactjs.org/), [Remix](https://remix.run/), and [Tailwind CSS](https://tailwindcss.com/) for the theme server.
+`mystmd` is built on top of well known tools in the JavaScript ecosystem, such as [unist](https://github.com/syntax-tree/unist) from [unified](https://unifiedjs.com/), [mdast](https://github.com/syntax-tree/mdast), and [citation.js](https://citation.js.org/) for the `myst` CLI or [React](https://reactjs.org/), [Remix](https://remix.run/), and [Tailwind CSS](https://tailwindcss.com/) for the theme server.
 
 If you are familiar with these tools, you should not find many surprises in the codebase.
 
@@ -69,20 +69,19 @@ That said, there are a couple of concepts used *only* in this project, that won'
 
 #### Concepts: theme server
 
-In the diagram above, we saw that `mystmd` produces websites by converting a set of documents to an AST, by serving that AST via a content server, and then exposing the data to the user via a React webapp that pulls in data from the content server.
+In the diagram above, we saw that `mystmd` produces websites by converting a set of documents to an AST, by serving that AST via a content server, and then exposing the data to the user via a React webapp (`myst-theme`) that pulls in data from the content server.
 
-:::{error}
-Missing:
+The `myst-to-react` package provides a `<MyST />` component which can render AST into a React tree.
+A React [context](https://react.dev/reference/react/useContext), named ..., is used to push state deeply into the tree, without having to pass it via props.
+
+:::{error} to do — find name of context
+:::
+
+:::{error} to do — explain rendering
 
 - describe the render loop, and how render blocks are registered
 - explain the ThemeProvider
 - explain styling
-:::
-
-#### Concepts: static conversion
-
-:::{warning}
-I know nothing yet about what this section should say, or whether it should exist.
 :::
 
 (develop:transforms)=
@@ -253,14 +252,9 @@ For now, we try to abide by the following rules for version bumps:
 
 #### Publishing
 
-We use [this GitHub action for releases](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml). Below is a description of some of the major steps to making a release.
-
-When it's time to make a release, we'll call `npm run version` and review the changelog.
-If all looks good, we call `npm run publish` (an alias for `changeset publish`), which pushes updated packages to the [npm registry](https://www.npmjs.com/) and adds a git version tag.
-
-```{error}
-Double check if the above paragraph is correct.
-```
+We use [this GitHub action for triggering releases](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml) upon merges to `main`.
+It calls  `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
+It then calls `npm run publish:ci`, which calls `changeset publish` to push updated packages to the [npm registry](https://www.npmjs.com/), and adds a git version tag.
 
 ### Packages in the mystmd repository
 
@@ -321,11 +315,8 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 **Miscellaneous:**
 
 - `myst-common`: common utilities for working with ASTs.
-- `myst-spec-ext`: extensions to `myst-spec`. used throughout this repository, before pushing upstream.
+- `myst-spec`: JSON Schema that defines the MyST AST.
+- `myst-spec-ext`: temporary development extensions to `myst-spec`.
 - `citation-js-utils`: utility functions to deal with citations.
 - `myst-cli-utils`: shared utils between jtex, and myst-cli.
 - `simple-validators`: validation utilities, that print all sorts of nice warnings.
-
-```{error}
-What does "before pushing upstream mean?
-```
