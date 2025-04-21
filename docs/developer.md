@@ -87,11 +87,11 @@ A React [context](https://react.dev/reference/react/useContext), named ..., is u
 (develop:transforms)=
 #### Concepts: MyST Transformers
 
-MyST Transformers are a way to convert an AST node into another type of node. Transformers operate on AST rather than on raw markdown because AST has more standardized structure to work with. For example, consider a markdown link like `[some text](#a-label)`. In MyST Markdown, this defines a **cross-reference** to `#a-label`, but it uses markdown link syntax. We use a MyST Transformer to convert that markdown to a cross-reference AST node like so:
+MyST Transformers are a way to convert an AST node into another type of node. Transformers operate on AST rather than on raw Markdown because AST has more standardized structure to work with. For example, consider a Markdown link like `[some text](#a-label)`. In MyST Markdown, this defines a **cross-reference** to `#a-label`, but it uses Markdown link syntax. We use a MyST Transformer to convert that Markdown to a cross-reference AST node like so:
 
-- First parse the markdown `[some text](#a-label)`.
-- The result is a MyST AST node for a markdown link.
-- Next, search the document AST for any markdown link nodes with a target that starts with `#`. Assume each one is actually meant to be a cross reference.
+- First parse the Markdown `[some text](#a-label)`.
+- The result is a MyST AST node for a Markdown link.
+- Next, search the document AST for any Markdown link nodes with a target that starts with `#`. Assume each one is actually meant to be a cross reference.
 - For each, run a **Transformer** that converts the Markdown Link node into a Cross Reference node.
 
 Some other uses for Transformers include:
