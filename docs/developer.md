@@ -74,7 +74,7 @@ In the diagram above, we saw that `mystmd` produces websites by converting a set
 
 The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) contains the default themes that ship with MyST, and is an example of a React-based MyST theme.
 The [`myst-to-react` package](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
-A React [context](https://react.dev/reference/react/useContext), named `ThemeContext`, is used to push state deeply into the tree, without having to pass it via props.
+A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
 
 :::{error} to do — find name of context
 :::
