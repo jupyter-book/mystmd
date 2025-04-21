@@ -1,20 +1,19 @@
 # Contribute to this project
 
-This page contains pointers and links to help you contribute to this project.
-
 > [!TIP]
-> See [our comprehensive contributing guide](https://mystmd.org/guide/contributing) for more information about how to contribute to the project.
-> This page helps you get started, but that resource has much more information.
+> For a live version of this page rendered with MyST, see [the MyST documentation contributing guide](https://mystmd.org/guide/contributing).
 
 <!-- MYST START -->
 
+This page contains pointers and links to help you contribute to this project.
+
 ## Developer guide
 
-Technical detail about project architecture and contributing code is given in the [developer guide](https://mystmd.org/guide/developer).
+Technical detail about project architecture and contributing code is given in the [developer guide](./docs/developer.md) ([see the live documentation here](https://mystmd.org/guide/developer)).
 
 ## Our team compass
 
-The [Executable Books Team Compass][compass] is a source of truth for our team structure and policy.
+The [Jupyter Book Team Compass][compass] is a source of truth for our team structure and policy.
 It also has a lot of information about how to contribute.
 
 ## Code of conduct

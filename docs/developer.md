@@ -13,7 +13,7 @@ Finally, we go over requirements for contributing code back, via GitHub Pull Req
 
 
 (architecture)=
-### Architecture
+### Architecture underlying a MyST build
 
 From an author's perspective, `mystmd` can be thought of as a tool which compiles files in [MyST Markdown format](./quickstart-myst-markdown),
 a variant of Markdown with several extensions, into books, articles, and websites.
@@ -35,6 +35,7 @@ flowchart LR
 
 Here's a workflow for producing a rich web application:
 
+(diagram-app)=
 ```{mermaid}
 flowchart TB
   subgraph "<tt>myst start --headless</tt>"
@@ -59,7 +60,7 @@ Walking through this last example, we see that invoking `myst start --headless` 
 The **theme server** is a React app that knows how to style data, which it pulls in from the content server.
 The user interacts with the React app, which may trigger new fetches from the content server.
 
-#### Project-specific concepts
+### Project-specific concepts
 
 `mystmd` is built on top of well known tools in the JavaScript ecosystem, such as [unist](https://github.com/syntax-tree/unist) from [unified](https://unifiedjs.com/), [mdast](https://github.com/syntax-tree/mdast), and [citation.js](https://citation.js.org/) for the `myst` CLI or [React](https://reactjs.org/), [Remix](https://remix.run/), and [Tailwind CSS](https://tailwindcss.com/) for the theme server.
 
@@ -71,8 +72,9 @@ That said, there are a couple of concepts used *only* in this project, that won'
 
 In the diagram above, we saw that `mystmd` produces websites by converting a set of documents to an AST, by serving that AST via a content server, and then exposing the data to the user via a React webapp (`myst-theme`) that pulls in data from the content server.
 
-The `myst-to-react` package provides a `<MyST />` component which can render AST into a React tree.
-A React [context](https://react.dev/reference/react/useContext), named ..., is used to push state deeply into the tree, without having to pass it via props.
+The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) contains the default themes that ship with MyST, and is an example of a React-based MyST theme.
+The [`myst-to-react` package](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
+A React [context](https://react.dev/reference/react/useContext), named `<MISSING-TODO>`, is used to push state deeply into the tree, without having to pass it via props.
 
 :::{error} to do — find name of context
 :::
@@ -102,7 +104,7 @@ Some other uses for Transformers include:
 
 [^ex-transform-node]: This is a pattern used in e.g. https://github.com/projectpythia-mystmd/cookbook-gallery/blob/main/pythia-gallery.py where an `executable transform` (non-JS transform that communicates over `STDIO` with `JSON`) takes custom `pythia-cookbooks` nodes and converts them (via some HTTP fetches) to a grid of cards by outputting the relevant grid and card AST nodes.
 
-### Tools
+### Tools that we use
 
 `mystmd` is built and developed using:
 
@@ -121,7 +123,9 @@ These are simply aliases for other commands, defined in the [`package.json` file
 
 The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
 
-:::{warning}
+:::{warning} Don't use `mystmd-py` and the NPM installation at the same time
+:class: dropdown
+
 The [`mystmd-py` package](https://github.com/jupyter-book/mystmd/tree/main/packages/mystmd-py/src/mystmd_py) is a thin Python wrapper around the `mystmd` bundle that can be installed using `pip` or `conda`. If you have installed `mystmd` this way, uninstall it before using the local development instructions below.
 :::
 
@@ -151,18 +155,18 @@ Optionally, you can link the built executable as your globally installed `mystmd
 npm run link
 ```
 
-```{warning}
+These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `npm run build` (executed in the top-level source directory).
+
+```{warning} Windows users should use unix-like shells
 The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
 ```
-
-These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `npm run build` (executed in the top-level source directory).
 
 ### Developer workflow: myst-theme
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
-Recall from the [architecture overview](#architecture) that `myst-theme` is a React web application. It provides theming, and requires a separate content server for data. When developing, the steps are therefore to:
+Recall from the [architecture overview](#diagram-app) that `myst-theme` is a React web application. It provides theming, and requires a separate content server for data. When developing, the steps are therefore to:
 
 1. Launch a content server
 2. Launch the `myst-theme` web application server (this is what you browse to)
@@ -178,15 +182,16 @@ cd landing-pages
 myst start --headless
 ```
 
-The `--headless` flag tells `myst` not to start up the theme server; we want to do that ourselves in the next step.
-When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that a _theme server_ uses to render a website.
+The `--headless` flag tells `myst` not to start a theme server; we want to do that ourselves in the next step.
+
+When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that the _content server_ produces, and that a _theme server_ uses to render a website (in the next step).
 
 
 #### myst-theme server
 
 We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](https://en.wikipedia.org/wiki/Hydration_(web_development)).
 
-First, clone the repository and install dependencies:
+First, clone [the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/) and install dependencies:
 
 ```shell
 git clone https://github.com/jupyter-book/myst-theme/
@@ -208,7 +213,7 @@ npm run theme:book
 
 After a while, it should tell you that the server has been started at http://localhost:3000. Browse there, and confirm that you can see the landing-page content.
 
-Each time after making changes to the myst-theme source, you'll need to recompile. You can do that using `npm run build`.
+Each time you change the myst-theme source, you must recompile by re-running `npm run build`. This allows you to preview the changes locally.
 
 To automatically watch for changes and reload, use the following command:
 
@@ -218,7 +223,7 @@ npm run dev
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
-### Practices
+### Practices that we follow for development
 
 #### Testing
 
