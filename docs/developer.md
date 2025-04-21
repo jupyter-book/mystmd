@@ -74,7 +74,7 @@ In the diagram above, we saw that `mystmd` produces websites by converting a set
 
 The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) contains the default themes that ship with MyST, and is an example of a React-based MyST theme.
 The [`myst-to-react` package](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
-A React [context](https://react.dev/reference/react/useContext), named `<MISSING-TODO>`, is used to push state deeply into the tree, without having to pass it via props.
+A React [context](https://react.dev/reference/react/useContext), named `ThemeContext`, is used to push state deeply into the tree, without having to pass it via props.
 
 :::{error} to do — find name of context
 :::
@@ -104,7 +104,7 @@ Some other uses for Transformers include:
 
 [^ex-transform-node]: This is a pattern used in e.g. https://github.com/projectpythia-mystmd/cookbook-gallery/blob/main/pythia-gallery.py where an `executable transform` (non-JS transform that communicates over `STDIO` with `JSON`) takes custom `pythia-cookbooks` nodes and converts them (via some HTTP fetches) to a grid of cards by outputting the relevant grid and card AST nodes.
 
-### Tools that we use
+### Tools used in development
 
 `mystmd` is built and developed using:
 
@@ -223,7 +223,7 @@ npm run dev
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
-### Practices that we follow for development
+### Practices we follow
 
 #### Testing
 
