@@ -7,9 +7,9 @@ cases:
         - type: paragraph
           children:
             - type: text
-              value: 'This is * ` # % @'
+              value: 'This is * ` # % @ ;'
     typst: |-
-      This is \* \` \# % \@
+      This is \* \` \# % \@ \;
   - title: text in paragraph
     mdast:
       type: root
@@ -40,9 +40,9 @@ cases:
                 - type: text
                   value: a link!
             - type: text
-              value: ' and not a # comment'
+              value: '; with a trailing semicolon and not a # comment'
     typst: |-
-      Some _markdown_ and *strong* and `inlineCode` and #link("https://example.com")[a link!] and not a \# comment
+      Some _markdown_ and *strong* and `inlineCode` and #link("https://example.com")[a link!]\; with a trailing semicolon and not a \# comment
   - title: strong
     mdast:
       type: root
