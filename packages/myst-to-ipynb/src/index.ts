@@ -12,42 +12,25 @@ function sourceToStringList(src: string): string[] {
   return lines;
 }
 
-function markdownString(file: VFile, md_cells: Block[]) {
-  const md = writeMd(file, { type: 'root', children: md_cells }).result as string;
-  return {
-    cell_type: 'markdown',
-    metadata: {},
-    source: sourceToStringList(md),
-  };
-}
-
 export function writeIpynb(file: VFile, node: Root, frontmatter?: PageFrontmatter) {
-  const cells = [];
-  const md_cells: Block[] = [];
-
-  for (const block of node.children as Block[]) {
+  const cells = (node.children as Block[]).map((block: Block) => {
     if (block.type === 'block' && block.kind === 'notebook-code') {
-      if (md_cells.length != 0) {
-        cells.push(markdownString(file, md_cells));
-        md_cells.length = 0;
-      }
       const code = select('code', block) as Code;
-      cells.push({
+      return {
         cell_type: 'code',
         execution_count: null,
         metadata: {},
         outputs: [],
         source: sourceToStringList(code.value),
-      });
-    } else {
-      md_cells.push(block);
+      };
     }
-  }
-
-  if (md_cells.length != 0) {
-    cells.push(markdownString(file, md_cells));
-    md_cells.length = 0;
-  }
+    const md = writeMd(file, { type: 'root', children: [block] }).result as string;
+    return {
+      cell_type: 'markdown',
+      metadata: {},
+      source: sourceToStringList(md),
+    };
+  });
 
   const ipynb = {
     cells,
@@ -59,6 +42,7 @@ export function writeIpynb(file: VFile, node: Root, frontmatter?: PageFrontmatte
     nbformat: 4,
     nbformat_minor: 2,
   };
+
   file.result = JSON.stringify(ipynb, null, 2);
   return file;
 }

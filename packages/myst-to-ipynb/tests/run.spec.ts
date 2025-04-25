@@ -7,7 +7,7 @@ import writeIpynb from '../src';
 
 type TestCase = {
   title: string;
-  ipynb: string;
+  ipynb: Record<string, any>;
   mdast: Record<string, any>;
 };
 
@@ -32,8 +32,7 @@ casesList.forEach(({ title, cases }) => {
         const pipe = unified().use(writeIpynb);
         pipe.runSync(mdast as any);
         const file = pipe.stringify(mdast as any);
-        console.log(file.result);
-        expect(file.result).toEqual(ipynb);
+        expect(JSON.parse(file.result)).toEqual(ipynb);
       },
     );
   });
