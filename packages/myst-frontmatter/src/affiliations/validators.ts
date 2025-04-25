@@ -7,12 +7,16 @@ import {
   validateNumber,
   validateObjectKeys,
   validateString,
-  validateUrl,
   validationWarning,
 } from 'simple-validators';
 import { stashPlaceholder } from '../utils/referenceStash.js';
 import { validateDoi } from '../utils/validators.js';
 import type { Affiliation } from './types.js';
+import {
+  SOCIAL_LINKS_ALIASES,
+  SOCIAL_LINKS_KEYS,
+  validateSocialLinks,
+} from '../utils/socialLinks.js';
 
 export const AFFILIATION_KEYS = [
   'id',
@@ -28,10 +32,10 @@ export const AFFILIATION_KEYS = [
   'ringgold',
   'ror',
   'doi',
-  'url',
   'email',
   'phone',
   'fax',
+  ...SOCIAL_LINKS_KEYS,
 ];
 
 export const AFFILIATION_ALIASES = {
@@ -40,8 +44,8 @@ export const AFFILIATION_ALIASES = {
   province: 'state',
   zipcode: 'postal_code',
   zip_code: 'postal_code',
-  website: 'url',
   institution: 'name',
+  ...SOCIAL_LINKS_ALIASES,
 };
 
 /**
@@ -118,9 +122,7 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   if (defined(value.email)) {
     output.email = validateEmail(value.email, incrementOptions('email', opts));
   }
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
+  validateSocialLinks(value, opts, output);
   if (defined(value.phone)) {
     output.phone = validateString(value.phone, incrementOptions('phone', opts));
   }
