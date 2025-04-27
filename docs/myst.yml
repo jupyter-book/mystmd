@@ -163,6 +163,7 @@ project:
     - title: Contribute
       children:
         - file: contributing.md
+        - file: developer.md
         - file: contribute-templates.md
         - file: contribute-docs.md
         - file: contribute-build-locally.md
