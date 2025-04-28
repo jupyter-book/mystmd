@@ -35,7 +35,7 @@ By default, MyST will stop executing a notebook if a cell raises an error.
 If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell (see [all cell tags](#tbl:notebook-cell-tags)).
 If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
 
-## Show outputs fo cells that return python modules and classes
+## Show outputs for cells that return python modules and classes
 
 By default, MyST will suppress outputs from cells that return Python objects.
 For example:
