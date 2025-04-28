@@ -41,16 +41,15 @@ By default, MyST will suppress outputs from cells that return Python objects.
 For example:
 
 ```{code} Python
-:caption: Input
+:filename: Input
 import math
 math
 ```
 
 ```{code} Python
-:caption: Output
+:filename: Output
 <module 'math' from '/some/path/math.cpython-312-darwin.so'>
 ```
-
 If you'd like to instead show these outputs, see [](#setting:output_matplotlib_strings).
 
 ## Add tags to notebook cells
