@@ -33,7 +33,7 @@ output_stdout
 
 (setting:output_matplotlib_strings)=
 output_matplotlib_strings
-: Remove, warn or error on matplotlib strings outputs. (e.g. `<Figure size 720x576 with 1 Axes>` or `Text(0.5, 0.98, 'Test 1')`). These can also be suppressed by ending your cell content with a semicolon in Jupyter Notebooks. The default is to remove these and warn (`"remove-warn"`).
+: Remove, warn, or error on cell outputs that return a string-based Python object (e.g., matplotlib strings outputs, such as `<Figure size 720x576 with 1 Axes>` or `Text(0.5, 0.98, 'Test 1')`). These can also be suppressed by ending your cell content with a semicolon in Jupyter Notebooks. The default is to remove these and warn (`"remove-warn"`).
 
     - `"show"`: show all matplotlib strings in outputs
     - `"remove"`: remove all matplotlib strings in outputs
