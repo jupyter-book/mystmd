@@ -237,6 +237,7 @@ The following table lists the available frontmatter fields, a brief description 
 +++
 
 (field-behavior)=
+
 ## Field Behavior
 
 Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a “project”. However, individual frontmatter fields are not uniformly available at both levels, and behavior of certain fields are different between project and page levels. There are three field behaviors to be aware of:
@@ -327,8 +328,6 @@ The `authors` field is a list of `author` objects. Available fields in the autho
   - boolean (true/false) - flags any corresponding authors, you must include an `email` if true.
 * - `email`
   - a string - email of the author, required if `corresponding` is `true`
-* - `url`
-  - a string - website or homepage of the author
 * - `roles`
   - a list of strings - must be valid [CRediT Contributor Roles](https://credit.niso.org/)
 
@@ -386,8 +385,18 @@ The `authors` field is a list of `author` objects. Available fields in the autho
   - a boolean (true/false), indicates that the author is an equal contributor
 * - `deceased`
   - a boolean (true/false), indicates that the author is deceased
-* - `twitter`
-  - a twitter username
+* - `url`
+  - a string - website or homepage of the author
+* - `bluesky`
+  - a bluesky username
+* - `mastodon`
+  - a mastodon username (`@user@example.com`) or URL
+* - `threads`
+  - a threads/instagram username
+* - `linkedin`
+  - a linkedin URL
+* - `twitter` (or `x`)
+  - a x/twitter username
 * - `github`
   - a GitHub username
 * - `note`
@@ -396,7 +405,34 @@ The `authors` field is a list of `author` objects. Available fields in the autho
   - a phone number, e.g. `(301) 754-5766`
 * - `fax`
   - for people who still use these machines, beep, boop, beeeep! 📠🎶
+* - `url`, `github`, and other social links
+  - See @table-frontmatter-social-links for all social profile links for the author
 ````
+
+(social-links)=
+
+### Social Links
+
+Contributors and affiliations can also have social links and URLs.
+
+```{list-table} Social Links for contributors and affiliations.
+:header-rows: 1
+:label: table-frontmatter-social-links
+* - `url`
+  - a string - website or homepage of the author
+* - `bluesky`
+  - a bluesky username
+* - `mastodon`
+  - a mastodon username (`@user@example.com`) or URL
+* - `threads`
+  - a threads/instagram username
+* - `linkedin`
+  - a linkedin URL
+* - `twitter` (or `x`)
+  - a x/twitter username
+* - `github`
+  - a GitHub username
+```
 
 (other-contributors)=
 
@@ -433,6 +469,7 @@ authors:
         country: Canada
         postal_code: V6T 1Z4
         phone: 604 822 2449
+        bluesky: '@eoas.ubc.ca'
   - name: Miles Mysterson
     affiliation: ubc
 ```
@@ -548,8 +585,8 @@ affiliations:
   - a string - email of the affiliation, required if `corresponding` is `true`
 * - `address`, `city`, `state`, `postal_code`, and `country`
   - affiliation address information. In place of `state` you can use `province` or `region`.
-* - `url`
-  - a string - website or homepage of the affiliation (`website` is an alias!)
+* - `url`, `github`, and other social links
+  - See @table-frontmatter-social-links for all social profile links for the affiliation
 * - `phone`
   - a phone number, e.g. `(301) 754-5766`
 * - `fax`
@@ -679,7 +716,7 @@ If selecting a license from the [SPDX License List](https://spdx.org/licenses/),
     - `AGPL`
 ```
 
-By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition.  The simplest and most common example is something like:
+By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition. The simplest and most common example is something like:
 
 ```yaml
 license: CC-BY-4.0
@@ -819,7 +856,6 @@ venue:
 ## Publication Metadata
 
 MyST includes several fields to maintain bibliographic metadata for journal publications. First, it has `first_page` and `last_page` - these are page numbers for the article in its printed form. Also, `volume` and `issue` are available to describe the journal volume/issue containing the article. Each of these properties has the same fields available, described in @table-frontmatter-biblio.
-
 
 ```{list-table} Available Volume and Issue fields
 :header-rows: 1

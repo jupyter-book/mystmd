@@ -13,8 +13,12 @@ cases:
             - Validation
           affiliations:
             - example university
-          twitter: '@test'
+          x: '@test'
           github: test
+          bsky: '@domain.com'
+          mastodon: '@alice@example.com'
+          linkedin: 'https://linkedin.com/@user'
+          instagram: 'username'
           url: https://example.com
     normalized:
       contributors:
@@ -34,6 +38,10 @@ cases:
             - example university
           twitter: '@test'
           github: test
+          bluesky: '@domain.com'
+          mastodon: '@alice@example.com'
+          linkedin: 'https://linkedin.com/@user'
+          threads: username
           url: https://example.com
           id: contributors-generated-uid-0
       affiliations:
