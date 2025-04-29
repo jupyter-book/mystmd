@@ -196,7 +196,7 @@ export function transformImagesWithoutExt(
       const sortedExtensions = [
         // Valid extensions
         ...(opts?.imageExtensions ?? []),
-        // Convertable extensions
+        // Convertible extensions
         ...Object.keys(conversionFnLookup),
         // All known extensions
         ...KNOWN_IMAGE_EXTENSIONS,

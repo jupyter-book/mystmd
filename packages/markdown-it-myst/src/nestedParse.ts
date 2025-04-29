@@ -63,7 +63,7 @@ export function nestedPartToTokens(
   state: StateCore,
   pluginRuleName: string,
   inline: boolean,
-) {
+): Token[] {
   if (!part) return [];
   const openToken = new state.Token(`${partName}_open`, '', 1);
   openToken.content = part;

@@ -93,7 +93,7 @@ export const includeDirective: DirectiveSpec = {
     if (data.options?.lines) {
       filter.lines = parseLinesString(
         vfile,
-        select('mystDirectiveOption[name="lines"]', data.node) ?? undefined,
+        select('mystOption[name="lines"]', data.node) ?? undefined,
         data.options?.lines as string,
       );
     } else {
