@@ -18,7 +18,7 @@
     "version": "changeset version && npm install",
     "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags",
     "publish:ci": "npm run build && changeset publish && git push --follow-tags",
-    "prepare": "husky"
+    "install-precommit-hooks": "husky"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.1",
