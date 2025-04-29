@@ -1,5 +1,14 @@
 # myst-directives
 
+## 1.5.13
+
+### Patch Changes
+
+- c6213ed: Move QMD admonition recognition to a transform
+- c6213ed: div node does not require a body
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
 ## 1.5.12
 
 ### Patch Changes

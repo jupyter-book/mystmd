@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.3.34
+
+### Patch Changes
+
+- c6213ed: Move QMD admonition recognition to a transform
+- 7d68c88e: block data class
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+  - myst-to-html@1.5.13
+
 ## 1.3.33
 
 ### Patch Changes
