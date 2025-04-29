@@ -101,6 +101,28 @@ function transformGitHubBracketedAdmonition(node: GenericNode): boolean {
   return true;
 }
 
+const QmdCallouts = [
+  'callout-note',
+  'callout-warning',
+  'callout-important',
+  'callout-tip',
+  'callout-caution',
+];
+
+export function admonitionQmdTransform(tree: GenericParent) {
+  const divs = selectAll('div', tree) as Admonition[];
+  divs.forEach((node) => {
+    const classNames = node.class?.split(/\s/).map((c) => c.trim());
+    if (!classNames) return;
+    const match = classNames?.find((s) => QmdCallouts.find((c) => c === s));
+    if (!match) return;
+    node.type = 'admonition';
+    node.kind = match.replace('callout-', '') as Admonition['kind'];
+    node.class = classNames.filter((c) => c && c !== match).join(' ');
+    if (!node.class) delete node.class;
+  });
+}
+
 /**
  * Visit all blockquote notes and add headers if necessary, support GitHub style admonitions
  */
@@ -124,3 +146,7 @@ export const admonitionBlockquotePlugin: Plugin<[], GenericParent, GenericParent
   () => (tree) => {
     admonitionBlockquoteTransform(tree);
   };
+
+export const admonitionQmdPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
+  admonitionQmdTransform(tree);
+};

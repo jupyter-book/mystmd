@@ -101,6 +101,7 @@ project:
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
         - file: table-of-contents.md
+        - file: inline-options.md
     - title: Executable Content
       children:
         - file: notebooks-with-markdown.md

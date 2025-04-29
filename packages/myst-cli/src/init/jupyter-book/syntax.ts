@@ -154,17 +154,20 @@ export async function upgradeContent(documentLines: string[]): Promise<string[] 
 }
 
 const admonitionPattern =
-  /^(attention|caution|danger|error|important|hint|note|seealso|tip|warning|\.callout-note|\.callout-warning|\.callout-important|\.callout-tip|\.callout-caution)$/;
+  /^(attention|caution|danger|error|important|hint|note|seealso|tip|warning)$/;
 
 async function upgradeNotes(documentLines: string[]): Promise<string[] | undefined> {
   const data = documentLines.join('\n');
   const mdast = mystParse(data);
 
-  const caseInsenstivePattern = new RegExp(admonitionPattern.source, admonitionPattern.flags + 'i');
+  const caseInsensitivePattern = new RegExp(
+    admonitionPattern.source,
+    admonitionPattern.flags + 'i',
+  );
   const directiveNodes = selectAll('mystDirective', mdast);
   const mixedCaseAdmonitions = directiveNodes.filter((item) => {
     const name = (item as any).name as string;
-    return name.match(caseInsenstivePattern) && !name.match(admonitionPattern);
+    return name.match(caseInsensitivePattern) && !name.match(admonitionPattern);
   });
   mixedCaseAdmonitions.forEach((node) => {
     const start = node.position!.start.line;
