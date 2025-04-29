@@ -101,6 +101,12 @@ export function inlineOptionsToTokens(
       throw new Error(`ID cannot start with a number: "${opt.value}"`);
     }
     if (opt.kind === 'unknown') {
+      if (opt.value.match(/\.[A-Za-z0-9_\-.]+/)) {
+        // Throw a nice error about unknown classes that are missing spaces
+        throw new Error(
+          `Unknown token "${opt.value}". Classes must be separated by spaces, try "${opt.value.replace(/\./g, ' .').trim()}"`,
+        );
+      }
       throw new Error(`Unknown token "${opt.value}"`);
     }
     if (opt.kind === 'class' || opt.kind === 'id' || opt.kind === 'bare') {

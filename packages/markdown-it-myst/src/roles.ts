@@ -72,11 +72,16 @@ function runRoles(state: StateCore): boolean {
           try {
             const { map } = token;
             const { content, col } = child as any;
-            const { name = 'span', tokens: optTokens } = inlineOptionsToTokens(
+            // Note, if default role as `span` is wanted, add a
+            // `name = 'span'` here and remove thrown error below
+            const { name, tokens: optTokens } = inlineOptionsToTokens(
               child.info,
               map?.[0] ?? 0,
               state,
             );
+            if (!name) {
+              throw new Error('A role name is required, for example, "{sub}`2`"');
+            }
             const roleOpen = new state.Token('parsed_role_open', '', 1);
             roleOpen.content = content;
             roleOpen.hidden = true;

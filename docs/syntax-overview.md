@@ -63,7 +63,7 @@ My directive content.
 
 2\) **directive options** - a collection of flags or key/value pairs that come just underneath `{directivename}`.
 
-There are two ways to write directive options, as `:key: value` or as a YAML block.
+There are three ways to write directive options: as `:key: value`, as a YAML block, or directly inline.
 
 ``````{tab-set}
 `````{tab-item} Key value pairs
@@ -93,6 +93,14 @@ My directive content.
 ```
 ````
 `````
+`````{tab-item} Inline Options
+Options can be included inline. See [](./inline-options.md) for more information.
+````markdown
+```{directivename .class-name #label key="value"}
+My directive content.
+```
+````
+`````
 ``````
 
 ```{tip}
@@ -115,6 +123,12 @@ Roles are defined inline, with an identifier and input. There are a number of ro
 
 ```{myst}
 Here is an {abc}`unknown role`.
+```
+
+Options for roles can be included inline. See [](./inline-options.md) for more information.
+
+```markdown
+Here is my {span #label .class-name key="value"}`custom span`.
 ```
 
 (nesting-content)=

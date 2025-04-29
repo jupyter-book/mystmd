@@ -92,6 +92,7 @@ describe('parseRoleHeader', () => {
     ['Multiple IDs', 'myRole #first #second', 'Cannot have more than one ID defined'],
     ['ID starts with a digit', 'myRole #1bad', 'ID cannot start with a number: "1bad"'],
     ['Unknown token', 'myRole #bad.', 'Unknown token "#bad."'],
+    ['Unknown token', 'myRole .class.no.space', 'Classes must be separated by spaces'],
   ])('throws error: %s', (_, header, expectedMessage) => {
     expect(() => inlineOptionsToTokens(header, 0, null as any)).toThrow(expectedMessage);
   });

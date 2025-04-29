@@ -1,12 +1,16 @@
 ---
 title: Inline Options
-# subtitle: Generate figures and other rich content using Jupyter kernels
-# short_title: Execute During Build
-# description: MyST can execute Markdown files and Jupyter Notebooks, making it possible to build rich websites from computational documents.
-# thumbnail: thumbnails/execute-notebooks.png
+subtitle: Concise specification of CSS classes, IDs, and attributes
+description: MyST Markdown has support for inline attributes for both roles and directives, allowing concise specification of CSS classes, IDs, and attributes. This complements other methods for defining options, making markup more expressive and flexible.
+# thumbnail: thumbnails/inline-options.png
 ---
 
-MyST Markdown is introducing inline attributes for both roles and directives, allowing concise specification of CSS classes, IDs, and attributes. This complements existing methods for defining options, making markup more expressive and flexible.
+:::{warning} Inline Options are in Beta
+The support for inline attributes is in beta and may have some bugs or limitations.
+Please give feedback on [GitHub](https://github.com/orgs/jupyter-book/discussions).
+:::
+
+MyST Markdown has support for inline attributes for both roles and directives, allowing concise specification of CSS classes, IDs, and attributes. This complements other methods for defining options, making markup more expressive and flexible.
 
 ```markdown
 :::{tip .dropdown open="true"} Title
@@ -45,6 +49,6 @@ Quoted Attributes (`key="value"`)
 : Supports attributes containing spaces or special characters.
 
 Unquoted Attributes (`key=value` or `key=123`)
-: Allows simpler attribute values.
+: Allows simpler attribute values when there are no spaces.
 
-For directives, these can be mixed with other ways to define options on directives, classes are combined in a single string other repeated directive options will raise a duplicate option warning.
+For directives, these can be mixed with other ways to define options on directives, classes are combined in a single space-separated string; other repeated directive options will raise a duplicate option warning.
