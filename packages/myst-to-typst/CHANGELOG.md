@@ -1,5 +1,15 @@
 # myst-to-typst
 
+## 0.0.31
+
+### Patch Changes
+
+- 68c93b9a: Escape semicolons
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
 ## 0.0.30
 
 ### Patch Changes

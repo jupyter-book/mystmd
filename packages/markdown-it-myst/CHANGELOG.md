@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.11
+
+### Patch Changes
+
+- c6213ed: Add inline options
+
 ## 1.0.10
 
 ### Patch Changes

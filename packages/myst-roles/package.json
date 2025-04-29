@@ -1,6 +1,6 @@
 {
   "name": "myst-roles",
-  "version": "1.5.12",
+  "version": "1.5.13",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default role definitions for MyST",
@@ -32,7 +32,7 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.7.9",
-    "myst-spec-ext": "^1.7.9"
+    "myst-common": "^1.7.11",
+    "myst-spec-ext": "^1.7.11"
   }
 }

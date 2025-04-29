@@ -1,5 +1,13 @@
 # myst-roles
 
+## 1.5.13
+
+### Patch Changes
+
+- c6213ed: Introduce a span role
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
 ## 1.5.12
 
 ### Patch Changes

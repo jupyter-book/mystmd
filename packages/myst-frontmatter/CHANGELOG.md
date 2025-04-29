@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.7.11
+
+### Patch Changes
+
+- 91bed6d0: Add additional social profiles (linkedin, bluesky, mastodon, threads). Enable affiliations to have social profiles.
+
 ## 1.7.10
 
 ### Patch Changes
