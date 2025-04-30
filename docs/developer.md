@@ -11,8 +11,8 @@ We start by discussing the project architecture, and give a birds eye view of ho
 Then, we delve into the specific tools you need, and the developer workflow for each part.
 Finally, we go over requirements for contributing code back, via GitHub Pull Requests.
 
-
 (architecture)=
+
 ### Architecture underlying a MyST build
 
 From an author's perspective, `mystmd` can be thought of as a tool which compiles files in [MyST Markdown format](./quickstart-myst-markdown),
@@ -36,6 +36,7 @@ flowchart LR
 Here's a workflow for producing a rich web application:
 
 (diagram-app)=
+
 ```{mermaid}
 flowchart TB
   subgraph "<tt>myst start --headless</tt>"
@@ -66,7 +67,7 @@ The user interacts with the React app, which may trigger new fetches from the co
 
 If you are familiar with these tools, you should not find many surprises in the codebase.
 
-That said, there are a couple of concepts used *only* in this project, that won't be familiar. These are detailed below:
+That said, there are a couple of concepts used _only_ in this project, that won't be familiar. These are detailed below:
 
 #### Concepts: theme server
 
@@ -84,9 +85,10 @@ A React [context](https://react.dev/reference/react/useContext), named `ThemeCon
 - describe the render loop, and how render blocks are registered
 - explain the ThemeProvider
 - explain styling
-:::
+  :::
 
 (develop:transforms)=
+
 #### Concepts: MyST Transformers
 
 MyST Transformers are a way to convert an AST node into another type of node. Transformers operate on AST rather than on raw Markdown because AST has more standardized structure to work with. For example, consider a Markdown link like `[some text](#a-label)`. In MyST Markdown, this defines a **cross-reference** to `#a-label`, but it uses Markdown link syntax. We use a MyST Transformer to convert that Markdown to a cross-reference AST node like so:
@@ -186,10 +188,9 @@ The `--headless` flag tells `myst` not to start a theme server; we want to do th
 
 When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that the _content server_ produces, and that a _theme server_ uses to render a website (in the next step).
 
-
 #### myst-theme server
 
-We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](https://en.wikipedia.org/wiki/Hydration_(web_development)).
+We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](<https://en.wikipedia.org/wiki/Hydration_(web_development)>).
 
 First, clone [the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/) and install dependencies:
 
@@ -237,7 +238,11 @@ If you are working in a particular package, change your working directory to tha
 
 #### Linting
 
-When contributing code, the continuous integration will run linting and formatting. You can run `npm run lint` and `npm run lint:format` locally to ensure they will pass. If you are using the VSCode editor, it can be setup to show you changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
+When contributing code, continuous integration will run linting and formatting on your pull request.
+You can also run `npm run lint` and `npm run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `npm run install-pre-commit`.[^uninstall-pre-commit]
+If you are using the VSCode editor, it can be setup to show changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
+
+[^uninstall-pre-commit]: Uninstall the pre-commit hook with `git config --unset core.hooksPath`.
 
 Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
 
@@ -258,7 +263,7 @@ For now, we try to abide by the following rules for version bumps:
 #### Publishing
 
 We use [this GitHub action for triggering releases](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml) upon merges to `main`.
-It calls  `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
+It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
 It then calls `npm run publish:ci`, which calls `changeset publish` to push updated packages to the [npm registry](https://www.npmjs.com/), and adds a git version tag.
 
 ### Packages in the mystmd repository
@@ -300,8 +305,7 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 **Transformers**
 
-- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more information](#develop:transforms)). 
-
+- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more information](#develop:transforms)).
 
 **Export Tools**
 
