@@ -260,11 +260,41 @@ For now, we try to abide by the following rules for version bumps:
 - **minor**: Backward incompatible change to the Javascript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
-#### Publishing
+#### Publish a release to NPM
 
 We use [this GitHub action for triggering releases](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml) upon merges to `main`.
 It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
 It then calls `npm run publish:ci`, which calls `changeset publish` to push updated packages to the [npm registry](https://www.npmjs.com/), and adds a git version tag.
+
+#### Make a release on GitHub
+
+When we publish a new release to NPM, we also make a release on GitHub and share it for our user community. Here's a brief process for what to do:
+
+- **Confirm a release has been made**. Go to [the Tags page](https://github.com/jupyter-book/mystmd/tags) and look for a tag from the latest release.
+- **Create a release on GitHub**. Go to [the Releases page](https://github.com/jupyter-book/mystmd/releases) and then click **`Draft a new release`**.
+  - The **title** should be the version from the tag. So if the tag was `mystmd@1.3.26`, the title is `v1.3.26`.
+  - Click **Choose a tag** and link it against the tag for the latest release to NPM (the one you discovered in the first step).
+  - Click **Generate release notes** so that GitHub automatically generates a list of the merged PRs and contributors.
+  - Categorize the PRs into `Features`, `Fixes`, `Documentation`, and `Maintenance` as you wish. (this is optional)
+  - For any major changes or new functionality, write a brief description that helps a user understand why it's important and how to learn more. (this is optional)
+  - Write a one or two sentence summary of the big ideas in this release at the top. (this is optional).
+- **Publish the release**. Do this by clicking the **`Publish release`** button at the bottom.
+- **Write a brief post for sharing the release.** This helps others learn about it, and follow the links for more information. Here's a snippet you can copy/paste:
+
+  ```md
+  TITLE: 🚀 Release: MySTMD v1.3.26
+
+  BODY:
+  Hey all 👋 I wanted to share a new release that the [Jupyter Book subproject](https://compass.jupyterbook.org) recently made.
+
+  [MySTMD v1.3.26](https://github.com/jupyter-book/mystmd/releases/tag/mystmd%401.3.26)
+
+  See the link above for the release notes on GitHub! Many thanks to the [Jupyter Book team](https://compass.jupyterbook.org/team) for stewarding our development and this release.
+  ```
+- **Share the release post in Jupyter spaces**. Here are a few places that are worth sharing (you can just copy/paste the same text into each):
+  - [The MyST Discord](https://discord.mystmd.org/)
+  - [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
+  - [The Jupyter Discourse](https://discourse.jupyter.org)
 
 ### Packages in the mystmd repository
 
