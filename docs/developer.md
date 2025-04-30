@@ -285,7 +285,7 @@ When we publish a new release to NPM, we also make a release on GitHub and share
   TITLE: 🚀 Release: MySTMD v1.3.26
 
   BODY:
-  Hey all 👋 I wanted to share a new release that the [Jupyter Book subproject](https://compass.jupyterbook.org) recently made.
+  The [Jupyter Book project](https://compass.jupyterbook.org) recently made a new release! 👇
 
   [MySTMD v1.3.26](https://github.com/jupyter-book/mystmd/releases/tag/mystmd%401.3.26)
 
