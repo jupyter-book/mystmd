@@ -29,6 +29,7 @@ For example, the style-sheet could contain styling for `em` elements nested belo
 :::{literalinclude} public/style.css
 :::
 
+(add-css-classes)=
 ## Adding CSS Classes
 
 The intended way to apply custom styling to your MyST website is to use CSS classes to connect your content to the style sheet. There are several ways to do this.
@@ -75,3 +76,30 @@ I'm _very stylish_.
 ## Built-in CSS Classes
 
 The HTML themes come with [a grid system of CSS classes](https://jupyter-book.github.io/myst-theme/?path=/docs/components-grid-system--docs), which can be used out-of-the-box to position content.
+
+(light-dark-css)=
+## Provide Light and Dark Mode images
+
+You can use [Tailwind CSS classes](https://tailwindcss.com/docs/dark-mode) to make certain content show up in light vs. dark mode. By default items are shown in light mode, so here is how you can control light vs. dark behavior:
+
+**To only show in dark mode**, attach the CSS class `hidden dark:block`. This hides the element by default, and sets its display to `block` when the Dark theme is active.
+
+**To only show in light mode**, attach the CSS class `dark:hidden`. The element will be hidden when Dark mode is active.
+
+For example, here is how you can make two elements swap visibility during light and dark mode. This is useful if you have two versions of an image that are meant for light and dark modes, but the same approach could be applied to any element you can [attach CSS classes to](#add-css-classes).
+
+````{myst}
+:::{div}
+:class: hidden dark:block
+The theme is dark.
+:::
+
+:::{div}
+:class: dark:hidden
+The theme is light.
+:::
+````
+
+:::{warning} This will only work if you're using the default themes
+This syntax depends on [Tailwind CSS](https://tailwindcss.com/docs/dark-mode), which comes with the default themes. If you're using a custom HTML theme, these classes may not work.
+:::
