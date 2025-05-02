@@ -11,7 +11,7 @@ We're still building out custom CSS functionality with the MyST engine.
 Follow and comment on the issues linked below to help us improve it!
 :::
 
-## Defining a Style Sheet
+## Add a Style Sheet (CSS) to your website
 
 The [default MyST website themes](#default-web-themes) support bundling a custom [style-sheet](https://en.wikipedia.org/wiki/CSS). This can be used to introduce custom CSS styling to your website. To include a custom CSS file as part of your website build, you can define the @template-site-myst-book-theme-style option, e.g.
 
@@ -72,6 +72,10 @@ For example, below we add a CSS class to an admonition directive to snap it to t
 I'm _very stylish_.
 ```
 ````
+
+### Add CSS classes in-line to role and directive titles
+
+You can add CSS classes directly to roles and divs using [Inline Options syntax](./inline-options.md).
 
 ## Built-in CSS Classes
 
