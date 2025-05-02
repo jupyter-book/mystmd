@@ -30,7 +30,7 @@ For example, the style-sheet could contain styling for `em` elements nested belo
 :::
 
 (add-css-classes)=
-## Adding CSS Classes
+## Add CSS Classes to content and blocks
 
 The intended way to apply custom styling to your MyST website is to use CSS classes to connect your content to the style sheet. There are several ways to do this.
 
