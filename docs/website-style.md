@@ -11,7 +11,7 @@ We're still building out custom CSS functionality with the MyST engine.
 Follow and comment on the issues linked below to help us improve it!
 :::
 
-## Defining a Style Sheet
+## Add a Style Sheet (CSS) to your website
 
 The [default MyST website themes](#default-web-themes) support bundling a custom [style-sheet](https://en.wikipedia.org/wiki/CSS). This can be used to introduce custom CSS styling to your website. To include a custom CSS file as part of your website build, you can define the @template-site-myst-book-theme-style option, e.g.
 
@@ -29,7 +29,8 @@ For example, the style-sheet could contain styling for `em` elements nested belo
 :::{literalinclude} public/style.css
 :::
 
-## Adding CSS Classes
+(add-css-classes)=
+## Add CSS Classes to content and blocks
 
 The intended way to apply custom styling to your MyST website is to use CSS classes to connect your content to the style sheet. There are several ways to do this.
 
@@ -72,6 +73,37 @@ I'm _very stylish_.
 ```
 ````
 
+### Add CSS classes in-line to role and directive titles
+
+You can add CSS classes directly to roles and divs using [Inline Options syntax](./inline-options.md).
+
 ## Built-in CSS Classes
 
 The HTML themes come with [a grid system of CSS classes](https://jupyter-book.github.io/myst-theme/?path=/docs/components-grid-system--docs), which can be used out-of-the-box to position content.
+
+(light-dark-css)=
+## Provide Light and Dark Mode images
+
+You can use [Tailwind CSS classes](https://tailwindcss.com/docs/dark-mode) to make certain content show up in light vs. dark mode. By default items are shown in light mode, so here is how you can control light vs. dark behavior:
+
+**To only show in dark mode**, attach the CSS class `hidden dark:block`. This hides the element by default, and sets its display to `block` when the Dark theme is active.
+
+**To only show in light mode**, attach the CSS class `dark:hidden`. The element will be hidden when Dark mode is active.
+
+For example, here is how you can make two elements swap visibility during light and dark mode. This is useful if you have two versions of an image that are meant for light and dark modes, but the same approach could be applied to any element you can [attach CSS classes to](#add-css-classes).
+
+````{myst}
+:::{div}
+:class: hidden dark:block
+The theme is dark.
+:::
+
+:::{div}
+:class: dark:hidden
+The theme is light.
+:::
+````
+
+:::{warning} This will only work if you're using the default themes
+This syntax depends on [Tailwind CSS](https://tailwindcss.com/docs/dark-mode), which comes with the default themes. If you're using a custom HTML theme, these classes may not work.
+:::
