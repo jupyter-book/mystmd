@@ -77,6 +77,7 @@ I'm _very stylish_.
 
 You can add CSS classes directly to roles and divs using [Inline Options syntax](./inline-options.md).
 
+(built-in-css)=
 ## Built-in CSS Classes
 
 The HTML themes come with [a grid system of CSS classes](https://jupyter-book.github.io/myst-theme/?path=/docs/components-grid-system--docs), which can be used out-of-the-box to position content.
