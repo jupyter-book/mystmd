@@ -157,7 +157,7 @@ site:
     hide_outline: true
 ```
 
-### Make content take up the space in the right margin
+### Make content expand to the right margin
 
 To make content take up the empty space to the right of the content (where the secondary sidebar usually lives), attach the `col-page-right` CSS class (one of the [built-in CSS classes](#built-in-css)) to a page block or element.
 
