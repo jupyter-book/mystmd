@@ -170,7 +170,7 @@ Yes it will!
 ```
 ````
 
-You could also attach it to a [contenet block](./blocks.md).
+You could also attach the CSS class to a [content block](./blocks.md).
 
 (navigation:footer)=
 
