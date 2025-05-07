@@ -164,7 +164,7 @@ To make content take up the empty space to the right of the content (where the s
 Here's an example of attaching the class directly to an admonition:
 
 ````md
-```{admonition} This admonition will spread to the right!
+```{note} This note will spread to the right!
 :class: col-page-right
 Yes it will!
 ```
