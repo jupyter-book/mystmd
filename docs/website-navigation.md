@@ -157,6 +157,21 @@ site:
     hide_outline: true
 ```
 
+### Make content take up the space in the right margin
+
+To make content take up the empty space to the right of the content (where the secondary sidebar usually lives), attach the `col-page-right` CSS class (one of the [built-in CSS classes](#built-in-css)) to a page block or element.
+
+Here's an example of attaching the class directly to an admonition:
+
+````md
+```{admonition} This admonition will spread to the right!
+:class: col-page-right
+Yes it will!
+```
+````
+
+You could also attach it to a [contenet block](./blocks.md).
+
 (navigation:footer)=
 
 ## Footer
