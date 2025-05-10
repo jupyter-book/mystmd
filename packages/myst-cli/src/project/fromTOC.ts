@@ -116,7 +116,7 @@ export function patternsToFileEntries(
   return entries
     .map((entry) => {
       if (isPattern(entry)) {
-        const { pattern } = entry as PatternEntry;
+        const { pattern, ...leftover } = entry as PatternEntry;
         // Glob matches, relative to `path`, ordered naturally
         const matches = globSync(pattern, { cwd: path, nodir: true, ...opts })
           .filter((item) => !ignore || !ignore.includes(item))
@@ -126,6 +126,7 @@ export function patternsToFileEntries(
           return {
             file: item,
             implicit: true,
+            ...leftover,
           };
         });
         if (newEntries.length === 0) {
@@ -169,15 +170,16 @@ function pagesFromEntries(
     if (isFile(entry)) {
       // Level must be "chapter" (0) or "section" (1-6) for files
       entryLevel = level < 0 ? 0 : level;
-      const file = resolveExtension(resolve(path, entry.file), (message, errorLevel, note) => {
+      const {file, ...leftover} = entry as FileEntry;
+      const resolvedFile = resolveExtension(resolve(path, file), (message, errorLevel, note) => {
         addWarningForFile(session, configFile, message, errorLevel, {
           ruleId: RuleId.tocContentsExist,
           note,
         });
       });
-      if (file && fs.existsSync(file) && !isDirectory(file)) {
-        const { slug } = fileInfo(file, pageSlugs, { ...opts, session });
-        pages.push({ file, level: entryLevel, slug, implicit: entry.implicit });
+      if (resolvedFile && fs.existsSync(resolvedFile) && !isDirectory(resolvedFile)) {
+        const { slug } = fileInfo(resolvedFile, pageSlugs, { ...opts, session });
+        pages.push({ file: resolvedFile, level: entryLevel, slug, ...leftover });
       }
     } else if (isURL(entry)) {
       addWarningForFile(
