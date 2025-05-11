@@ -77,9 +77,6 @@ The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) conta
 The [`myst-to-react` package](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
 A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
 
-:::{error} to do — find name of context
-:::
-
 :::{error} to do — explain rendering
 
 - describe the render loop, and how render blocks are registered
@@ -291,11 +288,13 @@ When we publish a new release to NPM, we also make a release on GitHub and share
 
   See the link above for the release notes on GitHub! Many thanks to the [Jupyter Book team](https://compass.jupyterbook.org/team) for stewarding our development and this release.
   ```
+
 - **Share the release post in Jupyter-adjacent spaces**. Here are a few places that are worth sharing (you can just copy/paste the same text into each):
   - [The MyST Discord](https://discord.mystmd.org/)
   - [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
   - [The Jupyter Discourse](https://discourse.jupyter.org)
   - Social media spaces of your choosing.
+
 ### Packages in the mystmd repository
 
 All packages used to build `mystmd` live in the [https://github.com/jupyter-book/mystmd](https://github.com/jupyter-book/mystmd) repository.
