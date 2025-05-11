@@ -3,8 +3,6 @@ title: Developer Guide
 short_title: Developer Guide
 ---
 
-## Developer quickstart
-
 These sections help you get started with a development environment for `mystmd` and learn how to contribute to the codebase. Note that `mystmd` is written in [TypeScript](https://www.typescriptlang.org/).
 
 We start by discussing the project architecture, and give a birds eye view of how the various parts fit together.
@@ -13,7 +11,7 @@ Finally, we go over requirements for contributing code back, via GitHub Pull Req
 
 (architecture)=
 
-### Architecture underlying a MyST build
+## Architecture underlying a MyST build
 
 From an author's perspective, `mystmd` can be thought of as a tool which compiles files in [MyST Markdown format](./quickstart-myst-markdown),
 a variant of Markdown with several extensions, into books, articles, and websites.
@@ -61,7 +59,7 @@ Walking through this last example, we see that invoking `myst start --headless` 
 The **theme server** is a React app that knows how to style data, which it pulls in from the content server.
 The user interacts with the React app, which may trigger new fetches from the content server.
 
-### Project-specific concepts
+## Project-specific concepts
 
 `mystmd` is built on top of well known tools in the JavaScript ecosystem, such as [unist](https://github.com/syntax-tree/unist) from [unified](https://unifiedjs.com/), [mdast](https://github.com/syntax-tree/mdast), and [citation.js](https://citation.js.org/) for the `myst` CLI or [React](https://reactjs.org/), [Remix](https://remix.run/), and [Tailwind CSS](https://tailwindcss.com/) for the theme server.
 
@@ -69,7 +67,7 @@ If you are familiar with these tools, you should not find many surprises in the 
 
 That said, there are a couple of concepts used _only_ in this project, that won't be familiar. These are detailed below:
 
-#### Concepts: theme server
+### Concepts: Renderers, themes, and templates
 
 In the diagram above, we saw that `mystmd` produces websites by converting a set of documents to an AST, by serving that AST via a content server, and then exposing the data to the user via a React webapp (`myst-theme`) that pulls in data from the content server.
 
@@ -77,16 +75,29 @@ The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) conta
 The [`myst-to-react` package](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
 A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
 
+#### Where to find renderers, themes, and templates
+
+MyST has multiple renders, themes, and templates that allow it to transform MyST AST into final output formats. The MyST team maintains a few that are worth noting:
+
+- [`github.com/jupyter-book/mystmd`](https://github.com/jupyter-book/mystmd): Has several out-of-the-box renderers in addition to the core document engine.
+  - A collection of Renderers, look for the [`myst-to-*` folders in `mystmd/packages`](https://github.com/jupyter-book/mystmd/tree/main/packages). These render MyST AST into components that themes can consume.
+- [`github.com/jupyter-book/myst-theme`](https://github.com/jupyter-book/myst-theme): The core React-based renderer and theme.
+  - A collection of [MyST Rendering Packages](https://github.com/jupyter-book/myst-theme/tree/main/packages) that define various React UI components for default MyST themes to use.
+  - The [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) generates React components out of MyST AST for use by the default MyST Themes.
+  - The [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes) are special out-of-the-box themes that we maintain, and that use the React Renderer.
+- [`myst-templates`](https://github.com/myst-templates): A collection of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to product static outputs.
+
+
 :::{error} to do — explain rendering
 
 - describe the render loop, and how render blocks are registered
 - explain the ThemeProvider
 - explain styling
-  :::
+:::
 
 (develop:transforms)=
 
-#### Concepts: MyST Transformers
+### Concepts: MyST Transformers
 
 MyST Transformers are a way to convert an AST node into another type of node. Transformers operate on AST rather than on raw Markdown because AST has more standardized structure to work with. For example, consider a Markdown link like `[some text](#a-label)`. In MyST Markdown, this defines a **cross-reference** to `#a-label`, but it uses Markdown link syntax. We use a MyST Transformer to convert that Markdown to a cross-reference AST node like so:
 
@@ -101,9 +112,127 @@ Some other uses for Transformers include:
 - Check that figures have alt-texts
 - Convert non-standard AST nodes (e.g., ones generated from a custom user directive) into ones that MyST knows how to render[^ex-transform-node].
 
+Below are a few examples demonstrating how transforms work:
+
 [^ex-transform-node]: This is a pattern used in e.g. https://github.com/projectpythia-mystmd/cookbook-gallery/blob/main/pythia-gallery.py where an `executable transform` (non-JS transform that communicates over `STDIO` with `JSON`) takes custom `pythia-cookbooks` nodes and converts them (via some HTTP fetches) to a grid of cards by outputting the relevant grid and card AST nodes.
 
-### Tools used in development
+#### Example: Parsing an admonition
+
+Let's say you've got MyST Markdown that defines an admonition, like this:
+
+```{code} markdown
+:filename: page1.md
+:::{note} Here's an admonition
+:::
+```
+
+The result of Parsing phase will be raw MyST AST (normally, this is `.json` but we'll show it in YAML so it is a bit more readable):
+
+```{code} yaml
+:filename: page1.json
+- type: mystDirective
+  name: note
+  args: Here's an admonition
+  children:
+    - type: admonition
+      kind: note
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Here’s an admonition
+```
+
+The AST simply encodes that there's a Directive present, with the name `note`.
+
+After initial parsing, all **Directive** nodes are run, triggering the [Admonition Directive logic](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-directives/src/admonition.ts). This converts the `Directive Node` into an `Admonition Node`.
+
+During the **transform** phase, the [Admonition Transforms](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-transforms/src/admonitions.ts) is applied to each Admonition node. These do things like double-check that the admonition has all the necessary information to be rendererd.
+
+The final output has more admonition-specific metadata defined, like `admonitionTitle`.
+
+```{code} yaml
+:filename: page1.json
+- type: admonition
+  kind: note
+  children:
+    - type: admonitionTitle
+      children:
+        - type: text
+          value: Note
+    - type: paragraph
+      children:
+        - type: text
+          value: Here’s an admonition
+```
+
+#### Example: Parsing a cross-reference
+
+Let's say you have a page labels some content, and cross-references it elsewhere on the page:
+
+```{code} markdown
+:filename: page1.md
+(label)=
+**A labeled paragraph**.
+
+A reference to [my label](#label)
+```
+
+The initial parse of this page nodes where labels are present, and treats our markdown link syntax as a regular URL.
+
+```{code} yaml
+:filename: page1.json
+- type: mystTarget
+  label: label
+- type: paragraph
+  children:
+    - type: strong
+      children:
+        - type: text
+          value: A labeled paragraph
+- type: paragraph
+  children:
+    - type: text
+      value: 'A reference to '
+    - type: link
+      url: '#label'
+      children:
+        - type: text
+          value: my label
+```
+
+During the **Transformations** phase, a number of [enumeration transforms](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-transforms/src/enumerate.ts) are run, including one that detects and resolves cross-reference links. At the end of these transforms, the AST now correctly encodes that we have a cross reference rather than a "normal" URL link. This can now be rendered into various output formats.
+
+```{code} yaml
+:filename: page1.json
+- type: paragraph
+  children:
+    - type: strong
+      children:
+        - type: text
+          value: A labeled paragraph
+  label: label
+  identifier: label
+  html_id: label
+- type: paragraph
+  children:
+    - type: text
+      value: 'A reference to '
+    - type: crossReference
+      children:
+        - type: text
+          value: my label
+      urlSource: '#label'
+      identifier: label
+      label: label
+      kind: paragraph
+      template: Paragraph
+      resolved: true
+      html_id: label
+```
+
+
+## Tools used in development
 
 `mystmd` is built and developed using:
 
@@ -118,7 +247,7 @@ Below you will see several `npm run x` commands.
 These are simply aliases for other commands, defined in the [`package.json` file](https://github.com/jupyter-book/mystmd/blob/main/package.json) under "scripts".
 ```
 
-### Developer workflow: myst CLI
+## Developer workflow: myst CLI
 
 The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
 
@@ -161,7 +290,7 @@ The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
 ```
 
-### Developer workflow: myst-theme
+## Developer workflow: myst-theme
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
@@ -171,7 +300,7 @@ Recall from the [architecture overview](#diagram-app) that `myst-theme` is a Rea
 2. Launch the `myst-theme` web application server (this is what you browse to)
 3. Run a process to monitor changes and rebuild `myst-theme`
 
-#### Content server
+### Content server
 
 We need some example data to test our theme against, such as [the example landing page](https://github.com/myst-examples/landing-pages). Clone this example content repository and start the content server:
 
@@ -185,7 +314,7 @@ The `--headless` flag tells `myst` not to start a theme server; we want to do th
 
 When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that the _content server_ produces, and that a _theme server_ uses to render a website (in the next step).
 
-#### myst-theme server
+### myst-theme server
 
 We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](<https://en.wikipedia.org/wiki/Hydration_(web_development)>).
 
@@ -221,9 +350,9 @@ npm run dev
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
-### Practices we follow
+## Practices we follow
 
-#### Testing
+### Testing
 
 Tests help ensure that code operates as intended, and that changes do not break existing code. You can run the test suite using:
 
@@ -233,7 +362,7 @@ npm run test
 
 If you are working in a particular package, change your working directory to that specific package, and run the tests there. To run in "watch mode" (runs each time a change is saved), use `npm run test:watch`.
 
-#### Linting
+### Linting
 
 When contributing code, continuous integration will run linting and formatting on your pull request.
 You can also run `npm run lint` and `npm run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `npm run install-pre-commit`.[^uninstall-pre-commit]
@@ -243,7 +372,7 @@ If you are using the VSCode editor, it can be setup to show changes in real time
 
 Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
 
-#### Versioning
+### Versioning
 
 We use [changesets](https://github.com/changesets/changesets) for tracking changes to packages and updating versions.
 Before submitting your Pull Request, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change.
@@ -257,13 +386,13 @@ For now, we try to abide by the following rules for version bumps:
 - **minor**: Backward incompatible change to the Javascript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
-#### Publish a release to NPM
+### Publish a release to NPM
 
 We use [this GitHub action for triggering releases](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml) upon merges to `main`.
 It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
 It then calls `npm run publish:ci`, which calls `changeset publish` to push updated packages to the [npm registry](https://www.npmjs.com/), and adds a git version tag.
 
-#### Make a release on GitHub
+### Make a release on GitHub
 
 When we publish a new release to NPM, we also make a release on GitHub and share it for our user community. Here's a brief process for what to do:
 
@@ -295,7 +424,7 @@ When we publish a new release to NPM, we also make a release on GitHub and share
   - [The Jupyter Discourse](https://discourse.jupyter.org)
   - Social media spaces of your choosing.
 
-### Packages in the mystmd repository
+## Packages in the mystmd repository
 
 All packages used to build `mystmd` live in the [https://github.com/jupyter-book/mystmd](https://github.com/jupyter-book/mystmd) repository.
 
