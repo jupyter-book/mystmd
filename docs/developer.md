@@ -350,6 +350,23 @@ npm run dev
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
+(myst-api-server)=
+## The MyST API server
+
+We run a lightweight server at [`api.mystmd.org`](https://api.mystmd.org/).
+This is primarily used for resolving template paths and allowing builds to download them.
+
+For example, to get a list of template types you can `GET` this URL:
+
+https://api.mystmd.org/templates
+
+And to see a list of available templates that can be resolved for Typst, you can `GET` this URL:
+
+https://api.mystmd.org/templates/typst
+
+:::{error} todo - Document how the API server is configured and where it is run.
+:::
+
 ## Practices we follow
 
 ### Testing

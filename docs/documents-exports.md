@@ -1,11 +1,12 @@
 ---
-title: Exporting documents
+title: Exporting overview
 description: Create an export for PDF, LaTeX, Typst, Docx, JATS, or CITATION.cff in your page or project frontmatter, and use `myst build` to build the export.
 ---
 
-You may define desired static exports in page or project frontmatter. In the export object, you may specify a `filename`, `format`, and/or `template`, as well as the article(s) you wish to include in your export. You may also provide any additional options required by your template in the export object.
+You can export MyST content into one or more static documents, and optionally bundle them with a MyST website. This section gives an overview of the Exporting process and major configuration options.
 
-## Types of documents you can export
+(types-of-exports)=
+## List of formats you can export
 
 Below are supported export types and links to documentation for further reading:
 
@@ -30,13 +31,31 @@ Below are supported export types and links to documentation for further reading:
   * [](#export:myst)
 ```
 
-```{seealso} The MyST templating engine drives document exports
-You can also explore the [MyST templating](xref:jtex) documentation for a deeper dive into defining templates.
+## Configuration options for exports
+
+There are a few options you can use to configure exports:
+
+```{list-table}
+- - Option
+  - Description
+- - `format`
+  - The type of export you'll create. For examples, see [](#types-of-exports).
+- - `template`
+  - The template to use for the export. For more information, see [](#export-templates).
+- - `output`
+  - The output file to be created.
+- - `id`
+  - A unique identified for the output, in case you want to [re-use exports later](#reuse-export-outputs).
+- - `articles`
+  - One or more source files to use in the export (you can [use `article` as well](#articles-or-article)). If using [page frontmatter](#exports-page-frontmatter), it will default to the current document.
+- - `toc`
+  - If exporting from a multi-page book, the [Table of Contents](./table-of-contents.md) that defines the book structure.
 ```
 
-## Configuring Exports
+You can configure export options in two different places:
 
-There are two places to configure exports, you can do this directly in the markdown of your article that you are exporting:
+(exports-page-frontmatter)=
+**In page frontmatter**:
 
 ```{code-block} yaml
 :filename: my-markdown-file.md
@@ -49,7 +68,7 @@ exports:
 ---
 ```
 
-Alternatively you can configure your export in your `myst.yml`, in this case you will need to specify the `article` (or `articles`) that you are targeting.
+**In your `myst.yml` configuration**. In this case you will need to specify the `article` (or `articles`) that you are targeting. For example, here's how you'd configure an export from a single-page document.
 
 ```{code-block} yaml
 :filename: myst.yml
@@ -62,7 +81,39 @@ project:
       output: exports/my-document.pdf
 ```
 
-## Building Exports
+(articles-or-article)=
+:::{note} You can use either `article:` or `articles:`
+MyST will let you use either one of these options, to make the `myst.yml` configuration more readable.
+:::
+
+(export-templates)=
+## Choose a template
+
+The exporting process uses a **MyST Template** [MyST Template](https://github.com/myst-templates) to transform the {term}`MyST AST` into an output format. MyST Templates are written for a specific export `format`. A MyST Renderer converts MyST AST into components that a template can use to export a final output.
+
+You can choose the template for a given export format with the `template` argument.
+There are several template names you can use out of the box[^api-server].
+For a list of community templates you can use, see [the MyST Templates table](https://github.com/myst-templates#templates) in the [`myst-templates`] GitHub organization.
+
+[^api-server]: These are resolved by the [MyST API server](#myst-api-server).
+
+You can also use a URL that points directly to a template. For example:
+
+```yaml
+- format: typst
+  id: typstpdf
+  template: https://github.com/rowanc1/typst-book.git
+  articles:
+    - page1.md
+    - page2.md
+  output: ./_build/pdf/typst-report.pdf
+```
+
+### The `myst-templates` GitHub organization
+
+The [`myst-templates` GitHub organization](https://github.com/myst-templates) has a collection of MyST templates that are contributed and maintained by the community. If you'd like to create your own template, this is a good starting point.
+
+## Build one or more exports
 
 After defining `exports` in your frontmatter, you may build them with the `myst build` command, by default this only builds the site.
 You can configure the CLI command in a number of ways:
@@ -78,6 +129,12 @@ You can configure the CLI command in a number of ways:
 
 `myst build my-paper.md --pdf`
 : Build all `pdf` exports in a specific page
+
+(reuse-export-outputs)=
+## Re-use export outputs for download buttons
+
+You can re-use exported artifacts by setting an `id:` in your export configuration.
+Then, reference that ID in [your `downloads:` configuration](#download-link).
 
 ## Export Configuration
 
@@ -98,9 +155,9 @@ See [](#docs:include) for more information.
 
 (export:myst)=
 
-## How can I export MyST Markdown from another document format
+## Export MyST Markdown from another document format
 
-MyST can parse some document formats as well.
+MyST can parse some non-MyST document formats as well.
 This makes it possible to convert something _into MyST Markdown_.
 
 For example, to convert LaTeX into MyST Markdown, use the following command:

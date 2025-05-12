@@ -1,4 +1,4 @@
-# What is the MyST stack?
+# Overview of the MyST stack
 
 This section provides a high-level overview of the main concepts and tools in the MyST ecosystem. See the [guiding principles of the MyST ecosystem](../guiding-principles.md) for some more high-level context.
 
