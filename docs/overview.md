@@ -15,10 +15,10 @@ The MyST Build process takes input documents from authors and converts them into
 - - (1) **Writing**: An author writes content with {term}`MyST Markdown` in a file.
   - Ideas
   - Content (`.md`, `.ipynb`, etc)
-- - (2) **Parsing**: A {term}`MyST Document Engine` parses content into structured data called the {term}`MyST AST`.
+- - (2) **Parsing**: A {term}`MyST Document Engine` parses content into structured data called the {term}`MyST AST`. See [](#overview-parsing).
   - Raw content (`.md`, `.ipynb`, etc)
   - Raw MyST AST
-- - (3) **Resolving**: Transform raw MyST AST into AST that can be rendered. See [](#overview-transforms).
+- - (3) **Resolving**: Transform raw MyST AST into AST that can be rendered. See [](#overview-transformers).
   - Raw MyST AST
   - Resolved / Processed MyST AST
 - - (4) **Rendering**: A {term}`MyST Renderer` transforms the {term}`MyST AST` into components that can be used by a {term}`MyST Theme`.
@@ -74,7 +74,7 @@ Here's an example of MyST content, and the same content parsed as MyST AST:
 
 The easiest way to understand how {term}`MyST Markdown` gets converted to {term}`MyST AST` is to [explore the MyST Sandbox](https://mystmd.org/sandbox). Click the {kbd}`AST` tab to see the underlying AST structure for anything that you type. The {kbd}`PRE` tab represents the initial parsing phase, and the {kbd}`POST` tab represents the AST after the resolving phase.
 
-(overview-transforms)=
+(overview-transformers)=
 ## How do MyST Transformers work?
 
 MyST Transformers are a way to convert a {term}`MyST AST` node into another type of node. Transformers operate on AST rather than on raw Markdown because AST has more standardized structure to work with.
