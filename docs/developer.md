@@ -16,6 +16,7 @@ Finally, we go over requirements for contributing code back, via GitHub Pull Req
 From an author's perspective, `mystmd` can be thought of as a tool which compiles files in [MyST Markdown format](./quickstart-myst-markdown),
 a variant of Markdown with several extensions, into books, articles, and websites.
 Like other such tools, it can produce static output, such as PDF, docx, or HTML.
+See [](#overview-build-process) for a conceptual overview.
 
 However, for a developer it is important to understand that `mystmd` consists of two parts:
 
@@ -61,18 +62,36 @@ The user interacts with the React app, which may trigger new fetches from the co
 
 ## Project-specific concepts
 
-`mystmd` is built on top of well known tools in the JavaScript ecosystem, such as [unist](https://github.com/syntax-tree/unist) from [unified](https://unifiedjs.com/), [mdast](https://github.com/syntax-tree/mdast), and [citation.js](https://citation.js.org/) for the `myst` CLI or [React](https://reactjs.org/), [Remix](https://remix.run/), and [Tailwind CSS](https://tailwindcss.com/) for the theme server.
+`mystmd` is built on top of well known tools in the JavaScript ecosystem, such as [unist](https://github.com/syntax-tree/unist) from [unified](https://unifiedjs.com/), [mdast](https://github.com/syntax-tree/mdast), and [citation.js](https://citation.js.org/) for the `myst` CLI. The default MyST web themes use [React](https://reactjs.org/), [Remix](https://remix.run/) (potentially [`vite`](https://remix.run/docs/en/main/guides/vite) soon), and [Tailwind CSS](https://tailwindcss.com/) for the theme server.
 
 If you are familiar with these tools, you should not find many surprises in the codebase.
 
 That said, there are a couple of concepts used _only_ in this project, that won't be familiar. These are detailed below:
 
+(develop-renderers-themes)=
 ### Concepts: Renderers, themes, and templates
 
-In the diagram above, we saw that `mystmd` produces websites by converting a set of documents to an AST, by serving that AST via a content server, and then exposing the data to the user via a React webapp (`myst-theme`) that pulls in data from the content server.
+In the diagram above, we saw that `mystmd` produces websites by:
 
-The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) contains the default themes that ship with MyST, and is an example of a React-based MyST theme.
-The [`myst-to-react` package](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
+- Parsing a set of documents to an AST
+- Transforming the AST into a resolved AST.
+- Rendering the AST into components that can be used by a template or theme.
+- Exporting into a final output by a template / theme.
+
+This section describes a bit more how **Rendering** and **Exporting** work using **Themes** and **Templates**.
+
+For an introduction to themes and templates, see [](#overview-themes). In addition, below we'll define what a **Renderer** is:
+
+```{glossary}
+Renderer
+: Converts MyST AST into components that {term}`themes` and {term}`templates` can use to export final outputs. For example, the [`myst-to-react` renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) converts MyST AST into a number of React components that the [`book` and `article` React themes](https://github.com/jupyter-book/myst-theme/tree/main/themes) use to generate websites.
+```
+
+For example, in the case of the `book` theme, a MyST Document engine serves MyST AST via a Content Server, the [MyST React renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) ingests that content and output React components, and the [book theme](https://github.com/jupyter-book/myst-theme/tree/main/themes/book) converts those components into HTML outputs.
+
+The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) contains the source code of the default themes that ship with MyST, and is an example of a React-based MyST theme. These themes are built and then hosted at the [`myst-templates` GitHub organization](https://github.com/myst-templates/book-theme) for consumption by users.
+
+The [`myst-to-react` renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
 A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
 
 #### Where to find renderers, themes, and templates
@@ -84,8 +103,8 @@ MyST has multiple renders, themes, and templates that allow it to transform MyST
 - [`github.com/jupyter-book/myst-theme`](https://github.com/jupyter-book/myst-theme): The core React-based renderer and theme.
   - A collection of [MyST Rendering Packages](https://github.com/jupyter-book/myst-theme/tree/main/packages) that define various React UI components for default MyST themes to use.
   - The [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) generates React components out of MyST AST for use by the default MyST Themes.
-  - The [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes) are special out-of-the-box themes that we maintain, and that use the React Renderer.
-- [`myst-templates`](https://github.com/myst-templates): A collection of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to product static outputs.
+  - The [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes) are out-of-the-box themes that we maintain, and that use the React Renderer.
+- [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to product static outputs.
 
 
 :::{error} to do — explain rendering
@@ -99,22 +118,8 @@ MyST has multiple renders, themes, and templates that allow it to transform MyST
 
 ### Concepts: MyST Transformers
 
-MyST Transformers are a way to convert an AST node into another type of node. Transformers operate on AST rather than on raw Markdown because AST has more standardized structure to work with. For example, consider a Markdown link like `[some text](#a-label)`. In MyST Markdown, this defines a **cross-reference** to `#a-label`, but it uses Markdown link syntax. We use a MyST Transformer to convert that Markdown to a cross-reference AST node like so:
-
-- First parse the Markdown `[some text](#a-label)`.
-- The result is a MyST AST node for a Markdown link.
-- Next, search the document AST for any Markdown link nodes with a target that starts with `#`. Assume each one is actually meant to be a cross reference.
-- For each, run a **Transformer** that converts the Markdown Link node into a Cross Reference node.
-
-Some other uses for Transformers include:
-
-- Lifting metadata from `code-cells` to their parent structures
-- Check that figures have alt-texts
-- Convert non-standard AST nodes (e.g., ones generated from a custom user directive) into ones that MyST knows how to render[^ex-transform-node].
-
-Below are a few examples demonstrating how transforms work:
-
-[^ex-transform-node]: This is a pattern used in e.g. https://github.com/projectpythia-mystmd/cookbook-gallery/blob/main/pythia-gallery.py where an `executable transform` (non-JS transform that communicates over `STDIO` with `JSON`) takes custom `pythia-cookbooks` nodes and converts them (via some HTTP fetches) to a grid of cards by outputting the relevant grid and card AST nodes.
+See [](#overview-transforms) for a higher-level overview of transforms.
+This section provides a few concrete examples of how transforms modify the AST throughout the transforms process.
 
 #### Example: Parsing an admonition
 
@@ -353,8 +358,7 @@ Note that you can run `npm run dev` from within any folder if you'd like to watc
 (myst-api-server)=
 ## The MyST API server
 
-We run a lightweight server at [`api.mystmd.org`](https://api.mystmd.org/).
-This is primarily used for resolving template paths and allowing builds to download them.
+We run a lightweight server at [`api.mystmd.org`](https://api.mystmd.org/) to help users resolve and download templates. The code for this exists at [the `myst-templates/templates` repository](https://github.com/myst-templates/templates).
 
 For example, to get a list of template types you can `GET` this URL:
 
@@ -364,10 +368,11 @@ And to see a list of available templates that can be resolved for Typst, you can
 
 https://api.mystmd.org/templates/typst
 
-:::{error} todo - Document how the API server is configured and where it is run.
-:::
-
 ## Practices we follow
+
+### Build system
+
+We use [Turbo](https://turborepo.com/) to manage our testing and build system.
 
 ### Testing
 

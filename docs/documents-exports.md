@@ -31,26 +31,7 @@ Below are supported export types and links to documentation for further reading:
   * [](#export:myst)
 ```
 
-## Configuration options for exports
-
-There are a few options you can use to configure exports:
-
-```{list-table}
-- - Option
-  - Description
-- - `format`
-  - The type of export you'll create. For examples, see [](#types-of-exports).
-- - `template`
-  - The template to use for the export. For more information, see [](#export-templates).
-- - `output`
-  - The output file to be created.
-- - `id`
-  - A unique identified for the output, in case you want to [re-use exports later](#reuse-export-outputs).
-- - `articles`
-  - One or more source files to use in the export (you can [use `article` as well](#articles-or-article)). If using [page frontmatter](#exports-page-frontmatter), it will default to the current document.
-- - `toc`
-  - If exporting from a multi-page book, the [Table of Contents](./table-of-contents.md) that defines the book structure.
-```
+## Where to configure options for exports
 
 You can configure export options in two different places:
 
@@ -86,6 +67,28 @@ project:
 MyST will let you use either one of these options, to make the `myst.yml` configuration more readable.
 :::
 
+
+## Configuration options for exports
+
+There are a few options you can use to configure exports:
+
+```{list-table}
+- - Option
+  - Description
+- - `format`
+  - The type of export you'll create. For examples, see [](#types-of-exports).
+- - `template`
+  - The template to use for the export. For more information, see [](#export-templates).
+- - `output`
+  - The output file to be created.
+- - `id`
+  - A unique identified for the output, in case you want to [re-use exports later](#reuse-export-outputs).
+- - `articles`
+  - One or more source files to use in the export (you can [use `article` as well](#articles-or-article)). If using [page frontmatter](#exports-page-frontmatter), it will default to the current document.
+- - `toc`
+  - If exporting from a multi-page book, the [Table of Contents](./table-of-contents.md) that defines the book structure.
+```
+
 (export-templates)=
 ## Choose a template
 
@@ -97,7 +100,7 @@ For a list of community templates you can use, see [the MyST Templates table](ht
 
 [^api-server]: These are resolved by the [MyST API server](#myst-api-server).
 
-You can also use a URL that points directly to a template. For example:
+You can also use a **URL** or a **local path** that points directly to a template. For example:
 
 ```yaml
 - format: typst
@@ -111,7 +114,7 @@ You can also use a URL that points directly to a template. For example:
 
 ### The `myst-templates` GitHub organization
 
-The [`myst-templates` GitHub organization](https://github.com/myst-templates) has a collection of MyST templates that are contributed and maintained by the community. If you'd like to create your own template, this is a good starting point.
+The [`myst-templates` GitHub organization](https://github.com/myst-templates) has a collection of MyST templates that are contributed and maintained by the community. These templates are made easily-consumable by MyST users [via the MyST API service](https://api.mystmd.org), see [](#myst-api-server) for technical details.
 
 ## Build one or more exports
 
