@@ -73,7 +73,7 @@ That said, there are a couple of concepts used _only_ in this project, that won'
 
 In the diagram above, we saw that `mystmd` produces websites by:
 
-- Parsing a set of documents to an AST
+- Parsing a set of documents to an AST.
 - Transforming the AST into a resolved AST.
 - Rendering the AST into components that can be used by a template or theme.
 - Exporting into a final output by a template / theme.
