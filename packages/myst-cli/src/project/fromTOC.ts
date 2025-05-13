@@ -170,7 +170,7 @@ function pagesFromEntries(
     if (isFile(entry)) {
       // Level must be "chapter" (0) or "section" (1-6) for files
       entryLevel = level < 0 ? 0 : level;
-      const {file, ...leftover} = entry as FileEntry;
+      const { file, ...leftover } = entry as FileEntry;
       const resolvedFile = resolveExtension(resolve(path, file), (message, errorLevel, note) => {
         addWarningForFile(session, configFile, message, errorLevel, {
           ruleId: RuleId.tocContentsExist,
