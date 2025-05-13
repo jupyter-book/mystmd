@@ -114,6 +114,22 @@ MyST has multiple renders, themes, and templates that allow it to transform MyST
 - explain styling
 :::
 
+#### Example: Adding an "edit this page" button
+
+Here's a brief example to illustrate a common development pattern.
+Let's say we want to add a new button to each page of the MyST Theme that includes an "edit link" for the page.
+
+To accomplish this, we need to make three contributions.
+
+First, update [`jupyter-book/mystmd`](https://github.com/jupyter-book/mystmd), so that we can expose the "edit link" for each page as a new piece of metadata. [The main logic for adding the edit URL is here](https://github.com/jupyter-book/mystmd/pull/1804/files#diff-582c1df86d16945dd170ec211cedead020d37f750744946564f7483d08a1059bR27-R30).
+
+Second, update the React theme infrastructure at [`jupyter-book/myst-theme`](https://github.com/jupyter-book/myst-theme/tree/main/themes). [Here's a pull request that implements this](https://github.com/jupyter-book/myst-theme/pull/577/files). Note how it:
+
+1. [Defines a new React component called `<EditLink />`](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R156-R174)
+2. [Pulls the new edit url metadta from the MyST AST](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R248).
+3. [Adds the new `<EditLink />` component to the `<FrontMatterBlock />` component](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R299).
+4. Because the book theme and the article theme _already use_ the `<FrontMatterBlock />`, they inherit this functionality automatically.
+
 (develop:transforms)=
 
 ### Concepts: MyST Transformers
