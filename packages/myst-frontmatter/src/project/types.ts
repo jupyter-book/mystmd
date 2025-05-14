@@ -84,7 +84,7 @@ export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
   references?: ExternalReferences;
   requirements?: string[];
   resources?: string[];
-  socials?: SocialLinks;
+  social?: SocialLinks;
   thebe?: ExpandedThebeFrontmatter;
   toc?: any[];
 };

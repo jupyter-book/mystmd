@@ -35,6 +35,19 @@ cases:
       github: https://github.com/example
       binder: https://example.com/binder
       source: https://example.com/source
+      socials:
+        x: '@test'
+        github: test
+        bsky: '@domain.com'
+        mastodon: 'https://fosstodon.org/@user'
+        linkedin: 'https://linkedin.com/@user'
+        instagram: 'username'
+        youtube: 'https://youtube.com/user'
+        facebook: 'https://facebook.com/user'
+        discourse: 'https://discourse.example.com'
+        discord: 'https://discord.gg/server'
+        slack: 'https://example.slack.com'
+        website: https://example.com
       subject: ''
       volume:
         number: 12
@@ -96,6 +109,19 @@ cases:
       github: https://github.com/example
       binder: https://example.com/binder
       source: https://example.com/source
+      social:
+        twitter: '@test'
+        github: test
+        bluesky: '@domain.com'
+        mastodon: 'https://fosstodon.org/@user'
+        linkedin: 'https://linkedin.com/@user'
+        threads: 'username'
+        youtube: 'https://youtube.com/user'
+        facebook: 'https://facebook.com/user'
+        discourse: 'https://discourse.example.com'
+        discord: 'https://discord.gg/server'
+        slack: 'https://example.slack.com'
+        url: https://example.com
       subject: ''
       volume:
         number: 12

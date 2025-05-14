@@ -70,7 +70,7 @@ export function validateSocialLinks(
     result.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
   }
   if (defined(value.youtube)) {
-    result.youtube = validateString(value.youtube, incrementOptions('youtube', opts));
+    result.youtube = validateUrl(value.youtube, incrementOptions('youtube', opts));
   }
   if (defined(value.discourse)) {
     result.discourse = validateUrl(value.discourse, incrementOptions('discourse', opts));

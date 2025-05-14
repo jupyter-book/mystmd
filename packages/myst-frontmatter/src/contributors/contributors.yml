@@ -16,10 +16,15 @@ cases:
           x: '@test'
           github: test
           bsky: '@domain.com'
-          mastodon: '@alice@example.com'
+          mastodon: 'https://fosstodon.org/@user'
           linkedin: 'https://linkedin.com/@user'
           instagram: 'username'
-          url: https://example.com
+          youtube: 'https://youtube.com/user'
+          facebook: 'https://facebook.com/user'
+          discourse: 'https://discourse.example.com'
+          discord: 'https://discord.gg/server'
+          slack: 'https://example.slack.com'
+          website: https://example.com
     normalized:
       contributors:
         - userId: ''
@@ -39,9 +44,14 @@ cases:
           twitter: '@test'
           github: test
           bluesky: '@domain.com'
-          mastodon: '@alice@example.com'
+          mastodon: 'https://fosstodon.org/@user'
           linkedin: 'https://linkedin.com/@user'
           threads: username
+          youtube: 'https://youtube.com/user'
+          facebook: 'https://facebook.com/user'
+          discourse: 'https://discourse.example.com'
+          discord: 'https://discord.gg/server'
+          slack: 'https://example.slack.com'
           url: https://example.com
           id: contributors-generated-uid-0
       affiliations:

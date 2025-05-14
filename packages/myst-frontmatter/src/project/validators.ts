@@ -273,8 +273,8 @@ export function validateProjectFrontmatterKeys(
     output.toc = validateTOC(value.toc, incrementOptions('toc', opts));
   }
 
-  if (defined(value.socials)) {
-    output.socials = validateSocialLinks(value.socials, incrementOptions('socials', opts));
+  if (defined(value.social)) {
+    output.social = validateSocialLinks(value.social, incrementOptions('social', opts));
   }
 
   if (defined(value.requirements)) {
