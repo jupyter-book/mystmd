@@ -176,11 +176,11 @@ Recall from the [architecture overview](#diagram-app) that `myst-theme` is a Rea
 
 #### Content server
 
-We need some example data to test our theme against, such as [the example landing page](https://github.com/myst-examples/landing-pages). Clone this example content repository and start the content server:
+We need some example data to test our theme against, such as [the example landing page](https://github.com/jupyter-book/example-landing-pages). Clone this example content repository and start the content server:
 
 ```shell
-git clone https://github.com/myst-examples/landing-pages
-cd landing-pages
+git clone https://github.com/jupyter-book/example-landing-pages
+cd example-landing-pages
 myst start --headless
 ```
 
@@ -291,11 +291,13 @@ When we publish a new release to NPM, we also make a release on GitHub and share
 
   See the link above for the release notes on GitHub! Many thanks to the [Jupyter Book team](https://compass.jupyterbook.org/team) for stewarding our development and this release.
   ```
+
 - **Share the release post in Jupyter-adjacent spaces**. Here are a few places that are worth sharing (you can just copy/paste the same text into each):
   - [The MyST Discord](https://discord.mystmd.org/)
   - [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
   - [The Jupyter Discourse](https://discourse.jupyter.org)
   - Social media spaces of your choosing.
+
 ### Packages in the mystmd repository
 
 All packages used to build `mystmd` live in the [https://github.com/jupyter-book/mystmd](https://github.com/jupyter-book/mystmd) repository.
