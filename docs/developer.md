@@ -475,6 +475,9 @@ Running in live-changes mode: depending on the package you are working in we hav
 ### Versioning and changesets
 
 We use [changesets](https://github.com/changesets/changesets) for tracking changes to packages and updating versions.
+To learn about changesets, see [this introductory guide to changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
+We use this [`changesets` GitHub Action](https://github.com/changesets/action) when we publish a release.
+
 Before submitting your Pull Request, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change.
 Commit the changeset file to the repository as a part of your pull request.
 You can use `npm run version` to preview the generated changelog.
