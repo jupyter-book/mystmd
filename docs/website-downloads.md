@@ -9,6 +9,7 @@ Downloads are downloadable files or useful links you want available on your MyST
 - If you specify project-level `downloads:` configuration, it will **append** each item to the source-file download of each page.
 - If you specify page-level `downloads:` configuration, it will **override** project-level configuration as well as page defaults.
 
+(download-link)=
 ## Add a download link
 
 Each download link entry has configuration that modifies its behavior.
