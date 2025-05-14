@@ -9,6 +9,7 @@ import type { ProjectSettings } from '../settings/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
 import { SITE_FRONTMATTER_KEYS } from '../site/types.js';
 import type { ExpandedThebeFrontmatter } from '../thebe/types.js';
+import type { SocialLinks } from '../utils/socialLinks.js';
 
 export const KNOWN_EXTERNAL_IDENTIFIERS = ['arxiv', 'pmid', 'pmcid', 'zenodo'];
 
@@ -83,6 +84,7 @@ export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
   references?: ExternalReferences;
   requirements?: string[];
   resources?: string[];
+  socials?: SocialLinks;
   thebe?: ExpandedThebeFrontmatter;
   toc?: any[];
 };
