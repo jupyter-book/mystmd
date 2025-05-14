@@ -16,6 +16,11 @@ export const SOCIAL_LINKS_KEYS = [
   'linkedin',
   'threads',
   'twitter', // Change to 'x' in future
+  'youtube',
+  'discourse',
+  'discord',
+  'slack',
+  'facebook',
 ] as const;
 
 export const SOCIAL_LINKS_ALIASES = {
@@ -34,7 +39,7 @@ export function validateSocialLinks(
   opts: ValidationOptions,
   output?: SocialLinks,
 ): SocialLinks | undefined {
-  const value = output
+  const value: SocialLinks = output
     ? input
     : validateObjectKeys(input, { optional: SOCIAL_LINKS_KEYS as unknown as string[], alias: SOCIAL_LINKS_ALIASES }, opts);
 
@@ -42,6 +47,7 @@ export function validateSocialLinks(
 
   const result = output ?? {};
 
+  // FIXME: normalize usernames into URLs
   if (defined(value.url)) {
     result.url = validateUrl(value.url, incrementOptions('url', opts));
   }
@@ -62,6 +68,21 @@ export function validateSocialLinks(
   }
   if (defined(value.twitter)) {
     result.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
+  }
+  if (defined(value.youtube)) {
+    result.youtube = validateString(value.youtube, incrementOptions('youtube', opts));
+  }
+  if (defined(value.discourse)) {
+    result.discourse = validateUrl(value.discourse, incrementOptions('discourse', opts));
+  }
+  if (defined(value.discord)) {
+    result.discord = validateUrl(value.discord, incrementOptions('discord', opts));
+  }
+  if (defined(value.slack)) {
+    result.slack = validateUrl(value.slack, incrementOptions('slack', opts));
+  }
+  if (defined(value.facebook)) {
+    result.facebook = validateUrl(value.facebook, incrementOptions('facebook', opts));
   }
   return result;
 }
