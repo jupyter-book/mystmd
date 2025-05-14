@@ -23,7 +23,7 @@ However, for a developer it is important to understand that `mystmd` consists of
 1. An engine that converts input documents into an AST (abstract syntax tree).
 2. A renderer, that converts that AST into a given output format.
 
-This model is equally applicable to exporting/converting static documents and rich web applications. Here's a workfklow for static documents:
+This model is equally applicable to exporting/converting static documents and rich web applications. Here's a workflow for static documents:
 
 ```{mermaid}
 flowchart LR
@@ -89,11 +89,6 @@ Renderer
 
 For example, in the case of the `book` theme, a MyST Document engine serves MyST AST via a Content Server, the [MyST React renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) ingests that content and output React components, and the [book theme](https://github.com/jupyter-book/myst-theme/tree/main/themes/book) converts those components into HTML outputs.
 
-The [`myst-theme` repository](https://github.com/jupyter-book/myst-theme/) contains the source code of the default themes that ship with MyST, and is an example of a React-based MyST theme. These themes are built and then hosted at the [`myst-templates` GitHub organization](https://github.com/myst-templates/book-theme) for consumption by users.
-
-The [`myst-to-react` renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) provides a `<MyST />` component which can render MyST AST into a React tree.
-A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
-
 #### Where to find renderers, themes, and templates
 
 MyST has multiple renders, themes, and templates that allow it to transform MyST AST into final output formats. The MyST team maintains a few that are worth noting:
@@ -102,10 +97,10 @@ MyST has multiple renders, themes, and templates that allow it to transform MyST
   - A collection of Renderers, look for the [`myst-to-*` folders in `mystmd/packages`](https://github.com/jupyter-book/mystmd/tree/main/packages). These render MyST AST into components that themes can consume.
 - [`github.com/jupyter-book/myst-theme`](https://github.com/jupyter-book/myst-theme): The core React-based renderer and theme.
   - A collection of [MyST Rendering Packages](https://github.com/jupyter-book/myst-theme/tree/main/packages) that define various React UI components for default MyST themes to use.
-  - The [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) generates React components out of MyST AST for use by the default MyST Themes.
-  - The [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes) are out-of-the-box themes that we maintain, and that use the React Renderer.
+  - The [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) generates React components out of MyST AST for use by the default MyST Themes. It provides a `<MyST />` component which can render MyST AST into a React tree.
+  - The source code of the [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes), each of which use the React renderer. These themes are built and then published at the [`myst-templates` GitHub organization](https://github.com/myst-templates/book-theme) for consumption by users.
+  - A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
 - [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to product static outputs.
-
 
 :::{error} to do — explain rendering
 
@@ -125,8 +120,8 @@ First, update [`jupyter-book/mystmd`](https://github.com/jupyter-book/mystmd), s
 
 Second, update the React theme infrastructure at [`jupyter-book/myst-theme`](https://github.com/jupyter-book/myst-theme/tree/main/themes). [Here's a pull request that implements this](https://github.com/jupyter-book/myst-theme/pull/577/files). Note how it:
 
-1. [Defines a new React component called `<EditLink />`](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R156-R174)
-2. [Pulls the new edit url metadta from the MyST AST](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R248).
+1. [Defines a new React component called `<EditLink />`](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R156-R174).
+2. [Pulls the new edit URL metadata from the MyST AST](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R248).
 3. [Adds the new `<EditLink />` component to the `<FrontMatterBlock />` component](https://github.com/jupyter-book/myst-theme/pull/577/files#diff-9f15761b56400d627876d6a1402c47f2e463590d010256066b64dc0475fd4e99R299).
 4. Because the book theme and the article theme _already use_ the `<FrontMatterBlock />`, they inherit this functionality automatically.
 
@@ -161,7 +156,7 @@ The result of Parsing phase will be raw MyST AST (normally, this is `.json` but 
         - type: paragraph
           children:
             - type: text
-              value: Here’s an admonition
+              value: Here's an admonition
 ```
 
 The AST simply encodes that there's a Directive present, with the name `note`.
@@ -184,12 +179,12 @@ The final output has more admonition-specific metadata defined, like `admonition
     - type: paragraph
       children:
         - type: text
-          value: Here’s an admonition
+          value: Here's an admonition
 ```
 
 #### Example: Parsing a cross-reference
 
-Let's say you have a page labels some content, and cross-references it elsewhere on the page:
+Let's say you have a page that labels some content, and cross-references it elsewhere on the page:
 
 ```{code} markdown
 :filename: page1.md
@@ -371,8 +366,9 @@ npm run dev
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
+## Infrastructure we run
 (myst-api-server)=
-## The MyST API server
+### The MyST API server
 
 We run a lightweight server at [`api.mystmd.org`](https://api.mystmd.org/) to help users resolve and download templates. The code for this exists at [the `myst-templates/templates` repository](https://github.com/myst-templates/templates).
 
@@ -384,53 +380,30 @@ And to see a list of available templates that can be resolved for Typst, you can
 
 https://api.mystmd.org/templates/typst
 
-## Practices we follow
 
-### Build system
+## Hwo to make a release
+### Make a release of `mystmd`
 
-We use [Turbo](https://turborepo.com/) to manage our testing and build system.
+To publish a new release of `mystmd`, we do two things:
 
-### Testing
+1. [Publish to NPM](#release-npm).
+2. [Publish a GitHub release](#release-github).
 
-Tests help ensure that code operates as intended, and that changes do not break existing code. You can run the test suite using:
+We describe each below.
 
-```shell
-npm run test
-```
+(release-npm)=
+#### Publish a `mystmd` release to NPM
 
-If you are working in a particular package, change your working directory to that specific package, and run the tests there. To run in "watch mode" (runs each time a change is saved), use `npm run test:watch`.
+- Find the **changesets** PR. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
+- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
+- After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
+  - It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
+  - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `npm run publish:ci`, which calls `changeset publish`).
+  - It creates a git version tag (which you'll use in making the GitHub release).
+- Next, [make a release on GitHub](#release-github).
 
-### Linting
-
-When contributing code, continuous integration will run linting and formatting on your pull request.
-You can also run `npm run lint` and `npm run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `npm run install-pre-commit`.[^uninstall-pre-commit]
-If you are using the VSCode editor, it can be setup to show changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
-
-[^uninstall-pre-commit]: Uninstall the pre-commit hook with `git config --unset core.hooksPath`.
-
-Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
-
-### Versioning
-
-We use [changesets](https://github.com/changesets/changesets) for tracking changes to packages and updating versions.
-Before submitting your Pull Request, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change.
-Commit the changeset file to the repository as a part of your pull request.
-You can use `npm run version` to preview the generated changelog.
-
-Our current versioning procedure is a little loose compared to strict semantic versioning; as `mystmd` continues to mature, this policy may need to be updated.
-For now, we try to abide by the following rules for version bumps:
-
-- **major**: Backward incompatible change to the underlying supported MyST data. These would be cases where a non-developer MyST user's project or site built with major version _N_ would not work with major version _N+1_. Currently, we never intentionally make these changes.
-- **minor**: Backward incompatible change to the Javascript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
-- **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
-
-### Publish a release to NPM
-
-We use [this GitHub action for triggering releases](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml) upon merges to `main`.
-It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
-It then calls `npm run publish:ci`, which calls `changeset publish` to push updated packages to the [npm registry](https://www.npmjs.com/), and adds a git version tag.
-
-### Make a release on GitHub
+(release-github)=
+#### Make a release on GitHub
 
 When we publish a new release to NPM, we also make a release on GitHub and share it for our user community. Here's a brief process for what to do:
 
@@ -461,6 +434,57 @@ When we publish a new release to NPM, we also make a release on GitHub and share
   - [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
   - [The Jupyter Discourse](https://discourse.jupyter.org)
   - Social media spaces of your choosing.
+
+(release-myst-theme)=
+### Make a release of the `myst-theme`
+
+The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
+
+- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release-npm). [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
+- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
+- Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
+  - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
+- Make a release on GitHub, by following the same process in [](#release-github).
+
+## Practices we follow
+
+### Build system
+
+We use [Turbo](https://turborepo.com/) to manage our testing and build system.
+
+### Testing
+
+Tests help ensure that code operates as intended, and that changes do not break existing code. You can run the test suite using:
+
+```shell
+npm run test
+```
+
+If you are working in a particular package, change your working directory to that specific package, and run the tests there. To run in "watch mode" (runs each time a change is saved), use `npm run test:watch`.
+
+### Linting
+
+When contributing code, continuous integration will run linting and formatting on your pull request.
+You can also run `npm run lint` and `npm run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `npm run install-pre-commit`.[^uninstall-pre-commit]
+If you are using the VSCode editor, it can be setup to show changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
+
+[^uninstall-pre-commit]: Uninstall the pre-commit hook with `git config --unset core.hooksPath`.
+
+Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
+
+### Versioning and changesets
+
+We use [changesets](https://github.com/changesets/changesets) for tracking changes to packages and updating versions.
+Before submitting your Pull Request, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change.
+Commit the changeset file to the repository as a part of your pull request.
+You can use `npm run version` to preview the generated changelog.
+
+Our current versioning procedure is a little loose compared to strict semantic versioning; as `mystmd` continues to mature, this policy may need to be updated.
+For now, we try to abide by the following rules for version bumps:
+
+- **major**: Backward incompatible change to the underlying supported MyST data. These would be cases where a non-developer MyST user's project or site built with major version _N_ would not work with major version _N+1_. Currently, we never intentionally make these changes.
+- **minor**: Backward incompatible change to the Javascript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
+- **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
 ## Packages in the mystmd repository
 
