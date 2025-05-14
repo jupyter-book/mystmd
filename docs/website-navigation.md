@@ -153,7 +153,7 @@ There are two ways to edit a URL in GitHub:
 
 To override this behavior and set a manual edit URL, use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
 
-To disable the `Edit this page` button, set the value of `edit_url` to `none`.
+To disable the `Edit this page` button, set the value of `edit_url` to `null`.
 
 (navigation:sidebar-secondary)=
 
