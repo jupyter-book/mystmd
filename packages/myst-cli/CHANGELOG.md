@@ -1,5 +1,15 @@
 # myst-cli
 
+## 1.3.27
+
+### Patch Changes
+
+- 300e71f7: expose hidden attribute in TOC nodes
+- Updated dependencies [bd3a2ed]
+- Updated dependencies [300e71f7]
+  - myst-to-typst@0.0.32
+  - myst-toc@0.1.3
+
 ## 1.3.26
 
 ### Patch Changes
