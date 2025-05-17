@@ -13,7 +13,7 @@ Although Netlify has both free and paid tiers, the build process is the same acr
 Importantly, the free tier only allows for 100GB of bandwidth usage per month across all of your Netlify built projects[^pricing].
 
 :::{note} You may wish to set more permissive CORS settings
-To allow other MyST sites to reference and use your content, ensure that Netlify has the proper CORS configuration. See [](#cors-settings) for more information.
+To allow other MyST sites to reference and use your content, ensure that Netlify has the proper CORS configuration. For an example, see [this GitHub PR updating CORS settings for Netlify](https://github.com/the-turing-way/the-turing-way/pull/4156). See [](#cors-settings) for more information.
 :::
 
 [^pricing]: If your project will be used by a large audience, or if you're creating many projects, you might want to consider registering for [a paid account](https://www.netlify.com/pricing/).

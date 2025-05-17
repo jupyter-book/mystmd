@@ -115,6 +115,8 @@ Enabling all origins in CORS enables your site to:
 - Support MyST cross-references (e.g., xref links, see docs) from other sites that use your website as a citation source.
 - Enable content embedding, linking, or automated metadata access (e.g., for previews or API consumers) without authentication or same-origin constraints.
 
+For an example of what it looks like to update CORS settings, see [this GitHub PR updating CORS settings for Netlify](https://github.com/the-turing-way/the-turing-way/pull/4156).
+
 ### What is CORS and why is it needed?
 
 CORS is a browser security feature that restricts how resources on a web page can be requested from another domain outside the one that served the web page. For example, JavaScript running on external-site.org cannot fetch metadata or assets from https://book.the-turing-way.org/ unless explicitly allowed.
@@ -126,5 +128,3 @@ By setting CORS headers to allow all origins (*), you make it possible for exter
 - Use it in federated, cross-site knowledge systems (like MyST Markdown references in external books or educational hubs).
 
 If your MyST site is public and does not require authentication, allowing all origins does not pose a security risk.
-
-_Note, this was adapted from [this GitHub issue from @rowanc1](https://github.com/the-turing-way/the-turing-way/pull/4156)_.
