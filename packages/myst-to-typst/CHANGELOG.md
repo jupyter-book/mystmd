@@ -1,5 +1,11 @@
 # myst-to-typst
 
+## 0.0.32
+
+### Patch Changes
+
+- bd3a2ed: Bump tex-to-typst@0.0.16
+
 ## 0.0.31
 
 ### Patch Changes

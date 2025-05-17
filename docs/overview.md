@@ -1,25 +1,115 @@
-# What is the MyST stack?
+# Overview of the MyST stack
 
 This section provides a high-level overview of the main concepts and tools in the MyST ecosystem. See the [guiding principles of the MyST ecosystem](../guiding-principles.md) for some more high-level context.
 
-## A brief overview of the MyST Stack
+(overview-build-process)=
+## Overview of the MyST build process
 
-Here is a brief description of the workflow that is involved in the MyST ecosystem and the technical pieces that are involved at each step. You can hover over (or click) the links in the list below to see more information about each one.
+The MyST Build process takes input documents from authors and converts them into outputs that are meant for consumption by readers. The [MyST CLI](https://mystmd.org) contains logic to use the MyST Document Engine, renderers, and themes to carry out this entire process. Here's a high-level breakdown of the major steps of that process:
 
-- An author writes content in {term}`MyST Markdown` in a file.
-- A {term}`MyST Document Engine` parses one or more files and builds them into structured data called the {term}`MyST AST`.
-- The {term}`MyST AST` is a version of the content with a specific structure and with extra metadata added to it (like defining a "type" for each chunk of content, resolved cross-references, etc). It conforms to the {term}`MyST Specification`.
-- A {term}`MyST Renderer` can then transform the {term}`MyST AST` into different kinds of outputs (most commonly HTML, or PDF via LaTeX/Typst). It uses a {term}`MyST Theme` to do so.
-- The [official MyST CLI](https://mystmd.org) contains both a parser and a renderer so that you can go from a local file to an output with one application. 
+```{list-table}
+:header-rows: 1
+- - Phase
+  - Input
+  - Output
+- - (1) **Writing**: An author writes content with {term}`MyST Markdown` in a file.
+  - Ideas
+  - Content (`.md`, `.ipynb`, etc)
+- - (2) **Parsing**: A {term}`MyST Document Engine` parses content into structured data called the {term}`MyST AST`. See [](#overview-parsing).
+  - Raw content (`.md`, `.ipynb`, etc)
+  - Raw MyST AST
+- - (3) **Resolving**: Transform raw MyST AST into AST that can be rendered. See [](#overview-transformers).
+  - Raw MyST AST
+  - Resolved / Processed MyST AST
+- - (4) **Rendering**: A {term}`MyST Renderer` transforms the {term}`MyST AST` into components that can be used by a {term}`MyST Theme`.
+  - Resolved MyST AST
+  - Components that can be rendered into a final output with a _template_ and/or _theme_ (e.g., LaTeX, React, etc).
+- - (5) **Theming / templating**: Rendered components are used by a {term}`MyST Theme` to generate final artifacts. See [](#overview-themes).
+  - Template components that have been rendered by a MyST renderer.
+  - Output formats that are ready for final consumption (e.g., a website or PDF).
+```
 
-Here's a diagram showing how these all relate to one another:
+Here is a brief overview of these steps:
 
 % NOTE: This is an excalidraw SVG. You can edit it directly in Excalidraw.
 % See the contributing docs for a short guide.
-:::{figure} images/myst-diagram.svg
-An overview of some major parts of the MyST stack and how they relate to one another.
-In the most common workflow, a text file written in MyST Markdown is parsed by the {term}`MyST Document Engine` which outputs {term}`MyST AST` (typically a `.json` file) that follows the {term}`MyST Specification`. This MyST AST can be rendered into many different kinds of outputs, most commonly HTML or PDF. This is most often done by the MyST Document Engine, but can be done by any application that understands how to parse and use the MyST Specification.
+:::{figure} images/overview-diagram-build.svg
+An overview of the "Parsing and Resolving" phase using the MyST Document Engine.
+In this stage, a text file written in MyST Markdown is parsed by the {term}`MyST Document Engine` which outputs {term}`MyST AST` that follows the {term}`MyST Specification`. This file undergoes a number of transformations to add metadata, resolve links, and enrich the document. The final output is MyST AST (usually a `.json` file) that can be rendered into many different kinds of outputs.
 :::
+
+:::{figure} images/overview-diagram-render.svg
+An overview of the "Rendering and Theming" phase using one or more MyST renderers / themes. In this stage, a resolved MyST AST is rendered into multiple components by a MyST renderer. These are building blocks that a theme knows how to convert into a final output. For example, the [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) and the [MyST React Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes) know how to use these React components to create a final website.
+:::
+
+(overview-parsing)=
+## How does parsing work?
+
+The MyST Document engine knows how to parse many kinds of documents into {term}`MyST AST`. This is most-commonly done with markdown files (`.md`) or Jupyter Notebooks (`.ipynb`) written in {term}`MyST Markdown`, a flavor of markdown that was designed for the MyST Document Engine.
+
+However, the MyST Engine knows how to parse other kinds of syntax into MyST AST as well. For example, [for admonition compatibility with GitHub Markdown](admonition-github-compatibility). This is because we see the {term}`MyST AST` as the primary point of _standardization_ for the MyST ecosystem, not the Markdown flavor. Input documents may have many different forms, but once it is parsed into {term}`MyST AST`, the document should have a standardized structure defined by the {term}`MyST Specification`.
+
+## What is the MyST AST and Specification?
+
+The {term}`MyST AST` is a version of parsed MyST content that follows a specific structure so that Renderers can convert into different outputs. MyST AST conforms to the {term}`MyST Specification`. The {term}`MyST Specification` is a superset of [the `mdast` specification](https://github.com/syntax-tree/mdast) (meaning that MyST includes all of the syntax that `mdast` supports, plus some extra ones like Directives).
+
+Here's an example of MyST content, and the same content parsed as MyST AST:
+
+````{list-table}
+:header-rows: 1
+- - Content
+  - AST
+- - `**Hello there!**`
+  - ```yaml
+    - type: block
+    children:
+      - type: paragraph
+        children:
+          - type: strong
+            children:
+              - type: text
+                value: Hello there!
+    ```
+````
+
+The easiest way to understand how {term}`MyST Markdown` gets converted to {term}`MyST AST` is to [explore the MyST Sandbox](https://mystmd.org/sandbox). Click the {kbd}`AST` tab to see the underlying AST structure for anything that you type. The {kbd}`PRE` tab represents the initial parsing phase, and the {kbd}`POST` tab represents the AST after the resolving phase.
+
+(overview-transformers)=
+## How do MyST Transformers work?
+
+MyST Transformers are a way to convert a {term}`MyST AST` node into another type of node. Transformers operate on AST rather than on raw Markdown because AST has more standardized structure to work with.
+
+For example, consider a Markdown link like `[some text](#a-label)`. In MyST Markdown, this defines a **cross-reference** to `#a-label`, but it uses Markdown link syntax. We use a **MyST Transformer** to convert that Markdown to a cross-reference AST node like so:
+
+- First parse the Markdown `[some text](#a-label)`.
+- The result is a MyST AST node for a **Markdown link**.
+- Next, search the document AST for any Markdown link nodes with a target that starts with `#`. Check if there's [a target](./cross-references.md) for the link. If so, it is meant to be a cross reference.
+- If so, converts the Markdown Link node into a Cross Reference node.
+
+Some other uses for Transformers include:
+
+- Lifting metadata from `code-cells` to their parent structures
+- Check that figures have alt-texts
+- Convert non-standard AST nodes (e.g., ones generated from a custom user directive) into ones that MyST knows how to render[^ex-transform-node].
+
+[^ex-transform-node]: For example, see [this Executable Transform example from Project Pythia](https://github.com/projectpythia-mystmd/cookbook-gallery/blob/main/pythia-gallery.py). It is an example of an [`executable transform`](#executable-plugins), which takes custom `pythia-cookbooks` nodes and converts them (via some HTTP fetches) to a grid of cards by outputting the relevant grid and card AST nodes.
+
+See [](#develop:transforms) for more details about how transforms operate on an AST and what intermediate steps look like.
+
+(overview-themes)=
+## How do MyST themes and templates work?
+
+MyST {term}`themes` and MyST {term}`templates` are both related to _exporting_ a resolved MyST AST into one or more final output formats. They differ in the amount of _customizability_ that a user has in altering their behavior, but the end-result is the same (generating an export artifact).
+
+```{glossary}
+Templates
+: Templates are usually used for [static exports](./documents-exports.md) (like LaTeX or Typst). The are structured like a final document (e.g., a LaTeX template for a specific journal), but with fields that MyST uses to insert document metadata at export time (e.g., a `doc.author` field if you want to insert the author name). See [the `myst-templates` GitHub repository](https://github.com/myst-templates) for a list of templates that you can use and contribute to.
+
+Themes
+: Themes are similar to templates because they expose more customizability than a template (which simply generates static outputs via a Jinja-like filter), but they function similar to a template because they take rendered components as inputs and export a final output. Themes are usually meant for _websites_, because there is a lot more control a website exposes compared to a static document like LaTeX. Themes have more complex logic, and thus their source-code is often in a dedicated repository. For examples, see the [build outputs of the `book` and `article` web themes are `myst-templates`](https://github.com/myst-templates#templates), but their [source code is in `myst-theme`](https://github.com/jupyter-book/myst-theme/tree/main/themes).
+```
+
+For a more technical explanation see [the developer guide on themes, templates, and renderers](#develop-renderers-themes).
 
 ## Are there other MyST engines?
 

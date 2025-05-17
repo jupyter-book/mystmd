@@ -1,5 +1,11 @@
 # myst-toc
 
+## 0.1.3
+
+### Patch Changes
+
+- 300e71f7: expose hidden attribute in TOC nodes
+
 ## 0.1.2
 
 ### Patch Changes

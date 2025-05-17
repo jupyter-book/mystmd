@@ -8,7 +8,7 @@ These provide different reading experiences that are designed for different type
 They are defined via the same templating system used for [static document exporting](./documents-exports.md), and a base set of web themes can be found in the [`jupyter-book/myst-theme` repository](https://github.com/jupyter-book/myst-theme/tree/main/themes).
 
 :::{tip} Themes and templates mean the same thing
-For the remainder of this page, assume that "theme" and "template" mean the same thing.
+See [](#overview-themes) for more explanation.
 :::
 
 (default-web-themes)=
