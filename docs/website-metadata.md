@@ -105,6 +105,7 @@ references
 
     : A boolean indicating that the reference is implicit to a page. This is common for headings, where the page information must be included.
 
+(cors-settings)=
 ## Ensure your document is referenceable with CORS
 
 To allow other MyST sites to reference your document, **allow Cross-Origin Resource Sharing (CORS) from all origins** (by setting `Access-Control-Allow-Origin: *`). This is on by default with GitHub Pages, but may not be enabled if you use a different provider (like Netlify).
