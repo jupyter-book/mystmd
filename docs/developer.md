@@ -318,11 +318,11 @@ Recall from the [architecture overview](#diagram-app) that `myst-theme` is a Rea
 
 ### Content server
 
-We need some example data to test our theme against, such as [the example landing page](https://github.com/myst-examples/landing-pages). Clone this example content repository and start the content server:
+We need some example data to test our theme against, such as [the example landing page](https://github.com/jupyter-book/example-landing-pages). Clone this example content repository and start the content server:
 
 ```shell
-git clone https://github.com/myst-examples/landing-pages
-cd landing-pages
+git clone https://github.com/jupyter-book/example-landing-pages
+cd example-landing-pages
 myst start --headless
 ```
 
