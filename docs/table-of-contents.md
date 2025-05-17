@@ -193,17 +193,53 @@ project:
 
 Note that when these files are excluded, they can still be specifically referenced by other files in your project (e.g. in an {myst:directive}`include directives <include>` or as a download), however, a change in those files will not trigger a build. An alternative in this case is to generate a table of contents (see [](./table-of-contents.md)). By default hidden folders (those starting with `.`, like `.git`), `_build` and `node_modules` are excluded.
 
-## Nested files will have flattened URLs
+## Folder structure & URLs
 
-If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information. For example:
+If a file is nested under a folder within your MyST project, for web-based exports its URL will be, _by default_, flattened to have a "slug" that removes folder information.
+For example, a folder structure like:
 
-- `folder1/folder2/01_my_article.md` becomes `/my-article`
+- `folder1/folder2/my-article.md`
+
+Produces this URL path:
+
+- `/my-article`
 
 All internal links will automatically be updated, and there is a `file` property that is exported as metadata in your site.
 See [](website-metadata.md) for more details on how cross-references are stored.
 
-:::{note} URL Nesting
-URL nesting that matches the folder structure is a requested feature that is being tracked in https://github.com/jupyter-book/mystmd/issues/670.
+If it is desired that the folder structure is preserved in the URLs (it seems most users want and/or prefer this approach), then we can use the `folders` option:
+
+```{code} yml
+:filename: myst.yml
+:caption: Example of setting folders to true to show nested file structure in the URL
+:linenos:
+:lineno-start: 78
+:emphasize-lines: 82
+...
+site:
+  template: book-theme
+  options:
+    folders: true
+    favicon: __assets/favicon.webp
+    logo: __assets/logo.webp
+    logo_text: My Project
+...
+```
+
+With the above setup, a folder structre like:
+
+- `folder1/folder2/01_my_article.md`
+
+Produces this URL path:
+
+- `/folder1/folder2/my-article`
+
+:::{tip} Background information on URL nesting
+URL nesting that matches the folder structure has been requested quite a few times.
+For reference, here are some links with background information on this feature:
+
+- https://github.com/jupyter-book/mystmd/issues/670.
+- https://github.com/jupyter-book/mystmd/pull/1601.
 :::
 
 ::::{note} Compatibility with Jupyter Book
