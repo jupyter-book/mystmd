@@ -104,3 +104,27 @@ references
 : implicit
 
     : A boolean indicating that the reference is implicit to a page. This is common for headings, where the page information must be included.
+
+(cors-settings)=
+## Ensure your document is referenceable with CORS
+
+To allow other MyST sites to reference your document, **allow Cross-Origin Resource Sharing (CORS) from all origins** (by setting `Access-Control-Allow-Origin: *`). This is on by default with GitHub Pages, but may not be enabled if you use a different provider (like Netlify).
+
+Enabling all origins in CORS enables your site to:
+
+- Support MyST cross-references (e.g., xref links, see docs) from other sites that use your website as a citation source.
+- Enable content embedding, linking, or automated metadata access (e.g., for previews or API consumers) without authentication or same-origin constraints.
+
+For an example of what it looks like to update CORS settings, see [this GitHub PR updating CORS settings for Netlify](https://github.com/the-turing-way/the-turing-way/pull/4156).
+
+### What is CORS and why is it needed?
+
+CORS is a browser security feature that restricts how resources on a web page can be requested from another domain outside the one that served the web page. For example, JavaScript running on external-site.org cannot fetch metadata or assets from https://book.the-turing-way.org/ unless explicitly allowed.
+
+By setting CORS headers to allow all origins (*), you make it possible for external tools and sites to:
+
+- Reference your content directly via structured and stable links.
+- Preview or embed sections of your site from another page (with attribution).
+- Use it in federated, cross-site knowledge systems (like MyST Markdown references in external books or educational hubs).
+
+If your MyST site is public and does not require authentication, allowing all origins does not pose a security risk.
