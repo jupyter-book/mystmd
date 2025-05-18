@@ -5,6 +5,20 @@ short_title: Write Documentation
 
 The documentation of MyST is inspired by the [Diataxis Documentation Framework](https://diataxis.fr).
 
+## Suggest an edit to our documentation directly from the browser
+
+The easiest way to suggest an edit to any Jupyter Book / MyST site is by using the **Edit this page** button. If you see something to change on a page, click this button:
+
+![Button to click to suggest an edit to documentation](./images/contribute-docs-edit-button.png)
+
+This will take you to the source file for that page on GitHub. Then press the "edit this page" button on GitHub, it looks like this:
+
+![Edit this page button on GitHub](./images/contribute-docs-edit-button-github.png)
+
+Alternatively, you can use the [**`github.dev` web-based editor**](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) to suggest more comprehensive edits to one or more pages. To do so, in the browser URL replace `github.com` with `github.dev`[^period].
+
+[^period]: Alternatively, you can just press {kbd}`.` from any GitHub source file page and it will open a VSCode editor in-browser to let you suggest edits.
+
 ## How to build the MyST guide documentation locally
 
 To build the MyST guide documentation:
