@@ -7,13 +7,19 @@ The documentation of MyST is inspired by the [Diataxis Documentation Framework](
 
 ## Suggest an edit to our documentation directly from the browser
 
-The easiest way to suggest an edit to any Jupyter Book / MyST site is by using the **Edit this page** button. If you see something to change on a page, click this button:
+The easiest way to suggest an edit to any Jupyter Book / MyST site is by using the **Edit this page** button. If you see something you'd like to change on a page, click this button:
 
-![Button to click to suggest an edit to documentation](./images/contribute-docs-edit-button.png)
+```{figure} ./images/contribute-docs-edit-button.png
+:width: 75%
+An example of the "edit this page" button in a MyST theme. Clicking this button will take you to the source page for this file in GitHub.
+```
 
 This will take you to the source file for that page on GitHub. Then press the "edit this page" button on GitHub, it looks like this:
 
-![Edit this page button on GitHub](./images/contribute-docs-edit-button-github.png)
+```{figure} ./images/contribute-docs-edit-button-github.png
+:width: 75%
+An example of the "edit this page" button on GitHub. This will open an interactive window where you can edit the source text.
+```
 
 Alternatively, you can use the [**`github.dev` web-based editor**](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) to suggest more comprehensive edits to one or more pages. To do so, in the browser URL replace `github.com` with `github.dev`[^period].
 
