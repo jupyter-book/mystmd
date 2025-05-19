@@ -41,7 +41,7 @@ function getKindFromName(name: string) {
 function getKind(session: ISession, kinds?: TemplateKinds): TemplateKind[] | undefined {
   if (!kinds) return undefined;
   const { pdf, tex, typst, docx, site } = kinds;
-  if (pdf) session.log.warn('PDF templates may use either "tex" or "typst"');
+  if (pdf) session.log.warn('PDF templates may be either "tex" or "typst", including both.');
   const flags = {
     [TemplateKind.tex]: (tex || pdf) ?? false,
     [TemplateKind.typst]: (typst || pdf) ?? false,
@@ -63,8 +63,12 @@ export async function downloadTemplateCLI(
 ) {
   const templateKind = getKindFromName(template);
   const kinds = templateKind ? [templateKind] : getKind(session, opts);
-  if (!kinds || kinds.length > 1) {
-    throw new Error('Cannot lookup a template with more than one kind.');
+  if (!kinds || !kinds.length) {
+    throw new Error('Cannot lookup a template without specifying a kind (e.g. typst).');
+  }
+
+  if (kinds.length > 1) {
+    throw new Error('Cannot lookup a template when more than one kind is specified.');
   }
   const kind = kinds[0] as TemplateKind;
   const { templatePath: defaultTemplatePath, templateUrl } = resolveInputs(session, {
