@@ -63,7 +63,7 @@ export async function downloadTemplateCLI(
 ) {
   const templateKind = getKindFromName(template);
   const kinds = templateKind ? [templateKind] : getKind(session, opts);
-  if (!kinds || !kinds.length) {
+  if (!kinds?.length) {
     throw new Error('Cannot lookup a template without specifying a kind (e.g. typst).');
   }
 
