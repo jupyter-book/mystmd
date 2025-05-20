@@ -19,7 +19,7 @@ export const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
 };
 
 const DEFAULT_TEMPLATES = {
-  tex: 'tex/myst/curvenote',
+  tex: 'tex/myst/plain_latex',
   typst: 'typst/myst/lapreprint-typst',
   docx: 'docx/myst/default',
   site: 'site/myst/book-theme',
