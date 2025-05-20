@@ -4,4 +4,3 @@ export * from './parseName.js';
 export * from './referenceStash.js';
 export * from './unnestKernelSpec.js';
 export * from './validators.js';
-export * from './socialLinks.js';

@@ -1,6 +1,6 @@
 import type { CreditRole } from 'credit-roles';
 import type { Affiliation } from '../affiliations/types.js';
-import type { SocialLinks } from '../utils/socialLinks.js';
+import type { SocialLinks } from '../socials/types.js';
 
 export type ContributorRole = CreditRole | string;
 
