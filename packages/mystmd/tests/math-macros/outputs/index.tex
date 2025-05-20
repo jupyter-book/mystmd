@@ -1,9 +1,13 @@
 \documentclass{article}
-\PassOptionsToPackage{short, nodayofweek}{datetime}
-
-\input{curvenote.def}
+\usepackage{hyperref}
+\usepackage{datetime}
+\usepackage{graphicx}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%  imports  %%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
 %%%%%%%%%%%%%%%%%  math commands  %%%%%%%%%%%%%%%%
 \newcommand{\three}{d}
 \newcommand{\one}{x}
@@ -15,27 +19,22 @@
 
 % colors for hyperlinks
 \hypersetup{colorlinks=true, allcolors=blue}
-\hypersetup{
-pdftitle={\@title},
-pdfsubject={},
-pdfauthor={\@author},
-pdfkeywords={},
-addtopdfcreator={Written in Curvenote}
+
+\newcommand{\logo}{
+  \href{https://curvenote.com}{\includegraphics[width=2cm]{curvenote.png}}
 }
 
-\usepackage{curvenote}
-
 \title{Testing Math Plugins}
+
+\author{}
 
 \newdate{articleDate}{1}{1}{2024}
 \date{\displaydate{articleDate}}
 
-\author{}
-
 \begin{document}
-
 \maketitle
-\keywords{}
+\begin{center}\logo\end{center}
+
 
 \section{No plugins}
 
@@ -76,4 +75,6 @@ Double recurse
 \begin{equation}
 \seven
 \end{equation}
+
+
 \end{document}
