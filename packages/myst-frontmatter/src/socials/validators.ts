@@ -5,9 +5,74 @@ import {
   validateObjectKeys,
   validateString,
   validateUrl,
+  validationError,
+  validateDomain,
 } from 'simple-validators';
 import { SOCIAL_LINKS_KEYS, SOCIAL_LINKS_ALIASES } from './types.js';
 import type { SocialLinks } from './types.js';
+
+// Match basic identifier (letters, numbers, underscores) plus a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
+const MASTODON_REGEX = /^@([A-Z0-9_]+)@(.+\..*[^.])$/i;
+// Match a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
+const BLUESKY_REGEX = /^@(.+\..*[^.])$/;
+const BLUESKY_URL_REGEX = /^https:\/\/bsky.app\/profile\/(.*)$/;
+
+/**
+ * Validate value is valid Mastodon webfinger account
+ *
+ * See https://docs.joinmastodon.org/spec/webfinger/ for details on how
+ * @foo@server.com account URIs are resolved
+ */
+export function validateMastodon(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (value === undefined) return undefined;
+
+  const match = value.match(MASTODON_REGEX);
+  if (match === null)
+    return validationError(
+      `must be a user ID of the form @username@server e.g. @mystmarkdown@fosstodon`,
+      opts,
+    );
+
+  const username = match[1];
+  const host = validateDomain(match[2], opts);
+  if (host === undefined) return undefined;
+
+  return `@${username}@${host}`;
+}
+
+/**
+ * Validate value is valid Bluesky URI or URL string
+ */
+export function validateBluesky(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (value === undefined) return undefined;
+
+  // Username
+  let match: ReturnType<typeof value.match>;
+  if ((match = value.match(BLUESKY_REGEX))) {
+    const domain = validateDomain(match[1], opts);
+    return `@${domain}`;
+  }
+  // URL to profile
+  else {
+    const result = validateUrl(value, opts);
+    if (result === undefined) return undefined;
+
+    match = result.match(BLUESKY_URL_REGEX);
+    if (match === null) {
+      return validationError(
+        `Bluesky profile URL must be a valid URL starting with https://bsky.app/profile/: ${value}`,
+        opts,
+      );
+    }
+
+    const domain = validateDomain(match[1], opts);
+    if (domain === undefined) return undefined;
+
+    return `@${domain}`;
+  }
+}
 
 export function validateSocialLinks(
   input: any,
@@ -34,10 +99,10 @@ export function validateSocialLinks(
     result.github = validateString(value.github, incrementOptions('github', opts));
   }
   if (defined(value.bluesky)) {
-    result.bluesky = validateString(value.bluesky, incrementOptions('bluesky', opts));
+    result.bluesky = validateBluesky(value.bluesky, incrementOptions('bluesky', opts));
   }
   if (defined(value.mastodon)) {
-    result.mastodon = validateString(value.mastodon, incrementOptions('mastodon', opts));
+    result.mastodon = validateMastodon(value.mastodon, incrementOptions('mastodon', opts));
   }
   if (defined(value.linkedin)) {
     result.linkedin = validateUrl(value.linkedin, incrementOptions('linkedin', opts));
