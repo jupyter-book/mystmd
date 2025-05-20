@@ -190,7 +190,7 @@ function makeDownloadCLI(program: Command) {
     .addOption(makeTypstOption('Download Typst template'))
     .addOption(makeDocxOption('Download Docx template'))
     .addOption(makeSiteOption('Download Site template'))
-    .addOption(makeForceOption())
+    .addOption(makeForceOption('Overwrite existing downloaded templates'))
     .action(clirun(Session, downloadTemplateCLI, program));
   return command;
 }

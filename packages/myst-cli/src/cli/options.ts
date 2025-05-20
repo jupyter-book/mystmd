@@ -85,11 +85,8 @@ export function makeStrictOption() {
   return new Option('--strict', 'Summarize build warnings and stop on any errors.').default(false);
 }
 
-export function makeForceOption() {
-  return new Option(
-    '--force',
-    'Build outputs for the given format, even if corresponding exports are not defined in file frontmatter',
-  ).default(false);
+export function makeForceOption(description: string) {
+  return new Option('--force', description).default(false);
 }
 
 export function makeCheckLinksOption() {
