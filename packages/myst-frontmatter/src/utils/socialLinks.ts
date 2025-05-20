@@ -7,7 +7,6 @@ import {
   validateUrl,
 } from 'simple-validators';
 
-
 export const SOCIAL_LINKS_KEYS = [
   'url',
   'github',
@@ -31,8 +30,8 @@ export const SOCIAL_LINKS_ALIASES = {
 };
 
 export type SocialLinks = {
-  [key in typeof SOCIAL_LINKS_KEYS[number]]?: string;
-}
+  [key in (typeof SOCIAL_LINKS_KEYS)[number]]?: string;
+};
 
 export function validateSocialLinks(
   input: any,
@@ -41,7 +40,11 @@ export function validateSocialLinks(
 ): SocialLinks | undefined {
   const value: SocialLinks = output
     ? input
-    : validateObjectKeys(input, { optional: SOCIAL_LINKS_KEYS as unknown as string[], alias: SOCIAL_LINKS_ALIASES }, opts);
+    : validateObjectKeys(
+        input,
+        { optional: SOCIAL_LINKS_KEYS as unknown as string[], alias: SOCIAL_LINKS_ALIASES },
+        opts,
+      );
 
   if (value === undefined) return undefined;
 
