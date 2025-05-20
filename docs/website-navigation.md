@@ -170,6 +170,11 @@ Yes it will!
 ```
 ````
 
+```{note} This note will spread to the right!
+:class: col-page-right
+Yes it will!
+```
+
 You could also attach the CSS class to a [content block](./blocks.md).
 
 (navigation:footer)=
