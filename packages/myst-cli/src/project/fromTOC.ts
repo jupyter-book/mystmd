@@ -275,7 +275,11 @@ export function projectFromTOC(
     throw Error(`Could not resolve project index file: ${root.file}`);
   }
   if (opts?.urlFolders && !opts.projectPath) opts.projectPath = path;
-  const { slug } = fileInfo(indexFile, pageSlugs, { ...opts, session });
+
+  // Ensure that the index page always has `index` as its slug!
+  const slug = 'index';
+  pageSlugs[slug] = 1;
+
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
   pagesFromEntries(session, path, entries, pages, level, pageSlugs, opts);
   return { path: path || '.', file: indexFile, index: slug, pages };
