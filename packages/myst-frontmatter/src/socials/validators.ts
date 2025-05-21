@@ -30,7 +30,7 @@ export function validateMastodon(input: any, opts: ValidationOptions) {
   const match = value.match(MASTODON_REGEX);
   if (match === null)
     return validationError(
-      `must be a user ID of the form @username@server e.g. @mystmarkdown@fosstodon`,
+      `must be a user ID of the form @username@server e.g. @mystmarkdown@fosstodon.org`,
       opts,
     );
 
