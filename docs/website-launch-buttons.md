@@ -2,7 +2,7 @@
 title: Launch Jupyter sessions
 ---
 
-If your source file is a Jupyter Notebook (`.ipynb`), you can add a button to your MyST website that launches a live Jupyter server in the cloud, and opens that content so they can edit and interact with it.[^thebe]
+You can add a button to your MyST website that launches a Jupyter environment in the cloud and opens the current file in the editor. If the file is a Jupyter Notebook (`.ipynb` file) or a MyST document with code-cells[^lab-myst], users can use the Jupyter environment to run the code cells and inline expressions.[^thebe]
 
 [^thebe]: This is a fully-interactive Jupyter environment. If you'd instead like like to provide interactivity to the same page, see [](./integrating-jupyter.md).
 
