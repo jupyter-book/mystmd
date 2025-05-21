@@ -1,5 +1,11 @@
 # myst-templates
 
+## 1.0.25
+
+### Patch Changes
+
+- 4b7c81a5: Change default LaTeX template
+
 ## 1.0.24
 
 ### Patch Changes

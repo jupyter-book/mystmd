@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.3.28
+
+### Patch Changes
+
+- dd9d0f7: Fix `/index` handling for projects with non-`index` index file and other files named `index.md`
+- Updated dependencies [4b7c81a5]
+  - myst-templates@1.0.25
+
 ## 1.3.27
 
 ### Patch Changes
