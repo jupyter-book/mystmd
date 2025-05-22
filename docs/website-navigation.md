@@ -140,6 +140,21 @@ site:
 Is populated with page-level metadata and your page's content.
 See [](./frontmatter.md) for many kinds of metadata that configure this section.
 
+### Use the Edit this Page button
+
+If you've added [`github` MyST frontmatter](#table-frontmatter), the MyST themes will display an "Edit this page" link for your page. This link will point to the source file for your page in GitHub, allowing a reader to quickly view the source and make an edit using GitHub's UI.
+
+:::{tip} How to use GitHub's UI to edit a page
+There are two ways to edit a URL in GitHub:
+
+1. Click the pencil icon {kbd}`✏️` to open a lightweight editor on the page.
+2. Replace `.com` with `.dev` in the URL (or, simply press the period button {kbd}`.`). This will open a VSCode editor session you can use to make more extensive edits.
+:::
+
+To override this behavior and set a manual edit URL, use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
+
+To disable the `Edit this page` button, set the value of `edit_url` to `null`.
+
 (navigation:sidebar-secondary)=
 
 ## Secondary sidebar
@@ -157,11 +172,31 @@ site:
     hide_outline: true
 ```
 
+### Make content expand to the right margin
+
+To make content take up the empty space to the right of the content (where the secondary sidebar usually lives), attach the `col-page-right` CSS class (one of the [built-in CSS classes](#built-in-css)) to a page block or element.
+
+Here's an example of attaching the class directly to an admonition:
+
+````md
+```{note} This note will spread to the right!
+:class: col-page-right
+Yes it will!
+```
+````
+
+```{note} This note will spread to the right!
+:class: col-page-right
+Yes it will!
+```
+
+You could also attach the CSS class to a [content block](./blocks.md).
+
 (navigation:footer)=
 
 ## Footer
 
 :::{warning} Work in progress
-Default footer support is not yet avialable.
+Default footer support is not yet available.
 See https://github.com/jupyter-book/myst-theme/issues/448 to provide feedback on this feature.
 :::

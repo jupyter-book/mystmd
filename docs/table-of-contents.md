@@ -193,18 +193,39 @@ project:
 
 Note that when these files are excluded, they can still be specifically referenced by other files in your project (e.g. in an {myst:directive}`include directives <include>` or as a download), however, a change in those files will not trigger a build. An alternative in this case is to generate a table of contents (see [](./table-of-contents.md)). By default hidden folders (those starting with `.`, like `.git`), `_build` and `node_modules` are excluded.
 
-## Nested files will have flattened URLs
+## Folder structure and URL slugs
 
-If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information. For example:
+By default, MyST will _flatten folder structure_ when creating URLs.
+If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information.
+For example, a folder structure like:
 
-- `folder1/folder2/01_my_article.md` becomes `/my-article`
+- `folder1/folder2/my-article.md`
 
-All internal links will automatically be updated, and there is a `file` property that is exported as metadata in your site.
-See [](website-metadata.md) for more details on how cross-references are stored.
+Produces this URL path:
 
-:::{note} URL Nesting
-URL nesting that matches the folder structure is a requested feature that is being tracked in https://github.com/jupyter-book/mystmd/issues/670.
-:::
+- `/my-article`
+
+Internal links will automatically be updated (duplicate filenames will have numbers appended, like `myfile-1`), and the `file` property in the [MyST document metadata](./website-metadata.md) will contain the original file path for the page.
+
+### Make your URL match your folder structure
+
+To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), set `site.options.folders` to `true` in `myst.yml`. For example:
+
+```{code} yml
+:filename: myst.yml
+:caption: Example of setting folders to true to show nested file structure in the URL
+:linenos:
+:lineno-start: 78
+:emphasize-lines: 82
+...
+site:
+  template: book-theme
+  options:
+    folders: true
+...
+```
+
+This will make a file like `folder1/folder2/01_my_article.md` render as the following URL slog: `/folder1/folder2/my-article`.
 
 ::::{note} Compatibility with Jupyter Book
 :class: dropdown

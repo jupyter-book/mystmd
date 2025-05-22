@@ -1,11 +1,38 @@
 ---
-title: Executable Plugins (Python)
+title: Write plugins in other languages
 description: Plugins built as stand-alone applications can be written in languages such as Python, and may be more familiar to some developers.
 ---
 
-MyST is able to invoke plugins written in different languages through standard IO protocols, for example, in Python. Executable MyST plugins are treated as a [](wiki:black_box), whereby MyST only sees the data it passes to the plugin, and the response from the plugin itself.
+MyST is able to invoke plugins written in different languages through standard IO protocols, for example, in Python. These are called **Executable Plugins** because they rely on scripts that are executed at build time.
 
-## Defining a new directive
+(executable-plugins)=
+## How executable plugins work
+
+Executable Plugins use `STDIO` to allow plugins that are written in any language, so long as they can access `STDIO` and can be executed. You configure an executable plugin in `myst.yml` like so:
+
+```{code} yaml
+:filename: myst.yml
+project:
+  plugins:
+    - type: executable
+      path: picsum.py
+```
+
+Your Executable Plugin file should have a `PLUGIN_SPEC` variable that defines its name and any roles, directives, or transforms that it will use. [See this `PLUGIN_SPEC` for example](https://github.com/projectpythia-mystmd/cookbook-gallery/blob/5ffd06e15d0058f310ea52f84f79f4f1d5394f81/pythia-gallery.py#L123-L127).
+
+Your Executable Plugin should be executable from the command line, and take the arguments `--role`, `--directive`, and `--transform`. These will be used by MyST. [Here's an example in Python](https://github.com/projectpythia-mystmd/cookbook-gallery/blob/5ffd06e15d0058f310ea52f84f79f4f1d5394f81/pythia-gallery.py#L133-L135).
+
+When your MyST site is built, MyST will **execute** the file specified in `path:` and follows a process like the following:
+
+- **Read in the MyST AST from STDIN**. Parse it as JSON. [Here's an example](https://github.com/projectpythia-mystmd/cookbook-gallery/blob/5ffd06e15d0058f310ea52f84f79f4f1d5394f81/pythia-gallery.py#L139)
+- **Modify the JSON AST in your script**. You can make edits, add things, etc. Just make sure that it remains valid JSON, and that it continues to follow the {term}`MyST Specification`. [Here's an example of the kind of AST you could output](https://github.com/projectpythia-mystmd/cookbook-gallery/blob/5ffd06e15d0058f310ea52f84f79f4f1d5394f81/pythia-gallery.py#L57-L79).
+- **Print the new MyST AST to STDOUT**. `mystmd` will read from STDOUT and insert the node at the proper location. [Here's an example](https://github.com/projectpythia-mystmd/cookbook-gallery/blob/5ffd06e15d0058f310ea52f84f79f4f1d5394f81/pythia-gallery.py#L140).
+
+:::{warning} What happens in an Executable Plugin is a black box
+Executable MyST plugins are treated as a [](wiki:black_box), whereby MyST only sees the data it passes to the plugin, and the response from the plugin itself.
+:::
+
+## Define a new directive
 
 :::{note}
 There are many different ways to create an executable plugin. Here we'll use Python to implement an `picsum-py` directive, but any programming language that can read and write from stdin, stdout, and stderr, and define a command line interface would work.

@@ -15,7 +15,7 @@ Landing pages are experimental, and the syntax and/or supported block-types are 
 The MyST [book-theme](#template-site-myst-book-theme) template provides out-of-the-box support for high-level landing-page blocks. By adding a small amount of annotation to your landing page, you can increase the approachability of your home page by composing it from visually-appealing blocks.
 
 :::{tip} Landing Page Example
-You can find a full working example at [`myst-examples/landing-pages`](https://github.com/myst-examples/landing-pages).
+You can find a full working example at [`jupyter-book/example-landing-pages`](https://github.com/jupyter-book/example-landing-pages).
 :::
 
 ## Defining a Block

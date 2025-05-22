@@ -33,6 +33,7 @@
               pkgs.texliveMedium
               pkgs.libwebp
               pkgs.imagemagick
+              pkgs.typst
             ];
           };
         }

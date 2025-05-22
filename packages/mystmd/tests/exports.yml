@@ -527,3 +527,11 @@ cases:
         content: multi-page-with-pageless-folder-and-headings-off/outputs/out-b.typ
       - path: multi-page-with-pageless-folder-and-headings-off/_build/out-c.typ
         content: multi-page-with-pageless-folder-and-headings-off/outputs/out-c.typ
+  - title: Site with non-index root file build
+    cwd: site-index
+    command: myst build
+    outputs:
+      - path: site-index/_build/site/content/index.json
+        content: outputs/site-index-content.json
+      - path: site-index/_build/site/content/index-1.json
+        content: outputs/site-index-content-1.json

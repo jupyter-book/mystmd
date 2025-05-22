@@ -19,9 +19,10 @@ import {
   validateObject,
   validateString,
   validationError,
+  validateBoolean,
 } from 'simple-validators';
 
-const COMMON_ENTRY_KEYS = ['title'];
+const COMMON_ENTRY_KEYS = ['title', 'hidden'];
 // const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'class'];
 
 function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): CommonEntry {
@@ -30,9 +31,9 @@ function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions
     output.title = validateString(entry.title, incrementOptions('title', opts));
   }
 
-  // if (defined(entry.hidden)) {
-  //   output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
-  // }
+  if (defined(entry.hidden)) {
+    output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
+  }
 
   // if (defined(entry.numbering)) {
   //   output.numbering = validateString(entry.numbering, incrementOptions('numbering', opts));

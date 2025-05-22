@@ -1,6 +1,6 @@
 ---
-title: Deploying your MyST Site
-short_title: Deployment
+title: Host your MyST Site
+short_title: Web hosting
 description: Deploy your MyST site to static HTML or a MyST-aware server.
 ---
 
