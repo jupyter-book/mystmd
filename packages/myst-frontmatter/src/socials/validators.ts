@@ -12,11 +12,19 @@ import { SOCIAL_LINKS_KEYS, SOCIAL_LINKS_ALIASES } from './types.js';
 import type { SocialLinks } from './types.js';
 
 // Match basic identifier (letters, numbers, underscores) plus a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
-const MASTODON_REGEX = /^@([A-Z0-9_]+)@(.+\..*[^.])$/i;
+const MASTODON_REGEX = /^@?([A-Z0-9_]+)@(.+\..*[^.])$/i;
 // Match a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
-const BLUESKY_REGEX = /^@(.+\..*[^.])$/;
-const BLUESKY_URL_REGEX = /^https:\/\/bsky.app\/profile\/(.*)$/;
-
+const BLUESKY_REGEX = /^@?(.+\..*[^.])$/;
+const BLUESKY_URL_REGEX = /^https:\/\/bsky\.app\/profile\/@?(.+\..*[^.])$/;
+// Match a basic identifier (letters, numbers, full-stop)
+const FACEBOOK_REGEX = /^[A-Z0-9.]+$/i;
+// Match a basic identifier (letters, numbers, full-stop)
+const YOUTUBE_REGEX = /^@?([A-Z0-9.]+)$/i;
+// Match a basic identifier (letters, numbers, full-stop, underscores)
+const THREADS_REGEX = /^[A-Z0-9_.]$/i;
+// Match a basic identifier (letters, numbers, underscores, between 4 and 15 characters)
+const TWITTER_REGEX = /^@?([A-Z0-9_]{4,15})$/i;
+const TWITTER_URL_REGEX = /^https:\/\/(twitter\.com|x\.com)\/@?([A-Z0-9_]{4,15})$/;
 /**
  * Validate value is valid Mastodon webfinger account
  *
@@ -74,6 +82,71 @@ export function validateBluesky(input: any, opts: ValidationOptions) {
   }
 }
 
+/**
+ * Validate value is valid Facebook URL or username string
+ */
+export function validateFacebook(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (value === undefined) return undefined;
+  // URL
+  if (/^https?:\/\//.test(value)) {
+    return validateUrl(input, { ...opts, includes: 'facebook.com' });
+  }
+  // username
+  else if (FACEBOOK_REGEX.test(value)) {
+    return value;
+  } else {
+    return validationError(
+      `Facebook social identity must be a valid URL starting with https://facebook.com/ or a valid username: ${value}`,
+      opts,
+    );
+  }
+}
+
+/**
+ * Validate value is valid Twitter/X URL or username string
+ */
+export function validateTwitter(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (value === undefined) return undefined;
+  let match: ReturnType<typeof value.match>;
+  // URL
+  if ((match = value.match(TWITTER_URL_REGEX))) {
+    return match[1];
+  }
+  // username
+  else if ((match = value.match(TWITTER_REGEX))) {
+    return value[1];
+  } else {
+    return validationError(
+      `Twitter social identity must be a valid URL starting with https://twitter.com/, https://x.com/, or a valid username: ${value}`,
+      opts,
+    );
+  }
+}
+
+/**
+ * Validate value is valid Facebook URL or username string
+ */
+export function validateYouTube(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (value === undefined) return undefined;
+  // URL
+  if (/^https?:\/\//.test(value)) {
+    return validateUrl(input, { ...opts, includes: 'facebook.com' });
+  }
+  // @handle
+  let match: ReturnType<typeof value.match>;
+  if ((match = value.match(YOUTUBE_REGEX))) {
+    return match[1];
+  } else {
+    return validationError(
+      `Facebook social identity must be a valid URL starting with https://facebook.com/ or a valid username: ${value}`,
+      opts,
+    );
+  }
+}
+
 export function validateSocialLinks(
   input: any,
   opts: ValidationOptions,
@@ -91,7 +164,6 @@ export function validateSocialLinks(
 
   const result = output ?? {};
 
-  // FIXME: normalize usernames into URLs
   if (defined(value.url)) {
     result.url = validateUrl(value.url, incrementOptions('url', opts));
   }
@@ -105,28 +177,40 @@ export function validateSocialLinks(
     result.mastodon = validateMastodon(value.mastodon, incrementOptions('mastodon', opts));
   }
   if (defined(value.linkedin)) {
-    result.linkedin = validateUrl(value.linkedin, incrementOptions('linkedin', opts));
+    result.linkedin = validateUrl(value.linkedin, {
+      ...incrementOptions('linkedin', opts),
+      includes: 'linkedin.com',
+    });
   }
   if (defined(value.threads)) {
-    result.threads = validateString(value.threads, incrementOptions('threads', opts));
+    result.threads = validateString(value.threads, {
+      ...incrementOptions('threads', opts),
+      regex: THREADS_REGEX,
+    });
   }
   if (defined(value.twitter)) {
-    result.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
+    result.twitter = validateTwitter(value.twitter, incrementOptions('twitter', opts));
   }
   if (defined(value.youtube)) {
-    result.youtube = validateUrl(value.youtube, incrementOptions('youtube', opts));
+    result.youtube = validateYouTube(value.youtube, incrementOptions('youtube', opts));
   }
   if (defined(value.discourse)) {
     result.discourse = validateUrl(value.discourse, incrementOptions('discourse', opts));
   }
   if (defined(value.discord)) {
-    result.discord = validateUrl(value.discord, incrementOptions('discord', opts));
+    result.discord = validateUrl(value.discord, {
+      ...incrementOptions('discord', opts),
+      includes: 'discord',
+    });
   }
   if (defined(value.slack)) {
-    result.slack = validateUrl(value.slack, incrementOptions('slack', opts));
+    result.slack = validateUrl(value.slack, {
+      ...incrementOptions('slack', opts),
+      includes: 'slack.com',
+    });
   }
   if (defined(value.facebook)) {
-    result.facebook = validateUrl(value.facebook, incrementOptions('facebook', opts));
+    result.facebook = validateFacebook(value.facebook, incrementOptions('facebook', opts));
   }
   return result;
 }
