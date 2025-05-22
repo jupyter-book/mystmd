@@ -139,7 +139,7 @@ export function validateGitHub(input: any, opts: ValidationOptions) {
   let match: ReturnType<typeof value.match>;
   // URL
   if ((match = value.match(GITHUB_USERNAME_REGEX))) {
-    return `@${match[1]}`;
+    return match[1];
   } else if ((match = value.match(GITHUB_USERNAME_REPO_REGEX))) {
     return match[0];
   } else if ((match = value.match(GITHUB_ORG_URL_REGEX))) {
