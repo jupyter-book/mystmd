@@ -173,7 +173,7 @@ export function validateSocialLinks(
     result.url = validateUrl(value.url, incrementOptions('url', opts));
   }
   if (defined(value.github)) {
-    result.github = validateString(value.github, incrementOptions('github', opts));
+    result.github = validateGitHub(value.github, incrementOptions('github', opts));
   }
   if (defined(value.bluesky)) {
     result.bluesky = validateBluesky(value.bluesky, incrementOptions('bluesky', opts));
