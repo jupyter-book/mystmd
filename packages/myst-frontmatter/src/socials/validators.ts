@@ -18,8 +18,6 @@ const MASTODON_REGEX = /^@?([A-Z0-9_]+)@(.+\..*[^.])$/i;
 const BLUESKY_REGEX = /^@?(.+\..*[^.])$/;
 const BLUESKY_URL_REGEX = /^https:\/\/bsky\.app\/profile\/@?(.+\..*[^.])$/;
 // Match a basic identifier (letters, numbers, full-stop)
-const FACEBOOK_REGEX = /^[A-Z0-9.]+$/i;
-// Match a basic identifier (letters, numbers, full-stop)
 const YOUTUBE_REGEX = /^@?([A-Z0-9.]+)$/i;
 // Match a basic identifier (letters, numbers, full-stop, underscores)
 const THREADS_REGEX = /^[A-Z0-9_.]+$/i;
@@ -84,27 +82,6 @@ export function validateBluesky(input: any, opts: ValidationOptions) {
     if (domain === undefined) return undefined;
 
     return `@${domain}`;
-  }
-}
-
-/**
- * Validate value is valid Facebook URL or username string
- */
-export function validateFacebook(input: any, opts: ValidationOptions) {
-  const value = validateString(input, opts);
-  if (value === undefined) return undefined;
-  // URL
-  if (/^https?:\/\//.test(value)) {
-    return validateUrl(input, { ...opts, includes: 'facebook.com' });
-  }
-  // username
-  else if (FACEBOOK_REGEX.test(value)) {
-    return value;
-  } else {
-    return validationError(
-      `Facebook social identity must be a valid URL starting with https://facebook.com/ or a valid username: ${value}`,
-      opts,
-    );
   }
 }
 
@@ -238,7 +215,10 @@ export function validateSocialLinks(
     });
   }
   if (defined(value.facebook)) {
-    result.facebook = validateFacebook(value.facebook, incrementOptions('facebook', opts));
+    result.facebook = validateUrl(value.facebook, {
+      ...incrementOptions('facebook', opts),
+      includes: 'facebook.com',
+    });
   }
   return result;
 }
