@@ -10,7 +10,7 @@ import {
 } from 'simple-validators';
 import { SOCIAL_LINKS_KEYS, SOCIAL_LINKS_ALIASES } from './types.js';
 import type { SocialLinks } from './types.js';
-import { validateGithubUrl } from '../utils/validators.js';
+import { GITHUB_USERNAME_REPO_REGEX, validateGithubUrl } from '../utils/validators.js';
 
 // Match basic identifier (letters, numbers, underscores) plus a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
 const MASTODON_REGEX = /^@?([A-Z0-9_]+)@(.+\..*[^.])$/i;
@@ -161,6 +161,8 @@ export function validateGitHub(input: any, opts: ValidationOptions) {
   // URL
   if ((match = value.match(GITHUB_USERNAME_REGEX))) {
     return `@${match[1]}`;
+  } else if ((match = value.match(GITHUB_USERNAME_REPO_REGEX))) {
+    return match[0];
   } else {
     return validateGithubUrl(value, opts);
   }
