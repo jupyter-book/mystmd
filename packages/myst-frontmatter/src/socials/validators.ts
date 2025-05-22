@@ -10,6 +10,7 @@ import {
 } from 'simple-validators';
 import { SOCIAL_LINKS_KEYS, SOCIAL_LINKS_ALIASES } from './types.js';
 import type { SocialLinks } from './types.js';
+import { validateGithubUrl } from '../utils/validators.js';
 
 // Match basic identifier (letters, numbers, underscores) plus a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
 const MASTODON_REGEX = /^@?([A-Z0-9_]+)@(.+\..*[^.])$/i;
@@ -25,6 +26,8 @@ const THREADS_REGEX = /^[A-Z0-9_.]+$/i;
 // Match a basic identifier (letters, numbers, underscores, between 4 and 15 characters)
 const TWITTER_REGEX = /^@?([A-Z0-9_]{4,15})$/i;
 const TWITTER_URL_REGEX = /^https:\/\/(twitter\.com|x\.com)\/@?([A-Z0-9_]{4,15})$/;
+// Match a basic identifier (letters, numbers, underscores, full-stops)
+const GITHUB_USERNAME_REGEX = /^@?([A-Z0-9_.-]+)$/i;
 /**
  * Validate value is valid Mastodon webfinger account
  *
@@ -126,7 +129,7 @@ export function validateTwitter(input: any, opts: ValidationOptions) {
 }
 
 /**
- * Validate value is valid Facebook URL or username string
+ * Validate value is valid YouTube URL or handle string
  */
 export function validateYouTube(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
@@ -144,6 +147,22 @@ export function validateYouTube(input: any, opts: ValidationOptions) {
       `YouTube social identity must be a valid URL starting with https://youtube.com/ or a valid handle: ${value}`,
       opts,
     );
+  }
+}
+
+/**
+ * Validate value is valid GitHub URL,
+ */
+export function validateGitHub(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (value === undefined) return undefined;
+
+  let match: ReturnType<typeof value.match>;
+  // URL
+  if ((match = value.match(GITHUB_USERNAME_REGEX))) {
+    return `@${match[1]}`;
+  } else {
+    return validateGithubUrl(value, opts);
   }
 }
 
