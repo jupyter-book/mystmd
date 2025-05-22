@@ -60,6 +60,14 @@
       "kind": "heading",
       "data": "/content/targets.json",
       "url": "/targets"
-    }
+    },
+    {
+      "identifier": "my-code-block",
+      "kind": "heading",
+      "data": "/content/targets.json",
+      "url": "/targets",
+      "implicit": true
+    },
+    { "identifier": "my-code", "kind": "code", "data": "/content/targets.json", "url": "/targets" }
   ]
 }
