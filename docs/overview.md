@@ -47,7 +47,7 @@ An overview of the "Rendering and Theming" phase using one or more MyST renderer
 
 The MyST Document engine knows how to parse many kinds of documents into {term}`MyST AST`. This is most-commonly done with markdown files (`.md`) or Jupyter Notebooks (`.ipynb`) written in {term}`MyST Markdown`, a flavor of markdown that was designed for the MyST Document Engine.
 
-However, the MyST Engine knows how to parse other kinds of syntax into MyST AST as well. For example, [for admonition compatibility with GitHub Markdown](admonition-github-compatibility). This is because we see the {term}`MyST AST` as the primary point of _standardization_ for the MyST ecosystem, not the Markdown flavor. Input documents may have many different forms, but once it is parsed into {term}`MyST AST`, the document should have a standardized structure defined by the {term}`MyST Specification`.
+However, the MyST Engine knows how to parse other kinds of syntax into MyST AST as well. For example, [for admonition compatibility with GitHub Markdown](#admonition-github-compatibility). This is because we see the {term}`MyST AST` as the primary point of _standardization_ for the MyST ecosystem, not the Markdown flavor. Input documents may have many different forms, but once it is parsed into {term}`MyST AST`, the document should have a standardized structure defined by the {term}`MyST Specification`.
 
 ## What is the MyST AST and Specification?
 
