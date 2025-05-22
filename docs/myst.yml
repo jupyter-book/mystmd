@@ -2,6 +2,7 @@ version: 1
 project:
   title: MyST Markdown
   github: https://github.com/jupyter-book/mystmd
+  # jupyter: true  # Uncomment to test launch buttons
   license:
     code: MIT
     content: CC-BY-4.0
@@ -109,6 +110,7 @@ project:
         - file: reuse-jupyter-outputs.md
         - file: interactive-notebooks.ipynb
         - file: integrating-jupyter.md
+        - file: website-launch-buttons.md
         - file: notebook-configuration.md
         - file: md-vs-ipynb.md
     - title: Websites
