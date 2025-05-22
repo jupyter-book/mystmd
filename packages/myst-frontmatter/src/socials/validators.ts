@@ -28,6 +28,8 @@ const TWITTER_REGEX = /^@?([A-Z0-9_]{4,15})$/i;
 const TWITTER_URL_REGEX = /^https:\/\/(twitter\.com|x\.com)\/@?([A-Z0-9_]{4,15})$/;
 // Match a basic identifier (letters, numbers, underscores, full-stops)
 const GITHUB_USERNAME_REGEX = /^@?([A-Z0-9_.-]+)$/i;
+const GITHUB_ORG_URL_REGEX = /^https:\/github\.com\/orgs\/[A-Z0-9_.-]+$/;
+
 /**
  * Validate value is valid Mastodon webfinger account
  *
@@ -163,8 +165,13 @@ export function validateGitHub(input: any, opts: ValidationOptions) {
     return `@${match[1]}`;
   } else if ((match = value.match(GITHUB_USERNAME_REPO_REGEX))) {
     return match[0];
+  } else if ((match = value.match(GITHUB_ORG_URL_REGEX))) {
+    return match[0];
   } else {
-    return validateGithubUrl(value, opts);
+    return validationError(
+      `GitHub social identity must be a valid username, org/repo, or org URL: ${value}`,
+      opts,
+    );
   }
 }
 
