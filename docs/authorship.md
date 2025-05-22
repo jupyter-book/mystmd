@@ -49,6 +49,63 @@ affiliations:
 
 See [the `authors` frontmatter reference](#frontmatter:authors) for a list of all authorship metadata fields you can use.
 
+### Re-use author information across repositories and projects
+
+By [extending MyST configuration files](#composing-myst-yml) you can store author information in one place and re-use it across many other locations. This allows you to define a source of truth for authorship and affiliations, and reference that over time. For example:
+
+In one file, you'd define all the author affiliations that are relevant to your project:
+
+```{code-block} yaml
+:filename: authors.yml
+version: 1
+project:
+  contributors:
+    - id: person_a
+      name: First Last
+      email: person_a@org_a.org
+      orcid: XXXX-XXXX-XXXX-XXXX
+      github: person_a
+      affiliations:
+        - id: org_a
+        - id: org_b
+    - id: person_b
+      name: First Last
+      email: person_b@org_b.com
+      orcid: XXXX-XXXX-XXXX-XXXX
+      github: person_b
+      affiliations:
+        - id: org_b
+  affiliations:
+    - id: org_a
+      name: Organization A Incorporated
+    - id: org_b
+      name: Org B Inc.
+```
+
+And in each of your project `myst.yml` files, you can extend this authorship file like so to include all the information:
+
+```{code-block} yaml
+:filename: myst.yml
+version: 1
+extends:
+  - ./authors.yml  # OR, the URL of this file if not hosted locally
+project:
+  authors:
+    - person_a
+    - person_b
+```
+
+You could then also reference these authors in your page frontmatter like so:
+
+```{code-block} markdown
+:filename: mypage.md
+---
+authors:
+- person_a
+---
+
+Page content...
+```
 
 (affiliations)=
 
