@@ -21,7 +21,7 @@ const FACEBOOK_REGEX = /^[A-Z0-9.]+$/i;
 // Match a basic identifier (letters, numbers, full-stop)
 const YOUTUBE_REGEX = /^@?([A-Z0-9.]+)$/i;
 // Match a basic identifier (letters, numbers, full-stop, underscores)
-const THREADS_REGEX = /^[A-Z0-9_.]$/i;
+const THREADS_REGEX = /^[A-Z0-9_.]+$/i;
 // Match a basic identifier (letters, numbers, underscores, between 4 and 15 characters)
 const TWITTER_REGEX = /^@?([A-Z0-9_]{4,15})$/i;
 const TWITTER_URL_REGEX = /^https:\/\/(twitter\.com|x\.com)\/@?([A-Z0-9_]{4,15})$/;
@@ -45,7 +45,6 @@ export function validateMastodon(input: any, opts: ValidationOptions) {
   const username = match[1];
   const host = validateDomain(match[2], opts);
   if (host === undefined) return undefined;
-
   return `@${username}@${host}`;
 }
 
@@ -60,6 +59,7 @@ export function validateBluesky(input: any, opts: ValidationOptions) {
   let match: ReturnType<typeof value.match>;
   if ((match = value.match(BLUESKY_REGEX))) {
     const domain = validateDomain(match[1], opts);
+    if (domain === undefined) return undefined;
     return `@${domain}`;
   }
   // URL to profile
@@ -116,7 +116,7 @@ export function validateTwitter(input: any, opts: ValidationOptions) {
   }
   // username
   else if ((match = value.match(TWITTER_REGEX))) {
-    return value[1];
+    return match[1];
   } else {
     return validationError(
       `Twitter social identity must be a valid URL starting with https://twitter.com/, https://x.com/, or a valid username: ${value}`,
@@ -133,7 +133,7 @@ export function validateYouTube(input: any, opts: ValidationOptions) {
   if (value === undefined) return undefined;
   // URL
   if (/^https?:\/\//.test(value)) {
-    return validateUrl(input, { ...opts, includes: 'facebook.com' });
+    return validateUrl(input, { ...opts, includes: 'youtube.com' });
   }
   // @handle
   let match: ReturnType<typeof value.match>;
@@ -141,7 +141,7 @@ export function validateYouTube(input: any, opts: ValidationOptions) {
     return match[1];
   } else {
     return validationError(
-      `Facebook social identity must be a valid URL starting with https://facebook.com/ or a valid username: ${value}`,
+      `YouTube social identity must be a valid URL starting with https://youtube.com/ or a valid username: ${value}`,
       opts,
     );
   }

@@ -36,10 +36,10 @@ cases:
       binder: https://example.com/binder
       source: https://example.com/source
       socials:
-        x: '@test'
+        x: 'test'
         github: test
         bsky: '@domain.com'
-        mastodon: 'https://fosstodon.org/@user'
+        mastodon: '@user@fosstodon.org'
         linkedin: 'https://linkedin.com/@user'
         instagram: 'username'
         youtube: 'https://youtube.com/user'
@@ -110,10 +110,10 @@ cases:
       binder: https://example.com/binder
       source: https://example.com/source
       social:
-        twitter: '@test'
+        twitter: 'test'
         github: test
         bluesky: '@domain.com'
-        mastodon: 'https://fosstodon.org/@user'
+        mastodon: '@user@fosstodon.org'
         linkedin: 'https://linkedin.com/@user'
         threads: 'username'
         youtube: 'https://youtube.com/user'
