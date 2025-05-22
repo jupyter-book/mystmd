@@ -141,7 +141,7 @@ export function validateYouTube(input: any, opts: ValidationOptions) {
     return match[1];
   } else {
     return validationError(
-      `YouTube social identity must be a valid URL starting with https://youtube.com/ or a valid username: ${value}`,
+      `YouTube social identity must be a valid URL starting with https://youtube.com/ or a valid handle: ${value}`,
       opts,
     );
   }
