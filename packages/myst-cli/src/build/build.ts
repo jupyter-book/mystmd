@@ -26,6 +26,7 @@ type FormatBuildOpts = {
   typst?: boolean;
   xml?: boolean;
   md?: boolean;
+  ipynb?: boolean;
   meca?: boolean;
   cff?: boolean;
   html?: boolean;
@@ -37,8 +38,8 @@ type FormatBuildOpts = {
 export type BuildOpts = FormatBuildOpts & CollectionOptions & RunExportOptions & StartOptions;
 
 export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
-  const { docx, pdf, tex, typst, xml, md, meca, cff } = opts;
-  return docx || pdf || tex || typst || xml || md || meca || cff || false;
+  const { docx, pdf, tex, typst, xml, md, ipynb, meca, cff } = opts;
+  return docx || pdf || tex || typst || xml || md || ipynb || meca || cff || false;
 }
 
 /**
@@ -50,12 +51,13 @@ export function hasAnyExplicitExportFormat(opts: BuildOpts): boolean {
  * @param opts.typst
  * @param opts.xml
  * @param opts.md
+ * @param opts.ipynb
  * @param opts.meca
  * @param opts.all all exports requested with --all option
  * @param opts.explicit explicit input file was provided
  */
 export function getAllowedExportFormats(opts: FormatBuildOpts & { explicit?: boolean }) {
-  const { docx, pdf, tex, typst, xml, md, meca, cff, all, explicit } = opts;
+  const { docx, pdf, tex, typst, xml, md, ipynb, meca, cff, all, explicit } = opts;
   const formats = [];
   const any = hasAnyExplicitExportFormat(opts);
   const override = all || (!any && explicit);
@@ -69,6 +71,7 @@ export function getAllowedExportFormats(opts: FormatBuildOpts & { explicit?: boo
   if (typst || override) formats.push(ExportFormats.typst);
   if (xml || override) formats.push(ExportFormats.xml);
   if (md || override) formats.push(ExportFormats.md);
+  if (ipynb || override) formats.push(ExportFormats.ipynb);
   if (meca || override) formats.push(ExportFormats.meca);
   if (cff || override) formats.push(ExportFormats.cff);
   return [...new Set(formats)];
@@ -78,7 +81,7 @@ export function getAllowedExportFormats(opts: FormatBuildOpts & { explicit?: boo
  * Return requested formats from CLI options
  */
 export function getRequestedExportFormats(opts: FormatBuildOpts) {
-  const { docx, pdf, tex, typst, xml, md, meca, cff } = opts;
+  const { docx, pdf, tex, typst, xml, md, ipynb, meca, cff } = opts;
   const formats = [];
   if (docx) formats.push(ExportFormats.docx);
   if (pdf) formats.push(ExportFormats.pdf);
@@ -86,6 +89,7 @@ export function getRequestedExportFormats(opts: FormatBuildOpts) {
   if (typst) formats.push(ExportFormats.typst);
   if (xml) formats.push(ExportFormats.xml);
   if (md) formats.push(ExportFormats.md);
+  if (ipynb) formats.push(ExportFormats.ipynb);
   if (meca) formats.push(ExportFormats.meca);
   if (cff) formats.push(ExportFormats.cff);
   return formats;
@@ -239,7 +243,8 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
       // Print out the kinds that are filtered
       const kinds = Object.entries(opts)
         .filter(
-          ([k, v]) => ['docx', 'pdf', 'tex', 'typst', 'xml', 'md', 'meca', 'cff'].includes(k) && v,
+          ([k, v]) =>
+            ['docx', 'pdf', 'tex', 'typst', 'xml', 'md', 'ipynb', 'meca', 'cff'].includes(k) && v,
         )
         .map(([k]) => k);
       session.log.info(
