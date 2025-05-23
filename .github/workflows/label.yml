@@ -25,7 +25,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - run: echo ${{ github.event.action == 'opened' && github.head_ref == "changeset-release/main" }}
+      - run: echo ${{ github.event.action == 'opened' && github.head_ref == 'changeset-release/main' }}
       - name: Label release pull request
         # .github/labeler.yml defines configuration
         uses: actions/labeler@v5
