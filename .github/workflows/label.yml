@@ -21,7 +21,7 @@ jobs:
             release
   label-release:
     runs-on: ubuntu-latest
-    if: github.event.action == 'opened' && github.head_ref == "changeset-release/main"
+    # if: github.event.action == 'opened' && github.head_ref == "changeset-release/main"
     permissions:
       pull-requests: write
     steps:
