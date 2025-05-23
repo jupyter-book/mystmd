@@ -20,6 +20,7 @@ import {
   makeMaxSizeWebpOption,
   makeDOIBibOption,
   makeCffOption,
+  makeIpynbOption,
 } from './options.js';
 import { readableName } from '../utils/whiteLabelling.js';
 
@@ -33,6 +34,7 @@ export function makeBuildCommand() {
     .addOption(makeTypstOption('Build Typst outputs'))
     .addOption(makeDocxOption('Build Docx output'))
     .addOption(makeMdOption('Build MD output'))
+    .addOption(makeIpynbOption('Build IPYNB output'))
     .addOption(makeJatsOption('Build JATS xml output'))
     .addOption(makeMecaOptions('Build MECA zip output'))
     .addOption(makeCffOption('Build CFF output'))
