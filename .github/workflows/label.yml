@@ -1,7 +1,7 @@
 name: Pull Request Labels
 on:
   pull_request:
-    types: [opened, labeled, unlabeled, synchronize]
+    types: [opened, labeled, unlabeled, synchronize, reopened]
 jobs:
   require-label:
     runs-on: ubuntu-latest
@@ -25,6 +25,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+      - run: echo ${{ github.event.action == 'opened' && github.head_ref == "changeset-release/main" }}
       - name: Label release pull request
         # .github/labeler.yml defines configuration
         uses: actions/labeler@v5
