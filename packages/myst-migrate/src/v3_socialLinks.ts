@@ -12,8 +12,9 @@ e.g. Twitter '@username' → 'username'
 const TWITTER_REGEX = /^@?([A-Z0-9_]{4,15})$/i;
 const TWITTER_URL_REGEX = /^https:\/\/(twitter\.com|x\.com)\/@?([A-Z0-9_]{4,15})$/;
 
-function upgradeSocials(object: Record<string, any> | undefined) {
-  if (object === undefined) return;
+function upgradeSocials(object: string | Record<string, any> | undefined) {
+  if (object === undefined || typeof object === 'string') return;
+
   const value = object['twitter'] as string | undefined;
   if (value === undefined) return;
 
@@ -35,7 +36,8 @@ function upgradeSocials(object: Record<string, any> | undefined) {
 }
 
 function downgradeSocials(object: Record<string, any> | undefined) {
-  if (object === undefined) return;
+  if (object === undefined || typeof object === 'string') return;
+
   if (object.twitter !== undefined) {
     object.twitter = `@${object.twitter}`;
   }
