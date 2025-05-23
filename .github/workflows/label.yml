@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, labeled, unlabeled, synchronize]
 jobs:
-  label:
+  require-label:
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -19,3 +19,12 @@ jobs:
             documentation
             maintenance
             release
+  label-release:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Label release pull request
+        # .github/labeler.yml defines configuration
+        uses: actions/labeler@v5

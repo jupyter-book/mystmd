@@ -56,11 +56,6 @@ jobs:
         with:
           name: python-package-distributions
           path: packages/mystmd-py/dist/
-      - name: Label pull request
-        uses: actions/labeler@v5
-        if: ${{ steps.changesets.outputs.pullRequestNumber }}
-        with:
-          pr-number: ${{ steps.changesets.outputs.pullRequestNumber }}
 
   release-py:
     name: Release Python
