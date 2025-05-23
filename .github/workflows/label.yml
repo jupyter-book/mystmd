@@ -1,14 +1,16 @@
 name: Pull Request Labels
 on:
-  pull_request:
-    types: [opened, labeled, unlabeled, synchronize]
+  pull_request_target:
+    types: [opened, labeled, unlabeled, synchronize, reopened]
 jobs:
-  label:
+  require-label:
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
     steps:
+      # WARNING: this is a pull_request_target workflow
+      #          DO NOT checkout the repo
       - uses: mheap/github-action-required-labels@v5
         with:
           mode: exactly
@@ -19,3 +21,16 @@ jobs:
             documentation
             maintenance
             release
+  label-release:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened' && github.head_ref == 'changeset-release/main'
+    permissions:
+      pull-requests: write
+      contents: read
+      issues: write
+    steps:
+      # WARNING: this is a pull_request_target workflow
+      #          DO NOT checkout the repo
+      - name: Label release pull request
+        # .github/labeler.yml defines configuration
+        uses: actions/labeler@v5

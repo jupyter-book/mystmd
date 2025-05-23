@@ -1,0 +1,2 @@
+release:
+  - head-branch: '^changeset-release/main$'
