@@ -77,9 +77,6 @@ export function downgrade(file: IFile): IFile {
   assert(version === 3, 'Version must be 3');
 
   transformFrontmatter(frontmatter, downgradeSocials);
-  if (frontmatter.socials !== undefined) {
-    delete frontmatter.socials;
-  }
 
   return file;
 }
