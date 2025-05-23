@@ -25,6 +25,7 @@ jobs:
     permissions:
       pull-requests: write
       contents: read
+      issues: write
     steps:
       - run: echo ${{ github.event.action == 'opened' && github.head_ref == 'changeset-release/main' }}
       - name: Label release pull request
