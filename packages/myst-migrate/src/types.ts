@@ -3,6 +3,7 @@ export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
 export interface IFile {
   version: number;
   mdast: any;
+  frontmatter: Record<string, any>;
 }
 
 export type Options = {
