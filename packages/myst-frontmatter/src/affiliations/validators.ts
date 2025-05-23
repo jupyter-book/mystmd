@@ -12,11 +12,8 @@ import {
 import { stashPlaceholder } from '../utils/referenceStash.js';
 import { validateDoi } from '../utils/validators.js';
 import type { Affiliation } from './types.js';
-import {
-  SOCIAL_LINKS_ALIASES,
-  SOCIAL_LINKS_KEYS,
-  validateSocialLinks,
-} from '../utils/socialLinks.js';
+import { SOCIAL_LINKS_ALIASES, SOCIAL_LINKS_KEYS } from '../socials/types.js';
+import { validateSocialLinks } from '../socials/validators.js';
 
 export const AFFILIATION_KEYS = [
   'id',

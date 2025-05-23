@@ -28,6 +28,7 @@ import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
 import { validateMathMacroObject } from '../math/validators.js';
+import { validateSocialLinks } from '../socials/validators.js';
 
 function getExternalIdentifierValidator(
   key: string,
@@ -270,6 +271,10 @@ export function validateProjectFrontmatterKeys(
 
   if (defined(value.toc)) {
     output.toc = validateTOC(value.toc, incrementOptions('toc', opts));
+  }
+
+  if (defined(value.social)) {
+    output.social = validateSocialLinks(value.social, incrementOptions('social', opts));
   }
 
   if (defined(value.requirements)) {
