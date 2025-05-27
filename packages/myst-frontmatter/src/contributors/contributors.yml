@@ -13,13 +13,13 @@ cases:
             - Validation
           affiliations:
             - example university
-          x: 'test'
+          x: '@test'
           github: test
           bsky: '@domain.com'
           mastodon: '@user@fosstodon.org'
           linkedin: 'https://linkedin.com/in/user'
           instagram: 'username'
-          youtube: 'https://youtube.com/user'
+          youtube: '@user'
           facebook: 'https://facebook.com/user'
           discourse: 'https://discourse.example.com'
           discord: 'https://discord.gg/server'
@@ -47,7 +47,7 @@ cases:
           mastodon: '@user@fosstodon.org'
           linkedin: 'https://linkedin.com/in/user'
           threads: username
-          youtube: 'https://youtube.com/user'
+          youtube: 'user'
           facebook: 'https://facebook.com/user'
           discourse: 'https://discourse.example.com'
           discord: 'https://discord.gg/server'
