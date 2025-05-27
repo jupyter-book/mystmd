@@ -13,7 +13,7 @@ Adding frontmatter ensures that these properties are available to downstream too
 Frontmatter can be set in two place:
 
 1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a “page” below)
-2. In  `myst.yml` file. This will be applied to all content in that project (apart from “page only” fields).
+2. In `myst.yml` file. This will be applied to all content in that project (apart from “page only” fields).
 
 More detailed examples are below.
 
@@ -72,8 +72,8 @@ version: 1
 site: ...
 project: ...
 extends:
-  - ../macros.yml  # A local file
-  - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml  # A remote file
+  - ../macros.yml # A local file
+  - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml # A remote file
 ```
 
 Each entry listed inside `extends` may be a relative path to a file or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
@@ -227,6 +227,9 @@ The following table lists the available frontmatter fields, a brief description 
   - project only
 * - `resources`
   - other resources associated with your project, distributed in the MECA bundle
+  - project only
+* - `social`
+  - social links (see [](#social-links))
   - project only
 * - `jupyter` or `thebe`
   - configuration for Jupyter execution (see [](./integrating-jupyter.md))
@@ -426,17 +429,27 @@ Contributors and affiliations can also have social links and URLs.
 * - `url`
   - a string - website or homepage of the author
 * - `bluesky`
-  - a bluesky username
+  - a bluesky username or URL
 * - `mastodon`
-  - a mastodon username (`@user@example.com`) or URL
+  - a mastodon username (`@user@example.com`)
 * - `threads`
   - a threads/instagram username
 * - `linkedin`
   - a linkedin URL
 * - `twitter` (or `x`)
-  - a x/twitter username
+  - a x/twitter username or URL
+* - `facebook`
+  - a facebook URL
+* - `discord`
+  - a discord URL
+* - `youtube`
+  - a YouTube username or URL
+* - `discourse`
+  - a discourse URL
+* - `slack`
+  - a slack URL
 * - `github`
-  - a GitHub username
+  - a GitHub username or organization URL (`https://github.com/orgs/example`)
 ```
 
 (other-contributors)=
