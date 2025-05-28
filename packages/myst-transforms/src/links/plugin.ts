@@ -20,7 +20,7 @@ export function formatLinkText(link: Link) {
   if (link.children?.length !== 1 || link.children[0].type !== 'text') return;
   const url = link.children[0].value;
   // Add an exception for wiki transforms links.
-  if (url.length < 20 || url.match(/\s/) || url.startsWith('wiki:')) return;
+  if (url.length < 20 || url.match(/\s/)) return;
   if (url.includes('​')) return;
   // Split the URL into an array to distinguish double slashes from single slashes
   const doubleSlash = url.split('//');
@@ -48,7 +48,10 @@ export function linksTransform(mdast: GenericParent, file: VFile, opts: Options)
     const result = transform?.transform(link, file);
     // The link transform may compare the text
     // Formatting adds no-width spaces to some URLs
-    formatLinkText(link);
+    // Don't format text if transform already does this
+    if (!transform?.formatsText) {
+      formatLinkText(link);
+    }
     if (!transform || result === undefined) return;
     if (result) {
       delete link.error;
