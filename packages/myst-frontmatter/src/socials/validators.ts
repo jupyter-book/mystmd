@@ -13,20 +13,20 @@ import type { SocialLinks } from './types.js';
 import { GITHUB_USERNAME_REPO_REGEX, validateGithubUrl } from '../utils/validators.js';
 
 // Match basic identifier (letters, numbers, underscores) plus a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
-const MASTODON_REGEX = /^@?([A-Z0-9_]+)@(.+\..*[^.])$/i;
+const MASTODON_REGEX = /^@?([a-zA-Z0-9_]+)@([^@]+\.[^@]*[^.])$/i;
 // Match a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
-const BLUESKY_REGEX = /^@?(.+\..*[^.])$/;
+const BLUESKY_REGEX = /^@?([^\/:]+\..*[^.])$/;
 const BLUESKY_URL_REGEX = /^https:\/\/bsky\.app\/profile\/@?(.+\..*[^.])$/;
 // Match a basic identifier (letters, numbers, full-stop)
-const YOUTUBE_REGEX = /^@?([A-Z0-9.]+)$/i;
+const YOUTUBE_REGEX = /^@?([a-zA-Z0-9.]+)$/i;
 // Match a basic identifier (letters, numbers, full-stop, underscores)
-const THREADS_REGEX = /^[A-Z0-9_.]+$/i;
+const THREADS_REGEX = /^[a-zA-Z0-9_.]+$/i;
 // Match a basic identifier (letters, numbers, underscores, between 4 and 15 characters)
-const TWITTER_REGEX = /^@?([A-Z0-9_]{4,15})$/i;
-const TWITTER_URL_REGEX = /^https:\/\/(twitter\.com|x\.com)\/@?([A-Z0-9_]{4,15})$/;
+const TWITTER_REGEX = /^@?([a-zA-Z0-9_]{4,15})$/i;
+const TWITTER_URL_REGEX = /^https:\/\/(?:twitter\.com|x\.com)\/@?([a-zA-Z0-9_]{4,15})$/;
 // Match a basic identifier (letters, numbers, underscores, full-stops)
-const GITHUB_USERNAME_REGEX = /^@?([A-Z0-9_.-]+)$/i;
-const GITHUB_ORG_URL_REGEX = /^https:\/github\.com\/orgs\/[A-Z0-9_.-]+$/;
+const GITHUB_USERNAME_REGEX = /^@?([a-zA-Z0-9_.-]+)$/i;
+const GITHUB_ORG_URL_REGEX = /^https:\/\/github\.com\/orgs\/[a-zA-Z0-9_.-]+$/;
 
 /**
  * Validate value is valid Mastodon webfinger account
