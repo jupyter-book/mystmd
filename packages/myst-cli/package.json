@@ -85,6 +85,7 @@
     "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.7.11",
     "myst-templates": "^1.0.25",
+    "myst-to-ipynb": "^1.0.15",
     "myst-to-docx": "^1.0.14",
     "myst-to-jats": "^1.0.34",
     "myst-to-md": "^1.0.15",
