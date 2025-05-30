@@ -1,5 +1,12 @@
 # myst-transforms
 
+## 1.3.35
+
+### Patch Changes
+
+- 813c2a66: Do not recognise permalink-style wiki links
+  - myst-to-html@1.5.14
+
 ## 1.3.34
 
 ### Patch Changes
