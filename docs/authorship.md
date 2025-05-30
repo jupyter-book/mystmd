@@ -1,6 +1,6 @@
 # Authorship and attribution
 
-You can bundle information about the authors of each page in a MyST project, as well as metadata about them. For example, their institutional affiliations, funding, etc. These will be treated differently depending on the 
+You can bundle information about the authors of each page in a MyST project, as well as metadata about them. For example, their institutional affiliations, funding, etc. 
 
 ## How to set author information
 
