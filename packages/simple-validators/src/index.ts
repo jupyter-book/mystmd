@@ -10,6 +10,7 @@ export {
   validateNumber,
   validateUrl,
   validateSubdomain,
+  validateDomain,
   validateEmail,
   validateChoice,
   validateEnum,

@@ -137,7 +137,10 @@ export function validateUrl(input: any, opts: { includes?: string } & Validation
   return value;
 }
 
-export function validateSubdomain(input: string, opts: ValidationOptions) {
+export function validateDomain(
+  input: string,
+  opts: { minParts?: number; maxParts?: number } & ValidationOptions,
+) {
   let value = validateString(input, { ...opts, maxLength: 2048 });
   if (value === undefined) return value;
   if (!value.startsWith('https://') && !value.startsWith('http://')) {
@@ -147,7 +150,7 @@ export function validateSubdomain(input: string, opts: ValidationOptions) {
   try {
     url = new URL(value);
   } catch {
-    return validationError(`must be valid domain: ${input}`, opts);
+    return validationError(`domain must be valid when used as a URL: ${input}`, opts);
   }
   const { hash, host, pathname, protocol, search } = url;
   if (protocol !== 'http:' && protocol !== 'https:') {
@@ -156,11 +159,17 @@ export function validateSubdomain(input: string, opts: ValidationOptions) {
   if ((pathname && pathname !== '/') || hash || search) {
     return validationError(`must not specify path, query, or fragment: ${input}`, opts);
   }
-  if (!host.match(/^.+\..+\..+$/)) {
-    return validationError(`must be a subdomain: ${input}`, opts);
-  }
+  const numParts = host.split('.').length;
+  if (opts.minParts !== undefined && opts.minParts > numParts)
+    return validationError(`must have at least ${opts.minParts} parts: ${input}`, opts);
+  if (opts.maxParts !== undefined && opts.maxParts < numParts)
+    return validationError(`must have at most ${opts.minParts} parts: ${input}`, opts);
   // `host` is already lowercased, but we can be super explicit!
   return host.toLowerCase();
+}
+
+export function validateSubdomain(input: string, opts: ValidationOptions) {
+  return validateDomain(input, { ...opts, minParts: 3 });
 }
 
 /**

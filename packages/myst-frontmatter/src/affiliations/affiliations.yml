@@ -257,12 +257,12 @@ cases:
           affiliations:
             - name: University A
               url: https://example.com
-              twitter: '@abc'
+              twitter: '@abcd'
         - id: an
           name: A. Nother Name
           affiliations:
             - url: https://example.com
-              twitter: '@abc'
+              twitter: '@abcd'
               name: University A
     normalized:
       authors:
@@ -286,7 +286,7 @@ cases:
         - id: affiliations-generated-uid-0
           name: University A
           url: https://example.com
-          twitter: '@abc'
+          twitter: 'abcd'
   - title: Author with affiliation object replaces id at top level
     raw:
       authors:
@@ -408,11 +408,11 @@ cases:
       affiliations:
         - name: University A
           id: univa
-          x: '@abc'
-          bsky: '@abc'
+          x: '@abcd'
+          bsky: '@abc.com'
     normalized:
       affiliations:
         - name: University A
           id: univa
-          twitter: '@abc'
-          bluesky: '@abc'
+          twitter: 'abcd'
+          bluesky: '@abc.com'
