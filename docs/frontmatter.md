@@ -59,9 +59,32 @@ project:
   open_access: true
 ```
 
+
+(field-behavior)=
+
+### How project and page frontmatter interact
+
+Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a "project". However, some frontmatter fields are available across an entire project, while others are only available for a given page.
+
+The behavior of each frontmatter field is hard-coded within MyST. These are the kinds of scope that a frontmatter field can have:
+
+`page & project`
+: the field is available on both the page & project but they are independent
+
+`page only`
+: the field is only available on pages, and not present on projects and it will be ignored if set there.
+
+`page can override project`
+: the field is available on both page & project but the value of the field on the page will override any set of the project. If the page field is omitted or undefined, the project value will be used. If the page field has a value of `null` (or `[]` in the case of multi-item fields like `authors`), the page will override the project value and clear the field for that page.
+
+`project only`
+: the field is only available on projects, and not present on pages and it will be ignored if set there.
+
++++
+
 (composing-myst-yml)=
 
-## Compose multiple `.yml` files
+### Compose multiple `.yml` files
 
 You may separate your frontmatter into multiple, composable files. This allows you to have a single source of truth for frontmatter to re-use across multiple projects, for example math macros or funding information.
 
@@ -241,26 +264,6 @@ The following table lists the available frontmatter fields, a brief description 
 
 +++
 
-(field-behavior)=
-
-## Field Behavior
-
-Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a “project”. However, individual frontmatter fields are not uniformly available at both levels, and behavior of certain fields are different between project and page levels. There are three field behaviors to be aware of:
-
-`page & project`
-: the field is available on both the page & project but they are independent
-
-`page only`
-: the field is only available on pages, and not present on projects and it will be ignored if set there.
-
-`page can override project`
-: the field is available on both page & project but the value of the field on the page will override any set of the project. Note that the page field must be omitted or undefined, for the project value to be used, value of `null` (or `[]` in the case of `authors`) will still override the project value but clear the field for that page.
-
-`project only`
-: the field is only available on projects, and not present on pages and it will be ignored if set there.
-
-+++
-
 (titles)=
 
 ## Titles
@@ -423,6 +426,8 @@ Contributors and affiliations can also have social links and URLs.
 ```{list-table} Social Links for contributors and affiliations.
 :header-rows: 1
 :label: table-frontmatter-social-links
+* - field
+  - description
 * - `url`
   - a string - website or homepage of the author
 * - `bluesky`
@@ -439,123 +444,9 @@ Contributors and affiliations can also have social links and URLs.
   - a GitHub username
 ```
 
-(other-contributors)=
+### Affiliations
 
-### Reviewers, Editors, Funding Recipients
-
-Other contributors besides authors may be listed elsewhere in the frontmatter. These include `reviewers`, `editors`, and [funding](#frontmatter:funding) award `investigators` and `recipients`. For all of these fields, you may use a full [author object](#frontmatter:authors), or you may use the string `id` from an existing author object defined elsewhere in your frontmatter.
-
-(affiliations)=
-
-## Affiliations
-
-You can create an affiliation directly by adding it to an author, and it can be as simple as a single string.
-
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliation: University of British Columbia
-```
-
-You can also add much more information to any affiliation, such as a ROR, ISNI, or an address. A very complete affiliations list for an author at the University of British Columbia is:
-
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliations:
-      - id: ubc
-        institution: University of British Columbia
-        ror: https://ror.org/03rmrcq20
-        isni: 0000 0001 2288 9830
-        department: Department of Earth, Ocean and Atmospheric Sciences
-        address: 2020 – 2207 Main Mall
-        city: Vancouver
-        region: British Columbia
-        country: Canada
-        postal_code: V6T 1Z4
-        phone: 604 822 2449
-        bluesky: '@eoas.ubc.ca'
-  - name: Miles Mysterson
-    affiliation: ubc
-```
-
-Notice how you can use an `id` to avoid writing this out for every coauthor. Additionally, if the affiliation is a single string and contains a semi-colon `;` it will be treated as a list. The affiliations can also be added to your `project` frontmatter in your `myst.yml` and used across any document in the project.
-
-::::{tab-set}
-:::{tab-item} article.md
-
-```yaml
----
-title: My Article
-authors:
-  - name: Marissa Myst
-    affiliation: ubc
-  - name: Miles Mysterson
-    affiliations: ubc; stanford
----
-```
-
-:::
-:::{tab-item} myst.yml
-
-```yaml
-affiliations:
-  - id: ubc
-    institution: University of British Columbia
-    ror: https://ror.org/03rmrcq20
-    isni: 0000 0001 2288 9830
-    department: Department of Earth, Ocean and Atmospheric Sciences
-    address: 2020 – 2207 Main Mall
-    city: Vancouver
-    region: British Columbia
-    country: Canada
-    postal_code: V6T 1Z4
-    phone: 604 822 2449
-  - id: stanford
-    name: ...
-```
-
-:::
-::::
-
-If you use a string that is not recognized as an already defined affiliation in the project or article frontmatter, an affiliation will be created automatically and normalized so that it can be referenced:
-
-::::{tab-set}
-:::{tab-item} Written Frontmatter
-
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliations:
-      - id: ubc
-        institution: University of British Columbia
-        ror: 03rmrcq20
-        department: Earth, Ocean and Atmospheric Sciences
-      - ACME Inc
-  - name: Miles Mysterson
-    affiliation: ubc
-```
-
-:::
-:::{tab-item} Normalized
-
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliations: ['ubc', 'ACME Inc']
-  - name: Miles Mysterson
-    affiliations: ['ubc']
-affiliations:
-  - id: ubc
-    institution: University of British Columbia
-    ror: https://ror.org/03rmrcq20
-    department: Earth, Ocean and Atmospheric Sciences
-  - id: ACME Inc
-    name: ACME Inc
-```
-
-:::
-::::
+Below are all the possible fields for frontmatter affiliations.
 
 ````{list-table} Frontmatter information for affiliations
 :header-rows: 1
@@ -599,6 +490,7 @@ affiliations:
 * - `collaboration`
   - a boolean - Indicate that this affiliation is a collaboration, for example, `"MyST Contributors"` can be both an affiliation and a listed author. This is used in certain templates as well as in [JATS](https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/collab.html).
 ````
+
 
 ## Date
 
