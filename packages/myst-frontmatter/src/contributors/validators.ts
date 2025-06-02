@@ -25,11 +25,8 @@ import {
   validateAndStashObject,
 } from '../utils/referenceStash.js';
 import type { Contributor, Name } from './types.js';
-import {
-  SOCIAL_LINKS_ALIASES,
-  SOCIAL_LINKS_KEYS,
-  validateSocialLinks,
-} from '../utils/socialLinks.js';
+import { SOCIAL_LINKS_ALIASES, SOCIAL_LINKS_KEYS } from '../socials/types.js';
+import { validateSocialLinks } from '../socials/validators.js';
 
 const PERSON_KEYS = [
   'id',

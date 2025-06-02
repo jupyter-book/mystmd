@@ -13,7 +13,7 @@ Adding frontmatter ensures that these properties are available to downstream too
 Frontmatter can be set in two place:
 
 1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a “page” below)
-2. In  `myst.yml` file. This will be applied to all content in that project (apart from “page only” fields).
+2. In `myst.yml` file. This will be applied to all content in that project (apart from “page only” fields).
 
 More detailed examples are below.
 
@@ -95,8 +95,8 @@ version: 1
 site: ...
 project: ...
 extends:
-  - ../macros.yml  # A local file
-  - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml  # A remote file
+  - ../macros.yml # A local file
+  - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml # A remote file
 ```
 
 Each entry listed inside `extends` may be a relative path to a file or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
@@ -122,9 +122,9 @@ The following table lists the available frontmatter fields, a brief description 
 :header-rows: 1
 :label: table-frontmatter
 
-* - field
-  - description
-  - field behavior
+* - Field
+  - Description
+  - Field Behavior
 * - `title`
   - a string (max 500 chars, see [](#titles))
   - page & project
@@ -251,6 +251,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `resources`
   - other resources associated with your project, distributed in the MECA bundle
   - project only
+* - `social`
+  - social links (see [](#social-links))
+  - project only
 * - `jupyter` or `thebe`
   - configuration for Jupyter execution (see [](./integrating-jupyter.md))
   - project only
@@ -324,8 +327,8 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 ````{list-table} Frontmatter information for authors
 :header-rows: 1
 :label: table-frontmatter-authors
-* - field
-  - description
+* - Field
+  - Description
 * - `name`
   - a string OR CSL-JSON author object - the author’s full name; if a string, this will be parsed automatically. Otherwise, the object may contain `given`, `surname`, `non_dropping_particle`, `dropping_particle`, `suffix`, and full name `literal`
 * - `id`
@@ -393,20 +396,6 @@ The `authors` field is a list of `author` objects. Available fields in the autho
   - a boolean (true/false), indicates that the author is an equal contributor
 * - `deceased`
   - a boolean (true/false), indicates that the author is deceased
-* - `url`
-  - a string - website or homepage of the author
-* - `bluesky`
-  - a bluesky username
-* - `mastodon`
-  - a mastodon username (`@user@example.com`) or URL
-* - `threads`
-  - a threads/instagram username
-* - `linkedin`
-  - a linkedin URL
-* - `twitter` (or `x`)
-  - a x/twitter username
-* - `github`
-  - a GitHub username
 * - `note`
   - a string, a freeform field to indicate additional information about the author, for example, acknowledgments or specific correspondence information.
 * - `phone`
@@ -426,22 +415,32 @@ Contributors and affiliations can also have social links and URLs.
 ```{list-table} Social Links for contributors and affiliations.
 :header-rows: 1
 :label: table-frontmatter-social-links
-* - field
-  - description
+* - Field
+  - Description
 * - `url`
   - a string - website or homepage of the author
 * - `bluesky`
-  - a bluesky username
+  - a Bluesky username or URL
 * - `mastodon`
-  - a mastodon username (`@user@example.com`) or URL
+  - a Mastodon webfinger account (`@user@example.com`)
 * - `threads`
-  - a threads/instagram username
+  - a Threads/Instagram username
 * - `linkedin`
-  - a linkedin URL
+  - a LinkedIn URL
 * - `twitter` (or `x`)
-  - a x/twitter username
+  - an x/Twitter username (`user` or `@user`) or URL
+* - `facebook`
+  - a Facebook URL
+* - `discord`
+  - a Discord URL
+* - `youtube`
+  - a YouTube handle (`@handle`) or URL
+* - `discourse`
+  - a Discourse URL
+* - `slack`
+  - a Slack URL
 * - `github`
-  - a GitHub username
+  - a GitHub username (`@user` or `user`), repository (`ORG/REPO`) or organization URL (`https://github.com/orgs/ORG`)
 ```
 
 ### Affiliations
@@ -451,8 +450,8 @@ Below are all the possible fields for frontmatter affiliations.
 ````{list-table} Frontmatter information for affiliations
 :header-rows: 1
 :label: table-frontmatter-affiliations
-* - field
-  - description
+* - Field
+  - Description
 * - `id`
   - a string - a local identifier that can be used to reference a repeated affiliation
 * - `name`
@@ -515,8 +514,8 @@ For usage information, see [](./documents-exports.md).
 ```{list-table} Frontmatter export definitions
 :header-rows: 1
 :label: table-frontmatter-exports
-* - field
-  - description
+* - Field
+  - Description
 * - `id`
   - a string - a local identifier that can be used to reference the export
 * - `format`
@@ -567,8 +566,8 @@ Below is a list of all possible downloads configuration.
 ```{list-table} Frontmatter download definitions
 :header-rows: 1
 :label: table-frontmatter-downloads
-* - field
-  - description
+* - Field
+  - Description
 * - `id`
   - a string - reference to an existing `export` identifier. The referenced export may be defined in a different file. If `id` is defined, `file`/`url` are not allowed.
 * - `file`
@@ -707,8 +706,8 @@ For MyST frontmatter, the `venue` object holds metadata for journals and confere
 ```{list-table} Available Venue fields
 :header-rows: 1
 :label: table-frontmatter-venue
-* - field
-  - description
+* - Field
+  - Description
 * - `title`
   - full title of the venue
 * - `short_title`
@@ -757,8 +756,8 @@ MyST includes several fields to maintain bibliographic metadata for journal publ
 ```{list-table} Available Volume and Issue fields
 :header-rows: 1
 :label: table-frontmatter-biblio
-* - field
-  - description
+* - Field
+  - Description
 * - `number`
   - a string or a number to identify journal volume/issue
 * - `title`

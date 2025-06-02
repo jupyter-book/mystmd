@@ -1,6 +1,6 @@
-import type { SocialLinks } from '../utils/socialLinks.js';
+import type { SocialLinks } from '../socials/types.js';
 
-export interface Affiliation extends SocialLinks {
+export type Affiliation = SocialLinks & {
   id?: string;
   name?: string; // by default required but if only institution is provided, it's ok
   institution?: string;
@@ -18,4 +18,4 @@ export interface Affiliation extends SocialLinks {
   email?: string;
   phone?: string;
   fax?: string;
-}
+};
