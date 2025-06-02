@@ -11,7 +11,7 @@ import {
 
 const it = test.extend<{ opts: ValidationOptions }>({
   // use a fixture here in case `opts` is modified in a test
-  opts: async (_, use) => {
+  opts: async ({ task }, use) => {
     await use({ property: '', messages: {} });
   },
 });
