@@ -168,7 +168,7 @@ This is a lightweight way to create flow charts and diagrams.
 3. Confirm that it is a SVG or PNG that was **created with Excalidraw**, and that had **embed scene** checked upon creation.
 4. Drag-and-drop that file into the Excalidraw window. (or, click **hamburger menu** -> **open** and add your file that way).
 5. Make your edits in Excalidraw.
-6. Export the new diagram using the [steps described above](export-excalidraw).
+6. Export the new diagram using the [steps described above](#export-excalidraw).
 7. Replace the old file with the new one and commit it to `git`. If using an SVG, you can also just copy/paste the new SVG text and replace the old SVG text with it.
 
 ## How to enable Pull Request previews on Netlify

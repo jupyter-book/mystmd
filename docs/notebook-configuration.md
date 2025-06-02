@@ -1,5 +1,5 @@
 ---
-title: Notebook Configuration
+title: Add metadata to notebooks
 ---
 
 In Jupyter Notebooks you can add cell level configuration by specifying **tags** in the cell metadata.
@@ -7,7 +7,7 @@ There are also global controls in the [project settings](#project-settings).
 
 (notebook-cell-tags)=
 
-### Notebook Cell Tags
+## Notebook Cell Tags
 
 Tags are a list of strings under the `tags` key in the cell metadata, which can be set in JupyterLab, VSCode or in a {myst:directive}`code-cell` directive.
 

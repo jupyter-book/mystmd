@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.3.28
+
+### Patch Changes
+
+- f37f2561: Improve error messages in template handling
+
 ## 1.3.27
 
 ## 1.3.26
