@@ -106,8 +106,8 @@ project:
         - file: inline-options.md
     - title: Executable Content
       children:
-        - file: notebooks-with-markdown.md
         - file: execute-notebooks.md
+        - file: notebooks-with-markdown.md
         - file: reuse-jupyter-outputs.md
         - file: interactive-notebooks.ipynb
         - file: integrating-jupyter.md
