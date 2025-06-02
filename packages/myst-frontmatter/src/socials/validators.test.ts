@@ -61,7 +61,9 @@ describe('validateTelegram', () => {
   it('should return an error for invalid Telegram usernames', ({ opts }) => {
     const result = validateTelegram('invalid username', opts);
     expect(result).toBeUndefined();
-    expect(opts.messages.errors?.at(0)?.message).toContain(`must be valid URL`);
+    expect(opts.messages.errors?.at(0)?.message).toContain(
+      'Telegram social identity must be a valid URL',
+    );
   });
 
   it('should return an error for non-telegram URL', ({ opts }) => {

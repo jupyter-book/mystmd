@@ -29,7 +29,7 @@ const GITHUB_USERNAME_REGEX = /^@?([a-zA-Z0-9_.-]+)$/;
 const GITHUB_ORG_URL_REGEX = /^https:\/\/github\.com\/orgs\/[a-zA-Z0-9_.-]+$/;
 // Match a basic identifier (letters, numbers, underscores, between 4 and 15 characters)
 const TELEGRAM_REGEX = /^@?([a-zA-Z0-9_]{5,})$/;
-const TELEGRAM_URL_REGEX = /^https:\/\/(t\.me|telegram\.me)\/?([a-zA-Z0-9_]{5,})$/;
+const TELEGRAM_URL_REGEX = /^https:\/\/(?:t\.me|telegram\.me)\/?([a-zA-Z0-9_]{5,})$/;
 
 /**
  * Validate value is valid Mastodon webfinger account
