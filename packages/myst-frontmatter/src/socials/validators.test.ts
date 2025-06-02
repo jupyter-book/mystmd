@@ -7,12 +7,11 @@ import {
   validateTwitter,
   validateYouTube,
   validateGitHub,
-  validateSocialLinks,
 } from './validators.js';
 
 const it = test.extend<{ opts: ValidationOptions }>({
   // use a fixture here in case `opts` is modified in a test
-  opts: async ({}, use) => {
+  opts: async (_, use) => {
     await use({ property: '', messages: {} });
   },
 });

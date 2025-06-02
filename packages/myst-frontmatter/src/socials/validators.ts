@@ -15,7 +15,7 @@ import { GITHUB_USERNAME_REPO_REGEX } from '../utils/validators.js';
 // Match basic identifier (letters, numbers, underscores) plus a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
 const MASTODON_REGEX = /^@?([a-zA-Z0-9_]+)@([^@]+\.[^@]*[^.])$/;
 // Match a permissive domain (ANYTHING DOT ANYTHING NOT-A-DOT)
-const BLUESKY_REGEX = /^@?([^\/:]+\..*[^.])$/;
+const BLUESKY_REGEX = /^@?([^/:]+\..*[^.])$/;
 const BLUESKY_URL_REGEX = /^https:\/\/bsky\.app\/profile\/@?(.+\..*[^.])$/;
 // Match a basic identifier (letters, numbers, full-stop)
 const YOUTUBE_REGEX = /^@?([a-zA-Z0-9.]+)$/;
