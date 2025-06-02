@@ -3,6 +3,7 @@ import type { ValidationOptions } from 'simple-validators';
 import {
   validateMastodon,
   validateBluesky,
+  validateTelegram,
   validateTwitter,
   validateYouTube,
   validateGitHub,
@@ -32,6 +33,42 @@ describe('validateMastodon', () => {
     expect(result).toBeUndefined();
     expect(opts.messages.errors?.at(0)?.message).toContain(
       `must be a user ID of the form @username@server e.g. @mystmarkdown@fosstodon.org`,
+    );
+  });
+});
+
+describe('validateTelegram', () => {
+  it('should validate a valid Telegram username with @', ({ opts }) => {
+    const result = validateTelegram('@i_am_POPULAR95', opts);
+    expect(result).toBe('i_am_POPULAR95');
+  });
+
+  it('should validate a valid Telegram username', ({ opts }) => {
+    const result = validateTelegram('i_am_POPULAR95', opts);
+    expect(result).toBe('i_am_POPULAR95');
+  });
+
+  it('should validate a valid t.me profile URL', ({ opts }) => {
+    const result = validateTelegram('https://t.me/i_am_popular95', opts);
+    expect(result).toBe('i_am_popular95');
+  });
+
+  it('should validate a valid telegram.me profile URL', ({ opts }) => {
+    const result = validateTelegram('https://telegram.me/i_am_popular95', opts);
+    expect(result).toBe('i_am_popular95');
+  });
+
+  it('should return an error for invalid Telegram usernames', ({ opts }) => {
+    const result = validateTelegram('invalid username', opts);
+    expect(result).toBeUndefined();
+    expect(opts.messages.errors?.at(0)?.message).toContain(`must be valid URL`);
+  });
+
+  it('should return an error for non-telegram URL', ({ opts }) => {
+    const result = validateTelegram('https://example.com', opts);
+    expect(result).toBeUndefined();
+    expect(opts.messages.errors?.at(0)?.message).toContain(
+      `Telegram social identity must be a valid URL starting with either `,
     );
   });
 });

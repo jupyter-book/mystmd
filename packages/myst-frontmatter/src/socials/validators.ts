@@ -126,7 +126,7 @@ export function validateTelegram(input: any, opts: ValidationOptions) {
     return match[1];
   } else {
     return validationError(
-      `Telegram social identity must be a valid URL starting with https://t.me/, or a valid username: ${value}`,
+      `Telegram social identity must be a valid URL starting with either https://t.me/ or https://telegram.me/, or a valid username: ${value}`,
       opts,
     );
   }
