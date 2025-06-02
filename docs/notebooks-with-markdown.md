@@ -195,6 +195,9 @@ See [](#notebooks:cell-visibility) for more information.
 You can use the {myst:role}`eval` role to evaluate code that is surrounded by text.
 This allows you to quickly insert its output in a way that flows with the text around it.
 
+:::{note} You can use inline expressions in the markdown cells of an `.ipynb` file as well.
+:::
+
 For example, the following MyST Markdown would re-use the variable defined above.
 
 ```markdown
