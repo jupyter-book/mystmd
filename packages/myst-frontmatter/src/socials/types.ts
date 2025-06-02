@@ -11,6 +11,7 @@ export const SOCIAL_LINKS_KEYS = [
   'discord',
   'slack',
   'facebook',
+  'telegram',
 ] as const;
 
 export const SOCIAL_LINKS_ALIASES = {

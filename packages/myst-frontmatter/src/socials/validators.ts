@@ -27,6 +27,9 @@ const TWITTER_URL_REGEX = /^https:\/\/(?:twitter\.com|x\.com)\/@?([a-zA-Z0-9_]{4
 // Match a basic identifier (letters, numbers, underscores, full-stops)
 const GITHUB_USERNAME_REGEX = /^@?([a-zA-Z0-9_.-]+)$/;
 const GITHUB_ORG_URL_REGEX = /^https:\/\/github\.com\/orgs\/[a-zA-Z0-9_.-]+$/;
+// Match a basic identifier (letters, numbers, underscores, between 4 and 15 characters)
+const TELEGRAM_REGEX = /^@?([A-Z0-9_]{5,})$/i;
+const TELEGRAM_URL_REGEX = /^https:\/\/(t\.me)\/?([A-Z0-9_]{5,})$/;
 
 /**
  * Validate value is valid Mastodon webfinger account
@@ -102,6 +105,28 @@ export function validateTwitter(input: any, opts: ValidationOptions) {
   } else {
     return validationError(
       `Twitter social identity must be a valid URL starting with https://twitter.com/, https://x.com/, or a valid username: ${value}`,
+      opts,
+    );
+  }
+}
+
+/**
+ * Validate value is valid Telegram URL or username string
+ */
+export function validateTelegram(input: any, opts: ValidationOptions) {
+  const value = validateString(input, opts);
+  if (value === undefined) return undefined;
+  let match: ReturnType<typeof value.match>;
+  // URL
+  if ((match = value.match(TELEGRAM_URL_REGEX))) {
+    return match[1];
+  }
+  // username
+  else if ((match = value.match(TELEGRAM_REGEX))) {
+    return match[1];
+  } else {
+    return validationError(
+      `Telegram social identity must be a valid URL starting with https://t.me/, or a valid username: ${value}`,
       opts,
     );
   }
@@ -195,6 +220,9 @@ export function validateSocialLinks(
   }
   if (defined(value.twitter)) {
     result.twitter = validateTwitter(value.twitter, incrementOptions('twitter', opts));
+  }
+  if (defined(value.telegram)) {
+    result.telegram = validateTelegram(value.telegram, incrementOptions('telegram', opts));
   }
   if (defined(value.youtube)) {
     result.youtube = validateYouTube(value.youtube, incrementOptions('youtube', opts));
