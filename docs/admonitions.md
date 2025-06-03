@@ -175,6 +175,14 @@ To have a dropdown-style admonition start open, add the {myst:directive}`admonit
 :class: dropdown
 👋 This could be a solution to a problem or contain other detailed explanations.
 :::
+
+:::{note} Hide Me! 👈
+:class: dropdown
+:open: true
+👋 This is an admonition with a lot of text. The user can hide it if they want.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+:::
 ```
 
 :::{seealso} You can also use a `{dropdown}`
