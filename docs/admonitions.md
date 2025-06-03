@@ -13,7 +13,7 @@ Try changing `tip` to `warning`!
 :::
 ```
 
-In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. Admonitions can be styled as `simple` or as a `dropdown`, and can optionally hide the icon using the {myst:directive}`admonition.class` option. There are ten kinds[^docutils-admonitions] of admonitions available:
+In MyST we call these kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available:
 
 ```{list-table} Named admonitions that can be used as directives
 :label: admonitions-list
@@ -181,3 +181,40 @@ To have a dropdown-style admonition start open, add the {myst:directive}`admonit
 :class: dropdown
 You can also use a {myst:directive}`dropdown` directive, which provides a more compact writing experience and is simpler in the displayed style. See [](#dropdowns) for more information.
 :::
+
+## Simpler Admonitions
+
+Admonitions can additionally be styled as `simple`, and can optionally hide the icon using the `icon` option of the `{myst:directive}`admonition.class`.
+
+```{myst}
+:::{important} Magic
+:class: simple
+This is a magic cat. It casts a luck spell on you that lasts an hour. \
+**つ( ･ω･｡)つ━☆・*。**
+:::
+```
+
+Removing the icon from an admonition of a certain class allows to use a custom emoji for style. 
+
+```{myst}
+:::{danger} 🎤 Transcript. **Speaker:** John Smith
+:icon: false
+— To begin this lecture, I would like to ask the audience some questions.
+
+...
+
+— The next assignment has to be handed in by 01.05. Thanks everyone for attending.
+:::
+```
+
+Multiple classes can be combined together. See below for an example.
+
+```{myst}
+:::{warning} ✍️ NB
+:class: simple
+:class: dropdown
+:icon: false
+:open:
+The proof of the lemma for $x \leqslant 0$ is left to the reader.  
+:::
+```
