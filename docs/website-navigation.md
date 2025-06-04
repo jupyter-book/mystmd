@@ -215,7 +215,7 @@ By default footers have style that is similar to the rest of your document.
 To define a different style (e.g., a multi-column footer with links), use a combination of [`{grid}` and button elements](#grids), along with a [custom CSS style sheet](style-sheet).
 The `.footer` CSS class is useful for selecting items in your footer.
 
-For example, the following `myst.yml` configuration adds a `footer.css` file that could define the look and feel of your footer.
+For example, the following `myst.yml` configuration adds a `footer.css` file that can be used to define the look and feel of your footer.
 
 ```{code} yaml
 :filename: myst.yml
