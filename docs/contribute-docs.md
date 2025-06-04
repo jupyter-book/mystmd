@@ -23,7 +23,7 @@ An example of the "edit this page" button on GitHub. This will open an interacti
 
 Alternatively, you can use the [**`github.dev` web-based editor**](https://docs.github.com/en/codespaces/the-githubdev-web-based-editor) to suggest more comprehensive edits to one or more pages. To do so, in the browser URL replace `github.com` with `github.dev`[^period].
 
-[^period]: Alternatively, you can just press {kbd}`.` from any GitHub source file page and it will open a VSCode editor in-browser to let you suggest edits.
+[^period]: Alternatively, you can just press {kbd}`.` from any GitHub source file page, and it will open a VSCode editor in-browser to let you suggest edits.
 
 ## How to build the MyST guide documentation locally
 
@@ -141,7 +141,7 @@ Jupyter Book and the MyST Document Engine have heavily overlapping functionality
 
 - The MyST document engine will be a **power user tool**. It will be more flexible and modular, with an extensive plugin ecosysytem. It will be agnostic to build output, and single- or multi-page documents.
    - MyST should have the complete reference documentation for the MyST engine, as well as longer explanatory content about the MyST ecosystem.
-   - As functionaliy is moved into plugins, we similarly prioritize reference documentation and explanation in those spaces.
+   - As functionality is moved into plugins, we similarly prioritize reference documentation and explanation in those spaces.
    - MyST should be a standalone tool and have enough information for a power user to use on its own.
 - Jupyter Book will be a **tool for typical users** focused around multi-page documents and websites. It will be opinionated, focused around the "book themes", and be more accessible to a new user or someone unfamiliar with JavaScript workflows.
    - Jupyter Book should focus on **How-Tos** and **Tutorials** that are driven by use-cases in multi-page workflows (e.g., documentation, books, community websites, etc).
@@ -165,7 +165,7 @@ This is a lightweight way to create flow charts and diagrams.
 
 1. Open [excalidraw.com](https://excalidraw.com).
 2. Find the file that you want to edit.
-3. Confirm that it is a SVG or PNG that was **created with Excalidraw**, and that had **embed scene** checked upon creation.
+3. Confirm that it is an SVG or PNG that was **created with Excalidraw**, and that had **embed scene** checked upon creation.
 4. Drag-and-drop that file into the Excalidraw window. (or, click **hamburger menu** -> **open** and add your file that way).
 5. Make your edits in Excalidraw.
 6. Export the new diagram using the [steps described above](#export-excalidraw).

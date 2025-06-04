@@ -6,7 +6,7 @@ thumbnail: ./thumbnails/typography.png
 
 ## Headings
 
-Markdown syntax denotes headers starting with between 1 to 6 `#`.
+Markdown syntax denotes headers starting with between 1 to 6 `#` symbols.
 For example, a level 3 header looks like:
 
 ```{myst}
@@ -43,7 +43,7 @@ In {sc}`MyST`, you {del}`should never` {u}`underline` _text_.
 
 ## Line Breaks
 
-To put a line break, without a paragraph, use a `\` followed by a new line. This corresponds to a `<br>` in HTML and `\\` in $\LaTeX$. For example, here is the [worlds shortest poem](wiki:Lines_on_the_Antiquity_of_Microbes):
+To put a line break, without a paragraph, use a `\` followed by a new line. This corresponds to a `<br>` in HTML and `\\` in $\LaTeX$. For example, here is the [world's shortest poem](wiki:Lines_on_the_Antiquity_of_Microbes):
 
 ```{myst}
 Fleas \
@@ -107,7 +107,7 @@ To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl` + {kbd}`Spac
 
 ## Abbreviations
 
-To create an abbreviation, you can use the {myst:role}`abbr` role, in HTML this will ensure that the title of the acronym or abbreviation appears in the title when you hover over the element. In the role, follow the syntax `HR (Heart Rate)` with the abbreviation first followed by the expanded title in parenthesis.
+To create an abbreviation, you can use the {myst:role}`abbr` role, in HTML this will ensure that the title of the acronym or abbreviation appears in the title when you hover over the element. In the role, follow the syntax `HR (Heart Rate)` with the abbreviation first followed by the expanded title in parentheses.
 
 ```{myst}
 Well {abbr}`MyST (Markedly Structured Text)` is cool!
@@ -204,7 +204,7 @@ If the label is an integer, then it will always use that integer for the rendere
 All footnote definitions are collected, and displayed at the bottom of the page for print or as hover-notes online.
 Note that un-referenced footnote definitions will not be displayed.
 
-Any preceding text after a footnote definitions, which is indented by four or more spaces, will also be included in the footnote definition.
+Any preceding text after a footnote definition, which is indented by four or more spaces, will also be included in the footnote definition.
 
 ````{tip}
 :class: dropdown

@@ -137,7 +137,7 @@ Options:
 article_type (choice) - Details about different article types...
 ```
 
-In addition basic information on the template, the template's specific "parts" and "options" are shown. Some of these may be marked as `(required)` and be essential for the building the document correctly with the template.
+In addition, basic information on the template, the template's specific "parts" and "options" are shown. Some of these may be marked as `(required)` and be essential for the building the document correctly with the template.
 
 🛠 In `01-paper.md` create an exports list with `docx` and `pdf` formats.
 

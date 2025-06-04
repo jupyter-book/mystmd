@@ -17,7 +17,7 @@ The MyST Site existing, modern web-frameworks including [Remix](https://remix.ru
 
 As an example, try hovering over the navigation on this page (potentially with your network development tools open!), the entire page will be fetched based on your intent (i.e. hovering over the link for a moment). This includes downloading any assets for additional styling on the upcoming page. Note that many assets are shared between pages, and only the actual content is fetched (i.e. the AST and page metadata), not the full HTML page, which again makes for smaller network payloads and speed for browsing! Content is also cached if you re-visit a page.
 
-When working locally MyST is designed to rebuild and rerender the site in <150ms, and has scroll-restoration so you don't loose your place. This speed can dramatically improve the authoring experience as it allows you to preview changes rapidly.
+When working locally MyST is designed to rebuild and rerender the site in <150ms, and has scroll-restoration so you don't lose your place. This speed can dramatically improve the authoring experience as it allows you to preview changes rapidly.
 
 The real-world deployment of your site will depend on the infrastructure that you use to serve it. See [deployment](./deployment.md) for more information on options for sharing your site.
 
@@ -34,11 +34,11 @@ Some performance and accessibility considerations:
 
 - Semantic HTML used for articles, asides, figures, nav, and captions, including limited use of generic `div`s and `span`s where we can.
 - Anchor tags for all interactive content, that work when Javascript is _not_ enabled
-- Prerendering math on the server, reducing page load size (for javascript) and improving render speed and cumulative layout shift.
+- Prerendering math on the server, reducing page load size (for Javascript) and improving render speed and cumulative layout shift.
 - Optimizing images to next-generation formats (e.g. `webp`), and providing fallbacks for older browsers (through image source sets)
 - Providing figure captions as alt-text for images
 - Lazy-fetching syntax highlighters
-- Lazy-fetching unused javascript
+- Lazy-fetching unused Javascript
 - Bundling and eliminating code for the entire site
 - Ensuring appropriate contrast in text and background in the default themes
 

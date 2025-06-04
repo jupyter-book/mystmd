@@ -40,7 +40,7 @@ Use a backtick fence (`` ``` ``) when the contents of the directive is code-like
 `````
 ``````
 
-The {myst:directive}`note` directive above doesn't take any arguments and we didn't add any options. In addition to the directive name and the directive content, directives allow two other configuration points:
+The {myst:directive}`note` directive above doesn't take any arguments, and we didn't add any options. In addition to the directive name and the directive content, directives allow two other configuration points:
 
 1\) **directive arguments** - a list of words that come just after the `{directivename}`.
 

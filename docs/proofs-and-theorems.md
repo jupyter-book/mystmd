@@ -73,7 +73,7 @@ You can refer to a proof using the standard link syntax:
 :::{tip} Compatibility with Sphinx Proof
 :class: dropdown
 
-You may also use the the `{prf:ref}` role like: `` {prf:ref}`my-theorem` ``, which will replace the reference with the theorem number like so: {prf:ref}`my-theorem`. When an explicit text is provided, this caption will serve as the title of the reference. For example, ``{prf:ref}`Orthogonal-Projection-Theorem <my-theorem>` `` will produce: {prf:ref}`Orthogonal-Projection-Theorem <my-theorem>`.
+You may also use the `{prf:ref}` role like: `` {prf:ref}`my-theorem` ``, which will replace the reference with the theorem number like so: {prf:ref}`my-theorem`. When an explicit text is provided, this caption will serve as the title of the reference. For example, ``{prf:ref}`Orthogonal-Projection-Theorem <my-theorem>` `` will produce: {prf:ref}`Orthogonal-Projection-Theorem <my-theorem>`.
 :::
 
 ## Hiding Proof Content

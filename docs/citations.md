@@ -5,7 +5,7 @@ description: Add academic citations to your documents easily, have hover-referen
 thumbnail: ./thumbnails/citations.png
 ---
 
-Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
+Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a Markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 (doi-links)=
 
@@ -17,7 +17,7 @@ Link to any DOI in your markdown files or Jupyter Notebooks by including a link 
 This is a link in markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
 ```
 
-It is also possible to to drop the link text, that is:\
+It is also possible to drop the link text, that is:\
 `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
 which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.). If the DOI is present on a citation from a BibTeX file in your project, that citation will be used. Otherwise, the citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory. This cache may be cleared with `myst clean --cache`.
 

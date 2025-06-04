@@ -7,7 +7,7 @@ The majority of our authoring documentation is on the MyST markup language, howe
 
 Authors can write and edit in LaTeX, then utilize MyST to generate dynamic web content or structured outputs without altering the original LaTeX source. This MyST parsing of LaTeX is **fast** compared to traditional LaTeX compilers[^speed] and this speed of rendering means instant previews and fast feedback to what you are writing. Additionally, as MyST is developed entirely in JavaScript, MyST's LaTeX parser and renderer can operate client-side, opening new possibilities for web-based LaTeX editing and rendering applications.
 
-[^speed]: The entire rendering process can run in a few hundred milliseconds from start to finish rather than around 3-10 seconds for small documents using common renderers. The papers we were testing while writing these docs are about ⚡️ 16 times faster ⚡️ - which is **significant**, and there is lots of room for improvement in MyST as well!
+[^speed]: The entire rendering process can run in a few hundred milliseconds from start to finish rather than around 3–10 seconds for small documents using common renderers. The papers we were testing while writing these docs are about ⚡️ 16 times faster ⚡️ - which is **significant**, and there is lots of room for improvement in MyST as well!
 
 ## Getting Started
 
@@ -54,7 +54,7 @@ if you have a package that you think we should support, please [open an issue](h
 
 ## Error Reporting
 
-MyST improves upon traditional LaTeX error messaging by providing specific, actionable feedback. Error messages include line and column numbers for direct navigation to issues, significantly reducing troubleshooting time. This feature, coupled with the ability to render partial documents despite errors, can ensures a smoother writing and revision process.
+MyST improves upon traditional LaTeX error messaging by providing specific, actionable feedback. Error messages include line and column numbers for direct navigation to issues, significantly reducing troubleshooting time. This feature, coupled with the ability to render partial documents despite errors, can ensure a smoother writing and revision process.
 
 :::{figure} ./images/latex-errors.png
 :label: fig:latex-errors

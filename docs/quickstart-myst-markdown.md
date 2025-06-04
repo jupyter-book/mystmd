@@ -105,7 +105,7 @@ As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is info
     Designing the user-experience of scientific communication is _really_ important.
 
 [^3]:
-    Just as an example of having lots of helpful information at your finger-tips, it would be nice to see the video of that article, _right_? Well here it is:
+    Just as an example of having lots of helpful information at your fingertips, it would be nice to see the video of that article, _right_? Well here it is:
 
     :::{iframe} https://www.youtube.com/embed/yYcQf-Yq8B0
     :::
