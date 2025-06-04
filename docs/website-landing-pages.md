@@ -87,26 +87,9 @@ site:
 ---
 ```
 
-## Adding a footer
+## Add a footer
 
-You can add a site-wide footer by adding a special footer part to your `myst.yml`:
-
-```
-site:
-  ...
-  options:
-    ...
-    style: ./css/footer.css
-
-  parts:
-    footer: footer.md
-```
-
-The contents of `footer.md` will be rendered at the bottom of each page, styled according to the custom `footer.css` file.
-
-The [example landing page](https://github.com/myst-examples/landing-pages) includes a [`footer.md`](https://raw.githubusercontent.com/jupyter-book/example-landing-pages/refs/heads/main/footer.md) and [`./css/footer.css`](https://raw.githubusercontent.com/jupyter-book/example-landing-pages/refs/heads/main/css/footer.css) that you can customize.
-
-In the future, we plan to also provide a directives for rendering social icons (GitHub, Bluesky, etc.) into the footer.
+To add footers to your landing page (and other pages of a MyST site), see [](#footer).
 
 ## Examples
 

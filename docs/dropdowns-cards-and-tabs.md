@@ -95,6 +95,7 @@ A button is an element with text content that triggers an action to navigate to 
 :::{myst:role} button
 :::
 
+(grids)=
 ## Grids
 
 Grids allow you to structure arbitrary chunks of content in a grid-like system.

@@ -11,6 +11,7 @@ We're still building out custom CSS functionality with the MyST engine.
 Follow and comment on the issues linked below to help us improve it!
 :::
 
+(style-sheet)=
 ## Add a Style Sheet (CSS) to your website
 
 The [default MyST website themes](#default-web-themes) support bundling a custom [style-sheet](https://en.wikipedia.org/wiki/CSS). This can be used to introduce custom CSS styling to your website. To include a custom CSS file as part of your website build, you can define the @template-site-myst-book-theme-style option, e.g.
