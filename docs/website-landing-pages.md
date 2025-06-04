@@ -4,8 +4,6 @@ subtitle: Add visually appealing landing pages to your project
 abbreviations:
   CTA: Call To Action
 thumbnail: ./thumbnails/landing-pages.png
-site:
-  hide_outline: true
 ---
 
 :::{warning} Landing Pages are Experimental
@@ -88,6 +86,10 @@ site:
   hide_title_block: true
 ---
 ```
+
+## Add a footer
+
+To add footers to your landing page (and other pages of a MyST site), see [](#navigation:footer).
 
 ## Examples
 

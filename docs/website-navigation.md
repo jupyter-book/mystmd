@@ -196,7 +196,36 @@ You could also attach the CSS class to a [content block](./blocks.md).
 
 ## Footer
 
-:::{warning} Work in progress
-Default footer support is not yet available.
-See https://github.com/jupyter-book/myst-theme/issues/448 to provide feedback on this feature.
-:::
+You can add a site-wide footer by using [site "parts"](#parts:site).
+Add a footer part to your `myst.yml` like so:
+
+```{code} yaml
+:filename: myst.yml
+site:
+  parts:
+    footer: footer.md
+```
+
+The contents of `footer.md` will be rendered at the bottom of each page.
+It will be parsed similarly to other MyST content (though some functionality like code execution will not work).
+
+### Style your footer
+
+By default footers have style that is similar to the rest of your document.
+To define a different style (e.g., a multi-column footer with links), use a combination of [`{grid}` and button elements](#grids), along with a [custom CSS style sheet](style-sheet).
+Footers are wrapped in a `div` with class `.footer`, which can be used in CSS to select items for styling.
+
+For example, the following `myst.yml` configuration adds a `footer.css` file that can be used to define the look and feel of your footer.
+
+```{code} yaml
+:filename: myst.yml
+site:
+  options:
+    style: ./css/footer.css
+  parts:
+    footer: footer.md
+```
+
+### An example custom footer
+
+The [example landing page](https://github.com/myst-examples/landing-pages) includes a [`footer.md`](https://raw.githubusercontent.com/jupyter-book/example-landing-pages/refs/heads/main/footer.md) and [`./css/footer.css`](https://raw.githubusercontent.com/jupyter-book/example-landing-pages/refs/heads/main/css/footer.css) that you can customize.
