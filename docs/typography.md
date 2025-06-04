@@ -55,7 +55,7 @@ By Strickland Gillilan
 
 ## Bullet points and numbered lists
 
-You can use bullet points and numbered lists as you would in standard markdown. Starting a line with either a `-` or `*` for a bullet point, and `1.` for numbered lists. These lists can be nested using two spaces at the start of the line.
+You can use bullet points and numbered lists as you would in standard Markdown. Starting a line with either a `-` or `*` for a bullet point, and `1.` for numbered lists. These lists can be nested using two spaces at the start of the line.
 
 ```{myst}
 - Lists can start with `-` or `*`

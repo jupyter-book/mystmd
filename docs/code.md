@@ -32,7 +32,7 @@ A list of language names supported by the  `myst-react` package is here: [HLJS l
 
 ## Code blocks
 
-The above code is not a directive, it is just standard markdown syntax, which cannot add a {myst:directive}`code.caption` or {myst:directive}`code.label`. To caption or label blocks of code use the {myst:directive}`code` directive.
+The above code is not a directive, it is just standard Markdown syntax, which cannot add a {myst:directive}`code.caption` or {myst:directive}`code.label`. To caption or label blocks of code use the {myst:directive}`code` directive.
 
 ````{myst}
 ```{code} python
@@ -70,7 +70,7 @@ You can also set the start number using the {myst:directive}`code.lineno-start` 
 
 For full compatibility with Sphinx we suggest using {myst:directive}`code-block` directive, which is an alias of the {myst:directive}`code` directive. The MyST implementation supports both the Sphinx [`{code-block} directive`](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) as well as the `docutils` [{code} directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#code) implementation, which only supports the `number-lines` option.
 
-You can use either `code` or `code-block` directive documented above or even a normal markdown code block.
+You can use either `code` or `code-block` directive documented above or even a normal Markdown code block.
 All implementations in MyST are resolved to the same `code` type in the abstract syntax tree.
 ```
 

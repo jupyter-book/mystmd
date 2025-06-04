@@ -99,7 +99,7 @@ This is an error admonition
 
 ## Admonition Titles
 
-All admonitions have a single argument ({myst:directive}`docs <admonition.arg>`), which is the admonition title and can use markdown.
+All admonitions have a single argument ({myst:directive}`docs <admonition.arg>`), which is the admonition title and can use Markdown.
 If a title argument is not supplied the first node of the {myst:directive}`admonition.body` is used if it is a `heading` or a paragraph with fully bold text; otherwise the name of the directive is used (e.g. `seealso` becomes `See Also`; `note` becomes `Note`).
 
 ```{myst}
@@ -111,7 +111,7 @@ Here is an admonition!
 (admonition-github-compatibility)=
 :::::::{tip} Compatibility with GitHub
 :class: dropdown
-GitHub markdown transforms blockquotes that start with a bold `Note` or text with `[!NOTE]` into a simple admonition (see [GitHub](https://github.com/community/community/discussions/16925)). This syntax only works for `note`, `important` or `warning`. MyST transforms these blockquotes into the appropriate admonitions with a `simple` {myst:directive}`admonition.class`.
+GitHub Markdown transforms blockquotes that start with a bold `Note` or text with `[!NOTE]` into a simple admonition (see [GitHub](https://github.com/community/community/discussions/16925)). This syntax only works for `note`, `important` or `warning`. MyST transforms these blockquotes into the appropriate admonitions with a `simple` {myst:directive}`admonition.class`.
 
 ```{myst}
 > [!NOTE]
@@ -134,7 +134,7 @@ GitHub markdown transforms blockquotes that start with a bold `Note` or text wit
 
 ::::{tip} Compatibility with Pandoc & Quarto
 :class: dropdown
-In Quarto/Pandoc markdown admonitions are styled with special classes like `{.callout-note}` or `{.callout-tip}`).
+In Quarto/Pandoc Markdown admonitions are styled with special classes like `{.callout-note}` or `{.callout-tip}`).
 If you are using Jupyter Book V1 or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 
 ```{myst}

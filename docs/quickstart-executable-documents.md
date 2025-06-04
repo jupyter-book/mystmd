@@ -103,7 +103,7 @@ This assigns the label `horsepower` to the output of that code cell.
 
 You can reference it and embed it like you would any other item in MyST.
 
-🛠 Add a reference to this cell, as well as an embedding in a figure by copy and pasting this into a markdown block of the notebook.
+🛠 Add a reference to this cell, as well as an embedding in a figure by copy and pasting this into a Markdown block of the notebook.
 
 ```markdown
 Here we reference [](#horsepower).
@@ -119,7 +119,7 @@ For more information about embedding notebook outputs, see [](./reuse-jupyter-ou
 
 ## Add an executable cell to your Markdown file
 
-You can add any executable content to a MyST markdown file.
+You can add any executable content to a MyST Markdown file.
 This is useful if you want to more natively version control your executable content in a system like `git`.
 
 To add executable content, use the {myst:directive}`code-cell` directive.

@@ -45,7 +45,7 @@ An overview of the "Rendering and Theming" phase using one or more MyST renderer
 (overview-parsing)=
 ## How does parsing work?
 
-The MyST Document engine knows how to parse many kinds of documents into {term}`MyST AST`. This is most-commonly done with markdown files (`.md`) or Jupyter Notebooks (`.ipynb`) written in {term}`MyST Markdown`, a flavor of markdown that was designed for the MyST Document Engine.
+The MyST Document engine knows how to parse many kinds of documents into {term}`MyST AST`. This is most-commonly done with Markdown files (`.md`) or Jupyter Notebooks (`.ipynb`) written in {term}`MyST Markdown`, a flavor of Markdown that was designed for the MyST Document Engine.
 
 However, the MyST Engine knows how to parse other kinds of syntax into MyST AST as well. For example, [for admonition compatibility with GitHub Markdown](#admonition-github-compatibility). This is because we see the {term}`MyST AST` as the primary point of _standardization_ for the MyST ecosystem, not the Markdown flavor. Input documents may have many different forms, but once it is parsed into {term}`MyST AST`, the document should have a standardized structure defined by the {term}`MyST Specification`.
 
@@ -118,14 +118,14 @@ The [MyST Specification](https://mystmd.org/spec) and [MyST Markdown Syntax](htt
 The [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) is an extension for [Sphinx](https://sphinx-doc.org) that can parse MyST Markdown into Sphinx's internal document structure. It was created to allow users to parse MyST Markdown syntax into Sphinx for [V1 of Jupyter Book](https://jupyterbook.org). It now exists as an independent extension for the Sphinx community, as Jupyter Book now uses the MyST Document Engine.
 
 :::{note} MyST Parser for Sphinx Compatibility
-As the MyST Parser for Sphinx does not support all of the syntax defined in the MyST Guide, or output {term}`MyST AST`, it's not a true {term}`MyST Document Engine` as defined by this project. That's OK! Its goal is to be a useful tool for the Sphinx community that only leverages parts of the MyST ecosystem (the markdown flavor), which for many people is "good enough."
+As the MyST Parser for Sphinx does not support all of the syntax defined in the MyST Guide, or output {term}`MyST AST`, it's not a true {term}`MyST Document Engine` as defined by this project. That's OK! Its goal is to be a useful tool for the Sphinx community that only leverages parts of the MyST ecosystem (the Markdown flavor), which for many people is "good enough."
 :::
 
 ## How does Jupyter Book relate to MyST?
 
 The MyST Markdown Syntax was originally created to allow [Jupyter Book V1](https://jupyterbook.org) to use the [Sphinx Document engine](https://sphinx-doc.org) with Markdown content[^md], rather than the less well-known <wiki:ReStructuredText> language.
 
-[^md]: Specifically, the [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) was created to move beyond the functionality of the [`recommonmark` project](https://github.com/readthedocs/recommonmark) in order to natively support docutils `roles` and `directives` in markdown.
+[^md]: Specifically, the [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) was created to move beyond the functionality of the [`recommonmark` project](https://github.com/readthedocs/recommonmark) in order to natively support docutils `roles` and `directives` in Markdown.
 
 Over time, the Jupyter Book team decided that the most sustainable path forward was to maintain its own document engine, the [MyST Document Engine](https://mystmd.org/guide). An early version of the MyST Document Engine was created by [Curvenote](https://curvenote.com). To promote its long-term sustainability, the project was open sourced and further developed in collaboration with the Jupyter Book team. It serves as the engine behind Jupyter Book V2.
 

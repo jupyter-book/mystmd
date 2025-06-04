@@ -30,7 +30,7 @@ To execute your code you will need to [](#install-jupyter-server).
 
 Defining a kernel specification (`kernelspec`) informs the Jupyter server of the name of the kernel that should execute your code. When you call `myst build --execute` or `myst start --execute`, the MyST CLI starts a Jupyter kernel to execute your code and gather the execution results. Defining different `kernelspec`s in each notebook makes it possible to flexibly switch the package environment and programming language (e.g. to use R in one notebook, and Julia in another).
 
-The `kernelspec` configuration should be defined in the _page-level_ frontmatter of each executable markdown file (see [](#field-behavior) for more information), and supports the same content that is validated by [`nbformat`'s schema](https://github.com/jupyter/nbformat/blob/main/nbformat/v4/nbformat.v4.5.schema.json):
+The `kernelspec` configuration should be defined in the _page-level_ frontmatter of each executable Markdown file (see [](#field-behavior) for more information), and supports the same content that is validated by [`nbformat`'s schema](https://github.com/jupyter/nbformat/blob/main/nbformat/v4/nbformat.v4.5.schema.json):
 
 ```{list-table} A list of available kernelspec fields
 :header-rows: 1
@@ -195,7 +195,7 @@ See [](#notebooks:cell-visibility) for more information.
 You can use the {myst:role}`eval` role to evaluate code that is surrounded by text.
 This allows you to quickly insert its output in a way that flows with the text around it.
 
-:::{note} You can use inline expressions in the markdown cells of an `.ipynb` file as well.
+:::{note} You can use inline expressions in the Markdown cells of an `.ipynb` file as well.
 :::
 
 For example, the following MyST Markdown would re-use the variable defined above.
@@ -233,7 +233,7 @@ In [](#compatibility-jupytext), the `jupytext` tool for integrating text-based n
 
 [jupytext](https://github.com/mwouts/jupytext) is a Python package that converts between Jupyter Notebooks (ipynb files) and plain text documents (like MyST Markdown files). It provides both a commandline tool to perform these conversions, and an extension for JupyterLab to facilitate opening text-based notebooks with the Notebook viewer. MyST Markdown is understood by jupytext, which defines a `md:myst` format for reading from / writing to MyST Markdown.
 
-The following command will convert a MyST markdown file `example.md` to the `.ipynb` notebook:
+The following command will convert a MyST Markdown file `example.md` to the `.ipynb` notebook:
 
 ```shell
 $ jupytext --from md:myst --to notebook example.md
