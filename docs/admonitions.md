@@ -202,7 +202,7 @@ This is a magic cat. It casts a luck spell on you that lasts an hour. \
 :::
 ```
 
-Removing the icon from an admonition of a certain class allows to use a custom emoji for style. 
+Removing the icon from an admonition of a certain class allows using a custom emoji for style. 
 
 ```{myst}
 :::{danger} 🎤 Transcript. **Speaker:** John Smith
@@ -215,7 +215,7 @@ Removing the icon from an admonition of a certain class allows to use a custom e
 :::
 ```
 
-Multiple classes can be combined together. See below for an example.
+Multiple classes can be combined. See below for an example.
 
 ```{myst}
 :::{warning} ✍️ NB
