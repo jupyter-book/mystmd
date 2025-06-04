@@ -89,7 +89,7 @@ site:
 
 ## Add a footer
 
-To add footers to your landing page (and other pages of a MyST site), see [](#footer).
+To add footers to your landing page (and other pages of a MyST site), see [](#navigation:footer).
 
 ## Examples
 
