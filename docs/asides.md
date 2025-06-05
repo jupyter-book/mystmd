@@ -40,10 +40,10 @@ Semantically, this is an `<aside>`.
 
 ```markdown
 :::{topic} This is an optional topic title
-This is an topic, with standalone ideas.
+This is a topic, with standalone ideas.
 :::
 ```
 
 :::{topic} This is an optional topic title
-This is an topic, with standalone ideas.
+This is a topic, with standalone ideas.
 :::

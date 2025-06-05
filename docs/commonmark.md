@@ -11,7 +11,7 @@ MyST (Markedly Structured Text) was designed to make it easier to create publish
 
 ### Headings
 
-Markdown syntax denotes headers starting with between 1 to 6 `#`.
+Markdown syntax denotes headers starting with between 1 to 6 `#` symbols.
 For example, a level 3 header looks like:
 
 ```{myst}

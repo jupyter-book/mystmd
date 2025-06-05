@@ -381,7 +381,7 @@ And to see a list of available templates that can be resolved for Typst, you can
 https://api.mystmd.org/templates/typst
 
 
-## Hwo to make a release
+## How to make a release
 ### Make a release of `mystmd`
 
 To publish a new release of `mystmd`, we do two things:
@@ -486,7 +486,7 @@ Our current versioning procedure is a little loose compared to strict semantic v
 For now, we try to abide by the following rules for version bumps:
 
 - **major**: Backward incompatible change to the underlying supported MyST data. These would be cases where a non-developer MyST user's project or site built with major version _N_ would not work with major version _N+1_. Currently, we never intentionally make these changes.
-- **minor**: Backward incompatible change to the Javascript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
+- **minor**: Backward incompatible change to the JavaScript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
 ## Packages in the mystmd repository

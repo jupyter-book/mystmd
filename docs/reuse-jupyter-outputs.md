@@ -57,7 +57,7 @@ If you are working with [](./notebooks-with-markdown.md), you can also use stand
 ````{code} python
 :linenos:
 :emphasize-lines: 2,3
-:filename: myfile.md, code-cell in a markdown file
+:filename: myfile.md, code-cell in a Markdown file
 ```{code-cell} python
 :label: mycelllabel
 :caption: My Notebook Cell Caption
@@ -68,7 +68,7 @@ print("Hello world!")
 
 ## Cross Reference a Cell
 
-Any labeled Jupyter cell can be referred to using the standard [cross-reference](./cross-references.md) syntax of markdown links.
+Any labeled Jupyter cell can be referred to using the standard [cross-reference](./cross-references.md) syntax of Markdown links.
 
 ```markdown
 [](#my-cell) - This is a cross-reference to a notebook cell

@@ -73,8 +73,10 @@ There are a few types of entries you can define:
   * ```yaml
     - title: Dropdown title
       children:
-      - url: pageone
-      - url: pagetwo
+      - title:
+        url: /pageone
+      - title:
+        url: /pagetwo
     ```
   * Becomes a dropdown with other entries inside.
 ````

@@ -141,7 +141,7 @@ project:
 
 ## Implicit Table of Contents from filenames
 
-When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
+When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All Markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
 
 The ordering of the table of contents will sort alphabetically as well as order by number, ensuring that, for example, `chapter10` comes after `chapter9`.
 
@@ -154,7 +154,7 @@ The filenames will also be transformed into url-friendly “slugs” that: remov
 
 ### Title Transformations
 
-If a title is not provided by a notebook or markdown document in the front matter or first heading, the filename is used. The filename is transformed to a title by splitting on camel case, replacing `-` or `_` with spaces, and transforming to title-case.
+If a title is not provided by a notebook or Markdown document in the front matter or first heading, the filename is used. The filename is transformed to a title by splitting on camel case, replacing `-` or `_` with spaces, and transforming to title-case.
 
 - `01_MyNotebook.ipynb` becomes `My Notebook`
 - `my_article.md` becomes `My Article`
@@ -174,7 +174,7 @@ The “root” of a site is the page displayed when someone browses to the index
 
 ### Excluding Files
 
-If there are markdown or notebook files within a project folder that you do not want included in your project, you may list these in the `myst.yml` project frontmatter under `exclude`. For example, to ignore a single file `notes.md`, all notebooks in the folder `hpc/`, and all files named `ignore.md`:
+If there are Markdown or notebook files within a project folder that you do not want included in your project, you may list these in the `myst.yml` project frontmatter under `exclude`. For example, to ignore a single file `notes.md`, all notebooks in the folder `hpc/`, and all files named `ignore.md`:
 
 ```yaml
 project:
@@ -184,7 +184,7 @@ project:
     - '**/ignore.md'
 ```
 
-Additionally, files excluded in this way will also not be watched during `myst start`. This may be useful if you have a folder with many thousands of files that causes the `myst start` watch task to crash. For example, in the `data/` directory, there may be no markdown and no notebooks but 100,000 small data files:
+Additionally, files excluded in this way will also not be watched during `myst start`. This may be useful if you have a folder with many thousands of files that causes the `myst start` watch task to crash. For example, in the `data/` directory, there may be no Markdown and no notebooks but 100,000 small data files:
 
 ```yaml
 project:
@@ -239,5 +239,5 @@ Support for `_toc.yml` exists only for compatibility reasons, and will be remove
 New users should use `myst.yml` instead.
 :::
 
-Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Juypter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
+Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Jupyter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
 ::::

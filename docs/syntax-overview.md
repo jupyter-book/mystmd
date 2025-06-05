@@ -5,7 +5,7 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 
 MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [reStructuredText](https://docutils.sourceforge.io/rst.html) (RST) ecosystems.
 
-MyST is a superset of [CommonMark](./commonmark.md), the standard form of Markdown, and allows you to directly create “directives” and “roles” that extend markdown to support technical and scientific documents. `directives` are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md).
+MyST is a superset of [CommonMark](./commonmark.md), the standard form of Markdown, and allows you to directly create “directives” and “roles” that extend Markdown to support technical and scientific documents. `directives` are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md).
 
 ## Directives & Roles
 
@@ -15,13 +15,13 @@ Roles and directives are two of the most powerful parts of MyST. They are kind o
 
 Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using a "fence" (either back-ticks or colons[^colon-or-fence]) and the name of the directive enclosed in braces (`{name}`):
 
-[^colon-or-fence]: Which fence type, colon or backtick, is up to you, and either will work. The colon-fence has better fallback when the contents of the directive includes markdown in non-MyST renderers (like GitHub). The backtick-fence should be used when the contents of the directive is code-like (e.g. a diagram or math!).
+[^colon-or-fence]: Which fence type, colon or backtick, is up to you, and either will work. The colon-fence has better fallback when the contents of the directive includes Markdown in non-MyST renderers (like GitHub). The backtick-fence should be used when the contents of the directive is code-like (e.g. a diagram or math!).
 
 (example-fence)=
 
 ``````{tab-set}
 ````{tab-item} Colon Fence
-Use a colon fence (`:::`) when the contents of the directive is markdown, such as [callouts](./admonitions.md) or  [theorems](./proofs-and-theorems.md) this will improve the processing in renderers that do not support MyST:
+Use a colon fence (`:::`) when the contents of the directive is Markdown, such as [callouts](./admonitions.md) or  [theorems](./proofs-and-theorems.md) this will improve the processing in renderers that do not support MyST:
 
 ```{myst}
 
@@ -40,7 +40,7 @@ Use a backtick fence (`` ``` ``) when the contents of the directive is code-like
 `````
 ``````
 
-The {myst:directive}`note` directive above doesn't take any arguments and we didn't add any options. In addition to the directive name and the directive content, directives allow two other configuration points:
+The {myst:directive}`note` directive above doesn't take any arguments, and we didn't add any options. In addition to the directive name and the directive content, directives allow two other configuration points:
 
 1\) **directive arguments** - a list of words that come just after the `{directivename}`.
 

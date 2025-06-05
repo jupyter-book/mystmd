@@ -39,7 +39,7 @@ To add more features to your table, you can use the {myst:directive}`table` dire
 ```
 
 ```{note}
-You may have inline markdown in the table caption, however, if it includes backticks, you must use a [colon fence](#example-fence).
+You may have inline Markdown in the table caption, however, if it includes backticks, you must use a [colon fence](#example-fence).
 ```
 
 ## List Tables

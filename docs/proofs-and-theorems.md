@@ -14,7 +14,7 @@ The implementation and documentation for proofs, theorems, etc. is based on [Sph
 
 Changes to the original extension include being able to click on the proof label (e.g. "Theorem 1"), and having a link to that proof anchor. We have also updated the styles from both Sphinx and Jupyter Book to be more distinct from admonitions.
 
-You can also reference proofs with any cross-reference syntax (including the {myst:role}`prf:ref` role). We recommend the markdown link syntax.
+You can also reference proofs with any cross-reference syntax (including the {myst:role}`prf:ref` role). We recommend the Markdown link syntax.
 :::
 
 Here is an example of a `{prf:theorem}` with a custom title:
@@ -73,7 +73,7 @@ You can refer to a proof using the standard link syntax:
 :::{tip} Compatibility with Sphinx Proof
 :class: dropdown
 
-You may also use the the `{prf:ref}` role like: `` {prf:ref}`my-theorem` ``, which will replace the reference with the theorem number like so: {prf:ref}`my-theorem`. When an explicit text is provided, this caption will serve as the title of the reference. For example, ``{prf:ref}`Orthogonal-Projection-Theorem <my-theorem>` `` will produce: {prf:ref}`Orthogonal-Projection-Theorem <my-theorem>`.
+You may also use the `{prf:ref}` role like: `` {prf:ref}`my-theorem` ``, which will replace the reference with the theorem number like so: {prf:ref}`my-theorem`. When an explicit text is provided, this caption will serve as the title of the reference. For example, ``{prf:ref}`Orthogonal-Projection-Theorem <my-theorem>` `` will produce: {prf:ref}`Orthogonal-Projection-Theorem <my-theorem>`.
 :::
 
 ## Hiding Proof Content

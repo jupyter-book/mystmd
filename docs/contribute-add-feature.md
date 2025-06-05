@@ -311,7 +311,7 @@ The MyST AST is inspired by (and re-uses parts of) [the MDAST specification](htt
 - [`Parent`](https://github.com/syntax-tree/unist/blob/main/readme.md#parent)
 - [`Literal`](https://github.com/syntax-tree/unist/blob/main/readme.md#literal)
 
-These nodes form the basic building blocks of any abstract syntax tree, and `unist` defines [some utility functions](https://unifiedjs.com/explore/topic/unist-util/) to manipulate trees composed from them.
+These nodes form the basic building blocks of any abstract syntax tree, and `unist` defines [some utility functions](https://unifiedjs.com/explore/topic/unist-util/) to manipulate trees composed of them.
 
 Given that we want to count _meaningful_ words, we must look at the MyST specification to determine _which_ nodes we need to look at. As MyST AST is a unist AST, and only `Literal` unist nodes can hold values, we can start by only considering `Literal` MyST nodes. The MyST specification contains [a list of all node types](https://mystmd.org/spec/myst-schema), and it can be seen that there are only a few `Literal` types, such as [`Text`](https://mystmd.org/spec/myst-schema#text) or [`HTML`](https://mystmd.org/spec/myst-schema#html).
 
@@ -531,7 +531,7 @@ Now let's see what happens over in our demo!
 (demo)$ myst start
 ```
 
-This will result in the following page with the word count that excludes it's own text!
+This will result in the following page with the word count that excludes its own text!
 
 :::{figure} images/word-count-initial-result.png
 :class: framed

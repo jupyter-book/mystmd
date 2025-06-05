@@ -9,7 +9,7 @@ thumbnail: ./thumbnails/dropdowns-cards-and-tabs.png
 
 ## Dropdowns
 
-Dropdowns can be used to toggle content and show it only when a user clicks on the header panel. These use the standard HTML `<details>` element, meaning they also will work without Javascript. The dropdown can have a title, as the directive argument, and the open option can be used to initialise the dropdown in the open state.
+Dropdowns can be used to toggle content and show it only when a user clicks on the header panel. These use the standard HTML `<details>` element, meaning they also will work without JavaScript. The dropdown can have a title, as the directive argument, and the open option can be used to initialise the dropdown in the open state.
 
 ```{myst}
 :::{dropdown} Dropdown Title
