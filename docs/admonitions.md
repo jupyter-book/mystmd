@@ -13,7 +13,7 @@ Try changing `tip` to `warning`!
 :::
 ```
 
-In MyST we call this kind of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available:
+In MyST we call these kinds of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available:
 
 ```{list-table} Named admonitions that can be used as directives
 :label: admonitions-list
