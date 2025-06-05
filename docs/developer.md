@@ -381,7 +381,7 @@ And to see a list of available templates that can be resolved for Typst, you can
 https://api.mystmd.org/templates/typst
 
 
-## Hwo to make a release
+## How to make a release
 ### Make a release of `mystmd`
 
 To publish a new release of `mystmd`, we do two things:
