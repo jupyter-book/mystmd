@@ -1,5 +1,13 @@
 # myst-config
 
+## 1.7.12
+
+### Patch Changes
+
+- Updated dependencies [8a0ee19e]
+  - myst-frontmatter@1.7.12
+  - myst-common@1.7.12
+
 ## 1.7.11
 
 ### Patch Changes

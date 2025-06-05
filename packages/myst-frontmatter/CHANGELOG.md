@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.7.12
+
+### Patch Changes
+
+- 8a0ee19e: Add social media project frontmatter
+
 ## 1.7.11
 
 ### Patch Changes
