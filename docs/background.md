@@ -25,7 +25,7 @@ The JavaScript packages in the `mystmd` ecosystem also power web-native extensio
 
 ## How was the MyST Engine Developed?
 
-The initial version was released by [Curvenote] as the [Curvenote CLI](https://curvenote.com/docs/cli) under the MIT license, and later transferred to the [ExecutableBooks] team. The goal of the project is to enable the same rich content and authoring experiences that Sphinx allows for software documentation, with a focus on web-first technologies (Javascript), interactivity, accessibility, scientific references (e.g. DOIs and other PIDs), and professional PDF outputs.
+The initial version was released by [Curvenote] as the [Curvenote CLI](https://curvenote.com/docs/cli) under the MIT license, and later transferred to the [ExecutableBooks] team. The goal of the project is to enable the same rich content and authoring experiences that Sphinx allows for software documentation, with a focus on web-first technologies (JavaScript), interactivity, accessibility, scientific references (e.g. DOIs and other PIDs), and professional PDF outputs.
 
 In June 2024, Jupyter Book was incorporated as a Jupyter sub-project, standardizing on using and stewarding the MyST document engine (`mystmd`). [See #123](https://github.com/jupyter/enhancement-proposals/pull/123).
 

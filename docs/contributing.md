@@ -32,7 +32,7 @@ We do most of our work in GitHub repositories in [the `jupyter-book/` GitHub org
 ## Relevant GitHub repositories
 
 The `mystmd` project covers a _subset_ of the [`jupyter-book/` GitHub organization](https://github.com/jupyter-book).
-It focuses on the Javascript-based MyST Markdown engine and ecosystem, as well as the markdown syntax that MyST uses.
+It focuses on the JavaScript-based MyST Markdown engine and ecosystem, as well as the markdown syntax that MyST uses.
 
 Below is a list of relevant repositories and a brief description of each.
 

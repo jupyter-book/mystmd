@@ -145,7 +145,7 @@ Sphinx and MyST take very different approaches to publishing to the web. In Sphi
 
 Although the official engine also supports static HTML outputs, implementing themes as applications makes it easier to build more powerful MyST viewing experiences.
 
-[^api-docs]: In the future, `mystmd` may offer support for Python and Javascript documentation, and if you want to contribute please reach out!
+[^api-docs]: In the future, `mystmd` may offer support for Python and JavaScript documentation, and if you want to contribute please reach out!
 [^docutils]: The Docutils source-code _is_ the specification.
 
 [docutils]: https://docutils.sourceforge.io/

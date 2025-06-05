@@ -33,12 +33,12 @@ Lighthouse score run Sept 15, 2022 on deployed site using Curvenote's global CDN
 Some performance and accessibility considerations:
 
 - Semantic HTML used for articles, asides, figures, nav, and captions, including limited use of generic `div`s and `span`s where we can.
-- Anchor tags for all interactive content, that work when Javascript is _not_ enabled
-- Prerendering math on the server, reducing page load size (for Javascript) and improving render speed and cumulative layout shift.
+- Anchor tags for all interactive content, that work when JavaScript is _not_ enabled
+- Prerendering math on the server, reducing page load size (for JavaScript) and improving render speed and cumulative layout shift.
 - Optimizing images to next-generation formats (e.g. `webp`), and providing fallbacks for older browsers (through image source sets)
 - Providing figure captions as alt-text for images
 - Lazy-fetching syntax highlighters
-- Lazy-fetching unused Javascript
+- Lazy-fetching unused JavaScript
 - Bundling and eliminating code for the entire site
 - Ensuring appropriate contrast in text and background in the default themes
 
@@ -46,7 +46,7 @@ Some performance and accessibility considerations:
 :class: dropdown
 # Comparing to Jupyter Book V1 & Quarto
 
-As a comparison to Jupyter Book V1 or Quarto, which are both static site generators for scientific content, and assets built by Sphinx and Pandoc, respectively. There are improvements possible primarily in the bundling of Javascript assets, which is very difficult to do in the Sphinx build process, for example.
+As a comparison to Jupyter Book V1 or Quarto, which are both static site generators for scientific content, and assets built by Sphinx and Pandoc, respectively. There are improvements possible primarily in the bundling of JavaScript assets, which is very difficult to do in the Sphinx build process, for example.
 
 ```{figure} ./images/lighthouse-jb-2022_09_15.png
 :label: lighthouse-jb
