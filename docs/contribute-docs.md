@@ -54,9 +54,9 @@ This will build the documentation locally so that you can preview what your chan
 
 When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. This is because we use [a custom MyST theme](#about:mystmd.org) that aggregates content from several MyST repositories into a single website.
 
-The live website mystmd.org is **managed by a Curvenote deployment**. To update mystmd.org, you must make a deployment to Curvenote.
+The content for the live website mystmd.org is **managed by a Curvenote deployment**. To update the content of `mystmd.org`, you must make a deployment to Curvenote.
 
-Currently, the only way to update MyST's Curvenote deployment is to ask [@rowanc1](https://github.com/rowanc1) to do it. See [this issue about standardizing team access to documentation infrastructure](https://github.com/jupyter-book/team-compass/issues/25) for making this easier for our team to use.
+Currently, the only way to update the content in MyST's Curvenote deployment is to ask [@rowanc1](https://github.com/rowanc1) to do it. See [this issue about standardizing team access to documentation infrastructure](https://github.com/jupyter-book/team-compass/issues/25) for making this easier for our team to use.
 
 ### Caution: only update the live deployment if we know the theme still works!
 
@@ -84,12 +84,6 @@ The [MyST website at mystmd.org](https://mystmd.org) is a custom MyST theme desi
 
 The [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) repository has a custom MyST theme that is used to control the content and structure of the site at mystmd.org. It is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/). 
 
-(team-vercel-deployment)=
-### How to access the Vercel configuration for mystmd.org
-
-Currently the theme is run on **Rowan's** personal Vercel project.
-If you need to change the configuration reach out to him.
-
 ### How does the mystmd.org theme work?
 
 The custom MyST theme at [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) is an example of generating a custom application/site using MyST components. It is **not** how most people build websites with MyST Markdown, but is a good "Advanced Use" example.
@@ -111,12 +105,17 @@ For example, `mystmd.org/guide` is pulled from [`jupyter-book/mystmd: /docs/`](h
 ### How do I deploy changes to the mystmd.org theme?
 
 After updating the theme at `mystmd.org`, we must [deploy it to Vercel](#team-vercel-deployment) in order to make it available for use.
-We use [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
+We use [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). This will update the theme infrastructure used to power `mystmd.org`.
 
 To trigger that action, you can either:
 
 1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
 2. **Push a commit to `main`** (of [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org)). Any new commit to the `main` branch will trigger this action.
+
+(team-vercel-deployment)=
+### Where is the Vercel deployment that serves the mystmd.org theme?
+
+Currently the theme is run on **Rowan's** personal Vercel project.
 
 ## How do I preview content changes in pull requests?
 
