@@ -76,10 +76,14 @@ See [](#about:mystmd.org) for more information about the mystmd.org deployment.
 
 (about:mystmd.org)=
 
-## About the `mystmd.org` documentation theme and hosting service
+## About the `mystmd.org` documentation and theme infrastructure
 
 The [MyST website at mystmd.org](https://mystmd.org) is a custom MyST theme designed by the community in order to aggregate documentation from many locations into one website.
 
+- The **content** for mystmd.org is located across several repositories in the MyST ecosystem, and it is deployed via a Curvenote deployment that uses the latest version of our custom `mystmd.org` theme from Vercel.
+- The **theme** for mystmd.org is in [a repository we manage](#mystmd-theme-location) and deployed via Vercel. (see below for details)
+
+(mystmd-theme-location)=
 ### Where is the mystmd.org theme located?
 
 The [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) repository has a custom MyST theme that is used to control the content and structure of the site at mystmd.org. It is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/). 
