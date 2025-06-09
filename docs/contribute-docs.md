@@ -52,17 +52,11 @@ This will build the documentation locally so that you can preview what your chan
 
 ## How to update the live website at mystmd.org
 
-When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. This is because we use [a custom MyST theme](#about:mystmd.org) that aggregates content from several MyST repositories into a single website.
+When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. We use [a custom MyST theme](#about:mystmd.org) that aggregates content from several MyST repositories into a single website. The content for the live website mystmd.org is hosted by Curvenote. To update the content of `mystmd.org`, [dispatch the action on `main`](https://github.com/jupyter-book/mystmd/actions/workflows/docs.yml).
 
-The live website mystmd.org is **managed by a Curvenote deployment**. To update mystmd.org, you must make a deployment to Curvenote.
-
-Currently, the only way to update MyST's Curvenote deployment is to ask [@rowanc1](https://github.com/rowanc1) to do it. See [this issue about standardizing team access to documentation infrastructure](https://github.com/jupyter-book/team-compass/issues/25) for making this easier for our team to use.
-
-### Caution: only update the live deployment if we know the theme still works!
-
-If we've only changed content in a repository, then it is usually safe to deploy the change to the live site at mystmd.org.
-
-However, **if MyST or one of its themes has been updated, first confirm that the [mystmd.org theme](#about:mystmd.org) has been updated to reflect these new changes.
+:::{warning} Only update the live deployment if we know the theme still works!
+If we've only changed content in a repository, then it is usually safe to deploy the change to the live site at mystmd.org. However, if MyST or one of its themes has been updated, first confirm that the [mystmd.org theme](#about:mystmd.org) has been updated to reflect these new changes.
+:::
 
 ## How does the MyST guide content relate to the documentation at mystmd.org
 
@@ -76,19 +70,18 @@ See [](#about:mystmd.org) for more information about the mystmd.org deployment.
 
 (about:mystmd.org)=
 
-## About the `mystmd.org` documentation theme and hosting service
+## About the `mystmd.org` documentation and theme infrastructure
 
 The [MyST website at mystmd.org](https://mystmd.org) is a custom MyST theme designed by the community in order to aggregate documentation from many locations into one website.
 
+- The **content** for mystmd.org is located across several repositories in the MyST ecosystem, and it is deployed via a Curvenote deployment that uses the latest version of our custom `mystmd.org` theme from Vercel.
+- The **theme** for mystmd.org is in [a repository we manage](#mystmd-theme-location) and deployed via Vercel. (see below for details)
+
+(mystmd-theme-location)=
+
 ### Where is the mystmd.org theme located?
 
-The [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) repository has a custom MyST theme that is used to control the content and structure of the site at mystmd.org. It is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/). 
-
-(team-vercel-deployment)=
-### How to access the Vercel configuration for mystmd.org
-
-Currently the theme is run on **Rowan's** personal Vercel project.
-If you need to change the configuration reach out to him.
+The [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) repository has a custom MyST theme that is used to control the content and structure of the site at mystmd.org. It is a [Remix](https://remix.run/) website and is deployed on [Vercel](https://vercel.com/).
 
 ### How does the mystmd.org theme work?
 
@@ -111,12 +104,18 @@ For example, `mystmd.org/guide` is pulled from [`jupyter-book/mystmd: /docs/`](h
 ### How do I deploy changes to the mystmd.org theme?
 
 After updating the theme at `mystmd.org`, we must [deploy it to Vercel](#team-vercel-deployment) in order to make it available for use.
-We use [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). When that action is run, it will pull the latest docs content from several MyST repositories, and push them to our Vercel deployment.
+We use [a GitHub Action to deploy to our Vercel project](https://github.com/jupyter-book/mystmd.org/blob/main/.github/workflows/deploy.yml). This will update the theme infrastructure used to power `mystmd.org`.
 
 To trigger that action, you can either:
 
-1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on *Run Workflow* and it will run.
+1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on _Run Workflow_ and it will run.
 2. **Push a commit to `main`** (of [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org)). Any new commit to the `main` branch will trigger this action.
+
+(team-vercel-deployment)=
+
+### Where is the Vercel deployment that serves the mystmd.org theme?
+
+Currently the theme is run on **Rowan's** personal Vercel project, the deployment is completed in the GitHub Actions and access to this is only needed if the GitHub Action does not deploy.
 
 ## How do I preview content changes in pull requests?
 
@@ -139,13 +138,13 @@ This is a best-effort description of our approach to documentation, based on som
 
 Jupyter Book and the MyST Document Engine have heavily overlapping functionality, so it may be unclear whether something should be documented at mystmd.org or jupyterbook.org. That's OK and expected - here are some guidelines for where to document things:
 
-- The MyST document engine will be a **power user tool**. It will be more flexible and modular, with an extensive plugin ecosysytem. It will be agnostic to build output, and single- or multi-page documents.
-   - MyST should have the complete reference documentation for the MyST engine, as well as longer explanatory content about the MyST ecosystem.
-   - As functionality is moved into plugins, we similarly prioritize reference documentation and explanation in those spaces.
-   - MyST should be a standalone tool and have enough information for a power user to use on its own.
+- The MyST document engine will be a **power user tool**. It will be more flexible and modular, with an extensive plugin ecosystem. It will be agnostic to build output, and single- or multi-page documents.
+  - MyST should have the complete reference documentation for the MyST engine, as well as longer explanatory content about the MyST ecosystem.
+  - As functionality is moved into plugins, we similarly prioritize reference documentation and explanation in those spaces.
+  - MyST should be a standalone tool and have enough information for a power user to use on its own.
 - Jupyter Book will be a **tool for typical users** focused around multi-page documents and websites. It will be opinionated, focused around the "book themes", and be more accessible to a new user or someone unfamiliar with JavaScript workflows.
-   - Jupyter Book should focus on **How-Tos** and **Tutorials** that are driven by use-cases in multi-page workflows (e.g., documentation, books, community websites, etc).
-   - Focus on keeping documentation outcome-oriented, and link heavily to the MyST engine docs for more complete reference information and explanation.
+  - Jupyter Book should focus on **How-Tos** and **Tutorials** that are driven by use-cases in multi-page workflows (e.g., documentation, books, community websites, etc).
+  - Focus on keeping documentation outcome-oriented, and link heavily to the MyST engine docs for more complete reference information and explanation.
 
 ## How to create and edit Excalidraw diagrams
 
