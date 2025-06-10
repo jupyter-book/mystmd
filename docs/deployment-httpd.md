@@ -23,5 +23,6 @@ For example, assuming your httpd configuration file lives in `/etc/httpd/conf/ht
     RewriteCond %{REQUEST_FILENAME}.html -f
     RewriteRule ^([^\.]+)$ $1.html [L]
 </Directory>
-
+```
+:::
 
