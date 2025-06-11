@@ -1,5 +1,20 @@
 # myst-cli
 
+## 1.4.0
+
+### Minor Changes
+
+- 483f2b7: Load plugins earlier, before parsing frontmatter parts
+
+### Patch Changes
+
+- Updated dependencies [483f2b7]
+- Updated dependencies [8a0ee19e]
+  - myst-common@1.7.12
+  - myst-frontmatter@1.7.12
+  - myst-config@1.7.12
+  - myst-spec-ext@1.7.12
+
 ## 1.3.28
 
 ### Patch Changes
