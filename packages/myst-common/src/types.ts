@@ -144,7 +144,11 @@ export type MystPlugin = {
   transforms?: TransformSpec[];
 };
 
-export type ValidatedMystPlugin = Required<Pick<MystPlugin, 'directives' | 'roles' | 'transforms'>>;
+export type ValidatedMystPlugin = Required<
+  Pick<MystPlugin, 'directives' | 'roles' | 'transforms'>
+> & {
+  paths: string[];
+};
 
 export enum TargetKind {
   heading = 'heading',

@@ -10,6 +10,7 @@ import type { BuildWarning, RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';
 import type { SessionManager } from '@jupyterlab/services';
 import type MystTemplate from 'myst-templates';
+import type { PluginInfo } from 'myst-config';
 
 export type ISession = {
   API_URL: string;
@@ -26,7 +27,7 @@ export type ISession = {
   publicPath(): string;
   showUpgradeNotice(): void;
   plugins: ValidatedMystPlugin | undefined;
-  loadPlugins(): Promise<MystPlugin>;
+  loadPlugins(plugins: PluginInfo[]): Promise<MystPlugin>;
   getAllWarnings(ruleId: RuleId): (BuildWarning & { file: string })[];
   jupyterSessionManager(): Promise<SessionManager | undefined>;
   dispose(): void;

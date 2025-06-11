@@ -28,6 +28,7 @@ import type { JupyterServerSettings } from 'myst-execute';
 import { launchJupyterServer } from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
+import type { PluginInfo } from 'myst-config';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -159,13 +160,8 @@ export class Session implements ISession {
 
   plugins: ValidatedMystPlugin | undefined;
 
-  _pluginPromise: Promise<ValidatedMystPlugin> | undefined;
-
-  async loadPlugins() {
-    // Early return if a promise has already been initiated
-    if (this._pluginPromise) return this._pluginPromise;
-    this._pluginPromise = loadPlugins(this);
-    this.plugins = await this._pluginPromise;
+  async loadPlugins(plugins: PluginInfo[]) {
+    this.plugins = await loadPlugins(this, plugins);
     return this.plugins;
   }
 

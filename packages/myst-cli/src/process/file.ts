@@ -236,7 +236,6 @@ export async function loadFile(
   extension?: '.md' | '.ipynb' | '.tex' | '.bib' | '.myst.json',
   opts?: LoadFileOptions,
 ): Promise<PreRendererData | undefined> {
-  await session.loadPlugins();
   const toc = tic();
   session.store.dispatch(warnings.actions.clearWarnings({ file }));
   const cache = castSession(session);

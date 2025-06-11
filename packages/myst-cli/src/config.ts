@@ -430,6 +430,7 @@ async function resolveProjectConfigPaths(
         }
       }),
     );
+    await session.loadPlugins(resolvedFields.plugins);
   }
   if (projectConfig.parts) {
     resolvedFields.parts = await loadFrontmatterParts(
