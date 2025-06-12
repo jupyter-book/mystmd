@@ -19,7 +19,7 @@ For example, assuming your httpd configuration file lives in `/etc/httpd/conf/ht
 
 ```
 <Directory "/var/www/html/my_Myst_project/_build">
-    Options Multiviews
+    Options MultiViews
 </Directory>
 ```
 ::::{tip} 
