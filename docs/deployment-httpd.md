@@ -1,6 +1,6 @@
 ---
 title: Deploy on an Apache web server (httpd)
-short_title: httpd
+short_title: Apache httpd
 description: Deploy your MyST site on Apache httpd
 ---
 
@@ -13,16 +13,22 @@ The URL for your static MyST project would therefore be `http://www.example.com/
 :::{warning} Enable automatic `.html` file suffixes
 `myst build --html` will produce HTML-formatted files that have `.html` as their suffix for `.md` and (if you choose to `execute` Jupyter notebooks) `.ipynb` files that you list in your project's [table of contents](table-of-contents.md).
 
-However, the links that are generated will not have `.html` as part of their HREFs. You will need to add a directive in your Apache httpd configuration file to make these links work properly.
+However, the links that are generated will not have `.html` as part of their HREFs. You will need to enable the [MultiViews](https://httpd.apache.org/docs/2.4/content-negotiation.html#multiviews) option in your Apache httpd configuration file to make these links work properly.
 
 For example, assuming your httpd configuration file lives in `/etc/httpd/conf/httpd.conf`, add the following stanza, and then reload/restart your Apache web server:
 
 ```
 <Directory "/var/www/html/my_Myst_project/_build">
-    RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME}.html -f
-    RewriteRule ^([^\.]+)$ $1.html [L]
+    Options Multiviews
 </Directory>
 ```
+::::{tip} 
+You may also need to add the line: 
+
+```
+LoadModule negotiation_module modules/mod_negotiation.so
+```
+to your `httpd` configuration. In RHEL-like Linux distributions, this line is already included in the `httpd` RPM package, in `/etc/httpd/conf.modules.d/00-base.conf`.
+::::
 :::
 
