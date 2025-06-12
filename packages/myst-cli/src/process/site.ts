@@ -337,7 +337,7 @@ export function selectPageReferenceStates(
   const cache = castSession(session);
   let previousCounts: TargetCounts | undefined;
   const pageReferenceStates: ReferenceState[] = pages
-    .map(({file, hidden} : {file: string, hidden?: boolean}) => {
+    .map(({ file, hidden }: { file: string; hidden?: boolean }) => {
       if (hidden) {
         // Skip hidden files
         return undefined;

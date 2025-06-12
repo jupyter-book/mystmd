@@ -14,8 +14,7 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
   const cache = castSession(session);
   const pages = await Promise.all(
     proj.pages.map(async (page) => {
-      if (('hidden' in page) && (page.hidden))
-        return null; // skip hidden pages
+      if ('hidden' in page && page.hidden) return null; // skip hidden pages
       if ('file' in page) {
         const fileInfo = selectors.selectFileInfo(state, page.file);
         const title = fileInfo.title || fileTitle(page.file);
@@ -48,7 +47,7 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
       return { ...page };
     }),
   );
-  return pages?.filter(p => p !== null);
+  return pages?.filter((p) => p !== null);
 }
 
 export function manifestTitleFromProject(session: ISession, projectPath: string) {
