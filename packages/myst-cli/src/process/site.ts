@@ -337,7 +337,11 @@ export function selectPageReferenceStates(
   const cache = castSession(session);
   let previousCounts: TargetCounts | undefined;
   const pageReferenceStates: ReferenceState[] = pages
-    .map(({ file }) => {
+    .map(({file, hidden} : {file: string, hidden?: boolean}) => {
+      if (hidden) {
+        // Skip hidden files
+        return undefined;
+      }
       const { frontmatter, identifiers, mdast, kind } = cache.$getMdast(file)?.post ?? {};
       const vfile = new VFile();
       vfile.path = file;
