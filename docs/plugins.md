@@ -48,6 +48,7 @@ There are two ways to implement a plugin in MyST:
 You can build plugins and share them with others for re-use as JavaScript modules.
 See [](./plugins-distribute.md).
 
+(plugins:use)=
 ## Use plugins in your MyST project
 
 To use a plugin in your MyST project, use the `project.plugins` list in your `myst.yml` configuration. You can link **plugins on local filesystem** or **remote plugins accessible by URL**. Here's an example of each:
