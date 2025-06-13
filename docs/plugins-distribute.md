@@ -25,7 +25,7 @@ If your plugin is simple enough, you can directly share it as an ESM bundle rath
 
 ### Other JavaScript bundlers
 
-There are a few other bundlers in the JavaScript ecosystem, which you may use to package MyST plugins if you prefer. Here are a few known bundler options:
+There are a few other bundlers in the JavaScript ecosystem, which you may use to package MyST plugins if you prefer. We share them in case you don't want to use `esbuild` for some reason (but for most people, `esbuild` should be just fine).
 
 * [tsup](https://github.com/egoist/tsup) - [example plugin](https://github.com/myst-ext/myst-ext-discourse)
 * [ncc](https://github.com/vercel/ncc) - [example plugin](https://github.com/myst-ext/myst-ext-xref-prefix/blob/e975496cafa57e86c88ea71d3abe26a7174b3944/package.json#L20) 
