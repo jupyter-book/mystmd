@@ -30,3 +30,9 @@ There are a few other bundlers in the JavaScript ecosystem, which you may use to
 * [tsup](https://github.com/egoist/tsup) - [example plugin](https://github.com/myst-ext/myst-ext-discourse)
 * [ncc](https://github.com/vercel/ncc) - [example plugin](https://github.com/myst-ext/myst-ext-xref-prefix/blob/e975496cafa57e86c88ea71d3abe26a7174b3944/package.json#L20) 
 
+## Distribute your plugin via a URL
+
+The easiest way to distribute your plugin is via an accessible URL that points to the bundled file that you've created.
+Then you can [configure `myst.yml` to use the URL in your plugin](#plugins:use).
+
+For example, you can [use GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases) to publish your built plugin as an artifact attached to a release. This will create a persistent URL that you can point to in your `myst.yml` build.
