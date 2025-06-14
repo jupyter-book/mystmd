@@ -24,6 +24,12 @@ export type LocalProjectPage = {
   implicit?: boolean;
 };
 
+export type ExternalURL = {
+  url: string;
+  title: string;
+  level: PageLevels;
+};
+
 export type LocalProject = {
   path: string;
   /** The local path to the local index file. */

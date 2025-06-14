@@ -52,6 +52,7 @@ type ManifestProjectItem = {
   bannerOptimized?: string;
   tags?: string[];
   enumerator?: string;
+  url?: string;
 };
 
 type ManifestProject = {
