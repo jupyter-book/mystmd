@@ -380,8 +380,12 @@ And to see a list of available templates that can be resolved for Typst, you can
 
 https://api.mystmd.org/templates/typst
 
-
 ## How to make a release
+
+:::{important} Informing other developers
+Making a release of MyST components may require other stakeholders to update their deployments of MyST. In order to minimise disruption, contributors should inform other developers of their intention to make a release in the [`#development` Discord channel](https://discord.com/channels/1083088970059096114/1177359316886503464). This step may be skipped if the benefits of making an unannounced release outweigh the risks, such as mitigating a security vulnerability or preventing data loss.
+:::
+
 ### Make a release of `mystmd`
 
 To publish a new release of `mystmd`, we do two things:
