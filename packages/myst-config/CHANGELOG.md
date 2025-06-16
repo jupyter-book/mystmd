@@ -1,5 +1,15 @@
 # myst-config
 
+## 1.7.13
+
+### Patch Changes
+
+- Updated dependencies [5031289b]
+- Updated dependencies [1aa5825]
+  - simple-validators@1.1.1
+  - myst-frontmatter@1.7.13
+  - myst-common@1.7.13
+
 ## 1.7.12
 
 ### Patch Changes

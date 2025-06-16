@@ -1,5 +1,13 @@
 # myst-frontmatter
 
+## 1.7.13
+
+### Patch Changes
+
+- 1aa5825: Bump frontmatter to reflect change to simple-validators
+- Updated dependencies [5031289b]
+  - simple-validators@1.1.1
+
 ## 1.7.12
 
 ### Patch Changes
