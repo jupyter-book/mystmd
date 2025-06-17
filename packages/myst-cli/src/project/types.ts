@@ -38,7 +38,7 @@ export type LocalProject = {
   index: string;
   implicitIndex?: boolean;
   bibliography: string[];
-  pages: (LocalProjectPage | LocalProjectFolder)[];
+  pages: (LocalProjectPage | LocalProjectFolder | ExternalURL)[];
 };
 
 export type SlugOptions = {
