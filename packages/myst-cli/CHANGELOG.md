@@ -1,11 +1,5 @@
 # myst-cli
 
-## 1.4.1
-
-### Patch Changes
-
-- d70e85bd: hidden nodes get excluded from manifest and enumeration
-
 ## 1.4.0
 
 ### Minor Changes
