@@ -6,9 +6,9 @@ description: Deploy your MyST site on Apache httpd
 
 Once you have built a static version of your MyST project via `myst build --html`, it can be served on an [Apache web server (httpd)](https://httpd.apache.org) instance.
 
-For example, let's assume your web server's base URL is `http://www.example.com`, it uses `/var/www/html` as its `DocumentRoot`, and that your MyST project's `_build` directory is `/var/www/html/my_MyST_project/_build`.
+For example, let's assume your web server's base URL is `http://www.example.com`, it uses `/var/www/html` as its `DocumentRoot`. You should copy the contents of your `_build/html/` directory into the `/var/www/html/` directory.
 
-The URL for your static MyST project would therefore be `http://www.example.com/my_MyST_project/_build`.
+The URL for your static MyST project would then be `http://www.example.com/`.
 
 :::{warning} Enable automatic `.html` file suffixes
 `myst build --html` will produce HTML-formatted files that have `.html` as their suffix for `.md` and (if you choose to `execute` Jupyter notebooks) `.ipynb` files that you list in your project's [table of contents](table-of-contents.md).
@@ -18,7 +18,7 @@ However, the links that are generated will not have `.html` as part of their HRE
 For example, assuming your httpd configuration file lives in `/etc/httpd/conf/httpd.conf`, add the following stanza, and then reload/restart your Apache web server:
 
 ```
-<Directory "/var/www/html/my_Myst_project/_build">
+<Directory "/var/www/html/">
     Options MultiViews
 </Directory>
 ```
