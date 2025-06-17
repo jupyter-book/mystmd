@@ -383,7 +383,9 @@ https://api.mystmd.org/templates/typst
 ## How to make a release
 
 :::{important} Informing other developers
-Making a release of MyST components may require other stakeholders to update their deployments of MyST. In order to minimise disruption, contributors should inform other developers of their intention to make a release in the [`#development` Discord channel](https://discord.com/channels/1083088970059096114/1177359316886503464). This step may be skipped if the benefits of making an unannounced release outweigh the risks, such as mitigating a security vulnerability or preventing data loss.
+Before making a release, it is good practice to announce your intention in the [`#release_coordination`](https://discord.com/channels/1083088970059096114/1384242935645737141) Discord channel. This gives the rest of the team an opportunity to coordinate around the release, e.g. to ensure that features are not half-shipped. 
+
+A good rule of thumb is to give people a "day" to see a release notice and engage with the announcement. Due to the range of time-zones that the Jupyter Book team are subject to, this effectively means a 24h wait. This is a subjective rule, and your best-judgement should be used to determine whether you need to hear back from the rest of the team before pushing the release. For example, releases consisting only of critical bug-fixes may be made immediately if time-sensitive. 
 :::
 
 ### Make a release of `mystmd`
