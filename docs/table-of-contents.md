@@ -137,6 +137,24 @@ project:
         - file: part-2-second-child.md
 ```
 
+(hidden-in-toc)=
+
+## Hiding pages from the Table of Contents
+
+In some cases, you may want some pages in your project to be built, but not included in the Table of Contents. You can do this by adding a `hidden: true` attribute to the corresponding `file` or `pattern` entry in your `toc` section:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    - file: accessible-from-the-toc.md
+    - file: built-but-not-mentioned-in-the-toc.md
+      hidden: true
+```
+
+In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
+
 (implicit-toc)=
 
 ## Implicit Table of Contents from filenames
