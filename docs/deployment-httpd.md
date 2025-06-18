@@ -12,8 +12,6 @@ For example, let's assume your web server's base URL is `http://www.example.com`
 cp -r _build/html /var/www/html/my-project
 ```
 
-The URL for your static MyST project would then be `http://www.example.com/`.
-
 ::::{warning} Enable automatic `.html` file suffixes
 `myst build --html` will produce HTML-formatted files that have `.html` as their suffix for `.md` and (if you choose to `execute` Jupyter notebooks) `.ipynb` files that you list in your project's [table of contents](table-of-contents.md).
 
