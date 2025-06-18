@@ -6,7 +6,7 @@ description: Deploy your MyST site on Apache httpd
 
 Once you have built a static version of your MyST project via `myst build --html`, it can be served on an [Apache web server (httpd)](https://httpd.apache.org) instance.
 
-For example, let's assume your web server's base URL is `http://www.example.com`, it uses `/var/www/html` as its `DocumentRoot`. If you copy the `_build/html/` directory to `/var/www/html/my-project`, then the URL would be: `http://www.example.com/my-project`:
+For example, let's assume your web server's base URL is `http://www.example.com`, it uses `/var/www/html` as its `DocumentRoot`. If you copy the `_build/html/` directory to `/var/www/html/my-project`, then the URL would be `http://www.example.com/my-project`:
 
 ```shell
 cp -r _build/html /var/www/html/my-project
