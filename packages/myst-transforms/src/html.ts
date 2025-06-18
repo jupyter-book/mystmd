@@ -114,6 +114,8 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       attrs.url = String(node.properties.src || '');
       if (node.properties.title) attrs.title = node.properties.title;
       if (node.properties.alt) attrs.alt = node.properties.alt;
+      if (node.properties.width) attrs.width = node.properties.width;
+      if (node.properties.height) attrs.height = node.properties.height;
       return h(node, 'image', attrs);
     },
     video(h: H, node: any) {
