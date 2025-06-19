@@ -380,8 +380,12 @@ And to see a list of available templates that can be resolved for Typst, you can
 
 https://api.mystmd.org/templates/typst
 
-
 ## How to make a release
+
+:::{important} Release Coordination
+We use the [`#release_coordination`](https://discord.com/channels/1083088970059096114/1384242935645737141) Discord channel to coordinate and collaborate on releases. For example, to ensure that features are not half-shipped, additional PRs can make it into a release, or other release responsibilities that can be shared among the team (e.g. release notes, theme deployments, social media posts, documentation updates).
+:::
+
 ### Make a release of `mystmd`
 
 To publish a new release of `mystmd`, we do two things:
