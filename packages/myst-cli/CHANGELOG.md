@@ -1,5 +1,16 @@
 # myst-cli
 
+## 1.4.1
+
+### Patch Changes
+
+- 8871ca8a: Improve symbol replacements.
+- Updated dependencies [8871ca8a]
+- Updated dependencies [423a1913]
+- Updated dependencies [501f981]
+  - myst-transforms@1.3.36
+  - citation-js-utils@1.2.7
+
 ## 1.4.0
 
 ### Minor Changes
