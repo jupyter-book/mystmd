@@ -17,6 +17,13 @@ figure: [](#my-fig)
 Embedded section with xref ⬇️
 
 ```{embed} #section-with-xref
+
+```
+
+Embedded code-block with xref
+```{embed} #my-code
+:remove-input: true
+:remove-output: true
 ```
 
 ## From external project
