@@ -10,6 +10,7 @@ export interface SiteProject {
 export interface SiteNavItem {
   title: string;
   url?: string;
+  open_in_same_tab?: boolean;
   internal?: boolean;
   children?: SiteNavItem[];
   static?: boolean;
@@ -52,7 +53,9 @@ type ManifestProjectItem = {
   bannerOptimized?: string;
   tags?: string[];
   enumerator?: string;
+  // For external URLs
   url?: string;
+  open_in_same_tab?: boolean;
 };
 
 type ManifestProject = {

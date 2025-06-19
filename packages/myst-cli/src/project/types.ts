@@ -28,6 +28,7 @@ export type ExternalURL = {
   url: string;
   title: string;
   level: PageLevels;
+  open_in_same_tab?: boolean;
 };
 
 export type LocalProject = {
