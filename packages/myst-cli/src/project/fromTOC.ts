@@ -183,7 +183,12 @@ function pagesFromEntries(
         pages.push({ file: resolvedFile, level: entryLevel, slug, ...leftover });
       }
     } else if (isURL(entry)) {
-      pages.push({ url: entry.url, title: entry.title || entry.url, level: entryLevel });
+      pages.push({
+        url: entry.url,
+        title: entry.title || entry.url,
+        level: entryLevel,
+        open_in_same_tab: entry.open_in_same_tab,
+      });
     } else {
       // Parent Entry - may be a "part" with level -1
       entryLevel = level < -1 ? -1 : level;
