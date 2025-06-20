@@ -43,6 +43,17 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
         };
         return projectPage;
       }
+      if ('url' in page) {
+        const { title, url, open_in_same_tab, level } = page;
+        const externalURL: ManifestProject['pages'][0] = {
+          title,
+          url,
+          open_in_same_tab,
+          level,
+        };
+        return externalURL;
+      }
+      // Not a file or URL, probably a sub-entry; try and bubble down
       return { ...page };
     }),
   );
