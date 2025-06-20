@@ -52,6 +52,15 @@ project:
       title: Google
 ```
 
+By default, URLs open in a new tab. You can change that with the
+`open_in_same_tab` option:
+
+```{code} yaml
+- url: 'https://google.com'
+  title: Google
+  open_in_same_tab: true
+```
+
 ### Glob pattern matching
 
 You can specify glob-like patterns in the TOC with the `pattern` key.
