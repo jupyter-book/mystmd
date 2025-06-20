@@ -10,7 +10,6 @@ export interface SiteProject {
 export interface SiteNavItem {
   title: string;
   url?: string;
-  open_in_same_tab?: boolean;
   internal?: boolean;
   children?: SiteNavItem[];
   static?: boolean;
