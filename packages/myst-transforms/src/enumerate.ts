@@ -125,6 +125,7 @@ export type TargetCounts = {
 
 export type StateOptions = {
   state: ReferenceState;
+  hidden?: boolean;
 };
 
 export type StateResolverOptions = {
@@ -344,12 +345,14 @@ export class ReferenceState implements IReferenceStateResolver {
       previousCounts?: TargetCounts;
       identifiers?: string[];
       vfile: VFile;
+      hidden?: boolean;
     },
   ) {
     this.numbering = fillNumbering(opts?.frontmatter?.numbering, DEFAULT_NUMBERING);
     this.offset = this.numbering?.title?.offset ?? 0;
     this.targetCounts = initializeTargetCounts(this.numbering, opts?.previousCounts, this.offset);
     if (
+      !opts?.hidden &&
       (this.numbering.title?.enabled || this.numbering.all?.enabled) &&
       !opts?.frontmatter?.content_includes_title &&
       this.numbering[`heading_${this.offset + 1}`]?.enabled !== false
@@ -372,10 +375,10 @@ export class ReferenceState implements IReferenceStateResolver {
     this.title = opts?.frontmatter?.title;
   }
 
-  addTarget(node: TargetNodes) {
+  addTarget(node: TargetNodes, hidden?: boolean) {
     if (!isTargetIdentifierNode(node)) return;
     const kind = kindFromNode(node);
-    const numberNode = shouldEnumerateNode(node, kind, this.numbering, this.offset);
+    const numberNode = !hidden && shouldEnumerateNode(node, kind, this.numbering, this.offset);
     if (numberNode) {
       this.incrementCount(node, kind as TargetKind);
     }
@@ -641,7 +644,7 @@ export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOption
       node.enumerated ||
       ['container', 'mathGroup', 'math', 'heading', 'proof'].includes(node.type)
     ) {
-      opts.state.addTarget(node as TargetNodes);
+      opts.state.addTarget(node as TargetNodes, opts?.hidden);
     }
   });
   // Add implicit labels to subfigures without explicit labels
@@ -659,7 +662,7 @@ export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOption
         // This is the second time addTarget is called on this node.
         // The first time, it was given an enumerator but not added to targets.
         // This time, it is added to targets since it now has an identifier.
-        opts.state.addTarget(sub as TargetNodes);
+        opts.state.addTarget(sub as TargetNodes, opts?.hidden);
       });
     });
   return tree;
