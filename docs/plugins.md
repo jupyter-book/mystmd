@@ -3,7 +3,7 @@ title: Plugins
 description: Plugins provide powerful ways to extend and customize MyST
 ---
 
-Plugins allow authors to extend and customize MyST to augment your articles and documentation. They also support custom rendering and transformation pipelines for various export targets including React, HTML, LaTeX, and Microsoft Word.
+Plugins allow you to extend and customize MyST to augment your articles and documentation. They also support custom rendering and transformation pipelines for various export targets including React, HTML, LaTeX, and Microsoft Word.
 
 :::{danger} Plugins are in-progress
 The interfaces and packaging for the plugins may change substantially in the future.\
@@ -14,7 +14,7 @@ If you are implementing a plugin, please let us know on [GitHub](https://github.
 
 ## Overview of a Plugin
 
-Plugins are executable code that can modify MyST AST as part of a build process. The supported plugin types are:
+Plugins are executable code that can modify {term}`MyST AST` as part of a build process. The supported plugin types are:
 
 directives
 : Add or overwrite directives, which provide a "block-level" extension point.

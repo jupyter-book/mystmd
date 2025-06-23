@@ -3,7 +3,7 @@ title: Package and distribute plugins
 description: Share your custom plugins so that others can use them.
 ---
 
-There is no "official" way to distribute plugins with MyST. However, you can use common workflows in the JavaScript ecosystem to distribute your plugins so that others can use them. This page documents a few approaches that may work.
+There is no "official" way to distribute MyST plugins. However, you can use common workflows in the JavaScript ecosystem to distribute your plugins so that others can use them. This page documents a few of them.
 
 ## Package plugins into a single ESM file 
 
@@ -13,7 +13,7 @@ JavaScript uses the [ECMAScript Modules standard](https://nodejs.org/api/esm.htm
 
 There are several "builders" in the JavaScript ecosystem that make it easy to quickly bundle JavaScript in distributable packages. The resulting artifact can then be shared directly, or published to a package registry like [NPM](https://npmjs.com).
 
-We recommend [using `esbuild`](https://esbuild.github.io/) to accomplish this.
+We recommend [`esbuild`](https://esbuild.github.io/).
 
 :::{note} Example: Bundle a custom plugin with `esbuild`
 The [`js-plugin` MyST example](https://github.com/myst-examples/js-plugin) demonstrates how to use `esbuild` to bundle a plugin and its dependencies into a single file. It uses GitHub releases to make the file available at a URL. See the [project README](https://github.com/jupyter-book/example-js-plugin?tab=readme-ov-file#myst-js-plugin) for more details.
