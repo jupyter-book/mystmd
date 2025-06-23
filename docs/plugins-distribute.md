@@ -4,10 +4,15 @@ description: Share your custom plugins so that others can use them.
 ---
 
 There is no "official" way to distribute MyST plugins. However, you can use common workflows in the JavaScript ecosystem to distribute your plugins so that others can use them. This page documents a few of them.
+## Distribute plugins as a single `.mjs` file if they have no dependencies
 
-## Package plugins into a single ESM file 
+If your plugin doesn't require any extra dependencies, then you can distributed it as a single `.mjs` file written in JavaScript. You can then use it locally or [distribute it via a URL](#plugin:distribute-url).
 
-JavaScript uses the [ECMAScript Modules standard](https://nodejs.org/api/esm.html) for packaging and distributing scripts. Your plugins can be bundled and distributed in the same way.
+See [](./javascript-plugins.md) for several example plugins written as individual `.mjs` files with no dependencies.
+
+## Package plugins into a single ESM file if they have dependencies
+
+If your plugin has other dependencies that it needs to package with the plugin, you can do so using the [ECMAScript Modules standard](https://nodejs.org/api/esm.html) for packaging and distributing JavaScript. The sections below describe how to do so.
 
 ## Use a builder to build an ESM package
 
@@ -30,6 +35,7 @@ There are a few other bundlers in the JavaScript ecosystem, which you may use to
 * [tsup](https://github.com/egoist/tsup) - [example plugin](https://github.com/myst-ext/myst-ext-discourse)
 * [ncc](https://github.com/vercel/ncc) - [example plugin](https://github.com/myst-ext/myst-ext-xref-prefix/blob/e975496cafa57e86c88ea71d3abe26a7174b3944/package.json#L20) 
 
+(plugin:distribute-url)=
 ## Distribute your plugin via a URL
 
 The easiest way to distribute your plugin is via an accessible URL that points to the bundled file that you've created.
