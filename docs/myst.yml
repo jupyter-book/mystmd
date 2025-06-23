@@ -14,40 +14,42 @@ project:
     spec: https://mystmd.org/spec/
     biapol: https://biapol.github.io/blog/
   abbreviations:
-    AST: Abstract Syntax Tree
-    DOI: Digital Object Identifier
-    MyST: Markedly Structured Text
-    CLI: Command Line Interface
-    HTML: Hypertext Markup Language
-    PDF: Portable Document Format
+    # Alphabetical order
     AMS: American Mathematical Society
-    RRID: Research Resource Identifier
-    CSS: Cascading Style Sheet
+    API: Application Programming Interface
+    AST: Abstract Syntax Tree
+    CLI: Command Line Interface
     CRediT: Contributor Roles Taxonomy
-    ROR: Research Organization Registry
-    ISNI: International Standard Name Identifier
-    NISO: National Information Standards Organization
-    YAML: Yet Another Markup Language
-    WASM: WebAssembly
-    REES: Reproducible Execution Environment Specification
-    URL: Uniform Resource Locator
-    XML: Extensible Markup Language
-    PID: Persistent Identifier
+    CSS: Cascading Style Sheet
+    CSV: comma-separated values
+    DOI: Digital Object Identifier
+    ESM: ECMAScript Modules
+    GPU: Graphics Processing Unit
+    HTML: Hypertext Markup Language
     ID: Identifier
+    ISNI: International Standard Name Identifier
     JATS: Journal Article Tag Suite
-    VoR: Version of Record
+    JSON: JavaScript Object Notation
     LTS: Long Term Support
+    MyST: Markedly Structured Text
+    NISO: National Information Standards Organization
+    OA: Open Access
+    PDF: Portable Document Format
+    PID: Persistent Identifier
     POSIX: Portable Operating System Interface
+    REES: Reproducible Execution Environment Specification
+    ROR: Research Organization Registry
+    RRID: Research Resource Identifier
     RST: reStructuredText
     SPDX: Software Package Data Exchange
-    API: Application Programming Interface
-    GPU: Graphics Processing Unit
-    TPU: Tensor Processing Unit
-    JSON: JavaScript Object Notation
     TLA: Three Letter Acronym
-    OA: Open Access
-    CSV: comma-separated values
     TOC: table of contents
+    TPU: Tensor Processing Unit
+    URL: Uniform Resource Locator
+    VoR: Version of Record
+    WASM: WebAssembly
+    YAML: Yet Another Markup Language
+    XML: Extensible Markup Language
   plugins:
     - directives.mjs
     - picsum.mjs
@@ -146,6 +148,7 @@ project:
       file: plugins.md
       children:
         - file: javascript-plugins.md
+        - file: plugins-distribute.md
         - file: executable-plugins.md
     - title: Reference
       children:
