@@ -4,7 +4,7 @@ description: The Table of Contents is the left-hand navigation for your site, it
 thumbnail: thumbnails/table-of-contents.png
 ---
 
-The Table of Contents defines the structure of your MyST project. 
+The Table of Contents defines the structure of your MyST project.
 It is defined in the `toc` attribute of [the project frontmatter](frontmatter.md#in-a-myst-yml-file).
 
 To automatically add a `toc` section to your `myst.yml` file using filenames to define ordering, use the following command:
@@ -41,11 +41,6 @@ project:
 
 URLs can be defined in the TOC. These URLs are links to external references within your table of contents. URLs are ignored in non-web exports.
 
-:::{warning} Work in progress
-Currently these URLs are also ignored in MyST sites.
-Follow https://github.com/jupyter-book/mystmd/issues/1445 for this enhancement and please provide feedback.
-:::
-
 ```{code} yaml
 :filename: myst.yml
 
@@ -54,6 +49,16 @@ project:
   toc:
     - file: root.md
     - url: 'https://google.com'
+      title: Google
+```
+
+By default, URLs open in a new tab. You can change that with the
+`open_in_same_tab` option:
+
+```{code} yaml
+- url: 'https://google.com'
+  title: Google
+  open_in_same_tab: true
 ```
 
 ### Glob pattern matching

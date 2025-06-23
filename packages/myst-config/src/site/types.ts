@@ -52,6 +52,9 @@ type ManifestProjectItem = {
   bannerOptimized?: string;
   tags?: string[];
   enumerator?: string;
+  // For external URLs
+  url?: string;
+  open_in_same_tab?: boolean;
 };
 
 type ManifestProject = {

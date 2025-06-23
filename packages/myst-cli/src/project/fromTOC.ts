@@ -15,6 +15,7 @@ import type {
   LocalProjectFolder,
   LocalProjectPage,
   LocalProject,
+  ExternalURL,
   PageSlugs,
   SlugOptions,
 } from './types.js';
@@ -159,7 +160,7 @@ function pagesFromEntries(
   session: ISession,
   path: string,
   entries: EntryWithoutPattern[],
-  pages: (LocalProjectFolder | LocalProjectPage)[] = [],
+  pages: (LocalProjectFolder | LocalProjectPage | ExternalURL)[] = [],
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
   opts?: SlugOptions,
@@ -182,15 +183,12 @@ function pagesFromEntries(
         pages.push({ file: resolvedFile, level: entryLevel, slug, ...leftover });
       }
     } else if (isURL(entry)) {
-      addWarningForFile(
-        session,
-        configFile,
-        `URLs in table of contents are not yet supported: ${entry.url}`,
-        'warn',
-        {
-          ruleId: RuleId.tocContentsExist,
-        },
-      );
+      pages.push({
+        url: entry.url,
+        title: entry.title || entry.url,
+        level: entryLevel,
+        open_in_same_tab: entry.open_in_same_tab,
+      });
     } else {
       // Parent Entry - may be a "part" with level -1
       entryLevel = level < -1 ? -1 : level;
