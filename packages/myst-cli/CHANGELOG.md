@@ -1,5 +1,26 @@
 # myst-cli
 
+## 1.5.0
+
+### Minor Changes
+
+- febc0de9: Enable external URLs in table of contents
+
+### Patch Changes
+
+- 8871ca8a: Improve symbol replacements.
+- 1ec5636: hidden nodes get excluded from manifest and enumeration
+- Updated dependencies [febc0de9]
+- Updated dependencies [8871ca8a]
+- Updated dependencies [423a1913]
+- Updated dependencies [501f981c]
+  - myst-config@1.8.0
+  - myst-transforms@1.3.36
+  - citation-js-utils@1.2.7
+  - myst-common@1.8.0
+  - myst-frontmatter@1.8.0
+  - myst-spec-ext@1.8.0
+
 ## 1.4.0
 
 ### Minor Changes

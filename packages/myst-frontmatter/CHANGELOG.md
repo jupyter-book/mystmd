@@ -1,5 +1,7 @@
 # myst-frontmatter
 
+## 1.8.0
+
 ## 1.7.13
 
 ### Patch Changes
