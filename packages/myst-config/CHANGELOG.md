@@ -1,5 +1,16 @@
 # myst-config
 
+## 1.8.0
+
+### Minor Changes
+
+- febc0de9: Enable external URLs in table of contents
+
+### Patch Changes
+
+- myst-common@1.8.0
+- myst-frontmatter@1.8.0
+
 ## 1.7.13
 
 ### Patch Changes

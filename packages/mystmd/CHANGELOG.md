@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.5.0
+
+### Patch Changes
+
+- 423a1913: Add image width/height reading to html parsing
+
 ## 1.4.0
 
 ## 1.3.28

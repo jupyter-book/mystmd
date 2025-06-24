@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.3.36
+
+### Patch Changes
+
+- 8871ca8a: Improve symbol replacements.
+- 423a1913: Add image width/height reading to html parsing
+  - myst-common@1.8.0
+  - myst-frontmatter@1.8.0
+  - myst-spec-ext@1.8.0
+
 ## 1.3.35
 
 ### Patch Changes
