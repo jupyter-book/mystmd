@@ -22,6 +22,8 @@ We expect all contributors to this project to [Code of Conduct][coc].
 
 We do most of our work in GitHub repositories in [the `jupyter-book/` GitHub organization](https://github.com/jupyter-book).
 
+## What should I work on?
+
 Our [roadmap](https://github.com/orgs/jupyter-book/projects/1/views/1) provides a big picture overview of project initiatives.
 [Current priorities](https://github.com/orgs/jupyter-book/projects/1/views/7) track work items that we would like to complete soon.
 You will see these divided into two lists: "Priority" items (important and urgent) and "Side Quest" items (important, not urgent).
