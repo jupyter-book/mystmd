@@ -3,12 +3,11 @@ title: Contribution Guide
 short_title: Contribution Guide
 ---
 
-
 This page contains pointers and links to help you contribute to this project.
 
 ## Developer guide
 
-Technical detail about project architecture and contributing code is given in the [developer guide](./developer.md) 
+Technical detail about project architecture and contributing code is given in the [developer guide](./developer.md)
 
 ## Our team compass
 
@@ -22,6 +21,12 @@ We expect all contributors to this project to [Code of Conduct][coc].
 ## Where we work
 
 We do most of our work in GitHub repositories in [the `jupyter-book/` GitHub organization](https://github.com/jupyter-book).
+
+Our [roadmap](https://github.com/orgs/jupyter-book/projects/1/views/1) provides a big picture overview of project initiatives.
+[Current priorities](https://github.com/orgs/jupyter-book/projects/1/views/7) track work items that we would like to complete soon.
+You will see these divided into two lists: "Priority" items (important and urgent) and "Side Quest" items (important, not urgent).
+If you are unsure what to work on, we recommend you pick an item from one of these two lists.
+These items are most likely to get an enthusiastic response, and will likely be reviewed quickly.
 
 ## Where we communicate
 
@@ -72,4 +77,3 @@ Our [governance page][governance] describes our formal decision-making processes
 [team]: https://compass.jupyterbook.org/team
 [governance]: https://compass.jupyterbook.org/team
 [decisions]: https://compass.jupyterbook.org/team
-
