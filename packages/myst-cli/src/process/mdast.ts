@@ -67,6 +67,7 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
+  liftOutputs,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -182,6 +183,25 @@ export async function transformMdast(
   // This needs to come before basic transformations since it may add labels to blocks
   liftCodeMetadataToBlock(session, vfile, mdast);
 
+  if (execute && !frontmatter.skip_execution) {
+    const cachePath = path.join(session.buildPath(), 'execute');
+    await kernelExecutionTransform(mdast, vfile, {
+      basePath: session.sourcePath(),
+      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+      sessionFactory: () => session.jupyterSessionManager(),
+      frontmatter: frontmatter,
+      ignoreCache: false,
+      errorIsFatal: false,
+      log: session.log,
+    });
+  }
+  transformRenderInlineExpressions(mdast, vfile);
+  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
+  liftOutputs(session, mdast, vfile, {
+    parseMyst: (content: string) => parseMyst(session, content, file),
+  });
+  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
+
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
@@ -225,21 +245,6 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  if (execute && !frontmatter.skip_execution) {
-    const cachePath = path.join(session.buildPath(), 'execute');
-    await kernelExecutionTransform(mdast, vfile, {
-      basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
-      sessionFactory: () => session.jupyterSessionManager(),
-      frontmatter: frontmatter,
-      ignoreCache: false,
-      errorIsFatal: false,
-      log: session.log,
-    });
-  }
-  transformRenderInlineExpressions(mdast, vfile);
-  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(session, file, mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
