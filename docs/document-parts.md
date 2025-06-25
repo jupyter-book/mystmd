@@ -3,9 +3,14 @@ title: Document Parts
 description: Parts allow you to specify special parts of your document, like abstract, key points, and acknowledgements.
 ---
 
-Document parts allow you to add metadata to your documents with specific components of your page or project, for example, abstract, dedication, or acknowledgments. Many templates put these in specific places.
+Document parts allow you to add metadata to your documents with specific components of your page or project, for example, abstract, dedication, or acknowledgments. [Templates](./documents-exports.md) can use this information to put that content in various locations.
 
-There are three ways that you can define parts of a document: (1) in your page frontmatter; (2) implicitly using a section heading; and (3) on a block using a `part` or `tag` annotation. These are all based on a part name, which is case insensitive.
+There are three ways that you can define parts of a document, each described below:
+
+1. [In page frontmatter](#parts:frontmatter)
+2. [With specific section headings](#parts:implicit)
+3. [With a content block](#parts:blocks).
+4. [In site configuration](#parts:site)
 
 (parts:frontmatter)=
 
@@ -131,7 +136,9 @@ Project-level `parts` are a new feature and may not yet be respected by your cho
 
 ## Parts in `myst.yml` Site configuration
 
-You may specify `parts` in the site configuration of your `myst.yml` file. These parts will only be used for MyST site builds, and they must correspond to `parts` declared in your [website theme's template](website-templates.md).
+You may specify `parts` in the site configuration of your `myst.yml` file. These parts will only be used for MyST site builds, and they must correspond to `parts` declared in your [website theme's template](website-templates.md). For example, see [](#navigation:footer).
+
+You may specify the content of a `part` directly in the configuration file:
 
 ```yaml
 version: 1
@@ -142,3 +149,44 @@ site:
       (c) MyST Markdown
   ...
 ```
+
+Alternatively, you may specify a path to a file that contains the part content:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+site:
+  template: ...
+  parts:
+    footer: parts/myfooter.md
+  ...
+```
+
+Content in parts will generally be parsed similarly to other MyST content (though some functionality like code execution will not work).
+
+### Share the same part across multiple sites
+
+If you wish to share the same part across multiple sites, use the [`extends:` key to compose multiple configuration files](#composing-myst-yml). This lets you define the part in one location, and re-use it in several others. It is useful if you want to standardize website components like a footer across many websites.
+
+For example, in one file:
+
+```{code} yaml
+:filename: parts.yml
+site:
+  parts:
+    footer: |
+      My nifty footer!
+  ...
+```
+
+And in another:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+extends: parts.yml
+site:
+  template: ...
+```
+
+**If you're extending configuration from a remote source**, make sure that you use absolute URLs if you must refer to an image or other asset in your part content. Relative paths that are defined inside the part content will generally break.
