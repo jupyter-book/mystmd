@@ -486,4 +486,20 @@ describe('Test reconstructHtmlTransform', () => {
       ],
     });
   });
+  test('u tag in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<u>underline</u>' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'underline',
+          children: [{ type: 'text', value: 'underline' }],
+        },
+      ],
+    });
+  });
 });

@@ -163,6 +163,11 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     summary(h: H, node: any) {
       return h(node, 'summary', all(h, node));
     },
+    u(h: H, node: any) {
+      // The default is emphasis
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'underline', attrs, all(h, node));
+    },
   },
 };
 
