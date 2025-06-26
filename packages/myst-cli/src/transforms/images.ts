@@ -536,6 +536,11 @@ export async function transformImageFormats(
   }
   unconvertableImages.forEach((image) => {
     const badExt = path.extname(image.url) || '<no extension>';
+    if (badExt === '.*') {
+      // There is already a warning for the wild card extensions.
+      // See https://github.com/jupyter-book/mystmd/issues/2123
+      return;
+    }
     addWarningForFile(
       session,
       file,
