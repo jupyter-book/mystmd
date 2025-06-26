@@ -107,6 +107,51 @@ Page content
 
 When using a Jupyter Notebook, you can add a `tag` to the cell with the part name. If multiple cells share that tag, they will be extracted and merged. 
 
+
+### Known Frontmatter Parts
+
+The known parts that are recognized as _top-level_ document frontmatter keys are:
+
+abstract
+: A concise overview of the entire document, highlighting the main objectives, methods, results, and conclusions. It's meant to give readers a quick snapshot of what to expect without having to read the entire document.
+
+summary
+: Similar to an abstract, but can either be slightly longer and more detailed or used as a plain-language summary, depending on the context. It summarizes the document's content, including the background, purpose, methodology, results, and conclusions.
+: Alias: `plain_language_summary`, `lay_summary`
+
+keypoints
+: A brief list that highlights the main findings, conclusions, or contributions of the document. Key points are often used to quickly convey the core message or most important aspects to the reader.
+
+dedication
+: A short section where the author dedicates the document to someone, often as a gesture of honor or respect.
+
+epigraph
+: A quote or poem that the author includes at the beginning of the document to set a tone or theme, or to hint at the document’s underlying message. It is often relevant to the content but not directly related to it.
+: Alias: `quote`
+
+data_availability
+: A statement or section that details how readers can access the data sets and resources used in the document. This can include links to repositories, conditions for access, and any restrictions on the data. It's crucial for transparency and reproducibility in research documents.
+: Alias: `availability`
+
+acknowledgments
+: A section where the author thanks individuals, organizations, or agencies that contributed to the completion of the document. This can include support in the form of funding, expertise, feedback, or moral support.
+: Alias: `ack`, `acknowledgements`
+
+### Custom Frontmatter Parts
+
+If you have a custom part name for a template, you can nest it under `parts:`, which takes arbitrary keys.
+
+```yaml
+---
+title: My document
+parts:
+  special_part: |
+    This is another _special_ part!
+---
+```
+
+The advantage of this method is that the content is not rendered in your document.
+
 (parts:site)=
 
 ## Add parts to your website
