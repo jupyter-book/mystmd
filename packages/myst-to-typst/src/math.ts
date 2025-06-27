@@ -60,7 +60,12 @@ export function resolveRecursiveCommands(plugins: MathPlugins): MathPlugins {
 }
 
 const math: Handler = (node, state) => {
-  const { value, macros } = texToTypst(node.value);
+  // Use typst value if available, otherwise convert LaTeX
+  const mathValue = node.typst || node.value;
+  const { value, macros } = node.typst
+    ? { value: mathValue, macros: undefined } // No conversion needed for typst
+    : texToTypst(node.value); // Convert LaTeX to Typst
+
   macros?.forEach((macro) => {
     state.useMacro(macro);
   });
@@ -80,7 +85,12 @@ const math: Handler = (node, state) => {
 };
 
 const inlineMath: Handler = (node, state) => {
-  const { value, macros } = texToTypst(node.value);
+  // Use typst value if available, otherwise convert LaTeX
+  const mathValue = node.typst || node.value;
+  const { value, macros } = node.typst
+    ? { value: mathValue, macros: undefined } // No conversion needed for typst
+    : texToTypst(node.value); // Convert LaTeX to Typst
+
   macros?.forEach((macro) => {
     state.useMacro(macro);
   });

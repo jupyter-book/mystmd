@@ -27,4 +27,48 @@ describe('myst-to-typst math', () => {
       aRecursion: '[ upright(a) ]',
     });
   });
+
+  it('uses typst value when provided', () => {
+    const tree = u('root', [
+      u('math', {
+        value: 'latex',
+        typst: 'typst',
+      }),
+    ]);
+    const pipe = unified().use(mystToTypst);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as TypstResult).value).toEqual('$ typst $');
+  });
+
+  it('converts LaTeX when typst value not provided', () => {
+    const tree = u('root', [u('math', { value: '\\mathrm{e}' })]);
+    const pipe = unified().use(mystToTypst);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as TypstResult).value).toEqual('$ upright(e) $');
+  });
+
+  it('uses typst value for inline math when provided', () => {
+    const tree = u('root', [
+      u('paragraph', [
+        u('inlineMath', {
+          value: 'latex',
+          typst: 'typst',
+        }),
+      ]),
+    ]);
+    const pipe = unified().use(mystToTypst);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as TypstResult).value).toEqual('$typst$');
+  });
+
+  it('converts LaTeX for inline math when typst value not provided', () => {
+    const tree = u('root', [u('paragraph', [u('inlineMath', { value: '\\mathrm{e}' })])]);
+    const pipe = unified().use(mystToTypst);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as TypstResult).value).toEqual('$upright(e)$');
+  });
 });
