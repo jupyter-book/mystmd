@@ -1,6 +1,7 @@
 {
+  "version": 2,
   "kind": "Article",
-  "sha256": "cefe343ffc7d00c2c2c4cfcd9f0d0612621d4343a3544ca819567f0b5a96e1b4",
+  "sha256": "3d6a8ef1f1f05f1044bd591cab831ca63d663cdff14e09d39c203b9063fc1059",
   "slug": "index",
   "location": "/index.md",
   "dependencies": [
@@ -18,7 +19,13 @@
     "content_includes_title": false,
     "github": "https://github.com/jupyter-book/mystmd",
     "keywords": [],
-    "exports": [{ "format": "md", "filename": "index.md" }]
+    "exports": [
+      {
+        "format": "md",
+        "filename": "index.md",
+        "url": "/index-52e2bc751b3bb2cb9ed25191a3951cf9.md"
+      }
+    ]
   },
   "mdast": {
     "type": "root",
@@ -349,19 +356,52 @@
             ]
           },
           {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 23, "column": 1 },
+              "end": { "line": 23, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Embedded code-block with xref",
+                "position": {
+                  "start": { "line": 23, "column": 1 },
+                  "end": { "line": 23, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "embed",
+            "source": {
+              "url": "/targets",
+              "label": "my-code",
+              "kind": "Article",
+              "slug": "targets",
+              "location": "/targets.md",
+              "title": "Targets"
+            },
+            "remove-input": true,
+            "remove-output": true,
+            "children": [
+              { "type": "code", "lang": "python", "value": "import antigravity", "enumerator": "1" }
+            ]
+          },
+          {
             "type": "heading",
             "depth": 2,
             "position": {
-              "start": { "line": 22, "column": 1 },
-              "end": { "line": 22, "column": 1 }
+              "start": { "line": 29, "column": 1 },
+              "end": { "line": 29, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "From external project",
                 "position": {
-                  "start": { "line": 22, "column": 1 },
-                  "end": { "line": 22, "column": 1 }
+                  "start": { "line": 29, "column": 1 },
+                  "end": { "line": 29, "column": 1 }
                 }
               }
             ],
@@ -373,32 +413,32 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 24, "column": 1 },
-              "end": { "line": 24, "column": 1 }
+              "start": { "line": 31, "column": 1 },
+              "end": { "line": 31, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "xref to intersphinx: ",
                 "position": {
-                  "start": { "line": 24, "column": 1 },
-                  "end": { "line": 24, "column": 1 }
+                  "start": { "line": 31, "column": 1 },
+                  "end": { "line": 31, "column": 1 }
                 }
               },
               {
                 "type": "link",
                 "url": "https://docs.python.org/3.7/library/abc.html",
                 "position": {
-                  "start": { "line": 24, "column": 1 },
-                  "end": { "line": 24, "column": 1 }
+                  "start": { "line": 31, "column": 1 },
+                  "end": { "line": 31, "column": 1 }
                 },
                 "children": [
                   {
                     "type": "text",
                     "value": "Python ABC",
                     "position": {
-                      "start": { "line": 24, "column": 1 },
-                      "end": { "line": 24, "column": 1 }
+                      "start": { "line": 31, "column": 1 },
+                      "end": { "line": 31, "column": 1 }
                     }
                   }
                 ],
@@ -411,24 +451,24 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 26, "column": 1 },
-              "end": { "line": 26, "column": 1 }
+              "start": { "line": 33, "column": 1 },
+              "end": { "line": 33, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "xref to myst: ",
                 "position": {
-                  "start": { "line": 26, "column": 1 },
-                  "end": { "line": 26, "column": 1 }
+                  "start": { "line": 33, "column": 1 },
+                  "end": { "line": 33, "column": 1 }
                 }
               },
               {
                 "type": "crossReference",
                 "url": "/myst-schema",
                 "position": {
-                  "start": { "line": 26, "column": 1 },
-                  "end": { "line": 26, "column": 1 }
+                  "start": { "line": 33, "column": 1 },
+                  "end": { "line": 33, "column": 1 }
                 },
                 "children": [
                   {
@@ -437,7 +477,8 @@
                     "position": {
                       "start": { "line": 187, "column": 1 },
                       "end": { "line": 187, "column": 1 }
-                    }
+                    },
+                    "key": "AvPEUq4zhF"
                   }
                 ],
                 "urlSource": "xref:spec#admonition",
@@ -456,16 +497,16 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 28, "column": 1 },
-              "end": { "line": 28, "column": 1 }
+              "start": { "line": 35, "column": 1 },
+              "end": { "line": 35, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "implicit xref to myst: ",
                 "position": {
-                  "start": { "line": 28, "column": 1 },
-                  "end": { "line": 28, "column": 1 }
+                  "start": { "line": 35, "column": 1 },
+                  "end": { "line": 35, "column": 1 }
                 }
               },
               {
@@ -474,8 +515,8 @@
                 "label": "example",
                 "kind": "narrative",
                 "position": {
-                  "start": { "line": 28, "column": 24 },
-                  "end": { "line": 28, "column": 49 }
+                  "start": { "line": 35, "column": 24 },
+                  "end": { "line": 35, "column": 49 }
                 },
                 "url": "/tables",
                 "urlSource": "xref:spec/tables#example",
@@ -491,7 +532,8 @@
                     "position": {
                       "start": { "line": 9, "column": 1 },
                       "end": { "line": 9, "column": 1 }
-                    }
+                    },
+                    "key": "FwKd6SXgee"
                   }
                 ],
                 "template": "{name}",
@@ -502,24 +544,24 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 30, "column": 1 },
-              "end": { "line": 30, "column": 1 }
+              "start": { "line": 37, "column": 1 },
+              "end": { "line": 37, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "xref to page: ",
                 "position": {
-                  "start": { "line": 30, "column": 1 },
-                  "end": { "line": 30, "column": 1 }
+                  "start": { "line": 37, "column": 1 },
+                  "end": { "line": 37, "column": 1 }
                 }
               },
               {
                 "type": "link",
                 "url": "https://mystmd.org/spec/tables",
                 "position": {
-                  "start": { "line": 30, "column": 1 },
-                  "end": { "line": 30, "column": 1 }
+                  "start": { "line": 37, "column": 1 },
+                  "end": { "line": 37, "column": 1 }
                 },
                 "children": [{ "type": "text", "value": "Tables" }],
                 "urlSource": "xref:spec/tables",
@@ -532,24 +574,24 @@
           {
             "type": "paragraph",
             "position": {
-              "start": { "line": 32, "column": 1 },
-              "end": { "line": 32, "column": 1 }
+              "start": { "line": 39, "column": 1 },
+              "end": { "line": 39, "column": 1 }
             },
             "children": [
               {
                 "type": "text",
                 "value": "xref to project: ",
                 "position": {
-                  "start": { "line": 32, "column": 1 },
-                  "end": { "line": 32, "column": 1 }
+                  "start": { "line": 39, "column": 1 },
+                  "end": { "line": 39, "column": 1 }
                 }
               },
               {
                 "type": "link",
                 "url": "https://mystmd.org/spec/",
                 "position": {
-                  "start": { "line": 32, "column": 1 },
-                  "end": { "line": 32, "column": 1 }
+                  "start": { "line": 39, "column": 1 },
+                  "end": { "line": 39, "column": 1 }
                 },
                 "children": [{ "type": "text", "value": "MyST Specification" }],
                 "urlSource": "xref:spec",
