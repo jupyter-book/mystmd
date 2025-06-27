@@ -36,7 +36,7 @@ function mutateEmbedNode(
   const { url, dataUrl, targetFile, sourceFile } = opts ?? {};
   if (targetNode && node['remove-output']) {
     targetNode = filter(targetNode, (n: GenericNode) => {
-      // After reduction, 'output' nodes may be replaced by their children which are then tagged as outputs
+      // This supports nodes of type 'output' or any other node with metadata suggesting it is type output
       return n.type !== 'output' && n.data?.type !== 'output';
     });
   }
@@ -48,8 +48,7 @@ function mutateEmbedNode(
         index: number | null | undefined,
         parent: GenericNode | undefined | null,
       ) => {
-        // Code nodes that are children of notebook cells and _not_ tagged as outputs
-        // should be removed
+        // Remove code nodes that are children of notebook cells and not tagged as outputs
         return !(
           n.type === 'code' &&
           n.data?.type !== 'output' &&
