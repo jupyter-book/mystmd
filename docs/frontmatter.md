@@ -12,8 +12,8 @@ Adding frontmatter ensures that these properties are available to downstream too
 
 Frontmatter can be set in two place:
 
-1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a “page” below)
-2. In `myst.yml` file. This will be applied to all content in that project (apart from “page only” fields).
+1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a "page" below)
+2. In `myst.yml` file. This will be applied to all content in that project (apart from "page only" fields).
 
 More detailed examples are below.
 
@@ -59,12 +59,11 @@ project:
   open_access: true
 ```
 
-
 (field-behavior)=
 
 ### How project and page frontmatter interact
 
-Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a "project". However, some frontmatter fields are available across an entire project, while others are only available for a given page.
+Frontmatter can be attached to a "page", meaning a local `.md` or `.ipynb` or a "project". However, some frontmatter fields are available across an entire project, while others are only available for a given page.
 
 The behavior of each frontmatter field is hard-coded within MyST. These are the kinds of scope that a frontmatter field can have:
 
@@ -158,6 +157,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `parts`
   - a dictionary of arbitrary content parts, not part of the main article, for example `abstract`, `data_availability` see [](./document-parts.md).
   - page & project
+* - `bibliography`
+  - a list of strings specifying file paths to bibliography files (see [](./citations.md))
+  - project
 * - `date`
   - a valid date formatted string
   - page can override project
@@ -330,7 +332,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 * - Field
   - Description
 * - `name`
-  - a string OR CSL-JSON author object - the author’s full name; if a string, this will be parsed automatically. Otherwise, the object may contain `given`, `surname`, `non_dropping_particle`, `dropping_particle`, `suffix`, and full name `literal`
+  - a string OR CSL-JSON author object - the author's full name; if a string, this will be parsed automatically. Otherwise, the object may contain `given`, `surname`, `non_dropping_particle`, `dropping_particle`, `suffix`, and full name `literal`
 * - `id`
   - a string - a local identifier that can be used to reference a repeated author
 * - `orcid`
@@ -490,7 +492,6 @@ Below are all the possible fields for frontmatter affiliations.
   - a boolean - Indicate that this affiliation is a collaboration, for example, `"MyST Contributors"` can be both an affiliation and a listed author. This is used in certain templates as well as in [JATS](https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/collab.html).
 ````
 
-
 ## Date
 
 The date field is a string and should conform to a well-defined calendar date. Examples of acceptable date formats are:
@@ -590,7 +591,7 @@ This field can be set to a string value directly or to a License object.
 
 Available fields in the License object are `content` and `code` allowing licenses to be set separately for these two forms of content, as often different subsets of licenses are applicable to each. If you only wish to apply a single license to your page or project use the string form rather than an object.
 
-If selecting a license from the [SPDX License List](https://spdx.org/licenses/), you may simply use the “Identifier” string; MyST will expand these identifiers into objects with `name`, `url`, and additional metadata related to open access ([OSI-approved](https://opensource.org/licenses), [FSF free](https://www.gnu.org/licenses/license-list.en.html), and [CC](https://creativecommons.org/)). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some common licenses are:
+If selecting a license from the [SPDX License List](https://spdx.org/licenses/), you may simply use the "Identifier" string; MyST will expand these identifiers into objects with `name`, `url`, and additional metadata related to open access ([OSI-approved](https://opensource.org/licenses), [FSF free](https://www.gnu.org/licenses/license-list.en.html), and [CC](https://creativecommons.org/)). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some common licenses are:
 
 ```{list-table}
 :header-rows: 1
