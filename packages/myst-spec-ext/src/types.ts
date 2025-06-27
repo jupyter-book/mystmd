@@ -73,6 +73,8 @@ export type InlineMath = SpecInlineMath & Target;
 export type Math = SpecMath & {
   kind?: 'subequation';
   tight?: 'before' | 'after' | boolean;
+  /** Typst-specific math content. If not provided, LaTeX content will be converted to Typst. */
+  typst?: string;
 };
 
 export type MathGroup = Target & {

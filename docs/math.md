@@ -237,3 +237,31 @@ In the macro in the example above, `\mathbf{d}_\text{pred}\left( #1 \right)`, th
 ```{seealso}
 In the future the information collected in the math macro will expand to include alt text, color, or interaction information (e.g. hover, substitution) to improve accessibility and interactivity.
 ```
+
+
+(typst-math)=
+
+### Typst-specific Math Content
+
+When exporting to Typst format, you can provide Typst-specific math content using the `typst` option. This allows you to use native Typst syntax instead of relying on [`tex-to-typst`](https://github.com/continuous-foundation/tex-to-typst) conversion, which may give incorrect results.
+
+Example with typst argument in a math block:
+
+````{myst}
+```{math}
+:typst: root(3, x)
+\sqrt[3]{x}
+```
+````
+
+When the `typst` option is provided, it will be used directly in Typst output instead of converting the LaTeX content.
+
+For inline math, you can also use the `typst` option with the math role:
+
+```{myst}
+{math typst="typst"}`latex`
+```
+
+:::{important} Improve the Math Conversion
+If your LaTeX math does not convert automatically to typst, please open an [issue here](https://github.com/continuous-foundation/tex-to-typst/issues/new).
+:::

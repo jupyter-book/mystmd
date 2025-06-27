@@ -58,6 +58,12 @@ describe('role spec with options', () => {
               type: 'mystRole',
               position: positionFn(1, 1, 1, 61),
               name: 'widget',
+              options: {
+                class: 'something another',
+                label: 'label',
+                max: 5,
+                open: true,
+              },
               value: '_a_',
               children: [
                 {

@@ -3,7 +3,13 @@ import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const mathRole: RoleSpec = {
   name: 'math',
-  options: { ...commonRoleOptions('math') },
+  options: {
+    ...commonRoleOptions('math'),
+    typst: {
+      type: String,
+      doc: 'Typst-specific math content. If not provided, LaTeX content will be converted to Typst.',
+    },
+  },
   body: {
     type: String,
     required: true,
@@ -11,6 +17,9 @@ export const mathRole: RoleSpec = {
   run(data: RoleData): GenericNode[] {
     const node: GenericNode = { type: 'inlineMath', value: data.body as string };
     addCommonRoleOptions(data, node);
+    if (data.options?.typst) {
+      node.typst = data.options.typst as string;
+    }
     return [node];
   },
 };

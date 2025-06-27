@@ -44,6 +44,7 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
     const { valid: validOptions, options } = parseOptions(name, node, vfile, optionsSpec);
     let validationError = validOptions;
     data.options = options;
+    node.options = options;
 
     // Only look to the direct children
     const bodyNode = node.children?.find((n) => n.type === 'mystRoleBody') as GenericNode;
