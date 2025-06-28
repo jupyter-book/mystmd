@@ -198,7 +198,7 @@ You could also attach the CSS class to a [content block](./blocks.md).
 
 ## Footer
 
-You can add a site-wide footer by using [site "parts"](#parts:site).
+Add a site-wide footer by using [site "parts"](#parts:site). 
 Add a footer part to your `myst.yml` like so:
 
 ```{code} yaml
@@ -209,7 +209,10 @@ site:
 ```
 
 The contents of `footer.md` will be rendered at the bottom of each page.
-It will be parsed similarly to other MyST content (though some functionality like code execution will not work).
+
+:::{seealso} More ways to configure footer content
+See [site "parts" configuration](#parts:site) for more ways you can configure site parts to add a footer.
+:::
 
 ### Style your footer
 

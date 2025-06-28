@@ -104,6 +104,7 @@ project:
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
         - file: table-of-contents.md
+        - file: document-parts.md
         - file: authorship.md
         - file: inline-options.md
     - title: Executable Content
@@ -159,7 +160,6 @@ project:
         - file: directives.md
         - file: roles.md
         - file: frontmatter.md
-        - file: document-parts.md
         - file: settings.md
         - file: glossary.md
         - file: versions.md
