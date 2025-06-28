@@ -3,18 +3,18 @@ title: Document Parts
 description: Parts allow you to specify special parts of your document, like abstract, key points, and acknowledgements.
 ---
 
-Document parts allow you to add metadata to your documents with specific components of your page or project, for example, abstract, dedication, or acknowledgments. [Templates](./documents-exports.md) can use this information to put that content in various locations.
+Document *parts* allow you to add content and metadata for specific components of your page or project, including `example`, `abstract`, `dedication`, and `acknowledgment`. [Templates](./documents-exports.md) may use the parts and their metadata, and render such content in various locations.
 
 ## Add document parts
 
 There are several ways you can define parts of a document, each described below:
 
-1. [In page frontmatter](#parts:frontmatter)
+1. [In site configuration](#parts:site)
 2. [In project-level configuration](#parts:project)
-3. [With specific section headings](#parts:implicit)
-4. [With a content block](#parts:blocks)
-5. [With Jupyter Notebook cell tags](#parts:cell-tags)
-6. [In site configuration](#parts:site)
+3. [In page frontmatter](#parts:frontmatter)
+4. [With specific section headings](#parts:implicit)
+5. [With a content block](#parts:blocks)
+6. [With Jupyter Notebook cell tags](#parts:cell-tags)
 
 (parts:frontmatter)=
 
@@ -156,7 +156,7 @@ The advantage of this method is that the content is not rendered in your documen
 
 ## Add parts to your website
 
-[Website themes](./website-templates.md) have their own configuration for parts because they often have extra user interface elements that are not part of a standard "document" structure. These are theme-dependent. For example, the [default myst themes](#default-web-themes) support [a website footer](#navigation:footer).
+[Website themes](./website-templates.md) have additional parts because they render user interface elements that are not part of a standard "document" structure. These are theme-dependent: for example, the [default myst themes](#default-web-themes) support a [`footer` part](#navigation:footer).
 
 Specify the content of a site `part` in the `site.parts` key of the `myst.yml` configuration file:
 
