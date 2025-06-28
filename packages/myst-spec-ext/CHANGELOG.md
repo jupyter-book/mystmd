@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.8.1
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+
 ## 1.8.0
 
 ## 1.7.13
