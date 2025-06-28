@@ -7,14 +7,37 @@ Document *parts* allow you to add content and metadata for specific components o
 
 ## Add document parts
 
-There are several ways you can define parts of a document, each described below:
+Document parts can be used in any export media (`html`, `pdf`, etc).
+There are several ways you can define document parts, each described below:
 
-1. [In site configuration](#parts:site)
-2. [In project-level configuration](#parts:project)
-3. [In page frontmatter](#parts:frontmatter)
+1. [In project-level configuration](#parts:project)
+2. [In page frontmatter](#parts:frontmatter)
+3. [With a content block](#parts:blocks)
 4. [With specific section headings](#parts:implicit)
-5. [With a content block](#parts:blocks)
-6. [With Jupyter Notebook cell tags](#parts:cell-tags)
+5. [With Jupyter Notebook cell tags](#parts:cell-tags)
+
+(parts:project)=
+
+### Parts in `myst.yml` Project configuration
+
+You may also specify `parts` in the project configuration of your `myst.yml` file. These are defined exactly the same as [`parts` defined in page frontmatter](#parts:frontmatter).
+
+```yaml
+version: 1
+project:
+  abstract:  |
+    This is a multi-line
+    abstract, with _markdown_!
+  parts:
+    special_part: |
+      This is another _special_ part!
+```
+
+Project-level `parts` are useful, for example, if you have an abstract, acknowledgments, or other part that applies to your entire project and doesn't make sense attached to an individual page.
+
+```{caution}
+Project-level `parts` are a new feature and may not yet be respected by your chosen MyST template or export format. If the project `part` is not behaving as you expect, try moving it to page frontmatter for now.
+```
 
 (parts:frontmatter)=
 
@@ -40,44 +63,6 @@ abstract: ../abstract.md
 ---
 ```
 
-(parts:project)=
-
-### Parts in `myst.yml` Project configuration
-
-You may also specify `parts` in the project configuration of your `myst.yml` file. These are defined exactly the same as [`parts` defined in page frontmatter](#parts:frontmatter).
-
-```yaml
-version: 1
-project:
-  abstract:  |
-    This is a multi-line
-    abstract, with _markdown_!
-  parts:
-    special_part: |
-      This is another _special_ part!
-```
-
-Project-level `parts` are useful, for example, if you have an abstract, acknowledgments, or other part that applies to your entire project and doesn't make sense attached to an individual page.
-
-```{caution}
-Project-level `parts` are a new feature and may not yet be respected by your chosen MyST template or export format. If the project `part` is not behaving as you expect, try moving it to page frontmatter for now.
-```
-
-(parts:implicit)=
-
-### Parts with specific header titles
-
-If you are rendering your project in other places, it can be helpful to leave these sections directly in the document.
-Complete this using a header as usual:
-
-```
-# Abstract
-
-This is my abstract!
-```
-
-Note that frontmatter parts and explicitly tagged cells/blocks will take precedence over this method. Themes may choose to only pick up a subset of implicit parts, for example, only an `Abstract` and not `Summary` as summary section can be used in other contexts.
-
 (parts:blocks)=
 
 ### Parts with content blocks
@@ -101,16 +86,30 @@ Page content
 
 ```
 
+(parts:implicit)=
+
+### Parts with specific header titles
+
+If you are rendering your project in other places, it can be helpful to leave these sections directly in the document.
+Complete this using a header as usual:
+
+```
+# Abstract
+
+This is my abstract!
+```
+
+Note that frontmatter parts and explicitly tagged cells/blocks will take precedence over this method. Themes may choose to only pick up a subset of implicit parts, for example, only an `Abstract` and not `Summary` as summary section can be used in other contexts.
+
 (parts:cell-tags)=
 
 ### Parts with Jupyter cell tags
 
 When using a Jupyter Notebook, you can add a `tag` to the cell with the part name. If multiple cells share that tag, they will be extracted and merged. 
 
+### Known Document Parts
 
-### Known Frontmatter Parts
-
-The known parts that are recognized as _top-level_ document frontmatter keys are:
+The known parts that are recognized as _top-level_ document parts keys are:
 
 abstract
 : A concise overview of the entire document, highlighting the main objectives, methods, results, and conclusions. It's meant to give readers a quick snapshot of what to expect without having to read the entire document.
@@ -154,7 +153,7 @@ The advantage of this method is that the content is not rendered in your documen
 
 (parts:site)=
 
-## Add parts to your website
+## Add website parts
 
 [Website themes](./website-templates.md) have additional parts because they render user interface elements that are not part of a standard "document" structure. These are theme-dependent: for example, the [default myst themes](#default-web-themes) support a [`footer` part](#navigation:footer).
 
@@ -212,3 +211,6 @@ site:
 
 **If you're extending configuration from a remote source**, make sure that you use absolute URLs if you must refer to an image or other asset in your part content. Relative paths that are defined inside the part content will generally break.
 
+:::{seealso} Referring to parts directly with a URL is coming
+See the [issue tracking this enhancement](https://github.com/jupyter-book/mystmd/issues/2127).
+:::
