@@ -1,5 +1,22 @@
 # myst-cli
 
+## 1.5.1
+
+### Patch Changes
+
+- 4a745b2b: Incorrect error about .\* image extension, but only when image is not found
+- 7b844a9a: Fix embedding of raw `code` nodes with `remove-input`
+- Updated dependencies [0b284816]
+- Updated dependencies [0b284816]
+- Updated dependencies [224da08d]
+  - myst-parser@1.5.15
+  - myst-spec-ext@1.8.1
+  - myst-to-typst@0.0.33
+  - myst-transforms@1.3.37
+  - myst-common@1.8.1
+  - myst-config@1.8.1
+  - myst-frontmatter@1.8.1
+
 ## 1.5.0
 
 ### Minor Changes

@@ -1,5 +1,14 @@
 # myst-directives
 
+## 1.5.15
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+  - myst-spec-ext@1.8.1
+  - myst-common@1.8.1
+
 ## 1.5.14
 
 ### Patch Changes
