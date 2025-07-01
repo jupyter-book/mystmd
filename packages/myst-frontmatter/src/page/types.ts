@@ -14,6 +14,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'enumerator',
   'content_includes_title',
   'skip_execution',
+  'source_url',
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
@@ -31,4 +32,6 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   content_includes_title?: boolean;
   /** Site Options, for example for turning off the outline on a single page */
   site?: Record<string, any>;
+  // URLs to edit or view the current source
+  source_url?: string | null;
 };
