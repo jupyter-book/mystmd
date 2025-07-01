@@ -172,6 +172,12 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     osi: true,
     free: true,
   },
+  'Artistic-dist': {
+    name: 'Artistic License 1.0 (dist)',
+  },
+  'Aspell-RU': {
+    name: 'Aspell Russian License',
+  },
   'ASWF-Digital-Assets-1.0': {
     name: 'ASWF Digital Assets License version 1.0',
   },
@@ -246,6 +252,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'BSD-2-Clause-Patent': {
     name: 'BSD-2-Clause Plus Patent License',
     osi: true,
+  },
+  'BSD-2-Clause-pkgconf-disclaimer': {
+    name: 'BSD 2-Clause pkgconf disclaimer variant',
   },
   'BSD-2-Clause-Views': {
     name: 'BSD 2-Clause with views sentence',
@@ -724,6 +733,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   Crossword: {
     name: 'Crossword License',
   },
+  CryptoSwift: {
+    name: 'CryptoSwift License',
+  },
   CrystalStacker: {
     name: 'CrystalStacker License',
   },
@@ -757,6 +769,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   DOC: {
     name: 'DOC License',
+  },
+  'DocBook-DTD': {
+    name: 'DocBook DTD License',
   },
   'DocBook-Schema': {
     name: 'DocBook Schema License',
@@ -889,8 +904,17 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   FSFULLR: {
     name: 'FSF Unlimited License (with License Retention)',
   },
+  FSFULLRSD: {
+    name: 'FSF Unlimited License (with License Retention and Short Disclaimer)',
+  },
   FSFULLRWD: {
     name: 'FSF Unlimited License (With License Retention and Warranty Disclaimer)',
+  },
+  'FSL-1.1-ALv2': {
+    name: 'Functional Source License, Version 1.1, ALv2 Future License',
+  },
+  'FSL-1.1-MIT': {
+    name: 'Functional Source License, Version 1.1, MIT Future License',
   },
   FTL: {
     name: 'Freetype Project License',
@@ -901,6 +925,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   fwlw: {
     name: 'fwlw License',
+  },
+  'Game-Programming-Gems': {
+    name: 'Game Programming Gems License',
   },
   'GCR-docs': {
     name: 'Gnome GCR Documentation License',
@@ -1030,6 +1057,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   HaskellReport: {
     name: 'Haskell Language Report License',
+  },
+  HDF5: {
+    name: 'HDF5 License',
   },
   hdparm: {
     name: 'hdparm License',
@@ -1196,6 +1226,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'JasPer-2.0': {
     name: 'JasPer License',
   },
+  jove: {
+    name: 'Jove License',
+  },
   'JPL-image': {
     name: 'JPL Image Use Policy',
   },
@@ -1262,6 +1295,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   Libpng: {
     name: 'libpng License',
+  },
+  'libpng-1.6.35': {
+    name: 'PNG Reference Library License v1 (for libpng 0.5 through 1.6.35)',
   },
   'libpng-2.0': {
     name: 'PNG Reference Library version 2',
@@ -1361,6 +1397,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   MakeIndex: {
     name: 'MakeIndex License',
+  },
+  man2html: {
+    name: 'man2html License',
   },
   'Martin-Birgmeier': {
     name: 'Martin Birgmeier License',
@@ -1532,6 +1571,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'Nethack General Public License',
     osi: true,
   },
+  ngrep: {
+    name: 'ngrep License',
+  },
   'NICTA-1.0': {
     name: 'NICTA Public Software License, Version 1.0',
   },
@@ -1579,6 +1621,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   NRL: {
     name: 'NRL License',
+  },
+  'NTIA-PD': {
+    name: 'NTIA Public Domain Notice',
   },
   NTP: {
     name: 'NTP License',
@@ -1958,6 +2003,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   snprintf: {
     name: 'snprintf License',
   },
+  SOFA: {
+    name: 'SOFA Software License',
+  },
   softSurfer: {
     name: 'softSurfer License',
   },
@@ -1995,6 +2043,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'SugarCRM-1.1.3': {
     name: 'SugarCRM Public License v1.1.3',
+  },
+  'SUL-1.0': {
+    name: 'Sustainable Use License v1.0',
   },
   'Sun-PPP': {
     name: 'Sun PPP License',
@@ -2102,6 +2153,12 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'The Unlicense',
     osi: true,
     free: true,
+  },
+  'Unlicense-libtelnet': {
+    name: 'Unlicense - libtelnet variant',
+  },
+  'Unlicense-libwhirlpool': {
+    name: 'Unlicense - libwhirlpool variant',
   },
   'UPL-1.0': {
     name: 'Universal Permissive License v1.0',
