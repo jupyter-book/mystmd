@@ -72,6 +72,11 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     // At this point, they just need to be an object
     output.site = validateObject(value.site, incrementOptions('site', opts));
   }
+  if (value.edit_url === null) {
+    output.edit_url = null;
+  } else if (defined(value.edit_url)) {
+    output.edit_url = validateUrl(value.edit_url, incrementOptions('edit_url', opts));
+  }
   if (value.source_url === null) {
     output.source_url = null;
   } else if (defined(value.source_url)) {
