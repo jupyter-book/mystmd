@@ -54,18 +54,18 @@ export function upgrade(file: IFile): IFile {
   assert(version === VERSION, `Version must be ${VERSION}`);
   const nodes = selectAll('output', mdast) as OutputV2[];
   nodes.forEach((node) => {
-    // We can only correlate output children with the IOutput objects if there's only one IOutput
-    // Additionally, there may be placeholders that need to be removed
     const numOutputs = node.data?.length ?? 0;
-    const children = numOutputs === 1 ? node.children ?? [] : [];
+    const children = node.children ?? [];
     const placeholders = children.filter((child) => !!child.placeholder);
-    const notPlaceholders = children.filter((child) => !child.placeholder);
-
+    // We can only correlate output children with the IOutput objects if there's only one IOutput
+    // Otherwise, drop them.
+    const notPlaceholders = numOutputs === 1 ? children.filter((child) => !child.placeholder) : [];
     const outputsChildren = (node.data ?? []).map((outputData) => {
       const result: OutputV3 = {
         type: 'output',
         jupyter_data: outputData,
-        children: notPlaceholders,
+        // The first output gets all of the non-placeholders
+        children: notPlaceholders.slice(),
       };
       notPlaceholders.length = 0;
       return result;

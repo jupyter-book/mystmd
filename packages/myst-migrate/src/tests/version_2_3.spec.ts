@@ -172,7 +172,7 @@ const V2_AST_WITH_PLACEHOLDER: Parent = {
               // @ts-expect-error: unknown property
               placeholder: true,
               url: 'some-image.png',
-              urlSource: 'test.png',
+              urlSource: 'some-image.png',
             },
           ],
         },
@@ -231,6 +231,13 @@ const V3_AST_WITH_PLACEHOLDER: Parent = {
                   },
                 },
               },
+            },
+            {
+              type: 'image',
+              // @ts-expect-error: unknown property
+              placeholder: true,
+              url: 'some-image.png',
+              urlSource: 'some-image.png',
             },
           ],
         },
