@@ -9,7 +9,7 @@ aliases:
 
 In-browser execution allows you to connect a live Jupyter kernel to your website, allowing you to add interactive visualizations and interactivity that is powered with a live kernel. This allows your readers to reproduce the outputs of your document in real-time, and to add more complex interactive content via tools like [`ipywidgets`](https://ipywidgets.readthedocs.io/) or [Panel](https://github.com/holoviz/panel).
 
-There are a variety of back-ends that can provide the computation for in-browser execution, such as **Binder**, **JupyterHub**, or **WASM-based kernels from JupyterLite**. See [](#thebe-backend-options) for more information.
+There are a variety of back-ends that can provide the computation for in-browser execution, such as **Binder**, **Standalone Jupyter Servers**, or **WASM-based kernels from JupyterLite**. See [](#thebe-backend-options) for more information.
 
 ```{attention} This is a beta feature
 We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/jupyter-book/mystmd/issues).
