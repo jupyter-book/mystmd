@@ -238,7 +238,7 @@ const V3_AST_WITH_PLACEHOLDER: Parent = {
     },
   ],
 };
-describe('downgrade 3->2', () => {
+describe('downgrade 3→2', () => {
   it('leaves a simple AST unchanged', async () => {
     const mdast = structuredClone(SIMPLE_AST) as any;
     const result = await migrate({ version: 3, mdast }, { to: 2 });
@@ -259,7 +259,7 @@ describe('downgrade 3->2', () => {
   });
 });
 
-describe('upgrade 3->2', () => {
+describe('upgrade 2→3', () => {
   it('leaves a simple AST unchanged', async () => {
     const mdast = structuredClone(SIMPLE_AST) as any;
     const result = await migrate({ version: 2, mdast }, { to: 3 });

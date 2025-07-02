@@ -149,7 +149,7 @@ const SIMPLE_V1_AST_WITH_FOOTNOTE: Parent = {
     },
   ],
 };
-describe('update 0->1', () => {
+describe('update 0→1', () => {
   it('leaves a simple AST unchanged', async () => {
     const mdast = structuredClone(SIMPLE_AST);
     const result = await migrate({ version: 0, mdast }, { to: 1 });

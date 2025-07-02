@@ -14,7 +14,7 @@ const SIMPLE_AST: Parent = {
   ],
 };
 
-describe('update 1->2', () => {
+describe('update 1→2', () => {
   it('leaves a simple AST unchanged', async () => {
     const mdast = structuredClone(SIMPLE_AST) as any;
     const result = await migrate({ version: 1, mdast }, { to: 2 });
