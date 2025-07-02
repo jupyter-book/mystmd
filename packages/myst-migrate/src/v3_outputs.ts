@@ -51,7 +51,9 @@ type OutputsV3 = {
 
 export function upgrade(file: IFile): IFile {
   const { version, mdast } = file;
-  assert(version === VERSION, `Version must be ${VERSION}`);
+  if (version !== 2) {
+    throw new Error(`Version must be 2`);
+  }
   const nodes = selectAll('output', mdast) as OutputV2[];
   nodes.forEach((node) => {
     const numOutputs = node.data?.length ?? 0;
@@ -87,7 +89,9 @@ export function upgrade(file: IFile): IFile {
 
 export function downgrade(file: IFile): IFile {
   const { version, mdast } = file;
-  assert(version === 3, 'Version must be 3');
+  if (version !== VERSION) {
+    throw new Error(`Version must be ${VERSION}`);
+  }
   const nodes = selectAll('outputs', mdast) as OutputsV3[];
   nodes.forEach((node) => {
     const data = node.children

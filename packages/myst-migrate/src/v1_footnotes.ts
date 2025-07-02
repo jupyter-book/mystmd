@@ -51,8 +51,10 @@ function maybeParseInt(value: string | undefined): number | undefined {
 export function upgrade(file: IFile): IFile {
   const { version, mdast } = file;
 
-  // The first version can allow version to be null
-  assert(version === 0 || version == null, 'Version must be 0');
+  // The first version can be null
+  if (!(version === 0 || version === null)) {
+    throw new Error(`Version must be 0`);
+  }
 
   const nodes = selectAll('footnoteDefinition,footnoteReference', mdast) as (
     | FootnoteDefinition
@@ -69,7 +71,9 @@ export function upgrade(file: IFile): IFile {
 
 export function downgrade(file: IFile): IFile {
   const { version, mdast } = file;
-  assert(version === VERSION, `Version must be ${VERSION}`);
+  if (version !== VERSION) {
+    throw new Error(`Version must be ${VERSION}`);
+  }
 
   const nodes = selectAll('footnoteDefinition,footnoteReference', mdast) as (
     | FootnoteDefinition
