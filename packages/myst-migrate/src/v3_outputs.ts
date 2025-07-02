@@ -53,7 +53,7 @@ export function upgrade(file: IFile): IFile {
       const result: OutputV3 = {
         type: 'output',
         jupyter_data: outputData,
-        children: notPlaceholders, // FIXME: ignoring children here
+        children: notPlaceholders,
       };
       notPlaceholders.length = 0;
       return result;
