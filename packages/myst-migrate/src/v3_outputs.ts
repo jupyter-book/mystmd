@@ -37,6 +37,18 @@ type OutputV3 = {
   html_id?: string;
 };
 
+type OutputsV3 = {
+  type: 'outputs';
+  children: (OutputV2 | any)[];
+
+  visibility?: any;
+  id?: string;
+
+  label?: string;
+  identifier?: string;
+  html_id?: string;
+};
+
 export function upgrade(file: IFile): IFile {
   const { version, mdast } = file;
   assert(version === VERSION, `Version must be ${VERSION}`);
@@ -68,6 +80,7 @@ export function upgrade(file: IFile): IFile {
     }
     (node as any).type = 'outputs';
     (node as any).children = outputsChildren;
+    // Carry forward node.id, and Target properties
   });
   return file;
 }
@@ -75,17 +88,16 @@ export function upgrade(file: IFile): IFile {
 export function downgrade(file: IFile): IFile {
   const { version, mdast } = file;
   assert(version === 3, 'Version must be 3');
-  const nodes = selectAll('outputs', mdast) as OutputV2[];
+  const nodes = selectAll('outputs', mdast) as OutputsV3[];
   nodes.forEach((node) => {
-    const outputsChildren = node.children as any[];
-    const data = outputsChildren
+    const data = node.children
       .filter((output) => output.type === 'output')
       .map((output: any) => output.jupyter_data)
       .filter((datum) => !!datum);
 
-    const notPlaceholders = outputsChildren.filter((child: any) => !child.placeholder);
+    const notPlaceholders = node.children.filter((child: any) => !child.placeholder);
     const children = notPlaceholders.map((output) => (output as OutputV3).children ?? []).flat();
-    const placeholders = outputsChildren.filter((child: any) => !!child.placeholder);
+    const placeholders = node.children.filter((child: any) => !!child.placeholder);
     children.push(...placeholders);
 
     // Convert Outputs into Output
@@ -93,6 +105,7 @@ export function downgrade(file: IFile): IFile {
 
     (node as any).type = 'output';
     (node as any).children = children;
+    // Carry forward node.id, and Target properties
   });
   return file;
 }
