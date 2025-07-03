@@ -11,8 +11,16 @@ type ProjectPage = {
   enumerator?: string;
 };
 
+function makeList(children?: ListItem[]): List {
+  return { type: 'list', children: !!children ? children : [] };
+}
+
+function makeListItem(child: Text | Link): ListItem {
+  return { type: 'listItem', children: [child] };
+}
+
 function listFromPages(pages: ProjectPage[], projectSlug?: string): List {
-  if (pages.length === 0) return { type: 'list', children: [] };
+  if (pages.length === 0) return makeList();
   let ignore = false;
   const level = pages[0].level;
   const children = pages
@@ -22,38 +30,52 @@ function listFromPages(pages: ProjectPage[], projectSlug?: string): List {
       if (page.level !== level) return undefined;
       return listItemFromPages(pages.slice(index), projectSlug);
     })
+    // Remove any null items
     .filter((item): item is ListItem => !!item);
-  return { type: 'list', children };
+  return makeList(children);
 }
 
-function listItemFromPages(pages: ProjectPage[], projectSlug?: string) {
+function listItemFromPages(pages: ProjectPage[], projectSlug?: string): ListItem {
   if (pages.length === 0) return;
-  const { title, slug, enumerator, level } = pages[0];
-  const text: Text = {
-    type: 'text',
-    value: `${enumerator ? `${enumerator} ` : ''}${title}`,
-  };
-  const child: Text | Link =
-    slug != null
-      ? ({
-          type: 'link',
-          url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
-          internal: true,
-          children: [text],
-        } as Link)
-      : text;
-  const item: ListItem = {
-    type: 'listItem',
-    children: [child],
-  };
-  if (pages[1] && pages[1].level > level) {
+  const page = pages[0];
+  const child = listItemChildFromPage(page, projectSlug);
+  const item = makeListItem(child);
+  if (pages[1] && pages[1].level > page.level) {
     item.children.push(listFromPages(pages.slice(1), projectSlug));
   }
   return item;
 }
 
+function listItemChildFromPage(page: ProjectPage, projectSlug?: string): Text | Link {
+  const { title, slug, url, enumerator, level } = page;
+  const text: Text = {
+    type: 'text',
+    value: `${enumerator ? `${enumerator} ` : ''}${title}`,
+  };
+  // Link to an external site if url is given
+  if (!!url) {
+    return {
+      type: 'link',
+      url: url,
+      internal: false,
+      children: [text],
+    } as Link;
+  // Link to an internal page if slug is given
+  } else if (slug != null) {
+    return {
+      type: 'link',
+      url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
+      internal: true,
+      children: [text],
+    } as Link;
+  // Otherwise plain text
+  } else {
+    return text;
+  }
+}
+
 function listFromHeadings(headings: Heading[]): List {
-  if (headings.length === 0) return { type: 'list', children: [] };
+  if (headings.length === 0) return makeList();
   let ignore = false;
   const depth = headings[0].depth;
   const children = headings
@@ -63,13 +85,24 @@ function listFromHeadings(headings: Heading[]): List {
       if (heading.depth !== depth) return undefined;
       return listItemFromHeadings(headings.slice(index));
     })
+    // Remove any null items
     .filter((item): item is ListItem => !!item);
-  return { type: 'list', children };
+  return makeList(children);
 }
 
-function listItemFromHeadings(headings: Heading[]) {
+function listItemFromHeadings(headings: Heading[]) : ListItem {
   if (headings.length === 0) return;
-  const { children, enumerator, depth, identifier } = headings[0];
+  const heading = headings[0];
+  const child = listItemChildFromHeading(heading);
+  const item = makeListItem(child);
+  if (headings[1] && headings[1].depth > heading.depth) {
+    item.children.push(listFromHeadings(headings.slice(1)));
+  }
+  return item;
+}
+
+function listItemChildFromHeading(heading: Heading): Text | Link {
+  const { children, enumerator, depth, identifier } = heading;
   const text: Text = {
     type: 'text',
     value: `${enumerator ? `${enumerator} ` : ''}${toText(children)}`,
@@ -83,14 +116,7 @@ function listItemFromHeadings(headings: Heading[]) {
         suppressImplicitWarning: true,
       } as Link)
     : text;
-  const item: ListItem = {
-    type: 'listItem',
-    children: [child],
-  };
-  if (headings[1] && headings[1].depth > depth) {
-    item.children.push(listFromHeadings(headings.slice(1)));
-  }
-  return item;
+  return child;
 }
 
 export function buildTocTransform(
