@@ -1,5 +1,4 @@
 import { selectAll } from 'unist-util-select';
-import { assert } from 'console';
 import type { IFile } from './types.js';
 
 export const VERSION = 3;
