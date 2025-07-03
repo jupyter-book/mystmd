@@ -14,7 +14,10 @@ export interface Migration {
   /**
    * Description of the migration to be used in the documentation
    */
-  description: string;
+  DESCRIPTION: string;
+  VERSION: number;
+  DATE: Date;
+
   /**
    * upgrade expects to transform the data from version N
    * to version N+1

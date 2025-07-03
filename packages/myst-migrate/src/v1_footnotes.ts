@@ -1,8 +1,10 @@
 import { selectAll } from 'unist-util-select';
-import { assert } from 'console';
 import type { IFile } from './types.js';
 
-export const description = `
+export const VERSION = 1;
+export const DATE = new Date(Date.parse('2025-02-07'));
+
+export const DESCRIPTION = `
 Footnotes have dropped backwards compatibility with \`number\`,
 instead using \`enumerator\` on both the \`FootnoteReference\` and \`FootnoteDefinition\` nodes.
 
@@ -48,8 +50,10 @@ function maybeParseInt(value: string | undefined): number | undefined {
 export function upgrade(file: IFile): IFile {
   const { version, mdast } = file;
 
-  // The first version can allow version to be null
-  assert(version === 0 || version == null, 'Version must be 0');
+  // The first version can be null
+  if (!(version === 0 || version === null)) {
+    throw new Error(`Version must be 0`);
+  }
 
   const nodes = selectAll('footnoteDefinition,footnoteReference', mdast) as (
     | FootnoteDefinition
@@ -66,7 +70,9 @@ export function upgrade(file: IFile): IFile {
 
 export function downgrade(file: IFile): IFile {
   const { version, mdast } = file;
-  assert(version === 1, 'Version must be 1');
+  if (version !== VERSION) {
+    throw new Error(`Version must be ${VERSION}`);
+  }
 
   const nodes = selectAll('footnoteDefinition,footnoteReference', mdast) as (
     | FootnoteDefinition
