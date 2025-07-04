@@ -164,7 +164,7 @@ export async function transformMystXRefs(
   const denominator = number === nodes.length ? '' : `/${nodes.length}`;
   session.log.info(
     toc(
-      `🪄 Updated link text for ${plural(`%s${denominator} external MyST reference(s)`, number)} in %s seconds`,
+      `🪄 Updated link text for ${plural(`%s${denominator} external MyST reference(s)`, number)} in %s`,
     ),
   );
 }
