@@ -1,5 +1,5 @@
 ---
-title: In-Browser Execution
+title: In-Page Execution
 subtitle: Connecting Jupyter Kernels to your MyST website
 description: MyST allows you to connect a website directly to a Jupyter Kernel, enabling interactive computation on your page.
 thumbnail: thumbnails/integrating-jupyter.png
@@ -7,9 +7,13 @@ aliases:
   - integrating-jupyter
 ---
 
-In-browser execution allows you to connect a live Jupyter kernel to your website, allowing you to add interactive visualizations and interactivity that is powered with a live kernel. This allows your readers to reproduce the outputs of your document in real-time, and to add more complex interactive content via tools like [`ipywidgets`](https://ipywidgets.readthedocs.io/) or [Panel](https://github.com/holoviz/panel).
+In-page execution allows you to connect a live Jupyter kernel to your website, allowing you to add interactive visualizations and interactivity that is powered with a live kernel. This allows your readers to reproduce the outputs of your document in real-time, and to add more complex interactive content via tools like [`ipywidgets`](https://ipywidgets.readthedocs.io/) or [Panel](https://github.com/holoviz/panel).
 
-There are a variety of back-ends that can provide the computation for in-browser execution, such as **Binder**, **Standalone Jupyter Servers**, or **WASM-based kernels from JupyterLite**. See [](#thebe-backend-options) for more information.
+Here are a few back-ends that you can use to provide the computation for in-page execution:
+
+- **Binder** (e.g., [mybinder.org](https://mybinder.org))
+- **WASM-based in-browser kernels** with [JupyterLite](https://jupyterlite.readthedocs.io)
+- **Local or remote Jupyter servers** you spin up locally or via a service like JupyterHub
 
 ```{attention} This is a beta feature
 We are in active development and this feature should be considered `beta` - please help us out [report any issues that you find](https://github.com/jupyter-book/mystmd/issues).
@@ -17,9 +21,9 @@ We are in active development and this feature should be considered `beta` - plea
 Watch for the 🚧 icons on headings that are still work in progress.
 ```
 
-## Enable in-browser computation
+## Enable in-page execution
 
-To enable in-browser computation, use the `project.jupyter: true` parameter like so:
+To enable in-page execution, use the `project.jupyter: true` parameter like so:
 
 ```{code} yaml
 :filename: myst.yml
@@ -30,13 +34,13 @@ project:
 
 By default, MyST will use [mybinder.org](https://mybinder.org) to build and provide the environment for computation. It will use the [`thebe-binder-base` repository](https://github.com/executablebooks/thebe-binder-base) to build the environment. If you have a GitHub repository defined for your project via `project.github`, then it will use that instead.
 
-### Launch in-browser execution
+### Launch in-page execution
 
-To launch in-browser execution on the page, press the "power" button at the top of the page content.
+To launch in-page execution on the page, press the "power" button at the top of the page content.
 
 This will launch a Binder session (or, [connect to a live Jupyter server](#thebe-jupyter-server) based on your configuration). If you launch a Binder server, you'll see a box in the bottom-right of the page showing the status of Binder launching your session.
 
-You'll know that execution is now available when the in-browser execution panel is visible at the top of the page. It looks like this:
+You'll know that execution is now available when the in-page execution panel is visible at the top of the page. It looks like this:
 
 ```{figure} ./images/thebe-control-panel.png
 This panel allows you to control the execution on the current page.
@@ -46,7 +50,7 @@ In addition, all cells on the page will execute when the server is available.
 
 ### Launch into the interactive Jupyter server
 
-To change the browser window to the fully interactive Jupyter server that is powering your computation, click the "Launch Jupyter Server Window" button to the right of the in-browser execution panel.
+To change the browser window to the fully interactive Jupyter server that is powering your computation, click the "Launch Jupyter Server Window" button to the right of the in-page execution panel.
 
 ```{figure} ./images/thebe-control-panel.png
 The right-most button will take you to the fully interactive Jupyter Server.
@@ -54,7 +58,7 @@ The right-most button will take you to the fully interactive Jupyter Server.
 
 ## Binder configuration options
 
-By default, in-browser computation uses a BinderHub service to provide computation.
+By default, in-page computation uses a BinderHub service to provide computation.
 
 ### Options for Binder configuration
 
@@ -87,7 +91,7 @@ By default, in-browser computation uses a BinderHub service to provide computati
 There are two possible locations for `binder` keys:
 
 1. `project.binder` is for [launch button configuration](./website-launch-buttons.md), and will take the user to a new page with a Binder session.
-2. `project.jupyter.binder` is for in-browser computation described here.
+2. `project.jupyter.binder` is for in-page computation described here.
 ```
 
 (binder-option-repository)=
@@ -103,7 +107,7 @@ project:
       repo: https://github.com/binder-examples/requirements # default repo
 ```
 
-By default, MyST will use the `HEAD` of the repository, which usually corresponds to the `main` branch. To choose a different branch, see [](#in-browser-computation-choose-branch).
+By default, MyST will use the `HEAD` of the repository, which usually corresponds to the `main` branch. To choose a different branch, see [](#in-page-computation-choose-branch).
 
 ````{tip} Equivalent Syntax
 :class: dropdown
@@ -201,9 +205,9 @@ See [the Binder documentation](https://docs.mybinder.org) for instructions on ho
 
 (thebe-jupyter-server)=
 
-## Use a local or remote Jupyter server for in-browser execution
+## Use a local or remote Jupyter server for in-page execution
 
-If you have access to a Jupyter server that is already running (for example, by starting a server locally, or accessing a server via a JupyterHub), you can use this to provide in-browser computation instead of Binder.
+If you have access to a Jupyter server that is already running (for example, by starting a server locally, or accessing a server via a JupyterHub), you can use this to provide in-page computation instead of Binder.
 
 To use a server that is already running locally, use the `jupyter.server` key like so:
 
@@ -235,7 +239,7 @@ project:
 
 (start-a-local-jupyter-server)=
 
-### Start a local Jupyter server for in-browser computation
+### Start a local Jupyter server for in-page computation
 
 In addition to how you might normally start a JupyterLab session, it's necessary to provide two additional command line options, as follows.
 
@@ -256,9 +260,9 @@ MyST Websites will work best, be safer and be more robust when backed by Jupyter
 
 (jupyterlite)=
 
-## Use JupyterLite and WebAssembly for in-browser computation
+## Use JupyterLite and WebAssembly for in-page computation
 
-The [JupyterLite project](https://jupyterlite.readthedocs.io/en/latest/) allows you to ship a lightweight computational environment that runs fully in your browser. To use JupyterLite for your in-browser computation, use the configuration below:
+The [JupyterLite project](https://jupyterlite.readthedocs.io/en/latest/) allows you to ship a lightweight computational environment that runs fully in your browser. To use JupyterLite for your in-page computation, use the configuration below:
 
 ```{code} yaml
 project:
@@ -273,11 +277,11 @@ Add the specific list options for custom wheel paths, etc.
 ```
 
 
-## Enable or disable in-browser computation on a single page
+## Enable or disable in-page computation on a single page
 
-To configure in-browser computation on a single page, use [document frontmatter](./frontmatter.md). For example:
+To configure in-page computation on a single page, use [document frontmatter](./frontmatter.md). For example:
 
-To **enable in-browser computation on a single page**, use configuration like so:
+To **enable in-page computation on a single page**, use configuration like so:
 
 ```{code} markdown
 :filename: mypage.ipynb
@@ -291,7 +295,7 @@ jupyter:
 My page content.
 ```
 
-To **disable in-browser computation on a single page**, use configuration like so:
+To **disable in-page computation on a single page**, use configuration like so:
 
 ```{code} markdown
 :filename: mypage.md
