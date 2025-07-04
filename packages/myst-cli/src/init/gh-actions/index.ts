@@ -58,7 +58,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - name: Install ${readableName()} Markdown
+      - name: Install ${readableName()}
         run: npm install -g ${npmPackageName()}
       - name: Build HTML Assets
         run: ${binaryName()} build --html
