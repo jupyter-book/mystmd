@@ -22,7 +22,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 :class: framed
 :::
 
-🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./integrating-jupyter.md)
+🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./in-page-execution.md)
 
 :::{figure} ./videos/thebe.mp4
 :class: framed

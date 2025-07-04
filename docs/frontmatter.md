@@ -257,7 +257,7 @@ The following table lists the available frontmatter fields, a brief description 
   - social links (see [](#social-links))
   - project only
 * - `jupyter` or `thebe`
-  - configuration for Jupyter execution (see [](./integrating-jupyter.md))
+  - configuration for Jupyter execution (see [](./in-page-execution.md))
   - project only
 * - `kernelspec`
   - configuration for the kernel (see [](#kernel-specification))
