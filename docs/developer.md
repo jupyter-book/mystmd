@@ -380,23 +380,34 @@ And to see a list of available templates that can be resolved for Typst, you can
 
 https://api.mystmd.org/templates/typst
 
+(howto:release)=
 ## How to make a release
 
-:::{important} Release Coordination
-We use the [`#release_coordination`](https://discord.com/channels/1083088970059096114/1384242935645737141) Discord channel to coordinate and collaborate on releases. For example, to ensure that features are not half-shipped, additional PRs can make it into a release, or other release responsibilities that can be shared among the team (e.g. release notes, theme deployments, social media posts, documentation updates).
-:::
+This process follows the general steps of making a release in the Jupyter Book community. Here are the basic steps to follow for any project:
 
-### Make a release of `mystmd`
+1. [Tell others about the upcoming release](#release:coordination).
+2. Publish the release in the package repository for the tool. For example:
+   - [How to publish a release of `mystmd`](#release:mystmd).
+   - [How to publish a release of `myst-theme`](#release:myst-theme).
+3. [Make a release on GitHub](#release:github).
+4. [Update the documentation](release:docs).
+5. (optionally) [Create and share a blog post](#release:share).
 
-To publish a new release of `mystmd`, we do two things:
+(release:coordination)=
+### Coordinating the release with the team
 
-1. [Publish to NPM](#release-npm).
-2. [Publish a GitHub release](#release-github).
+We use the [`#release_coordination`](https://discord.com/channels/1083088970059096114/1384242935645737141) Discord channel to coordinate and collaborate on releases.
+This is a way to generate excitement and get any last-second work in before shipping.
+It also gives others a heads-up that some new functionality is about to go live.
 
-We describe each below.
+### Publish a release for the repository
 
-(release-npm)=
+When you publish a release, you upload a new version of the tool for package managers to use. The specifics depend on the toolchain for your package (in particular, it is different for Python vs. JavaScript tools). Here are a few specifics for the `mystmd` repository.
+
+(release:mystmd)=
 #### Publish a `mystmd` release to NPM
+
+`mystmd` is published to NPM via a GitHub Action. Here's how to publish a release.
 
 - Find the **changesets** PR. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
 - Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
@@ -404,10 +415,23 @@ We describe each below.
   - It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
   - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `npm run publish:ci`, which calls `changeset publish`).
   - It creates a git version tag (which you'll use in making the GitHub release).
-- Next, [make a release on GitHub](#release-github).
 
-(release-github)=
-#### Make a release on GitHub
+You're done!
+
+(release:myst-theme)=
+#### Publish a release of `myst-theme`
+
+The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
+
+- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release:mystmd). [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
+- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
+- Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
+  - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
+
+You're done!
+
+(release:github)=
+### Make a release on GitHub
 
 When we publish a new release to NPM, we also make a release on GitHub and share it for our user community. Here's a brief process for what to do:
 
@@ -415,40 +439,74 @@ When we publish a new release to NPM, we also make a release on GitHub and share
 - **Create a release on GitHub**. Go to [the Releases page](https://github.com/jupyter-book/mystmd/releases) and then click **`Draft a new release`**.
   - The **title** should be the version from the tag. So if the tag was `mystmd@1.3.26`, the title is `v1.3.26`.
   - Click **Choose a tag** and link it against the tag for the latest release to NPM (the one you discovered in the first step).
-  - Click **Generate release notes** so that GitHub automatically generates a list of the merged PRs and contributors.
-  - Categorize the PRs into `Features`, `Fixes`, `Documentation`, and `Maintenance` as you wish. (this is optional)
+  - **Generate release notes** by [following these instructions](#release:notes).
   - For any major changes or new functionality, write a brief description that helps a user understand why it's important and how to learn more. (this is optional)
   - Write a one or two sentence summary of the big ideas in this release at the top. (this is optional).
 - **Publish the release**. Do this by clicking the **`Publish release`** button at the bottom.
-- **Write a brief post for sharing the release.** This helps others learn about it, and follow the links for more information. Here's a snippet you can copy/paste:
 
-  ```md
-  TITLE: 🚀 Release: MySTMD v1.3.26
+(release:notes)=
+### Generate release notes
 
-  BODY:
-  The [Jupyter Book project](https://compass.jupyterbook.org) recently made a new release! 👇
+The [`github-activity` project](https://github-activity.readthedocs.io) lets you generate a markdown changelog when making a release that recognizes contributions other than just authoring a PR in the notes. We like to use it for making release notes to recognize the many kinds of contributions that go into making every release.
 
-  [MySTMD v1.3.26](https://github.com/jupyter-book/mystmd/releases/tag/mystmd%401.3.26)
+Here's a brief guide to generate release notes using `github-activity`.
 
-  See the link above for the release notes on GitHub! Many thanks to the [Jupyter Book team](https://compass.jupyterbook.org/team) for stewarding our development and this release.
-  ```
+**Install `github-activity`** with `pip`, like so:
 
-- **Share the release post in Jupyter-adjacent spaces**. Here are a few places that are worth sharing (you can just copy/paste the same text into each):
-  - [The MyST Discord](https://discord.mystmd.org/)
-  - [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
-  - [The Jupyter Discourse](https://discourse.jupyter.org)
-  - Social media spaces of your choosing.
+```bash
+pip install github-activity
+```
 
-(release-myst-theme)=
-### Make a release of the `myst-theme`
+**Generate release notes** by providing the repository, and either a date or tag that marks the _start date_ of the contributions to include in the notes. For example, this command generates release notes for mystmd after July 1st, 2025:
 
-The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
+```bash
+github-activity jupyter-book/mystmd -s 2025-07-01
+```
 
-- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release-npm). [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
-- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
-- Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
-  - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
-- Make a release on GitHub, by following the same process in [](#release-github).
+:::{tip} You can also use a tag
+Alternatively you can provide the _git tag_ of the last release, and it will return a list of the PRs _since that tag_. However, here we recommend using the date of the last release bacause many of our packages are monorepos, and have a lot of tags in them.
+:::
+
+Finally, **copy and paste** the output into the GitHub release notes. You can paste over any that are auto-generated by GitHub.
+
+(release:docs)=
+### Update documentation
+
+When we make a release we should ensure that the documentation is up-to-date with the latest version. This will depend on the tool that you're using.
+
+**For tools hosted at mystmd.org**, follow these [instructions to update the content at mystmd.org](#docs:update-mystmd.org).
+
+**For most other tools**, the documentation should auto-update with new releases (e.g., via a GitHub action).
+
+(release:share)=
+### Create and share a blog post
+
+Feel free to use the blog to post release notes as well.
+This should be as simple and quick as possible, don't over-think it. Here are some simple steps:
+
+1. Copy and paste the [release notes you generated](#release:notes) into a new file [on our blog repository](https://github.com/jupyter-book/blog).
+2. Use the following YAML header metadata for the post:
+
+   ```yaml
+   ---
+   date: <release-date>
+   author: The Jupyter Book Team
+   title: <title from GitHub release>
+   tags: release
+   ---
+
+   <content from GitHub release>
+   ```
+3. Self-merge the blog post.
+
+Feel free to celebrate new releases and share the news publicly so that others know about new enhancements in our projects.
+
+**Spaces to publicize releases**. Here are a few places that are worth sharing (you can just copy/paste the same text into each):
+
+- [The MyST Discord](https://discord.mystmd.org/)
+- [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
+- [The Jupyter Discourse](https://discourse.jupyter.org)
+- Social media spaces of your choosing.
 
 ## Practices we follow
 
