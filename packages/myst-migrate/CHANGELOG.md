@@ -1,5 +1,11 @@
 # myst-migrate
 
+## 1.5.1
+
+### Patch Changes
+
+- 822bae8e: Add support for upgrade/downgrade of outputs
+
 ## 1.5.0
 
 ## 1.4.0
