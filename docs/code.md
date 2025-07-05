@@ -46,7 +46,7 @@ hy = [(1, 40)]
 mesh = TensorMesh([hx, hy])
 ```
 
-In the [](#my-program), we create a mesh for simulation using [SimPEG](https://discretize.simpeg.xyz/).
+In @my-program, we create a mesh for simulation using [SimPEG](https://discretize.simpeg.xyz/).
 ````
 
 ## Numbering and Highlighting
