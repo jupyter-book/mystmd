@@ -2,8 +2,6 @@ import chalk from 'chalk';
 import cors from 'cors';
 import express from 'express';
 import getPort, { portNumbers } from 'get-port';
-import { makeExecutable } from 'myst-cli-utils';
-import type child_process from 'child_process';
 import { nanoid } from 'nanoid';
 import { join } from 'node:path';
 import type WebSocket from 'ws';
@@ -11,12 +9,11 @@ import { WebSocketServer } from 'ws';
 import type { ProcessSiteOptions } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import version from '../../version.js';
-import { createServerLogger } from './logger.js';
 import { buildSite } from './prepare.js';
-import { installSiteTemplate, getSiteTemplate } from './template.js';
+import { installSiteTemplate, startSiteTemplate } from '../../templates/site.js';
+import { getSiteTemplate } from './template.js';
 import { watchContent } from './watch.js';
-
-const DEFAULT_START_COMMAND = 'npm run start';
+import type { AppServer } from '../../templates/site.js';
 
 type ServerOptions = {
   serverPort?: number;
@@ -110,13 +107,6 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: StartOpt
     }
   }
 }
-
-export type AppServer = {
-  port: number;
-  process: child_process.ChildProcess;
-  stop: () => void;
-};
-
 export async function startServer(
   session: ISession,
   opts: StartOptions,
@@ -138,34 +128,16 @@ export async function startServer(
     );
     return undefined;
   }
-  session.log.info(
-    `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
-  );
-  const port = opts?.port ?? (await getPort({ port: portNumbers(3000, 3100) }));
-  const appServer = { port } as AppServer;
-  await new Promise<void>((resolve) => {
-    const start = makeExecutable(
-      mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
-      createServerLogger(session, resolve),
-      {
-        cwd: mystTemplate.templatePath,
-        env: {
-          ...process.env,
-          CONTENT_CDN_PORT: String(server.port),
-          PORT: String(port),
-          MODE: opts.buildStatic ? 'static' : 'app',
-          BASE_URL: opts.baseurl || undefined,
-        },
-        getProcess(process) {
-          appServer.process = process;
-        },
-      },
-    );
-    start().catch((e) => session.log.debug(e));
+  const appServer = await startSiteTemplate(session, mystTemplate, {
+    ...opts,
+    cdn: `http://localhost:${server.port}`,
   });
-  appServer.stop = () => {
-    appServer.process.kill();
-    server.stop();
-  };
+  if (appServer) {
+    const appStop = appServer.stop;
+    appServer.stop = () => {
+      appStop();
+      server.stop();
+    };
+  }
   return appServer;
 }
