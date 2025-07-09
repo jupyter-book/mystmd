@@ -4,14 +4,15 @@ import { join } from 'node:path';
 import yaml from 'js-yaml';
 import { tic } from 'myst-cli-utils';
 import type { TemplateYmlResponse } from 'myst-templates';
-import {
+import MystTemplate, {
   downloadTemplate,
   fetchPublicTemplate,
   listPublicTemplates,
   resolveInputs,
   TEMPLATE_YML,
 } from 'myst-templates';
-import type { ISession } from './session/types.js';
+import type { ISession } from '../session/types.js';
+import { installSiteTemplate, startSiteTemplate, ensureSiteTemplateExistsOnPath } from './site.js';
 
 import { TemplateKind } from 'myst-common';
 
@@ -43,6 +44,23 @@ function getKind(session: ISession, kinds?: TemplateKinds): TemplateKind[] | und
     .map(([k]) => k);
   if (!filteredKinds || filteredKinds.length === 0) return undefined;
   return filteredKinds as TemplateKind[];
+}
+
+export async function startTemplateCLI(
+  session: ISession,
+  template: string,
+  opts?: { force?: true; cdn: string },
+) {
+  if (!opts) return;
+  const mystTemplate = new MystTemplate(session, {
+    kind: TemplateKind.site,
+    template,
+    buildDir: session.buildPath(),
+    validateFiles: true,
+  });
+
+  await ensureSiteTemplateExistsOnPath(session, mystTemplate, opts.force);
+  await startSiteTemplate(session, mystTemplate, { cdn: opts.cdn });
 }
 
 export async function downloadTemplateCLI(
