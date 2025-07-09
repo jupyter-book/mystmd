@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import {
   Session,
   downloadTemplateCLI,
+  startTemplateCLI,
   listTemplatesCLI,
   makeDocxOption,
   makeForceOption,
@@ -9,8 +10,19 @@ import {
   makeSiteOption,
   makeTexOption,
   makeTypstOption,
+  makeCDNOption,
 } from 'myst-cli';
 import { clirun } from './clirun.js';
+
+function makeStartCLI(program: Command) {
+  const command = new Command('start')
+    .description('Start a public site template')
+    .argument('<template>', 'The template URL or name')
+    .addOption(makeCDNOption('Use specific content server'))
+    .addOption(makeForceOption('Overwrite existing downloaded templates'))
+    .action(clirun(Session, startTemplateCLI, program, { keepAlive: true }));
+  return command;
+}
 
 function makeDownloadCLI(program: Command) {
   const command = new Command('download')
@@ -47,6 +59,7 @@ function makeListCLI(program: Command) {
 export function makeTemplatesCLI(program: Command) {
   const command = new Command('templates')
     .description('List and download templates')
+    .addCommand(makeStartCLI(program))
     .addCommand(makeListCLI(program))
     .addCommand(makeDownloadCLI(program));
   return command;

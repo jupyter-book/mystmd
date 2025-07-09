@@ -1,15 +1,10 @@
-import fs from 'node:fs';
-import { join } from 'node:path';
 import { RuleId, TemplateKind } from 'myst-common';
-import { createNpmLogger, makeExecutable, tic } from 'myst-cli-utils';
 import MystTemplate from 'myst-templates';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { castSession } from '../../session/cache.js';
-
-const DEFAULT_TEMPLATE = 'book-theme';
-const DEFAULT_INSTALL_COMMAND = 'npm install';
+import { DEFAULT_TEMPLATE } from '../../templates/site.js';
 
 export async function getSiteTemplate(
   session: ISession,
@@ -39,21 +34,4 @@ export async function getSiteTemplate(
   await mystTemplate.ensureTemplateExistsOnPath();
   cache.$siteTemplate = mystTemplate;
   return mystTemplate;
-}
-
-export async function installSiteTemplate(
-  session: ISession,
-  mystTemplate: MystTemplate,
-): Promise<void> {
-  if (fs.existsSync(join(mystTemplate.templatePath, 'node_modules'))) return;
-  const toc = tic();
-  session.log.info('⤵️  Installing web libraries (can take up to 60 s)');
-  await makeExecutable(
-    mystTemplate.getValidatedTemplateYml().build?.install ?? DEFAULT_INSTALL_COMMAND,
-    createNpmLogger(session),
-    {
-      cwd: mystTemplate.templatePath,
-    },
-  )();
-  session.log.info(toc('📦 Installed web libraries in %s'));
 }
