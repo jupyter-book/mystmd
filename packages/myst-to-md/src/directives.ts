@@ -408,6 +408,8 @@ export const directiveHandlers: Record<string, Handle> = {
   include: writeStaticDirective('include', { argsKey: 'file' }),
   mermaid: writeStaticDirective('mermaid'),
   mystDirective,
+  exercise: writeStaticDirective('exercise'),
+  solution: writeStaticDirective('solution'),
 };
 
 export const directiveValidators: Record<string, Validator> = {
