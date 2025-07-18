@@ -1,5 +1,16 @@
 # myst-to-typst
 
+## 0.0.33
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+- Updated dependencies [fefffffd]
+  - myst-spec-ext@1.8.1
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+
 ## 0.0.32
 
 ### Patch Changes

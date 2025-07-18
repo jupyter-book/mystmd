@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.8.1
+
+### Patch Changes
+
+- fefffffd: Update licenses
+
 ## 1.8.0
 
 ## 1.7.13

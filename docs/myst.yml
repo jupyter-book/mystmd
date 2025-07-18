@@ -2,7 +2,10 @@ version: 1
 project:
   title: MyST Markdown
   github: https://github.com/jupyter-book/mystmd
-  # jupyter: true  # Uncomment to test launch buttons
+  # Uncomment to test launch buttons
+  jupyter:
+    binder:
+      repo: https://github.com/jupyter-book/thebe-binder-base
   license:
     code: MIT
     content: CC-BY-4.0
@@ -54,6 +57,7 @@ project:
     - directives.mjs
     - picsum.mjs
     - latex.mjs
+    - versions.mjs
     - templates.mjs
     - type: executable
       path: picsum.py
@@ -113,7 +117,7 @@ project:
         - file: notebooks-with-markdown.md
         - file: reuse-jupyter-outputs.md
         - file: interactive-notebooks.ipynb
-        - file: integrating-jupyter.md
+        - file: in-page-execution.md
         - file: website-launch-buttons.md
         - file: notebook-configuration.md
         - file: md-vs-ipynb.md

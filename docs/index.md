@@ -22,7 +22,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 :class: framed
 :::
 
-🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./integrating-jupyter.md)
+🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./in-page-execution.md)
 
 :::{figure} ./videos/thebe.mp4
 :class: framed
@@ -132,14 +132,12 @@ flowchart LR
   D <--> J[JATS]
 ```
 
-```{important}
-:class: dropdown
-**Using Sphinx or Python?**
+```{important .dropdown} Using Sphinx or Python?
 
-For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book, which can be found at:
+For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book V1, which can be found at:
 
 - [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
 - [Jupyter Book](https://jupyterbook.org/)
 
-Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the **JavaScript** MyST Markdown CLI.
+Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the `mystmd` CLI.
 ```
