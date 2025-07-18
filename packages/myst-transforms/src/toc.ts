@@ -35,7 +35,7 @@ function listItemFromPages(pages: ProjectPage[], projectSlug?: string) {
     value: `${enumerator ? `${enumerator} ` : ''}${title}`,
   };
   let child;
-  if (!!url) {
+  if (url != null) {
     // Link to an external site if url is given
     child = {
       type: 'link',
