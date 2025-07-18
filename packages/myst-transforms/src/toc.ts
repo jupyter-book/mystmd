@@ -1,10 +1,4 @@
-import {
-  fileError,
-  fileWarn,
-  toText,
-  type GenericNode,
-  type GenericParent,
-} from 'myst-common';
+import { fileError, fileWarn, toText, type GenericNode, type GenericParent } from 'myst-common';
 import type { List, Text } from 'myst-spec';
 import type { Heading, Link, ListItem } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
@@ -74,7 +68,7 @@ function transformPage(page: ProjectPage, projectSlug?: string): Text | Link {
       internal: false,
       children: [text],
     } as Link;
-  // Link to an internal page if slug is given
+    // Link to an internal page if slug is given
   } else if (slug != null) {
     return {
       type: 'link',
@@ -82,7 +76,7 @@ function transformPage(page: ProjectPage, projectSlug?: string): Text | Link {
       internal: true,
       children: [text],
     } as Link;
-  // Otherwise plain text
+    // Otherwise plain text
   } else {
     return text;
   }
@@ -104,7 +98,7 @@ function listFromHeadings(headings: Heading[]): List {
   return makeList(children);
 }
 
-function listItemFromHeadings(headings: Heading[]) : ListItem {
+function listItemFromHeadings(headings: Heading[]): ListItem {
   // headings will never be an empty array.
   const heading = headings[0];
   const child = transformHeading(heading);
@@ -147,7 +141,7 @@ function transformProjectTocs(
 ) {
   // Select 'project' type TOC nodes.
   const projectTocs = tocsAndHeadings.filter(
-    (node) => node.type === 'toc' && node.kind === 'project'
+    (node) => node.type === 'toc' && node.kind === 'project',
   );
   // No project TOCs found, nothing to do.
   if (projectTocs.length === 0) return;
@@ -169,14 +163,9 @@ function transformProjectTocs(
   }
 }
 
-function transformPageTocs(
-  vfile: VFile,
-  tocsAndHeadings: GenericNode[],
-) {
+function transformPageTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
   // Select 'page' type TOC nodes.
-  const pageTocs = tocsAndHeadings.filter(
-    (node) => node.type === 'toc' && node.kind === 'page'
-  );
+  const pageTocs = tocsAndHeadings.filter((node) => node.type === 'toc' && node.kind === 'page');
   // No page TOCs found, nothing to do.
   if (pageTocs.length === 0) return;
 
@@ -189,8 +178,8 @@ function transformPageTocs(
     }
     pageTocs.forEach((toc) => {
       const filteredHeadings = toc.depth
-	? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
-	: headings;
+        ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
+        : headings;
       toc.type = 'block';
       delete toc.kind;
       toc.data = { part: 'toc:page' };
@@ -200,13 +189,9 @@ function transformPageTocs(
   }
 }
 
-function transformSectionTocs(
-  vfile: VFile,
-  tocsAndHeadings: GenericNode[]
-) {
+function transformSectionTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
   // Select 'section' type TOC nodes.
-  const isSectionToc =
-    (node: GenericNode) => node.type === 'toc' && node.kind === 'section';
+  const isSectionToc = (node: GenericNode) => node.type === 'toc' && node.kind === 'section';
 
   tocsAndHeadings.forEach((toc, index) => {
     if (!isSectionToc(toc)) return;
@@ -224,8 +209,7 @@ function transformSectionTocs(
       delete toc.kind;
       toc.data = { part: 'toc:section' };
       if (!toc.children) toc.children = [];
-      const nextSection = filteredHeadings.findIndex(
-	      (h) => h.depth < filteredHeadings[0].depth);
+      const nextSection = filteredHeadings.findIndex((h) => h.depth < filteredHeadings[0].depth);
       toc.children.push(
         listFromHeadings(
           nextSection === -1 ? filteredHeadings : filteredHeadings.slice(0, nextSection),
