@@ -1,4 +1,10 @@
-import { fileError, fileWarn, toText, type GenericNode, type GenericParent } from 'myst-common';
+import {
+  fileError,
+  fileWarn,
+  toText,
+  type GenericNode,
+  type GenericParent,
+} from 'myst-common';
 import type { List, Text } from 'myst-spec';
 import type { Heading, Link, ListItem } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
@@ -31,23 +37,30 @@ function listFromPages(pages: ProjectPage[], projectSlug?: string): List {
       if (page.level !== level) return undefined;
       return listItemFromPages(pages.slice(index), projectSlug);
     })
-    // Remove any null items
+    // Remove any undefined items.
     .filter((item): item is ListItem => !!item);
   return makeList(children);
 }
 
-function listItemFromPages(pages: ProjectPage[], projectSlug?: string): ListItem | undefined {
-  if (pages.length === 0) return;
+function listItemFromPages(pages: ProjectPage[], projectSlug?: string): ListItem {
+  // pages will never be an empty array.
   const page = pages[0];
-  const child = listItemChildFromPage(page, projectSlug);
+  const child = transformPage(page, projectSlug);
   const item = makeListItem(child);
-  if (pages[1] && pages[1].level > page.level) {
+  const nextPage = pages[1];
+
+  // If there is a next page and it is the root of a subtree, recurse into it
+  // and add the resultant List to this item's children.
+  if (nextPage && nextPage.level > page.level) {
     item.children.push(listFromPages(pages.slice(1), projectSlug));
   }
   return item;
 }
 
-function listItemChildFromPage(page: ProjectPage, projectSlug?: string): Text | Link {
+// This captures the base case of the mutual recursion implemented by the pair
+// of functions listFromPages/listItemFromPages.
+//
+function transformPage(page: ProjectPage, projectSlug?: string): Text | Link {
   const { title, slug, url, enumerator, level } = page;
   const text: Text = {
     type: 'text',
@@ -86,29 +99,36 @@ function listFromHeadings(headings: Heading[]): List {
       if (heading.depth !== depth) return undefined;
       return listItemFromHeadings(headings.slice(index));
     })
-    // Remove any null items
+    // Remove any undefined items.
     .filter((item): item is ListItem => !!item);
   return makeList(children);
 }
 
-function listItemFromHeadings(headings: Heading[]) : ListItem | undefined {
-  if (headings.length === 0) return;
+function listItemFromHeadings(headings: Heading[]) : ListItem {
+  // headings will never be an empty array.
   const heading = headings[0];
-  const child = listItemChildFromHeading(heading);
+  const child = transformHeading(heading);
   const item = makeListItem(child);
-  if (headings[1] && headings[1].depth > heading.depth) {
+
+  // If there is a next heading and it is the root of a subtree, recurse into it
+  // and add the resultant List to this item's children.
+  const nextHeading = headings[1];
+  if (nextHeading && nextHeading.depth > heading.depth) {
     item.children.push(listFromHeadings(headings.slice(1)));
   }
   return item;
 }
 
-function listItemChildFromHeading(heading: Heading): Text | Link {
+// This captures the base case of the mutual recursion implemented by the pair
+// of functions listFromHeadings/listItemFromHeadings.
+//
+function transformHeading(heading: Heading): Text | Link {
   const { children, enumerator, depth, identifier } = heading;
   const text: Text = {
     type: 'text',
     value: `${enumerator ? `${enumerator} ` : ''}${toText(children)}`,
   };
-  const child: Text | Link = identifier
+  return identifier
     ? ({
         type: 'link',
         url: `#${identifier}`,
@@ -117,7 +137,6 @@ function listItemChildFromHeading(heading: Heading): Text | Link {
         suppressImplicitWarning: true,
       } as Link)
     : text;
-  return child;
 }
 
 function transformProjectTocs(
