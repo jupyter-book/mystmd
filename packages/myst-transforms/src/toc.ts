@@ -43,7 +43,7 @@ function listItemFromPages(pages: ProjectPage[], projectSlug?: string) {
       internal: false,
       children: [text],
     } as Link;
-    // Link to an internal page if slug is given
+  // Link to an internal page if slug is given
   } else if (slug != null) {
     child = {
       type: 'link',
@@ -51,7 +51,7 @@ function listItemFromPages(pages: ProjectPage[], projectSlug?: string) {
       internal: true,
       children: [text],
     } as Link;
-    // Otherwise plain text
+  // Otherwise plain text
   } else {
     child = text;
   }
