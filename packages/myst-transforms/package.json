@@ -13,7 +13,6 @@
     "clean": "rimraf dist",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "test:debug": "vitest --inspect-brk --pool threads --poolOptions.threads.singleThread --no-file-parallelism run",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
     "build:esm": "tsc",
