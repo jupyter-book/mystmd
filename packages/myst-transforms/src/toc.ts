@@ -8,6 +8,7 @@ type ProjectPage = {
   title: string;
   level: number;
   slug?: string;
+  url?: string;
   enumerator?: string;
 };
 
@@ -35,7 +36,7 @@ function listFromPages(pages: ProjectPage[], projectSlug?: string): List {
   return makeList(children);
 }
 
-function listItemFromPages(pages: ProjectPage[], projectSlug?: string): ListItem {
+function listItemFromPages(pages: ProjectPage[], projectSlug?: string): ListItem | undefined {
   if (pages.length === 0) return;
   const page = pages[0];
   const child = listItemChildFromPage(page, projectSlug);
@@ -90,7 +91,7 @@ function listFromHeadings(headings: Heading[]): List {
   return makeList(children);
 }
 
-function listItemFromHeadings(headings: Heading[]) : ListItem {
+function listItemFromHeadings(headings: Heading[]) : ListItem | undefined {
   if (headings.length === 0) return;
   const heading = headings[0];
   const child = listItemChildFromHeading(heading);
@@ -119,6 +120,102 @@ function listItemChildFromHeading(heading: Heading): Text | Link {
   return child;
 }
 
+function transformProjectTocs(
+  vfile: VFile,
+  tocsAndHeadings: GenericNode[],
+  pages?: ProjectPage[],
+  projectSlug?: string,
+) {
+  // Select 'project' type TOC nodes.
+  const projectTocs = tocsAndHeadings.filter(
+    (node) => node.type === 'toc' && node.kind === 'project'
+  );
+  // No project TOCs found, nothing to do.
+  if (projectTocs.length === 0) return;
+
+  if (!pages) {
+    fileError(vfile, `Pages not available to build Table of Contents`);
+  } else {
+    if (pages[0].level !== 1) {
+      fileWarn(vfile, `First page of Table of Contents must be level 1`);
+    }
+    projectTocs.forEach((toc) => {
+      const filteredPages = toc.depth ? pages.filter((page) => page.level <= toc.depth) : pages;
+      toc.type = 'block';
+      delete toc.kind;
+      toc.data = { part: 'toc:project' };
+      if (!toc.children) toc.children = [];
+      toc.children.push(listFromPages(filteredPages, projectSlug));
+    });
+  }
+}
+
+function transformPageTocs(
+  vfile: VFile,
+  tocsAndHeadings: GenericNode[],
+) {
+  // Select 'page' type TOC nodes.
+  const pageTocs = tocsAndHeadings.filter(
+    (node) => node.type === 'toc' && node.kind === 'page'
+  );
+  // No page TOCs found, nothing to do.
+  if (pageTocs.length === 0) return;
+
+  const headings = tocsAndHeadings.filter((node) => node.type === 'heading') as Heading[];
+  if (headings.length === 0) {
+    fileWarn(vfile, `No page headings found for Table of Contents`);
+  } else {
+    if (Math.min(...headings.map((h) => h.depth)) !== headings[0].depth) {
+      fileWarn(vfile, 'Page heading levels do not start with highest level');
+    }
+    pageTocs.forEach((toc) => {
+      const filteredHeadings = toc.depth
+	? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
+	: headings;
+      toc.type = 'block';
+      delete toc.kind;
+      toc.data = { part: 'toc:page' };
+      if (!toc.children) toc.children = [];
+      toc.children.push(listFromHeadings(filteredHeadings));
+    });
+  }
+}
+
+function transformSectionTocs(
+  vfile: VFile,
+  tocsAndHeadings: GenericNode[]
+) {
+  // Select 'section' type TOC nodes.
+  const isSectionToc =
+    (node: GenericNode) => node.type === 'toc' && node.kind === 'section';
+
+  tocsAndHeadings.forEach((toc, index) => {
+    if (!isSectionToc(toc)) return;
+
+    const headings = tocsAndHeadings
+      .slice(index + 1)
+      .filter((h) => h.type === 'heading') as Heading[];
+    if (headings.length === 0) {
+      fileWarn(vfile, `No section headings found for Table of Contents`);
+    } else {
+      const filteredHeadings = toc.depth
+        ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
+        : headings;
+      toc.type = 'block';
+      delete toc.kind;
+      toc.data = { part: 'toc:section' };
+      if (!toc.children) toc.children = [];
+      const nextSection = filteredHeadings.findIndex(
+	      (h) => h.depth < filteredHeadings[0].depth);
+      toc.children.push(
+        listFromHeadings(
+          nextSection === -1 ? filteredHeadings : filteredHeadings.slice(0, nextSection),
+        ),
+      );
+    }
+  });
+}
+
 export function buildTocTransform(
   mdast: GenericParent,
   vfile: VFile,
@@ -130,74 +227,8 @@ export function buildTocTransform(
     // Do not include toc headings anywhere in this transform
     return !tocHeadings.includes(item);
   }) as GenericNode[];
-  if (!tocsAndHeadings.find((node) => node.type === 'toc')) return;
-  const projectTocs = tocsAndHeadings.filter(
-    (node) => node.type === 'toc' && node.kind === 'project',
-  );
-  const pageTocs = tocsAndHeadings.filter((node) => node.type === 'toc' && node.kind === 'page');
-  const sectionTocs = tocsAndHeadings.filter(
-    (node) => node.type === 'toc' && node.kind === 'section',
-  );
-  if (projectTocs.length) {
-    if (!pages) {
-      fileError(vfile, `Pages not available to build Table of Contents`);
-    } else {
-      if (pages[0].level !== 1) {
-        fileWarn(vfile, `First page of Table of Contents must be level 1`);
-      }
-      projectTocs.forEach((toc) => {
-        const filteredPages = toc.depth ? pages.filter((page) => page.level <= toc.depth) : pages;
-        toc.type = 'block';
-        delete toc.kind;
-        toc.data = { part: 'toc:project' };
-        if (!toc.children) toc.children = [];
-        toc.children.push(listFromPages(filteredPages, projectSlug));
-      });
-    }
-  }
-  if (pageTocs.length) {
-    const headings = tocsAndHeadings.filter((node) => node.type === 'heading') as Heading[];
-    if (headings.length === 0) {
-      fileWarn(vfile, `No page headings found for Table of Contents`);
-    } else {
-      if (Math.min(...headings.map((h) => h.depth)) !== headings[0].depth) {
-        fileWarn(vfile, 'Page heading levels do not start with highest level');
-      }
-      pageTocs.forEach((toc) => {
-        const filteredHeadings = toc.depth
-          ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
-          : headings;
-        toc.type = 'block';
-        delete toc.kind;
-        toc.data = { part: 'toc:page' };
-        if (!toc.children) toc.children = [];
-        toc.children.push(listFromHeadings(filteredHeadings));
-      });
-    }
-  }
-  if (sectionTocs.length) {
-    tocsAndHeadings.forEach((toc, index) => {
-      if (toc.type !== 'toc' || toc.kind !== 'section') return;
-      const headings = tocsAndHeadings
-        .slice(index + 1)
-        .filter((h) => h.type === 'heading') as Heading[];
-      if (headings.length === 0) {
-        fileWarn(vfile, `No section headings found for Table of Contents`);
-      } else {
-        const filteredHeadings = toc.depth
-          ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
-          : headings;
-        toc.type = 'block';
-        delete toc.kind;
-        toc.data = { part: 'toc:section' };
-        if (!toc.children) toc.children = [];
-        const nextSection = filteredHeadings.findIndex((h) => h.depth < filteredHeadings[0].depth);
-        toc.children.push(
-          listFromHeadings(
-            nextSection === -1 ? filteredHeadings : filteredHeadings.slice(0, nextSection),
-          ),
-        );
-      }
-    });
-  }
+
+  transformProjectTocs(vfile, tocsAndHeadings, pages, projectSlug);
+  transformPageTocs(vfile, tocsAndHeadings);
+  transformSectionTocs(vfile, tocsAndHeadings);
 }
