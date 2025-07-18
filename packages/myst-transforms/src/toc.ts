@@ -35,24 +35,24 @@ function listItemFromPages(pages: ProjectPage[], projectSlug?: string) {
     value: `${enumerator ? `${enumerator} ` : ''}${title}`,
   };
   let child;
-  // Link to an external site if url is given
   if (!!url) {
+    // Link to an external site if url is given
     child = {
       type: 'link',
       url: url,
       internal: false,
       children: [text],
     } as Link;
-  // Link to an internal page if slug is given
   } else if (slug != null) {
+    // Link to an internal page if slug is given
     child = {
       type: 'link',
       url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
       internal: true,
       children: [text],
     } as Link;
-  // Otherwise plain text
   } else {
+    // Otherwise plain text
     child = text;
   }
   const item: ListItem = {
