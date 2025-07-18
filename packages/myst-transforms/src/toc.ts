@@ -8,6 +8,7 @@ type ProjectPage = {
   title: string;
   level: number;
   slug?: string;
+  url?: string;
   enumerator?: string;
 };
 
@@ -28,20 +29,32 @@ function listFromPages(pages: ProjectPage[], projectSlug?: string): List {
 
 function listItemFromPages(pages: ProjectPage[], projectSlug?: string) {
   if (pages.length === 0) return;
-  const { title, slug, enumerator, level } = pages[0];
+  const { title, slug, url, enumerator, level } = pages[0];
   const text: Text = {
     type: 'text',
     value: `${enumerator ? `${enumerator} ` : ''}${title}`,
   };
-  const child: Text | Link =
-    slug != null
-      ? ({
-          type: 'link',
-          url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
-          internal: true,
-          children: [text],
-        } as Link)
-      : text;
+  let child;
+  if (url != null) {
+    // Link to an external site if url is given
+    child = {
+      type: 'link',
+      url: url,
+      internal: false,
+      children: [text],
+    } as Link;
+  } else if (slug != null) {
+    // Link to an internal page if slug is given
+    child = {
+      type: 'link',
+      url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
+      internal: true,
+      children: [text],
+    } as Link;
+  } else {
+    // Otherwise plain text
+    child = text;
+  }
   const item: ListItem = {
     type: 'listItem',
     children: [child],
