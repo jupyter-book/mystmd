@@ -1,5 +1,11 @@
 # myst-transforms
 
+## 1.3.38
+
+### Patch Changes
+
+- cb76fb71: Add URLs to toc-directive
+
 ## 1.3.37
 
 ### Patch Changes
