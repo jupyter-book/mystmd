@@ -223,18 +223,6 @@ async function getValidatedConfigsFromFile(
   }
   const { site: rawSite, project: rawProject } = conf ?? {};
   const path = dirname(file);
-  if (rawSite) {
-    site = fillSiteConfig(
-      await validateSiteConfigAndThrow(session, path, vfile, rawSite),
-      site ?? {},
-      incrementOptions('extend', opts),
-    );
-  }
-  if (site) {
-    session.log.debug(`Loaded site config from ${file}`);
-  } else {
-    session.log.debug(`No site config in ${file}`);
-  }
   if (rawProject) {
     project = fillProjectFrontmatter(
       await validateProjectConfigAndThrow(session, path, vfile, rawProject),
@@ -246,6 +234,18 @@ async function getValidatedConfigsFromFile(
     session.log.debug(`Loaded project config from ${file}`);
   } else {
     session.log.debug(`No project config defined in ${file}`);
+  }
+  if (rawSite) {
+    site = fillSiteConfig(
+      await validateSiteConfigAndThrow(session, path, vfile, rawSite),
+      site ?? {},
+      incrementOptions('extend', opts),
+    );
+  }
+  if (site) {
+    session.log.debug(`Loaded site config from ${file}`);
+  } else {
+    session.log.debug(`No site config in ${file}`);
   }
   logMessagesFromVFile(session, vfile);
   return { site, project, extend };
@@ -512,17 +512,6 @@ export async function writeConfigs(
   // Get site config to save
   const vfile = new VFile();
   vfile.path = file;
-  if (siteConfig) {
-    saveSiteConfig(
-      session,
-      path,
-      await validateSiteConfigAndThrow(session, path, vfile, siteConfig),
-    );
-  }
-  siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
-  if (siteConfig) {
-    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
-  }
   // Get project config to save
   if (projectConfig) {
     saveProjectConfig(
@@ -541,6 +530,17 @@ export async function writeConfigs(
       resolveToRelative,
       file,
     );
+  }
+  if (siteConfig) {
+    saveSiteConfig(
+      session,
+      path,
+      await validateSiteConfigAndThrow(session, path, vfile, siteConfig),
+    );
+  }
+  siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
+  if (siteConfig) {
+    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {
