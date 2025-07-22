@@ -59,6 +59,7 @@ project:
     - latex.mjs
     - versions.mjs
     - templates.mjs
+    - experiment.mjs
     - type: executable
       path: picsum.py
     - type: executable
