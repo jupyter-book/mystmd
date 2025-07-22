@@ -6,21 +6,12 @@ on:
       tag_name:
         required: true
         type: string
-      release_title:
-        required: false
-        type: string
-        default: ''
   workflow_dispatch:
     inputs:
       tag_name:
         description: 'Tag name for the release (e.g. v1.2.3)'
         required: true
         type: string
-      release_title:
-        description: 'Optional release title (will be ignored, see workflow logic)'
-        required: false
-        type: string
-        default: ''
 
 jobs:
   publish-release:
@@ -57,19 +48,10 @@ jobs:
         run: |
           github-activity --since "${{ steps.latest_release.outputs.date }}" --repo "$GITHUB_REPOSITORY" > release-notes.md
 
-      # Strip leading 'v' from tag for the release title
-      - name: Prepare release title
-        id: version
-        run: |
-          TAG="${{ github.event.inputs.tag_name || inputs.tag_name }}"
-          VERSION=${TAG#v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      # Create the GitHub Release using the GitHub CLI
+      # Create GitHub Release with gh
       - name: Create GitHub Release with gh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.event.inputs.tag_name || inputs.tag_name }}"
-          TITLE="mystmd v${{ steps.version.outputs.version }}"
-          gh release create "$TAG" --title "$TITLE" --notes-file release-notes.md 
+          gh release create "$TAG" --title "$TAG" --notes-file release-notes.md 
