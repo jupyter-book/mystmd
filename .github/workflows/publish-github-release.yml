@@ -44,7 +44,7 @@ jobs:
       # Generate release notes since the last release
       - name: Generate release notes with github-activity
         run: |
-          github-activity --since "${{ steps.previous_release.outputs.tag }}" --repo "$GITHUB_REPOSITORY" > release-notes.md
+          github-activity "$GITHUB_REPOSITORY" --since "${{ steps.previous_release.outputs.tag }}" > release-notes.md
 
       # Create GitHub Release with gh
       - name: Create GitHub Release with gh
