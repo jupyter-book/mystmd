@@ -76,3 +76,29 @@ jobs:
           path: dist/
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  get-tag:
+    name: Get Tag Name
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.get_tag.outputs.tag_name }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Get tag name from package.json
+        id: get_tag
+        run: |
+          TAG="v$(jq -r .version < packages/mystmd/package.json)"
+          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
+
+  release-github:
+    name: Publish GitHub Release
+    needs:
+      - release-npm
+      - release-py
+      - get-tag
+    if: ${{ needs.release-npm.outputs.published == 'true' }}
+    uses: ./.github/workflows/publish-github-release.yml
+    with:
+      tag_name: ${{ needs.get-tag.outputs.tag_name }}
+    secrets: inherit

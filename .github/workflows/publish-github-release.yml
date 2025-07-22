@@ -1,0 +1,76 @@
+name: Publish GitHub Release
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+      release_title:
+        required: false
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (e.g. v1.2.3)'
+        required: true
+        type: string
+      release_title:
+        description: 'Optional release title (will be ignored, see workflow logic)'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # Get the date of the latest GitHub release
+      - name: Get latest release date
+        id: latest_release
+        run: |
+          latest_release_json=$(gh release list --limit 1 --json publishedAt --jq '.[0]')
+          if [ -z "$latest_release_json" ]; then
+            echo "No previous GitHub release found. Cannot generate release notes."
+            exit 1
+          else
+            date=$(echo "$latest_release_json" | jq -r '.publishedAt')
+            echo "date=$date" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install github-activity
+        run: pip install github-activity
+
+      # Generate release notes since the last release
+      - name: Generate release notes with github-activity
+        run: |
+          github-activity --since "${{ steps.latest_release.outputs.date }}" --repo "$GITHUB_REPOSITORY" > release-notes.md
+
+      # Strip leading 'v' from tag for the release title
+      - name: Prepare release title
+        id: version
+        run: |
+          TAG="${{ github.event.inputs.tag_name || inputs.tag_name }}"
+          VERSION=${TAG#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      # Create the GitHub Release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag_name || inputs.tag_name }}
+          name: mystmd v${{ steps.version.outputs.version }}
+          body_path: release-notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
