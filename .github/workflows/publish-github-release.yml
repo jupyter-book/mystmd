@@ -65,12 +65,11 @@ jobs:
           VERSION=${TAG#v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      # Create the GitHub Release
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.event.inputs.tag_name || inputs.tag_name }}
-          name: mystmd v${{ steps.version.outputs.version }}
-          body_path: release-notes.md
+      # Create the GitHub Release using the GitHub CLI
+      - name: Create GitHub Release with gh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag_name || inputs.tag_name }}"
+          TITLE="mystmd v${{ steps.version.outputs.version }}"
+          gh release create "$TAG" --title "$TITLE" --notes-file release-notes.md 
