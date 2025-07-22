@@ -43,6 +43,8 @@ jobs:
 
       # Generate release notes since the last release
       - name: Generate release notes with github-activity
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           github-activity "$GITHUB_REPOSITORY" --since "${{ steps.previous_release.outputs.tag }}" > release-notes.md
 
