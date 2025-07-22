@@ -1,0 +1,55 @@
+name: Publish GitHub Release
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (e.g. v1.2.3)'
+        required: true
+        type: string
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      # Get the date of the latest GitHub release
+      - name: Get previous release tag
+        id: previous_release
+        run: |
+          PREV_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous GitHub release found. Cannot generate release notes."
+            exit 1
+          fi
+          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install github-activity
+        run: pip install github-activity
+
+      # Generate release notes since the last release
+      - name: Generate release notes with github-activity
+        run: |
+          github-activity --since "${{ steps.previous_release.outputs.tag }}" --repo "$GITHUB_REPOSITORY" > release-notes.md
+
+      # Create GitHub Release with gh
+      - name: Create GitHub Release with gh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag_name || inputs.tag_name }}"
+          gh release create "$TAG" --title "$TAG" --notes-file release-notes.md 
