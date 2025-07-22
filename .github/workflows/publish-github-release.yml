@@ -56,4 +56,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.event.inputs.tag_name || inputs.tag_name }}"
-          gh release create "$TAG" --title "$TAG" --notes-file release-notes.md 
+          
+          # Check if the tag already exists
+          if git ls-remote --tags origin "$TAG" | grep -q "$TAG"; then
+            echo "Tag $TAG already exists, creating release for existing tag"
+            gh release create "$TAG" --title "$TAG" --notes-file release-notes.md --target "$TAG" --verify-tag
+          else
+            echo "Error: Tag $TAG does not exist. Please create the tag first before running this workflow."
+            exit 1
+          fi 
