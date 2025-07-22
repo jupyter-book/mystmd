@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v4
 
       # Get the date of the latest GitHub release
-      - name: Get latest release date
+      - name: Get previous release date
         id: latest_release
         run: |
           latest_release_json=$(gh release list --limit 1 --json publishedAt --jq '.[0]')
