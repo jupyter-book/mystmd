@@ -21,17 +21,15 @@ jobs:
         uses: actions/checkout@v4
 
       # Get the date of the latest GitHub release
-      - name: Get previous release date
-        id: latest_release
+      - name: Get previous release tag
+        id: previous_release
         run: |
-          latest_release_json=$(gh release list --limit 1 --json publishedAt --jq '.[0]')
-          if [ -z "$latest_release_json" ]; then
+          PREV_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          if [ -z "$PREV_TAG" ]; then
             echo "No previous GitHub release found. Cannot generate release notes."
             exit 1
-          else
-            date=$(echo "$latest_release_json" | jq -r '.publishedAt')
-            echo "date=$date" >> $GITHUB_OUTPUT
           fi
+          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -46,7 +44,7 @@ jobs:
       # Generate release notes since the last release
       - name: Generate release notes with github-activity
         run: |
-          github-activity --since "${{ steps.latest_release.outputs.date }}" --repo "$GITHUB_REPOSITORY" > release-notes.md
+          github-activity --since "${{ steps.previous_release.outputs.tag }}" --repo "$GITHUB_REPOSITORY" > release-notes.md
 
       # Create GitHub Release with gh
       - name: Create GitHub Release with gh
