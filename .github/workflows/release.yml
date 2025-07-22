@@ -88,7 +88,7 @@ jobs:
       - name: Get tag name from package.json
         id: get_tag
         run: |
-          TAG="v$(jq -r .version < packages/mystmd/package.json)"
+          TAG="mystmd@$(jq -r .version < packages/mystmd/package.json)"
           echo "tag_name=$TAG" >> $GITHUB_OUTPUT
 
   release-github:

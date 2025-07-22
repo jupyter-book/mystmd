@@ -49,6 +49,8 @@ jobs:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           github-activity "$GITHUB_REPOSITORY" --since "${{ steps.previous_release.outputs.tag }}" > release-notes.md
+          # Remove the title from the release notes
+          tail -n +2 release-notes.md > release-notes-temp.md && mv release-notes-temp.md release-notes.md
 
       # Create GitHub Release with gh
       - name: Create GitHub Release with gh
