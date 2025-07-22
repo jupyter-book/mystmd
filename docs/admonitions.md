@@ -228,9 +228,11 @@ The proof of the lemma for $x \leqslant 0$ is left to the reader.
 ```
 
 ## Custom admonitions
-It is possible to make [your own admonition](https://next.jupyterbook.org/plugins/directives-and-roles/#create-a-custom-admonition) and embed it through a [plugin](https://next.jupyterbook.org/tutorial/plugins/). The colors, icon and behaviour in dark/light mode can be specified through a customs css file. 
+It is possible to make [your own admonition](https://next.jupyterbook.org/plugins/directives-and-roles/#create-a-custom-admonition) and embed it through a [plugin](https://next.jupyterbook.org/tutorial/plugins/). The colors, icon and behaviour in dark/light mode can be specified through a customs css file. Below we provide an example of the `experiment` admonition.
 
-```{raw} markdown
+```{code} yml
+:class: dropdown
+
 /* Custom experiment admonition, based on documentation (see https://next.jupyterbook.org/plugins/directives-and-roles#create-a-custom-admonition). 
 *   css file (custom.css) included in style folder. 
 */
@@ -291,10 +293,12 @@ const plugin = {
 export default plugin;
 ```
 
-```{raw} css
-/*Title color in dark mode, changes title color into black when in dark mode*/
+
+
+```{code} css
+/*Title color in dark mode*/
 .dark aside.admonition-experiment .dark\:text-white {
-   color: rgb(0 0 0); 
+   color: rgb(23 25 25); 
 }
 
 /* Parent */
@@ -349,5 +353,4 @@ display: block;
 
 Using the description above, make your own custom admonition!
 ```
-
 
