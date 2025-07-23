@@ -4,13 +4,14 @@ import { writeFileToFolder } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import type { SiteManifestOptions } from '../site/manifest.js';
-import { getSiteManifest } from '../site/manifest.js';
 import type { StartOptions } from '../site/start.js';
 import { startServer } from '../site/start.js';
 import { getSiteTemplate } from '../site/template.js';
 import { slugToUrl } from 'myst-common';
 import pLimit from 'p-limit';
 import { fetchWithRetry } from '../../utils/fetchWithRetry.js';
+import { selectors } from '../../store/index.js';
+import type { LocalProjectPage } from '../../project/types.js';
 
 const limitConnections = pLimit(5);
 
@@ -20,15 +21,21 @@ export async function currentSiteRoutes(
   baseurl: string | undefined,
   opts?: SiteManifestOptions,
 ): Promise<{ url: string; path: string; binary?: boolean }[]> {
-  const manifest = await getSiteManifest(session, opts);
-  return (manifest.projects ?? [])
+  const state = session.store.getState();
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
+  return (siteConfig?.projects ?? [])
     ?.map((proj) => {
+      if (!proj.path) return [];
+      const localProj = selectors.selectLocalProject(state, proj.path);
+      if (!localProj) return [];
       const projSlug = proj.slug ? `/${proj.slug}` : '';
       // We need to get the index from a slug page to make remix happy
       // If this gets from the index, then the site will trigger the wrong render path
       // And then hydration does not match
-      const siteIndex = baseurl ? `/${proj.index}` : '';
-      const pages = proj.pages.filter((page) => !!page.slug);
+      const siteIndex = baseurl ? `/${localProj.index}` : '';
+      const pages = localProj.pages.filter(
+        (page): page is LocalProjectPage => !!(page as any).slug,
+      );
       return [
         { url: `${host}${projSlug}${siteIndex}`, path: path.join(proj.slug ?? '', 'index.html') },
         ...pages.map((page) => {
@@ -40,8 +47,8 @@ export async function currentSiteRoutes(
         }),
         // Download all of the configured JSON
         {
-          url: `${host}${projSlug}/${proj.index}.json`,
-          path: path.join(proj.slug ?? '', `${proj.index}.json`),
+          url: `${host}${projSlug}/${localProj.index}.json`,
+          path: path.join(proj.slug ?? '', `${localProj.index}.json`),
         },
         ...pages.map((page) => {
           return {
