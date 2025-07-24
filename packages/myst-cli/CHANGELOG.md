@@ -1,5 +1,22 @@
 # myst-cli
 
+## 1.6.0
+
+### Minor Changes
+
+- 547a13e5: Currently, the static export triggered by `myst build --html` exports
+  `any/route` to `any/route.html`. This makes it hard to deploy to
+  static page sites like GitHub (or even Apache), which all expect
+  `/any/route` to point to `any/route/index.html`. This change is to
+  update the static export to using that naming convention, i.e. to
+  produce the `index.html` files as expected.
+
+### Patch Changes
+
+- ff61479: Fix whitelabelling bug
+- Updated dependencies [cb76fb71]
+  - myst-transforms@1.3.38
+
 ## 1.5.1
 
 ### Patch Changes

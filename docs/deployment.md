@@ -82,6 +82,24 @@ site:
 If you are using Git, add the `_build` folder to your `.gitignore` so that it is not tracked. This folder contains auto-generated assets that can easily be re-built -- for example in a Continuous Integration system like GitHub Actions.
 :::
 
+:::{tip} Static HTML generates folder-based HTML files
+:class: dropdown
+
+When you generate static HTML using MyST, routes to documents (e.g. `/folder/mydoc`) must be rendered into static HTML files. MyST will turn routes into HTML paths like so:
+
+```
+/myfolder/mydoc/index.html
+```
+
+When the browser sends a request to the route `/folder/mydoc`, the server interprets that as request for the HTML file `/myfolder/mydoc/index.html`, and returns that.
+
+Some SSGs instead return HTML files like `/myfolder/mydoc.html`, and this can trigger different behavior depending on the hosting platform you're using. However, `/myfolder/mydoc/index.html` is generally a safer bet, which is why it is the default.
+
+See [the trailing slash and hosting provider guide](https://github.com/slorber/trailing-slash-guide) for more information about the impact of this behavior across hosting providers.
+
+_Inspired from the [excellent Docusaurus documentation](https://docusaurus.io/docs/advanced/routing#routes-become-html-files)_
+:::
+
 (deploy:base-url)=
 ### Custom domains and the base URL
 

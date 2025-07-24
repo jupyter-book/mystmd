@@ -35,7 +35,7 @@ export async function currentSiteRoutes(
           const pageSlug = slugToUrl(page.slug);
           return {
             url: `${host}${projSlug}/${pageSlug}`,
-            path: path.join(proj.slug ?? '', `${pageSlug}.html`),
+            path: path.join(proj.slug ?? '', `${pageSlug}/index.html`),
           };
         }),
         // Download all of the configured JSON
