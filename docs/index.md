@@ -60,7 +60,7 @@ TL;DR
 : **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in JavaScript not Python!
 : Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
 :
-: For an upgrade guide from v1 to v2, please visit this [JupyterBook documentation page](https://next.jupyterbook.org/upgrade/).
+: For more information see this [upgrade guide from Jupyter Book v1 to v2](https://next.jupyterbook.org/upgrade/).
 :::
 
 ## Cite `mystmd`
