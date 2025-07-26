@@ -104,13 +104,13 @@ This re-uses the reference specification defined by [the intersphinx plugin for 
 
 % TODO: Update this when we release Jupyter Book V2 because /stable will no longer be a Sphinx site.
 
-Similar to [MyST cross references](#myst-xref), use the `references` object to list Sphinx projects. For example, in the demonstration below we will load the Python 3.7 documentation and Jupyter Book V1 docs, both of which use sphinx and expose cross references through an `objects.inv` file.
+Similar to [MyST cross references](#myst-xref), use the `references` object to list Sphinx projects. For example, in the demonstration below we will load the Python 3.13 documentation and Jupyter Book V1 docs, both of which use sphinx and expose cross references through an `objects.inv` file.
 
 (intersphinx-config)=
 
 ```yaml
 references:
-  python: https://docs.python.org/3.7/
+  python: https://docs.python.org/3.13/
   jupyterbook: https://jupyterbook.org/en/stable/
 ```
 
@@ -167,12 +167,12 @@ MyST will warn you in the console if your target is not found.
 You can also use the [intersphinx](https://www.npmjs.com/package/intersphinx) package, for example, `list`, or `parse` an intersphinx inventory:
 
 ```bash
->> intersphinx list https://docs.python.org/3.7 --domain std:doc --includes abc --limit 5
+>> intersphinx list https://docs.python.org/3.13 --domain std:doc --includes abc --limit 5
 
 std:doc Abstract Base Classes (library/abc)
-  https://docs.python.org/3.7/library/abc.html
+  https://docs.python.org/3.13/library/abc.html
 std:doc Abstract Base Classes for Containers (library/collections.abc)
-  https://docs.python.org/3.7/library/collections.abc.html
+  https://docs.python.org/3.13/library/collections.abc.html
 ```
 
 Use the target in the parenthesis, which would be `xref:python#library/abc` above.
