@@ -177,7 +177,7 @@ ${filename}
         ? `at:\n\n    ${githubPagesUrl}\n`
         : 'on your https://{{ organization }}.github.io/{{ repo }} domain'
     }
-7. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
+7. 🎉 Celebrate and tell us about your site on BlueSky or Mastodon! 🐦 🐘
 `,
   );
 }
@@ -218,7 +218,7 @@ ${filename}
 5. Push these changes (and/or merge to ${prompt.branch})
 6. Look for a new action to start${githubUrl ? `\n\n    ${githubUrl}/actions\n` : ''}
 7. Once the action completes, your site should be deployed
-8. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
+8. 🎉 Celebrate and tell us about your site on BlueSky or Mastodon! 🐦 🐘
 `,
   );
 }
