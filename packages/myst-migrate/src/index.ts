@@ -9,6 +9,9 @@ export { MIGRATIONS } from './migrations.js';
  * @param options - to: desired target version, log: Logger
  */
 export async function migrate(src: IFile, opts?: Options): Promise<IFile> {
+  if (opts?.to === undefined) {
+    opts?.log?.warn(`Calling migrate with no version is deprecated and will be removed in future.`);
+  }
   const to = opts?.to ?? MIGRATIONS.length;
   let currentVersion = src.version || 0;
 
