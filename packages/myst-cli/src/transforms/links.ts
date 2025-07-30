@@ -89,27 +89,38 @@ type LinkInfo = {
 
 export type LinkLookup = Record<string, LinkInfo>;
 
+export function getSourceFolder(link: string, sourceFile: string, projectFolder: string): string {
+  return link.startsWith('/') ? projectFolder : path.dirname(sourceFile);
+}
 /**
  * Compute link node file path relative to site root (currently, only the working directory)
+ *
+ * @param pathFromLink Path from link node URL relative to file where it is defined
+ * @param file File where link is defined
+ */
+export function fileFromRelativePath(pathFromLink: string, file?: string): string | undefined {
+  const folder = file ? path.dirname(file) : undefined;
+  return fileFromSourceFolder(pathFromLink, folder);
+}
+
+/**
+ * Compute link node file path relative to a source folder.
  *
  * If path has no extension, this function looks for .md then .ipynb.
  * If a '#target' is present at the end of the path, it is maintained.
  * If file does not exists, returns undefined.
  *
- * @param pathFromLink Path from link node URL relative to file where it is defined
- * @param file File where link is defined
- * @param sitePath Root path of site / session; from here all relative paths in the store are defined
+ * @param pathFromLink Path from link node URL relative to the folder
+ * @param folder Folder path to resolve from
  */
-export function fileFromRelativePath(pathFromLink: string, file?: string): string | undefined {
+export function fileFromSourceFolder(pathFromLink: string, folder?: string): string | undefined {
   let target: string[];
   [pathFromLink, ...target] = pathFromLink.split('#');
-  // The URL is encoded (e.g. %20 --> space)
   pathFromLink = decodeURIComponent(pathFromLink);
-  if (file) {
-    pathFromLink = path.resolve(path.dirname(file), pathFromLink);
+  if (folder) {
+    pathFromLink = path.resolve(path.join(folder, pathFromLink));
   }
   if (fs.existsSync(pathFromLink) && fs.lstatSync(pathFromLink).isDirectory()) {
-    // This should only return true for files
     return undefined;
   }
   if (!fs.existsSync(pathFromLink)) {
@@ -136,13 +147,15 @@ export class StaticFileTransformer implements LinkTransformer {
 
   test(url?: string) {
     if (!url) return false;
-    const linkFileWithTarget = fileFromRelativePath(url, this.filePath);
+    const sourceFileFolder = getSourceFolder(url, this.filePath, this.session.sourcePath());
+    const linkFileWithTarget = fileFromSourceFolder(url, sourceFileFolder);
     return !!linkFileWithTarget;
   }
 
   transform(link: Link, file: VFile): boolean {
     const urlSource = link.urlSource || link.url;
-    const linkFileWithTarget = fileFromRelativePath(urlSource, this.filePath);
+    const sourceFileFolder = getSourceFolder(urlSource, this.filePath, this.session.sourcePath());
+    const linkFileWithTarget = fileFromSourceFolder(urlSource, sourceFileFolder);
     if (!linkFileWithTarget) {
       // Not raising a warning here, this should be caught in the test above
       return false;
