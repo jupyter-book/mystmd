@@ -133,7 +133,9 @@ export async function saveImageInStaticFolder(
   writeFolder: string,
   opts?: { altOutputFolder?: string; position?: VFileMessage['position'] },
 ): Promise<{ urlSource: string; url: string } | null> {
-  const sourceFileFolder = path.dirname(sourceFile);
+  const sourceFileFolder = urlSource.startsWith('/')
+    ? session.sourcePath()
+    : path.dirname(sourceFile);
   const imageLocalFile = path.join(sourceFileFolder, urlSource);
   let file: string | undefined;
   if (isUrl(urlSource)) {
