@@ -205,6 +205,12 @@ The following table lists the available frontmatter fields, a brief description 
 * - `github`
   - a valid GitHub URL or `owner/reponame`
   - page can override project
+* - `edit_url`
+  - URL to edit the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific GitHub URL for the page. You may disable this behavior by explicitly setting `edit_url` to `null`.
+  - page can override project
+* - `source_url`
+  - URL to view the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific GitHub URL for the page. You may disable this behavior by explicitly setting `source_url` to `null`.
+  - page can override project
 * - `binder`
   - any valid URL
   - page can override project
@@ -261,12 +267,6 @@ The following table lists the available frontmatter fields, a brief description 
   - page only
 * - `skip_execution`
   - opt-out of execution for a particular document (see [](./execute-notebooks))
-  - page only
-* - `edit_url`
-  - URL to edit the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific GitHub URL for the page. You may disable this behavior by explicitly setting `edit_url` to `null`.
-  - page only
-* - `source_url`
-  - URL to view the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific GitHub URL for the page. You may disable this behavior by explicitly setting `source_url` to `null`.
   - page only
 ```
 

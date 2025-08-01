@@ -236,6 +236,16 @@ export function validateProjectAndPageFrontmatterKeys(
     );
     if (settings) output.settings = settings;
   }
+  if (value.edit_url === null) {
+    output.edit_url = null;
+  } else if (defined(value.edit_url)) {
+    output.edit_url = validateUrl(value.edit_url, incrementOptions('edit_url', opts));
+  }
+  if (value.source_url === null) {
+    output.source_url = null;
+  } else if (defined(value.source_url)) {
+    output.source_url = validateUrl(value.source_url, incrementOptions('source_url', opts));
+  }
   return output;
 }
 
