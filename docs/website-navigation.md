@@ -144,14 +144,7 @@ See [](./frontmatter.md) for many kinds of metadata that configure this section.
 
 ### Use the Edit this Page button
 
-If you've added [`github` MyST frontmatter](#table-frontmatter), the MyST themes will display an "Edit this page" link for your page. This link will point to the source file for your page in GitHub, allowing a reader to quickly view the source and make an edit using GitHub's UI.
-
-:::{tip} How to use GitHub's UI to edit a page
-There are two ways to edit a URL in GitHub:
-
-1. Click the pencil icon {kbd}`✏️` to open a lightweight editor on the page.
-2. Replace `.com` with `.dev` in the URL (or, simply press the period button {kbd}`.`). This will open a VSCode editor session you can use to make more extensive edits.
-:::
+If you've added [`github` MyST frontmatter](#table-frontmatter), the MyST themes will display an "Edit this page" link for your page. This link will take the user directly to GitHub's editing interface for the given page.
 
 To override this behavior and set a manual edit URL, use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
 

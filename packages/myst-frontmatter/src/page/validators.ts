@@ -6,6 +6,7 @@ import {
   validateString,
   validateBoolean,
   validateObject,
+  validateUrl,
 } from 'simple-validators';
 import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
 import { PAGE_FRONTMATTER_KEYS, type PageFrontmatter } from './types.js';
