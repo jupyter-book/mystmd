@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.6.1
+
+### Patch Changes
+
+- e661f85d: Change social links to drop Twitter
+- a01426a: When clicking "edit this page" take the user directly to the GitHub edit interface
+- 089cbcaf: Load project config before site config
+
 ## 1.6.0
 
 ### Minor Changes
