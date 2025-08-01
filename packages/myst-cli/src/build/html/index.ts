@@ -3,7 +3,6 @@ import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
-import type { SiteManifestOptions } from '../site/manifest.js';
 import type { StartOptions } from '../site/start.js';
 import { startServer } from '../site/start.js';
 import { getSiteTemplate } from '../site/template.js';
@@ -19,7 +18,6 @@ export async function currentSiteRoutes(
   session: ISession,
   host: string,
   baseurl: string | undefined,
-  opts?: SiteManifestOptions,
 ): Promise<{ url: string; path: string; binary?: boolean }[]> {
   const state = session.store.getState();
   const siteConfig = selectors.selectCurrentSiteConfig(state);
@@ -149,7 +147,7 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   const appServer = await startServer(session, { ...opts, buildStatic: true, baseurl });
   if (!appServer) return;
   const host = `http://localhost:${appServer.port}`;
-  const routes = await currentSiteRoutes(session, host, baseurl, opts);
+  const routes = await currentSiteRoutes(session, host, baseurl);
 
   // Fetch all HTML pages and assets by the template
   await Promise.all(
