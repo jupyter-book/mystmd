@@ -148,19 +148,20 @@ function transformProjectTocs(
 
   if (!pages) {
     fileError(vfile, `Pages not available to build Table of Contents`);
-  } else {
-    if (pages[0].level !== 1) {
-      fileWarn(vfile, `First page of Table of Contents must be level 1`);
-    }
-    projectTocs.forEach((toc) => {
-      const filteredPages = toc.depth ? pages.filter((page) => page.level <= toc.depth) : pages;
-      toc.type = 'block';
-      delete toc.kind;
-      toc.data = { part: 'toc:project' };
-      if (!toc.children) toc.children = [];
-      toc.children.push(listFromPages(filteredPages, projectSlug));
-    });
+    return;
   }
+
+  if (pages[0].level !== 1) {
+    fileWarn(vfile, `First page of Table of Contents must be level 1`);
+  }
+  projectTocs.forEach((toc) => {
+    const filteredPages = toc.depth ? pages.filter((page) => page.level <= toc.depth) : pages;
+    toc.type = 'block';
+    delete toc.kind;
+    toc.data = { part: 'toc:project' };
+    if (!toc.children) toc.children = [];
+    toc.children.push(listFromPages(filteredPages, projectSlug));
+  });
 }
 
 function transformPageTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
@@ -172,21 +173,22 @@ function transformPageTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
   const headings = tocsAndHeadings.filter((node) => node.type === 'heading') as Heading[];
   if (headings.length === 0) {
     fileWarn(vfile, `No page headings found for Table of Contents`);
-  } else {
-    if (Math.min(...headings.map((h) => h.depth)) !== headings[0].depth) {
-      fileWarn(vfile, 'Page heading levels do not start with highest level');
-    }
-    pageTocs.forEach((toc) => {
-      const filteredHeadings = toc.depth
-        ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
-        : headings;
-      toc.type = 'block';
-      delete toc.kind;
-      toc.data = { part: 'toc:page' };
-      if (!toc.children) toc.children = [];
-      toc.children.push(listFromHeadings(filteredHeadings));
-    });
+    return;
   }
+
+  if (Math.min(...headings.map((h) => h.depth)) !== headings[0].depth) {
+    fileWarn(vfile, 'Page heading levels do not start with highest level');
+  }
+  pageTocs.forEach((toc) => {
+    const filteredHeadings = toc.depth
+      ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
+      : headings;
+    toc.type = 'block';
+    delete toc.kind;
+    toc.data = { part: 'toc:page' };
+    if (!toc.children) toc.children = [];
+    toc.children.push(listFromHeadings(filteredHeadings));
+  });
 }
 
 function transformSectionTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
