@@ -32,6 +32,7 @@ type FormatBuildOpts = {
   all?: boolean;
   force?: boolean;
   output?: string;
+  config?: string;
 };
 
 export type BuildOpts = FormatBuildOpts & CollectionOptions & RunExportOptions & StartOptions;
@@ -220,6 +221,12 @@ function extToKind(ext: string): string {
 
 export async function build(session: ISession, files: string[], opts: BuildOpts) {
   const { site, all, watch, writeDOIBib } = opts;
+
+  // Override default myst.yml if --config option is given.
+  if (opts.config !== undefined) {
+    session.configFiles[0] = opts.config;
+  }
+
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts)) || writeDOIBib;
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   // TODO: generalize and pull this out!

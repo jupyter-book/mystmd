@@ -20,6 +20,7 @@ import {
   makeMaxSizeWebpOption,
   makeDOIBibOption,
   makeCffOption,
+  makeConfigOption,
 } from './options.js';
 import { readableName } from '../utils/whiteLabelling.js';
 
@@ -50,6 +51,7 @@ export function makeBuildCommand() {
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())
     .addOption(makeCIOption())
-    .addOption(makeMaxSizeWebpOption());
+    .addOption(makeMaxSizeWebpOption())
+    .addOption(makeConfigOption());
   return command;
 }
