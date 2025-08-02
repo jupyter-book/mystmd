@@ -175,3 +175,11 @@ export function makeTemplatesOption() {
     'Delete the _build/templates folder where downloaded templates are saved',
   ).default(false);
 }
+
+export function makeConfigOption() {
+  return new Option(
+    '--config <config-file>',
+    'Use this YAML config file, instead of the default myst.yml',
+  ).default(undefined);
+}
+
