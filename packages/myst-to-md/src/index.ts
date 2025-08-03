@@ -23,11 +23,10 @@ export function writeMd(file: VFile, node: Root, frontmatter?: PageFrontmatter) 
     ...referenceHandlers,
     ...miscHandlers,
   };
-  const exerciseDirectivesNames = exerciseDirectives
-    .flatMap(({ name, alias }) => [
-      ...(name && name.trim() !== '' ? [name] : []),
-      ...(alias?.filter(a => a && a.trim() !== '') || [])
-    ]);
+  const exerciseDirectivesNames = exerciseDirectives.flatMap(({ name, alias }) => [
+    ...(name && name.trim() !== '' ? [name] : []),
+    ...(alias?.filter((a) => a && a.trim() !== '') || []),
+  ]);
   const handlerKeys = [
     ...Object.keys(handlers),
     ...Object.keys(defaultHandlers),
