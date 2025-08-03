@@ -44,6 +44,7 @@
     "myst-frontmatter": "^1.7.6",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
-    "vfile-reporter": "^7.0.4"
+    "vfile-reporter": "^7.0.4",
+    "myst-ext-exercise": "^1.0.9"
   }
 }
