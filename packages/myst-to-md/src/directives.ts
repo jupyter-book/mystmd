@@ -82,6 +82,97 @@ function mystDirective(node: any, _: Parent, state: NestedState, info: Info): st
   return writeStaticDirective(node.name, { argsKey: 'args' })(node, _, state, info);
 }
 
+/**
+ * Handler for any directive with children nodes
+ *
+ * This adds multiple backticks in cases where directives are nested
+ */
+function writeFlowDirective(name: string, args?: string, options?: DirectiveOptions) {
+  return (node: any, _: Parent, state: NestedState, info: Info): string => {
+    incrementNestedLevel('directive', state);
+    const optionsLines = optionsFromNode(node, options);
+    const content = state.containerFlow(node, info);
+    const nesting = popNestedLevel('directive', state);
+    const marker = directiveChar.repeat(nesting + 3);
+    if (optionsLines.length && content) optionsLines.push('');
+    const directiveLines = [
+      `${marker}{${name}}${args ? ' ' : ''}${args ? args : ''}`,
+      ...optionsLines,
+    ];
+    if (content) directiveLines.push(content);
+    directiveLines.push(marker);
+    return directiveLines.join('\n');
+  };
+}
+
+/**
+ * Handler for exercise nodes
+ */
+function exercise(node: any, _: Parent, state: NestedState, info: Info): string {
+  const admonitionTitle = select('admonitionTitle', node);
+  const args = admonitionTitle ? state.containerPhrasing(admonitionTitle as any, info) : '';
+
+  // Handle gate property for exercise-start/exercise-end
+  if (node.gate === 'start') {
+    const nodeCopy = {
+      ...node,
+      children: node.children.filter((n: GenericNode) => n.type !== 'admonitionTitle'),
+    };
+    const options = {
+      keys: ['label', 'class', 'hidden', 'enumerated', 'nonumber'],
+      aliases: {
+        enumerated: 'enumerated',
+        nonumber: 'nonumber',
+      },
+    };
+    return writeFlowDirective('exercise-start', args, options)(nodeCopy, _, state, info);
+  } else if (node.gate === 'end') {
+    return '```{exercise-end}\n```';
+  }
+
+  const nodeCopy = {
+    ...node,
+    children: node.children.filter((n: GenericNode) => n.type !== 'admonitionTitle'),
+  };
+  const options = {
+    keys: ['label', 'class', 'hidden', 'enumerated', 'nonumber'],
+    aliases: {
+      enumerated: 'enumerated',
+      nonumber: 'nonumber',
+    },
+  };
+  return writeFlowDirective('exercise', args, options)(nodeCopy, _, state, info);
+}
+
+/**
+ * Handler for solution nodes
+ */
+function solution(node: any, _: Parent, state: NestedState, info: Info): string {
+  // Handle gate property for solution-start/solution-end
+  const args = '';
+  if (node.gate === 'start') {
+    const nodeCopy = {
+      ...node,
+      children: node.children.filter((n: GenericNode) => n.type !== 'admonitionTitle'),
+    };
+    const options = {
+      keys: ['class', 'hidden'],
+    };
+    return writeFlowDirective('solution-start', args, options)(nodeCopy, _, state, info);
+  } else if (node.gate === 'end') {
+    return '```{solution-end}\n```';
+  }
+
+  const nodeCopy = {
+    ...node,
+    children: node.children.filter((n: GenericNode) => n.type !== 'admonitionTitle'),
+  };
+  const options = {
+    keys: ['class', 'hidden'],
+  };
+  return writeFlowDirective('solution', args, options)(nodeCopy, _, state, info);
+}
+
 const CODE_BLOCK_KEYS = [
   'class',
   'emphasizeLines',
@@ -140,29 +231,6 @@ function image(node: any, _: Parent, state: NestedState, info: Info): string {
     keys: IMAGE_OPTS,
   };
   return writeStaticDirective('image', options)(node, _, state, info);
-}
-
-/**
- * Handler for any directive with children nodes
- *
- * This adds multiple backticks in cases where directives are nested
- */
-function writeFlowDirective(name: string, args?: string, options?: DirectiveOptions) {
-  return (node: any, _: Parent, state: NestedState, info: Info): string => {
-    incrementNestedLevel('directive', state);
-    const optionsLines = optionsFromNode(node, options);
-    const content = state.containerFlow(node, info);
-    const nesting = popNestedLevel('directive', state);
-    const marker = directiveChar.repeat(nesting + 3);
-    if (optionsLines.length && content) optionsLines.push('');
-    const directiveLines = [
-      `${marker}{${name}}${args ? ' ' : ''}${args ? args : ''}`,
-      ...optionsLines,
-    ];
-    if (content) directiveLines.push(content);
-    directiveLines.push(marker);
-    return directiveLines.join('\n');
-  };
 }
 
 function containerValidator(node: any, file: VFile) {
@@ -397,6 +465,8 @@ export const directiveHandlers: Record<string, Handle> = {
   iframe,
   aside,
   card,
+  exercise,
+  solution,
   grid: writeFlowDirective('grid', undefined, {
     keys: ['columns'],
     transforms: { columns: (val) => val.join(' ') },

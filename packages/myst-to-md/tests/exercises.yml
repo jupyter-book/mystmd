@@ -1,0 +1,160 @@
+title: myst-to-md exercise directives
+cases:
+  - title: exercise directive - basic
+    mdast:
+      type: root
+      children:
+        - type: exercise
+          label: ex-1
+          identifier: ex-1
+          enumerated: true
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: Plot a function
+            - type: paragraph
+              children:
+                - type: text
+                  value: Plot the function f(x) = cos(x)
+    markdown: |-
+      :::{exercise} Plot a function
+      :label: ex-1
+      :enumerated:
+
+      Plot the function f(x) = cos(x)
+      :::
+  - title: exercise directive - no title
+    mdast:
+      type: root
+      children:
+        - type: exercise
+          label: ex-2
+          identifier: ex-2
+          enumerated: true
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Plot the function f(x) = sin(x)
+    markdown: |-
+      :::{exercise}
+      :label: ex-2
+      :enumerated:
+
+      Plot the function f(x) = sin(x)
+      :::
+  - title: exercise-start directive
+    mdast:
+      type: root
+      children:
+        - type: exercise
+          label: ex-3
+          identifier: ex-3
+          enumerated: true
+          gate: start
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: Complex Exercise
+            - type: paragraph
+              children:
+                - type: text
+                  value: This is a complex exercise with multiple parts.
+    markdown: |-
+      :::{exercise-start} Complex Exercise
+      :label: ex-3
+      :enumerated:
+
+      This is a complex exercise with multiple parts.
+      :::
+  - title: exercise-end directive
+    mdast:
+      type: root
+      children:
+        - type: exercise
+          gate: end
+    markdown: |-
+      ```{exercise-end}
+      ```
+  - title: solution directive - basic
+    mdast:
+      type: root
+      children:
+        - type: solution
+          hidden: false
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: 'Solution to '
+                - type: crossReference
+                  label: ex-1
+                  identifier: ex-1
+            - type: paragraph
+              children:
+                - type: text
+                  value: Here is the solution
+    markdown: |-
+      :::{solution}
+      Here is the solution
+      :::
+  - title: solution-start directive with class
+    mdast:
+      type: root
+      children:
+        - type: solution
+          gate: start
+          class: dropdown
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: 'Solution to '
+                - type: crossReference
+                  label: mpl_ex1
+                  identifier: mpl_ex1
+            - type: paragraph
+              children:
+                - type: text
+                  value: Here's one solution
+    markdown: |-
+      :::{solution-start}
+      :class: dropdown
+
+      Here's one solution
+      :::
+  - title: solution-end directive
+    mdast:
+      type: root
+      children:
+        - type: solution
+          gate: end
+    markdown: |-
+      ```{solution-end}
+      ```
+  - title: exercise with options
+    mdast:
+      type: root
+      children:
+        - type: exercise
+          label: ex-4
+          identifier: ex-4
+          enumerated: false
+          nonumber: true
+          hidden: false
+          class: my-exercise
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Exercise content here
+    markdown: |-
+      :::{exercise}
+      :label: ex-4
+      :class: my-exercise
+      :nonumber:
+
+      Exercise content here
+      :::
