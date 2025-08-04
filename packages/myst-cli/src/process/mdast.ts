@@ -67,6 +67,7 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
+  liftOutputs,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -194,6 +195,12 @@ export async function transformMdast(
       log: session.log,
     });
   }
+  transformRenderInlineExpressions(mdast, vfile);
+  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
+  liftOutputs(session, mdast, vfile, {
+    parseMyst: (content: string) => parseMyst(session, content, file),
+  });
+  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
@@ -238,9 +245,6 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  transformRenderInlineExpressions(mdast, vfile);
-  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(session, file, mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
