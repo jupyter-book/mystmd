@@ -58,8 +58,6 @@ Like the word "missed".
 
 Like the [natural phenomenon caused by small droplets of water aerosols suspended in the cold air, usually by condensation](https://en.wikipedia.org/wiki/Mist).
 
-Like `/mɪst/`.
-
-Like [mist](https://dictionary.cambridge.org/us/pronunciation/english/mist).
+Like [`/mɪst/`](https://dictionary.cambridge.org/us/pronunciation/english/mist).
 
 Like [the video game](https://en.wikipedia.org/wiki/Myst).
