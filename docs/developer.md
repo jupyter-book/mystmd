@@ -532,7 +532,7 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 **Transformers**
 
-- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more information](#develop:transforms)).
+- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more [information](#develop:transforms)).
 
 **Export Tools**
 
