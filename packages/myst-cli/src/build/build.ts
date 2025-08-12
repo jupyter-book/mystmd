@@ -225,6 +225,7 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
   // Override default myst.yml if --config option is given.
   if (opts.config !== undefined) {
     session.configFiles[0] = opts.config;
+    await session.reload();
   }
 
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts)) || writeDOIBib;
