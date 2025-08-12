@@ -494,7 +494,7 @@ cd packages/mystmd
 Then run the `npm test` command like so:
 
 ```shell
-npm test -- -t "Basic tex build"
+npm run test -- -t "Basic tex build"
 ```
 
 For integration test titles, see `packages/mystmd/tests/exports.yml`.
