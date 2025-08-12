@@ -12,6 +12,25 @@ type Options = {
 const githubAdmonitionKinds = ['note', 'tip', 'important', 'warning', 'caution'];
 
 /**
+ * Extract header children from a possible heading node (paragraph with strong text or heading)
+ * This function can be used by other packages to get header content for directives
+ */
+export function getPossibleAdmonitionHeaderChildren(
+  possibleHeading: FlowContent,
+): any[] | undefined {
+  if (
+    possibleHeading?.type === 'paragraph' &&
+    possibleHeading.children?.length === 1 &&
+    possibleHeading.children[0].type === 'strong'
+  ) {
+    return possibleHeading.children[0].children;
+  } else if (possibleHeading?.type === 'heading') {
+    return possibleHeading.children;
+  }
+  return undefined;
+}
+
+/**
  * Visit all admonitions and add headers if necessary
  */
 export function admonitionHeadersTransform(tree: GenericParent, opts?: Options) {
@@ -37,17 +56,10 @@ export function admonitionHeadersTransform(tree: GenericParent, opts?: Options) 
         AdmonitionTitle,
         FlowContent,
       ];
-      if (
-        possibleHeading?.type === 'paragraph' &&
-        possibleHeading.children?.length === 1 &&
-        possibleHeading.children[0].type === 'strong'
-      ) {
-        const strongTextChildren = possibleHeading.children[0].children;
-        admonitionHeader.children = strongTextChildren; // Replace the admonition text with the strong chidren
-        node.children = [admonitionHeader, ...rest]; // remove the strong text
-      } else if (possibleHeading?.type === 'heading') {
-        admonitionHeader.children = possibleHeading.children; // Replace the admonition text with the heading chidren
-        node.children = [admonitionHeader, ...rest]; // remove the strong text
+      const headerChildren = getPossibleAdmonitionHeaderChildren(possibleHeading);
+      if (headerChildren) {
+        admonitionHeader.children = headerChildren; // Replace the admonition text with the header children
+        node.children = [admonitionHeader, ...rest]; // remove the header text
       }
     }
   });
