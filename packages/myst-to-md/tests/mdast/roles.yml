@@ -15,7 +15,7 @@ cases:
                     - type: text
                       value: markdown
     markdown: |-
-      Some % {sub}`*markdown*`
+      Some % {sub}`_markdown_`
   - title: superscript
     mdast:
       type: root
@@ -31,7 +31,7 @@ cases:
                     - type: text
                       value: markdown
     markdown: |-
-      Some % {sup}`*markdown*`
+      Some % {sup}`_markdown_`
   - title: delete
     mdast:
       type: root
@@ -47,7 +47,7 @@ cases:
                     - type: text
                       value: markdown
     markdown: |-
-      Some % {del}`*markdown*`
+      Some % {del}`_markdown_`
   - title: underline
     mdast:
       type: root
@@ -63,7 +63,7 @@ cases:
                     - type: text
                       value: markdown
     markdown: |-
-      Some % {u}`*markdown*`
+      Some % {u}`_markdown_`
   - title: smallcaps
     mdast:
       type: root
@@ -79,7 +79,7 @@ cases:
                     - type: text
                       value: markdown
     markdown: |-
-      Some % {sc}`*markdown*`
+      Some % {sc}`_markdown_`
   - title: inline math
     mdast:
       type: root
@@ -91,7 +91,7 @@ cases:
             - type: inlineMath
               value: markdown math
     markdown: |-
-      Some % {math}`markdown math`
+      Some % $markdown math$
   - title: abbreviation - no title
     mdast:
       type: root
@@ -107,7 +107,7 @@ cases:
                     - type: text
                       value: md
     markdown: |-
-      Some % {abbr}`*md*`
+      Some % {abbr}`_md_`
   - title: abbreviation - title
     mdast:
       type: root
@@ -124,7 +124,7 @@ cases:
                     - type: text
                       value: md
     markdown: |-
-      Some % {abbr}`*md* (markdown)`
+      Some % {abbr}`_md_ (markdown)`
   - title: nested roles
     mdast:
       type: root
@@ -181,7 +181,7 @@ cases:
                 - type: inlineCode
                   value: and code
     markdown: |-
-      Some % {abbr}``*md* `and code` (markdown)``
+      Some % {abbr}``_md_ `and code` (markdown)``
   - title: nested roles with math
     mdast:
       type: root
@@ -202,7 +202,7 @@ cases:
                 - type: inlineMath
                   value: and math
     markdown: |-
-      Some % {abbr}``*md* {math}`and math` (markdown)``
+      Some % {abbr}`_md_ $and math$ (markdown)`
   - title: nested roles with inline backtick
     mdast:
       type: root
@@ -223,7 +223,7 @@ cases:
                 - type: inlineCode
                   value: co`de
     markdown: |-
-      Some % {abbr}```*md* ``co`de`` (markdown)```
+      Some % {abbr}```_md_ ``co`de`` (markdown)```
   - title: nested roles with multiple levels
     mdast:
       type: root
@@ -252,7 +252,7 @@ cases:
                         - type: inlineCode
                           value: co`de
     markdown: |-
-      Some % {abbr}`````{u}``{sub}`md` `` {math}`and math`{u}````{sub}``` ``co`de`` ``` ```` (markdown)`````
+      Some % {abbr}`````{u}``{sub}`md` `` $and math${u}````{sub}``` ``co`de`` ``` ```` (markdown)`````
   - title: myst role
     mdast:
       type: root

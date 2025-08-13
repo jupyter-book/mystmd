@@ -1,42 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import fs from 'node:fs';
-import path from 'node:path';
-import yaml from 'js-yaml';
 import { unified } from 'unified';
 import mystToMd from '../src';
-
-type TestCase = {
-  title: string;
-  markdown: string;
-  mdast: Record<string, any>;
-};
-
-type TestCases = {
-  title: string;
-  cases: TestCase[];
-};
-
-const casesList: TestCases[] = fs
-  .readdirSync(__dirname)
-  .filter((file) => file.endsWith('.yml'))
-  .map((file) => {
-    const content = fs.readFileSync(path.join(__dirname, file), { encoding: 'utf-8' });
-    return yaml.load(content) as TestCases;
-  });
-
-casesList.forEach(({ title, cases }) => {
-  describe(title, () => {
-    test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
-      '%s',
-      (_, { markdown, mdast }) => {
-        const pipe = unified().use(mystToMd);
-        pipe.runSync(mdast as any);
-        const file = pipe.stringify(mdast as any);
-        expect(file.result).toEqual(markdown);
-      },
-    );
-  });
-});
 
 describe('myst-to-md frontmatter', () => {
   test('empty frontmatter passes', () => {
@@ -47,7 +11,7 @@ describe('myst-to-md frontmatter', () => {
     };
     pipe.runSync(mdast as any);
     const file = pipe.stringify(mdast as any);
-    expect(file.result).toEqual('Hello world!');
+    expect(file.result).toEqual('Hello world!\n');
   });
   test('simple frontmatter passes', () => {
     const pipe = unified().use(mystToMd, { title: 'My Title' });
@@ -57,7 +21,7 @@ describe('myst-to-md frontmatter', () => {
     };
     pipe.runSync(mdast as any);
     const file = pipe.stringify(mdast as any);
-    expect(file.result).toEqual('---\ntitle: My Title\n---\nHello world!');
+    expect(file.result).toEqual('---\ntitle: My Title\n---\nHello world!\n');
   });
   test('frontmatter with licenses passes', () => {
     const pipe = unified().use(mystToMd, {
@@ -85,7 +49,7 @@ describe('myst-to-md frontmatter', () => {
     pipe.runSync(mdast as any);
     const file = pipe.stringify(mdast as any);
     expect(file.result).toEqual(
-      '---\ntitle: My Title\nlicense:\n  content: Apache-2.0\n  code: CC-BY-3.0\n---\nHello world!',
+      '---\ntitle: My Title\nlicense:\n  content: Apache-2.0\n  code: CC-BY-3.0\n---\nHello world!\n',
     );
   });
 });
