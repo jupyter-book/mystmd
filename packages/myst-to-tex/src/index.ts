@@ -241,7 +241,11 @@ const handlers: Record<string, Handler> = {
   },
   listItem(node, state) {
     state.write('\\item ');
-    state.renderChildren(node, true);
+    if (node.children?.[0]?.type === 'paragraph' && node.children.length === 1) {
+      state.renderChildren(node.children[0], true);
+    } else {
+      state.renderChildren(node, true);
+    }
     state.write('\n');
   },
   thematicBreak(node, state) {
