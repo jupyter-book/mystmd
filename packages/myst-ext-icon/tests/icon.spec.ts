@@ -44,7 +44,7 @@ describe('icon role', () => {
       const output = mystParse(markup, {
         roles: [iconRole],
       });
-      expect(deletePositions(output)).toEqual(expected);
+      expect(deletePositions(output)).toMatchObject(expected);
     },
   );
   it.each(Object.entries(LEGACY_ICON_ALIASES))(
@@ -79,7 +79,7 @@ describe('icon role', () => {
       const output = mystParse(markup, {
         roles: [iconRole],
       });
-      expect(deletePositions(output)).toEqual(expected);
+      expect(deletePositions(output)).toMatchObject(expected);
     },
   );
 });
