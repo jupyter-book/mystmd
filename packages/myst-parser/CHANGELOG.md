@@ -1,5 +1,14 @@
 # myst-parser
 
+## 1.5.16
+
+### Patch Changes
+
+- 8ffa2d3: Transform lists that have non-block content (text, italic, inlineCode, etc.) to ensure they are in paragraphs.
+  - myst-common@1.8.2
+  - myst-roles@1.5.16
+  - myst-directives@1.5.16
+
 ## 1.5.15
 
 ### Patch Changes
