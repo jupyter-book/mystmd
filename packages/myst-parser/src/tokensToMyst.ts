@@ -8,6 +8,7 @@ import { selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown.js';
 import type { MdastOptions, TokenHandlerSpec } from './fromMarkdown.js';
+import { listItemParagraphsTransform } from './transforms/index.js';
 
 export function computeAmsmathTightness(
   src: string,
@@ -519,6 +520,7 @@ function nestSingleImagesIntoParagraphs(tree: GenericParent) {
 const defaultOptions: MdastOptions = {
   handlers: defaultMdast,
   hoistSingleImagesOutofParagraphs: true,
+  listItemParagraphs: true,
   nestBlocks: true,
 };
 
@@ -570,6 +572,11 @@ export function tokensToMyst(
       }
     }
   });
+
+  if (opts.listItemParagraphs) {
+    // Ensure that listItems that are not paragraphs are wrapped in paragraphs
+    listItemParagraphsTransform(tree);
+  }
 
   // Move crossReference text value to children
   visit(tree, 'crossReference', (node: GenericNode) => {

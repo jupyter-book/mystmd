@@ -62,46 +62,64 @@ cases:
                         - type: tableCell
                           header: true
                           children:
-                            - type: text
-                              value: a
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: a
                         - type: tableCell
                           header: true
                           children:
-                            - type: text
-                              value: b
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: b
                         - type: tableCell
                           header: true
                           children:
-                            - type: text
-                              value: c
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: c
                     - type: tableRow
                       children:
                         - type: tableCell
                           header: true
                           children:
-                            - type: text
-                              value: '1'
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: '1'
                         - type: tableCell
                           header: true
                           children:
-                            - type: text
-                              value: '2'
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: '2'
                         - type: tableCell
                           header: true
                           children:
-                            - type: text
-                              value: '3'
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: '3'
                     - type: tableRow
                       children:
                         - type: tableCell
                           children:
-                            - type: text
-                              value: '4'
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: '4'
                         - type: tableCell
                           children:
-                            - type: text
-                              value: '5'
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: '5'
                         - type: tableCell
                           children:
-                            - type: text
-                              value: '6'
+                            - type: paragraph
+                              children:
+                                - type: text
+                                  value: '6'

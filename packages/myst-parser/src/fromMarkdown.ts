@@ -24,6 +24,7 @@ const UNHIDDEN_TOKENS = new Set([
 export type MdastOptions = {
   handlers?: Record<string, TokenHandlerSpec>;
   hoistSingleImagesOutofParagraphs?: boolean;
+  listItemParagraphs?: boolean;
   nestBlocks?: boolean;
 };
 

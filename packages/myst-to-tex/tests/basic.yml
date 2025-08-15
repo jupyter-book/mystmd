@@ -461,3 +461,28 @@ cases:
                   value: markdown
     latex: |-
       Some \% other \textit{markdown}
+  - title: list item with and without paragraph
+    description: |
+      The list item should not add space if there is only a single paragraph.
+      This is resilient to a listItem not having a paragraph as the child.
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A list item'
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'A list item in a paragraph'
+    latex: |-
+      \begin{itemize}
+      \item A list item
+      \item A list item in a paragraph
+      \end{itemize}
