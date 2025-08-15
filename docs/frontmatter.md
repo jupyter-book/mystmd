@@ -605,7 +605,7 @@ If selecting a license from the [SPDX License List](https://spdx.org/licenses/),
 
 * - - `CC-BY-4.0`
     - `CC-BY-SA-4.0`
-    - `CC-BY-N-SA-4.0`
+    - `CC-BY-NC-SA-4.0`
     - `CC0-1.0`
 
   - - `MIT`

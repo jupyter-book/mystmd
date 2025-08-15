@@ -12,12 +12,12 @@ describe('Parses GFM Tasklists', () => {
     const task3 = (mdast.children[0] as List).children[2] as ListItem;
     expect(task1.type).toBe('listItem');
     expect(task1.checked).toBe(false);
-    expect((task1.children[0] as any).value).toBe('task 1');
+    expect((task1.children[0] as any).children[0].value).toBe('task 1');
     expect(task2.type).toBe('listItem');
     expect(task2.checked).toBe(true);
-    expect((task2.children[0] as any).value).toBe('task 2');
+    expect((task2.children[0] as any).children[0].value).toBe('task 2');
     expect(task3.type).toBe('listItem');
     expect(task3.checked).toBe(undefined);
-    expect((task3.children[0] as any).value).toBe('not a task');
+    expect((task3.children[0] as any).children[0].value).toBe('not a task');
   });
 });

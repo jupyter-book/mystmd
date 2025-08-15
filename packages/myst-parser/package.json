@@ -31,7 +31,7 @@
     "clean": "rimraf dist",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "build:bundle:browser": "esbuild bundle/myst.ts --bundle --outfile=dist/myst.min.js --platform=browser --minify",
     "build:esm": "tsc --project ./src/tsconfig.json",

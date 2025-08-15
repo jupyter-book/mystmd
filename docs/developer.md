@@ -263,7 +263,8 @@ Below you will see several `npm run x` commands.
 These are simply aliases for other commands, defined in the [`package.json` file](https://github.com/jupyter-book/mystmd/blob/main/package.json) under "scripts".
 ```
 
-## Developer workflow: myst CLI
+(developer:mystmd)=
+## Local development: `mystmd`
 
 The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
 
@@ -306,7 +307,7 @@ The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
 ```
 
-## Developer workflow: myst-theme
+## Local development: myst-theme
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
@@ -456,15 +457,58 @@ The process for releasing `myst-theme` infrastructure is similar to the release 
 
 We use [Turbo](https://turborepo.com/) to manage our testing and build system.
 
+(developer:testing)=
 ### Testing
 
-Tests help ensure that code operates as intended, and that changes do not break existing code. You can run the test suite using:
+We use [vitest](https://vitest.dev/guide/) for all tests in `mystmd`.
+
+#### How to run the test suite
+
+First [install `mystmd` locally](#developer:mystmd).
+
+Then, run the test suite using:
 
 ```shell
 npm run test
 ```
 
-If you are working in a particular package, change your working directory to that specific package, and run the tests there. To run in "watch mode" (runs each time a change is saved), use `npm run test:watch`.
+If you are working in a particular package, change your working directory to that specific package, and run the tests there.
+
+```shell
+cd packages/myst-cli
+npm run test
+```
+
+To run in "watch mode" (runs each time a change is saved), use:
+
+```shell
+npm run test:watch
+```
+
+To run a single test by matching its title, first change the working directory to the package where the test exists. For example:
+
+```shell
+cd packages/mystmd
+```
+
+Then run the `npm test` command like so:
+
+```shell
+npm run test -- -t "Basic tex build"
+```
+
+For integration test titles, see `packages/mystmd/tests/exports.yml`.
+
+#### Types of tests
+
+There are two types of tests in the `mystmd` repository:
+
+**Unit Tests** - are attached to each sub-package in the `packages/` directory. These use [`vitest`](https://vitest.dev/) for basic functionality within each package. They have files like [`config.spec.ts`](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/config.spec.ts).
+
+**Integration Tests** - Test the entire `mystmd` build workflow. Here's how it works:
+
+- `packages/mystmd/tests/endToEnd.spec.ts` runs a build from end to end, similar to the `vitest` tests above.
+- `packages/mystmd/tests/exports.yml` contains several integration tests - each one points to a build configuration (a folder in `packages/mystmd/tests/`) and compares expected to generated outputs.
 
 ### Linting
 
@@ -532,7 +576,7 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 **Transformers**
 
-- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more information](#develop:transforms)).
+- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more [information](#develop:transforms)).
 
 **Export Tools**
 

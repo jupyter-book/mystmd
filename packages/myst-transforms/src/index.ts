@@ -5,6 +5,7 @@ export {
   admonitionBlockquoteTransform,
   admonitionQmdTransform,
   admonitionQmdPlugin,
+  getPossibleAdmonitionHeaderChildren,
 } from './admonitions.js';
 export { captionParagraphPlugin, captionParagraphTransform } from './caption.js';
 export { footnotesPlugin, footnotesTransform } from './footnotes.js';
