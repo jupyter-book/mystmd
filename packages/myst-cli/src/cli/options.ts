@@ -176,10 +176,3 @@ export function makeTemplatesOption() {
   ).default(false);
 }
 
-export function makeConfigOption() {
-  return new Option(
-    '--config <config-file>',
-    'Use this YAML config file, instead of the default myst.yml',
-  ).default(undefined);
-}
-

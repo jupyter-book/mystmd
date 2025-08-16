@@ -97,9 +97,9 @@ export class Session implements ISession {
     return this.$logger;
   }
 
-  constructor(opts: { logger?: Logger; doiLimiter?: Limit } = {}) {
+  constructor(opts: { logger?: Logger; doiLimiter?: Limit; configFiles?: string[] } = {}) {
     this.API_URL = API_URL;
-    this.configFiles = CONFIG_FILES;
+    this.configFiles = opts.configFiles ? opts.configFiles : CONFIG_FILES;
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
     const proxyUrl = process.env.HTTPS_PROXY;
