@@ -1,9 +1,4 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest';
-import memfs from 'memfs';
-import { Session } from '../session';
-import { projectFromPath } from './fromPath';
-import { pagesFromSphinxTOC, projectFromSphinxTOC } from './fromTOC';
-import { tocFromProject } from './toTOC';
+import { describe, expect, it } from 'vitest';
 import { handleDeprecatedFields } from './config';
 import { VFile } from 'vfile';
 

@@ -37,5 +37,9 @@ program.addCommand(makeCleanCLI(program));
 program.addCommand(makeTemplatesCLI(program));
 program.version(`v${version}`, '-v, --version', `Print the current version of ${readableName()}`);
 program.option('-d, --debug', 'Log out any errors to the console');
+program.option(
+  '--config <config-file>',
+  'Use this YAML config file, instead of the default myst.yml'
+);
 addDefaultCommand(program);
 program.parse(process.argv);
