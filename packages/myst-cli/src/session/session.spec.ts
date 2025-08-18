@@ -3,8 +3,8 @@ import { Session } from '../session';
 import { RuleId } from 'myst-common';
 import { addWarningForFile } from '../utils/addWarningForFile';
 
-describe('session clone', () => {
-  it('Session.clone copies configFiles', async () => {
+describe('Session.clone', () => {
+  it('copies configFiles', async () => {
     const configFiles = ['foo.yml'];
     const session = new Session({ configFiles: configFiles });
     const sessionClone = await session.clone();
