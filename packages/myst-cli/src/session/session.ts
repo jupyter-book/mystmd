@@ -99,7 +99,7 @@ export class Session implements ISession {
 
   constructor(opts: { logger?: Logger; doiLimiter?: Limit; configFiles?: string[] } = {}) {
     this.API_URL = API_URL;
-    this.configFiles = opts.configFiles ? opts.configFiles : CONFIG_FILES;
+    this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
     const proxyUrl = process.env.HTTPS_PROXY;
@@ -192,7 +192,11 @@ export class Session implements ISession {
   _clones: ISession[] = [];
 
   async clone() {
-    const cloneSession = new Session({ logger: this.log, doiLimiter: this.doiLimiter });
+    const cloneSession = new Session({
+      logger: this.log,
+      doiLimiter: this.doiLimiter,
+      configFiles: this.configFiles,
+    });
     await cloneSession.reload();
     // TODO: clean this up through better state handling
     cloneSession._jupyterSessionManagerPromise = this._jupyterSessionManagerPromise;

@@ -3,6 +3,16 @@ import { Session } from '../session';
 import { RuleId } from 'myst-common';
 import { addWarningForFile } from '../utils/addWarningForFile';
 
+describe('session clone', () => {
+  it('Session.clone copies configFiles', async () => {
+    const configFiles = ['foo.yml'];
+    const session = new Session({ configFiles: configFiles });
+    const sessionClone = await session.clone();
+    expect(session.configFiles).toEqual(configFiles);
+    expect(sessionClone.configFiles).toEqual(configFiles);
+  });
+});
+
 describe('session warnings', () => {
   it('getAllWarnings returns for single session', async () => {
     const session = new Session();
