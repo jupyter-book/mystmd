@@ -31,8 +31,8 @@ describe('findYAMLSection', () => {
     (_, { name, source, result, opts }) => {
       const lines = source.split(/\r\n|\r|\n/);
       const transformed = findYAMLSection(name, opts?.indent ?? 0, lines, opts?.index ?? 0);
-      console.log(JSON.stringify(lines, null, 2));
-      console.log(JSON.stringify(source));
+      //console.log(JSON.stringify(lines, null, 2));
+      //console.log(JSON.stringify(source));
       expect(transformed).toEqual(result);
     },
   );
