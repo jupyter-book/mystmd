@@ -39,7 +39,7 @@ program.version(`v${version}`, '-v, --version', `Print the current version of ${
 program.option('-d, --debug', 'Log out any errors to the console');
 program.option(
   '--config <config-file>',
-  'Use this YAML config file, instead of the default myst.yml'
+  'Use this YAML config file, instead of the default myst.yml',
 );
 addDefaultCommand(program);
 program.parse(process.argv);
