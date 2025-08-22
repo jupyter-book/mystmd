@@ -280,6 +280,7 @@ describe('listItemParagraphsTransform', () => {
               type: 'listItem',
               children: [
                 { type: 'text', value: 'start ' },
+                { type: 'footnoteReference', id: '1' },
                 { type: 'strong', children: [{ type: 'text', value: 'bold' }] },
                 {
                   type: 'list',
@@ -319,6 +320,7 @@ describe('listItemParagraphsTransform', () => {
       type: 'paragraph',
       children: [
         { type: 'text', value: 'start ' },
+        { type: 'footnoteReference', id: '1' },
         { type: 'strong', children: [{ type: 'text', value: 'bold' }] },
       ],
     });
