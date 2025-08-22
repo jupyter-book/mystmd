@@ -1,5 +1,12 @@
 # myst-config
 
+## 1.8.2
+
+### Patch Changes
+
+- myst-common@1.8.2
+- myst-frontmatter@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes
