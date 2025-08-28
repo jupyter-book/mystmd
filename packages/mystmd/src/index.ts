@@ -37,5 +37,9 @@ program.addCommand(makeCleanCLI(program));
 program.addCommand(makeTemplatesCLI(program));
 program.version(`v${version}`, '-v, --version', `Print the current version of ${readableName()}`);
 program.option('-d, --debug', 'Log out any errors to the console');
+program.option(
+  '--config <config-file>',
+  'Use an alternate YAML config file, named relative to the project directory',
+);
 addDefaultCommand(program);
 program.parse(process.argv);

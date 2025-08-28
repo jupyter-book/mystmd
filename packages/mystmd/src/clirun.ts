@@ -5,6 +5,7 @@ import { chalkLogger, LogLevel } from 'myst-cli-utils';
 
 type SessionOpts = {
   debug?: boolean;
+  config?: string;
 };
 
 export function clirun(
@@ -27,7 +28,9 @@ export function clirun(
   return async (...args: any[]) => {
     const opts = program.opts() as SessionOpts;
     const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info, process.cwd());
-    const session = new sessionClass({ logger });
+    // Override default myst.yml if --config option is given.
+    const configFiles = opts?.config ? [opts.config] : null;
+    const session = new sessionClass({ logger, configFiles });
     await session.reload();
     const versions = await getNodeVersion(session);
     logVersions(session, versions);
