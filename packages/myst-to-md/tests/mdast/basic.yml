@@ -1,4 +1,4 @@
-title: myst-to-md basic features
+title: myst-to-md basic
 cases:
   - title: styles in paragraph
     mdast:
@@ -23,7 +23,7 @@ cases:
             - type: inlineCode
               value: style`s
     markdown: |-
-      Some % *markdown* with **different** ``style`s``
+      Some % _markdown_ with **different** ``style`s``
   - title: headings
     mdast:
       type: root
@@ -49,7 +49,7 @@ cases:
     markdown: |-
       # first
 
-      Some % *markdown*
+      Some % _markdown_
 
       #### fourth
   - title: thematic break
@@ -86,7 +86,7 @@ cases:
                     - type: text
                       value: markdown
     markdown: |-
-      > Some % *markdown*
+      > Some % _markdown_
   - title: unordered list
     mdast:
       type: root
@@ -107,9 +107,8 @@ cases:
                     - type: text
                       value: Some more markdown
     markdown: |-
-      *   Some markdown
-
-      *   Some more markdown
+      - Some markdown
+      - Some more markdown
   - title: ordered list
     mdast:
       type: root
@@ -131,9 +130,8 @@ cases:
                     - type: text
                       value: Some more markdown
     markdown: |-
-      5.  Some markdown
-
-      6.  Some more markdown
+      5. Some markdown
+      6. Some more markdown
   - title: html
     mdast:
       type: root
@@ -241,7 +239,7 @@ cases:
                 - type: text
                   value: markdown
     markdown: |-
-      [Some % *markdown*](https://example.com "my link")
+      [Some % _markdown_](https://example.com "my link")
   - title: image
     mdast:
       type: root
@@ -267,7 +265,7 @@ cases:
                 - type: text
                   value: markdown
     markdown: |-
-      [Some % *markdown*][My-Link]
+      [Some % _markdown_][My-Link]
   - title: image reference
     mdast:
       type: root
