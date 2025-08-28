@@ -135,6 +135,17 @@ site:
     hide_toc: true
 ```
 
+### Hide MyST branding in ToC
+
+To hide the MyST logo at the bottom of the Primary Sidebar, use `site.options.hide_myst_branding` as follows:
+
+```{code-block} yaml
+:filename: myst.yml
+site: 
+  option:
+    hide_myst_branding: true
+```
+
 (navigation:content-window)=
 
 ## Content window
