@@ -472,6 +472,19 @@ const handlers: Record<string, Handler> = {
       state.renderChildren(node);
     }
   },
+  toc(node, state) {
+    const title = node.children?.[0];
+    if (title) {
+       state.write('\\renewcommand{\\contentsname}{');
+       state.text(toText(title));
+       state.write('}\n');
+    }
+    if (node.depth) {
+       state.write(`\\setcounter{tocdepth}{${node.depth}}\n`);
+    }
+    state.write('\\tableofcontents\n');
+  },
+
 };
 
 class TexSerializer implements ITexSerializer {
