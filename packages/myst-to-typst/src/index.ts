@@ -443,12 +443,12 @@ const handlers: Record<string, Handler> = {
     const title = node.children?.[0];
     state.write('#outline(');
     if (node.depth) {
-       state.write(`depth: ${node.depth},\n`);
+      state.write(`depth: ${node.depth},\n`);
     }
     if (title) {
-       state.write('title: [');
-       state.text(toText(title));
-       state.write('],\n');
+      state.write('title: [');
+      state.text(toText(title));
+      state.write('],\n');
     }
     state.write(')\n\n');
   },
