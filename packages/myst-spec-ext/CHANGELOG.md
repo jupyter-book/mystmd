@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.8.2
+
+### Patch Changes
+
+- 9cb280a4b: Add typst option to inlineMath node
+
 ## 1.8.1
 
 ### Patch Changes
