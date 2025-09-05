@@ -24,6 +24,7 @@ export function listItemParagraphsTransform(tree: GenericParent) {
       'footnoteReference',
       'crossReference',
       'cite',
+      'citeGroup',
       'html',
     ]);
 
