@@ -1,5 +1,26 @@
 # myst-cli
 
+## 1.6.1
+
+### Patch Changes
+
+- e661f85d9: Change social links to drop Twitter
+- 80bc241e4: Refactor function to expose parsing options
+- a01426ad3: When clicking "edit this page" take the user directly to the GitHub edit interface
+- 4792531: Add typst PDF to the meca bundle
+- 089cbcaff: Load project config before site config
+- Updated dependencies [ae6123412]
+- Updated dependencies [9cb280a4b]
+- Updated dependencies [8ffa2d33c]
+- Updated dependencies [efc29a450]
+- Updated dependencies [a0fbdc419]
+  - myst-transforms@1.3.39
+  - myst-spec-ext@1.8.2
+  - myst-parser@1.5.16
+  - myst-common@1.8.2
+  - myst-config@1.8.2
+  - myst-frontmatter@1.8.2
+
 ## 1.6.0
 
 ### Minor Changes
