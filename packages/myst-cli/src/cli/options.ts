@@ -8,6 +8,10 @@ function parseInt(value: any) {
   return parsedValue;
 }
 
+export function makeCDNOption(description: string) {
+  return new Option('--cdn <string>', description).default('http://localhost:3100');
+}
+
 export function makePdfOption(description: string) {
   return new Option('--pdf', description).default(false);
 }
