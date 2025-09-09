@@ -2,7 +2,10 @@ import chalk from 'chalk';
 import type { LoggerDE } from 'myst-cli-utils';
 import type { ISession } from '../../session/types.js';
 
-export function createServerLogger(session: ISession, ready: () => void): LoggerDE {
+export function createServerLogger(
+  session: ISession,
+  opts: { host: string; ready: () => void },
+): LoggerDE {
   const logger = {
     debug(data: string) {
       const line = data.trim();
@@ -11,8 +14,8 @@ export function createServerLogger(session: ISession, ready: () => void): Logger
       if (line.includes('started at http://')) {
         const [, ipAndPort] = line.split('http://');
         const port = ipAndPort.split(':')[1].replace(/[^0-9]/g, '');
-        const local = `http://localhost:${port}`;
-        ready();
+        const local = `http://${opts.host}:${port}`;
+        opts.ready();
         session.log.info(
           `\n🔌 Server started on port ${port}!  🥳 🎉\n\n\n\t👉  ${chalk.green(local)}  👈\n\n`,
         );
