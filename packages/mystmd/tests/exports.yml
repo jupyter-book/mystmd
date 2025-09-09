@@ -535,3 +535,10 @@ cases:
         content: outputs/site-index-content.json
       - path: site-index/_build/site/content/index-1.json
         content: outputs/site-index-content-1.json
+  - title: Hidden pages exist in html build
+    cwd: hidden-pages
+    command: myst build --html
+    outputs:
+      - path: hidden-pages/_build/html/index.html
+      - path: hidden-pages/_build/html/hidden/index.html
+      - path: hidden-pages/_build/html/not-hidden/index.html
