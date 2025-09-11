@@ -146,7 +146,7 @@ export async function collectAllBuildExportOptions(
     exportOptionsList = resolveExportListArticles(
       session,
       files[0],
-      [{ format, output: path.join(path.resolve('.'), output) }],
+      [{ format, output: path.resolve('.', output) }],
       projectPath,
       opts,
     ).map((exp) => {
