@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { dirname, extname, join, relative, resolve } from 'node:path';
+import { dirname, extname, relative, resolve } from 'node:path';
 import yaml from 'js-yaml';
 import { writeFileToFolder, isUrl, computeHash } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
@@ -33,13 +33,13 @@ function emptyConfig(): Config {
 }
 
 export function defaultConfigFile(session: ISession, path: string) {
-  return join(path, session.configFiles[0]);
+  return resolve(path, session.configFiles[0]);
 }
 
 export function configFromPath(session: ISession, path: string) {
   const configs = session.configFiles
     .map((file) => {
-      return join(path, file);
+      return resolve(path, file);
     })
     .filter((file) => {
       return fs.existsSync(file);
