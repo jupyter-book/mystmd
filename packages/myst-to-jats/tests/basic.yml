@@ -686,33 +686,41 @@ cases:
               identifier: nb-cell-0-code
               enumerator: 1
               html_id: nb-cell-0-code
-            - type: output
+            - type: outputs
               id: T7FMDqDm8dM2bOT1tKeeM
-              identifier: nb-cell-0-output
-              html_id: nb-cell-0-output
-              data:
-                - name: stdout
-                  output_type: stream
-                  text: abc\n...
-                  hash: a
-                  path: files/a.txt
-            - type: output
+              identifier: nb-cell-0-outputs
+              html_id: nb-cell-0-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-0-outputs-0
+                  html_id: nb-cell-0-outputs-0
+                  jupyter_data:
+                    name: stdout
+                    output_type: stream
+                    text: abc\n...
+                    hash: a
+                    path: files/a.txt
+            - type: outputs
               id: uE4mPgSow0oyo0dvEH9Lc
-              identifier: nb-cell-1-output
-              html_id: nb-cell-1-output
-              data:
-                - output_type: execute_result
-                  execution_count: 3
-                  metadata: {}
-                  data:
-                    text/plain:
-                      content_type: text/plain
-                      hash: b
-                      path: files/b.txt
-                    text/html:
-                      content_type: text/html
-                      hash: b
-                      path: files/b.html
+              identifier: nb-cell-0-outputs
+              html_id: nb-cell-0-outputs
+              children:
+                - type: output
+                  identifier: nb-cell-0-outputs-0
+                  html_id: nb-cell-0-outputs-0
+                  jupyter_data:
+                    output_type: execute_result
+                    execution_count: 3
+                    metadata: {}
+                    data:
+                      text/plain:
+                        content_type: text/plain
+                        hash: b
+                        path: files/b.txt
+                      text/html:
+                        content_type: text/html
+                        hash: b
+                        path: files/b.html
             - type: caption
               children:
                 - type: paragraph
