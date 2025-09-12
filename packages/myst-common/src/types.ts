@@ -129,6 +129,7 @@ export type TransformSpec = {
     GenericParent,
     GenericParent | Promise<GenericParent>
   >;
+  options?: PluginOptions;
 };
 
 /**
