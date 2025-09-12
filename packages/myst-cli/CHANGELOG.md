@@ -1,5 +1,17 @@
 # myst-cli
 
+## 1.6.2
+
+### Patch Changes
+
+- 1c9c1c9d7: Ensure host is only for local development and is not exposed on local network.
+- e060c9f1d: Add --config option to CLI to override default myst.yml
+- b27afefc5: Include hidden routes in static HTML export
+- Updated dependencies [973db009e]
+  - myst-to-tex@1.0.42
+  - myst-to-typst@0.0.34
+  - tex-to-myst@1.0.42
+
 ## 1.6.1
 
 ### Patch Changes

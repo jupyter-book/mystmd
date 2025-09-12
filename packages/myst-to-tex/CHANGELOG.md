@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 1.0.42
+
+### Patch Changes
+
+- 973db009e: Add `toc` node to render Table of Contents in Typst and LaTeX.
+
 ## 1.0.41
 
 ### Patch Changes
