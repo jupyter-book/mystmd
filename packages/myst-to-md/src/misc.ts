@@ -13,7 +13,17 @@ function block(node: any, _: Parent, state: State, info: Info): string {
   if (node.visibility === 'remove' || node.visibility === 'hide') return '';
   const meta = node.meta ? ` ${node.meta}` : '';
   const content = state.containerFlow(node, info);
-  return `+++${meta}\n${content}`;
+  return `+++${meta}\n\n${content}`;
+}
+
+function blockBreak(node: any, _: Parent, state: State): string {
+  return state.indentLines(`+++`, (line: string, _1: any, blank: boolean) => (blank ? '' : line));
+}
+
+function mystTarget(node: any, _: Parent, state: State): string {
+  return state.indentLines(`(${node.label})=`, (line: string, _1: any, blank: boolean) =>
+    blank ? '' : line,
+  );
 }
 
 function definitionListValidator(node: any, file: VFile) {
@@ -40,7 +50,7 @@ function definitionDescription(node: any, _: Parent, state: State, info: Info) {
   const contentLines = state.containerFlow(node, info).split('\n');
   const indented = contentLines.map((line, ind) => {
     if (!line && ind) return line;
-    const prefix = ind ? `    ` : `:   `;
+    const prefix = ind ? `  ` : `: `;
     return `${prefix}${line}`;
   });
   return indented.join('\n');
@@ -48,6 +58,8 @@ function definitionDescription(node: any, _: Parent, state: State, info: Info) {
 
 export const miscHandlers: Record<string, Handle> = {
   block,
+  blockBreak,
+  mystTarget,
   comment,
   definitionList,
   definitionTerm,

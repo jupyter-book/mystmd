@@ -11,6 +11,8 @@ import { referenceHandlers } from './references.js';
 import { roleHandlers } from './roles.js';
 import { addFrontmatter, runValidators, unsupportedHandlers } from './utils.js';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import { basicTransformations } from './transforms/index.js';
+import { copyNode } from 'myst-common';
 
 const FOOTNOTE_HANDLER_KEYS = ['footnoteDefinition', 'footnoteReference'];
 const TABLE_HANDLER_KEYS = ['table', 'tableRow', 'tableCell'];
@@ -28,19 +30,38 @@ export function writeMd(file: VFile, node: Root, frontmatter?: PageFrontmatter) 
     ...FOOTNOTE_HANDLER_KEYS,
     ...TABLE_HANDLER_KEYS,
   ];
-  const unsupported = unsupportedHandlers(node, handlerKeys, file);
+  const copy = copyNode(node);
+  const unsupported = unsupportedHandlers(copy, handlerKeys, file);
   const options: Options = {
     fences: true,
     rule: '-',
+    ruleRepetition: 3,
+    emphasis: '_',
+    bullet: '-',
+    listItemIndent: 'one',
     handlers: {
       ...handlers,
       ...unsupported,
     },
+    join: [
+      (left, right, parent) => {
+        if (left.type === ('mystTarget' as any)) return 0;
+        if (right.type === ('definitionDescription' as any)) return 0;
+        if (
+          // This ensures lists are tightly joined always
+          left.type === ('listItem' as any) ||
+          (right.type === ('list' as any) && parent.type === ('listItem' as any))
+        )
+          return 0;
+        return 1;
+      },
+    ],
     extensions: [gfmFootnoteToMarkdown(), gfmTableToMarkdown()],
   };
   const validators = { ...directiveValidators, ...miscValidators };
-  runValidators(node, validators, file);
-  const result = toMarkdown(node as any, options).trim();
+  runValidators(copy, validators, file);
+  basicTransformations(copy);
+  const result = toMarkdown(copy as any, options);
   file.result = addFrontmatter(result, frontmatter);
   return file;
 }

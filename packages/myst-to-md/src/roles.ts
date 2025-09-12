@@ -2,6 +2,7 @@ import type { Handle, Info } from 'mdast-util-to-markdown';
 import { defaultHandlers } from 'mdast-util-to-markdown';
 import type { NestedState, Parent } from './types.js';
 import { incrementNestedLevel, popNestedLevel } from './utils.js';
+import type { InlineMath } from 'myst-spec-ext';
 
 /**
  * Inline code handler
@@ -103,6 +104,17 @@ function citeGroup(node: any, _: Parent, state: NestedState, info: Info): string
   return tracker.move(`{${name}}\`${labels}\``);
 }
 
+/**
+ * Inline math handler
+ */
+function inlineMath(node: InlineMath, _: Parent, state: NestedState, info: Info): string {
+  if (node.label || node.typst) {
+    return writeStaticRole('math')(node, _, state);
+  }
+  const tracker = state.createTracker(info);
+  return tracker.move(`$${node.value}$`);
+}
+
 export const roleHandlers: Record<string, Handle> = {
   subscript: writePhrasingRole('sub'),
   superscript: writePhrasingRole('sup'),
@@ -110,7 +122,7 @@ export const roleHandlers: Record<string, Handle> = {
   underline: writePhrasingRole('u'),
   smallcaps: writePhrasingRole('sc'),
   abbreviation,
-  inlineMath: writeStaticRole('math'),
+  inlineMath,
   inlineCode,
   cite,
   citeGroup,
