@@ -5,6 +5,14 @@ description: Project and page settings for MyST
 
 The `settings` field in the project or page frontmatter allows you to change how the parsing, transforms, plugins, or other behaviors of mystmd.
 
+```{code-block} yaml
+:filename: myst.yml
+project:
+  settings:
+    output_matplotlib_strings: remove
+    output_stderr: remove-warn
+```
+
 (project-settings)=
 
 ## Available settings fields
