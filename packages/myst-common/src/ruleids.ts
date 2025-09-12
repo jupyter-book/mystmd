@@ -48,6 +48,8 @@ export enum RuleId {
   imageFormatConverts = 'image-format-converts',
   imageCopied = 'image-copied',
   imageFormatOptimizes = 'image-format-optimizes',
+  imageHasAltText = 'image-has-alt-text',
+  imageAltTextGenerated = 'image-alt-text-generated',
   // Math rules
   mathLabelLifted = 'math-label-lifted',
   mathEquationEnvRemoved = 'math-equation-env-removed',
