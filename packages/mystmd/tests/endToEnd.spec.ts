@@ -13,7 +13,7 @@ type TestCase = {
   command: string;
   outputs: {
     path: string;
-    content: string;
+    content?: string;
   }[];
 };
 
@@ -55,6 +55,7 @@ describe.concurrent('End-to-end cli export tests', { timeout: 15000 }, () => {
     // Expect correct output
     outputs.forEach((output) => {
       expect(fs.existsSync(resolve(output.path))).toBeTruthy();
+      if (!output.content) return;
       if (path.extname(output.content) === '.json') {
         expect(
           JSON.parse(cleanHashes(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' }))),

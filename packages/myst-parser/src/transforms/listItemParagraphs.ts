@@ -21,6 +21,10 @@ export function listItemParagraphsTransform(tree: GenericParent) {
       'inlineCode',
       'inlineMath',
       'mystRole',
+      'footnoteReference',
+      'crossReference',
+      'cite',
+      'citeGroup',
       'html',
     ]);
 
