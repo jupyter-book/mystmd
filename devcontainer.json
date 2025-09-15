@@ -1,0 +1,5 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-22",
+  "forwardPorts": [3000],
+  "postCreateCommand": "npm run build",
+}
