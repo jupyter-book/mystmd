@@ -2,6 +2,10 @@
 
 This is the TUD JB2 template to produce your own online interactive textbook. 
 
+Awesome:
+
+$$E=mc^2$$
+
 ## Set up your own repository
 Follow these instruction to use this template for your own book.
 

@@ -9,6 +9,8 @@ Markdown is een eenvoudige opmaaktaal: platte tekst die *opgemaakt* wordt met kl
 Een Jupyter Book gemaakt met MyST vraagt een collectie van markdown en jupyter notebooks die vervolgens geëxporteerd kunnen worden naar pdf, html maar ook word.
 ```
 
+$$F=m\cdot a$$
+
 ## Structuur
 We kunnen hier onderscheid maken in twee structuren: die van de inhoud van de boek (een collectie van verschillende documenten), en de (interne)structuur van de hoofdstukken.
 

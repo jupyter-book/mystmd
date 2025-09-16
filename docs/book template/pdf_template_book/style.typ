@@ -15,28 +15,6 @@
 }
 
 
-// Figure
-// #let myfigure(
-//   content,
-//   placement: none,
-//   caption: none,
-//   kind: auto,
-//   supplement: auto,
-//   gap: length,
-//   outlined: bool,
-// ) = {
-//   figure(
-//     content,
-//     caption: caption,
-//     kind: kind,
-//     supplement: supplement,
-//     placement: placement,
-//   )
-// }
-
-
-
-
 #let template(
   // The book's title.
   title: "Book Title",
@@ -49,6 +27,7 @@
   // The book's content.
   body
 ) = {
+  
   set page(numbering: none) //numbering off until first chapter
   
   set heading(numbering: (..args) => {
@@ -63,11 +42,10 @@
 
   // figure
   set figure(numbering: (..args) => {
-    let chap = counter(heading).display((..ns) => ns.pos().at(0))
-    [#chap.#numbering("1", ..args.pos())]
+    let chapter = counter(heading).display((..nums) => nums.pos().at(0))
+    [#chapter.#numbering("1", ..args.pos())]
   })
-  // show figure.caption: leftCaption
-  // set figure(placement: none)
+  
 
   // Configure equation numbering and spacing.
   set math.equation(numbering: (..args) => {
@@ -114,14 +92,14 @@
   outline(indent: auto)
 
   show heading.where(level: 1): it => {
-  pagebreak()
-  // Reset alle relevante tellers bij elk nieuw hoofdstuk
-  counter(figure).update(0)                // alle figuren (ongeacht kind)
-  counter(figure.where(kind: table)).update(0) // specifiek voor tabellen
-  counter(math.equation).update(0)
+    pagebreak()
+    // Reset alle relevante tellers bij elk nieuw hoofdstuk
+    counter(figure).update(0)                // alle figuren (ongeacht kind)
+    counter(figure.where(kind: table)).update(0) // specifiek voor tabellen
+    counter(math.equation).update(0)
 
-  it
-}
+    it
+  }
 
   // include pagenumber and set it to 1
   set page(numbering: "1")
