@@ -1,5 +1,4 @@
   
-
 #let leftCaption(it) = {
   set text(size: 8pt)
   set align(left)
@@ -15,6 +14,29 @@
   it.body
 }
 
+
+// Figure
+// #let myfigure(
+//   content,
+//   placement: none,
+//   caption: none,
+//   kind: auto,
+//   supplement: auto,
+//   gap: length,
+//   outlined: bool,
+// ) = {
+//   figure(
+//     content,
+//     caption: caption,
+//     kind: kind,
+//     supplement: supplement,
+//     placement: placement,
+//   )
+// }
+
+
+
+
 #let template(
   // The book's title.
   title: "Book Title",
@@ -28,24 +50,24 @@
   body
 ) = {
   set page(numbering: none) //numbering off until first chapter
+  
   set heading(numbering: (..args) => {
     let nums = args.pos()
     let level = nums.len()
     if level == 1 {
-      // Reset the numbering on figures
-      counter(figure.where(kind: image)).update(0)
-      counter(figure.where(kind: table)).update(0)
-      counter(math.equation).update(0)
       [#numbering("1.", ..nums)]
     } else {
       [#numbering("1.1.1", ..nums)]
     }
   })
 
+  // figure
   set figure(numbering: (..args) => {
-    let chapter = counter(heading).display((..nums) => nums.pos().at(0))
-    [#chapter.#numbering("1", ..args.pos())]
+    let chap = counter(heading).display((..ns) => ns.pos().at(0))
+    [#chap.#numbering("1", ..args.pos())]
   })
+  // show figure.caption: leftCaption
+  // set figure(placement: none)
 
   // Configure equation numbering and spacing.
   set math.equation(numbering: (..args) => {
@@ -53,8 +75,7 @@
     [(#chapter.#numbering("1)", ..args.pos())]
   })
   show math.equation: set block(spacing: 1em)
-  show figure.caption: leftCaption
-  set figure(placement: auto)
+
 
   // Configure lists.
   set enum(indent: 10pt, body-indent: 9pt)
@@ -82,9 +103,6 @@
     text(12pt, fill: gray.darken(50%), authors)
   )
   }
-  // if authors != none {
-  //   text(12pt, fill: gray.darken(50%), authors)
-  // }
 
 
   // Outline of book
@@ -95,19 +113,21 @@
   }
   outline(indent: auto)
 
-  show heading.where(level: 1): (it) => {
-    pagebreak()
-    let chapter = counter(heading).display((..nums) => nums.pos().at(0))
-    it
-  }
+  show heading.where(level: 1): it => {
+  pagebreak()
+  // Reset alle relevante tellers bij elk nieuw hoofdstuk
+  counter(figure).update(0)                // alle figuren (ongeacht kind)
+  counter(figure.where(kind: table)).update(0) // specifiek voor tabellen
+  counter(math.equation).update(0)
+
+  it
+}
 
   // include pagenumber and set it to 1
   set page(numbering: "1")
   counter(page).update(1)
 
-  //none floating figures
-  set figure(placement: none)
 
   // Display the book's contents.
-  body
+  [#body]
 }
