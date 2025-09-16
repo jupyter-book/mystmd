@@ -6,10 +6,12 @@ thumbnail: ./thumbnails/math.png
 ---
 
 There are several ways to make writing math in your documents as familiar as possible.
-Math can either be (1) inline or (2) displayed as an equation block.
+Math can either be (1) inline or (2) displayed as an equation block.[^katex]
 In addition to the usual MyST syntax, you can also use "dollar math", which is derived from $\LaTeX$
 and surrounds inline math with single dollar signs (`$`), and equation blocks with two dollar signs (`$$`).
 The details of using inline math and equations are below.
+
+[^katex]: The default MyST themes use [KaTeX](https://github.com/KaTeX/KaTeX) to render math in websites. This is similar to [MathJax](https://www.mathjax.org/), which was used by Jupyter Book 1, but has a few differences. Almost all math should work the exact same way, but if you were using more custom LaTeX or MathJax workflows, you may need to investigate how to port them to KaTeX. See [the KaTeX documentation](https://katex.org/docs/).
 
 For example, here is an example of a cross-product, which we reference in the docs below!
 

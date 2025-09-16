@@ -263,7 +263,8 @@ Below you will see several `npm run x` commands.
 These are simply aliases for other commands, defined in the [`package.json` file](https://github.com/jupyter-book/mystmd/blob/main/package.json) under "scripts".
 ```
 
-## Developer workflow: myst CLI
+(developer:mystmd)=
+## Local development: `mystmd`
 
 The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
 
@@ -306,7 +307,7 @@ The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
 ```
 
-## Developer workflow: myst-theme
+## Local development: myst-theme
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
@@ -407,37 +408,37 @@ We describe each below.
 - Next, [make a release on GitHub](#release-github).
 
 (release-github)=
-#### Make a release on GitHub
+#### Automated releases on GitHub
 
-When we publish a new release to NPM, we also make a release on GitHub and share it for our user community. Here's a brief process for what to do:
+After a successful NPM release, our [`release.yml` workflow](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/publish-github-release.yml) will automatically create a new GitHub Release. The release notes are generated using [`github-activity`](https://github.com/cheukting/github-activity) and include a summary of all merged PRs and commits since the previous release.
 
-- **Confirm a release has been made**. Go to [the Tags page](https://github.com/jupyter-book/mystmd/tags) and look for a tag from the latest release.
-- **Create a release on GitHub**. Go to [the Releases page](https://github.com/jupyter-book/mystmd/releases) and then click **`Draft a new release`**.
-  - The **title** should be the version from the tag. So if the tag was `mystmd@1.3.26`, the title is `v1.3.26`.
-  - Click **Choose a tag** and link it against the tag for the latest release to NPM (the one you discovered in the first step).
-  - Click **Generate release notes** so that GitHub automatically generates a list of the merged PRs and contributors.
-  - Categorize the PRs into `Features`, `Fixes`, `Documentation`, and `Maintenance` as you wish. (this is optional)
-  - For any major changes or new functionality, write a brief description that helps a user understand why it's important and how to learn more. (this is optional)
-  - Write a one or two sentence summary of the big ideas in this release at the top. (this is optional).
-- **Publish the release**. Do this by clicking the **`Publish release`** button at the bottom.
-- **Write a brief post for sharing the release.** This helps others learn about it, and follow the links for more information. Here's a snippet you can copy/paste:
+**Maintainers are encouraged to review the new GitHub Release and edit the description as needed.** For example, you may want to add an executive summary, highlight important changes, or clarify upgrade instructions for users.
 
-  ```md
-  TITLE: 🚀 Release: MySTMD v1.3.26
+You can find the latest releases at: https://github.com/jupyter-book/mystmd/releases
 
-  BODY:
-  The [Jupyter Book project](https://compass.jupyterbook.org) recently made a new release! 👇
+When you've confirmed the release has been made, consider sharing it for others to discover! 
 
-  [MySTMD v1.3.26](https://github.com/jupyter-book/mystmd/releases/tag/mystmd%401.3.26)
+:::{note} Here's an announcement snippet you can copy/paste
+:class: dropdown
+```md
+TITLE: 🚀 Release: MySTMD v1.3.26
 
-  See the link above for the release notes on GitHub! Many thanks to the [Jupyter Book team](https://compass.jupyterbook.org/team) for stewarding our development and this release.
-  ```
+BODY:
+The [Jupyter Book project](https://compass.jupyterbook.org) recently made a new release! 👇
 
-- **Share the release post in Jupyter-adjacent spaces**. Here are a few places that are worth sharing (you can just copy/paste the same text into each):
-  - [The MyST Discord](https://discord.mystmd.org/)
-  - [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
-  - [The Jupyter Discourse](https://discourse.jupyter.org)
-  - Social media spaces of your choosing.
+[MySTMD v1.3.26](https://github.com/jupyter-book/mystmd/releases/tag/mystmd%401.3.26)
+
+See the link above for the release notes on GitHub! Many thanks to the [Jupyter Book team](https://compass.jupyterbook.org/team) for stewarding our development and this release.
+```
+:::
+
+
+**Here are a few Jupyter-adjacent spaces to share with** (you can just copy/paste the same text into each):
+
+- [The MyST Discord](https://discord.mystmd.org/)
+- [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
+- [The Jupyter Discourse](https://discourse.jupyter.org)
+- Social media spaces of your choosing.
 
 (release-myst-theme)=
 ### Make a release of the `myst-theme`
@@ -456,15 +457,58 @@ The process for releasing `myst-theme` infrastructure is similar to the release 
 
 We use [Turbo](https://turborepo.com/) to manage our testing and build system.
 
+(developer:testing)=
 ### Testing
 
-Tests help ensure that code operates as intended, and that changes do not break existing code. You can run the test suite using:
+We use [vitest](https://vitest.dev/guide/) for all tests in `mystmd`.
+
+#### How to run the test suite
+
+First [install `mystmd` locally](#developer:mystmd).
+
+Then, run the test suite using:
 
 ```shell
 npm run test
 ```
 
-If you are working in a particular package, change your working directory to that specific package, and run the tests there. To run in "watch mode" (runs each time a change is saved), use `npm run test:watch`.
+If you are working in a particular package, change your working directory to that specific package, and run the tests there.
+
+```shell
+cd packages/myst-cli
+npm run test
+```
+
+To run in "watch mode" (runs each time a change is saved), use:
+
+```shell
+npm run test:watch
+```
+
+To run a single test by matching its title, first change the working directory to the package where the test exists. For example:
+
+```shell
+cd packages/mystmd
+```
+
+Then run the `npm test` command like so:
+
+```shell
+npm run test -- -t "Basic tex build"
+```
+
+For integration test titles, see `packages/mystmd/tests/exports.yml`.
+
+#### Types of tests
+
+There are two types of tests in the `mystmd` repository:
+
+**Unit Tests** - are attached to each sub-package in the `packages/` directory. These use [`vitest`](https://vitest.dev/) for basic functionality within each package. They have files like [`config.spec.ts`](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/config.spec.ts).
+
+**Integration Tests** - Test the entire `mystmd` build workflow. Here's how it works:
+
+- `packages/mystmd/tests/endToEnd.spec.ts` runs a build from end to end, similar to the `vitest` tests above.
+- `packages/mystmd/tests/exports.yml` contains several integration tests - each one points to a build configuration (a folder in `packages/mystmd/tests/`) and compares expected to generated outputs.
 
 ### Linting
 
@@ -532,7 +576,7 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 **Transformers**
 
-- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more information](#develop:transforms)).
+- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more [information](#develop:transforms)).
 
 **Export Tools**
 

@@ -79,6 +79,7 @@ describe('Common Mark Spec with unified', () => {
       },
       mdast: {
         hoistSingleImagesOutofParagraphs: false,
+        listItemParagraphs: false,
       },
       extensions: {
         frontmatter: false, // Frontmatter screws with some tests!

@@ -11,7 +11,7 @@ project:
     content: CC-BY-4.0
   subject: MyST Markdown
   references:
-    python: https://docs.python.org/3.7/
+    python: https://docs.python.org/3.13/
     jupyterbook: https://jupyterbook.org/en/stable/
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/

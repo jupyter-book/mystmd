@@ -123,6 +123,7 @@ project:
         - file: part-2-second-child.md
 ```
 
+
 You can nest children under a `title` without specifying a parent `file`.
 This will create a dropdown of pages in the Table of Contents.
 
@@ -141,6 +142,11 @@ project:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
 ```
+
+:::{note} Landing page title
+The landing page inherits its TOC title from `title` field of [the project formatter](frontmatter.md#available-frontmatter-fields), if it is defined.
+Otherwise it will be the title or the top heading of the page.
+:::
 
 (hidden-in-toc)=
 

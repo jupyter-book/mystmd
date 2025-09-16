@@ -59,6 +59,7 @@ TL;DR
 : **Yes**, you can use `mystmd` with your Jupyter Book! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
 : **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in JavaScript not Python!
 : Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+: For more information see this [upgrade guide from Jupyter Book v1 to v2](https://next.jupyterbook.org/upgrade/).
 :::
 
 ## Cite `mystmd`

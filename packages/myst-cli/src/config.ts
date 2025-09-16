@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { dirname, extname, join, relative, resolve } from 'node:path';
+import { dirname, extname, relative, resolve } from 'node:path';
 import yaml from 'js-yaml';
 import { writeFileToFolder, isUrl, computeHash } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
@@ -33,13 +33,13 @@ function emptyConfig(): Config {
 }
 
 export function defaultConfigFile(session: ISession, path: string) {
-  return join(path, session.configFiles[0]);
+  return resolve(path, session.configFiles[0]);
 }
 
 export function configFromPath(session: ISession, path: string) {
   const configs = session.configFiles
     .map((file) => {
-      return join(path, file);
+      return resolve(path, file);
     })
     .filter((file) => {
       return fs.existsSync(file);
@@ -223,18 +223,6 @@ async function getValidatedConfigsFromFile(
   }
   const { site: rawSite, project: rawProject } = conf ?? {};
   const path = dirname(file);
-  if (rawSite) {
-    site = fillSiteConfig(
-      await validateSiteConfigAndThrow(session, path, vfile, rawSite),
-      site ?? {},
-      incrementOptions('extend', opts),
-    );
-  }
-  if (site) {
-    session.log.debug(`Loaded site config from ${file}`);
-  } else {
-    session.log.debug(`No site config in ${file}`);
-  }
   if (rawProject) {
     project = fillProjectFrontmatter(
       await validateProjectConfigAndThrow(session, path, vfile, rawProject),
@@ -246,6 +234,18 @@ async function getValidatedConfigsFromFile(
     session.log.debug(`Loaded project config from ${file}`);
   } else {
     session.log.debug(`No project config defined in ${file}`);
+  }
+  if (rawSite) {
+    site = fillSiteConfig(
+      await validateSiteConfigAndThrow(session, path, vfile, rawSite),
+      site ?? {},
+      incrementOptions('extend', opts),
+    );
+  }
+  if (site) {
+    session.log.debug(`Loaded site config from ${file}`);
+  } else {
+    session.log.debug(`No site config in ${file}`);
   }
   logMessagesFromVFile(session, vfile);
   return { site, project, extend };
@@ -512,17 +512,6 @@ export async function writeConfigs(
   // Get site config to save
   const vfile = new VFile();
   vfile.path = file;
-  if (siteConfig) {
-    saveSiteConfig(
-      session,
-      path,
-      await validateSiteConfigAndThrow(session, path, vfile, siteConfig),
-    );
-  }
-  siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
-  if (siteConfig) {
-    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
-  }
   // Get project config to save
   if (projectConfig) {
     saveProjectConfig(
@@ -541,6 +530,17 @@ export async function writeConfigs(
       resolveToRelative,
       file,
     );
+  }
+  if (siteConfig) {
+    saveSiteConfig(
+      session,
+      path,
+      await validateSiteConfigAndThrow(session, path, vfile, siteConfig),
+    );
+  }
+  siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
+  if (siteConfig) {
+    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {

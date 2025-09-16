@@ -1,5 +1,16 @@
 # myst-parser
 
+## 1.5.16
+
+### Patch Changes
+
+- 8ffa2d33c: Transform lists that have non-block content (text, italic, inlineCode, etc.) to ensure they are in paragraphs.
+- efc29a450: Add footnoteReference to known list elements inline children.
+- a0fbdc419: CiteGroup as another phrasing type
+  - myst-common@1.8.2
+  - myst-roles@1.5.16
+  - myst-directives@1.5.16
+
 ## 1.5.15
 
 ### Patch Changes
