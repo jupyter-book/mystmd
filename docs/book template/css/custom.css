@@ -1,0 +1,145 @@
+
+/* Code toegevoegd 17/05. Leuke kleurtjes zodat het makkelijk te zien is wat waar komt */
+
+/*Title color in dark mode*/
+.dark aside.admonition-experiment .dark\:text-white {
+   color: rgb(23 25 25); 
+}
+
+/* Parent */
+aside.admonition-experiment {
+  border-color: rgb(255, 0, 0) !important; /* Important zorgt ervoor dat we over de oude stijl heen schrijven */
+  background-color: rgb(255, 255, 255); /* Change background color text part*/
+} 
+
+/* Title */
+aside.admonition-experiment > div:first-child {
+  background-color: rgb(251, 183, 183);  /* Change header background color */
+}
+
+/* Icon */
+aside.admonition-experiment > div:first-child::before {
+  content: "🧪";
+  /* add padding left so it is not directly on the side*/
+  padding-left: 0.2em;
+  margin-left: 0.5em;
+}
+
+aside.admonition-experiment > div:first-child > div:first-child {
+  background-color: rgb(251, 183, 183); /* changes header color of text part
+  margin-left: 0 !important; /* voorkomt dubbele margin */
+}
+
+/* end of new code */
+
+.admonition-experiment .admonition-title-experiment {
+  background-color: black; /* Change header background color */
+  color: #FFFFFF; /* Change header text color */
+}
+
+/* Custom icon using ::before pseudo-element */
+.admonition-experiment .admonition-title-experiment::before {
+  content: "🧪"; /* Use an emoji or */
+  content: "\f0c3"; /* Use a FontAwesome icon code */
+  font-family: "Font Awesome 5 Free"; /* If using FontAwesome */
+  margin-right: 0.5em;
+}
+
+aside.admonition-experiment img {
+display: block;
+}
+
+
+
+/* ADMONITION INTERMEZZO */
+/* Parent */
+aside.admonition-intermezzo {
+  border-color: rgb(162, 0, 255) !important; 
+  background-color: rgb(255, 255, 255); 
+} 
+
+/* Title */
+aside.admonition-intermezzo > div:first-child {
+  background-color: rgb(218, 154, 255);  
+}
+
+/* Icon */
+aside.admonition-intermezzo > div:first-child::before {
+  content: "📖";
+  /* add padding left so it is not directly on the side*/
+  padding-left: 0.2em;
+  margin-left: 0.5em;
+}
+
+aside.admonition-intermezzo > div:first-child > div:first-child {
+  background-color: rgb(218, 154, 255); /* changes header color of text part
+  margin-left: 0 !important; /* voorkomt dubbele margin */
+}
+
+.admonition-intermezzo .admonition-title-intermezzo {
+  background-color: black; /* Change header background color */
+  color: #FFFFFF; /* Change header text color */
+}
+
+/* Custom icon using ::before pseudo-element */
+.admonition-intermezzo .admonition-title-intermezzo::before {
+  content: "📖"; /* Use an emoji or */
+  content: "f518"; /* Use a FontAwesome icon code */
+  font-family: "Font Awesome 5 Free"; /* If using FontAwesome */
+  margin-right: 0.5em;
+}
+
+aside.admonition-intermezzo img {
+display: block;
+}
+
+
+/* ADMONITION EXAMPLE */
+/* Parent */
+aside.admonition-example {
+  border-color: rgb(12, 35, 64) !important; 
+  background-color: rgb(255, 255, 255); 
+} 
+
+/* Title */
+aside.admonition-example > div:first-child {
+  background-color: rgb(0, 118, 194);  
+}
+
+/* Icon */
+aside.admonition-example > div:first-child::before {
+  content: "🔍";
+  color:rgb(12, 35, 64)
+  /* add padding left so it is not directly on the side*/
+  padding-left: 0.2em;
+  margin-left: 0.5em;
+}
+
+aside.admonition-example > div:first-child > div:first-child {
+  background-color: rgb(0, 118, 194); /* changes header color of text part
+  margin-left: 0 !important; /* voorkomt dubbele margin */
+}
+
+.admonition-example .admonition-title-example {
+  background-color: black; /* Change header background color */
+  color: #FFFFFF; /* Change header text color */
+}
+
+/* Custom icon using ::before pseudo-element */
+.admonition-example .admonition-title-example::before {
+  content: "🔍"; /* Use an emoji or */
+  content: "f002"; /* Use a FontAwesome icon code */
+  font-family: "Font Awesome 5 Free"; /* If using FontAwesome */
+  margin-right: 0.5em;
+}
+
+aside.admonition-example img {
+display: block;
+}
+
+
+/* dark mode white inverter */
+.dark img[src$=".svg"]:not(.no-invert) {
+  filter: invert(1) brightness(1);
+}
+
