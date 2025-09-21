@@ -1,0 +1,52 @@
+jtex: v1
+kind: typst
+title: LaPreprint Typst Template
+description: Easily create beautiful preprints in Typst
+template: template.typ
+files:
+  - template.typ
+  - style.typ
+  - LICENSE
+  - Cover.PNG
+authors:
+  - name: Rowan Cockett
+    github: rowanc1
+    affiliations:
+      - Curvenote
+  - name: Franklin Koch
+    github: fwkoch
+    affiliations:
+      - Curvenote
+  - name: Freek Pols
+    github: FreekPols
+    affiliations:
+      - Delft University of Technology
+version: 0.0.2
+license: MIT
+tags:
+  - preprint
+  - article
+  - paper
+thumbnail: ./examples/pixels/files/screenshot.png
+github: https://github.com/myst-templates/lapreprint-typst
+doc:
+  - id: title
+    required: true
+  - id: authors
+    required: true
+  - id: subtitle
+  - id: short_title
+  - id: open_access
+  - id: keywords
+  - id: doi
+  - id: venue
+options:
+  # type: string
+  # description: Venue shown in the footer
+  - id: logo
+    type: file
+    description: An image path that is shown in the top right of the page
+  - id: kind
+    type: string
+    description: The "kind" of the content, e.g. "Original Research" - shown as the title of the margin content on the first page
+parts: []

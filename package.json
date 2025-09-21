@@ -1,9 +1,6 @@
 {
   "name": "mystmd",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
@@ -15,9 +12,9 @@
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
-    "version": "changeset version && npm install",
-    "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags",
-    "publish:ci": "npm run build && changeset publish && git push --follow-tags",
+    "version": "changeset version && pnpm install",
+    "publish": "pnpm run clean && pnpm run build -- --force && changeset publish && git push --follow-tags",
+    "publish:ci": "pnpm run build && changeset publish && git push --follow-tags",
     "install-pre-commit": "husky"
   },
   "devDependencies": {
@@ -36,10 +33,9 @@
     "vitest": "^2.1.2"
   },
   "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
-  "packageManager": "npm@8.10.0",
+  "packageManager": "pnpm@9",
   "lint-staged": {
     "*.ts": "eslint --config ./.eslintrc.cjs --fix",
     "*.{js,jsx,ts,tsx,md,html,css,json}": "prettier --write"
