@@ -91,7 +91,7 @@ For example, in the case of the `book` theme, a MyST Document engine serves MyST
 
 #### Where to find renderers, themes, and templates
 
-MyST has multiple renders, themes, and templates that allow it to transform MyST AST into final output formats. The MyST team maintains a few that are worth noting:
+MyST has multiple renderers, themes, and templates that allow it to transform MyST AST into final output formats. The MyST team maintains a few that are worth noting:
 
 - [`github.com/jupyter-book/mystmd`](https://github.com/jupyter-book/mystmd): Has several out-of-the-box renderers in addition to the core document engine.
   - A collection of Renderers, look for the [`myst-to-*` folders in `mystmd/packages`](https://github.com/jupyter-book/mystmd/tree/main/packages). These render MyST AST into components that themes can consume.
@@ -163,7 +163,7 @@ The AST simply encodes that there's a Directive present, with the name `note`.
 
 After initial parsing, all **Directive** nodes are run, triggering the [Admonition Directive logic](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-directives/src/admonition.ts). This converts the `Directive Node` into an `Admonition Node`.
 
-During the **transform** phase, the [Admonition Transforms](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-transforms/src/admonitions.ts) is applied to each Admonition node. These do things like double-check that the admonition has all the necessary information to be rendererd.
+During the **transform** phase, the [Admonition Transforms](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-transforms/src/admonitions.ts) is applied to each Admonition node. These do things like double-check that the admonition has all the necessary information to be rendered.
 
 The final output has more admonition-specific metadata defined, like `admonitionTitle`.
 
@@ -194,7 +194,7 @@ Let's say you have a page that labels some content, and cross-references it else
 A reference to [my label](#label)
 ```
 
-The initial parse of this page nodes where labels are present, and treats our markdown link syntax as a regular URL.
+The initial parse of this page creates nodes where labels are present, and treats our markdown link syntax as a regular URL.
 
 ```{code} yaml
 :filename: page1.json
@@ -373,7 +373,7 @@ Note that you can run `npm run dev` from within any folder if you'd like to watc
 
 We run a lightweight server at [`api.mystmd.org`](https://api.mystmd.org/) to help users resolve and download templates. The code for this exists at [the `myst-templates/templates` repository](https://github.com/myst-templates/templates).
 
-For example, to get a list of template types you can `GET` this URL:
+For example, to get a list of template types (i.e. the available output types) you can `GET` this URL:
 
 https://api.mystmd.org/templates
 
