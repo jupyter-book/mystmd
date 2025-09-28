@@ -1,0 +1,50 @@
+{
+  "name": "myst-to-ipynb",
+  "version": "1.0.15",
+  "description": "Export from MyST mdast to ipynb",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-md",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "keywords": [
+    "myst-plugin",
+    "markdown"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "mdast-util-gfm-footnote": "^1.0.2",
+    "mdast-util-gfm-table": "^1.0.7",
+    "mdast-util-to-markdown": "^1.5.0",
+    "myst-common": "^1.7.6",
+    "myst-frontmatter": "^1.7.6",
+    "myst-to-md": "^1.0.15",
+    "unist-util-select": "^4.0.3",
+    "vfile": "^5.3.7",
+    "vfile-reporter": "^7.0.4"
+  }
+}

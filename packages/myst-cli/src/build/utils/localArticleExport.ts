@@ -20,6 +20,7 @@ import { texExportOptionsFromPdf } from '../pdf/single.js';
 import { createPdfGivenTexExport } from '../pdf/create.js';
 import { runMecaExport } from '../meca/index.js';
 import { runMdExport } from '../md/index.js';
+import { runIpynbExport } from '../ipynb/index.js';
 import { selectors, watch as watchReducer } from '../../store/index.js';
 import { runCffExport } from '../cff.js';
 
@@ -113,6 +114,8 @@ async function _localArticleExport(
         exportFn = runJatsExport;
       } else if (format === ExportFormats.md) {
         exportFn = runMdExport;
+      } else if (format === ExportFormats.ipynb) {
+        exportFn = runIpynbExport;
       } else if (format === ExportFormats.meca) {
         exportFn = runMecaExport;
       } else if (format === ExportFormats.cff) {

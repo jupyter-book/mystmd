@@ -61,6 +61,7 @@ export const EXT_TO_FORMAT: Record<string, ExportFormats> = {
   '.typ': ExportFormats.typst,
   '.typst': ExportFormats.typst,
   '.cff': ExportFormats.cff,
+  '.ipynb': ExportFormats.ipynb,
 };
 
 export const RESERVED_EXPORT_KEYS = [
