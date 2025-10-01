@@ -311,13 +311,17 @@ When building on Windows, use either WSL or a unix-like shell (such as Git Bash 
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
+A theme may be deployed locally for development as a dynamic theme server, _or_ a site may be statically build against a local theme.  Development procedures will be different depending on which deployment scenario you are targeting.
+
+### Dynamic Site
+
 Recall from the [architecture overview](#diagram-app) that `myst-theme` is a React web application. It provides theming, and requires a separate content server for data. When developing, the steps are therefore to:
 
 1. Launch a content server
 2. Launch the `myst-theme` web application server (this is what you browse to)
 3. Run a process to monitor changes and rebuild `myst-theme`
 
-### Content server
+#### Content server
 
 We need some example data to test our theme against, such as [the example landing page](https://github.com/jupyter-book/example-landing-pages). Clone this example content repository and start the content server:
 
@@ -331,7 +335,7 @@ The `--headless` flag tells `myst` not to start a theme server; we want to do th
 
 When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that the _content server_ produces, and that a _theme server_ uses to render a website (in the next step).
 
-### myst-theme server
+#### myst-theme server
 
 We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](<https://en.wikipedia.org/wiki/Hydration_(web_development)>).
 
@@ -366,6 +370,69 @@ npm run dev
 ```
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
+
+### Static Site
+
+No content or theme server is required for a static site build.  Steps will be:
+
+1. Build the theme into a production deployment package
+2. Point your site config to the built theme
+3. Build the site statically
+
+We'll use the mystmd docs site as an example.
+
+#### Build theme
+
+To build a static site against a local theme, the theme must be built as it would be for production deployment to a theme registry.  For that we will use the "make" target
+instead of `npm run`:
+
+```{code} shell
+cd myst-theme
+make build-book # because mystmd docs use the book theme
+```
+
+That should produce a production ready version of the book theme under `.deploy/book`.
+
+:::{tip}
+While debugging, it helps to work with a theme built against the "development" version of React, which results in unminimized build artifacts (ie preserving whitespace and variable/function names) and more detailed React errors and warnings.  For this, tell remix to run in node "development" mode:
+
+```{code} json
+:filename: myst-theme/themes/book/package.json
+// Add NODE_ENV near the end of the "prod:build" script
+                      v
+"prod:build": "... && NODE_ENV=development remix build",
+                      ^
+```
+:::
+
+#### Configure site
+
+Building a static site against a local theme requires configuring your site's `myst.yml` to point to the built theme's `template.yml`.   Using the mystmd docs site as
+an example (`mystmd/docs/myst.yml`):
+
+```{code} yaml
+:filename: mystmd/docs/myst.yml
+site:
+    # assuming your mystmd and myst-theme working directories are siblings
+    template: ../../myst-theme/.deploy/book/template.yml
+```
+(NOTE: This is the built template file, under `.deploy`, not the source template directly under myst-theme)
+
+#### Build site
+
+```{code} bash
+cd mystmd/docs
+mystmd build --html
+```
+
+Then host the static site locally.  An easy way is with Python's built-in http server:
+```{code} bash
+cd _build/html
+python3 -m http.server  # serves on port 8000 by default
+```
+
+Finally, browse the site at [http://localhost:8000](http://localhost:8000).
+
 
 ## Infrastructure we run
 (myst-api-server)=
