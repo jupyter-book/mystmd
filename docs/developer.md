@@ -386,7 +386,7 @@ We'll use the mystmd docs site as an example.
 To build a static site against a local theme, the theme must be built as it would be for publication.  For that we will use the "make" target
 instead of `npm run`:
 
-```{code} shell
+```{code} bash
 cd myst-theme
 make build-book # because mystmd docs site uses the book theme
 ```
@@ -408,7 +408,7 @@ While debugging, it helps to work with a theme built against the "development" v
 #### Configure site
 
 Building a static site against a local theme requires configuring your site's `myst.yml` to point to the built theme's `template.yml`.   Using the mystmd docs site as
-an example (`mystmd/docs/myst.yml`):
+an example:
 
 ```{code} yaml
 :filename: mystmd/docs/myst.yml
@@ -482,7 +482,7 @@ To debug myst-theme running server-side in service of a static build:
 
 ### Debug a mystmd subpackage test suite
 
-This requires a handful of options to be passed to vitest to ensure it runs in a single process.  For example, to connect a step debugger to a running myst-transforms test:
+This requires a handful of options to be passed to vitest to ensure it runs in a single process.  For example, to connect a step debugger to a running `myst-transforms` test:
 
 ```{code} json
 :filename: mystmd/packages/myst-transforms/package.json
