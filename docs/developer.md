@@ -482,7 +482,7 @@ To debug myst-theme running server-side in service of a static build:
 
 ### Debug a mystmd subpackage test suite
 
-This requires a handful of options to be passed to vitest to ensure it runs in a single process.  For example, to connect a step debugger to a running myst-transform test:
+This requires a handful of options to be passed to vitest to ensure it runs in a single process.  For example, to connect a step debugger to a running myst-transforms test:
 
 ```{code} json
 :filename: mystmd/packages/myst-transforms/package.json
