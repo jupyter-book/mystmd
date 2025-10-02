@@ -311,7 +311,7 @@ When building on Windows, use either WSL or a unix-like shell (such as Git Bash 
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
-A theme may be deployed locally for development as a dynamic theme server, _or_ a site may be statically build against a local theme.  Development procedures will be different depending on which deployment scenario you are targeting.
+A theme may be deployed locally for development as a dynamic theme server, _or_ a site may be statically built against a local theme.  Development procedures will be different depending on which deployment scenario you are targeting.
 
 ### Dynamic Site
 
@@ -373,7 +373,7 @@ Note that you can run `npm run dev` from within any folder if you'd like to watc
 
 ### Static Site
 
-No content or theme server is required for a static site build.  Steps will be:
+No content or theme server is required for a static site build.  Steps are:
 
 1. Build the theme into a production deployment package
 2. Point your site config to the built theme
@@ -416,7 +416,7 @@ site:
     # assuming your mystmd and myst-theme working directories are siblings
     template: ../../myst-theme/.deploy/book/template.yml
 ```
-(NOTE: This is the built template file, under `.deploy`, not the source template directly under myst-theme)
+(NOTE: This is the _built_ template file, under `.deploy`, not the source template)
 
 #### Build site
 
@@ -432,6 +432,57 @@ python3 -m http.server  # serves on port 8000 by default
 ```
 
 Finally, browse the site at [http://localhost:8000](http://localhost:8000).
+
+## Step Debugging
+
+Sometimes the trusty `console.log` (aka print statement) is not sufficient for your debugging needs.  In more involved situations, a proper step debugger can be your friend.
+You may have used Firefox or Chrome developer tools to debug in-browser code by adding the `debugger` keyword into your javascript source.
+But what about code that runs in node engine on the server?
+Chrome and Firefox dev tools can _also_ debug server-side javascript.  To do this, node must be invoked with the `--inspect`
+or `--inspect-brk` comand-line option.  That will cause the node process to open a socket listening for a debugger to connect.  If "inspect-brk" is used
+(vs "inspect"), then the process will immediately pause, awaiting a debugger connection.  The `debugger` keyword in source will only pause the program if a
+debugger is connected when that keyword is reached.
+
+To connect to an awaiting node debug socket, enter into the browser address bar:
+
+- Firefox: `about:debugging`, or
+- Chrome:  `chrome://inspect`
+
+That opens a debugger control panel in the browser which should list your awaiting node process as available to connect to (if it has been correctly invoked).
+(NOTE: other browsers and IDEs can also connect as debug inspectors - see Inspector Clients reference below)
+
+In most cases we don't call `node` directly, so there is no easy way to add those options to a shell invocation.
+Instead, an `npm` script can be defined with environment variable `NODE_OPTIONS=inspect` (or "inspect-brk") set in an appropriate spot (example follows).
+
+### Debug myst-theme service
+
+For example, to debug myst-theme's book theme running as a dynamic application server, alter the npm scripts like so:
+
+```{code} json
+:filename:  myst-theme/themes/book/package.json
+// add NODE_OPTIONS
+//                                                                                    v
+"dev": "npm run dev:copy && npm run build:thebe && concurrently \"npm run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
+```
+Now remove the "--parallel" option, because when turbo runs the theme server in "parallel" mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
+Then your debugger will only connect to the one that succeeded, with no guarantee any subsequent web request will hit the one process connected to the debugger.
+
+```{code} json
+:filename:  myst-theme/package.json
+// remove the --parallel option
+//                           v
+"theme:book": "turbo run dev --filter='./themes/book'",
+```
+
+### Debug static myst-theme
+
+To debug myst-theme running server-side in service of a static build:
+
+**TBD**
+
+### Debugging references
+
+- [Node Inspector Clients](https://nodejs.org/en/learn/getting-started/debugging#inspector-clients)
 
 
 ## Infrastructure we run
