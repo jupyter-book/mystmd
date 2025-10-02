@@ -383,12 +383,12 @@ We'll use the mystmd docs site as an example.
 
 #### Build theme
 
-To build a static site against a local theme, the theme must be built as it would be for production deployment to a theme registry.  For that we will use the "make" target
+To build a static site against a local theme, the theme must be built as it would be for publication.  For that we will use the "make" target
 instead of `npm run`:
 
 ```{code} shell
 cd myst-theme
-make build-book # because mystmd docs use the book theme
+make build-book # because mystmd docs site uses the book theme
 ```
 
 That should produce a production ready version of the book theme under `.deploy/book`.
@@ -452,7 +452,7 @@ That opens a debugger control panel in the browser which should list your awaiti
 (NOTE: other browsers and IDEs can also connect as debug inspectors - see Inspector Clients reference below)
 
 In most cases we don't call `node` directly, so there is no easy way to add those options to a shell invocation.
-Instead, an `npm` script can be defined with environment variable `NODE_OPTIONS=inspect` (or "inspect-brk") set in an appropriate spot (example follows).
+Instead, an `npm` script can be defined with environment variable `NODE_OPTIONS=--inspect` (or "--inspect-brk") set in an appropriate spot (example follows).
 
 ### Debug myst-theme service
 
@@ -464,7 +464,7 @@ For example, to debug myst-theme's book theme running as a dynamic application s
 //                                                                                    v
 "dev": "npm run dev:copy && npm run build:thebe && concurrently \"npm run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
 ```
-Now remove the "--parallel" option, because when turbo runs the theme server in "parallel" mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
+Now remove the turbo "--parallel" option, because when turbo runs the theme server in "parallel" (ie multiprocess) mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
 Then your debugger will only connect to the one that succeeded, with no guarantee any subsequent web request will hit the one process connected to the debugger.
 
 ```{code} json
@@ -479,6 +479,15 @@ Then your debugger will only connect to the one that succeeded, with no guarante
 To debug myst-theme running server-side in service of a static build:
 
 **TBD**
+
+### Debug a mystmd subpackage test suite
+
+This requires a handful of options to be passed to vitest to ensure it runs in a single process.  For example, to connect a step debugger to a running myst-transform test:
+
+```{code} json
+:filename: mystmd/packages/myst-transforms/package.json
+"test": "vitest --inspect-brk --pool threads --poolOptions.threads.singleThread --no-file-parallelism run",
+```
 
 ### Debugging references
 
