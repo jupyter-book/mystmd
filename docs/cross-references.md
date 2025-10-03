@@ -338,7 +338,7 @@ The `numbering` object allows you to be much more granular with enabling and dis
 ```yaml
 numbering:
   code: false
-  math: false
+  equations: false
   headings: true
 ```
 
