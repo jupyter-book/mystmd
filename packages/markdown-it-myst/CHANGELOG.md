@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.12
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+
 ## 1.0.11
 
 ### Patch Changes

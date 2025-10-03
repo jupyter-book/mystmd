@@ -1,5 +1,28 @@
 # myst-cli
 
+## 1.6.3
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+- c699bba: Set the HOST environment variable to 127.0.0.1 on ReadTheDocs CI
+- 8492fb0: Add `--keep-host` to the `myst build` command.
+- 38579e6: Bump @jupyterlab/services pin
+- Updated dependencies [a85b321]
+- Updated dependencies [38579e6]
+- Updated dependencies [6783dae]
+  - myst-cli-utils@2.0.12
+  - myst-templates@1.0.26
+  - myst-to-docx@1.0.15
+  - myst-to-md@1.0.16
+  - myst-execute@0.2.0
+  - myst-frontmatter@1.8.3
+  - myst-parser@1.5.17
+  - myst-common@1.8.3
+  - myst-config@1.8.3
+  - myst-spec-ext@1.8.3
+  - myst-transforms@1.3.40
+
 ## 1.6.2
 
 ### Patch Changes
