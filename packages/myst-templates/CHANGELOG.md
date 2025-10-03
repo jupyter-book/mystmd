@@ -1,5 +1,16 @@
 # myst-templates
 
+## 1.0.26
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+- Updated dependencies [a85b321]
+- Updated dependencies [6783dae]
+  - myst-cli-utils@2.0.12
+  - myst-frontmatter@1.8.3
+  - myst-common@1.8.3
+
 ## 1.0.25
 
 ### Patch Changes

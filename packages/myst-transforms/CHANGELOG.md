@@ -1,5 +1,15 @@
 # myst-transforms
 
+## 1.3.40
+
+### Patch Changes
+
+- Updated dependencies [6783dae]
+  - myst-frontmatter@1.8.3
+  - myst-common@1.8.3
+  - myst-spec-ext@1.8.3
+  - myst-to-html@1.5.17
+
 ## 1.3.39
 
 ### Patch Changes
