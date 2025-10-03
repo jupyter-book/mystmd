@@ -1,4 +1,4 @@
-import type MarkdownIt from 'markdown-it/lib';
+import type MarkdownIt from 'markdown-it/lib/index.js';
 import { rolePlugin } from './roles.js';
 import { directivePlugin } from './directives.js';
 import { citationsPlugin } from './citations.js';
