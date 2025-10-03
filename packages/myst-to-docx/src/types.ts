@@ -9,7 +9,7 @@ import type {
   ParagraphChild,
   Table,
 } from 'docx';
-import type { IPropertiesOptions } from 'docx/build/file/core-properties';
+import type { IPropertiesOptions } from 'docx/build/file/core-properties/index.js';
 
 export type StateData = {
   maxImageWidth?: number;

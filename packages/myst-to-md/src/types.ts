@@ -1,5 +1,5 @@
 import type { Handle, State } from 'mdast-util-to-markdown';
-import type { VFile } from 'vfile-reporter/lib';
+import type { VFile } from 'vfile-reporter/lib/index.js';
 
 export type NestedKinds = {
   role: number;
