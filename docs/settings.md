@@ -1,5 +1,5 @@
 ---
-title: Settings
+title: Project settings
 description: Project and page settings for MyST
 ---
 
