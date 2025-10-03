@@ -42,7 +42,7 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "@jupyterlab/services": "^7.0.0",
+    "@jupyterlab/services": "^7.3.0",
     "@reduxjs/toolkit": "^2.1.0",
     "adm-zip": "^0.5.10",
     "boxen": "^7.1.1",
