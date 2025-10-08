@@ -1,0 +1,14 @@
+name: Apply Pull Request Labels
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize, reopened]
+jobs:
+  require-label:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+      issues: write
+    steps:
+      - name: Labeler
+        uses: actions/labeler@v6.0.1
