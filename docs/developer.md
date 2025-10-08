@@ -311,9 +311,10 @@ When building on Windows, use either WSL or a unix-like shell (such as Git Bash 
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
-A theme may be deployed locally for development as a dynamic theme server, _or_ a site may be statically built against a local theme.  Development procedures will be different depending on which deployment scenario you are targeting.
+There are two ways to deploy a theme (AKA React web app): as a server, or as a static build.
+Development procedures are slightly different, depending on which approach you take.
 
-### Dynamic Site
+### Approach 1: Theme server
 
 Recall from the [architecture overview](#diagram-app) that `myst-theme` is a React web application. It provides theming, and requires a separate content server for data. When developing, the steps are therefore to:
 
@@ -371,11 +372,11 @@ npm run dev
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
-### Static Site
+### Approach 2: Static build
 
 No content or theme server is required for a static site build.  Steps are:
 
-1. Build the theme into a production deployment package
+1. Build the theme for production
 2. Point your site config to the built theme
 3. Build the site statically
 
@@ -383,7 +384,7 @@ We'll use the mystmd docs site as an example.
 
 #### Build theme
 
-To build a static site against a local theme, the theme must be built as it would be for publication.  For that we will use the "make" target
+To build a static site against a local theme, the theme must be built as it would be for production.  For that we will use the "make" target
 instead of `npm run`:
 
 ```{code} bash
