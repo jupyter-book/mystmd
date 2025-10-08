@@ -42,7 +42,7 @@
     "npm": ">=6"
   },
   "dependencies": {
-    "@jupyterlab/services": "^7.0.0",
+    "@jupyterlab/services": "^7.3.0",
     "@reduxjs/toolkit": "^2.1.0",
     "adm-zip": "^0.5.10",
     "boxen": "^7.1.1",
@@ -92,7 +92,7 @@
     "myst-to-typst": "^0.0.34",
     "myst-toc": "^0.1.3",
     "myst-transforms": "^1.3.39",
-    "nanoid": "^4.0.0",
+    "nanoid": "^5.1.6",
     "nbtx": "^0.4.0",
     "node-fetch": "^3.3.1",
     "p-limit": "^3.1.0",

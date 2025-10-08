@@ -100,6 +100,13 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
 }
 
 export function warnOnHostEnvironmentVariable(session: ISession, opts?: StartOptions): string {
+  // Check if we're running in ReadTheDocs environment
+  if (process.env.READTHEDOCS === 'True') {
+    session.log.info('Detected ReadTheDocs environment, setting HOST to 127.0.0.1');
+    process.env.HOST = '127.0.0.1';
+    return '127.0.0.1';
+  }
+
   if (!process.env.HOST || process.env.HOST === 'localhost' || process.env.HOST === '127.0.0.1') {
     return process.env.HOST || DEFAULT_HOST;
   }
