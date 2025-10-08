@@ -94,7 +94,7 @@ export async function downloadAndSaveImage(
       } else {
         res.body.pipe(fileStream);
         res.body.on('error', reject);
-        fileStream.on('finish', resolve);
+        fileStream.on('finish', resolve as () => void);
       }
     });
     await new Promise((r) => setTimeout(r, 50));

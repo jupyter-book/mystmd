@@ -45,6 +45,7 @@ export const NUMBERING_ALIAS = {
   figures: 'figure',
   subfigures: 'subfigure',
   equations: 'equation',
+  math: 'equation',
   subequations: 'subequation',
   tables: 'table',
   titles: 'title',

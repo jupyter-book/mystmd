@@ -24,7 +24,11 @@ function makeExecWrapper(
   options?: Options,
 ) {
   return function inner(
-    callback?: (error: child_process.ExecException | null, stdout: string, stderr: string) => void,
+    callback?: (
+      error: child_process.ExecException | null,
+      stdout: string | Buffer,
+      stderr: string | Buffer,
+    ) => void,
   ) {
     const childProcess = child_process.exec(command, (options ?? {}) as ExecOptions, callback);
     childProcess.stdout?.on('data', (data: any) => log?.debug(data));
@@ -39,5 +43,5 @@ export function makeExecutable(
   log: Pick<Logger, 'debug' | 'error'> | null,
   options?: Options,
 ) {
-  return util.promisify(makeExecWrapper(command, log, options));
+  return util.promisify(makeExecWrapper(command, log, options)) as () => Promise<string>;
 }

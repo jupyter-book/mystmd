@@ -37,7 +37,7 @@
     "js-yaml": "^4.1.0",
     "myst-common": "^1.8.2",
     "myst-spec-ext": "^1.8.2",
-    "nanoid": "^4.0.2",
+    "nanoid": "^5.1.6",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7"
   }

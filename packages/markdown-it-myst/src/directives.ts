@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { YAMLException } from 'js-yaml';
 import yaml from 'js-yaml';
-import type MarkdownIt from 'markdown-it/lib';
+import type MarkdownIt from 'markdown-it/lib/index.js';
 import type StateCore from 'markdown-it/lib/rules_core/state_core.js';
 import { nestedPartToTokens } from './nestedParse.js';
 import { stateError, stateWarn } from './utils.js';

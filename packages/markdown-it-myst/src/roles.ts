@@ -1,4 +1,4 @@
-import type MarkdownIt from 'markdown-it/lib';
+import type MarkdownIt from 'markdown-it/lib/index.js';
 import type StateCore from 'markdown-it/lib/rules_core/state_core.js';
 import type StateInline from 'markdown-it/lib/rules_inline/state_inline.js';
 import { nestedPartToTokens } from './nestedParse.js';
