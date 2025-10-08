@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, labeled, unlabeled, synchronize, reopened]
 jobs:
-  require-label:
+  auto-label:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
