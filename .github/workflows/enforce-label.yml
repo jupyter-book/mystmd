@@ -1,16 +1,27 @@
-name: Enforce Pull Request Labels
+name: Update and Check Pull Request Labels
 on:
   pull_request_target:
     types: [opened, labeled, unlabeled, synchronize, reopened]
 jobs:
-  require-label:
+  auto-label:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      # As this is a pull_request_target, we'll get `main` here
+      - name: Checkout contents
+        uses: actions/checkout@v4
+      - name: Add labels
+        uses: actions/labeler@v6
+
+  check-labels:
+    needs: auto-label
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
     steps:
-      # WARNING: this is a pull_request_target workflow
-      #          DO NOT checkout the repo
       - uses: mheap/github-action-required-labels@v5
         with:
           mode: exactly
