@@ -10,5 +10,7 @@ jobs:
       contents: read
       issues: write
     steps:
-      - name: Labeler
+      - name: Checkout contents
+        uses: actions/checkout@v4
+      - name: Add labels
         uses: actions/labeler@v6.0.1
