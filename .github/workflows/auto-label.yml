@@ -1,6 +1,6 @@
 name: Apply Pull Request Labels
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, labeled, unlabeled, synchronize, reopened]
 jobs:
   auto-label:
@@ -8,8 +8,8 @@ jobs:
     permissions:
       pull-requests: write
       contents: read
-      issues: write
     steps:
+      # As this is a pull_request_target, we'll get `main` here
       - name: Checkout contents
         uses: actions/checkout@v4
       - name: Add labels
