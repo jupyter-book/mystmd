@@ -1,10 +1,10 @@
 = This is page D
 
-== Heading one on page D
+== Heading one on page D <heading-one-on-page-d>
 
 Some text
 
-=== Heading two on page D
+=== Heading two on page D <heading-two-on-page-d>
 
 More text
 
