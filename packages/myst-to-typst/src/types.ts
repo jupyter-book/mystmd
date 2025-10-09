@@ -37,6 +37,7 @@ export type StateData = {
   list?: {
     env: string[];
   };
+  headingIdentifiers: string[];
 };
 
 export type RenderChildrenOptions = { delim?: string; trimEnd?: boolean; after?: string };
