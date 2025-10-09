@@ -29,13 +29,17 @@ function addIndicesToAuthors(
   });
   let correspondingIndex = 0;
   return authors.map((auth, index) => {
-    let corresponding: ValueAndIndex | undefined;
+    let corresponding: { value: false } | ValueAndIndex | undefined;
     if (auth.corresponding) {
       corresponding = {
         value: auth.corresponding,
         ...indexAndLetter(correspondingIndex),
       };
       correspondingIndex += 1;
+    } else if (auth.corresponding === false) {
+      corresponding = {
+        value: false,
+      };
     }
     let affiliations = auth.affiliations
       ?.filter((value) => Object.keys(affiliationLookup).includes(value))
