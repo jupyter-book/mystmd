@@ -17,6 +17,7 @@ import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { XREF_MAX_AGE } from '../transforms/crossReferences.js';
 import { dirname } from 'node:path';
+import { logMessagesFromVFile } from '../utils/index.js';
 
 function inventoryCacheFilename(refKind: 'intersphinx' | 'myst', id: string, path: string) {
   const hashcontent = `${id}${path}`;
@@ -79,6 +80,7 @@ async function loadReference(
   if (reference.kind === 'intersphinx' && (reference.value as Inventory)?._loaded) {
     return reference;
   }
+  let mystXrefFetchError: boolean = false;
   if (!reference.kind || reference.kind === 'myst') {
     const mystXRefsUrl = `${reference.url}/myst.xref.json`;
     session.log.debug(`Attempting to load MyST xref file: ${mystXRefsUrl}`);
@@ -109,6 +111,7 @@ async function loadReference(
       });
       return;
     } else {
+      mystXrefFetchError = true;
       session.log.debug(`Unable to load reference "${reference.key}" as MyST cross-references`);
     }
   }
@@ -125,7 +128,13 @@ async function loadReference(
           ruleId: RuleId.intersphinxReferencesResolve,
         });
       } else {
-        session.log.debug(`Unable to load reference "${reference.key}" as intersphinx`);
+        fileError(
+          vfile,
+          `Unable to load reference "${reference.key}" as ${mystXrefFetchError ? `MyST cross-references or ` : ''}intersphinx`,
+          {
+            ruleId: RuleId.intersphinxReferencesResolve,
+          },
+        );
       }
       return;
     }
@@ -161,12 +170,12 @@ async function loadReference(
 export async function loadReferences(
   session: ISession,
   opts: { projectPath: string },
-): Promise<void[]> {
+): Promise<void> {
   const state = session.store.getState();
   const projectConfig = selectors.selectLocalProjectConfig(state, opts.projectPath);
   const configFile = selectors.selectLocalConfigFile(state, opts.projectPath);
   // A bit confusing here, references is the frontmatter, but those are `externalReferences`
-  if (!projectConfig?.references || !configFile) return [];
+  if (!projectConfig?.references || !configFile) return;
   const vfile = new VFile();
   vfile.path = configFile;
   const cache = castSession(session);
@@ -180,9 +189,10 @@ export async function loadReferences(
       })
       .filter((exists) => !!exists),
   );
-  return Promise.all(
+  await Promise.all(
     references.map(async (ref) => {
       await loadReference(session, vfile, ref);
     }),
   );
+  logMessagesFromVFile(session, vfile);
 }
