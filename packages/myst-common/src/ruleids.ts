@@ -41,7 +41,6 @@ export enum RuleId {
   encounteredLegacyTOC = 'encountered-legacy-toc',
   validTOCStructure = 'valid-toc-structure',
   validTOC = 'valid-toc',
-  tocWritten = 'toc-written',
   // Image rules
   imageDownloads = 'image-downloads',
   imageExists = 'image-exists',
@@ -101,7 +100,6 @@ export enum RuleId {
   staticActionFileCopied = 'static-action-file-copied',
   // Plugins
   pluginLoads = 'plugin-loads',
-  pluginExecutionFailed = 'plugin-execution-failed',
   // Container rules
   containerChildrenValid = 'container-children-valid',
   // File rules
@@ -157,7 +155,6 @@ export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
   [RuleId.encounteredLegacyTOC]: 'Table of contents uses deprecated format',
   [RuleId.validTOCStructure]: 'Table of contents structure passes schema validation',
   [RuleId.validTOC]: 'Table of contents is valid',
-  [RuleId.tocWritten]: 'Table of contents writes to disk successfully',
   // Image rules
   [RuleId.imageDownloads]: 'Remote image downloads successfully',
   [RuleId.imageExists]: 'Image file exists at specified path',
@@ -220,7 +217,6 @@ export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
   [RuleId.staticActionFileCopied]: 'Static action file copies successfully',
   // Plugins
   [RuleId.pluginLoads]: 'Plugin loads and executes without errors',
-  [RuleId.pluginExecutionFailed]: 'Plugin execution encounters an error',
   // Container rules
   [RuleId.containerChildrenValid]: 'Container has valid child elements',
   // File rules

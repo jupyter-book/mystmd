@@ -100,6 +100,8 @@ The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the r
 
 :::{seealso .dropdown} List of Error Rules
 
+The full list of errors and warnings used across MyST with their defaults shown.
+
 ```{myst:error-rules-list}
 
 ```

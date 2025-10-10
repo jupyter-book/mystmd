@@ -15,8 +15,9 @@
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
     "test": "vitest run",
     "test:watch": "vitest watch",
+    "generate:rule-severities": "node scripts/generate-rule-severities.mjs",
     "build:esm": "tsc",
-    "build": "npm-run-all -l clean -p build:esm"
+    "build": "npm-run-all -l clean generate:rule-severities -p build:esm"
   },
   "dependencies": {
     "mdast": "^3.0.0",
