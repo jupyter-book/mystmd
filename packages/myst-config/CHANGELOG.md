@@ -1,5 +1,15 @@
 # myst-config
 
+## 1.8.3
+
+### Patch Changes
+
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+
 ## 1.8.2
 
 ### Patch Changes
