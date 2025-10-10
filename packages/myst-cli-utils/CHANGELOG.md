@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.12
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+
 ## 2.0.11
 
 ### Patch Changes
