@@ -51,9 +51,10 @@ function listItemFromPages(pages: ProjectPage[], projectSlug?: string): ListItem
   return item;
 }
 
-// This captures the base case of the mutual recursion implemented by the pair
-// of functions listFromPages/listItemFromPages.
-//
+/**
+ * transformPage captures the base case of the mutual recursion
+ * implemented by the pair of functions listFromPages/listItemFromPages
+ */
 function transformPage(page: ProjectPage, projectSlug?: string): Text | Link {
   const { title, slug, url, enumerator, level } = page;
   const text: Text = {
@@ -113,9 +114,10 @@ function listItemFromHeadings(headings: Heading[]): ListItem {
   return item;
 }
 
-// This captures the base case of the mutual recursion implemented by the pair
-// of functions listFromHeadings/listItemFromHeadings.
-//
+/**
+ * transformHeading captures the base case of the mutual recursion
+ * implemented by the pair of functions listFromHeadings/listItemFromHeadings
+ */
 function transformHeading(heading: Heading): Text | Link {
   const { children, enumerator, depth, identifier } = heading;
   const text: Text = {
