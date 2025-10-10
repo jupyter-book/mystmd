@@ -57,6 +57,7 @@ project:
     - directives.mjs
     - picsum.mjs
     - latex.mjs
+    - error-rules.mjs
     - versions.mjs
     - templates.mjs
     - type: executable

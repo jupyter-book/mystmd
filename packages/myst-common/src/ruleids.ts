@@ -107,3 +107,117 @@ export enum RuleId {
   // File rules
   mystJsonValid = 'myst-json-valid',
 }
+
+/**
+ * Descriptions for each rule ID.
+ * TypeScript will enforce that every RuleId has a corresponding description.
+ */
+export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
+  // Frontmatter rules
+  [RuleId.validConfigStructure]: 'Configuration file has valid structure',
+  [RuleId.siteConfigExists]: 'Site configuration exists',
+  [RuleId.projectConfigExists]: 'Project configuration exists',
+  [RuleId.validSiteConfig]: 'Site configuration is valid',
+  [RuleId.validProjectConfig]: 'Project configuration is valid',
+  [RuleId.configHasNoDeprecatedFields]: 'Configuration contains no deprecated fields',
+  [RuleId.frontmatterIsYaml]: 'Frontmatter is valid YAML',
+  [RuleId.validPageFrontmatter]: 'Page frontmatter is valid',
+  [RuleId.validFrontmatterExportList]: 'Frontmatter export list is valid',
+  // Export rules
+  [RuleId.docxRenders]: 'DOCX export renders successfully',
+  [RuleId.jatsRenders]: 'JATS export renders successfully',
+  [RuleId.mdRenders]: 'Markdown export renders successfully',
+  [RuleId.mecaIncludesJats]: 'MECA export includes JATS file',
+  [RuleId.mecaExportsBuilt]: 'MECA exports build successfully',
+  [RuleId.mecaFilesCopied]: 'MECA files copied successfully',
+  [RuleId.pdfBuildCommandsAvailable]: 'PDF build commands are available',
+  [RuleId.pdfBuildsWithoutErrors]: 'PDF builds without errors',
+  [RuleId.pdfBuilds]: 'PDF builds successfully',
+  [RuleId.texRenders]: 'LaTeX export renders successfully',
+  [RuleId.exportExtensionCorrect]: 'Export file extension is correct',
+  [RuleId.exportArticleExists]: 'Export article file exists',
+  // Parse rules
+  [RuleId.texParses]: 'LaTeX file parses successfully',
+  [RuleId.jatsParses]: 'JATS file parses successfully',
+  [RuleId.mystFileLoads]: 'MyST file loads successfully',
+  [RuleId.selectedFileIsProcessed]: 'Selected file is processed',
+  // Directive and role rules
+  [RuleId.directiveRegistered]: 'Directive is registered',
+  [RuleId.directiveKnown]: 'Directive is known',
+  [RuleId.directiveArgumentCorrect]: 'Directive argument is correct',
+  [RuleId.directiveOptionsCorrect]: 'Directive options are correct',
+  [RuleId.directiveBodyCorrect]: 'Directive body is correct',
+  [RuleId.roleRegistered]: 'Role is registered',
+  [RuleId.roleKnown]: 'Role is known',
+  [RuleId.roleBodyCorrect]: 'Role body is correct',
+  // Project structure rules
+  [RuleId.tocContentsExist]: 'Table of contents entries exist',
+  [RuleId.encounteredLegacyTOC]: 'Encountered legacy table of contents format',
+  [RuleId.validTOCStructure]: 'Table of contents structure is valid',
+  [RuleId.validTOC]: 'Table of contents is valid',
+  [RuleId.tocWritten]: 'Table of contents written successfully',
+  // Image rules
+  [RuleId.imageDownloads]: 'Image downloads successfully',
+  [RuleId.imageExists]: 'Image file exists',
+  [RuleId.imageFormatConverts]: 'Image format converts successfully',
+  [RuleId.imageCopied]: 'Image copied successfully',
+  [RuleId.imageFormatOptimizes]: 'Image format optimizes successfully',
+  // Math rules
+  [RuleId.mathLabelLifted]: 'Math label lifted successfully',
+  [RuleId.mathEquationEnvRemoved]: 'Math equation environment removed',
+  [RuleId.mathEqnarrayReplaced]: 'Math eqnarray replaced with align',
+  [RuleId.mathAlignmentAdjusted]: 'Math alignment adjusted',
+  [RuleId.mathRenders]: 'Math renders successfully',
+  // Reference rules
+  [RuleId.referenceTemplateFills]: 'Reference template fills successfully',
+  [RuleId.identifierIsUnique]: 'Identifier is unique',
+  [RuleId.referenceTargetResolves]: 'Reference target resolves',
+  [RuleId.referenceSyntaxValid]: 'Reference syntax is valid',
+  [RuleId.referenceTargetExplicit]: 'Reference target is explicit',
+  [RuleId.footnoteReferencesDefinition]: 'Footnote references a definition',
+  [RuleId.intersphinxReferencesResolve]: 'Intersphinx references resolve',
+  // Link rules
+  [RuleId.mystLinkValid]: 'MyST link is valid',
+  [RuleId.sphinxLinkValid]: 'Sphinx link is valid',
+  [RuleId.rridLinkValid]: 'RRID link is valid',
+  [RuleId.rorLinkValid]: 'ROR link is valid',
+  [RuleId.wikipediaLinkValid]: 'Wikipedia link is valid',
+  [RuleId.doiLinkValid]: 'DOI link is valid',
+  [RuleId.linkResolves]: 'Link resolves successfully',
+  [RuleId.linkTextExists]: 'Link text exists',
+  // Notebook rules
+  [RuleId.notebookAttachmentsResolve]: 'Notebook attachments resolve',
+  [RuleId.notebookOutputCopied]: 'Notebook output copied successfully',
+  // Content rules
+  [RuleId.mdastSnippetImports]: 'MDAST snippet imports successfully',
+  [RuleId.includeContentFilters]: 'Include content filters correctly',
+  [RuleId.includeContentLoads]: 'Include content loads successfully',
+  [RuleId.gatedNodesJoin]: 'Gated nodes join correctly',
+  [RuleId.glossaryUsesDefinitionList]: 'Glossary uses definition list',
+  [RuleId.blockMetadataLoads]: 'Block metadata loads successfully',
+  [RuleId.indexEntriesResolve]: 'Index entries resolve',
+  // Citation rules
+  [RuleId.citationIsUnique]: 'Citation identifier is unique',
+  [RuleId.bibFileExists]: 'Bibliography file exists',
+  [RuleId.citationRenders]: 'Citation renders successfully',
+  // Code rules
+  [RuleId.codeMetadataLifted]: 'Code metadata lifted successfully',
+  [RuleId.codeMetatagsValid]: 'Code metatags are valid',
+  [RuleId.codeLangDefined]: 'Code language is defined',
+  [RuleId.codeMetadataLoads]: 'Code metadata loads successfully',
+  [RuleId.inlineCodeMalformed]: 'Inline code is malformed',
+  [RuleId.inlineExpressionRenders]: 'Inline expression renders successfully',
+  // Static file rules
+  [RuleId.staticFileCopied]: 'Static file copied successfully',
+  [RuleId.exportFileCopied]: 'Export file copied successfully',
+  [RuleId.sourceFileCopied]: 'Source file copied successfully',
+  [RuleId.templateFileCopied]: 'Template file copied successfully',
+  [RuleId.staticActionFileCopied]: 'Static action file copied successfully',
+  // Plugins
+  [RuleId.pluginLoads]: 'Plugin loads successfully',
+  [RuleId.pluginExecutionFailed]: 'Plugin execution failed',
+  // Container rules
+  [RuleId.containerChildrenValid]: 'Container children are valid',
+  // File rules
+  [RuleId.mystJsonValid]: 'MyST JSON is valid',
+};
