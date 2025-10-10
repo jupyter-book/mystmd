@@ -3,6 +3,8 @@ title: Directives
 description: A full list of the directives included in MyST Markdown by default.
 ---
 
+To learn more about the syntax and usage of the directives, please refer to the [](#syntax:directives) section of the documentation.
+
 :::{myst:directive} admonition
 :::
 

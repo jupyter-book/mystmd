@@ -11,6 +11,8 @@ MyST is a superset of [CommonMark](./commonmark.md), the standard form of Markdo
 
 Roles and directives are two of the most powerful parts of MyST. They are kind of like functions, but written in a markup language. They both serve a similar purpose, but roles are written in one line whereas directives span many lines. They both accept different kinds of inputs, and what they do with those inputs depends on the specific role or directive being used.
 
+(syntax:directives)=
+
 ### Directives
 
 Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using a "fence" (either back-ticks or colons[^colon-or-fence]) and the name of the directive enclosed in braces (`{name}`):
