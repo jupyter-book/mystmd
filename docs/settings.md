@@ -79,6 +79,8 @@ beamer
     - `true`: Add `\begin{frame}` environment for each block, delimited by `+++`, and enable presentation outline with block metadata `+++ {"outline":true}`
     - `false` (default): No extra `\begin{frame}` environment will be used
 
+(setting:error_rules)=
+
 ## Error Rules
 
 The `error_rules` list in the project configuration can be used to disable or modify logging rules in the CLI:
