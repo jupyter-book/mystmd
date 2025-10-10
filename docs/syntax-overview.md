@@ -15,7 +15,7 @@ Roles and directives are two of the most powerful parts of MyST. They are kind o
 
 ### Directives
 
-Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using a "fence" (either back-ticks or colons[^colon-or-fence]) and the name of the directive enclosed in braces (`{name}`):
+Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md) (visit this page for the [full list of directives](#directives_list)). At its simplest, you can use directives using a "fence" (either back-ticks or colons[^colon-or-fence]) and the name of the directive enclosed in braces (`{name}`):
 
 [^colon-or-fence]: Which fence type, colon or backtick, is up to you, and either will work. The colon-fence has better fallback when the contents of the directive includes Markdown in non-MyST renderers (like GitHub). The backtick-fence should be used when the contents of the directive is code-like (e.g. a diagram or math!).
 
