@@ -32,3 +32,18 @@ cases:
         - id: a-rule
           severity: ignore
           key: two
+  - title: error rules with glob patterns
+    raw:
+      error_rules:
+        - rule: link-resolves
+          keys:
+            - 'https://example.org/**'
+            - 'https://*.example.com/**'
+    normalized:
+      error_rules:
+        - id: link-resolves
+          severity: ignore
+          key: 'https://example.org/**'
+        - id: link-resolves
+          severity: ignore
+          key: 'https://*.example.com/**'
