@@ -26,6 +26,13 @@ const skippedDomains = [
   'medium.com',
   'twitter.com',
   'en.wikipedia.org',
+  // Reserved domains for documentation and examples (RFC 2606)
+  'example.com',
+  'example.org',
+  'example.net',
+  'www.example.com',
+  'www.example.org',
+  'www.example.net',
 ];
 
 function checkLinkCacheFilename(url: string) {

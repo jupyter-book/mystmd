@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
-import { fileFromRelativePath } from './links';
+import { fileFromRelativePath, checkLink } from './links';
+import type { ISession } from '../session/types.js';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
@@ -58,5 +59,105 @@ describe('fileFromRelativePath', () => {
     expect(fileFromRelativePath('../readme#target#etc', 'folder/readme.ipynb')).toMatch(
       /\/readme.md#target#etc$/,
     );
+  });
+});
+
+describe('checkLink', () => {
+  const createMockSession = (): ISession =>
+    ({
+      store: {
+        getState: vi.fn().mockReturnValue({
+          local: {
+            links: {},
+          },
+        }),
+        dispatch: vi.fn(),
+      },
+      log: {
+        debug: vi.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        error: vi.fn(),
+      },
+      fetch: vi.fn(),
+    }) as any;
+
+  it('skips mailto links', async () => {
+    const session = createMockSession();
+    const result = await checkLink(session, 'mailto:test@example.com');
+    expect(result.skipped).toBe(true);
+    expect(result.url).toBe('mailto:test@example.com');
+  });
+
+  it('skips example.com domains', async () => {
+    const session = createMockSession();
+    const testUrls = [
+      'https://example.com/page',
+      'https://www.example.com/page',
+      'http://example.com/page',
+    ];
+
+    for (const url of testUrls) {
+      const result = await checkLink(session, url);
+      expect(result.skipped).toBe(true);
+      expect(result.url).toBe(url);
+    }
+  });
+
+  it('skips example.org domains', async () => {
+    const session = createMockSession();
+    const testUrls = [
+      'https://example.org/page',
+      'https://www.example.org/page',
+      'http://example.org/test',
+    ];
+
+    for (const url of testUrls) {
+      const result = await checkLink(session, url);
+      expect(result.skipped).toBe(true);
+      expect(result.url).toBe(url);
+    }
+  });
+
+  it('skips example.net domains', async () => {
+    const session = createMockSession();
+    const testUrls = [
+      'https://example.net/page',
+      'https://www.example.net/page',
+      'http://example.net/documentation',
+    ];
+
+    for (const url of testUrls) {
+      const result = await checkLink(session, url);
+      expect(result.skipped).toBe(true);
+      expect(result.url).toBe(url);
+    }
+  });
+
+  it('skips other blocked domains', async () => {
+    const session = createMockSession();
+    const testUrls = [
+      'https://linkedin.com/in/user',
+      'https://twitter.com/user',
+      'https://medium.com/article',
+      'https://en.wikipedia.org/wiki/Article',
+    ];
+
+    for (const url of testUrls) {
+      const result = await checkLink(session, url);
+      expect(result.skipped).toBe(true);
+      expect(result.url).toBe(url);
+    }
+  });
+
+  it('does not skip non-blocked domains', async () => {
+    const session = createMockSession();
+    // The test simply verifies that the domain is not in the skip list
+    // For non-skipped domains, we don't test the full fetch logic here
+    const result = await checkLink(session, 'https://github.com/user/repo');
+    // If not skipped, the result should have been attempted to fetch
+    // (even if it fails, it shouldn't have the skipped flag)
+    expect(result.skipped).toBeUndefined();
+    expect(result.url).toBe('https://github.com/user/repo');
   });
 });
