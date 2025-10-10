@@ -79,7 +79,7 @@ MyST can check for broken links when building a site. To report bad links:
 myst build --check-links
 ```
 
-And to fail the build if there are bad links:
+And use `--strict` to fail the build if there are errors, such as bad links, or other [rules](#setting:error_rules) set to error severity:
 
 ```
 myst build --strict
