@@ -33,10 +33,10 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "@types/markdown-it": "^13.0.1",
     "vfile": "^5.3.7"
   },
-  "devDependencies": {
+  "peerDependencies": {
+    "@types/markdown-it": "^13.0.1",
     "markdown-it": "^13.0.1"
   }
 }
