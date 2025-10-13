@@ -6,7 +6,7 @@ import { inlineOptionsToTokens } from './inlineAttributes.js';
 
 export function rolePlugin(md: MarkdownIt): void {
   md.inline.ruler.before('backticks', 'parse_roles', roleRule);
-  md.core.ruler.after('inline', 'run_roles', runRoles);
+  md.core.ruler.after('text_join', 'run_roles', runRoles);
   // fallback renderer for unhandled roles
   md.renderer.rules['role'] = (tokens, idx) => {
     const token = tokens[idx];
