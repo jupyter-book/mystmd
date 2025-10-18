@@ -192,7 +192,7 @@ You can also use a {myst:directive}`dropdown` directive, which provides a more c
 
 ## Simpler Admonitions
 
-Admonitions can additionally be styled as `simple`, and can optionally hide the icon using the `icon` option of the `{myst:directive}`admonition.class`.
+Admonitions can additionally be styled as `simple`, and can optionally hide the icon using the {myst:directive}`admonition.icon` option.
 
 ```{myst}
 :::{important} Magic
@@ -202,7 +202,7 @@ This is a magic cat. It casts a luck spell on you that lasts an hour. \
 :::
 ```
 
-Removing the icon from an admonition of a certain class allows using a custom emoji for style. 
+Removing the icon from an admonition allows using a custom emoji for style.
 
 ```{myst}
 :::{danger} 🎤 Transcript. **Speaker:** John Smith
@@ -215,14 +215,10 @@ Removing the icon from an admonition of a certain class allows using a custom em
 :::
 ```
 
-Multiple classes can be combined. See below for an example.
+Multiple classes can be combined using, for example, [inline options](./inline-options.md):
 
 ```{myst}
-:::{warning} ✍️ NB
-:class: simple
-:class: dropdown
-:icon: false
-:open:
-The proof of the lemma for $x \leqslant 0$ is left to the reader.  
+:::{warning .simple .dropdown icon=false open=true} ✍️ NB
+The proof of the lemma for $x \leqslant 0$ is left to the reader.
 :::
 ```
