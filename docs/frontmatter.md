@@ -85,7 +85,7 @@ The behavior of each frontmatter field is hard-coded within MyST. These are the 
 
 ### Compose multiple `.yml` files
 
-You may separate your frontmatter into multiple, composable files. This allows you to have a single source of truth for frontmatter to re-use across multiple projects, for example math macros or funding information.
+You may separate your frontmatter into multiple, composable files (see this [example for a long ToC](#using-extend-for-a-long-toc)). This allows you to have a single source of truth for frontmatter to re-use across multiple projects, for example math macros or funding information. 
 
 To reference other files from your main `myst.yml` file, use the `extends` key with relative path(s) to the other configuration files:
 

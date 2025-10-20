@@ -178,6 +178,7 @@ myst templates list arxiv_two_column --tex
 
 There are two ways to provide information to a template, through `parts` and `options`.
 
+
 ## Template `parts`
 
 The `parts` of a template are things like `abstract`, `acknowledgments` or `data_availability`, see [](./document-parts.md) for more information. These parts are usually written pieces of a document, but are placed specifically in a template. For example, an abstract usually has a place in templates, with a box or other typographic choices applied. These parts can be marked as `required`, and will raise error in the PDF export process, however, myst will always try to complete the build.
@@ -215,6 +216,47 @@ exports:
 
 Any unrecognized, or malformed entries will be logged as errors as well as required options that are not provided.
 
+
+### Setting options using extends
+Using [extends](#composing-myst-yml) you can create an `export.yml` file which is referred to in the `myst.yml` file: 
+
+```{code-block} yaml
+:filename: myst.yml
+---
+extends:
+  - export.yml
+---
+```
+
+in which you set these parts and options:
+
+```{code-block} yaml
+:filename: export.yml
+---
+version: 1
+project:
+
+  downloads:
+    - id: output-pdf1
+
+  exports:
+    - id: output-pdf1
+      format: typst
+      template: https://github.com/myst-templates/plain_typst_book
+      output: book.pdf
+      # additional options
+
+      #### Cover picture
+      cover: Cover.PNG
+      #Coverposition:
+      # coverwidth:
+
+      #### Logo at top of position
+      logo: logo.svg
+      logo_width: 10
+---      
+```
+
 ## Creating a Template
 
 The export list can also point to local templates, for $\LaTeX$ these are built using [`jtex`](/jtex), and you can learn more about how to create a template for: [any $\LaTeX$ document](/jtex/create-a-latex-template) and [Beamer presentations](/jtex/create-a-beamer-template).
@@ -241,11 +283,11 @@ Please consider [contributing your template](/jtex/contribute-a-template) to the
 
 If you have a [block](./blocks.md) or notebook cell that you do not want to render to your $\LaTeX$ output, add the `no-tex` tag to the cell. Similarly, to exclude a cell from Typst, use `no-typst`. To exclude a cell from both formats, use `no-pdf`.
 
-```markdown
-+++{no-pdf}
+````markdown
++++{"no-pdf": true}
 This will not be in the pdf
 +++
-```
+````
 
 ## Including Content with Specific Exports
 
@@ -337,3 +379,4 @@ exports:
         title: Summary of this Thesis
 ---
 ```
+

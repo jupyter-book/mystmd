@@ -270,3 +270,36 @@ New users should use `myst.yml` instead.
 
 Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Jupyter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
 ::::
+
+## Using extend for a long ToC
+In some cases the ToC becomes very long, where it would be more convenient to create a separate ToC file. This can be done using [extends](#composing-myst-yml). 
+
+```{code-block} yaml
+:filename: myst.yml
+---
+version: 1
+project:
+  [..]
+
+extends:
+  - toc.yml
+
+site:
+  [..]
+---
+```
+
+```{code-block} yaml
+:filename: toc.yml
+---
+version: 1
+project:
+  toc:
+    - file: index.md
+    - title: Some title 
+      children:
+        - file: introduction/about.md
+        - file: introduction/credits.md
+---  
+```
+
