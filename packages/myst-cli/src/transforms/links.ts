@@ -90,13 +90,14 @@ type LinkInfo = {
 export type LinkLookup = Record<string, LinkInfo>;
 
 export function getSourceFolder(link: string, sourceFile: string, projectFolder: string): string {
-  return link.startsWith('/') ? projectFolder : path.dirname(sourceFile);
+  return link.startsWith(path.sep) ? projectFolder : path.dirname(sourceFile);
 }
 /**
  * Compute link node file path relative to site root (currently, only the working directory)
  *
  * @param pathFromLink Path from link node URL relative to file where it is defined
  * @param file File where link is defined
+ * @deprecated Use getSourceFolder and fileFromSourceFolder to correctly resolve paths
  */
 export function fileFromRelativePath(pathFromLink: string, file?: string): string | undefined {
   const folder = file ? path.dirname(file) : undefined;
