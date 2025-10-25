@@ -5,7 +5,8 @@ description: Add Google Analytics or Plausible to your MyST website with a site 
 thumbnail: ./thumbnails/analytics.png
 ---
 
-There are no tracking cookies or analytics added to a MyST site by default, however, you may want to know more about basic analytics for your domain when you deploy it. There are two analytics tracking codes that MyST site templates currently supports:
+There are no tracking cookies or analytics added to a MyST site by default. 
+However, there are two analytics tracking codes that MyST site templates currently supports:
 
 1. [Google Analytics](https://marketingplatform.google.com/about/analytics/); and
 2. [Plausible](https://plausible.io/), which is privacy-friendly alternative to Google.
