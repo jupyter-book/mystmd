@@ -5,15 +5,12 @@ thumbnail: ./thumbnails/admonitions.png
 ---
 
 Callouts, or "admonitions", highlight a particular block of text that exists slightly apart from the narrative of your page, such as a note or a warning.
-For example, try changing the following example of a `{tip}` admonition to a `{warning}`:
 
-```{myst}
-:::{tip}
-Try changing `tip` to `warning`!
-:::
+```{tip} 
+See the different admonitions below and try it yourself in the next admonition!
 ```
 
-In MyST we call these kinds of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available:
+In MyST we call these kinds of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available by default, and several others by the use of [plugins](./plugins.md):
 
 ```{list-table} Named admonitions that can be used as directives
 :label: admonitions-list
@@ -30,6 +27,16 @@ In MyST we call these kinds of directives {myst:directive}`admonitions <admoniti
 ```
 
 [^docutils-admonitions]: These admonitions are the same as those used in [docutils](https://docutils.sourceforge.io/docs/ref/rst/directives.html#specific-admonitions) and Sphinx.
+
+For example, try changing the following example of a `{tip}` admonition to a `{warning}`:
+
+```{myst}
+:::{tip}
+Try changing `tip` to `warning`!
+:::
+```
+
+
 
 See below for a demo of each admonition in the default theme.
 
@@ -134,7 +141,7 @@ GitHub Markdown transforms blockquotes that start with a bold `Note` or text wit
 
 ::::{tip} Compatibility with Pandoc & Quarto
 :class: dropdown
-In Quarto/Pandoc Markdown admonitions are styled with special classes like `{.callout-note}` or `{.callout-tip}`).
+In Quarto/Pandoc Markdown admonitions are styled with special classes (e.g. `{.callout-note}` or `{.callout-tip}`).
 If you are using Jupyter Book V1 or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 
 ```{myst}
@@ -197,6 +204,7 @@ Admonitions can additionally be styled as `simple`, and can optionally hide the 
 ```{myst}
 :::{important} Magic
 :class: simple
+
 This is a magic cat. It casts a luck spell on you that lasts an hour. \
 **つ( ･ω･｡)つ━☆・*。**
 :::
