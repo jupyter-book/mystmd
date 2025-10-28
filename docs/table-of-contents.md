@@ -272,7 +272,7 @@ Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different confi
 ::::
 
 ## Configure your Table of Contents in a separate file using `extend:`
-In some cases the ToC becomes very long, where it would be more convenient to create a separate ToC file. This can be done using [extends](#composing-myst-yml). 
+If your Table of Contents is very long, it can make your `myst.yml` difficult to read and maintain. You can use [`extends:` functionality](#composing-myst-yml) to store the ToC structure in a separate file, allowing you to re-use it in a modular way. 
 
 ```{code-block} yaml
 :filename: myst.yml
