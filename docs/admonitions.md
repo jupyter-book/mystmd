@@ -10,7 +10,7 @@ Callouts, or "admonitions", highlight a particular block of text that exists sli
 See the different admonitions below and try it yourself in the next admonition!
 ```
 
-In MyST we call these kinds of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available by default, and several others by the use of [plugins](./plugins.md):
+In MyST we call these kinds of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available by default, and others may be introduced by [plugins](./plugins.md):
 
 ```{list-table} Named admonitions that can be used as directives
 :label: admonitions-list
