@@ -5,7 +5,7 @@ description: Asides provide an easy way to represent content that is only indire
 ---
 
 Asides provide an easy way to represent content that is only indirectly related to the article's main content.
-Where supported, MyST will attempt to display an {myst:directive}`aside` _as close as possible_ but separately from the main article, such as in the side-margin.
+Where supported, MyST will attempt to display an {myst:directive}`aside` _as close as possible to_—but separate from—the main article, such as in the side-margin.
 
 ```{aside} Margin Content
 Here’s some margin content! It was created by using the {myst:directive}`margin` directive in a Markdown, we can include images:
