@@ -36,8 +36,6 @@ Try changing `tip` to `warning`!
 :::
 ```
 
-
-
 See below for a demo of each admonition in the default theme.
 
 `````{tab-set}
