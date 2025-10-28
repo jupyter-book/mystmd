@@ -6,9 +6,6 @@ thumbnail: ./thumbnails/admonitions.png
 
 Callouts, or "admonitions", highlight a particular block of text that exists slightly apart from the narrative of your page, such as a note or a warning.
 
-```{tip} 
-See the different admonitions below and try it yourself in the next admonition!
-```
 
 In MyST we call these kinds of directives {myst:directive}`admonitions <admonition>`, however, they are almost always used through their _named_ directives, like {myst:directive}`note` or {myst:directive}`danger`. There are ten kinds[^docutils-admonitions] of admonitions available by default, and others may be introduced by [plugins](./plugins.md):
 
@@ -139,7 +136,7 @@ GitHub Markdown transforms blockquotes that start with a bold `Note` or text wit
 
 ::::{tip} Compatibility with Pandoc & Quarto
 :class: dropdown
-In Quarto/Pandoc Markdown admonitions are styled with special classes (e.g. `{.callout-note}` or `{.callout-tip}`).
+In Quarto/Pandoc Markdown admonitions are styled with special classes (like `{.callout-note}` or `{.callout-tip}`).
 If you are using Jupyter Book V1 or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 
 ```{myst}
@@ -153,7 +150,7 @@ This is an example of a callout with a caption.
 
 ::::{warning} Compatibility with Sphinx
 :class: dropdown
-In Sphinx, all named admonitions (e.g. `{note}` or `{tip}`), have **no arguments**.
+In Sphinx, all named admonitions (like `{note}` or `{tip}`), have **no arguments**.
 If you place content on the first line it will instead be prepended to the admonition body.
 If you are using Jupyter Book V1 or Sphinx documentation, use an {myst:directive}`admonition` directive with the specific class, for example:
 

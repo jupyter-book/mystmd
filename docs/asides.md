@@ -33,7 +33,7 @@ Many of the features on this page are experimental and may change at any time.
 
 These elements can conflict with the document outline when they are both competing for the margin space (see [#170](https://github.com/jupyter-book/myst-theme/issues/170)).
 
-There is, yet, no plugin available transforming this directive into a Typst pdf.
+There is, as yet, no plugin available for transforming this directive into Typst.
 :::
 
 % Using bold here, until we fix #170

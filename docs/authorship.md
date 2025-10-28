@@ -4,7 +4,7 @@ A MyST project can include metadata about the authors of each page, such as inst
 
 ## How to set author information
 
-Author information is set with [MyST frontmatter](./frontmatter.md).
+Author information is set in the [MyST frontmatter](./frontmatter.md).
 You can set this either in **`myst.yml`** (in which case, they will apply to all documents in a MyST project), or in the **page frontmatter** (in which case they'll just apply to that page).
 
 For example, the examples below show frontmatter for authors and [author affiliations](#affiliations) in frontmatter of an `article.md` file, and in `myst.yml`:
@@ -53,7 +53,7 @@ See [the `authors` frontmatter reference](#frontmatter:authors) for a list of al
 ### Re-use author information across repositories and projects
 
 By [extending MyST configuration files](#composing-myst-yml) you can store author information in one place and re-use it across many other locations.
-This allows you to define a source of truth for authorship and affiliations, and reference that over time. For example:
+This allows you to define a source of truth for authorship and affiliations, and reference it over time. For example:
 
 In one file, you'd define all the author affiliations that are relevant to your project:
 
