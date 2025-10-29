@@ -97,6 +97,23 @@ See [](#my-figure-fruit) for the fruit, and [](#my-figure) to reference both sub
 When referring to subfigures, the `{number}` that is used includes the parent enumerator by default (that is: `1a` rather than just `a`).
 To specifically use the sub-enumerator only, you can use the syntax `{subEnumerator}` in your text link which will be replaced with the sub-enumerator (that is: `a` rather than `1a`).
 
+CSS classes can be applied to make subfigures appear side-by-side or in a grid layout.
+`:class: grid grid-cols-2 items-end gap-4` 
+can be used to create a two-column grid of images with aligned bottoms and a gap between them.
+
+::::{figure}
+:class: grid grid-cols-2 items-end gap-4
+:label: fig_combined2
+:width: 100%
+
+![Banff, Canada](https://github.com/rowanc1/pics/blob/main/banff-wide.png)
+![Golden Gate Bridge, San Francisco](https://github.com/rowanc1/pics/blob/main/sfo-wide.png)
+
+Some lovely pictures
+::::
+
+
+
 ## Supported Image Formats
 
 MyST supports many images formats including `.png`, `.jpg`, `.gif`, `.tiff`, `.svg`, `.pdf`, and `.eps`.
