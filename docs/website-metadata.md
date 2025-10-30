@@ -24,9 +24,7 @@ You can access the MyST JSON representation of a page by looking up the page's d
 
 e.g. <https://foo.com/folder/subfolder/page/> becomes <https://foo.com/folder.subfolder.page.json>.
 
-Meanwhile, for websites without the [`folders`](xref:guide#template-site-myst-book-theme-folders) option, it's as simple as adding `.json` to the end of the URL,m 
-
-For example, the URL of this page is:e.g. <https://foo.com/long-page-name> becomes <https://foo.com/long.page.name.json>.
+Meanwhile, for websites without the [`folders`](xref:guide#template-site-myst-book-theme-folders) option, it's as simple as adding `.json` to the end of the URL, e.g. <https://foo.com/long-page-name> becomes <https://foo.com/long.page.name.json>.
 
 (myst-xref-json)=
 
