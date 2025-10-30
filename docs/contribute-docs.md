@@ -62,15 +62,6 @@ Some pages in the MyST documentation include executable code cells that demonstr
 
 2. Build with the `--execute` flag:
 
-   ```
-   myst start --execute
-   ```
-
-   Or for a static build:
-
-   ```
-   myst build --html --execute
-   ```
 
 This will execute all `{code-cell}` directives in the documentation and include their outputs in the built site.
 
