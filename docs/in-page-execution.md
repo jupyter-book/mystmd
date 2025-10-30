@@ -95,6 +95,7 @@ There are two possible locations for `binder` keys:
 ```
 
 (binder-option-repository)=
+
 ### Choose the repository for your kernel environment
 
 To choose the repository that is used for your kernel, use the `project.jupyter.binder.repo` key. Here's an example:
@@ -223,9 +224,8 @@ project:
       token: <your-secret-token>
 ```
 
-```{list-table}
+```{list-table} The configuration options and their defaults for local kernel computation.
 :header-rows: 1
-:caption: The configuration options and their defaults for local kernel computation.
 
 * - key
   - description
@@ -275,7 +275,6 @@ This will load the server using the default environment described in the [Jupyte
 ```{important} TODO
 Add the specific list options for custom wheel paths, etc.
 ```
-
 
 ## Enable or disable in-page computation on a single page
 

@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.8.3
+
+### Patch Changes
+
+- 6783dae: Allow math as an alias for equation in numbering.
+
 ## 1.8.2
 
 ## 1.8.1

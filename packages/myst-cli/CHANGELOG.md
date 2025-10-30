@@ -1,5 +1,39 @@
 # myst-cli
 
+## 1.6.3
+
+### Patch Changes
+
+- 53867c3: Ignore example domains by default
+- a85b321: Update to package dependencies and typescript
+- c699bba: Set the HOST environment variable to 127.0.0.1 on ReadTheDocs CI
+- 8492fb0: Add `--keep-host` to the `myst build` command.
+- 53867c3: Add glob patterns to error rules for links
+- 38579e6: Bump @jupyterlab/services pin
+- cc583b5: Non-quiet myst.xref.json load error
+- fb6f430: Throw errors including on the main page when strict.
+- Updated dependencies [6a5fe67]
+- Updated dependencies [13bd33a]
+- Updated dependencies [a85b321]
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [38579e6]
+- Updated dependencies [6783dae]
+- Updated dependencies [6a5fe67]
+- Updated dependencies [956055c]
+  - myst-templates@1.0.26
+  - myst-transforms@1.3.40
+  - myst-cli-utils@2.0.12
+  - myst-to-docx@1.0.15
+  - myst-to-md@1.0.16
+  - myst-common@1.8.3
+  - myst-execute@0.2.0
+  - myst-frontmatter@1.8.3
+  - myst-to-typst@0.0.35
+  - myst-parser@1.5.17
+  - myst-config@1.8.3
+  - myst-spec-ext@1.8.3
+
 ## 1.6.2
 
 ### Patch Changes

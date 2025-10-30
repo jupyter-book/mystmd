@@ -497,10 +497,12 @@ Below are all the possible fields for frontmatter affiliations.
 
 ## Date
 
-The date field is a string and should conform to a well-defined calendar date. Examples of acceptable date formats are:
+The date field is a string and should conform to a well-defined calendar date.
+It should be quoted most of the time for notebook frontmatter to avoid parsing issues on the Jupyter side.
+Examples of acceptable date formats are:
 
-- `2022-12-14` - `YYYY-MM-DD`
-- `01 Jan 2000` - `DD? MON YYYY`
+- `"2022-12-14"` - `YYYY-MM-DD`
+- `"01 Jan 2000"` - `DD? MON YYYY`
 - `Sat, 1 Jan 2000` - `DAY, DD? MON YYYY`
 
 These dates correspond to two main formats:
