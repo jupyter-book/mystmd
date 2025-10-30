@@ -57,7 +57,7 @@ Some pages in the MyST documentation include executable code cells that demonstr
 1. Install the Python requirements:
 
    ```
-   pip install -r requirements.txt
+   pip install -r docs/requirements.txt
    ```
 
 2. Build with the `--execute` flag:

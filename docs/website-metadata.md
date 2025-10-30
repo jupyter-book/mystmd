@@ -12,19 +12,33 @@ Each is explained below.
 This page includes executable Python code examples. When you build the documentation with `myst start --execute`, the code cells will run and display their outputs. See [](./execute-notebooks.md) for more information about executing content in MyST.
 :::
 
-## Page document metadata as `.json`
+(data-url)=
+## Page document metadata as `.json` data URLs
 
 All webpages built with MyST come bundled with a <wiki:JSON> representation of their content.
 This is a machine-readable version of the page that contains all of the metadata and page structure defined by [the MyST specification](xref:spec).
+Access the MyST JSON representation of a page by looking up the page's data URL'. 
 
-You can access the MyST JSON representation of a page by looking up the page's data URL'. For sites with the [`folders`](xref:guide#template-site-myst-book-theme-folders) option enabled, this URL can be found by:
+**When using folder URLs**: For sites with the [`folders`](#site-url-folders) option enabled, this URL can be found by:
+
 1. Removing any trailing `/`
 2. Replacing `/` with `.` in the pathname of the page 
 3. Adding a `.json` extension
 
-e.g. <https://foo.com/folder/subfolder/page/> becomes <https://foo.com/folder.subfolder.page.json>.
+For example:
+```
+https://foo.com/folder/subfolder/page/
+https://foo.com/folder.subfolder.page.json
+```
 
-Meanwhile, for websites without the [`folders`](xref:guide#template-site-myst-book-theme-folders) option, it's as simple as adding `.json` to the end of the URL, e.g. <https://foo.com/long-page-name> becomes <https://foo.com/long.page.name.json>.
+**For websites without folder structure**: simply add `.json` to the end of the URL.
+
+For example:
+
+```
+https://foo.com/long-page-name
+https://foo.com/long-page-name.json
+```
 
 (myst-xref-json)=
 
@@ -175,7 +189,7 @@ JSON(page_data["frontmatter"])
 
 ### Download the MyST AST of a page
 
-The JSON file at each page's `data` URL contains the complete MyST Abstract Syntax Tree (AST):
+The JSON file at each page's [`data` URL](#data-url) contains the complete MyST Abstract Syntax Tree (AST), as defined in [the MyST specification](xref:spec):
 
 ```{code-cell} python
 # Get the index page and fetch its AST
@@ -195,7 +209,7 @@ JSON({
 
 ### Find and download the exports and source file of a page
 
-You can locate the original source file and available exports for each page using the page's JSON data:
+You can locate the original source file and available [exports](./documents-exports.md) (e.g., PDF, JATS, Microsoft Word) for each page using the page's JSON data:
 
 ```{code-cell} python
 # Get a page with "quickstart" in the URL
@@ -213,12 +227,12 @@ JSON({
 })
 ```
 
-Download and display the source file content from the CDN:
+Download and display the source file content. Note that export URLs typically point to a CDN where the files are hosted (e.g., GitHub Pages):
 
 ```{code-cell} python
 from IPython.display import Markdown
 
-# Download from CDN and show preview
+# The export URL points to where the exported file is hosted
 cdn_url = page_data["frontmatter"]["exports"][0]["url"]
 
 print(f"Retrieving URL: {cdn_url}")
