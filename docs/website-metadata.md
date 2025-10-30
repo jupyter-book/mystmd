@@ -14,23 +14,19 @@ This page includes executable Python code examples. When you build the documenta
 
 ## Page document metadata as `.json`
 
-All webpages built with MyST come bundled with a `.json` representation of their content.
+All webpages built with MyST come bundled with a <wiki:JSON> representation of their content.
 This is a machine-readable version of the page that contains all of the metadata and page structure defined by [the MyST specification](xref:spec).
 
-You can access the MyST `.json` representation of a page by adding `.json` to the page name.
+You can access the MyST JSON representation of a page by looking up the page's data URL'. For sites with the [`folders`](xref:guide#template-site-myst-book-theme-folders) option enabled, this URL can be found by:
+1. Removing any trailing `/`
+2. Replacing `/` with `.` in the pathname of the page 
+3. Adding a `.json` extension
 
-For example, the URL of this page is:
+e.g. <https://foo.com/folder/subfolder/page/> becomes <https://foo.com/folder.subfolder.page.json>.
 
-```
-https://mystmd.org/guide/web-metadata
-```
+Meanwhile, for websites without the [`folders`](xref:guide#template-site-myst-book-theme-folders) option, it's as simple as adding `.json` to the end of the URL,m 
 
-and you can access its JSON representation at the following URL:
-
-```
-https://mystmd.org/guide/web-metadata.json
-```
-
+For example, the URL of this page is:e.g. <https://foo.com/long-page-name> becomes <https://foo.com/long.page.name.json>.
 
 (myst-xref-json)=
 
