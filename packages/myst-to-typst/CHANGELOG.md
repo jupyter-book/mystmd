@@ -1,5 +1,18 @@
 # myst-to-typst
 
+## 0.0.35
+
+### Patch Changes
+
+- 6a5fe67: Allow implicit headings in typst
+- 956055c: Bump tex-to-typst version
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+
 ## 0.0.34
 
 ### Patch Changes

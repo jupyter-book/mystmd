@@ -674,7 +674,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
   if (opts?.strict) {
     const hasWarnings = projects
       .map((project) => {
-        return project.pages
+        return [{ file: project.file, slug: project.index }, ...project.pages]
           .map((page) => {
             if (!('slug' in page)) return [0, 0];
             const buildWarnings = selectors.selectFileWarnings(session.store.getState(), page.file);

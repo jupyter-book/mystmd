@@ -1,5 +1,18 @@
 # myst-transforms
 
+## 1.3.40
+
+### Patch Changes
+
+- 13bd33a: :wrench: Refactorings to clean up table-of-contents transform
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+  - myst-to-html@1.5.17
+
 ## 1.3.39
 
 ### Patch Changes

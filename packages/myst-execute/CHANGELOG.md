@@ -1,5 +1,19 @@
 # myst-execute
 
+## 0.2.0
+
+### Minor Changes
+
+- 38579e6: Bump @jupyterlab/services pin
+
+### Patch Changes
+
+- Updated dependencies [a85b321]
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+  - myst-cli-utils@2.0.12
+  - myst-common@1.8.3
+
 ## 0.1.2
 
 ### Patch Changes

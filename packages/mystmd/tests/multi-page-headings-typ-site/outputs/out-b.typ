@@ -1,10 +1,10 @@
 == This is page B - title in markdown
 
-=== Heading one on page B
+=== Heading one on page B <heading-one-on-page-b>
 
 Some text
 
-==== Heading two on page B
+==== Heading two on page B <heading-two-on-page-b>
 
 More text
 

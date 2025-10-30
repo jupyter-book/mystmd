@@ -3,7 +3,7 @@ import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
 import { fileError, fileWarn, toText, getMetadataTags } from 'myst-common';
-import { captionHandler, containerHandler, getDefaultCaptionSupplement } from './container.js';
+import { captionHandler, containerHandler } from './container.js';
 import type {
   Handler,
   ITypstSerializer,
@@ -116,12 +116,13 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 2, { after });
   },
   heading(node, state) {
-    const { depth, identifier, enumerated, implicit } = node;
+    const { depth, identifier, enumerated } = node;
     state.write(`${Array(depth).fill('=').join('')} `);
     state.renderChildren(node);
-    if (enumerated !== false && identifier && !implicit) {
-      // Implicit labels can have duplicates and stop typst from compiling
+    if (enumerated !== false && identifier && !state.data.headingIdentifiers.includes(identifier)) {
       state.write(` <${identifier}>`);
+      // Duplicate headings cause hard failures in typst
+      state.data.headingIdentifiers.push(identifier);
     }
     state.write('\n\n');
   },
@@ -489,7 +490,7 @@ class TypstSerializer implements ITypstSerializer {
     const { math, ...otherOpts } = opts ?? {};
     this.options = { ...otherOpts };
     if (math) this.options.math = resolveRecursiveCommands(math);
-    this.data = { mathPlugins: {}, macros: new Set() };
+    this.data = { mathPlugins: {}, macros: new Set(), headingIdentifiers: [] };
     this.handlers = opts?.handlers ?? handlers;
     this.footnotes = Object.fromEntries(
       selectAll('footnoteDefinition', tree).map((node) => {
