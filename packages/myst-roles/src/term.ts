@@ -25,8 +25,8 @@ export const termRole: RoleSpec = {
       type: 'crossReference',
       label,
       identifier: `term-${identifier}`,
+      children: [{ type: 'text', value: modified ? modified.trim() : identifier }],
     };
-    if (modified) crossRef.children = [{ type: 'text', value: modified.trim() }];
     return [crossRef];
   },
 };
