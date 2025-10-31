@@ -1,5 +1,4 @@
 import path from 'node:path';
-import fs from 'node:fs';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
 import type { Logger } from 'myst-cli-utils';
@@ -80,6 +79,44 @@ export function logUpdateAvailable({
   );
 }
 
+function createForceCacheInterceptor(maxAge: number) {
+  return (dispatch: any) => {
+    return (opt: any, handler: any) => {
+      const myHandler = {
+        onRequestStart: handler.onRequestStart.bind(handler),
+        onResponseError: handler.onResponseError.bind(handler),
+        onResponseData: handler.onResponseData.bind(handler),
+        onResponseEnd: handler.onResponseEnd.bind(handler),
+        onResponseStart: (controller: any, statusCode: any, headers: any, statusMessage: any) => {
+          if ('cache-control' in headers) {
+            const directives = headers['cache-control']
+              .split(/,\s*/)
+              .map((directive: string) => {
+                const [name] = directive.split('=', 1);
+                switch (name) {
+                  case 'max-age':
+                    return `max-age=${maxAge}`;
+                  case 'must-revalidate':
+                  case 'no-cache':
+                    return null;
+                  default:
+                    return directive;
+                }
+              })
+              .filter((x: any) => x);
+
+            headers['cache-control'] = directives.join(', ');
+            console.log(headers);
+          }
+          handler.onResponseStart(controller, statusCode, headers, statusMessage);
+        },
+      };
+
+      return dispatch(opt, myHandler);
+    };
+  };
+}
+
 export class Session implements ISession {
   API_URL: string;
   configFiles: string[];
@@ -105,37 +142,9 @@ export class Session implements ISession {
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
     const proxyUrl = process.env.HTTPS_PROXY;
 
-    const store = this.createUndiciCache();
-    let cacheByDefault;
-    if (process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE) {
-      cacheByDefault = parseInt(process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE);
-    } else {
-      cacheByDefault = undefined;
-    }
-    const cache = interceptors.cache({ store, methods: ['GET', 'HEAD'], cacheByDefault });
-    const interceptor = (dispatch: any) => {
-      return (opt: any, handler: any) => {
-        const myHandler = {
-          onRequestStart: handler.onRequestStart.bind(handler),
-          onResponseError: handler.onResponseError.bind(handler),
-          onResponseData: handler.onResponseData.bind(handler),
-          onResponseEnd: handler.onResponseEnd.bind(handler),
-          onResponseStart: (controller: any, statusCode: any, headers: any, statusMessage: any) => {
-            console.log('HEADER', headers);
-            if ('cache-control' in headers) {
-              headers['cache-control'] = headers['cache-control']
-                .replace(', must-revalidate', '')
-                .replace('max-age=0', 'max-age=1800');
-            }
-            handler.onResponseStart(controller, statusCode, headers, statusMessage);
-          },
-        };
-
-        return dispatch(opt, myHandler);
-      };
-    };
-    this.dispatcher = new Agent().compose(interceptor, cache);
-    if (proxyUrl) this.proxyDispatcher = new ProxyAgent(proxyUrl).compose(cache);
+    const dispatchers = this.createUndiciDispatchers();
+    this.dispatcher = new Agent().compose(...dispatchers);
+    if (proxyUrl) this.proxyDispatcher = new ProxyAgent(proxyUrl).compose(...dispatchers);
 
     this.store = createStore(rootReducer);
     // Allow the latest version to be loaded
@@ -146,17 +155,35 @@ export class Session implements ISession {
       .catch(() => null);
   }
 
-  createUndiciCache() {
-    let location: string | unknown;
-    if ((location = process.env.MYST_HTTP_CACHE_DB)) {
-      try {
-        return new cacheStores.SqliteCacheStore({ location });
-      } catch (e) {
-        this.log.error('Failed to create Sqlite cache', e);
+  createUndiciDispatchers() {
+    const makeStore = () => {
+      let location: string | unknown;
+      if ((location = process.env.MYST_HTTP_CACHE_DB)) {
+        try {
+          return new cacheStores.SqliteCacheStore({ location });
+        } catch (e) {
+          this.log.error('Failed to create Sqlite cache', e);
+        }
       }
+      this.log.warn('Using memory store for HTTP caching');
+      return new cacheStores.MemoryCacheStore();
+    };
+
+    const cacheByDefault = process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE
+      ? parseInt(process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE)
+      : undefined;
+    const forceCache = process.env.MYST_HTTP_CACHE_FORCE
+      ? ['yes', '1', 'true', 'on'].includes(process.env.MYST_HTTP_CACHE_FORCE.toLowerCase())
+      : undefined;
+
+    const store = makeStore();
+    const cache = interceptors.cache({ store, methods: ['GET', 'HEAD'], cacheByDefault });
+    if (cacheByDefault !== undefined && forceCache !== undefined) {
+      const rewrite = createForceCacheInterceptor(cacheByDefault);
+      return [rewrite, cache];
+    } else {
+      return [cache];
     }
-    this.log.warn('Using memory store for HTTP caching');
-    return new cacheStores.MemoryCacheStore();
   }
 
   showUpgradeNotice() {
