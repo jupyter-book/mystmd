@@ -1,4 +1,5 @@
 import path from 'node:path';
+import fs from 'node:fs';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
 import type { Logger } from 'myst-cli-utils';
@@ -7,7 +8,6 @@ import type { RuleId, ValidatedMystPlugin } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 import pLimit from 'p-limit';
 import type { Limit } from 'p-limit';
 import {
@@ -26,17 +26,16 @@ import { isWhiteLabelled } from '../utils/whiteLabelling.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
 import { launchJupyterServer } from 'myst-execute';
-import type { RequestInfo, RequestInit } from 'node-fetch';
-import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 import type { PluginInfo } from 'myst-config';
-
-// fetch polyfill for node<18
-if (!globalThis.fetch) {
-  globalThis.fetch = nodeFetch as any;
-  globalThis.Headers = Headers as any;
-  globalThis.Request = Request as any;
-  globalThis.Response = Response as any;
-}
+import {
+  fetch as fetchImpl,
+  Agent,
+  interceptors,
+  // @ts-expect-error cacheStores is not exported in type decl
+  cacheStores,
+  ProxyAgent,
+} from 'undici';
+import type { RequestInfo, RequestInit, Response, Dispatcher } from 'undici';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -88,7 +87,9 @@ export class Session implements ISession {
   $logger: Logger;
   doiLimiter: Limit;
 
-  proxyAgent?: HttpsProxyAgent<string>;
+  proxyDispatcher?: ProxyAgent;
+  dispatcher: Dispatcher;
+
   _shownUpgrade = false;
   _latestVersion?: string;
   _jupyterSessionManagerPromise?: Promise<SessionManager | undefined>;
@@ -103,7 +104,39 @@ export class Session implements ISession {
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
     const proxyUrl = process.env.HTTPS_PROXY;
-    if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
+
+    const store = this.createUndiciCache();
+    let cacheByDefault;
+    if (process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE) {
+      cacheByDefault = parseInt(process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE);
+    } else {
+      cacheByDefault = undefined;
+    }
+    const cache = interceptors.cache({ store, methods: ['GET', 'HEAD'], cacheByDefault });
+    const interceptor = (dispatch: any) => {
+      return (opt: any, handler: any) => {
+        const myHandler = {
+          onRequestStart: handler.onRequestStart.bind(handler),
+          onResponseError: handler.onResponseError.bind(handler),
+          onResponseData: handler.onResponseData.bind(handler),
+          onResponseEnd: handler.onResponseEnd.bind(handler),
+          onResponseStart: (controller: any, statusCode: any, headers: any, statusMessage: any) => {
+            console.log('HEADER', headers);
+            if ('cache-control' in headers) {
+              headers['cache-control'] = headers['cache-control']
+                .replace(', must-revalidate', '')
+                .replace('max-age=0', 'max-age=1800');
+            }
+            handler.onResponseStart(controller, statusCode, headers, statusMessage);
+          },
+        };
+
+        return dispatch(opt, myHandler);
+      };
+    };
+    this.dispatcher = new Agent().compose(interceptor, cache);
+    if (proxyUrl) this.proxyDispatcher = new ProxyAgent(proxyUrl).compose(cache);
+
     this.store = createStore(rootReducer);
     // Allow the latest version to be loaded
     latestVersion('mystmd')
@@ -111,6 +144,19 @@ export class Session implements ISession {
         this._latestVersion = latest;
       })
       .catch(() => null);
+  }
+
+  createUndiciCache() {
+    let location: string | unknown;
+    if ((location = process.env.MYST_HTTP_CACHE_DB)) {
+      try {
+        return new cacheStores.SqliteCacheStore({ location });
+      } catch (e) {
+        this.log.error('Failed to create Sqlite cache', e);
+      }
+    }
+    this.log.warn('Using memory store for HTTP caching');
+    return new cacheStores.MemoryCacheStore();
   }
 
   showUpgradeNotice() {
@@ -144,16 +190,22 @@ export class Session implements ISession {
   async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
     const urlOnly = new URL((url as Request).url ?? (url as URL | string));
     this.log.debug(`Fetching: ${urlOnly}`);
-    if (this.proxyAgent && !LOCALHOSTS.includes(urlOnly.hostname)) {
-      if (!init) init = {};
-      init = { agent: this.proxyAgent, ...init };
-      this.log.debug(`Using HTTPS proxy: ${this.proxyAgent.proxy}`);
+
+    const needsProxy = this.proxyDispatcher && !LOCALHOSTS.includes(urlOnly.hostname);
+    if (needsProxy) {
+      this.log.debug(`Using HTTPS proxy: ${this.proxyDispatcher}`);
     }
+
     const logData = { url: urlOnly, done: false };
     setTimeout(() => {
       if (!logData.done) this.log.info(`⏳ Waiting for response from ${url}`);
     }, 5000);
-    const resp = await nodeFetch(url, init);
+
+    const resp = await fetchImpl(url, {
+      ...init,
+      dispatcher: needsProxy ? this.proxyDispatcher! : this.dispatcher,
+    });
+    console.log(resp.headers);
     logData.done = true;
     return resp;
   }

@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'node:path';
+import { pipeline } from 'node:stream/promises';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
@@ -159,13 +160,10 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
           return;
         }
         if (route.binary && resp.body) {
-          await new Promise<void>((resolve) => {
-            const filename = path.join(htmlDir, route.path);
-            if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
-            const fileWriteStream = fs.createWriteStream(filename);
-            resp.body!.pipe(fileWriteStream);
-            fileWriteStream.on('finish', resolve);
-          });
+          const filename = path.join(htmlDir, route.path);
+          if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
+          const fileWriteStream = fs.createWriteStream(filename);
+          await pipeline(resp.body!, fileWriteStream);
         } else {
           const content = await resp.text();
           writeFileToFolder(path.join(htmlDir, route.path), content);

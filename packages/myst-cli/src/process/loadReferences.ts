@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import type { Response } from 'node-fetch';
+import type { Response } from 'undici';
 import { Inventory } from 'intersphinx';
 import { tic, isUrl, computeHash } from 'myst-cli-utils';
 import { RuleId, fileError } from 'myst-common';

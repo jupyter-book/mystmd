@@ -37,7 +37,7 @@
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "test": "npm run link; npm run copy:version; vitest run",
     "test:watch": "npm run link; npm run copy:version; vitest watch",
-    "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node14",
+    "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node18",
     "build": "npm-run-all -l clean copy:version -p build:cli"
   },
   "devDependencies": {

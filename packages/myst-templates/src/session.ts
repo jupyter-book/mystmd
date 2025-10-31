@@ -1,8 +1,8 @@
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { ISession } from './types.js';
-import { default as nodeFetch } from 'node-fetch';
-import type { RequestInfo, RequestInit, Response } from 'node-fetch';
+import { fetch } from 'undici';
+import type { RequestInfo, RequestInit, Response } from 'undici';
 
 export class Session implements ISession {
   API_URL = 'https://api.mystmd.org';
@@ -12,7 +12,7 @@ export class Session implements ISession {
   }
 
   async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
-    const resp = await nodeFetch(url, init);
+    const resp = await fetch(url, init);
     return resp;
   }
 }
