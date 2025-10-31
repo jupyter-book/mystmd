@@ -88,6 +88,14 @@ project:
         - file: quickstart-static-exports.md
         - file: quickstart-myst-markdown.md
         - file: quickstart-jupyter-lab-myst.md
+    - title: Configuration and setup
+      children:
+      - file: configuration.md
+      - file: frontmatter.md
+      - file: settings.md
+      - file: table-of-contents.md
+      - file: document-parts.md
+      - file: authorship.md
     - title: Authoring
       children:
         - file: typography.md
@@ -108,9 +116,6 @@ project:
         - file: dropdowns-cards-and-tabs.md
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
-        - file: table-of-contents.md
-        - file: document-parts.md
-        - file: authorship.md
         - file: inline-options.md
     - title: Executable Content
       children:
@@ -143,7 +148,7 @@ project:
         - file: website-landing-pages.md
 
         # - file: publishing.md
-    - title: Documents
+    - title: Document exports
       children:
         - file: documents-exports.md
         - file: creating-pdf-documents.md
@@ -164,8 +169,6 @@ project:
         - file: syntax-overview.md
         - file: directives.md
         - file: roles.md
-        - file: frontmatter.md
-        - file: settings.md
         - file: glossary.md
         - file: versions.md
     - title: About MyST
