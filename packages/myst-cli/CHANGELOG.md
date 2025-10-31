@@ -1,5 +1,17 @@
 # myst-cli
 
+## 1.6.4
+
+### Patch Changes
+
+- 0ddd860: Log debug errors on watch
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
+- Updated dependencies [aab5f02]
+- Updated dependencies [4fb0d72]
+- Updated dependencies [cd8ee79]
+  - myst-transforms@1.3.41
+  - myst-parser@1.6.0
+
 ## 1.6.3
 
 ### Patch Changes
