@@ -5,7 +5,8 @@ description: MyST supports adding exercises and solutions which can cross-refere
 thumbnail: ./thumbnails/exercise.png
 ---
 
-There are two directives available to add exercises and solutions to your documents: (1) an `exercise` directive; and (2) a `solution` directive. The exercises are enumerated by default and can take in an optional title argument as well as be "gated" around Jupyter Notebook cells.
+There are two directives available to add exercises and solutions to your documents: (1) an `exercise` directive; and (2) a `solution` directive.
+The exercises are enumerated by default and can take in an optional title argument as well as be "gated" around Jupyter Notebook cells.
 
 ## Exercise Directive
 
@@ -55,7 +56,10 @@ The following options for exercise directives are supported:
 
 ## Solution Directive
 
-A solution directive can be included using the `solution` pattern. It takes in the label of the directive it wants to link to as a required argument. Unlike the `exercise` directive, the solution directive is not enumerable as it inherits numbering directly from the linked exercise. The argument for a solution is the label of the linked exercise, which is required.
+A solution directive can be included using the `solution` pattern.
+It takes in the label of the directive it wants to link to as a required argument.
+Unlike the `exercise` directive, the solution directive is not enumerable as it inherits numbering directly from the linked exercise.
+The argument for a solution is the label of the linked exercise, which is required.
 
 ::::{tab-set}
 :::{tab-item} Example
@@ -138,7 +142,8 @@ For example,\
 
 ### Referencing Solutions
 
-You can refer to a solution directly as well using a Markdown link or using the {myst:role}`ref` role like: `` {ref}`my-solution` `` the output of which depends on the attributes of the linked directive. If the linked directive is enumerable, the role will replace the solution reference with the linked directive type and its appropriate number like so: {ref}`my-solution`.
+You can refer to a solution directly as well using a Markdown link or using the {myst:role}`ref` role like: `` {ref}`my-solution` `` the output of which depends on the attributes of the linked directive.
+If the linked directive is enumerable, the role will replace the solution reference with the linked directive type and its appropriate number like so: {ref}`my-solution`.
 
 In the event that the directive being referenced is unenumerable, the reference will display its title: {ref}`nfactorial-solution`.
 
@@ -204,7 +209,8 @@ static int factorial(int n){
 
 ## Alternative Gated Syntax
 
-To be able to be viewed as Jupyter Notebooks (e.g. in [JupyterLab MyST](./quickstart-jupyter-lab-myst.md)) `code-cell` directives must be at the root level of the document for them to be executed. This maintains direct compatibility with the `jupyter notebook` and enables tools like `jupytext` to convert between `myst` and `ipynb` files.
+To be able to be viewed as Jupyter Notebooks (e.g. in [JupyterLab MyST](./quickstart-jupyter-lab-myst.md)) `code-cell` directives must be at the root level of the document for them to be executed.
+This maintains direct compatibility with the `jupyter notebook` and enables tools like `jupytext` to convert between `myst` and `ipynb` files.
 
 As a result **executable** `code-cell` directives cannot be nested inside of exercises or solution directives.
 
@@ -264,7 +270,8 @@ and maybe you wish to add a figure
 :::
 ::::
 
-This can also be completed for solutions with `solution-start` and `solution-end` directives. The `solution-start` and `exercise-start` directives have the same options as original directive.
+This can also be completed for solutions with `solution-start` and `solution-end` directives.
+The `solution-start` and `exercise-start` directives have the same options as original directive.
 
 ```{warning} Mismatched Start & End
 :class: dropdown
@@ -325,6 +332,12 @@ Any specific directive can be hidden by introducing the `:hidden:` option. For e
 This is a hidden exercise directive.
 ```
 ````
+
+## Exporting exercises and solutions
+
+When exporting content which include exercises and solutions to pdf using either LaTeX or Typst, warning errors are raised since these directives are not natively supported in these formats.
+A plugin is [available](https://github.com/jupyter-book/myst-plugins/tree/main/plugins/exercise-admonition-pdf) to enable exporting these directives to pdf formats - including numeration.
+
 
 % TODO: Remove All Solutions
 % TODO: Custom CSS

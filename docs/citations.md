@@ -5,13 +5,17 @@ description: Add academic citations to your documents easily, have hover-referen
 thumbnail: ./thumbnails/citations.png
 ---
 
-Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a Markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
+Citations automatically show up in your site, including a references section at the bottom of the page.
+These citations are able to be clicked on to see more information, like the abstract.
+There are two different ways to add citations to your documents: 
+1. adding a Markdown link to a [DOI](wiki:Digital_object_identifier); and 
+2. by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 (doi-links)=
-
 ## Simple Referencing with a DOI Link
 
-Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI. Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below👇).
+Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI.
+Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below 👇).
 
 ```md
 This is a link in Markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
@@ -19,9 +23,13 @@ This is a link in Markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.64760
 
 It is also possible to drop the link text, that is:\
 `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
-which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.). If the DOI is present on a citation from a BibTeX file in your project, that citation will be used. Otherwise, the citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory. This cache may be cleared with `myst clean --cache`.
+which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.).
+If the DOI is present on a citation from a BibTeX file in your project, that citation will be used.
+Otherwise, the citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory.
+This cache may be cleared with `myst clean --cache`.
 
-Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link. If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
+Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link.
+If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
 
 :::{note} Dealing with complex DOIs
 :class: dropdown
@@ -41,19 +49,21 @@ For DOIs with multiple slashes in the identifier you also have to use the full h
 
 ### Writing DOIs to BibTeX
 
-If you encounter problems fetching DOIs from `https://doi.org`, for example the downloaded citation does not include all the data you expect or requests to `https://doi.org` are failing on an automated continuous integration platform, you may write your DOI citations to file using the MyST command
+If you encounter problems fetching DOIs from `https://doi.org`, for example the downloaded citation does not include all the data you expect or requests to `https://doi.org` are failing on an automated continuous integration platform, you may write your DOI citations to file using the MyST command:
 
 ```bash
 myst build --doi-bib
 ```
 
-This will generate a BibTeX file `myst.doi.bib` which you may then rename, edit, and save to your project. On subsequent builds, the DOIs will be loaded from this file rather than fetched remotely.
+This will generate a BibTeX file `myst.doi.bib` which you may then rename, edit, and save to your project.
+On subsequent builds, the DOIs will be loaded from this file rather than fetched remotely.
 
 ## Including BibTeX
 
 A standard way of including references for $\LaTeX$ is using <wiki:BibTeX>, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
 
-If you want to explicitly reference which BibTeX files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files. This will load the files in order specified.
+If you want to explicitly reference which BibTeX files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files.
+This will load the files in order specified.
 
 ```yaml
 bibliography:
@@ -66,7 +76,11 @@ The remote BibTeX can be helpful for working with reference managers that suppor
 ## Markdown Citations
 
 You can add citations to any BibTeX entry using the citation key preceded by an `@`, for example, `@author2023`.
-This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#citation-syntax). Multiple citations can be grouped together with square brackets, separated with semi-colons. It is also possible to add a prefix or suffix to parenthetical citations, for example, `[e.g. @author2023, chap. 3; @author1995]`. To add a suffix to a narrative citation, follow the citation with the suffix in square brackets, for example, `@author2023 [chap. 3]`. As with a link to a DOI, you can also use the DOI directly instead of the BibTeX key.
+This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#citation-syntax).
+Multiple citations can be grouped together with square brackets, separated with semi-colons.
+It is also possible to add a prefix or suffix to parenthetical citations, for example, `[e.g. @author2023, chap. 3; @author1995]`.
+To add a suffix to a narrative citation, follow the citation with the suffix in square brackets, for example, `@author2023 [chap. 3]`.
+As with a link to a DOI, you can also use the DOI directly instead of the BibTeX key.
 
 ```{list-table} Examples of Markdown citations
 :header-rows: 1
@@ -99,7 +113,8 @@ This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#
 
 ## Citation Roles
 
-MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1. To create a citation role in Markdown, use either a parenthetical or textual citation:
+MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1.
+To create a citation role in Markdown, use either a parenthetical or textual citation:
 
 ```md
 This is a parenthetical citation {cite:p}`cockett2015`.
