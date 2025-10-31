@@ -200,7 +200,11 @@ export async function transformMdast(
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
-      firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
+      // Parts should preserve their original heading levels for structural sections like appendices
+      firstDepth:
+        kind === SourceFileKind.Part
+          ? undefined
+          : (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
     })
     .use(inlineMathSimplificationPlugin, { replaceSymbol: false })
     .use(mathPlugin, { macros: frontmatter.math });
