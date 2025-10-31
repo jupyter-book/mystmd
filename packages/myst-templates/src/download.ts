@@ -168,6 +168,7 @@ export async function downloadTemplate(
   } else {
     downloadUrl = await fetchTemplateDownloadLink(session, opts);
   }
+  // historical packaging of templates was using a plain git commit
   if (downloadUrl.endsWith('.git')) {
     const branch = opts.branch || 'main';
     if (branch !== 'main') {
@@ -175,6 +176,22 @@ export async function downloadTemplate(
     }
     const urlBase = downloadUrl.substring(0, downloadUrl.length - 4);
     downloadUrl = `${urlBase}/archive/refs/heads/${branch}.zip`;
+  // this scheme is for using GH releases as a way to distribute stable templates
+  } else if (downloadUrl.endsWith('.release')) {
+    session.log.warn(`👷 Warning, using a .release link which may not be stable yet`);
+    // xxx rather use a tag ???
+    const branch = opts.branch || 'main';
+    if (branch !== 'main') {
+      session.log.warn(`👷 Warning, using a branch: ${branch}`);
+    }
+    // the /releases/ endpoint makes sense under gh only
+    const re = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/([^.\/]+)\.release\/?$/;
+    const match = downloadUrl.match(re);
+    if (!match) {
+      throw new Error(`Problem with .release link "${downloadUrl}": Not a valid GitHub URL`);
+    }
+    const [, orga, repo, theme] = match;
+    downloadUrl = `https://github.com/${orga}/${repo}/releases/download/${branch}/${theme}.zip`;
   }
   await downloadAndUnzipTemplate(session, downloadUrl, opts);
   session.log.info(`💾 Saved template to path ${templatePath}`);
