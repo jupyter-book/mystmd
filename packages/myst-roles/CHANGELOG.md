@@ -1,5 +1,11 @@
 # myst-roles
 
+## 1.6.0
+
+### Patch Changes
+
+- e293e72: Add node information to doc-role warning
+
 ## 1.5.17
 
 ### Patch Changes
