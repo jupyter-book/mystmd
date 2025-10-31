@@ -20,15 +20,7 @@ import {
 import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
 
 export const SITE_CONFIG_KEYS = {
-  optional: [
-    ...SITE_FRONTMATTER_KEYS,
-    'projects',
-    'nav',
-    'actions',
-    'domains',
-    'favicon',
-    'template',
-  ],
+  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'template'],
   alias: FRONTMATTER_ALIASES,
 };
 
@@ -149,9 +141,6 @@ export function validateSiteConfigKeys(
       },
     );
     if (domains) output.domains = [...new Set(domains)];
-  }
-  if (defined(value.favicon)) {
-    output.favicon = validateString(value.favicon, incrementOptions('favicon', opts));
   }
   if (defined(value.template)) {
     output.template = validateString(value.template, incrementOptions('template', opts));

@@ -375,9 +375,6 @@ async function resolveSiteConfigPaths(
       }),
     );
   }
-  if (siteConfig.favicon) {
-    resolvedFields.favicon = await resolutionFn(session, path, siteConfig.favicon);
-  }
   if (siteConfig.parts) {
     resolvedFields.parts = await loadFrontmatterParts(
       session,

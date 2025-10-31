@@ -29,7 +29,6 @@ export type SiteConfig = SiteFrontmatter & {
   nav?: SiteNavItem[];
   actions?: SiteAction[];
   domains?: string[];
-  favicon?: string;
   template?: string;
 };
 

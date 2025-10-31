@@ -116,9 +116,19 @@ describe('validateSiteConfig', () => {
       nav: [{ title: 'cool folder', children: [{ title: 'cool page', url: '/test/cool-page' }] }],
       actions: [{ title: 'Go To Example', url: 'https://example.com', static: false }],
       domains: ['test.curve.space'],
-      favicon: 'curvenote.png',
+      options: { favicon: 'curvenote.png' },
     };
     expect(validateSiteConfig(siteConfig, opts)).toEqual(siteConfig);
+  });
+  it('valid favicon is moved to options', async () => {
+    const siteConfig = {
+      projects: [{ path: 'my-proj', slug: 'test' }],
+      favicon: 'curvenote.png',
+    };
+    expect(validateSiteConfig(siteConfig, opts)).toEqual({
+      projects: [{ path: 'my-proj', slug: 'test' }],
+      options: { favicon: 'curvenote.png' },
+    });
   });
   it('invalid list values are filtered', async () => {
     expect(
