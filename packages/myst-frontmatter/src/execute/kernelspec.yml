@@ -1,0 +1,50 @@
+title: Kernel Spec
+cases:
+  - title: empty object has defaults
+    raw:
+      kernelspec: {}
+    normalized:
+      kernelspec:
+        name: python3
+        display_name: python3 Kernel
+    warnings: 2
+  - title: extra keys removed
+    raw:
+      kernelspec:
+        extra: ''
+        name: python3
+        display_name: Python 3
+    normalized:
+      kernelspec:
+        name: python3
+        display_name: Python 3
+    warnings: 1
+  - title: full object returns self
+    raw:
+      kernelspec:
+        name: python3
+        language: python
+        display_name: Python 3
+        argv:
+          - python3
+          - -m
+          - IPython.kernel
+          - -f
+          - '{connection_file}'
+        env:
+          a: 1
+          b: two
+    normalized:
+      kernelspec:
+        name: python3
+        language: python
+        display_name: Python 3
+        argv:
+          - python3
+          - -m
+          - IPython.kernel
+          - -f
+          - '{connection_file}'
+        env:
+          a: 1
+          b: two

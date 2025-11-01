@@ -23,7 +23,11 @@ import {
  *
  * @param nodes array of executable nodes
  */
-function buildCacheKey(kernelSpec: KernelSpec, nodes: ExecutableNode[]): string {
+function buildCacheKey(
+  kernelSpec: KernelSpec,
+  nodes: ExecutableNode[],
+  envVars: Record<string, string | undefined>,
+): string {
   // Build an array of hashable items from an array of nodes
   const hashableItems: {
     kind: string;
@@ -46,12 +50,17 @@ function buildCacheKey(kernelSpec: KernelSpec, nodes: ExecutableNode[]): string 
       });
     }
   }
+  // Order hashable environment variable keys, to ensure determinism
+  const envKeys = Object.keys(envVars).sort();
+  const hashableEnv = Object.fromEntries(envKeys.map((n) => [n, envVars[n]]));
 
   // Build a hash from notebook state
-  return createHash('md5')
-    .update(kernelSpec.name)
-    .update(JSON.stringify(hashableItems))
-    .digest('hex');
+  const hash = createHash('md5').update(kernelSpec.name).update(JSON.stringify(hashableItems));
+  // Tack on hash of env vars. The if() prevents empty env-var objects breaking existing caches
+  if (envKeys.length) {
+    hash.update(JSON.stringify(hashableEnv));
+  }
+  return hash.digest('hex');
 }
 
 export type Options = {
@@ -90,7 +99,10 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
 
   // See if we already cached this execution
-  const cacheKey = buildCacheKey(kernelspec, executableNodes);
+  const cacheEnv = Object.fromEntries(
+    (opts.frontmatter.execute?.env ?? []).map((name) => [name, process.env[name]]),
+  );
+  const cacheKey = buildCacheKey(kernelspec, executableNodes, cacheEnv);
   let cachedResults = opts.cache.get(cacheKey);
 
   // Do we need to re-execute notebook?
