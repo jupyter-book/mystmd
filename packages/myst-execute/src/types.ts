@@ -1,6 +1,6 @@
-import type { Block, Code, Output } from 'myst-spec-ext';
+import type { Block, Code, Output, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
-
+import type { IExpressionResult } from 'myst-common';
 /**
  * Type narrowing Output to contain IOutput data
  *
@@ -23,3 +23,6 @@ export type CodeBlock = Block & {
   };
   children: (Code | CodeBlockOutput)[];
 };
+
+export type ExecutableNode = CodeBlock | InlineExpression;
+export type ExecutionResult = IOutput[] | IExpressionResult;

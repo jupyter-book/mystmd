@@ -1,4 +1,4 @@
-export { kernelExecutionTransform } from './execute.js';
+export { kernelExecutionTransform } from './transform.js';
 export type { JupyterServerSettings } from './manager.js';
 export { findExistingJupyterServer, launchJupyterServer } from './manager.js';
 export { LocalDiskCache } from './cache.js';
