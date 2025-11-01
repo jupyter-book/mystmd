@@ -156,27 +156,34 @@ export class Session implements ISession {
   }
 
   createUndiciDispatchers() {
+    // Do we want to impose a TTL for responses that do not set maxAge?
+    const cacheByDefault = process.env.MYST_HTTP_CACHE_DEFAULT_MAX_AGE
+      ? parseInt(process.env.MYST_HTTP_CACHE_DEFAULT_MAX_AGE)
+      : undefined;
+    // Do we want to force explicitly non-cacheable items to cache?
+    const forceCache = process.env.MYST_HTTP_CACHE_FORCE
+      ? ['yes', '1', 'true', 'on'].includes(process.env.MYST_HTTP_CACHE_FORCE.toLowerCase())
+      : undefined;
+    // Where, if defined, should the SQLite store be put?
+    const storeLocation = process.env.MYST_HTTP_CACHE_DB;
+
+    // Create an HTTP cache store. Prefer SQLite if we can write to disk.
     const makeStore = () => {
-      let location: string | unknown;
-      if ((location = process.env.MYST_HTTP_CACHE_DB)) {
+      if (storeLocation !== undefined) {
         try {
-          return new cacheStores.SqliteCacheStore({ location });
+          const store = new cacheStores.SqliteCacheStore({ location: storeLocation });
+          this.log.debug('Using SQLite store for HTTP caching');
+          return store;
         } catch (e) {
           this.log.error('Failed to create Sqlite cache', e);
         }
       }
-      this.log.warn('Using memory store for HTTP caching');
+      this.log.debug('Using memory store for HTTP caching');
       return new cacheStores.MemoryCacheStore();
     };
 
-    const cacheByDefault = process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE
-      ? parseInt(process.env.MYST_HTTP_CACHE_FORCE_MAX_AGE)
-      : undefined;
-    const forceCache = process.env.MYST_HTTP_CACHE_FORCE
-      ? ['yes', '1', 'true', 'on'].includes(process.env.MYST_HTTP_CACHE_FORCE.toLowerCase())
-      : undefined;
-
     const store = makeStore();
+    // Define an HTTP cache that intercepts HTTP GET and HTTP HEAD requests
     const cache = interceptors.cache({ store, methods: ['GET', 'HEAD'], cacheByDefault });
     if (cacheByDefault !== undefined && forceCache !== undefined) {
       const rewrite = createForceCacheInterceptor(cacheByDefault);
@@ -232,7 +239,6 @@ export class Session implements ISession {
       ...init,
       dispatcher: needsProxy ? this.proxyDispatcher! : this.dispatcher,
     });
-    console.log(resp.headers);
     logData.done = true;
     return resp;
   }
