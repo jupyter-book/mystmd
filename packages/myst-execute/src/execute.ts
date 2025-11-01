@@ -2,7 +2,7 @@ import { select, selectAll } from 'unist-util-select';
 import type { Logger } from 'myst-cli-utils';
 import type { PageFrontmatter, KernelSpec } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
-import type { Block, Code, InlineExpression, Output } from 'myst-spec-ext';
+import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent, IExpressionResult, IExpressionError } from 'myst-common';
 import { NotebookCell, NotebookCellTags, fileError, RuleId } from 'myst-common';
@@ -12,6 +12,7 @@ import assert from 'node:assert';
 import { createHash } from 'node:crypto';
 import type { Plugin } from 'unified';
 import type { ICache } from './cache.js';
+import type { CodeBlock } from './types.js';
 
 /**
  * Interpret an IOPub message as an IOutput object
@@ -136,29 +137,6 @@ function buildCacheKey(kernelSpec: KernelSpec, nodes: (CodeBlock | InlineExpress
     .update(JSON.stringify(hashableItems))
     .digest('hex');
 }
-
-/**
- * Type narrowing Output to contain IOutput data
- *
- * TODO: lift this to the myst-spec definition
- */
-type CodeBlockOutput = Output & {
-  data: IOutput[];
-};
-
-/**
- * Type narrowing Block to contain code-cells and code-cell outputs
- *
- * TODO: lift this to the myst-spec definition
- */
-
-type CodeBlock = Block & {
-  kind: 'code';
-  data?: {
-    tags?: string[];
-  };
-  children: (Code | CodeBlockOutput)[];
-};
 
 /**
  * Return true if the given node is a block over a code node and output node
