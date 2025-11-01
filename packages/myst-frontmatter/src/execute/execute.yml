@@ -1,0 +1,29 @@
+title: Execute
+cases:
+  - title: empty object is empty
+    raw:
+      execute: {}
+    normalized:
+      execute: {}
+  - title: extra keys removed
+    raw:
+      execute:
+        extra: ''
+        skip: true
+    normalized:
+      execute:
+        skip: true
+    warnings: 1
+  - title: full object returns self
+    raw:
+      execute:
+        skip: true
+        env:
+          - FOO
+          - BAR
+    normalized:
+      execute:
+          skip: true
+        env:
+          - FOO
+          - BAR
