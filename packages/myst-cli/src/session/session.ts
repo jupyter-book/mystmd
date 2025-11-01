@@ -124,7 +124,7 @@ export class Session implements ISession {
   $logger: Logger;
   doiLimiter: Limit;
 
-  proxyDispatcher?: ProxyAgent;
+  localDispatcher: Dispatcher;
   dispatcher: Dispatcher;
 
   _shownUpgrade = false;
@@ -140,11 +140,16 @@ export class Session implements ISession {
     this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
-    const proxyUrl = process.env.HTTPS_PROXY;
 
-    const dispatchers = this.createUndiciDispatchers();
-    this.dispatcher = new Agent().compose(...dispatchers);
-    if (proxyUrl) this.proxyDispatcher = new ProxyAgent(proxyUrl).compose(...dispatchers);
+    const proxyUrl = process.env.HTTPS_PROXY;
+    if (proxyUrl !== undefined) {
+      this.log.debug(`Using HTTPS proxy ${proxyUrl}`);
+    }
+    const cacheDispatchers = this.createCacheDispatchers();
+    this.dispatcher = (proxyUrl ? new ProxyAgent(proxyUrl) : new Agent()).compose(
+      ...cacheDispatchers,
+    );
+    this.localDispatcher = new Agent();
 
     this.store = createStore(rootReducer);
     // Allow the latest version to be loaded
@@ -155,7 +160,7 @@ export class Session implements ISession {
       .catch(() => null);
   }
 
-  createUndiciDispatchers() {
+  createCacheDispatchers() {
     // Do we want to impose a TTL for responses that do not set maxAge?
     const cacheByDefault = process.env.MYST_HTTP_CACHE_DEFAULT_MAX_AGE
       ? parseInt(process.env.MYST_HTTP_CACHE_DEFAULT_MAX_AGE)
@@ -225,9 +230,9 @@ export class Session implements ISession {
     const urlOnly = new URL((url as Request).url ?? (url as URL | string));
     this.log.debug(`Fetching: ${urlOnly}`);
 
-    const needsProxy = this.proxyDispatcher && !LOCALHOSTS.includes(urlOnly.hostname);
-    if (needsProxy) {
-      this.log.debug(`Using HTTPS proxy: ${this.proxyDispatcher}`);
+    const isLocal = LOCALHOSTS.includes(urlOnly.hostname);
+    if (isLocal) {
+      this.log.debug(`Using local dispatcher for request to ${urlOnly.hostname}`);
     }
 
     const logData = { url: urlOnly, done: false };
@@ -237,7 +242,7 @@ export class Session implements ISession {
 
     const resp = await fetchImpl(url, {
       ...init,
-      dispatcher: needsProxy ? this.proxyDispatcher! : this.dispatcher,
+      dispatcher: isLocal ? this.localDispatcher! : this.dispatcher,
     });
     logData.done = true;
     return resp;
