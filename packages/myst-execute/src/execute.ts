@@ -1,7 +1,7 @@
 import { select, selectAll } from 'unist-util-select';
 import type { Logger } from 'myst-cli-utils';
 import type { PageFrontmatter, KernelSpec } from 'myst-frontmatter';
-import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab/services';
+import type { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
 import type { Code, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent, IExpressionResult, IExpressionError } from 'myst-common';
@@ -286,6 +286,46 @@ export type Options = {
   log?: Logger;
 };
 
+function getExecutableNodes(tree: GenericParent) {
+  // Pull out code-like nodes
+  return (
+    (
+      selectAll(`block[kind=${NotebookCell.code}],inlineExpression`, tree) as (
+        | CodeBlock
+        | InlineExpression
+      )[]
+    )
+      // Filter out nodes that skip execution
+      .filter((node) => !(isCellBlock(node) && codeBlockSkipsExecution(node)))
+  );
+}
+
+type ISessionConnection = Awaited<ReturnType<SessionManager['startNew']>>;
+type ISessionConnectionWithKernel = ISessionConnection & {
+  kernel: NonNullable<ISessionConnection['kernel']>;
+};
+
+async function createKernelConnection(
+  sessionManager: SessionManager,
+  basePath: string,
+  kernelspec: KernelSpec,
+  vfile: VFile,
+): Promise<ISessionConnectionWithKernel | undefined> {
+  const sessionOpts = {
+    type: 'notebook',
+    path: path.relative(basePath, vfile.path),
+    name: path.basename(vfile.path),
+    kernel: {
+      name: kernelspec.name,
+    },
+  };
+  const connection = await sessionManager.startNew(sessionOpts);
+  if (connection.kernel === null) {
+    return undefined;
+  }
+  return connection as any;
+}
+
 /**
  * Transform an AST to include the outputs of executing the given notebook
  *
@@ -296,93 +336,74 @@ export type Options = {
 export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile, opts: Options) {
   const log = opts.log ?? console;
 
+  const kernelspec = opts.frontmatter.kernelspec;
   // We need the kernelspec to proceed
-  if (opts.frontmatter.kernelspec === undefined) {
+  if (kernelspec === undefined) {
     return fileError(
       vfile,
       `Notebook does not declare the necessary 'kernelspec' frontmatter key required for execution`,
     );
   }
 
-  // Pull out code-like nodes
-  const executableNodes = (
-    selectAll(`block[kind=${NotebookCell.code}],inlineExpression`, tree) as (
-      | CodeBlock
-      | InlineExpression
-    )[]
-  )
-    // Filter out nodes that skip execution
-    .filter((node) => !(isCellBlock(node) && codeBlockSkipsExecution(node)));
-
+  const executableNodes = getExecutableNodes(tree);
   // Only do something if we have any nodes!
   if (executableNodes.length === 0) {
     return;
   }
 
   // See if we already cached this execution
-  const cacheKey = buildCacheKey(opts.frontmatter.kernelspec, executableNodes);
-  let cachedResults: (IExpressionResult | IOutput[])[] | undefined = opts.cache.get(cacheKey);
+  const cacheKey = buildCacheKey(kernelspec, executableNodes);
+  let cachedResults = opts.cache.get(cacheKey);
 
   // Do we need to re-execute notebook?
-  if (opts.ignoreCache || cachedResults === undefined) {
-    log.info(
-      `💿 Executing Notebook (${vfile.path}) ${
-        opts.ignoreCache ? '[cache ignored]' : '[no execution cache found]'
-      }`,
-    );
-    const sessionManager = await opts.sessionFactory();
-    // Do we not have a working session?
-    if (sessionManager === undefined) {
-      fileError(vfile, `Could not load Jupyter session manager to run executable nodes`, {
-        fatal: opts.errorIsFatal,
-      });
-    }
-    // Otherwise, boot up a kernel, and execute each cell
-    else {
-      let sessionConnection: Session.ISessionConnection | undefined;
-      const sessionOpts = {
-        path: path.relative(opts.basePath, vfile.path),
-        type: 'notebook',
-        name: path.basename(vfile.path),
-        kernel: {
-          name: opts.frontmatter.kernelspec.name,
-        },
-      };
-      await sessionManager
-        .startNew(sessionOpts)
-        .catch((err) => {
-          log.debug((err as Error).stack);
-          log.error(`Jupyter Connection Error: ${(err as Error).message}`);
-        })
-        .then(async (conn) => {
-          if (!conn) return;
-          sessionConnection = conn;
-          assert(conn.kernel);
-          log.debug(`Connected to kernel ${conn.kernel.name}`);
-          // Execute notebook
-          const { results, errorOccurred } = await computeExecutableNodes(
-            conn.kernel,
-            executableNodes,
-            { vfile },
-          );
-          // Populate cache if things were successful
-          if (!errorOccurred) {
-            opts.cache.set(cacheKey, results);
-          }
-          // Refer to these computed results
-          cachedResults = results;
-        })
-        // Ensure that we shut-down the kernel
-        .finally(async () => sessionConnection !== undefined && sessionConnection.shutdown());
-    }
-  } else {
-    // We found the cache, adding them in below!
+  if (!opts.ignoreCache && cachedResults !== undefined) {
+    // Apply results to tree
     log.info(`💾 Adding Cached Notebook Outputs (${vfile.path})`);
+    applyComputedOutputsToNodes(executableNodes, cachedResults);
+    return;
   }
-
-  if (cachedResults) {
+  log.info(
+    `💿 Executing Notebook (${vfile.path}) ${
+      opts.ignoreCache ? '[cache ignored]' : '[no execution cache found]'
+    }`,
+  );
+  const sessionManager = await opts.sessionFactory();
+  // Do we not have a working session?
+  if (sessionManager === undefined) {
+    fileError(vfile, `Could not load Jupyter session manager to run executable nodes`, {
+      fatal: opts.errorIsFatal,
+    });
+    return;
+  }
+  // Otherwise, boot up a kernel, and execute each cell
+  const sessionConnection = await createKernelConnection(
+    sessionManager,
+    opts.basePath,
+    kernelspec,
+    vfile,
+  );
+  if (sessionConnection === undefined) {
+    log.error(`Unable to create a new kernel ${kernelspec.name}`);
+    return;
+  }
+  const { kernel } = sessionConnection;
+  log.debug(`Connected to kernel ${kernel.name}`);
+  try {
+    // Execute notebook
+    const { results, errorOccurred } = await computeExecutableNodes(kernel, executableNodes, {
+      vfile,
+    });
+    // Populate cache if things were successful
+    if (!errorOccurred) {
+      opts.cache.set(cacheKey, results);
+    }
+    // Refer to these computed results
+    cachedResults = results;
     // Apply results to tree
     applyComputedOutputsToNodes(executableNodes, cachedResults);
+  } finally {
+    // Ensure that we shut-down the kernel
+    sessionConnection.shutdown();
   }
 }
 
