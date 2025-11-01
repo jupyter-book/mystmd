@@ -45,7 +45,7 @@
     "myst-cli-utils": "^2.0.12",
     "myst-common": "^1.8.3",
     "myst-frontmatter": "^1.8.3",
-    "node-fetch": "^3.3.1",
+    "undici": "^7.16.0",
     "pretty-hrtime": "^1.0.3",
     "simple-validators": "^1.0.6"
   },

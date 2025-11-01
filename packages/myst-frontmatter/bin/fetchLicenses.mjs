@@ -1,5 +1,5 @@
 import fs from 'fs';
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 
 (async () => {
   const data = await (await fetch('https://spdx.org/licenses/licenses.json')).json();
