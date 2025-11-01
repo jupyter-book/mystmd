@@ -5,7 +5,7 @@ import type { Kernel, KernelMessage, Session, SessionManager } from '@jupyterlab
 import type { Block, Code, InlineExpression, Output } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { GenericNode, GenericParent, IExpressionResult, IExpressionError } from 'myst-common';
-import { NotebookCell, NotebookCellTags, fileError } from 'myst-common';
+import { NotebookCell, NotebookCellTags, fileError, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
@@ -234,6 +234,7 @@ async function computeExecutableNodes(
           `An exception occurred during code execution, halting further execution:\n\n${errorMessage}`,
           {
             node: matchedNode,
+            ruleId: RuleId.codeCellExecutes,
           },
         );
         // Make a note of the failure
@@ -250,7 +251,7 @@ async function computeExecutableNodes(
         fileError(
           opts.vfile,
           `An exception occurred during expression evaluation, halting further execution:\n\n${errorMessage}`,
-          { node: matchedNode },
+          { node: matchedNode, ruleId: RuleId.inlineExpressionExecutes },
         );
         // Make a note of the failure
         errorOccurred = true;
