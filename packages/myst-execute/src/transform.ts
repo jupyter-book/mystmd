@@ -73,6 +73,10 @@ export type Options = {
   log?: Logger;
 };
 
+function getCacheEnvironment(env: string[]) {
+  return Object.fromEntries(env.map((name) => [name, process.env[name]]));
+}
+
 /**
  * Transform an AST to include the outputs of executing the given notebook
  *
@@ -84,6 +88,8 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   const log = opts.log ?? console;
 
   const kernelspec = opts.frontmatter.kernelspec;
+  const executeConfig = opts.frontmatter.execute;
+
   // We need the kernelspec to proceed
   if (kernelspec === undefined) {
     return fileError(
@@ -99,14 +105,19 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
 
   // See if we already cached this execution
-  const cacheEnv = Object.fromEntries(
-    (opts.frontmatter.execute?.env ?? []).map((name) => [name, process.env[name]]),
-  );
+  const cacheEnv = getCacheEnvironment(executeConfig?.env ?? []);
   const cacheKey = buildCacheKey(kernelspec, executableNodes, cacheEnv);
   let cachedResults = opts.cache.get(cacheKey);
 
   // Do we need to re-execute notebook?
-  if (!opts.ignoreCache && cachedResults !== undefined) {
+  if (
+    // If we don't globally ignore caching'
+    !opts.ignoreCache &&
+    // If this document hasn't opted out of cache'
+    executeConfig?.cache !== false &&
+    // If we have a cached result
+    cachedResults !== undefined
+  ) {
     // Apply results to tree
     log.info(`💾 Adding Cached Notebook Outputs (${vfile.path})`);
     applyComputedOutputsToNodes(executableNodes, cachedResults);
