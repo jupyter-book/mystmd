@@ -164,7 +164,9 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
     applyComputedOutputsToNodes(executableNodes, cachedResults);
   } finally {
     // Ensure that we shut-down the kernel
-    sessionConnection.shutdown();
+    if (!sessionConnection.isDisposed) {
+      sessionConnection.shutdown();
+    }
   }
 }
 
