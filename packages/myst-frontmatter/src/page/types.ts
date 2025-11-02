@@ -15,7 +15,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'enumerator',
   'content_includes_title',
   'skip_execution',
-  'execute'
+  'execute',
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
