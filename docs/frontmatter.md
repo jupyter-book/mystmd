@@ -266,7 +266,7 @@ The following table lists the available frontmatter fields, a brief description 
   - configuration for the kernel (see [](#kernel-specification))
   - page only
 * - `execute`
-  - configuration for build-time execution of a particular document (see [](#execute-configuration))
+  - configuration for build-time execution of a particular document (see [](#execute-config))
   - page only
 ```
 
