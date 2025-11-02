@@ -23,7 +23,13 @@ cases:
           - BAR
     normalized:
       execute:
-          skip: true
+        skip: true
         env:
           - FOO
           - BAR
+  - title: renamed skip is aliased
+    raw:
+      skip_execution: true
+    normalized:
+      execute:
+        skip: true
