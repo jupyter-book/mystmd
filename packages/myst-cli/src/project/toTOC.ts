@@ -4,12 +4,10 @@ import type { PageLevels, LocalProject, LocalProjectFolder, LocalProjectPage } f
 import { findYAMLSection, yamlLineIndent } from './utils.js';
 import type { Entry } from 'myst-toc';
 import yaml from 'js-yaml';
-import { relative, parse } from 'node:path';
+import { posix, parse } from 'node:path';
 
 function getRelativeDocumentLink(file: string, path: string) {
-  const relativePath = path === '.' ? file : relative(path, file);
-  // Normalize path separators to forward slashes for cross-platform compatibility
-  return relativePath.replace(/\\/g, '/');
+  return path === '.' ? file : posix.relative(path, file);
 }
 
 function tocFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string): any {
