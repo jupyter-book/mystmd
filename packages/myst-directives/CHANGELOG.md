@@ -1,5 +1,12 @@
 # myst-directives
 
+## 1.6.0
+
+### Patch Changes
+
+- myst-common@1.8.4
+- myst-spec-ext@1.8.4
+
 ## 1.5.17
 
 ### Patch Changes
