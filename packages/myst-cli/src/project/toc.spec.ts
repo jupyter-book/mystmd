@@ -774,6 +774,36 @@ describe('tocFromProject', () => {
       },
     ]);
   });
+  it('normalizes backslashes to forward slashes in paths', async () => {
+    // Simulate Windows-style paths with backslashes
+    expect(
+      tocFromProject({
+        file: 'chapters\\readme.md',
+        pages: [
+          {
+            file: 'chapters\\h1.md',
+            slug: 'h1',
+            level: 1,
+          },
+          {
+            file: 'chapters\\section\\page.md',
+            slug: 'page',
+            level: 2,
+          },
+        ],
+      }),
+    ).toEqual([
+      { file: 'chapters/readme.md' },
+      {
+        file: 'chapters/h1.md',
+        children: [
+          {
+            file: 'chapters/section/page.md',
+          },
+        ],
+      },
+    ]);
+  });
 });
 const SITE_CONFIG = `
 version: 1
