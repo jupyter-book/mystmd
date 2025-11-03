@@ -1,5 +1,7 @@
 # myst-roles
 
+## 1.6.0
+
 ## 1.5.17
 
 ### Patch Changes

@@ -16,43 +16,7 @@ project:
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
     biapol: https://biapol.github.io/blog/
-  abbreviations:
-    # Alphabetical order
-    AMS: American Mathematical Society
-    API: Application Programming Interface
-    AST: Abstract Syntax Tree
-    CLI: Command Line Interface
-    CRediT: Contributor Roles Taxonomy
-    CSS: Cascading Style Sheet
-    CSV: comma-separated values
-    DOI: Digital Object Identifier
-    ESM: ECMAScript Modules
-    GPU: Graphics Processing Unit
-    HTML: Hypertext Markup Language
-    ID: Identifier
-    ISNI: International Standard Name Identifier
-    JATS: Journal Article Tag Suite
-    JSON: JavaScript Object Notation
-    LTS: Long Term Support
-    MyST: Markedly Structured Text
-    NISO: National Information Standards Organization
-    OA: Open Access
-    PDF: Portable Document Format
-    PID: Persistent Identifier
-    POSIX: Portable Operating System Interface
-    REES: Reproducible Execution Environment Specification
-    ROR: Research Organization Registry
-    RRID: Research Resource Identifier
-    RST: reStructuredText
-    SPDX: Software Package Data Exchange
-    TLA: Three Letter Acronym
-    TOC: table of contents
-    TPU: Tensor Processing Unit
-    URL: Uniform Resource Locator
-    VoR: Version of Record
-    WASM: WebAssembly
-    YAML: Yet Another Markup Language
-    XML: Extensible Markup Language
+ 
   plugins:
     - directives.mjs
     - picsum.mjs
@@ -66,6 +30,7 @@ project:
       path: markup.py
     - type: javascript
       path: markup.mjs
+
   error_rules:
     - rule: link-resolves
       severity: ignore
@@ -77,6 +42,7 @@ project:
         - /jtex/create-a-latex-template
         - /jtex/create-a-beamer-template
         - /jtex/contribute-a-template
+        
   toc:
     - file: index.md
     - file: installing.md
@@ -182,6 +148,9 @@ project:
         - file: contribute-build-locally.md
         - file: contribute-add-feature.md
     - file: cite.md
+
+extends:
+  - abbreviations.yml
 
 site:
   title: MyST Markdown Guide
