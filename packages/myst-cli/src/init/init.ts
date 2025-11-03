@@ -134,6 +134,7 @@ export async function init(session: ISession, opts: InitOptions) {
 ‣ Rename any modified or unneeded files so that they are hidden
 
 `),
+            // Just for a few months while people get used to JB2. Remove after Feb 2026.
             chalk.dim(`If you prefer to continue using Jupyter Book 1.x, run: ${chalk.blue('pip install jupyter-book<2')}
 
 `),
