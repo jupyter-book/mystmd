@@ -176,7 +176,7 @@ export async function downloadTemplate(
     }
     const urlBase = downloadUrl.substring(0, downloadUrl.length - 4);
     downloadUrl = `${urlBase}/archive/refs/heads/${branch}.zip`;
-  // this scheme is for using GH releases as a way to distribute stable templates
+    // this scheme is for using GH releases as a way to distribute stable templates
   } else if (downloadUrl.endsWith('.release')) {
     session.log.warn(`👷 Warning, using a .release link which may not be stable yet`);
     // xxx rather use a tag ???
@@ -185,7 +185,7 @@ export async function downloadTemplate(
       session.log.warn(`👷 Warning, using a branch: ${branch}`);
     }
     // the /releases/ endpoint makes sense under gh only
-    const re = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/([^.\/]+)\.release\/?$/;
+    const re = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/([^./]+)\.release\/?$/;
     const match = downloadUrl.match(re);
     if (!match) {
       throw new Error(`Problem with .release link "${downloadUrl}": Not a valid GitHub URL`);
