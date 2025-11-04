@@ -19,9 +19,18 @@ myst start --execute
 myst build --execute
 ```
 
+:::{note} Other flags can be relevant as well
+For example if you want to produce a static HTML output from your content, you may wish to pass the `--html` flag as well:
+
+```bash
+myst build --execute --html
+```
+
+:::
+
 ## What content will be executed?
 
-If you enable execution with the configuration above, the following content will be executed at build time:
+If you enable execution with the `--execute` flag as above, the following content will be executed at build time:
 
 - **Cells in a Jupyter Notebook (`.ipynb`)**. These will be executed in the order they appeared in a notebook.
 - **Markdown code cells with [the `code-cell` directive](#code-cell)**. These will be executed similar to a code cell. See [](./notebooks-with-markdown.md) for more information.
@@ -31,15 +40,9 @@ If you enable execution with the configuration above, the following content will
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
-## Allow a code-cell to error without failing the build
+## Show raw Python objects
 
-By default, MyST will stop executing a notebook if a cell raises an error.
-If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell (see [all cell tags](#tbl:notebook-cell-tags)).
-If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
-
-## Show outputs for cells that return python modules and classes
-
-By default, MyST will suppress outputs from cells that return Python objects.
+By default, MyST will suppress outputs from cells that return raw Python objects - like typically modules and classes - that don't have a string representation.
 For example:
 
 ```{code} Python
@@ -52,13 +55,20 @@ math
 :filename: Output
 <module 'math' from '/some/path/math.cpython-312-darwin.so'>
 ```
+
+This also applies to results like matplotlib's Axes objects, or pandas' GroupBy objects, etc..
+
 If you'd like to instead show these outputs, see [](#setting:output_matplotlib_strings).
 
-## Add tags to notebook cells
+## Allow a code-cell to error without failing the build
 
-The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
-Additionally, you can specify tags (and other cell metadata) with markdown using the {myst:directive}`code-cell` directive.
-Here's an example of adding this tag with a {myst:directive}`code-cell` directive:
+By default, MyST will stop executing a notebook if a cell raises an error.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell (see [all cell tags](#tbl:notebook-cell-tags)). If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
+
+:::{tip} How to add a cell tag
+
+The easiest way to add cell tags on regular notebooks is via [the JupyterLab interface](https://jupyterlab.readthedocs.io), that has a dedicated UI for managing cell metadata, if that is your usual environment.  
+In addition, [MyST also supports the {myst-directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), and here's an example of adding the `raises-exception` tag on such a code cell:
 
 ````markdown
 ```{code-cell}
@@ -67,6 +77,8 @@ Here's an example of adding this tag with a {myst:directive}`code-cell` directiv
 print("Hello" + 10001)
 ```
 ````
+
+:::
 
 ## Skip particular code-cells
 
