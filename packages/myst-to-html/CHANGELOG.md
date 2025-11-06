@@ -1,5 +1,52 @@
 # myst-to-html
 
+## 1.6.0
+
+### Patch Changes
+
+- cd8ee79: Update MarkdownIt to 13 for all dependencies, add types to dependencieswq
+  - myst-common@1.8.4
+
+## 1.5.17
+
+### Patch Changes
+
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+  - myst-common@1.8.3
+
+## 1.5.16
+
+### Patch Changes
+
+- myst-common@1.8.2
+
+## 1.5.15
+
+### Patch Changes
+
+- myst-common@1.8.1
+
+## 1.5.14
+
+## 1.5.13
+
+### Patch Changes
+
+- myst-common@1.7.11
+
+## 1.5.12
+
+### Patch Changes
+
+- myst-common@1.7.9
+
+## 1.5.11
+
+### Patch Changes
+
+- myst-common@1.7.8
+
 ## 1.5.10
 
 ### Patch Changes

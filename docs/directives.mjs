@@ -3,6 +3,7 @@ import { mystParse } from 'myst-parser';
 import { defaultDirectives } from 'myst-directives';
 import { defaultRoles } from 'myst-roles';
 import { cardDirective } from 'myst-ext-card';
+import { buttonRole } from 'myst-ext-button';
 import { gridDirectives } from 'myst-ext-grid';
 import { proofDirective } from 'myst-ext-proof';
 import { exerciseDirectives } from 'myst-ext-exercise';
@@ -17,7 +18,7 @@ const allDirectives = [
   cardDirective,
   proofDirective,
 ];
-const allRoles = [...defaultRoles];
+const allRoles = [...defaultRoles, buttonRole];
 
 /**
  * @param {import('myst-common').OptionDefinition} option

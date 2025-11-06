@@ -4,7 +4,11 @@ import type { GenericParent } from 'myst-common';
 import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
 import { mystTargetsTransform, headingLabelTransform } from './targets.js';
 import { captionParagraphTransform } from './caption.js';
-import { admonitionBlockquoteTransform, admonitionHeadersTransform } from './admonitions.js';
+import {
+  admonitionBlockquoteTransform,
+  admonitionHeadersTransform,
+  admonitionQmdTransform,
+} from './admonitions.js';
 import { blockMetadataTransform, blockNestingTransform, blockToFigureTransform } from './blocks.js';
 import { htmlIdsTransform } from './htmlIds.js';
 import { imageAltTextTransform, imageNoAltTextTransform } from './images.js';
@@ -30,6 +34,7 @@ export function basicTransformations(tree: GenericParent, file: VFile, opts?: Re
   subequationTransform(tree, file);
   // Label headings after the targets-transform
   headingLabelTransform(tree);
+  admonitionQmdTransform(tree);
   admonitionBlockquoteTransform(tree); // Must be before header transforms
   admonitionHeadersTransform(tree);
   joinGatesTransform(tree, file); // This should be before block nesting

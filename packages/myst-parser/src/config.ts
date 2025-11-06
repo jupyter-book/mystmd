@@ -32,7 +32,7 @@ export const MARKDOWN_IT_CONFIG = {
   components: {
     core: {
       // Adding 'linkify' here is the only change to the MarkdownIt commonmark preset config
-      rules: ['normalize', 'block', 'inline', 'linkify'],
+      rules: ['normalize', 'block', 'inline', 'linkify', 'text_join'],
     },
 
     block: {
@@ -63,10 +63,10 @@ export const MARKDOWN_IT_CONFIG = {
         'newline',
         'text',
       ],
-      rules2: ['balance_pairs', 'emphasis', 'text_collapse'],
+      rules2: ['balance_pairs', 'emphasis', 'fragments_join'],
     },
   },
 };
 
 // List of valid TLDs to exclude from linkify
-export const EXCLUDE_TLDS = ['py', 'md', 'dot', 'next', 'so', 'es'];
+export const EXCLUDE_TLDS = ['py', 'md', 'dot', 'next', 'so', 'es', 'java', 'zip'];

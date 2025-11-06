@@ -7,9 +7,9 @@ cases:
         - type: paragraph
           children:
             - type: text
-              value: 'This is * ` # % @'
+              value: 'This is * ` # % @ ;'
     typst: |-
-      This is \* \` \# % \@
+      This is \* \` \# % \@ \;
   - title: text in paragraph
     mdast:
       type: root
@@ -40,9 +40,9 @@ cases:
                 - type: text
                   value: a link!
             - type: text
-              value: ' and not a # comment'
+              value: '; with a trailing semicolon and not a # comment'
     typst: |-
-      Some _markdown_ and *strong* and `inlineCode` and #link("https://example.com")[a link!] and not a \# comment
+      Some _markdown_ and *strong* and `inlineCode` and #link("https://example.com")[a link!]\; with a trailing semicolon and not a \# comment
   - title: strong
     mdast:
       type: root
@@ -397,3 +397,26 @@ cases:
                   value: markdown
     typst: |-
       Some % other _markdown_
+  - title: list item with and without paragraph
+    description: |
+      The list item should not add space if there is only a single paragraph.
+      This is resilient to a listItem not having a paragraph as the child.
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A list item'
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'A list item in a paragraph'
+    typst: |-
+      - A list item
+      - A list item in a paragraph

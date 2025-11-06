@@ -1,5 +1,272 @@
 # myst-cli
 
+## 1.6.4
+
+### Patch Changes
+
+- 0ddd860: Log debug errors on watch
+- d348d04: Update relative path backslashes with unix-style paths
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
+- eba4f34: Favicon on site option is under options.
+- Updated dependencies [aab5f02]
+- Updated dependencies [4fb0d72]
+- Updated dependencies [eba4f34]
+- Updated dependencies [cd8ee79]
+  - myst-transforms@1.3.41
+  - myst-config@1.8.4
+  - myst-parser@1.6.0
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+  - myst-spec-ext@1.8.4
+
+## 1.6.3
+
+### Patch Changes
+
+- 53867c3: Ignore example domains by default
+- a85b321: Update to package dependencies and typescript
+- c699bba: Set the HOST environment variable to 127.0.0.1 on ReadTheDocs CI
+- 8492fb0: Add `--keep-host` to the `myst build` command.
+- 53867c3: Add glob patterns to error rules for links
+- 38579e6: Bump @jupyterlab/services pin
+- cc583b5: Non-quiet myst.xref.json load error
+- fb6f430: Throw errors including on the main page when strict.
+- Updated dependencies [6a5fe67]
+- Updated dependencies [13bd33a]
+- Updated dependencies [a85b321]
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [38579e6]
+- Updated dependencies [6783dae]
+- Updated dependencies [6a5fe67]
+- Updated dependencies [956055c]
+  - myst-templates@1.0.26
+  - myst-transforms@1.3.40
+  - myst-cli-utils@2.0.12
+  - myst-to-docx@1.0.15
+  - myst-to-md@1.0.16
+  - myst-common@1.8.3
+  - myst-execute@0.2.0
+  - myst-frontmatter@1.8.3
+  - myst-to-typst@0.0.35
+  - myst-parser@1.5.17
+  - myst-config@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 1.6.2
+
+### Patch Changes
+
+- 1c9c1c9d7: Ensure host is only for local development and is not exposed on local network.
+- e060c9f1d: Add --config option to CLI to override default myst.yml
+- b27afefc5: Include hidden routes in static HTML export
+- Updated dependencies [973db009e]
+  - myst-to-tex@1.0.42
+  - myst-to-typst@0.0.34
+  - tex-to-myst@1.0.42
+
+## 1.6.1
+
+### Patch Changes
+
+- e661f85d9: Change social links to drop Twitter
+- 80bc241e4: Refactor function to expose parsing options
+- a01426ad3: When clicking "edit this page" take the user directly to the GitHub edit interface
+- 4792531: Add typst PDF to the meca bundle
+- 089cbcaff: Load project config before site config
+- Updated dependencies [ae6123412]
+- Updated dependencies [9cb280a4b]
+- Updated dependencies [8ffa2d33c]
+- Updated dependencies [efc29a450]
+- Updated dependencies [a0fbdc419]
+  - myst-transforms@1.3.39
+  - myst-spec-ext@1.8.2
+  - myst-parser@1.5.16
+  - myst-common@1.8.2
+  - myst-config@1.8.2
+  - myst-frontmatter@1.8.2
+
+## 1.6.0
+
+### Minor Changes
+
+- 547a13e5: Currently, the static export triggered by `myst build --html` exports
+  `any/route` to `any/route.html`. This makes it hard to deploy to
+  static page sites like GitHub (or even Apache), which all expect
+  `/any/route` to point to `any/route/index.html`. This change is to
+  update the static export to using that naming convention, i.e. to
+  produce the `index.html` files as expected.
+
+### Patch Changes
+
+- ff61479: Fix whitelabelling bug
+- Updated dependencies [cb76fb71]
+  - myst-transforms@1.3.38
+
+## 1.5.1
+
+### Patch Changes
+
+- 4a745b2b: Incorrect error about .\* image extension, but only when image is not found
+- 7b844a9a: Fix embedding of raw `code` nodes with `remove-input`
+- f1d704ba: Remove time unit from heartbeat message
+- 2db64b6c: Add whitelabelling for myst init
+- c96b0835: Fix indentation of log message
+- Updated dependencies [0b284816]
+- Updated dependencies [0b284816]
+- Updated dependencies [224da08d]
+- Updated dependencies [fefffffd]
+  - myst-parser@1.5.15
+  - myst-spec-ext@1.8.1
+  - myst-to-typst@0.0.33
+  - myst-transforms@1.3.37
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+  - myst-config@1.8.1
+
+## 1.5.0
+
+### Minor Changes
+
+- febc0de9: Enable external URLs in table of contents
+
+### Patch Changes
+
+- 8871ca8a: Improve symbol replacements.
+- 1ec5636: hidden nodes get excluded from manifest and enumeration
+- Updated dependencies [febc0de9]
+- Updated dependencies [8871ca8a]
+- Updated dependencies [423a1913]
+- Updated dependencies [501f981c]
+  - myst-config@1.8.0
+  - myst-transforms@1.3.36
+  - citation-js-utils@1.2.7
+  - myst-common@1.8.0
+  - myst-frontmatter@1.8.0
+  - myst-spec-ext@1.8.0
+
+## 1.4.0
+
+### Minor Changes
+
+- 483f2b7: Load plugins earlier, before parsing frontmatter parts
+
+### Patch Changes
+
+- Updated dependencies [483f2b7]
+- Updated dependencies [8a0ee19e]
+  - myst-common@1.7.12
+  - myst-frontmatter@1.7.12
+  - myst-config@1.7.12
+  - myst-spec-ext@1.7.12
+
+## 1.3.28
+
+### Patch Changes
+
+- dd9d0f7: Fix `/index` handling for projects with non-`index` index file and other files named `index.md`
+- Updated dependencies [4b7c81a5]
+  - myst-templates@1.0.25
+
+## 1.3.27
+
+### Patch Changes
+
+- 300e71f7: expose hidden attribute in TOC nodes
+- Updated dependencies [bd3a2ed]
+- Updated dependencies [300e71f7]
+  - myst-to-typst@0.0.32
+  - myst-toc@0.1.3
+
+## 1.3.26
+
+### Patch Changes
+
+- d35eecf2: Add a `--template` flag to `myst` that allows the user to specify a custom location for `template.yml`. When that flag is specified, the template is local, and therefore we do not validate the `files` section of the template.
+- dc90dc94: Bump nbtx to 0.3.0
+- 10c56987: Remove default label from expression
+- f84a4fcb: Escape backticks in `init --gh-pages` template
+- 198c36dc: This makes a fix to the checkLinkTransform, that processes `card` nodes in addition to `links`. Card nodes can have optional `url` properties, which when undefined cause a fatal error.
+- 7e2a114e: Improve error handling for xref resolution
+- 03d72de9: Ensure that javascript and html bundle match.
+- 7d68c88e: block data class
+- 45c78260: Fix missing references in docx export
+- 062d8957: Move kernel execution transform earlier in pipeline
+- Updated dependencies [d35eecf2]
+- Updated dependencies [dc90dc94]
+- Updated dependencies [91bed6d0]
+- Updated dependencies [c6213ed]
+- Updated dependencies [7d68c88e]
+- Updated dependencies [68c93b9a]
+  - myst-templates@1.0.24
+  - myst-to-jats@1.0.34
+  - myst-frontmatter@1.7.11
+  - myst-transforms@1.3.34
+  - myst-to-typst@0.0.31
+  - myst-parser@1.5.13
+  - myst-common@1.7.11
+  - myst-config@1.7.11
+  - myst-spec-ext@1.7.11
+
+## 1.3.25
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- 0941552: Blocks can now set `kind` and `class`
+- Updated dependencies [26e8d199]
+- Updated dependencies [0941552]
+  - myst-frontmatter@1.7.10
+  - myst-transforms@1.3.33
+  - myst-to-jats@1.0.33
+  - myst-common@1.7.10
+  - myst-config@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.3.24
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- 7448083f: Add support for skipping execution of individual notebooks
+- 75bbb180: Change footnotes to use enumerator over number
+- 0ca2c679: Set site.options.folders in JB2 upgrade
+- 1a18e4f4: Fix typo in upgrade routine
+- 75bbb180: Add version to site content outputs
+- 2a6db555: Fix imports of plugins on Windows
+- 491d134e: Fix errors about missing images on non-first builds
+- b516d4fe: Improve error message for missing javascript plugins
+- Updated dependencies [0052853]
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+- Updated dependencies [75bbb180]
+- Updated dependencies [aa49c51c]
+- Updated dependencies [92839fba]
+  - myst-transforms@1.3.32
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-to-docx@1.0.14
+  - myst-config@1.7.9
+  - myst-parser@1.5.12
+  - myst-common@1.7.9
+
+## 1.3.23
+
+### Patch Changes
+
+- fad8f673: Add new button role
+- 3b4a5f8d: Add support for `strip-quotes` metadata
+- Updated dependencies [7d24862a]
+- Updated dependencies [fad8f673]
+- Updated dependencies [eacacd95]
+  - myst-parser@1.5.11
+  - myst-ext-button@0.0.1
+  - myst-spec-ext@1.7.8
+  - myst-transforms@1.3.31
+  - myst-common@1.7.8
+  - myst-config@1.7.8
+  - myst-frontmatter@1.7.8
+
 ## 1.3.22
 
 ### Patch Changes

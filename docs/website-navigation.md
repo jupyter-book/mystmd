@@ -8,7 +8,7 @@ In the [default MyST templates](./website-templates.md) there are several sectio
 Here's how you can configure them.
 
 :::{seealso} For all theme options
-See [](site-options) for a list of all site options in both of the default themes.
+See [](#site-options) for a list of all site options in both of the default themes.
 :::
 
 ## Website Layout
@@ -29,6 +29,7 @@ Other themes may have slightly different structure.
 - **[Footer](#navigation:footer)**: (work in progress) Contains more in-depth site navigation.
 
 (navigation:header)=
+
 ## Header
 
 (site-navigation)=
@@ -51,7 +52,7 @@ site:
 
 There are a few types of entries you can define:
 
-:::{list-table}
+````{list-table}
 :header-rows: 1
 - * Type
   * Pattern
@@ -65,19 +66,20 @@ There are a few types of entries you can define:
 - * **External URLs**
   * ```yaml
     - title: Custom title
-      url: https://somelink.org`
+      url: https://somelink.org
     ```
   * Direct links to an external website. This should be a fully-specified URL.
 - * **Dropdowns**
   * ```yaml
     - title: Dropdown title
       children:
-      - url: pageone
-      - url: pagetwo
+      - title:
+        url: /pageone
+      - title:
+        url: /pagetwo
     ```
   * Becomes a dropdown with other entries inside.
-:::
-
+````
 
 ### Action Buttons
 
@@ -95,11 +97,9 @@ site:
       url: https://mystmd.org
 ```
 
-
 There are two types of actions:
 
-
-:::{list-table}
+````{list-table}
 :header-rows: 1
 - * Type
   * Pattern
@@ -116,9 +116,10 @@ There are two types of actions:
       url: https://somelink.org`
     ```
   * Direct links to an external website. This should be a fully-specified URL.
-:::
+````
 
 (navigation:sidebar-primary)=
+
 ## Primary sidebar (Table of Contents)
 
 Is defined by your [MyST Project Table of Contents](./table-of-contents.md).
@@ -134,13 +135,34 @@ site:
     hide_toc: true
 ```
 
+### Hide MyST branding in ToC
+
+To hide the MyST logo at the bottom of the Primary Sidebar, use `site.options.hide_myst_branding` as follows:
+
+```{code-block} yaml
+:filename: myst.yml
+site: 
+  option:
+    hide_myst_branding: true
+```
+
 (navigation:content-window)=
+
 ## Content window
 
 Is populated with page-level metadata and your page's content.
 See [](./frontmatter.md) for many kinds of metadata that configure this section.
 
+### Use the Edit this Page button
+
+If you've added [`github` MyST frontmatter](#table-frontmatter), the MyST themes will display an "Edit this page" link for your page. This link will take the user directly to GitHub's editing interface for the given page.
+
+To override this behavior and set a manual edit URL, use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
+
+To disable the `Edit this page` button, set the value of `edit_url` to `null`.
+
 (navigation:sidebar-secondary)=
+
 ## Secondary sidebar
 
 Contains the in-page navigation of the page, autopopulated by the page's header structure.
@@ -156,12 +178,63 @@ site:
     hide_outline: true
 ```
 
+### Make content expand to the right margin
+
+To make content take up the empty space to the right of the content (where the secondary sidebar usually lives), attach the `col-page-right` CSS class (one of the [built-in CSS classes](#built-in-css)) to a page block or element.
+
+Here's an example of attaching the class directly to an admonition:
+
+````md
+```{note} This note will spread to the right!
+:class: col-page-right
+Yes it will!
+```
+````
+
+```{note} This note will spread to the right!
+:class: col-page-right
+Yes it will!
+```
+
+You could also attach the CSS class to a [content block](./blocks.md).
+
 (navigation:footer)=
+
 ## Footer
 
-:::{warning} Work in progress
-Default footer support is not yet avialable.
-See https://github.com/jupyter-book/myst-theme/issues/448 to provide feedback on this feature.
-:::
-+++
+Add a site-wide footer by using [site "parts"](#parts:site). 
+Add a footer part to your `myst.yml` like so:
 
+```{code} yaml
+:filename: myst.yml
+site:
+  parts:
+    footer: footer.md
+```
+
+The contents of `footer.md` will be rendered at the bottom of each page.
+
+:::{seealso} More ways to configure footer content
+See [site "parts" configuration](#parts:site) for more ways you can configure site parts to add a footer.
+:::
+
+### Style your footer
+
+By default footers have style that is similar to the rest of your document.
+To define a different style (e.g., a multi-column footer with links), use a combination of [`{grid}` and button elements](#grids), along with a [custom CSS style sheet](style-sheet).
+Footers are wrapped in a `div` with class `.footer`, which can be used in CSS to select items for styling.
+
+For example, the following `myst.yml` configuration adds a `footer.css` file that can be used to define the look and feel of your footer.
+
+```{code} yaml
+:filename: myst.yml
+site:
+  options:
+    style: ./css/footer.css
+  parts:
+    footer: footer.md
+```
+
+### An example custom footer
+
+The [example landing page](https://github.com/myst-examples/landing-pages) includes a [`footer.md`](https://raw.githubusercontent.com/jupyter-book/example-landing-pages/refs/heads/main/footer.md) and [`./css/footer.css`](https://raw.githubusercontent.com/jupyter-book/example-landing-pages/refs/heads/main/css/footer.css) that you can customize.

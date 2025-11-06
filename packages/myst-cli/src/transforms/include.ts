@@ -10,6 +10,7 @@ import type { ISession } from '../session/types.js';
 import { watch } from '../store/reducers.js';
 import type { LoadFileResult } from '../process/file.js';
 import { loadMdFile, loadNotebookFile, loadTexFile } from '../process/file.js';
+import { getSourceFolder } from './links.js';
 
 /**
  * Return resolveFile function
@@ -21,9 +22,11 @@ import { loadMdFile, loadNotebookFile, loadTexFile } from '../process/file.js';
  * it exists or log an error and return undefined otherwise.
  */
 export const makeFileResolver =
-  (baseFile: string) => (relativeFile: string, sourceFile: string, vfile: VFile) => {
+  (baseFile: string) =>
+  (relativeFile: string, sourceFile: string, sourcePath: string, vfile: VFile) => {
     const base = sourceFile.toLowerCase().endsWith('.tex') ? baseFile : sourceFile;
-    const fullFile = path.resolve(path.dirname(base), relativeFile);
+    const sourceFolder = getSourceFolder(relativeFile, base, sourcePath);
+    const fullFile = path.resolve(path.join(sourceFolder, relativeFile));
     if (!fs.existsSync(fullFile)) {
       fileError(
         vfile,
@@ -89,5 +92,6 @@ export async function includeFilesTransform(
     loadFile,
     parseContent,
     sourceFile: baseFile,
+    sourcePath: session.sourcePath(),
   });
 }

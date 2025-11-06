@@ -45,6 +45,44 @@ describe('Code block options', () => {
     expect(opts).toEqual({ emphasizeLines: [3, 5] });
     expect(vfile.messages.length).toEqual(0);
   });
+  test.each([
+    ['3', [3]],
+    ['3,5', [3, 5]],
+    ['3-6, 1', [1, 3, 4, 5, 6]],
+    ['1-3,5', [1, 2, 3, 5]],
+    ['2,4-6', [2, 4, 5, 6]],
+    [' 1 - 2 , 4 ', [1, 2, 4]],
+    ['3,5,4', [3, 4, 5]], // Out of order is fine
+    ['3,,5', [3, 5]], // tolerant to extra comma
+    ['3, ', [3]], // tolerant to trailing comma
+    ['7-7', [7]], // valid single range
+    ['3,3,3-3', [3]], // duplicates removed
+    ['1-3,2', [1, 2, 3]], // duplicates removed
+  ])('parses emphasize-lines="%s" into %j', (input, expected) => {
+    const vfile = new VFile();
+    const opts = getCodeBlockOptionsWrap({ 'emphasize-lines': input }, vfile);
+    expect(opts).toEqual({ emphasizeLines: expected });
+    expect(vfile.messages.length).toEqual(0);
+  });
+  test.each([
+    ['abc'],
+    ['one,two'],
+    ['1-'],
+    ['4--5'],
+    ['1-3-5'],
+    ['-2'], // Must be positive
+    ['6-2'], // must be ascending
+    ['5,6-2,7, 2-4', [2, 3, 4, 5, 7]], // Good numbers are still parsed
+  ])(
+    'invalid emphasize-lines="%s" logs warning and returns empty',
+    (input, expected = undefined) => {
+      const vfile = new VFile();
+      const opts = getCodeBlockOptionsWrap({ 'emphasize-lines': input }, vfile);
+      expect(opts).toEqual({ emphasizeLines: expected });
+      expect(vfile.messages.length).toBeGreaterThan(0);
+      expect(vfile.messages[0].message).toMatch(/Invalid emphasize-lines/i);
+    },
+  );
   // See https://github.com/jupyter-book/jupyterlab-myst/issues/174
   test(':lineno-start: 10, :emphasize-lines: 12,13', () => {
     const vfile = new VFile();

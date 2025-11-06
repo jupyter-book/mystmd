@@ -137,6 +137,7 @@ describe('Testing myst --> mdast conversions', () => {
             mystParse(myst, {
               mdast: {
                 hoistSingleImagesOutofParagraphs: false,
+                listItemParagraphs: false,
                 nestBlocks: false,
               },
               extensions: {

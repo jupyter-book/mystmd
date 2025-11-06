@@ -22,9 +22,7 @@ describe.each([
   ['url', 'https://google.com'],
   ['pattern', 'main*.md'],
 ])('Single %s entry', (entryName, entryValue) => {
-  test.each([
-    ['title', 'document'],
-  ])('with %s passes', (name, value) => {
+  test.each([['title', 'document']])('with %s passes', (name, value) => {
     const entry = {};
     entry[entryName] = entryValue;
     entry[name] = value;
@@ -35,9 +33,7 @@ describe.each([
     expect(toc).toStrictEqual(input);
   });
 
-  test.each([
-    ['title', 1000, 'string'],
-  ])('with invalid type for %s fails', (name, value, type) => {
+  test.each([['title', 1000, 'string']])('with invalid type for %s fails', (name, value, type) => {
     const input = [{ file: 'foo.md' }];
     input[0][name] = value;
     validateTOC(input, opts);
@@ -124,4 +120,34 @@ test('invalid toc entry', () => {
     },
   ]);
   expect(opts.messages.warnings).toBeUndefined();
+});
+
+// optional properties
+
+describe.each([
+  ['file', 'foo.md'],
+  ['url', 'https://google.com'],
+  ['pattern', 'main*.md'],
+])('Single %s entry', (entryName, entryValue) => {
+  test.each([
+    // for now we have only this one exposed
+    ['hidden', true, true],
+    // the other ones are expected to be pruned at validation time
+    ['numbering', '1.2.3', false],
+    ['id', 'foo', false],
+    ['class', 'bar', false],
+  ])('with %s issues warning', (name, value, preserved) => {
+    const entry = {};
+    entry[entryName] = entryValue;
+    entry[name] = value;
+    const input = [entry];
+    const toc = validateTOC(input, opts);
+    expect(opts.messages.errors?.length).toBeFalsy();
+    if (!preserved) {
+      expect(opts.messages.warnings?.length).toBe(1);
+    } else {
+      expect(opts.messages.warnings).toBeUndefined();
+      expect(toc).toStrictEqual(input);
+    }
+  });
 });

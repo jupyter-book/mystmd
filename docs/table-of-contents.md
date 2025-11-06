@@ -4,7 +4,7 @@ description: The Table of Contents is the left-hand navigation for your site, it
 thumbnail: thumbnails/table-of-contents.png
 ---
 
-The Table of Contents defines the structure of your MyST project. 
+The Table of Contents defines the structure of your MyST project.
 It is defined in the `toc` attribute of [the project frontmatter](frontmatter.md#in-a-myst-yml-file).
 
 To automatically add a `toc` section to your `myst.yml` file using filenames to define ordering, use the following command:
@@ -41,11 +41,6 @@ project:
 
 URLs can be defined in the TOC. These URLs are links to external references within your table of contents. URLs are ignored in non-web exports.
 
-:::{warning} Work in progress
-Currently these URLs are also ignored in MyST sites.
-Follow https://github.com/jupyter-book/mystmd/issues/1445 for this enhancement and please provide feedback.
-:::
-
 ```{code} yaml
 :filename: myst.yml
 
@@ -54,6 +49,16 @@ project:
   toc:
     - file: root.md
     - url: 'https://google.com'
+      title: Google
+```
+
+By default, URLs open in a new tab. You can change that with the
+`open_in_same_tab` option:
+
+```{code} yaml
+- url: 'https://google.com'
+  title: Google
+  open_in_same_tab: true
 ```
 
 ### Glob pattern matching
@@ -118,6 +123,7 @@ project:
         - file: part-2-second-child.md
 ```
 
+
 You can nest children under a `title` without specifying a parent `file`.
 This will create a dropdown of pages in the Table of Contents.
 
@@ -137,11 +143,34 @@ project:
         - file: part-2-second-child.md
 ```
 
+:::{note} Landing page title
+The landing page inherits its TOC title from `title` field of [the project formatter](frontmatter.md#available-frontmatter-fields), if it is defined.
+Otherwise it will be the title or the top heading of the page.
+:::
+
+(hidden-in-toc)=
+
+## Hiding pages from the Table of Contents
+
+In some cases, you may want some pages in your project to be built, but not included in the Table of Contents. You can do this by adding a `hidden: true` attribute to the corresponding `file` or `pattern` entry in your `toc` section:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    - file: accessible-from-the-toc.md
+    - file: built-but-not-mentioned-in-the-toc.md
+      hidden: true
+```
+
+In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
+
 (implicit-toc)=
 
 ## Implicit Table of Contents from filenames
 
-When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
+When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All Markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
 
 The ordering of the table of contents will sort alphabetically as well as order by number, ensuring that, for example, `chapter10` comes after `chapter9`.
 
@@ -154,7 +183,7 @@ The filenames will also be transformed into url-friendly “slugs” that: remov
 
 ### Title Transformations
 
-If a title is not provided by a notebook or markdown document in the front matter or first heading, the filename is used. The filename is transformed to a title by splitting on camel case, replacing `-` or `_` with spaces, and transforming to title-case.
+If a title is not provided by a notebook or Markdown document in the front matter or first heading, the filename is used. The filename is transformed to a title by splitting on camel case, replacing `-` or `_` with spaces, and transforming to title-case.
 
 - `01_MyNotebook.ipynb` becomes `My Notebook`
 - `my_article.md` becomes `My Article`
@@ -174,7 +203,7 @@ The “root” of a site is the page displayed when someone browses to the index
 
 ### Excluding Files
 
-If there are markdown or notebook files within a project folder that you do not want included in your project, you may list these in the `myst.yml` project frontmatter under `exclude`. For example, to ignore a single file `notes.md`, all notebooks in the folder `hpc/`, and all files named `ignore.md`:
+If there are Markdown or notebook files within a project folder that you do not want included in your project, you may list these in the `myst.yml` project frontmatter under `exclude`. For example, to ignore a single file `notes.md`, all notebooks in the folder `hpc/`, and all files named `ignore.md`:
 
 ```yaml
 project:
@@ -184,7 +213,7 @@ project:
     - '**/ignore.md'
 ```
 
-Additionally, files excluded in this way will also not be watched during `myst start`. This may be useful if you have a folder with many thousands of files that causes the `myst start` watch task to crash. For example, in the `data/` directory, there may be no markdown and no notebooks but 100,000 small data files:
+Additionally, files excluded in this way will also not be watched during `myst start`. This may be useful if you have a folder with many thousands of files that causes the `myst start` watch task to crash. For example, in the `data/` directory, there may be no Markdown and no notebooks but 100,000 small data files:
 
 ```yaml
 project:
@@ -193,18 +222,39 @@ project:
 
 Note that when these files are excluded, they can still be specifically referenced by other files in your project (e.g. in an {myst:directive}`include directives <include>` or as a download), however, a change in those files will not trigger a build. An alternative in this case is to generate a table of contents (see [](./table-of-contents.md)). By default hidden folders (those starting with `.`, like `.git`), `_build` and `node_modules` are excluded.
 
-## Nested files will have flattened URLs
+## Folder structure and URL slugs
 
-If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information. For example:
+By default, MyST will _flatten folder structure_ when creating URLs.
+If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information.
+For example, a folder structure like:
 
-- `folder1/folder2/01_my_article.md` becomes `/my-article`
+- `folder1/folder2/my-article.md`
 
-All internal links will automatically be updated, and there is a `file` property that is exported as metadata in your site.
-See [](website-metadata.md) for more details on how cross-references are stored.
+Produces this URL path:
 
-:::{note} URL Nesting
-URL nesting that matches the folder structure is a requested feature that is being tracked in https://github.com/jupyter-book/mystmd/issues/670.
-:::
+- `/my-article`
+
+Internal links will automatically be updated (duplicate filenames will have numbers appended, like `myfile-1`), and the `file` property in the [MyST document metadata](./website-metadata.md) will contain the original file path for the page.
+
+### Make your URL match your folder structure
+
+To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), set `site.options.folders` to `true` in `myst.yml`. For example:
+
+```{code} yml
+:filename: myst.yml
+:caption: Example of setting folders to true to show nested file structure in the URL
+:linenos:
+:lineno-start: 78
+:emphasize-lines: 82
+...
+site:
+  template: book-theme
+  options:
+    folders: true
+...
+```
+
+This will make a file like `folder1/folder2/01_my_article.md` render as the following URL slog: `/folder1/folder2/my-article`.
 
 ::::{note} Compatibility with Jupyter Book
 :class: dropdown
@@ -218,5 +268,5 @@ Support for `_toc.yml` exists only for compatibility reasons, and will be remove
 New users should use `myst.yml` instead.
 :::
 
-Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Juypter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
+Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Jupyter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
 ::::

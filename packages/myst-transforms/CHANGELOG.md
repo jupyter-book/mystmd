@@ -1,5 +1,124 @@
 # myst-transforms
 
+## 1.3.41
+
+### Patch Changes
+
+- aab5f02: Handle undefined URLs in formatting link text
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
+- Updated dependencies [cd8ee79]
+  - myst-to-html@1.6.0
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+  - myst-spec-ext@1.8.4
+
+## 1.3.40
+
+### Patch Changes
+
+- 13bd33a: :wrench: Refactorings to clean up table-of-contents transform
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+  - myst-to-html@1.5.17
+
+## 1.3.39
+
+### Patch Changes
+
+- ae6123412: Expose admonition header test function
+- Updated dependencies [9cb280a4b]
+  - myst-spec-ext@1.8.2
+  - myst-common@1.8.2
+  - myst-frontmatter@1.8.2
+  - myst-to-html@1.5.16
+
+## 1.3.38
+
+### Patch Changes
+
+- cb76fb71: Add URLs to toc-directive
+
+## 1.3.37
+
+### Patch Changes
+
+- 224da08d: Underline tag in html is underline not emphasis
+- Updated dependencies [0b284816]
+- Updated dependencies [fefffffd]
+  - myst-spec-ext@1.8.1
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+  - myst-to-html@1.5.15
+
+## 1.3.36
+
+### Patch Changes
+
+- 8871ca8a: Improve symbol replacements.
+- 423a1913: Add image width/height reading to html parsing
+  - myst-common@1.8.0
+  - myst-frontmatter@1.8.0
+  - myst-spec-ext@1.8.0
+
+## 1.3.35
+
+### Patch Changes
+
+- 813c2a66: Do not recognise permalink-style wiki links
+  - myst-to-html@1.5.14
+
+## 1.3.34
+
+### Patch Changes
+
+- c6213ed: Move QMD admonition recognition to a transform
+- 7d68c88e: block data class
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+  - myst-to-html@1.5.13
+
+## 1.3.33
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- 0941552: Blocks can now set `kind` and `class`
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+  - myst-common@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.3.32
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- 75bbb180: Change footnotes to use enumerator over number
+- 92839fba: Add support for `class` in block data
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+  - myst-to-html@1.5.12
+
+## 1.3.31
+
+### Patch Changes
+
+- eacacd95: Fix unwanted continuous numbering for some enumerated types
+- Updated dependencies [fad8f673]
+  - myst-spec-ext@1.7.8
+  - myst-common@1.7.8
+  - myst-frontmatter@1.7.8
+  - myst-to-html@1.5.11
+
 ## 1.3.30
 
 ### Patch Changes

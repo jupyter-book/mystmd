@@ -1,5 +1,57 @@
 # myst-frontmatter
 
+## 1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- 6783dae: Allow math as an alias for equation in numbering.
+
+## 1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- fefffffd: Update licenses
+
+## 1.8.0
+
+## 1.7.13
+
+### Patch Changes
+
+- 1aa5825: Bump frontmatter to reflect change to simple-validators
+- Updated dependencies [5031289b]
+  - simple-validators@1.1.1
+
+## 1.7.12
+
+### Patch Changes
+
+- 8a0ee19e: Add social media project frontmatter
+
+## 1.7.11
+
+### Patch Changes
+
+- 91bed6d0: Add additional social profiles (linkedin, bluesky, mastodon, threads). Enable affiliations to have social profiles.
+
+## 1.7.10
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+
+## 1.7.9
+
+### Patch Changes
+
+- 7448083f: Add support for skipping execution of individual notebooks
+
+## 1.7.8
+
 ## 1.7.7
 
 ### Patch Changes

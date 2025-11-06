@@ -1,11 +1,11 @@
 {
   "name": "myst-execute",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "Execute MyST content with Jupyter",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-execution",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-execute",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -32,17 +32,17 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "@jupyterlab/services": "^7.0.0",
+    "@jupyterlab/services": "^7.3.0",
+    "@jupyterlab/nbformat": "^3.5.2",
     "chalk": "^5.2.0",
-    "myst-cli-utils": "^2.0.11",
-    "myst-common": "^1.7.6",
+    "myst-cli-utils": "^2.0.12",
+    "myst-common": "^1.8.3",
     "node-fetch": "^3.3.0",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
     "which": "^4.0.0"
   },
   "devDependencies": {
-    "@jupyterlab/nbformat": "^3.5.2",
     "js-yaml": "^4.1.0"
   }
 }

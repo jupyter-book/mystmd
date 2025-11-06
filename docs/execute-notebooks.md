@@ -19,23 +19,42 @@ myst start --execute
 myst build --execute
 ```
 
-The following computational content will be executed:
+## What content will be executed?
 
-- **Notebook cells** will be executed in the order they appeared in a notebook (ie, a file ending in `.ipynb`).
-- **{myst:directive}`code-block` directives** will be executed similar to a code block cell. See [](./notebooks-with-markdown.md) for more information.
-- **Inline expressions with the {myst:role}`eval` role** can be used to insert the outputs of a computation in-line with other text.
+If you enable execution with the configuration above, the following content will be executed at build time:
+
+- **Cells in a Jupyter Notebook (`.ipynb`)**. These will be executed in the order they appeared in a notebook.
+- **Markdown code cells with [the `code-cell` directive](#code-cell)**. These will be executed similar to a code cell. See [](./notebooks-with-markdown.md) for more information.
+- **Inline expressions with [the `eval` role](#myst:inline-expressions)**. These can be used to insert the outputs of a computation in-line with other text.
 
 :::{note} Jupyter is required for execution
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
-## Expect a code-cell to fail
+## Allow a code-cell to error without failing the build
 
 By default, MyST will stop executing a notebook if a cell raises an error.
 If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell (see [all cell tags](#tbl:notebook-cell-tags)).
 If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
 
-## Adding Tags to Notebook Cells
+## Show outputs for cells that return python modules and classes
+
+By default, MyST will suppress outputs from cells that return Python objects.
+For example:
+
+```{code} Python
+:filename: Input
+import math
+math
+```
+
+```{code} Python
+:filename: Output
+<module 'math' from '/some/path/math.cpython-312-darwin.so'>
+```
+If you'd like to instead show these outputs, see [](#setting:output_matplotlib_strings).
+
+## Add tags to notebook cells
 
 The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
 Additionally, you can specify tags (and other cell metadata) with markdown using the {myst:directive}`code-cell` directive.
@@ -65,6 +84,24 @@ name = input("What is your name?")
 
 Additional [cell tags](#tbl:notebook-cell-tags) to hide, remove, or raise exceptions are also possible.
 
+## Skip entire notebooks
+
+You may wish to disable execution for certain notebooks. This can be done by setting the top-level `skip_execution` frontmatter option to `true`, e.g.
+
+````markdown
+---
+kernelspec:
+  name: python3
+  display_name: Python 3
+
+skip_execution: true
+---
+
+```{code-cell}
+print("This will never be executed!")
+```
+````
+
 ## Cache execution outputs
 
 When MyST executes your notebook, it will store the outputs in a cache in a folder called `execute/` in your MyST build folder.
@@ -86,7 +123,9 @@ Alternatively, you can manually delete the `execute/` folder in your build folde
 rm -rf _build/execute
 ```
 
-## How MyST executes your code
+(install-jupyter-server)=
+
+## Install Jupyter Server
 
 MyST uses a [Jupyter Server](https://jupyter-server.readthedocs.io/) to execute your code.
 Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.

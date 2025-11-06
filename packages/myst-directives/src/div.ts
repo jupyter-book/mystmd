@@ -9,13 +9,12 @@ export const divDirective: DirectiveSpec = {
   },
   body: {
     type: 'myst',
-    required: true,
   },
   run(data: DirectiveData): GenericNode[] {
-    const div: GenericNode = {
-      type: 'div',
-      children: data.body as unknown as (FlowContent | ListContent | PhrasingContent)[],
-    };
+    const div: GenericNode = { type: 'div' };
+    if (data.body) {
+      div.children = data.body as unknown as (FlowContent | ListContent | PhrasingContent)[];
+    }
     addCommonDirectiveOptions(data, div);
     return [div];
   },

@@ -8,13 +8,52 @@ import type { VFile } from 'vfile';
 import { select } from 'unist-util-select';
 import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
-function parseEmphasizeLines(emphasizeLinesString?: string | undefined): number[] | undefined {
+function parseEmphasizeLines(
+  data: DirectiveData,
+  vfile: VFile,
+  emphasizeLinesString?: string,
+): number[] | undefined {
+  const { node } = data;
   if (!emphasizeLinesString) return undefined;
-  const emphasizeLines = emphasizeLinesString
-    ?.split(',')
-    .map((val) => Number(val.trim()))
-    .filter((val) => Number.isInteger(val));
-  return emphasizeLines;
+
+  const result = new Set<number>();
+
+  for (const part of emphasizeLinesString.split(',')) {
+    const trimmed = part.trim();
+
+    const rangeMatch = trimmed.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (rangeMatch) {
+      const start = Number(rangeMatch[1]);
+      const end = Number(rangeMatch[2]);
+      if (start <= end) {
+        for (let i = start; i <= end; i++) {
+          result.add(i);
+        }
+        continue;
+      } else {
+        fileWarn(vfile, `Invalid emphasize-lines range "${trimmed}" (start > end)`, {
+          node,
+          source: 'code-block:options',
+          ruleId: RuleId.directiveOptionsCorrect,
+        });
+        continue;
+      }
+    }
+
+    if (/^\d+$/.test(trimmed)) {
+      result.add(Number(trimmed));
+    } else if (trimmed !== '') {
+      fileWarn(vfile, `Invalid emphasize-lines value "${trimmed}"`, {
+        node,
+        source: 'code-block:options',
+        ruleId: RuleId.directiveOptionsCorrect,
+      });
+    }
+  }
+
+  if (result.size === 0) return undefined;
+
+  return Array.from(result).sort((a, b) => a - b);
 }
 
 /** This function parses both sphinx and RST code-block options */
@@ -26,12 +65,16 @@ export function getCodeBlockOptions(
   const { options, node } = data;
   if (options?.['lineno-start'] != null && options?.['number-lines'] != null) {
     fileWarn(vfile, 'Cannot use both "lineno-start" and "number-lines"', {
-      node: select('mystDirectiveOption[name="number-lines"]', node) ?? node,
+      node: select('mystOption[name="number-lines"]', node) ?? node,
       source: 'code-block:options',
       ruleId: RuleId.directiveOptionsCorrect,
     });
   }
-  const emphasizeLines = parseEmphasizeLines(options?.['emphasize-lines'] as string | undefined);
+  const emphasizeLines = parseEmphasizeLines(
+    data,
+    vfile,
+    options?.['emphasize-lines'] as string | undefined,
+  );
   const numberLines = options?.['number-lines'] as number | undefined;
   // Only include this in mdast if it is `true`
   const showLineNumbers =
@@ -78,7 +121,7 @@ export const CODE_DIRECTIVE_OPTIONS: DirectiveSpec['options'] = {
   },
   'emphasize-lines': {
     type: String,
-    doc: 'Emphasize particular lines (comma-separated numbers), e.g. "3,5"',
+    doc: 'Emphasize particular lines (comma-separated numbers which can include ranges), e.g. "3,5,7-9"',
   },
   filename: {
     type: String,
@@ -101,7 +144,7 @@ export function parseTags(input: any, vfile: VFile, node: GenericNode): string[]
       return parseTags(yaml.load(input) as string[], vfile, node);
     } catch (error) {
       fileError(vfile, 'Could not load tags for code-cell directive', {
-        node: select('mystDirectiveOption[name="tags"]', node) ?? node,
+        node: select('mystOption[name="tags"]', node) ?? node,
         source: 'code-cell:tags',
         ruleId: RuleId.directiveOptionsCorrect,
       });
@@ -124,7 +167,7 @@ export function parseTags(input: any, vfile: VFile, node: GenericNode): string[]
     }
   } else if (tags) {
     fileWarn(vfile, 'tags in code-cell directive must be a list of strings', {
-      node: select('mystDirectiveOption[name="tags"]', node) ?? node,
+      node: select('mystOption[name="tags"]', node) ?? node,
       source: 'code-cell:tags',
       ruleId: RuleId.directiveOptionsCorrect,
     });

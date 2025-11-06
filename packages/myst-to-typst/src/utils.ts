@@ -29,6 +29,7 @@ const hrefOnlyReplacements: Record<string, string> = {
   ']': '\\]',
   '^': '\\^',
   '@': '\\@',
+  ';': '\\;',
 };
 
 const textOnlyReplacements: Record<string, string> = {

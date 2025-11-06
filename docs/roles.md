@@ -6,6 +6,9 @@ description: A full list of the roles included in MyST Markdown by default.
 :::{myst:role} abbreviation
 :::
 
+:::{myst:role} button
+:::
+
 :::{myst:role} chemicalFormula
 :::
 

@@ -1,5 +1,51 @@
 # myst-to-typst
 
+## 0.0.35
+
+### Patch Changes
+
+- 6a5fe67: Allow implicit headings in typst
+- 956055c: Bump tex-to-typst version
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 0.0.34
+
+### Patch Changes
+
+- 973db009e: Add `toc` node to render Table of Contents in Typst and LaTeX.
+
+## 0.0.33
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+- Updated dependencies [fefffffd]
+  - myst-spec-ext@1.8.1
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+
+## 0.0.32
+
+### Patch Changes
+
+- bd3a2ed: Bump tex-to-typst@0.0.16
+
+## 0.0.31
+
+### Patch Changes
+
+- 68c93b9a: Escape semicolons
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
 ## 0.0.30
 
 ### Patch Changes

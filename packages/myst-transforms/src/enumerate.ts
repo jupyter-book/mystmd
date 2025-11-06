@@ -125,6 +125,7 @@ export type TargetCounts = {
 
 export type StateOptions = {
   state: ReferenceState;
+  hidden?: boolean;
 };
 
 export type StateResolverOptions = {
@@ -286,7 +287,7 @@ export function initializeTargetCounts(
   // Update with other initial values
   Object.entries(previousCounts ?? {})
     .filter(([key]) => key !== 'heading')
-    .filter(([key]) => !numbering[key] || numbering[key]?.continue || numbering.all?.continue)
+    .filter(([key]) => numbering[key]?.continue || numbering.all?.continue)
     .forEach(([key, val]) => {
       targetCounts[key] = { ...(val as { main: number; sub: number }) };
     });
@@ -344,12 +345,14 @@ export class ReferenceState implements IReferenceStateResolver {
       previousCounts?: TargetCounts;
       identifiers?: string[];
       vfile: VFile;
+      hidden?: boolean;
     },
   ) {
     this.numbering = fillNumbering(opts?.frontmatter?.numbering, DEFAULT_NUMBERING);
     this.offset = this.numbering?.title?.offset ?? 0;
     this.targetCounts = initializeTargetCounts(this.numbering, opts?.previousCounts, this.offset);
     if (
+      !opts?.hidden &&
       (this.numbering.title?.enabled || this.numbering.all?.enabled) &&
       !opts?.frontmatter?.content_includes_title &&
       this.numbering[`heading_${this.offset + 1}`]?.enabled !== false
@@ -372,10 +375,10 @@ export class ReferenceState implements IReferenceStateResolver {
     this.title = opts?.frontmatter?.title;
   }
 
-  addTarget(node: TargetNodes) {
+  addTarget(node: TargetNodes, hidden?: boolean) {
     if (!isTargetIdentifierNode(node)) return;
     const kind = kindFromNode(node);
-    const numberNode = shouldEnumerateNode(node, kind, this.numbering, this.offset);
+    const numberNode = !hidden && shouldEnumerateNode(node, kind, this.numbering, this.offset);
     if (numberNode) {
       this.incrementCount(node, kind as TargetKind);
     }
@@ -641,7 +644,7 @@ export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOption
       node.enumerated ||
       ['container', 'mathGroup', 'math', 'heading', 'proof'].includes(node.type)
     ) {
-      opts.state.addTarget(node as TargetNodes);
+      opts.state.addTarget(node as TargetNodes, opts?.hidden);
     }
   });
   // Add implicit labels to subfigures without explicit labels
@@ -659,7 +662,7 @@ export const enumerateTargetsTransform = (tree: GenericParent, opts: StateOption
         // This is the second time addTarget is called on this node.
         // The first time, it was given an enumerator but not added to targets.
         // This time, it is added to targets since it now has an identifier.
-        opts.state.addTarget(sub as TargetNodes);
+        opts.state.addTarget(sub as TargetNodes, opts?.hidden);
       });
     });
   return tree;
@@ -735,7 +738,8 @@ export function addContainerCaptionNumbersTransform(
  * Raise a warning if `target` linked by `node` has an implicit reference
  */
 function implicitTargetWarning(target: Target, node: GenericNode, opts: StateResolverOptions) {
-  if ((target.node as GenericNode).implicit && opts.state.vfile) {
+  // suppressImplicitWarning is used, for example, in the table of contents directive
+  if ((target.node as GenericNode).implicit && opts.state.vfile && !node.suppressImplicitWarning) {
     fileWarn(
       opts.state.vfile,
       `Linking "${target.node.identifier}" to an implicit ${target.kind} reference, best practice is to create an explicit reference.`,
@@ -747,6 +751,7 @@ function implicitTargetWarning(target: Target, node: GenericNode, opts: StateRes
       },
     );
   }
+  delete node.suppressImplicitWarning;
 }
 
 export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateResolverOptions) => {

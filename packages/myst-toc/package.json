@@ -1,6 +1,6 @@
 {
   "name": "myst-toc",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST Table of Contents types and validation",

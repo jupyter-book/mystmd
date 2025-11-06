@@ -19,7 +19,7 @@ export const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
 };
 
 const DEFAULT_TEMPLATES = {
-  tex: 'tex/myst/curvenote',
+  tex: 'tex/myst/plain_latex',
   typst: 'typst/myst/lapreprint-typst',
   docx: 'docx/myst/default',
   site: 'site/myst/book-theme',
@@ -218,7 +218,7 @@ export async function downloadAndUnzipTemplate(
   await new Promise((resolve, reject) => {
     res.body?.pipe(fileStream);
     res.body?.on('error', reject);
-    fileStream.on('finish', resolve);
+    fileStream.on('finish', resolve as () => void);
   });
   session.log.debug(`Unzipping template on disk ${zipFile}`);
 

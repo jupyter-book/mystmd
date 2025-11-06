@@ -51,6 +51,23 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         });
       }
     }
+
+    // Customiseable kind
+    const kind = block.data?.kind;
+    if (kind) {
+      block.kind = kind;
+      delete block.data.kind;
+    }
+
+    // Customiseable class
+    if (typeof block.data?.class === 'string') {
+      block.class = `${block.class ?? ''} ${block.data.class}`.trim();
+      delete block.data.class;
+    }
+
+    // Minor cleanup
+    if (block.data && Object.keys(block.data).length === 0) delete block.data;
+
     const label = block.data?.label ?? block.data?.id;
     if (typeof label === 'string') {
       const normalized = normalizeLabel(label);

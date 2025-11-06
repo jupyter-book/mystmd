@@ -157,7 +157,7 @@ describe('initializeTargetCounts', () => {
     const previousCounts = {
       heading: [5, 3, 1, 0, null, null],
       figure: { main: 7, sub: 2 },
-      other: { main: 0, sub: 0 },
+      other: { main: 3, sub: 0 },
     };
     expect(
       initializeTargetCounts(
@@ -172,7 +172,6 @@ describe('initializeTargetCounts', () => {
           other: { continue: true, enabled: true },
         },
         previousCounts as any,
-        undefined,
       ),
     ).toEqual(previousCounts);
   });
@@ -180,7 +179,6 @@ describe('initializeTargetCounts', () => {
     const previousCounts = {
       heading: [5, 3, 1, 0, null, null],
       figure: { main: 7, sub: 2 },
-      other: { main: 0, sub: 0 },
     };
     const numbering = {
       heading_1: { enabled: true, start: 5, continue: true },
@@ -192,8 +190,24 @@ describe('initializeTargetCounts', () => {
     expect(initializeTargetCounts(numbering, previousCounts as any)).toEqual({
       heading: [4, null, 0, 0, 1, 0],
       figure: { main: 4, sub: 0 },
-      other: { main: 0, sub: 0 },
       code: { main: 7, sub: 0 },
+    });
+  });
+  test('unknown numberings reset from previousCounts', () => {
+    const previousCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+      exercise: { main: 5, sub: 0 },
+    };
+    const numbering = {
+      heading_1: { enabled: true, start: 5, continue: true },
+      heading_2: { enabled: false, start: 2, continue: true },
+      heading_5: { enabled: true, start: 2, continue: true },
+      figure: { enabled: true, start: 5, continue: true },
+    };
+    expect(initializeTargetCounts(numbering, previousCounts as any)).toEqual({
+      heading: [4, null, 0, 0, 1, 0],
+      figure: { main: 4, sub: 0 },
     });
   });
 });

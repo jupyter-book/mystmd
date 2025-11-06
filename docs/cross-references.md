@@ -56,7 +56,7 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
     : If you override the text in the link, that will be used.
   - [**bold _reference_**](#targeting-headers)
 * - `[](./citations.md)`
-    : Link to documents using relative links from the markdown.
+    : Link to documents using relative links from the markdown[^no-toc].
   - [](./citations.md)
 * - `[](./myst.yml)`
     : Link to static files that will be included in your built website. Similar to the [{download}](#download-role) role.
@@ -65,6 +65,8 @@ Cross-referencing content is accomplished with markdown link syntax (`[text](#ta
     : External hover-references to MyST or Sphinx projects. See [](./external-references.md).
   - [Admonition](xref:spec#admonition)
 ```
+
+[^no-toc]: To link to a page, that file must be included in the project's [table of contents](./table-of-contents.md). If it isn't, then the document will be presented as a static file.
 
 % TODO: absolute links
 
@@ -194,9 +196,9 @@ See [](#my-math-label) for an equation!
 
 ### Header Targets
 
-To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and {myst:role}`ref` roles. This is helpful if you want to quickly insert links to other parts of your book. Referencing a heading will show the heading and the subsequent two pieces of content[^3], unless a header is encountered.
+To add labels to a header use `(my-section)=` before the header, these can then be used in markdown links and {myst:role}`ref` roles. This is helpful if you want to quickly insert links to other parts of your book. Referencing a heading will show the heading and the subsequent two pieces of content[^heading-content], unless a header is encountered.
 
-[^3]: The content could be a single paragraph, a figure, table or list. It can also be fully interactive content, with cross-references to other content, allowing you to nest and follow references easily!
+[^heading-content]: The content could be a single paragraph, a figure, table or list. It can also be fully interactive content, with cross-references to other content, allowing you to nest and follow references easily!
 
 ```{myst}
 (my-section)=
@@ -336,7 +338,7 @@ The `numbering` object allows you to be much more granular with enabling and dis
 ```yaml
 numbering:
   code: false
-  math: false
+  equations: false
   headings: true
 ```
 

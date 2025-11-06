@@ -16,11 +16,6 @@ export const admonitionDirective: DirectiveSpec = {
     'seealso',
     'tip',
     'warning',
-    '.callout-note',
-    '.callout-warning',
-    '.callout-important',
-    '.callout-tip',
-    '.callout-caution',
   ],
   arg: {
     type: 'myst',
@@ -65,10 +60,7 @@ export const admonitionDirective: DirectiveSpec = {
     }
     const admonition: Admonition = {
       type: 'admonition',
-      kind:
-        data.name !== 'admonition'
-          ? (data.name.replace('.callout-', '') as Admonition['kind'])
-          : undefined,
+      kind: data.name !== 'admonition' ? (data.name as Admonition['kind']) : undefined,
       children: children as any[],
     };
     if (data.options?.icon === false) {

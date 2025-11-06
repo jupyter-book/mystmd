@@ -20,6 +20,7 @@ import {
   makeMaxSizeWebpOption,
   makeDOIBibOption,
   makeCffOption,
+  makeKeepHostOption,
 } from './options.js';
 import { readableName } from '../utils/whiteLabelling.js';
 
@@ -42,10 +43,15 @@ export function makeBuildCommand() {
     .addOption(makeDOIBibOption())
     .addOption(makeWatchOption())
     .addOption(makeNamedExportOption('Output file for the export'))
-    .addOption(makeForceOption())
+    .addOption(
+      makeForceOption(
+        'Build outputs for the given format, even if corresponding exports are not defined in file frontmatter',
+      ),
+    )
     .addOption(makeCheckLinksOption())
     .addOption(makeStrictOption())
     .addOption(makeCIOption())
-    .addOption(makeMaxSizeWebpOption());
+    .addOption(makeMaxSizeWebpOption())
+    .addOption(makeKeepHostOption());
   return command;
 }

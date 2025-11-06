@@ -1,5 +1,5 @@
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
-import { RuleId, fileWarn, normalizeLabel } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import { CODE_DIRECTIVE_OPTIONS, getCodeBlockOptions } from './code.js';
 import type { Include } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
@@ -68,26 +68,21 @@ export const includeDirective: DirectiveSpec = {
     },
   },
   run(data, vfile): Include[] {
+    // Make a literal include if any of "literal", "lang" are defined or "literalinclude" directive is used
     const literal =
       data.name === 'literalinclude' || !!data.options?.literal || !!data.options?.lang;
 
     const file = data.arg as string;
-    if (!literal) {
-      // TODO: warn on unused options
-      const include: Include = {
-        type: 'include',
-        file,
-      };
-      addCommonDirectiveOptions(data, include);
-      return [include];
-    }
     const lang = (data.options?.lang as string) ?? extToLanguage(file.split('.').pop());
-    const opts = getCodeBlockOptions(
-      data,
-      vfile,
-      // Set the filename in the literal include by default
-      file.split(/\/|\\/).pop(),
-    );
+    const opts = literal
+      ? getCodeBlockOptions(
+          data,
+          vfile,
+          // Set the filename in the literal include by default
+          file.split(/\/|\\/).pop(),
+        )
+      : {};
+    const caption = literal ? (data.options?.caption as any[]) : undefined;
     const filter: Include['filter'] = {};
     ensureOnlyOneOf(data, vfile, ['start-at', 'start-line', 'start-after', 'lines']);
     ensureOnlyOneOf(data, vfile, ['end-at', 'end-line', 'end-before', 'lines']);
@@ -98,7 +93,7 @@ export const includeDirective: DirectiveSpec = {
     if (data.options?.lines) {
       filter.lines = parseLinesString(
         vfile,
-        select('mystDirectiveOption[name="lines"]', data.node) ?? undefined,
+        select('mystOption[name="lines"]', data.node) ?? undefined,
         data.options?.lines as string,
       );
     } else {
@@ -117,13 +112,15 @@ export const includeDirective: DirectiveSpec = {
         ];
       }
     }
+    // Are any filter properties set?
+    const usesFilter = Object.values(filter).some((value) => value !== undefined);
     const include: Include = {
       type: 'include',
       file,
       literal,
       lang,
-      caption: data.options?.caption as any[],
-      filter: Object.keys(filter).length > 0 ? filter : undefined,
+      caption,
+      filter: usesFilter ? filter : undefined,
       ...opts,
     };
     addCommonDirectiveOptions(data, include);

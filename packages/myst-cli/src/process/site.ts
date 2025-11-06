@@ -45,6 +45,7 @@ import { loadReferences } from './loadReferences.js';
 import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
+import { SPEC_VERSION } from '../spec-version.js';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -336,7 +337,7 @@ export function selectPageReferenceStates(
   const cache = castSession(session);
   let previousCounts: TargetCounts | undefined;
   const pageReferenceStates: ReferenceState[] = pages
-    .map(({ file }) => {
+    .map(({ file, hidden }: { file: string; hidden?: boolean }) => {
       const { frontmatter, identifiers, mdast, kind } = cache.$getMdast(file)?.post ?? {};
       const vfile = new VFile();
       vfile.path = file;
@@ -349,11 +350,12 @@ export function selectPageReferenceStates(
         identifiers,
         previousCounts,
         vfile,
+        hidden,
       });
       if (frontmatter && !frontmatter.enumerator) {
         frontmatter.enumerator = state.enumerator;
       }
-      if (mdast) enumerateTargetsTransform(mdast, { state });
+      if (mdast) enumerateTargetsTransform(mdast, { state, hidden });
       previousCounts = state.targetCounts;
       logMessagesFromVFile(session, vfile);
       if (state) {
@@ -412,6 +414,7 @@ export async function writeFile(
   const parts = resolveFrontmatterParts(session, frontmatter);
   const frontmatterWithExports = { ...frontmatter, exports, downloads, parts };
   const mystData: MystData = {
+    version: SPEC_VERSION,
     kind,
     sha256,
     slug,
@@ -487,6 +490,7 @@ export async function fastProcessFile(
         file: f,
         pageReferenceStates,
         extraLinkTransformers,
+        site: true,
       });
     }),
   );
@@ -499,7 +503,7 @@ export async function fastProcessFile(
           imageAltOutputFolder: imageAltOutputFolder ?? '/',
           imageExtensions: imageExtensions ?? WEB_IMAGE_EXTENSIONS,
           optimizeWebp: true,
-          processThumbnail: true,
+          processThumbnail: f === file,
           maxSizeWebp,
         });
       }
@@ -601,6 +605,7 @@ export async function processProject(
         checkLinks: checkLinks || strict,
         pageReferenceStates,
         extraLinkTransformers,
+        site: true,
       }),
     ),
   );
@@ -669,7 +674,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
   if (opts?.strict) {
     const hasWarnings = projects
       .map((project) => {
-        return project.pages
+        return [{ file: project.file, slug: project.index }, ...project.pages]
           .map((page) => {
             if (!('slug' in page)) return [0, 0];
             const buildWarnings = selectors.selectFileWarnings(session.store.getState(), page.file);

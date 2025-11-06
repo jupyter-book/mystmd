@@ -13,7 +13,6 @@ This tutorial covers how to add metadata and export to both PDF and Word documen
 **Prerequisites**: This assumes you've completed [](./quickstart.md) and have MyST installed locally, as well as a local version of the [MyST quickstart content](https://github.com/jupyter-book/mystmd-quickstart). We also recommend completing [](./quickstart-myst-documents.md).
 :::
 
-
 ````{note} See the video tutorial 📺
 :class: dropdown
 This video covers [](./quickstart-myst-documents.md) as well as the material on this page.
@@ -22,6 +21,7 @@ This video covers [](./quickstart-myst-documents.md) as well as the material on 
 :width: 100%
 ```
 ````
+
 ![](#lookout-for-tutorial-actions)
 
 ::::{warning} Exporting to Word & PDF destroys metadata! 😵‍💫
@@ -117,7 +117,7 @@ Tags: paper, journal, two-column, geoscience, earthscience
 ```
 
 🛠 Then, list the specific information needed for a template:\
-`myst templates list volcanica --pdf`
+`myst templates list volcanica --tex`
 
 ```text
 Volcanica                volcanica
@@ -137,7 +137,7 @@ Options:
 article_type (choice) - Details about different article types...
 ```
 
-In addition basic information on the template, the template's specific "parts" and "options" are shown. Some of these may be marked as `(required)` and be essential for the building the document correctly with the template.
+In addition, basic information on the template, the template's specific "parts" and "options" are shown. Some of these may be marked as `(required)` and be essential for the building the document correctly with the template.
 
 🛠 In `01-paper.md` create an exports list with `docx` and `pdf` formats.
 

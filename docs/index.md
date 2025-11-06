@@ -3,7 +3,7 @@ title: MyST Markdown Tools
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-{abbr}`MyST (Markedly Structured Text)` is an ecosystem of open-source, community-driven tools designed to revolutionize scientific communication. Our powerful authoring framework supports blogs, online books, scientific papers, reports and journals articles.
+{abbr}`MyST (Markedly Structured Text)` is an [ecosystem of open-source, community-driven tools](./overview.md) designed to revolutionize scientific communication. Our powerful authoring framework supports blogs, online books, scientific papers, reports and journals articles.
 
 :::{card} Get Started With MyST 👩‍💻
 :link: ./quickstart.md
@@ -22,7 +22,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 :class: framed
 :::
 
-🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./integrating-jupyter.md)
+🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./in-page-execution.md)
 
 :::{figure} ./videos/thebe.mp4
 :class: framed
@@ -53,13 +53,18 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 
 👋 We are glad you are here! 💚
 
-There are many ways that `mystmd` can be used with Jupyter Book and Sphinx. We recommend that you read [background on `mystmd`](./background.md), which goes over how these projects overlap and work together!
+There are many ways that `mystmd` can be used with Jupyter Book and Sphinx. We recommend that you read [a high-level overview of MyST](./overview.md) as well as [the project background](./background.md), which goes over how these projects overlap and work together!
 
 TL;DR
 : **Yes**, you can use `mystmd` with your Jupyter Book! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
-: **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in Javascript not Python!
+: **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in JavaScript not Python!
 : Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+: For more information see this [upgrade guide from Jupyter Book v1 to v2](https://next.jupyterbook.org/upgrade/).
 :::
+
+## Cite `mystmd`
+
+To cite or read more references about the `mystmd` project and related tools, see [](./cite.md).
 
 ## Project Goals
 
@@ -103,7 +108,7 @@ Read about performance »
 
 **Technical Goals**
 
-- `mystmd` is a Javascript parser and command line tool for working with MyST Markdown
+- `mystmd` is a JavaScript parser and command line tool for working with MyST Markdown
 - Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://mystmd.org/spec)
 - Translate and render MyST into:
   - Modern [interactive websites](./quickstart-myst-documents.md), using React (like this website!)
@@ -128,14 +133,12 @@ flowchart LR
   D <--> J[JATS]
 ```
 
-```{important}
-:class: dropdown
-**Using Sphinx or Python?**
+```{important .dropdown} Using Sphinx or Python?
 
-For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book, which can be found at:
+For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book V1, which can be found at:
 
 - [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
 - [Jupyter Book](https://jupyterbook.org/)
 
-Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the **Javascript** MyST Markdown CLI.
+Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the `mystmd` CLI.
 ```

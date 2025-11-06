@@ -19,9 +19,10 @@ import {
   validateObject,
   validateString,
   validationError,
+  validateBoolean,
 } from 'simple-validators';
 
-const COMMON_ENTRY_KEYS = ['title'];
+const COMMON_ENTRY_KEYS = ['title', 'hidden'];
 // const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'class'];
 
 function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): CommonEntry {
@@ -30,9 +31,9 @@ function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions
     output.title = validateString(entry.title, incrementOptions('title', opts));
   }
 
-  // if (defined(entry.hidden)) {
-  //   output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
-  // }
+  if (defined(entry.hidden)) {
+    output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
+  }
 
   // if (defined(entry.numbering)) {
   //   output.numbering = validateString(entry.numbering, incrementOptions('numbering', opts));
@@ -93,7 +94,7 @@ export function validateURLEntry(
     entry,
     {
       required: ['url'],
-      optional: [...COMMON_ENTRY_KEYS, 'children'],
+      optional: [...COMMON_ENTRY_KEYS, 'children', 'open_in_same_tab'],
     },
     opts,
   );
@@ -109,6 +110,14 @@ export function validateURLEntry(
   const commonEntry = validateCommonEntry(intermediate, opts);
 
   let output: URLEntry | URLParentEntry = { url, ...commonEntry };
+
+  if (defined(entry.open_in_same_tab)) {
+    output.open_in_same_tab = validateBoolean(
+      entry.open_in_same_tab,
+      incrementOptions('open_in_same_tab', opts),
+    );
+  }
+
   if (defined(entry.children)) {
     const children = validateList(
       intermediate.children,

@@ -190,6 +190,24 @@ cases:
         content: outputs/basic-site-config.json
       - path: basic-site/_build/site/myst.xref.json
         content: outputs/basic-site-myst.xref.json
+  - title: Alternate config file
+    cwd: alternate-config
+    command: myst --config foo.yml build
+    outputs:
+      - path: alternate-config/_build/site/content/index.json
+        # Keys and file hashes are removed from this output file
+        content: outputs/basic-site-content.json
+      - path: alternate-config/_build/site/config.json
+        content: outputs/basic-site-config.json
+      - path: alternate-config/_build/site/myst.xref.json
+        content: outputs/basic-site-myst.xref.json
+  - title: Basic plugin build
+    cwd: basic-plugin
+    command: myst build
+    outputs:
+      - path: basic-plugin/_build/site/content/index.json
+        # Keys and file hashes are removed from this output file
+        content: outputs/basic-plugin-content.json
   - title: XRef site build
     cwd: site-xrefs
     command: myst build
@@ -520,3 +538,18 @@ cases:
         content: multi-page-with-pageless-folder-and-headings-off/outputs/out-b.typ
       - path: multi-page-with-pageless-folder-and-headings-off/_build/out-c.typ
         content: multi-page-with-pageless-folder-and-headings-off/outputs/out-c.typ
+  - title: Site with non-index root file build
+    cwd: site-index
+    command: myst build
+    outputs:
+      - path: site-index/_build/site/content/index.json
+        content: outputs/site-index-content.json
+      - path: site-index/_build/site/content/index-1.json
+        content: outputs/site-index-content-1.json
+  - title: Hidden pages exist in html build
+    cwd: hidden-pages
+    command: myst build --html
+    outputs:
+      - path: hidden-pages/_build/html/index.html
+      - path: hidden-pages/_build/html/hidden/index.html
+      - path: hidden-pages/_build/html/not-hidden/index.html

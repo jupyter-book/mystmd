@@ -468,4 +468,38 @@ describe('Test reconstructHtmlTransform', () => {
       ],
     });
   });
+  test('image tags in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<img src="image.png" width="300px" height="50%" />' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'image',
+          url: 'image.png',
+          width: '300px',
+          height: '50%',
+        },
+      ],
+    });
+  });
+  test('u tag in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<u>underline</u>' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'underline',
+          children: [{ type: 'text', value: 'underline' }],
+        },
+      ],
+    });
+  });
 });

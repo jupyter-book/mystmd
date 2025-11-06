@@ -21,7 +21,7 @@ import {
   KNOWN_VIDEO_EXTENSIONS,
 } from '../utils/resolveExtension.js';
 import { ffmpeg, imagemagick, inkscape } from '../utils/index.js';
-
+import { getSourceFolder } from './links.js';
 export const BASE64_HEADER_SPLIT = ';base64,';
 
 function isBase64(data: string) {
@@ -94,7 +94,7 @@ export async function downloadAndSaveImage(
       } else {
         res.body.pipe(fileStream);
         res.body.on('error', reject);
-        fileStream.on('finish', resolve);
+        fileStream.on('finish', resolve as () => void);
       }
     });
     await new Promise((r) => setTimeout(r, 50));
@@ -133,7 +133,7 @@ export async function saveImageInStaticFolder(
   writeFolder: string,
   opts?: { altOutputFolder?: string; position?: VFileMessage['position'] },
 ): Promise<{ urlSource: string; url: string } | null> {
-  const sourceFileFolder = path.dirname(sourceFile);
+  const sourceFileFolder = getSourceFolder(urlSource, sourceFile, session.sourcePath());
   const imageLocalFile = path.join(sourceFileFolder, urlSource);
   let file: string | undefined;
   if (isUrl(urlSource)) {
@@ -196,7 +196,7 @@ export function transformImagesWithoutExt(
       const sortedExtensions = [
         // Valid extensions
         ...(opts?.imageExtensions ?? []),
-        // Convertable extensions
+        // Convertible extensions
         ...Object.keys(conversionFnLookup),
         // All known extensions
         ...KNOWN_IMAGE_EXTENSIONS,
@@ -536,6 +536,11 @@ export async function transformImageFormats(
   }
   unconvertableImages.forEach((image) => {
     const badExt = path.extname(image.url) || '<no extension>';
+    if (badExt === '.*') {
+      // There is already a warning for the wild card extensions.
+      // See https://github.com/jupyter-book/mystmd/issues/2123
+      return;
+    }
     addWarningForFile(
       session,
       file,

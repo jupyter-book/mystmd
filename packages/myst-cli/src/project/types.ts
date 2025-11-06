@@ -24,6 +24,13 @@ export type LocalProjectPage = {
   implicit?: boolean;
 };
 
+export type ExternalURL = {
+  url: string;
+  title: string;
+  level: PageLevels;
+  open_in_same_tab?: boolean;
+};
+
 export type LocalProject = {
   path: string;
   /** The local path to the local index file. */
@@ -32,7 +39,7 @@ export type LocalProject = {
   index: string;
   implicitIndex?: boolean;
   bibliography: string[];
-  pages: (LocalProjectPage | LocalProjectFolder)[];
+  pages: (LocalProjectPage | LocalProjectFolder | ExternalURL)[];
 };
 
 export type SlugOptions = {

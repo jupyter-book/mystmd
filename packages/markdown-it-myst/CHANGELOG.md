@@ -1,5 +1,23 @@
 # markdown-it-myst
 
+## 1.0.13
+
+### Patch Changes
+
+- cd8ee79: Update MarkdownIt to 13 for all dependencies, add types to dependencieswq
+
+## 1.0.12
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+
+## 1.0.11
+
+### Patch Changes
+
+- c6213ed: Add inline options
+
 ## 1.0.10
 
 ### Patch Changes

@@ -2,55 +2,63 @@ version: 1
 project:
   title: MyST Markdown
   github: https://github.com/jupyter-book/mystmd
+  # Uncomment to test launch buttons
+  jupyter:
+    binder:
+      repo: https://github.com/jupyter-book/thebe-binder-base
   license:
     code: MIT
     content: CC-BY-4.0
   subject: MyST Markdown
   references:
-    python: https://docs.python.org/3.7/
+    python: https://docs.python.org/3.13/
     jupyterbook: https://jupyterbook.org/en/stable/
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
     biapol: https://biapol.github.io/blog/
   abbreviations:
-    AST: Abstract Syntax Tree
-    DOI: Digital Object Identifier
-    MyST: Markedly Structured Text
-    CLI: Command Line Interface
-    HTML: Hypertext Markup Language
-    PDF: Portable Document Format
+    # Alphabetical order
     AMS: American Mathematical Society
-    RRID: Research Resource Identifier
-    CSS: Cascading Style Sheet
+    API: Application Programming Interface
+    AST: Abstract Syntax Tree
+    CLI: Command Line Interface
     CRediT: Contributor Roles Taxonomy
-    ROR: Research Organization Registry
-    ISNI: International Standard Name Identifier
-    NISO: National Information Standards Organization
-    YAML: Yet Another Markup Language
-    WASM: WebAssembly
-    REES: Reproducible Execution Environment Specification
-    URL: Uniform Resource Locator
-    XML: Extensible Markup Language
-    PID: Persistent Identifier
+    CSS: Cascading Style Sheet
+    CSV: comma-separated values
+    DOI: Digital Object Identifier
+    ESM: ECMAScript Modules
+    GPU: Graphics Processing Unit
+    HTML: Hypertext Markup Language
     ID: Identifier
+    ISNI: International Standard Name Identifier
     JATS: Journal Article Tag Suite
-    VoR: Version of Record
+    JSON: JavaScript Object Notation
     LTS: Long Term Support
+    MyST: Markedly Structured Text
+    NISO: National Information Standards Organization
+    OA: Open Access
+    PDF: Portable Document Format
+    PID: Persistent Identifier
     POSIX: Portable Operating System Interface
+    REES: Reproducible Execution Environment Specification
+    ROR: Research Organization Registry
+    RRID: Research Resource Identifier
     RST: reStructuredText
     SPDX: Software Package Data Exchange
-    API: Application Programming Interface
-    GPU: Graphics Processing Unit
-    TPU: Tensor Processing Unit
-    JSON: JavaScript Object Notation
     TLA: Three Letter Acronym
-    OA: Open Access
-    CSV: comma-separated values
     TOC: table of contents
+    TPU: Tensor Processing Unit
+    URL: Uniform Resource Locator
+    VoR: Version of Record
+    WASM: WebAssembly
+    YAML: Yet Another Markup Language
+    XML: Extensible Markup Language
   plugins:
     - directives.mjs
     - picsum.mjs
     - latex.mjs
+    - error-rules.mjs
+    - versions.mjs
     - templates.mjs
     - type: executable
       path: picsum.py
@@ -101,14 +109,19 @@ project:
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
         - file: table-of-contents.md
+        - file: document-parts.md
+        - file: authorship.md
+        - file: inline-options.md
     - title: Executable Content
       children:
-        - file: notebooks-with-markdown.md
         - file: execute-notebooks.md
+        - file: notebooks-with-markdown.md
         - file: reuse-jupyter-outputs.md
         - file: interactive-notebooks.ipynb
-        - file: integrating-jupyter.md
+        - file: in-page-execution.md
+        - file: website-launch-buttons.md
         - file: notebook-configuration.md
+        - file: md-vs-ipynb.md
     - title: Websites
       children:
         - file: website-templates.md
@@ -126,6 +139,9 @@ project:
             - file: deployment-github-pages.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
+            - file: deployment-httpd.md
+        - file: website-landing-pages.md
+
         # - file: publishing.md
     - title: Documents
       children:
@@ -138,11 +154,10 @@ project:
       file: plugins.md
       children:
         - file: javascript-plugins.md
+        - file: plugins-distribute.md
         - file: executable-plugins.md
     - title: Reference
       children:
-        - file: background.md
-        - file: guiding-principles.md
         - file: install-node.md
         - file: update-myst.md
         - file: commonmark.md
@@ -150,18 +165,27 @@ project:
         - file: directives.md
         - file: roles.md
         - file: frontmatter.md
-        - file: document-parts.md
         - file: settings.md
         - file: glossary.md
+        - file: versions.md
+    - title: About MyST
+      children:
+        - file: overview.md
+        - file: guiding-principles.md
+        - file: background.md
     - title: Contribute
       children:
         - file: contributing.md
+        - file: developer.md
         - file: contribute-templates.md
         - file: contribute-docs.md
         - file: contribute-build-locally.md
         - file: contribute-add-feature.md
+    - file: cite.md
 
 site:
   title: MyST Markdown Guide
   domains:
     - mystmd-guide.curve.space
+  options:
+    style: public/style.css

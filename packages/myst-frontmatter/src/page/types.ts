@@ -13,6 +13,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'site',
   'enumerator',
   'content_includes_title',
+  'skip_execution',
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
@@ -21,6 +22,8 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   jupytext?: Jupytext;
   tags?: string[];
   enumerator?: string;
+  // Disable execution for this page
+  skip_execution?: boolean;
   /** Flag if frontmatter title is duplicated in content
    *
    * Set during initial file/frontmatter load

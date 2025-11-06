@@ -1,5 +1,81 @@
 # myst-common
 
+## 1.8.4
+
+### Patch Changes
+
+- myst-frontmatter@1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- df8bbb0: add rule default severity
+- c736b16: add descriptions to error rules
+- Updated dependencies [6783dae]
+  - myst-frontmatter@1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- myst-frontmatter@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [fefffffd]
+  - myst-frontmatter@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- myst-frontmatter@1.8.0
+
+## 1.7.13
+
+### Patch Changes
+
+- Updated dependencies [1aa5825]
+  - myst-frontmatter@1.7.13
+
+## 1.7.12
+
+### Patch Changes
+
+- 483f2b7: Load plugins earlier, before parsing frontmatter parts
+- Updated dependencies [8a0ee19e]
+  - myst-frontmatter@1.7.12
+
+## 1.7.11
+
+### Patch Changes
+
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+
+## 1.7.10
+
+### Patch Changes
+
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- Updated dependencies [7448083f]
+  - myst-frontmatter@1.7.9
+
+## 1.7.8
+
+### Patch Changes
+
+- myst-frontmatter@1.7.8
+
 ## 1.7.7
 
 ### Patch Changes

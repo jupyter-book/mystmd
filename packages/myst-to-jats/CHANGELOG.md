@@ -1,5 +1,30 @@
 # myst-to-jats
 
+## 1.0.34
+
+### Patch Changes
+
+- dc90dc94: Bump nbtx to 0.3.0
+- Updated dependencies [91bed6d0]
+- Updated dependencies [c6213ed]
+- Updated dependencies [7d68c88e]
+  - myst-frontmatter@1.7.11
+  - myst-transforms@1.3.34
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
+## 1.0.33
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- Updated dependencies [26e8d199]
+- Updated dependencies [0941552]
+  - myst-frontmatter@1.7.10
+  - myst-transforms@1.3.33
+  - myst-common@1.7.10
+  - myst-spec-ext@1.7.10
+
 ## 1.0.32
 
 ### Patch Changes

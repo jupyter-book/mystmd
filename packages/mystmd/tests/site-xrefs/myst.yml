@@ -9,7 +9,7 @@ project:
   github: https://github.com/jupyter-book/mystmd
   # bibliography: []
   references:
-    python: https://docs.python.org/3.7/
+    python: https://docs.python.org/3.13/
     spec: https://mystmd.org/spec/
 site:
   template: ../templates/site/myst/book-theme

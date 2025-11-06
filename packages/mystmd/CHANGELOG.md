@@ -1,5 +1,49 @@
 # mystmd
 
+## 1.6.4
+
+## 1.6.3
+
+## 1.6.2
+
+### Patch Changes
+
+- e060c9f1d: Add --config option to CLI to override default myst.yml
+
+## 1.6.1
+
+## 1.6.0
+
+## 1.5.1
+
+## 1.5.0
+
+### Patch Changes
+
+- 423a1913: Add image width/height reading to html parsing
+
+## 1.4.0
+
+## 1.3.28
+
+### Patch Changes
+
+- f37f2561: Improve error messages in template handling
+
+## 1.3.27
+
+## 1.3.26
+
+## 1.3.25
+
+## 1.3.24
+
+### Patch Changes
+
+- 2a6db555: Fix imports of plugins on Windows
+
+## 1.3.23
+
 ## 1.3.22
 
 ## 1.3.21

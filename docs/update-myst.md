@@ -35,7 +35,7 @@ npm update -g mystmd
 :::
 ::::
 
-Try the `myst --version` command before and after, with an update you should have the most up to date version (see [npm](https://npmjs.com/package/mystmd) for the latest version!). If you not, then you probably have multiple copies of `myst` installed on your computer, which should be removed before re-installing MyST.
+Try the `myst --version` command before and after, with an update you should have the most up-to-date version (see [npm](https://npmjs.com/package/mystmd) for the latest version!). If you not, then you probably have multiple copies of `myst` installed on your computer, which should be removed before re-installing MyST.
 
 ## Update the MyST templates and themes
 

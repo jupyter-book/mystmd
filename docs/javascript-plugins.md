@@ -7,9 +7,9 @@ JavaScript plugins are native MyST plugins, which are loaded as modules into the
 
 ## Defining a new directive
 
-To create a plugin, you will need a single Javascript file[^esm] that exports one or more of the objects above. For example, a simple directive that pulls a random image from [Unsplash](https://picsum.photos/) can be created with a single file that exports an `picsum` directive.
+To create a plugin, you will need a single JavaScript file[^esm] that exports one or more of the objects above. For example, a simple directive that pulls a random image from [Unsplash](https://picsum.photos/) can be created with a single file that exports an `picsum` directive.
 
-[^esm]: The format of the Javascript should be an ECMAScript modules, not CommonJS. This means it uses `import` statements rather than `require()` and is the most modern style of Javascript.
+[^esm]: The format of the JavaScript should be an ECMAScript modules, not CommonJS. This means it uses `import` statements rather than `require()` and is the most modern style of JavaScript.
 
 :::{literalinclude} picsum.mjs
 :label: picsum-js-source

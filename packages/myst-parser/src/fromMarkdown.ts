@@ -11,10 +11,10 @@ const UNHIDDEN_TOKENS = new Set([
   'parsed_directive_close',
   'directive_arg_open',
   'directive_arg_close',
-  'directive_option_open',
-  'directive_option_close',
   'directive_body_open',
   'directive_body_close',
+  'myst_option_open',
+  'myst_option_close',
   'parsed_role_open',
   'parsed_role_close',
   'role_body_open',
@@ -24,6 +24,7 @@ const UNHIDDEN_TOKENS = new Set([
 export type MdastOptions = {
   handlers?: Record<string, TokenHandlerSpec>;
   hoistSingleImagesOutofParagraphs?: boolean;
+  listItemParagraphs?: boolean;
   nestBlocks?: boolean;
 };
 

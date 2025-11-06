@@ -8,6 +8,7 @@ import { selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown.js';
 import type { MdastOptions, TokenHandlerSpec } from './fromMarkdown.js';
+import { listItemParagraphsTransform } from './transforms/index.js';
 
 export function computeAmsmathTightness(
   src: string,
@@ -397,15 +398,6 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       };
     },
   },
-  directive_option: {
-    type: 'mystDirectiveOption',
-    getAttrs(t) {
-      return {
-        name: t.info,
-        value: t.meta.value,
-      };
-    },
-  },
   directive_body: {
     type: 'mystDirectiveBody',
     getAttrs(t) {
@@ -417,6 +409,21 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   directive_error: {
     type: 'mystDirectiveError',
     noCloseToken: true,
+    getAttrs(t) {
+      return {
+        message: t.meta?.error_message,
+      };
+    },
+  },
+  myst_option: {
+    type: 'mystOption',
+    getAttrs(t) {
+      return {
+        name: t.info,
+        location: t.meta.location,
+        value: t.meta.value,
+      };
+    },
   },
   parsed_role: {
     type: 'mystRole',
@@ -513,6 +520,7 @@ function nestSingleImagesIntoParagraphs(tree: GenericParent) {
 const defaultOptions: MdastOptions = {
   handlers: defaultMdast,
   hoistSingleImagesOutofParagraphs: true,
+  listItemParagraphs: true,
   nestBlocks: true,
 };
 
@@ -564,6 +572,11 @@ export function tokensToMyst(
       }
     }
   });
+
+  if (opts.listItemParagraphs) {
+    // Ensure that listItems that are not paragraphs are wrapped in paragraphs
+    listItemParagraphsTransform(tree);
+  }
 
   // Move crossReference text value to children
   visit(tree, 'crossReference', (node: GenericNode) => {

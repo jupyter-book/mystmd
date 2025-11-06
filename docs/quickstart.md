@@ -5,13 +5,12 @@ subject: MyST Quickstart Tutorial
 description: Get up and running with the MyST (Markedly Structured Text) command line interface. MyST is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-These quickstart tutorials are here to get you up and running on your local computer 👩‍💻. You will learn how to:
+These quickstart tutorials are here to get you up and running on your local computer 👩‍💻.
+See [this overview of the MyST ecosystem](./overview.md) for a more conceptual introduction. In this tutorial, you will get up and running from scratch. You will learn how to:
 
-- learn how to write MyST Markdown 🖊
-- export PDF, Word and $\LaTeX$ documents 📑
-- and create a website like this one 🌎
-
-The current tutorial will help you get up and running from scratch.
+- **write** MyST Markdown 🖊
+- **export** PDF, Word and $\LaTeX$ documents 📑
+- **create** a website like this one 🌎
 
 :::{note} Goals and Prerequisites
 **Goal**: The goal of this tutorial is to help you **install MyST** on your local computer 👩‍💻, create a local website 🌎, and edit elements of the theme to improve the website style 🎨.
@@ -51,7 +50,7 @@ Next we'll download some sample content and use MyST to render it as a local web
 
 ### Download example content
 
-We provide an example project that includes a few simple markdown files and some Jupyter Notebooks.
+We provide an example project that includes a few simple Markdown files and some Jupyter Notebooks.
 Through the course of the tutorials we will add content to these documents that show off some of the features of MyST.
 
 🛠 Download the example content[^no-git], and navigate into the folder:
@@ -80,7 +79,7 @@ myst init walks you through creating a myst.yml file.
 
 You can use myst to:
 
- - create interactive websites from markdown and Jupyter Notebooks 📈
+ - create interactive websites from Markdown and Jupyter Notebooks 📈
  - build & export professional PDFs and Word documents 📄
 
 Learn more about this CLI and MyST Markdown at: https://mystmd.org

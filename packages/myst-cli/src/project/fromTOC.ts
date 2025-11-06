@@ -15,6 +15,7 @@ import type {
   LocalProjectFolder,
   LocalProjectPage,
   LocalProject,
+  ExternalURL,
   PageSlugs,
   SlugOptions,
 } from './types.js';
@@ -116,7 +117,7 @@ export function patternsToFileEntries(
   return entries
     .map((entry) => {
       if (isPattern(entry)) {
-        const { pattern } = entry as PatternEntry;
+        const { pattern, ...leftover } = entry as PatternEntry;
         // Glob matches, relative to `path`, ordered naturally
         const matches = globSync(pattern, { cwd: path, nodir: true, ...opts })
           .filter((item) => !ignore || !ignore.includes(item))
@@ -126,6 +127,7 @@ export function patternsToFileEntries(
           return {
             file: item,
             implicit: true,
+            ...leftover,
           };
         });
         if (newEntries.length === 0) {
@@ -158,7 +160,7 @@ function pagesFromEntries(
   session: ISession,
   path: string,
   entries: EntryWithoutPattern[],
-  pages: (LocalProjectFolder | LocalProjectPage)[] = [],
+  pages: (LocalProjectFolder | LocalProjectPage | ExternalURL)[] = [],
   level: PageLevels = 1,
   pageSlugs: PageSlugs,
   opts?: SlugOptions,
@@ -169,26 +171,24 @@ function pagesFromEntries(
     if (isFile(entry)) {
       // Level must be "chapter" (0) or "section" (1-6) for files
       entryLevel = level < 0 ? 0 : level;
-      const file = resolveExtension(resolve(path, entry.file), (message, errorLevel, note) => {
+      const { file, ...leftover } = entry as FileEntry;
+      const resolvedFile = resolveExtension(resolve(path, file), (message, errorLevel, note) => {
         addWarningForFile(session, configFile, message, errorLevel, {
           ruleId: RuleId.tocContentsExist,
           note,
         });
       });
-      if (file && fs.existsSync(file) && !isDirectory(file)) {
-        const { slug } = fileInfo(file, pageSlugs, { ...opts, session });
-        pages.push({ file, level: entryLevel, slug, implicit: entry.implicit });
+      if (resolvedFile && fs.existsSync(resolvedFile) && !isDirectory(resolvedFile)) {
+        const { slug } = fileInfo(resolvedFile, pageSlugs, { ...opts, session });
+        pages.push({ file: resolvedFile, level: entryLevel, slug, ...leftover });
       }
     } else if (isURL(entry)) {
-      addWarningForFile(
-        session,
-        configFile,
-        `URLs in table of contents are not yet supported: ${entry.url}`,
-        'warn',
-        {
-          ruleId: RuleId.tocContentsExist,
-        },
-      );
+      pages.push({
+        url: entry.url,
+        title: entry.title || entry.url,
+        level: entryLevel,
+        open_in_same_tab: entry.open_in_same_tab,
+      });
     } else {
       // Parent Entry - may be a "part" with level -1
       entryLevel = level < -1 ? -1 : level;
@@ -273,7 +273,11 @@ export function projectFromTOC(
     throw Error(`Could not resolve project index file: ${root.file}`);
   }
   if (opts?.urlFolders && !opts.projectPath) opts.projectPath = path;
-  const { slug } = fileInfo(indexFile, pageSlugs, { ...opts, session });
+
+  // Ensure that the index page always has `index` as its slug!
+  const slug = 'index';
+  pageSlugs[slug] = 1;
+
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
   pagesFromEntries(session, path, entries, pages, level, pageSlugs, opts);
   return { path: path || '.', file: indexFile, index: slug, pages };

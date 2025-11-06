@@ -25,7 +25,8 @@ export async function addEditUrl(session: ISession, frontmatter: PageFrontmatter
     const getGitRoot = makeExecutable('git rev-parse --show-toplevel', gitLog);
     const gitRoot = (await getGitRoot()).trim();
     if (gitBranch && gitRoot && file.startsWith(gitRoot)) {
-      frontmatter.edit_url = `${frontmatter.github}/blob/${gitBranch}${file.replace(gitRoot, '')}`;
+      frontmatter.source_url = `${frontmatter.github}/blob/${gitBranch}${file.replace(gitRoot, '')}`;
+      frontmatter.edit_url = `${frontmatter.github}/edit/${gitBranch}${file.replace(gitRoot, '')}`;
       session.log.debug(`Added edit URL ${frontmatter.edit_url} to ${file}`);
     }
   } catch {

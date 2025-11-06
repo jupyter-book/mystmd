@@ -29,6 +29,7 @@ import {
   inlineMathSimplificationPlugin,
   checkLinkTextTransform,
   indexIdentifierPlugin,
+  buildTocTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -76,6 +77,11 @@ import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { rawDirectiveTransform } from '../transforms/raw.js';
 import { addEditUrl } from '../utils/addEditUrl.js';
+import {
+  indexFrontmatterFromProject,
+  manifestPagesFromProject,
+  manifestTitleFromProject,
+} from '../build/utils/projectManifest.js';
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
@@ -176,6 +182,19 @@ export async function transformMdast(
   // This needs to come before basic transformations since it may add labels to blocks
   liftCodeMetadataToBlock(session, vfile, mdast);
 
+  if (execute && !frontmatter.skip_execution) {
+    const cachePath = path.join(session.buildPath(), 'execute');
+    await kernelExecutionTransform(mdast, vfile, {
+      basePath: session.sourcePath(),
+      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+      sessionFactory: () => session.jupyterSessionManager(),
+      frontmatter: frontmatter,
+      ignoreCache: false,
+      errorIsFatal: false,
+      log: session.log,
+    });
+  }
+
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
@@ -183,7 +202,7 @@ export async function transformMdast(
       parser: (content: string) => parseMyst(session, content, file),
       firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
     })
-    .use(inlineMathSimplificationPlugin)
+    .use(inlineMathSimplificationPlugin, { replaceSymbol: false })
     .use(mathPlugin, { macros: frontmatter.math });
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
@@ -219,18 +238,6 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  if (execute) {
-    const cachePath = path.join(session.buildPath(), 'execute');
-    await kernelExecutionTransform(mdast, vfile, {
-      basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
-      sessionFactory: () => session.jupyterSessionManager(),
-      frontmatter: frontmatter,
-      ignoreCache: false,
-      errorIsFatal: false,
-      log: session.log,
-    });
-  }
   transformRenderInlineExpressions(mdast, vfile);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
@@ -289,11 +296,13 @@ export async function postProcessMdast(
     checkLinks,
     pageReferenceStates,
     extraLinkTransformers,
+    site,
   }: {
     file: string;
     checkLinks?: boolean;
     pageReferenceStates: ReferenceState[];
     extraLinkTransformers?: LinkTransformer[];
+    site?: boolean;
   },
 ) {
   const toc = tic();
@@ -306,6 +315,28 @@ export async function postProcessMdast(
   const { mdast, dependencies, frontmatter } = mdastPost;
   const state = new MultiPageReferenceResolver(pageReferenceStates, file, vfile);
   const externalReferences = Object.values(cache.$externalReferences);
+  const storeState = session.store.getState();
+  const projectPath = selectors.selectCurrentProjectPath(storeState);
+  const siteConfig = selectors.selectCurrentSiteConfig(storeState);
+  const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
+  if (site) {
+    buildTocTransform(
+      mdast,
+      vfile,
+      projectPath
+        ? [
+            {
+              title: manifestTitleFromProject(session, projectPath),
+              level: 1,
+              slug: '',
+              enumerator: indexFrontmatterFromProject(session, projectPath).enumerator,
+            },
+            ...(await manifestPagesFromProject(session, projectPath)),
+          ]
+        : undefined,
+      projectSlug,
+    );
+  }
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [
     ...(extraLinkTransformers || []),

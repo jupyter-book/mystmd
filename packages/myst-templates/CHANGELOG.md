@@ -1,5 +1,34 @@
 # myst-templates
 
+## 1.0.26
+
+### Patch Changes
+
+- 6a5fe67: Persist explicit corresponding=false in template exports
+- a85b321: Update to package dependencies and typescript
+- Updated dependencies [a85b321]
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-cli-utils@2.0.12
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+
+## 1.0.25
+
+### Patch Changes
+
+- 4b7c81a5: Change default LaTeX template
+
+## 1.0.24
+
+### Patch Changes
+
+- d35eecf2: Add a `--template` flag to `myst` that allows the user to specify a custom location for `template.yml`. When that flag is specified, the template is local, and therefore we do not validate the `files` section of the template.
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+
 ## 1.0.23
 
 ### Patch Changes

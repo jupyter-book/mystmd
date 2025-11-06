@@ -1,6 +1,6 @@
 import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import type { ISession } from './session/types.js';
-import { selectors } from './store/index.js';
 import { RuleId, plural, type MystPlugin, type ValidatedMystPlugin } from 'myst-common';
 import type { PluginInfo } from 'myst-config';
 import { addWarningForFile } from './utils/addWarningForFile.js';
@@ -11,42 +11,35 @@ import { loadExecutablePlugin } from './executablePlugin.js';
  *
  * @param session session with logging
  */
-export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugin> {
-  let configPlugins: PluginInfo[] = [];
-  const state = session.store.getState();
-  const projConfig = selectors.selectCurrentProjectConfig(state);
-  if (projConfig?.plugins) configPlugins.push(...projConfig.plugins);
-  const siteConfig = selectors.selectCurrentSiteConfig(state);
-  if (siteConfig?.projects) {
-    siteConfig.projects
-      .filter((project): project is { path: string } => !!project.path)
-      .forEach((project) => {
-        const siteProjConfig = selectors.selectLocalProjectConfig(state, project.path);
-        if (siteProjConfig?.plugins) configPlugins.push(...siteProjConfig.plugins);
-      });
-  }
-
-  // Deduplicate by path
-  configPlugins = [...new Map(configPlugins.map((info) => [info.path, info])).values()];
-
-  const plugins: ValidatedMystPlugin = {
+export async function loadPlugins(
+  session: ISession,
+  plugins: PluginInfo[],
+): Promise<ValidatedMystPlugin> {
+  const loadedPlugins: ValidatedMystPlugin = session.plugins ?? {
     directives: [],
     roles: [],
     transforms: [],
+    paths: [],
   };
-  if (configPlugins.length === 0) {
-    return plugins;
+
+  // Deduplicate by path...
+  const newPlugins = [...new Map(plugins.map((info) => [info.path, info])).values()].filter(
+    // ...and filter out already loaded plugins
+    ({ path }) => !loadedPlugins.paths.includes(path),
+  );
+  if (newPlugins.length === 0) {
+    return loadedPlugins;
   }
   session.log.debug(
-    `Loading plugins: "${configPlugins.map((info) => `${info.path} (${info.type})`).join('", "')}"`,
+    `Loading plugins: "${newPlugins.map((info) => `${info.path} (${info.type})`).join('", "')}"`,
   );
   const modules = await Promise.all(
-    configPlugins.map(async (info) => {
+    newPlugins.map(async (info) => {
       const { type, path } = info;
       switch (type) {
         case 'executable': {
           // Ensure the plugin is a file
-          if (!fs.statSync(path).isFile) {
+          if (!fs.statSync(path, { throwIfNoEntry: false })?.isFile()) {
             addWarningForFile(
               session,
               path,
@@ -84,7 +77,7 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
           return { path, module: { plugin } };
         }
         case 'javascript': {
-          if (!fs.statSync(path).isFile || !path.endsWith('.mjs')) {
+          if (!fs.statSync(path, { throwIfNoEntry: false })?.isFile() || !path.endsWith('.mjs')) {
             addWarningForFile(
               session,
               path,
@@ -97,8 +90,9 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
             return null;
           }
           let module: any;
+          const pathURL = pathToFileURL(path);
           try {
-            module = await import(path);
+            module = await import(pathURL.toString());
           } catch (error) {
             session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
             addWarningForFile(session, path, `Error reading plugin: ${error}`, 'error', {
@@ -125,17 +119,19 @@ export async function loadPlugins(session: ISession): Promise<ValidatedMystPlugi
     );
     if (directives) {
       // TODO: validate each directive
-      plugins.directives.push(...directives);
+      loadedPlugins.directives.push(...directives);
     }
     if (roles) {
       // TODO: validate each role
-      plugins.roles.push(...roles);
+      loadedPlugins.roles.push(...roles);
     }
     if (transforms) {
       // TODO: validate each transform
-      plugins.transforms.push(...transforms);
+      loadedPlugins.transforms.push(...transforms);
     }
+    loadedPlugins.paths.push(pluginLoader.path);
   });
+  session.plugins = loadedPlugins;
   session.log.debug('Plugins loaded');
-  return plugins;
+  return loadedPlugins;
 }

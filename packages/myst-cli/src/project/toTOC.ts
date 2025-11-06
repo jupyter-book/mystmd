@@ -7,9 +7,11 @@ import yaml from 'js-yaml';
 import { relative, parse } from 'node:path';
 
 function getRelativeDocumentLink(file: string, path: string) {
-  if (path === '.') return file;
-  return relative(path, file);
+  const relativePath = path === '.' ? file : relative(path, file);
+  // Normalize path separators to forward slashes for cross-platform compatibility
+  return relativePath.replace(/\\/g, '/');
 }
+
 function tocFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string): any {
   const levels = pages.map((page) => page.level);
   const currentLevel = Math.min(...levels) as PageLevels;

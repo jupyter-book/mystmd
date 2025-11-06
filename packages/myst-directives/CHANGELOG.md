@@ -1,5 +1,71 @@
 # myst-directives
 
+## 1.6.0
+
+### Patch Changes
+
+- myst-common@1.8.4
+- myst-spec-ext@1.8.4
+
+## 1.5.17
+
+### Patch Changes
+
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+  - myst-common@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 1.5.16
+
+### Patch Changes
+
+- Updated dependencies [9cb280a4b]
+  - myst-spec-ext@1.8.2
+  - myst-common@1.8.2
+
+## 1.5.15
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+  - myst-spec-ext@1.8.1
+  - myst-common@1.8.1
+
+## 1.5.14
+
+### Patch Changes
+
+- d09a748f: Enable ranges in emphasize lines (e.g. "5,7-9") for code blocks in addition to comma-separated line numbers.
+
+## 1.5.13
+
+### Patch Changes
+
+- c6213ed: Move QMD admonition recognition to a transform
+- c6213ed: div node does not require a body
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
+## 1.5.12
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- aa49c51c: Added support for include directive options when not using the literal option.
+- Updated dependencies [75bbb180]
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+
+## 1.5.11
+
+### Patch Changes
+
+- Updated dependencies [fad8f673]
+  - myst-spec-ext@1.7.8
+  - myst-common@1.7.8
+
 ## 1.5.10
 
 ### Patch Changes

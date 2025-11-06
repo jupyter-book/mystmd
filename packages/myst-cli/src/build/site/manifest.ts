@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { SPEC_VERSION } from '../../spec-version.js';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
 import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
@@ -18,16 +19,18 @@ import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
 import { transformBanner, transformThumbnail } from '../../transforms/images.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
-import { fileTitle } from '../../utils/fileInfo.js';
 import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import version from '../../version.js';
 import { getSiteTemplate } from './template.js';
 import { collectExportOptions } from '../utils/collectExportOptions.js';
 import { filterPages } from '../../project/load.js';
 import { getRawFrontmatterFromFile } from '../../process/file.js';
-import { castSession } from '../../session/cache.js';
-
-type ManifestProject = Required<SiteManifest>['projects'][0];
+import type { ManifestProject } from '../utils/projectManifest.js';
+import {
+  indexFrontmatterFromProject,
+  manifestPagesFromProject,
+  manifestTitleFromProject,
+} from '../utils/projectManifest.js';
 
 export async function resolvePageExports(session: ISession, file: string): Promise<SiteExport[]> {
   const exports = (
@@ -134,45 +137,9 @@ export async function localToManifestProject(
   const proj = selectors.selectLocalProject(state, projectPath);
   if (!proj) return null;
   // Update all of the page title to the frontmatter title
-  const { index, file: indexFile } = proj;
+  const { index } = proj;
   const projectFileInfo = selectors.selectFileInfo(state, proj.file);
-  const projectTitle = projConfig?.title || projectFileInfo.title || proj.index;
-  const cache = castSession(session);
-  const pages = await Promise.all(
-    proj.pages.map(async (page) => {
-      if ('file' in page) {
-        const fileInfo = selectors.selectFileInfo(state, page.file);
-        const title = fileInfo.title || fileTitle(page.file);
-        const short_title = fileInfo.short_title ?? undefined;
-        const description = fileInfo.description ?? '';
-        const thumbnail = fileInfo.thumbnail ?? '';
-        const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
-        const banner = fileInfo.banner ?? '';
-        const bannerOptimized = fileInfo.bannerOptimized ?? '';
-        const date = fileInfo.date ?? '';
-        const tags = fileInfo.tags ?? [];
-        const { slug, level, file } = page;
-        const { frontmatter } = cache.$getMdast(file)?.post ?? {};
-        const projectPage: ManifestProject['pages'][0] = {
-          slug,
-          title,
-          short_title,
-          description,
-          date,
-          thumbnail,
-          thumbnailOptimized,
-          banner,
-          bannerOptimized,
-          tags,
-          level,
-          enumerator: frontmatter?.enumerator,
-        };
-        return projectPage;
-      }
-      return { ...page };
-    }),
-  );
-
+  const pages = await manifestPagesFromProject(session, projectPath);
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   const projConfigFile = selectors.selectLocalConfigFile(state, projectPath);
   const exports = projConfigFile ? await resolvePageExports(session, projConfigFile) : [];
@@ -195,7 +162,7 @@ export async function localToManifestProject(
     session.publicPath(),
     { altOutputFolder: '/', webp: true },
   );
-  const { frontmatter } = cache.$getMdast(indexFile)?.post ?? {};
+  const frontmatter = indexFrontmatterFromProject(session, projectPath);
   return {
     ...projFrontmatter,
     // TODO: a null in the project frontmatter should not fall back to index page
@@ -214,7 +181,7 @@ export async function localToManifestProject(
     downloads,
     parts,
     bibliography: projFrontmatter.bibliography || [],
-    title: projectTitle || 'Untitled',
+    title: manifestTitleFromProject(session, projectPath),
     slug: projectSlug,
     index,
     enumerator: frontmatter?.enumerator,
@@ -417,9 +384,10 @@ export async function getSiteManifest(
   validatedFrontmatter.options = resolvedOptions;
   const parts = resolveFrontmatterParts(session, validatedFrontmatter);
   const manifest: SiteManifest = {
+    version: SPEC_VERSION,
+    myst: version,
     ...validatedFrontmatter,
     parts,
-    myst: version,
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,

@@ -5,6 +5,26 @@ description: Project and page settings for MyST
 
 The `settings` field in the project or page frontmatter allows you to change how the parsing, transforms, plugins, or other behaviors of mystmd.
 
+Here's an example of settings specified in **project frontmatter**
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  settings:
+    output_matplotlib_strings: remove
+    output_stderr: remove-warn
+```
+
+Here's an example of settings in **page frontmatter**
+
+```{code-block} yaml
+:filename: page.md
+
+settings:
+  output_matplotlib_strings: remove
+  output_stderr: remove-warn
+```
+
 (project-settings)=
 
 ## Available settings fields
@@ -33,7 +53,7 @@ output_stdout
 
 (setting:output_matplotlib_strings)=
 output_matplotlib_strings
-: Remove, warn or error on matplotlib strings outputs. (e.g. `<Figure size 720x576 with 1 Axes>` or `Text(0.5, 0.98, 'Test 1')`). These can also be suppressed by ending your cell content with a semicolon in Jupyter Notebooks. The default is to remove these and warn (`"remove-warn"`).
+: Remove, warn, or error on cell outputs that return a string-based Python object (e.g., matplotlib strings outputs, such as `<Figure size 720x576 with 1 Axes>` or `Text(0.5, 0.98, 'Test 1')`). These can also be suppressed by ending your cell content with a semicolon in Jupyter Notebooks. The default is to remove these and warn (`"remove-warn"`).
 
     - `"show"`: show all matplotlib strings in outputs
     - `"remove"`: remove all matplotlib strings in outputs
@@ -59,6 +79,8 @@ beamer
     - `true`: Add `\begin{frame}` environment for each block, delimited by `+++`, and enable presentation outline with block metadata `+++ {"outline":true}`
     - `false` (default): No extra `\begin{frame}` environment will be used
 
+(setting:error_rules)=
+
 ## Error Rules
 
 The `error_rules` list in the project configuration can be used to disable or modify logging rules in the CLI:
@@ -74,6 +96,55 @@ project:
       keys:
         - /known-internal-link
         - https://flaky-connection.com
+        - 'https://example.org/**'
+        - 'https://*.example.com/**'
 ```
 
 The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity listed will be adopted rather than the default log message severity. The default severity for rules included in the list is `ignore`, which means that simply listing the rule IDs as strings will ignore those rules. To discover the rule ID, run myst in debug mode to get the error (and optional key) printed to the console. For example, the above configuration updates will no longer warn on `math-eqnarray-replaced` and will also ignore the two links when running `myst build --check-links --strict` in continuous integration.
+
+:::{seealso .dropdown} List of Error Rules
+
+The full list of errors and warnings used across MyST with their defaults shown.
+
+```{myst:error-rules-list}
+
+```
+
+:::
+
+### Pattern Matching in Keys
+
+Keys support glob patterns, allowing you to match multiple URLs or paths with a single pattern. Patterns use the same glob syntax as many modern build tools:
+
+- `*` matches any characters except `/` (e.g., `https://example.com/*` matches `https://example.com/page` but not `https://example.com/path/to/page`)
+- `**` matches any characters including `/` (e.g., `https://example.org/**` matches all URLs under `example.org`)
+- `?` matches a single character (e.g., `page?` matches `page1`, `page2`, etc.)
+- `*.example.com` matches any subdomain (e.g., `www.example.com`, `blog.example.com`)
+- Brace expansion like `{www,blog}.example.com` matches either `www.example.com` or `blog.example.com`
+- Use `{http,https}://` to match both HTTP and HTTPS protocols (e.g., `{http,https}://api.example.com/**` matches both protocol variants)
+
+:::{note .dropdown} Automatically Skipped Domains
+
+The following domains are automatically skipped by the link checker and do not need to be added to error_rules:
+
+- `example.com`, `example.org`, `example.net` (and their `www.` variants) - Reserved for documentation per RFC 2606
+- `linkedin.com`, `twitter.com`, `medium.com`, `wikipedia.org` - Block automated access from CI environments
+
+:::
+
+**Common use cases:**
+
+To fail CI when there are missing links, you can use `myst build --check-links --strict` with the following example `myst.yml` configuration.
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  error_rules:
+    # Match both HTTP and HTTPS for a domain
+    - rule: link-resolves
+      keys:
+        - '{http,https}://legacy-api.mysite.com/**'
+        - '{http,https}://staging.mysite.com/**'
+```
+
+This is particularly useful for ignoring groups of external links that may be blocked in CI environments or example URLs that don't need to be checked.

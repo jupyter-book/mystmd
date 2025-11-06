@@ -68,11 +68,17 @@ export type AlgorithmLine = Parent & {
   enumerator?: string;
 };
 
-export type InlineMath = SpecInlineMath & Target;
+export type InlineMath = SpecInlineMath &
+  Target & {
+    /** Typst-specific math content. If not provided, LaTeX content will be converted to Typst. */
+    typst?: string;
+  };
 
 export type Math = SpecMath & {
   kind?: 'subequation';
   tight?: 'before' | 'after' | boolean;
+  /** Typst-specific math content. If not provided, LaTeX content will be converted to Typst. */
+  typst?: string;
 };
 
 export type MathGroup = Target & {
@@ -83,8 +89,6 @@ export type MathGroup = Target & {
 };
 
 export type FootnoteDefinition = FND & {
-  /** @deprecated this should be enumerator */
-  number?: number;
   enumerator?: string;
 };
 
@@ -275,6 +279,7 @@ export type CrossReference = SpecCrossReference & {
   dataUrl?: string;
   remoteBaseUrl?: string;
   html_id?: string;
+  class?: Image['class'];
 };
 
 export type Link = SpecLink & {
@@ -284,6 +289,7 @@ export type Link = SpecLink & {
   static?: true;
   protocol?: string;
   error?: true;
+  class?: Image['class'];
 };
 
 // Search types

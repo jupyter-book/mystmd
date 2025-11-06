@@ -1,6 +1,6 @@
 ---
 title: Frontmatter
-description: Frontmatter can be set at the top of your documents to change the look and feel of your articles.
+description: Frontmatter can be set at the top of your documents and in myst.yml to change the look and feel of your content.
 thumbnail: thumbnails/frontmatter.png
 ---
 
@@ -10,7 +10,12 @@ Adding frontmatter ensures that these properties are available to downstream too
 
 ## Where to set frontmatter
 
-Frontmatter can be set in a markdown (`md`) or notebook (`ipynb`) file (described as a “page” below) or in the `project:` section of a `myst.yml` file. When project frontmatter is set in a `myst.yml` file, those settings will be applied to all content in that project (apart from “page only” fields).
+Frontmatter can be set in two place:
+
+1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a "page" below)
+2. In `myst.yml` file. This will be applied to all content in that project (apart from "page only" fields).
+
+More detailed examples are below.
 
 ### In a MyST markdown file
 
@@ -44,7 +49,7 @@ If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](
 
 ### In a `myst.yml` file
 
-Frontmatter fields can be added directly to any `project:` section within a `myst.yml` file. If your root `myst.yml` file only contains a `site:` section, and you want to add frontmatter, add a `project:` section at the top level and add the fields there. e.g.
+Frontmatter fields can be added directly to any `project:` section within a `myst.yml` file. These will be applied to all pages in your MyST project. Here's an example:
 
 ```yaml
 version: 1
@@ -54,24 +59,46 @@ project:
   open_access: true
 ```
 
+(field-behavior)=
+
+### How project and page frontmatter interact
+
+Frontmatter can be attached to a "page", meaning a local `.md` or `.ipynb` or a "project". However, some frontmatter fields are available across an entire project, while others are only available for a given page.
+
+The behavior of each frontmatter field is hard-coded within MyST. These are the kinds of scope that a frontmatter field can have:
+
+`page & project`
+: the field is available on both the page & project but they are independent
+
+`page only`
+: the field is only available on pages, and not present on projects and it will be ignored if set there.
+
+`page can override project`
+: the field is available on both page & project but the value of the field on the page will override any set of the project. If the page field is omitted or undefined, the project value will be used. If the page field has a value of `null` (or `[]` in the case of multi-item fields like `authors`), the page will override the project value and clear the field for that page.
+
+`project only`
+: the field is only available on projects, and not present on pages and it will be ignored if set there.
+
++++
+
 (composing-myst-yml)=
 
-#### Composing multiple `.yml` files
+### Compose multiple `.yml` files
 
-You may separate your frontmatter into multiple, composable files. To reference other files from your main `myst.yml` file, use the `extends` key with relative path(s) to the other configuration files:
+You may separate your frontmatter into multiple, composable files. This allows you to have a single source of truth for frontmatter to re-use across multiple projects, for example math macros or funding information.
+
+To reference other files from your main `myst.yml` file, use the `extends` key with relative path(s) to the other configuration files:
 
 ```yaml
 version: 1
 site: ...
 project: ...
 extends:
-  - ../macros.yml
-  - ../funding.yml
+  - ../macros.yml # A local file
+  - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml # A remote file
 ```
 
-Each entry listed under `extends` may be a relative path to a file or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
-
-Composing files together this way allows you to have a single source of truth for project frontmatter that may be reused across multiple projects, for example math macros or funding information.
+Each entry listed inside `extends` may be a relative path to a file or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
 
 When using `extends` to compose configuration files, list-type fields are combined, rather than replaced. This means, for example, you may define a single export in one file:
 
@@ -94,9 +121,9 @@ The following table lists the available frontmatter fields, a brief description 
 :header-rows: 1
 :label: table-frontmatter
 
-* - field
-  - description
-  - field behavior
+* - Field
+  - Description
+  - Field Behavior
 * - `title`
   - a string (max 500 chars, see [](#titles))
   - page & project
@@ -130,6 +157,9 @@ The following table lists the available frontmatter fields, a brief description 
 * - `parts`
   - a dictionary of arbitrary content parts, not part of the main article, for example `abstract`, `data_availability` see [](./document-parts.md).
   - page & project
+* - `bibliography`
+  - a list of strings specifying file paths to bibliography files (see [](./citations.md))
+  - project
 * - `date`
   - a valid date formatted string
   - page can override project
@@ -176,7 +206,10 @@ The following table lists the available frontmatter fields, a brief description 
   - a valid GitHub URL or `owner/reponame`
   - page can override project
 * - `edit_url`
-  - URL to edit the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific github URL for the page. You may disable this behavior by explicitly setting `edit_url` to `null`.
+  - URL to edit the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific GitHub URL for the page. You may disable this behavior by explicitly setting `edit_url` to `null`.
+  - page can override project
+* - `source_url`
+  - URL to view the page source. If this value is unset but `github` is specified, MyST will attempt to compute the specific GitHub URL for the page. You may disable this behavior by explicitly setting `source_url` to `null`.
   - page can override project
 * - `binder`
   - any valid URL
@@ -223,32 +256,19 @@ The following table lists the available frontmatter fields, a brief description 
 * - `resources`
   - other resources associated with your project, distributed in the MECA bundle
   - project only
+* - `social`
+  - social links (see [](#social-links))
+  - project only
 * - `jupyter` or `thebe`
-  - configuration for Jupyter execution (see [](./integrating-jupyter.md))
+  - configuration for Jupyter execution (see [](./in-page-execution.md))
   - project only
 * - `kernelspec`
   - configuration for the kernel (see [](#kernel-specification))
   - page only
+* - `skip_execution`
+  - opt-out of execution for a particular document (see [](./execute-notebooks))
+  - page only
 ```
-
-+++
-
-(field-behavior)=
-## Field Behavior
-
-Frontmatter can be attached to a “page”, meaning a local `.md` or `.ipynb` or a “project”. However, individual frontmatter fields are not uniformly available at both levels, and behavior of certain fields are different between project and page levels. There are three field behaviors to be aware of:
-
-`page & project`
-: the field is available on both the page & project but they are independent
-
-`page only`
-: the field is only available on pages, and not present on projects and it will be ignored if set there.
-
-`page can override project`
-: the field is available on both page & project but the value of the field on the page will override any set of the project. Note that the page field must be omitted or undefined, for the project value to be used, value of `null` (or `[]` in the case of `authors`) will still override the project value but clear the field for that page.
-
-`project only`
-: the field is only available on projects, and not present on pages and it will be ignored if set there.
 
 +++
 
@@ -312,10 +332,10 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 ````{list-table} Frontmatter information for authors
 :header-rows: 1
 :label: table-frontmatter-authors
-* - field
-  - description
+* - Field
+  - Description
 * - `name`
-  - a string OR CSL-JSON author object - the author’s full name; if a string, this will be parsed automatically. Otherwise, the object may contain `given`, `surname`, `non_dropping_particle`, `dropping_particle`, `suffix`, and full name `literal`
+  - a string OR CSL-JSON author object - the author's full name; if a string, this will be parsed automatically. Otherwise, the object may contain `given`, `surname`, `non_dropping_particle`, `dropping_particle`, `suffix`, and full name `literal`
 * - `id`
   - a string - a local identifier that can be used to reference a repeated author
 * - `orcid`
@@ -324,8 +344,6 @@ The `authors` field is a list of `author` objects. Available fields in the autho
   - boolean (true/false) - flags any corresponding authors, you must include an `email` if true.
 * - `email`
   - a string - email of the author, required if `corresponding` is `true`
-* - `url`
-  - a string - website or homepage of the author
 * - `roles`
   - a list of strings - must be valid [CRediT Contributor Roles](https://credit.niso.org/)
 
@@ -383,140 +401,62 @@ The `authors` field is a list of `author` objects. Available fields in the autho
   - a boolean (true/false), indicates that the author is an equal contributor
 * - `deceased`
   - a boolean (true/false), indicates that the author is deceased
-* - `twitter`
-  - a twitter username
-* - `github`
-  - a GitHub username
 * - `note`
   - a string, a freeform field to indicate additional information about the author, for example, acknowledgments or specific correspondence information.
 * - `phone`
   - a phone number, e.g. `(301) 754-5766`
 * - `fax`
   - for people who still use these machines, beep, boop, beeeep! 📠🎶
+* - `url`, `github`, and other social links
+  - See @table-frontmatter-social-links for all social profile links for the author
 ````
 
-(other-contributors)=
+(social-links)=
 
-### Reviewers, Editors, Funding Recipients
+### Social Links
 
-Other contributors besides authors may be listed elsewhere in the frontmatter. These include `reviewers`, `editors`, and [funding](#frontmatter:funding) award `investigators` and `recipients`. For all of these fields, you may use a full [author object](#frontmatter:authors), or you may use the string `id` from an existing author object defined elsewhere in your frontmatter.
+Contributors and affiliations can also have social links and URLs.
 
-(affiliations)=
-
-## Affiliations
-
-You can create an affiliation directly by adding it to an author, and it can be as simple as a single string.
-
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliation: University of British Columbia
+```{list-table} Social Links for contributors and affiliations.
+:header-rows: 1
+:label: table-frontmatter-social-links
+* - Field
+  - Description
+* - `url`
+  - a string - website or homepage of the author
+* - `bluesky`
+  - a Bluesky username or URL
+* - `mastodon`
+  - a Mastodon webfinger account (`@user@example.com`)
+* - `threads`
+  - a Threads/Instagram username
+* - `linkedin`
+  - a LinkedIn URL
+* - `twitter` (or `x`)
+  - an x/Twitter username (`user` or `@user`) or URL
+* - `facebook`
+  - a Facebook URL
+* - `discord`
+  - a Discord URL
+* - `youtube`
+  - a YouTube handle (`@handle`) or URL
+* - `discourse`
+  - a Discourse URL
+* - `slack`
+  - a Slack URL
+* - `github`
+  - a GitHub username (`@user` or `user`), repository (`ORG/REPO`) or organization URL (`https://github.com/orgs/ORG`)
 ```
 
-You can also add much more information to any affiliation, such as a ROR, ISNI, or an address. A very complete affiliations list for an author at the University of British Columbia is:
+### Affiliations
 
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliations:
-      - id: ubc
-        institution: University of British Columbia
-        ror: https://ror.org/03rmrcq20
-        isni: 0000 0001 2288 9830
-        department: Department of Earth, Ocean and Atmospheric Sciences
-        address: 2020 – 2207 Main Mall
-        city: Vancouver
-        region: British Columbia
-        country: Canada
-        postal_code: V6T 1Z4
-        phone: 604 822 2449
-  - name: Miles Mysterson
-    affiliation: ubc
-```
-
-Notice how you can use an `id` to avoid writing this out for every coauthor. Additionally, if the affiliation is a single string and contains a semi-colon `;` it will be treated as a list. The affiliations can also be added to your `project` frontmatter in your `myst.yml` and used across any document in the project.
-
-::::{tab-set}
-:::{tab-item} article.md
-
-```yaml
----
-title: My Article
-authors:
-  - name: Marissa Myst
-    affiliation: ubc
-  - name: Miles Mysterson
-    affiliations: ubc; stanford
----
-```
-
-:::
-:::{tab-item} myst.yml
-
-```yaml
-affiliations:
-  - id: ubc
-    institution: University of British Columbia
-    ror: https://ror.org/03rmrcq20
-    isni: 0000 0001 2288 9830
-    department: Department of Earth, Ocean and Atmospheric Sciences
-    address: 2020 – 2207 Main Mall
-    city: Vancouver
-    region: British Columbia
-    country: Canada
-    postal_code: V6T 1Z4
-    phone: 604 822 2449
-  - id: stanford
-    name: ...
-```
-
-:::
-::::
-
-If you use a string that is not recognized as an already defined affiliation in the project or article frontmatter, an affiliation will be created automatically and normalized so that it can be referenced:
-
-::::{tab-set}
-:::{tab-item} Written Frontmatter
-
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliations:
-      - id: ubc
-        institution: University of British Columbia
-        ror: 03rmrcq20
-        department: Earth, Ocean and Atmospheric Sciences
-      - ACME Inc
-  - name: Miles Mysterson
-    affiliation: ubc
-```
-
-:::
-:::{tab-item} Normalized
-
-```yaml
-authors:
-  - name: Marissa Myst
-    affiliations: ['ubc', 'ACME Inc']
-  - name: Miles Mysterson
-    affiliations: ['ubc']
-affiliations:
-  - id: ubc
-    institution: University of British Columbia
-    ror: https://ror.org/03rmrcq20
-    department: Earth, Ocean and Atmospheric Sciences
-  - id: ACME Inc
-    name: ACME Inc
-```
-
-:::
-::::
+Below are all the possible fields for frontmatter affiliations.
 
 ````{list-table} Frontmatter information for affiliations
 :header-rows: 1
 :label: table-frontmatter-affiliations
-* - field
-  - description
+* - Field
+  - Description
 * - `id`
   - a string - a local identifier that can be used to reference a repeated affiliation
 * - `name`
@@ -545,8 +485,8 @@ affiliations:
   - a string - email of the affiliation, required if `corresponding` is `true`
 * - `address`, `city`, `state`, `postal_code`, and `country`
   - affiliation address information. In place of `state` you can use `province` or `region`.
-* - `url`
-  - a string - website or homepage of the affiliation (`website` is an alias!)
+* - `url`, `github`, and other social links
+  - See @table-frontmatter-social-links for all social profile links for the affiliation
 * - `phone`
   - a phone number, e.g. `(301) 754-5766`
 * - `fax`
@@ -557,10 +497,12 @@ affiliations:
 
 ## Date
 
-The date field is a string and should conform to a well-defined calendar date. Examples of acceptable date formats are:
+The date field is a string and should conform to a well-defined calendar date.
+It should be quoted most of the time for notebook frontmatter to avoid parsing issues on the Jupyter side.
+Examples of acceptable date formats are:
 
-- `2022-12-14` - `YYYY-MM-DD`
-- `01 Jan 2000` - `DD? MON YYYY`
+- `"2022-12-14"` - `YYYY-MM-DD`
+- `"01 Jan 2000"` - `DD? MON YYYY`
 - `Sat, 1 Jan 2000` - `DAY, DD? MON YYYY`
 
 These dates correspond to two main formats:
@@ -578,8 +520,8 @@ For usage information, see [](./documents-exports.md).
 ```{list-table} Frontmatter export definitions
 :header-rows: 1
 :label: table-frontmatter-exports
-* - field
-  - description
+* - Field
+  - Description
 * - `id`
   - a string - a local identifier that can be used to reference the export
 * - `format`
@@ -630,8 +572,8 @@ Below is a list of all possible downloads configuration.
 ```{list-table} Frontmatter download definitions
 :header-rows: 1
 :label: table-frontmatter-downloads
-* - field
-  - description
+* - Field
+  - Description
 * - `id`
   - a string - reference to an existing `export` identifier. The referenced export may be defined in a different file. If `id` is defined, `file`/`url` are not allowed.
 * - `file`
@@ -654,7 +596,7 @@ This field can be set to a string value directly or to a License object.
 
 Available fields in the License object are `content` and `code` allowing licenses to be set separately for these two forms of content, as often different subsets of licenses are applicable to each. If you only wish to apply a single license to your page or project use the string form rather than an object.
 
-If selecting a license from the [SPDX License List](https://spdx.org/licenses/), you may simply use the “Identifier” string; MyST will expand these identifiers into objects with `name`, `url`, and additional metadata related to open access ([OSI-approved](https://opensource.org/licenses), [FSF free](https://www.gnu.org/licenses/license-list.en.html), and [CC](https://creativecommons.org/)). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some common licenses are:
+If selecting a license from the [SPDX License List](https://spdx.org/licenses/), you may simply use the "Identifier" string; MyST will expand these identifiers into objects with `name`, `url`, and additional metadata related to open access ([OSI-approved](https://opensource.org/licenses), [FSF free](https://www.gnu.org/licenses/license-list.en.html), and [CC](https://creativecommons.org/)). Identifiers for well-known licenses are easily recognizable (e.g. `MIT` or `BSD`) and MyST will attempt to infer the specific identifier if an ambiguous license is specified (e.g. `GPL` will be interpreted as `GPL-3.0+` and a warning raised letting you know of this interpretation). Some common licenses are:
 
 ```{list-table}
 :header-rows: 1
@@ -665,7 +607,7 @@ If selecting a license from the [SPDX License List](https://spdx.org/licenses/),
 
 * - - `CC-BY-4.0`
     - `CC-BY-SA-4.0`
-    - `CC-BY-N-SA-4.0`
+    - `CC-BY-NC-SA-4.0`
     - `CC0-1.0`
 
   - - `MIT`
@@ -676,7 +618,7 @@ If selecting a license from the [SPDX License List](https://spdx.org/licenses/),
     - `AGPL`
 ```
 
-By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition.  The simplest and most common example is something like:
+By using the correct SPDX Identifier, your website will automatically use the appropriate icon for the license and link to the license definition. The simplest and most common example is something like:
 
 ```yaml
 license: CC-BY-4.0
@@ -770,8 +712,8 @@ For MyST frontmatter, the `venue` object holds metadata for journals and confere
 ```{list-table} Available Venue fields
 :header-rows: 1
 :label: table-frontmatter-venue
-* - field
-  - description
+* - Field
+  - Description
 * - `title`
   - full title of the venue
 * - `short_title`
@@ -817,12 +759,11 @@ venue:
 
 MyST includes several fields to maintain bibliographic metadata for journal publications. First, it has `first_page` and `last_page` - these are page numbers for the article in its printed form. Also, `volume` and `issue` are available to describe the journal volume/issue containing the article. Each of these properties has the same fields available, described in @table-frontmatter-biblio.
 
-
 ```{list-table} Available Volume and Issue fields
 :header-rows: 1
 :label: table-frontmatter-biblio
-* - field
-  - description
+* - Field
+  - Description
 * - `number`
   - a string or a number to identify journal volume/issue
 * - `title`

@@ -45,21 +45,3 @@ cases:
                   children:
                     - type: text
                       value: Here is some advice
-  - title: admonition directive parses with callout QMD prefix
-    markdown: |-
-      ```{.callout-tip} hello
-      ```
-    mdast:
-      type: root
-      children:
-        - type: mystDirective
-          name: .callout-tip
-          args: hello
-          children:
-            - type: admonition
-              kind: tip
-              children:
-                - type: paragraph
-                  children:
-                    - type: text
-                      value: hello

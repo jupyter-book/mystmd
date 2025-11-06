@@ -14,9 +14,9 @@ describe(
         templatePath: inputs.templatePath,
         templateUrl: inputs.templateUrl as string,
       });
-      expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.zip')).toBe(true);
-      expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.yml')).toBe(true);
-      expect(fs.existsSync('_build/templates/tex/myst/curvenote/template.tex')).toBe(true);
+      expect(fs.existsSync('_build/templates/tex/myst/plain_latex/template.zip')).toBe(true);
+      expect(fs.existsSync('_build/templates/tex/myst/plain_latex/template.yml')).toBe(true);
+      expect(fs.existsSync('_build/templates/tex/myst/plain_latex/template.tex')).toBe(true);
     });
     it('Bad template paths to throw', async () => {
       const jtex = new MystTemplate(new Session(), {

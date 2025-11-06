@@ -1,5 +1,43 @@
 # myst-spec-ext
 
+## 1.8.4
+
+## 1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- 9cb280a4b: Add typst option to inlineMath node
+
+## 1.8.1
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+
+## 1.8.0
+
+## 1.7.13
+
+## 1.7.12
+
+## 1.7.11
+
+## 1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+
+## 1.7.8
+
+### Patch Changes
+
+- fad8f673: Add new button role
+
 ## 1.7.7
 
 ### Patch Changes
