@@ -163,6 +163,8 @@ export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
   [RuleId.imageFormatConverts]: 'Image format converts successfully using available tools',
   [RuleId.imageCopied]: 'Image copies to output directory successfully',
   [RuleId.imageFormatOptimizes]: 'Image format optimizes successfully',
+  [RuleId.imageHasAltText]: 'Image has non-empty alt text',
+  [RuleId.imageAltTextGenerated]: 'Image has alt text which is not automatically generated',
   // Math rules
   [RuleId.mathLabelLifted]: 'Math equation label extracts successfully',
   [RuleId.mathEquationEnvRemoved]: 'Nested equation environment removes successfully',
