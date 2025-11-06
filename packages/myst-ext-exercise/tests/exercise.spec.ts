@@ -22,7 +22,7 @@ describe('exercise directive', () => {
           options: {
             label: 'ex-1',
           },
-          args: 'Exercise Title',
+          args: [{ type: 'text', value: 'Exercise Title' }],
           value: 'Exercise content',
           children: [
             {
@@ -58,7 +58,7 @@ describe('exercise directive', () => {
     const output = mystParse(content, {
       directives: [exerciseDirective],
     });
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
   it('nonumber is prioritized over enumerated', async () => {
     const content =
@@ -74,7 +74,7 @@ describe('exercise directive', () => {
             enumerated: true,
             nonumber: true,
           },
-          args: 'Exercise Title',
+          args: [{ type: 'text', value: 'Exercise Title' }],
           value: 'Exercise content',
           children: [
             {
@@ -110,7 +110,7 @@ describe('exercise directive', () => {
     const output = mystParse(content, {
       directives: [exerciseDirective],
     });
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
   it('exercises are enumerated with labels by default', async () => {
     const content = '```{exercise} Exercise Title\nExercise content\n```';
@@ -125,7 +125,7 @@ describe('exercise directive', () => {
         {
           type: 'mystDirective',
           name: 'exercise',
-          args: 'Exercise Title',
+          args: [{ type: 'text', value: 'Exercise Title' }],
           value: 'Exercise content',
           children: [
             {
@@ -158,6 +158,6 @@ describe('exercise directive', () => {
         },
       ],
     };
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
 });

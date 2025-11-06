@@ -26,7 +26,7 @@ cases:
               value: style`s
     markdown: |-
       (my-paragraph)=
-      Some % *markdown* with **different** ``style`s``
+      Some % _markdown_ with **different** ``style`s``
   - title: labeled headings
     mdast:
       type: root
@@ -56,7 +56,7 @@ cases:
       (my-heading)=
       # first
 
-      Some % *markdown*
+      Some % _markdown_
 
       (my-subheading)=
       #### fourth
@@ -83,7 +83,7 @@ cases:
     markdown: |-
       # first
 
-      Some % *markdown*
+      Some % _markdown_
   - title: labeled quote
     mdast:
       type: root
@@ -101,7 +101,7 @@ cases:
                       value: markdown
     markdown: |-
       (my-quote)=
-      > Some % *markdown*
+      > Some % _markdown_
   - title: labeled  list
     mdast:
       type: root
@@ -125,9 +125,8 @@ cases:
                       value: Some more markdown
     markdown: |-
       (my-list)=
-      *   Some markdown
-
-      *   Some more markdown
+      - Some markdown
+      - Some more markdown
   - title: crossReference
     mdast:
       type: root
@@ -142,7 +141,7 @@ cases:
                 - type: text
                   value: markdown
     markdown: |-
-      [Some % *markdown*](#example)
+      [Some % _markdown_](#example)
   - title: crossReference - no children
     mdast:
       type: root
@@ -165,7 +164,7 @@ cases:
                 - type: text
                   value: markdown
     markdown: |-
-      [Some % *markdown*](#example)
+      [Some % _markdown_](#example)
   - title: crossReference - identifier only
     mdast:
       type: root
@@ -180,4 +179,4 @@ cases:
                 - type: text
                   value: markdown
     markdown: |-
-      [Some % *markdown*](#example)
+      [Some % _markdown_](#example)
