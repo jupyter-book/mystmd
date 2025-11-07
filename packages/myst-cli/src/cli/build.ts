@@ -21,6 +21,7 @@ import {
   makeDOIBibOption,
   makeCffOption,
   makeKeepHostOption,
+  makePortOption,
 } from './options.js';
 import { readableName } from '../utils/whiteLabelling.js';
 
@@ -52,6 +53,7 @@ export function makeBuildCommand() {
     .addOption(makeStrictOption())
     .addOption(makeCIOption())
     .addOption(makeMaxSizeWebpOption())
-    .addOption(makeKeepHostOption());
+    .addOption(makeKeepHostOption())
+    .addOption(makePortOption());
   return command;
 }
