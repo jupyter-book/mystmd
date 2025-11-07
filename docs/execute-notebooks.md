@@ -25,7 +25,6 @@ For example if you want to produce a static HTML output from your content, you m
 ```bash
 myst build --execute --html
 ```
-
 :::
 
 ## What content will be executed?
@@ -42,8 +41,7 @@ In order to execute your MyST content, you must install a Jupyter Server and the
 
 ## Show raw Python objects
 
-By default, MyST will suppress outputs from cells that return raw Python objects - like typically modules and classes - that don't have a string representation.
-For example:
+By default, MyST will suppress outputs from cells that return **raw** Python objects - like modules and classes - that don't have a string representation. For example with regular Python, you would observe this:
 
 ```{code} Python
 :filename: Input
@@ -56,19 +54,19 @@ math
 <module 'math' from '/some/path/math.cpython-312-darwin.so'>
 ```
 
-This also applies to results like matplotlib's Axes objects, or pandas' GroupBy objects, etc..
-
+But within MyST, this output is suppressed by default. This also applies to results like matplotlib's Axes objects, pandas' GroupBy objects, etc..  
 If you'd like to instead show these outputs, see [](#setting:output_matplotlib_strings).
 
 ## Allow a code-cell to error without failing the build
 
 By default, MyST will stop executing a notebook if a cell raises an error.
-If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell (see [all cell tags](#tbl:notebook-cell-tags)). If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell. If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
 
-:::{tip} How to add a cell tag
+:::{tip} How to manage cell tags
+:class: dropdown
 
-The easiest way to add cell tags on regular notebooks is via [the JupyterLab interface](https://jupyterlab.readthedocs.io), that has a dedicated UI for managing cell metadata, if that is your usual environment.  
-In addition, [MyST also supports the {myst-directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), and here's an example of adding the `raises-exception` tag on such a code cell:
+See [notebook cell tags](notebook-configuration.md#notebook-cell-tags) for how to manage cell tags  
+For example, in a [{myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), you would add the `raises-exception` tag as follows:
 
 ````markdown
 ```{code-cell}
@@ -77,14 +75,15 @@ In addition, [MyST also supports the {myst-directive}`code-cell` directive](note
 print("Hello" + 10001)
 ```
 ````
-
 :::
 
-## Skip particular code-cells
+## Skip particular code cells
 
 Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book V1) use to prevent a cell from being executed.
 
-For [Markdown notebooks using the {myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), the `skip-execution` tag can be added as follows:
+:::{tip} Example of skipping a code cell
+:class: dropdown
+For example, in a [{myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), the `skip-execution` tag can be added as follows:
 
 ````markdown
 ```{code-cell}
@@ -94,7 +93,11 @@ name = input("What is your name?")
 ```
 ````
 
-Additional [cell tags](#tbl:notebook-cell-tags) to hide, remove, or raise exceptions are also possible.
+Here again, see [notebook cell tags](notebook-configuration.md#notebook-cell-tags) for more details on how to manage cell tags  
+
+:::
+
+[Additional cell tags](#tbl:notebook-cell-tags), to hide or remove cells inputs or outputs, are also available.
 
 ## Skip entire notebooks
 
@@ -113,6 +116,8 @@ skip_execution: true
 print("This will never be executed!")
 ```
 ````
+
+See also [notebook tags](notebook-configuration.md#notebook-tags-ipynb) for how to set notebook-level metadata on a Jupyter Notebook.
 
 ## Cache execution outputs
 
