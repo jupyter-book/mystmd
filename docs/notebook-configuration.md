@@ -2,14 +2,11 @@
 title: Add metadata to notebooks
 ---
 
-In addition to global controls that you can set in the [project
-settings](#project-settings), you can also add metadata to individual notebooks,
-or on notebook cells, to control how MyST handles them during execution and
-rendering.
+In addition to global controls that you can set in the [project settings](#project-settings), you can also add metadata to individual notebooks, or on notebook cells, to control how MyST handles them during execution and rendering.
 
 (notebook-tags)=
 
-## Notebook tags
+## Tags for an entire notebook
 
 The concrete syntax of notebook tags depends on the notebook format.
 
@@ -48,7 +45,7 @@ skip_execution: true
 
 (notebook-cell-tags)=
 
-## Notebook cell tags
+## Tags for a cell in a notebook
 
 Tags are a list of strings under the `tags` key in the cell metadata, which can
 be set in JupyterLab, VSCode or in a {myst:directive}`code-cell` directive. Here

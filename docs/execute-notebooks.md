@@ -39,7 +39,7 @@ If you enable execution with the `--execute` flag as above, the following conten
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
-## Show raw Python objects
+## Show raw Python objects like modules and classes
 
 By default, MyST will suppress outputs from cells that return **raw** Python objects - like modules and classes - that don't have a string representation. For example with regular Python, you would observe this:
 
@@ -65,8 +65,8 @@ If instead you'd like MyST to continue executing subsequent cells (e.g., in orde
 :::{tip} How to manage cell tags
 :class: dropdown
 
-See [notebook cell tags](notebook-configuration.md#notebook-cell-tags) for how to manage cell tags  
-For example, in a [{myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), you would add the `raises-exception` tag as follows:
+See [notebook cell tags](#notebook-cell-tags) for how to manage cell tags  
+For example, in a [{myst:directive}`code-cell` directive](#code-cell), you would add the `raises-exception` tag as follows:
 
 ````markdown
 ```{code-cell}
@@ -83,7 +83,7 @@ Sometimes, you might have a notebook containing code that you _don't_ want to ex
 
 :::{tip} Example of skipping a code cell
 :class: dropdown
-For example, in a [{myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), the `skip-execution` tag can be added as follows:
+For example, in a [{myst:directive}`code-cell` directive](#code-cell), the `skip-execution` tag can be added as follows:
 
 ````markdown
 ```{code-cell}
@@ -93,7 +93,7 @@ name = input("What is your name?")
 ```
 ````
 
-Here again, see [notebook cell tags](notebook-configuration.md#notebook-cell-tags) for more details on how to manage cell tags  
+Here again, see [notebook cell tags](#notebook-cell-tags) for more details on how to manage cell tags  
 
 :::
 
@@ -117,7 +117,7 @@ print("This will never be executed!")
 ```
 ````
 
-See also [notebook tags](notebook-configuration.md#notebook-tags-ipynb) for how to set notebook-level metadata on a Jupyter Notebook.
+See also [notebook tags](#notebook-tags-ipynb) for how to set notebook-level metadata on a Jupyter Notebook.
 
 ## Cache execution outputs
 
