@@ -38,6 +38,7 @@ export type LocalProject = {
   /** The slug that the index get's renamed to for the JSON */
   index: string;
   implicitIndex?: boolean;
+  execution_order?: number;
   bibliography: string[];
   pages: (LocalProjectPage | LocalProjectFolder | ExternalURL)[];
 };
