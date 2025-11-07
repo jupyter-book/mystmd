@@ -2,16 +2,58 @@
 title: Add metadata to notebooks
 ---
 
-In Jupyter Notebooks you can add cell level configuration by specifying **tags** in the cell metadata.
-There are also global controls in the [project settings](#project-settings).
+In addition to global controls that you can set in the [project settings](#project-settings), you can also add metadata to individual notebooks, or on notebook cells, to control how MyST handles them during execution and rendering.
+
+(notebook-tags)=
+
+## Tags for an entire notebook
+
+The concrete syntax of notebook tags depends on the notebook format.
+
+(notebook-tags-ipynb)=
+
+### ipynb notebooks
+
+Using Jupyter Lab, you can use the `Property Inspector` builtin extension to manage notebook-level metadata.
+
+:::{image} /images/jupyterlab-property-inspector.png
+:::
+
+Using this tool you can add key-value pairs to the notebook metadata. For
+example, to skip execution of a notebook, you would add the following key-value
+pair inside the notebook metadata dictionary:
+```json
+"tags": [
+        "skip-execution"
+    ]
+```
+
+### Markdown notebooks
+
+With Markdown notebooks, you can add notebook-level metadata using the YAML frontmatter at the top of the file. For example, to skip execution of a notebook, you would add the following to the frontmatter:
+
+```markdown
+---
+kernelspec:
+  name: python3
+  display_name: Python 3
+
+skip_execution: true
+---
+```
+
 
 (notebook-cell-tags)=
 
-## Notebook Cell Tags
+## Tags for a cell in a notebook
 
-Tags are a list of strings under the `tags` key in the cell metadata, which can be set in JupyterLab, VSCode or in a {myst:directive}`code-cell` directive.
+Tags are a list of strings under the `tags` key in the cell metadata, which can
+be set in JupyterLab, VSCode or in a {myst:directive}`code-cell` directive. Here
+again the actual syntax depends on the notebook format.
 
-In the JSON representation of a jupyter notebook these look like:
+### ipynb notebooks
+
+In the JSON representation of a jupyter notebook, cell tags would look like:
 
 ```json
 {
@@ -23,6 +65,15 @@ In the JSON representation of a jupyter notebook these look like:
 }
 ```
 
+You can use the `Property Inspector` builtin extension in Jupyter Lab to manage cell metadata, like so:
+
+:::{image} /images/jupyterlab-cell-tags.png
+:::
+
+### Markdown notebooks
+
+In addition, [MyST also supports the {myst-directive}`code-cell` directive](#code-cell), and here's an example of adding the `raises-exception` tag on such a code cell:
+
 In Markdown of a jupyter notebook these look like:
 
 ````markdown
@@ -32,7 +83,7 @@ print("This will show output with no input!")
 ```
 ````
 
-for a single tag, or
+for a single tag, or more generally, if you need to add multiple tags:
 
 ````markdown
 ```{code-cell} python
@@ -40,8 +91,6 @@ for a single tag, or
 print("This will show output with no input!")
 ```
 ````
-
-for any number of tags.
 
 :::{table} Notebook cell tags with special meanings
 :label: tbl:notebook-cell-tags
