@@ -72,7 +72,7 @@ You can use the `Property Inspector` builtin extension in Jupyter Lab to manage 
 
 ### Markdown notebooks
 
-In addition, [MyST also supports the {myst-directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), and here's an example of adding the `raises-exception` tag on such a code cell:
+In addition, [MyST also supports the {myst-directive}`code-cell` directive](#code-cell), and here's an example of adding the `raises-exception` tag on such a code cell:
 
 In Markdown of a jupyter notebook these look like:
 
