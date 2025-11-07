@@ -18,13 +18,13 @@ cases:
     raw:
       execute:
         skip: true
-        env:
+        depends_on_env:
           - FOO
           - BAR
     normalized:
       execute:
         skip: true
-        env:
+        depends_on_env:
           - FOO
           - BAR
   - title: renamed skip is aliased

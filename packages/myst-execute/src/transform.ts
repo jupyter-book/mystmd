@@ -105,7 +105,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
 
   // See if we already cached this execution
-  const cacheEnv = getCacheEnvironment(executeConfig?.env ?? []);
+  const cacheEnv = getCacheEnvironment(executeConfig?.depends_on_env ?? []);
   const cacheKey = buildCacheKey(kernelspec, executableNodes, cacheEnv);
   let cachedResults = opts.cache.get(cacheKey);
 

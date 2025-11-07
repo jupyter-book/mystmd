@@ -1,5 +1,5 @@
 export type Execute = {
   skip?: boolean;
   cache?: boolean;
-  env?: string[];
+  depends_on_env?: string[];
 };
