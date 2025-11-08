@@ -39,6 +39,43 @@ If you enable execution with the `--execute` flag as above, the following conten
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
+## How to manage the order of execution? 
+
+### Implicit TOC
+
+If no table of contents (`toc`) is defined in your myst.yml, all executable sources are run in parallel by default.
+
+### Explicit TOC
+
+#### Managing concurrency without dependency order
+
+By default, executable files are processed concurrently in batches of 5.
+
+You can modify this behavior by passing the `--execute-concurrency <n>` option to your build command, where `<n>` specifies how many executable documents should run simultaneously.
+
+* You can pass `--execute-concurrency <n>` to your build command to change the number of executable documents that will be executed together.  
+
+#### Defining a specific execution order
+
+To define a sequential execution order, use the `execution_order` field within the `toc` element. For example:
+
+```yaml
+  toc:
+  - file: paper.md
+  - file: evidence/figure_1.ipynb
+    execution_order: 0
+  - file: evidence/figure_2.ipynb
+    execution_order: 1
+  - file: evidence/figure_3.ipynb
+    execution_order: 1
+```
+
+In this example, `figure_2.ipynb` and `figure_3.ipynb` will both wait for `figure_1.ipynb` to finish before being executed concurrently.
+
+:::{warning} Execution flow
+If a notebook that other notebooks depend on fails during execution, the build process will continue by default. To stop the build whenever an error occurs (including for notebooks without dependencies) pass the `--strict` flag to your build command.
+:::
+
 ## Show raw Python objects like modules and classes
 
 By default, MyST will suppress outputs from cells that return **raw** Python objects - like modules and classes - that don't have a string representation. For example with regular Python, you would observe this:
