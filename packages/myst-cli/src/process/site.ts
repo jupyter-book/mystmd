@@ -145,7 +145,7 @@ function groupPagesByExecutionOrder<T extends { execution_order?: number }>(page
   // Sort batches by order (ascending)
   const batches = Array.from(batchMap.entries())
     .sort(([a], [b]) => a - b)
-    .map(([_, pages]) => pages);
+    .map(([_, batch]) => batch);
 
   // Unordered pages run in parallel with the first batch (no dependencies)
   if (withoutOrder.length > 0 && batches.length > 0) {
