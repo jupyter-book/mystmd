@@ -123,10 +123,7 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
  *
  * Sources (as defined in toc) without an execution order will be run in parallel
  */
-function groupPagesByExecutionOrder<T extends { execution_order?: number }>(
-  pages: T[]
-): T[][] {
-  
+function groupPagesByExecutionOrder<T extends { execution_order?: number }>(pages: T[]): T[][] {
   const withOrder = pages.filter((p) => p.execution_order !== undefined);
   const withoutOrder = pages.filter((p) => p.execution_order === undefined);
 
@@ -621,10 +618,12 @@ export async function processProject(
     .map((part) => {
       return { file: part };
     });
-  const pagesToTransform: { file: string; slug?: string; level?: number; execution_order?: number }[] = [
-    ...pages,
-    ...projectParts,
-  ];
+  const pagesToTransform: {
+    file: string;
+    slug?: string;
+    level?: number;
+    execution_order?: number;
+  }[] = [...pages, ...projectParts];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
   // Transform all pages
   // await Promise.all(
@@ -643,7 +642,7 @@ export async function processProject(
   //     }),
   //   ),
   // );
-   if (execute) {
+  if (execute) {
     // Group pages by execution_order for sequential batch execution
     const batches = groupPagesByExecutionOrder(pagesToTransform);
     const concurrency = executeConcurrency ?? 5;
@@ -652,12 +651,10 @@ export async function processProject(
     for (const [batchIndex, batch] of batches.entries()) {
       if (batches.length > 1) {
         session.log.info(
-          `🍡 Executing batch ${batchIndex + 1}/${batches.length} (${batch.length} file${batch.length > 1 ? 's' : ''}, max ${concurrency} concurrent)`
+          `🍡 Executing batch ${batchIndex + 1}/${batches.length} (${batch.length} file${batch.length > 1 ? 's' : ''}, max ${concurrency} concurrent)`,
         );
       } else if (batch.length > concurrency) {
-        session.log.info(
-          `🍡 Executing ${batch.length} files (max ${concurrency} concurrent)`
-        );
+        session.log.info(`🍡 Executing ${batch.length} files (max ${concurrency} concurrent)`);
       }
 
       // Execute files within batch with concurrency control
