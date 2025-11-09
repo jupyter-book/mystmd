@@ -60,16 +60,12 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.skip_execution)) {
     output.execute ??= {};
     if (defined(output.execute.skip)) {
-      validationWarning(
-        `skip_execution is defined in addition to output.execute.skip. Preferring output.execute.skip`,
-        opts,
-      );
-    } else {
-      output.execute.skip = validateBoolean(
-        value.skip_execution,
-        incrementOptions('skip_execution', opts),
-      );
+      validationWarning(`skip_execution is deprecated in favour of execute.skip`, opts);
     }
+    output.execute.skip = validateBoolean(
+      value.skip_execution,
+      incrementOptions('skip_execution', opts),
+    );
   }
   if (defined(value.enumerator)) {
     output.enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
