@@ -1,6 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
+import 'katex/contrib/mhchem/mhchem.js';
 import type { InlineMath, Node } from 'myst-spec';
 import type { Math } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
