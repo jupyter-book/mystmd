@@ -22,6 +22,7 @@ import { RuleId } from './ruleids.js';
 export const RULE_DEFAULT_SEVERITY: Record<RuleId, 'error' | 'warn'> = {
   // Frontmatter rules
   [RuleId.validConfigStructure]: 'error', // fileError, validationOpts in packages/myst-cli/src/config.ts
+  [RuleId.locateExtendedConfig]: 'error', // fileError in packages/myst-cli/src/config.ts
   [RuleId.siteConfigExists]: 'error', // addWarningForFile in packages/myst-cli/src/config.ts
   [RuleId.projectConfigExists]: 'warn', // addWarningForFile in packages/myst-cli/src/project/load.ts
   [RuleId.validSiteConfig]: 'error', // Uses both error (2×) and warn (1×); addWarningForFile, validationOpts in packages/myst-cli/src/bu...

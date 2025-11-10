@@ -1,6 +1,7 @@
 export enum RuleId {
   // Frontmatter rules
   validConfigStructure = 'valid-config-structure',
+  locateExtendedConfig = 'locate-extended-config',
   siteConfigExists = 'site-config-exists',
   projectConfigExists = 'project-config-exists',
   validSiteConfig = 'valid-site-config',
@@ -113,6 +114,7 @@ export enum RuleId {
 export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
   // Frontmatter rules
   [RuleId.validConfigStructure]: 'Configuration file structure is valid and can be parsed',
+  [RuleId.locateExtendedConfig]: 'Extending configuration file can be located.',
   [RuleId.siteConfigExists]: 'Site configuration is found in project',
   [RuleId.projectConfigExists]: 'Project configuration file exists in the directory',
   [RuleId.validSiteConfig]: 'Site configuration passes validation',
