@@ -33,3 +33,13 @@ cases:
     normalized:
       execute:
         skip: true
+    warnings: 1
+  - title: renamed skip and new alias warns
+    raw:
+      skip_execution: true
+      execute:
+        skip: false
+    normalized:
+      execute:
+        skip: false
+    warnings: 1
