@@ -109,12 +109,15 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   const cacheKey = buildCacheKey(kernelspec, executableNodes, cacheEnv);
   let cachedResults = opts.cache.get(cacheKey);
 
+  const ignoreCachedDocument =
+    // If we don't globally ignore caching'
+    opts.ignoreCache ||
+    // If this document hasn't opted out of cache'
+    executeConfig?.cache === false;
+
   // Do we need to re-execute notebook?
   if (
-    // If we don't globally ignore caching'
-    !opts.ignoreCache &&
-    // If this document hasn't opted out of cache'
-    executeConfig?.cache !== false &&
+    !ignoreCachedDocument &&
     // If we have a cached result
     cachedResults !== undefined
   ) {
@@ -125,7 +128,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
   log.info(
     `💿 Executing notebook (${vfile.path}) ${
-      opts.ignoreCache ? '[cache ignored]' : '[no execution cache found]'
+      ignoreCachedDocument ? '[cache ignored]' : '[no execution cache found]'
     }`,
   );
   const sessionManager = await opts.sessionFactory();
