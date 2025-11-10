@@ -58,15 +58,14 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
     output.execute = validateExecute(value.execute, incrementOptions('execute', opts));
   }
   if (defined(value.skip_execution)) {
-    validationWarning(`skip_execution is deprecated in favour of execute.skip`, opts);
     output.execute ??= {};
     if (defined(output.execute.skip)) {
       validationWarning(
         `both execute.skip and deprecated skip_execution are defined, taking execute.skip`,
         opts,
       );
-    }
-    {
+    } else {
+      validationWarning(`skip_execution is deprecated in favour of execute.skip`, opts);
       output.execute.skip = validateBoolean(
         value.skip_execution,
         incrementOptions('skip_execution', opts),
