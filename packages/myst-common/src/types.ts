@@ -123,6 +123,8 @@ export type TransformSpec = {
   name: string;
   doc?: string;
   stage: 'document' | 'project';
+  before?: string;
+  after?: string;
   // context?: 'tex' | 'docx' | 'jats' | 'typst' | 'site';
   plugin: Plugin<
     [PluginOptions | undefined, PluginUtils],

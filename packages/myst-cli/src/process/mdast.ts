@@ -8,12 +8,14 @@ import type { LinkTransformer, ReferenceState } from 'myst-transforms';
 import {
   basicTransformationsPlugin,
   htmlPlugin,
-  footnotesPlugin,
+  htmlTransform,
+  footnotesTransform,
   MultiPageReferenceResolver,
   resolveLinksAndCitationsTransform,
   resolveReferencesTransform,
   mathPlugin,
-  codePlugin,
+  mathTransform,
+  codeTransform,
   keysTransform,
   linksTransform,
   MystTransformer,
@@ -24,12 +26,18 @@ import {
   RORTransformer,
   DOITransformer,
   glossaryPlugin,
+  glossaryTransform,
   abbreviationPlugin,
+  abbreviationTransform,
   reconstructHtmlPlugin,
+  reconstructHtmlTransform,
   inlineMathSimplificationPlugin,
+  inlineMathSimplificationTransform,
   checkLinkTextTransform,
   indexIdentifierPlugin,
+  indexIdentifierTransform,
   buildTocTransform,
+  basicTransformations,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -171,6 +179,7 @@ export async function transformMdast(
     if (!frontmatter.numbering.title) frontmatter.numbering.title = {};
     if (frontmatter.numbering.title.offset == null) frontmatter.numbering.title.offset = offset;
   }
+  const isJupytext = frontmatter.kernelspec || frontmatter.jupytext;
   await addEditUrl(session, frontmatter, file);
   const references: References = {
     cite: { order: [], data: {} },
@@ -182,11 +191,11 @@ export async function transformMdast(
   // This needs to come before basic transformations since it may add labels to blocks
   liftCodeMetadataToBlock(session, vfile, mdast);
 
+  const executionCachePath = path.join(session.buildPath(), 'execute');
   if (execute && !frontmatter.execute?.skip) {
-    const cachePath = path.join(session.buildPath(), 'execute');
     await kernelExecutionTransform(mdast, vfile, {
       basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(executionCachePath),
       sessionFactory: () => session.jupyterSessionManager(),
       frontmatter: frontmatter,
       ignoreCache: false,
@@ -214,77 +223,117 @@ export async function transformMdast(
     .use(glossaryPlugin) // This should be before the enumerate plugins
     .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
     .use(indexIdentifierPlugin);
-
   await pipe.run(mdast, vfile);
+
+  builder.addTransform('reconstruct-html', reconstructHtmlTransform);
+  builder.addTransform('html', (tree) => htmlTransform(tree, { htmlHandlers }));
+  builder.addTransform('basic-transformations', (tree) =>
+    basicTransformations(tree, vfile, {
+      parser: (content: string) => parseMyst(session, content, file),
+      firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
+    }),
+  );
+  builder.addTransform('inline-math-simplification', (tree) =>
+    inlineMathSimplificationTransform(tree, { replaceSymbol: false }),
+  );
+  builder.addTransform('math', (tree) => mathTransform(tree, vfile, { macros: frontmatter.math }));
+  // Load custom transform plugins
+  session.plugins?.transforms.forEach((t) => {
+    builder.addTransform(
+      t.name,
+      async (tree) => {
+        // TODO: drop unified shim
+        await unified().use(t.plugin, undefined, pluginUtils).run(tree, vfile);
+      },
+      { after: t.after, before: t.before },
+    );
+  });
+
+  builder.addTransform('glossary', (tree) => glossaryTransform(tree, vfile));
+  builder.addTransform('abbreviation', (tree) =>
+    abbreviationTransform(tree, { abbreviations: frontmatter.abbreviations }),
+  );
+  builder.addTransform('index-identifier', indexIdentifierTransform);
 
   // This needs to come after basic transformations since meta tags are added there
   propagateBlockDataToCode(session, vfile, mdast);
-
-  // Initialize citation renderers for this (non-bib) file
-  cache.$citationRenderers[file] = await transformLinkedDOIs(
-    session,
-    vfile,
-    mdast,
-    cache.$doiRenderers,
-    file,
   );
-  const rendererFiles = [file];
-  if (projectPath) {
-    rendererFiles.unshift(projectPath);
-  } else {
-    const localFiles = (await bibFilesInDir(session, path.dirname(file))) || [];
-    rendererFiles.push(...localFiles);
-  }
-  // Combine file-specific citation renderers with project renderers from bib files
-  const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
+
+  const registerCitationsContext: { state?: ReturnType<typeof combineCitationRenderers> } = {};
+  const registerCitations = async (tree: typeof mdast) => {
+    // Initialize citation renderers for this (non-bib) file
+    cache.$citationRenderers[file] = await transformLinkedDOIs(
+      session,
+      vfile,
+      tree,
+      cache.$doiRenderers,
+      file,
+    );
+    const rendererFiles = [file];
+    if (projectPath) {
+      rendererFiles.unshift(projectPath);
+    } else {
+      const localFiles = (await bibFilesInDir(session, path.dirname(file))) || [];
+      rendererFiles.push(...localFiles);
+    }
+    // Combine file-specific citation renderers with project renderers from bib files
+    registerCitationsContext.state = combineCitationRenderers(cache, ...rendererFiles);
+  };
+  await registerCitations(mdast);
 
   transformRenderInlineExpressions(mdast, vfile);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
-  transformCitations(session, file, mdast, fileCitationRenderer, references);
-  await unified()
-    .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
-    .use(footnotesPlugin) // Needs to happen near the end
-    .run(mdast, vfile);
+  transformCitations(session, file, mdast, registerCitationsContext.state!, references);
+
+  codeTransform(mdast, vfile, { lang: frontmatter?.kernelspec?.language });
+
+  footnotesTransform(mdast, vfile);
+
   transformImagesToEmbed(mdast);
   transformImagesWithoutExt(session, mdast, file, { imageExtensions });
-  const isJupytext = frontmatter.kernelspec || frontmatter.jupytext;
   if (isJupytext) transformLiftCodeBlocksInJupytext(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
-  const useSlug = pageSlug !== index;
-  let url: string | undefined;
-  let dataUrl: string | undefined;
-  if (pageSlug && projectSlug) {
-    url = `/${projectSlug}/${useSlug ? pageSlug : ''}`;
-    dataUrl = `/${projectSlug}/${pageSlug}.json`;
-  } else if (pageSlug) {
-    url = `/${useSlug ? pageSlug : ''}`;
-    dataUrl = `/${pageSlug}.json`;
-  }
-  url = slugToUrl(url);
-  updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
-  const data: RendererData = {
-    kind: isJupytext ? SourceFileKind.Notebook : kind,
-    file,
-    location,
-    sha256,
-    slug: pageSlug,
-    dependencies: [],
-    frontmatter,
-    mdast,
-    references,
-    identifiers,
-    widgets,
-  } as any;
-  const cachedMdast = cache.$getMdast(file);
-  if (cachedMdast) cachedMdast.post = data;
-  if (extraTransforms) {
-    await Promise.all(
-      extraTransforms.map(async (transform) => {
-        await transform(session, opts);
-      }),
-    );
-  }
+  const writePostMdast = async () => {
+    const useSlug = pageSlug !== index;
+    let url: string | undefined;
+    let dataUrl: string | undefined;
+    if (pageSlug && projectSlug) {
+      url = `/${projectSlug}/${useSlug ? pageSlug : ''}`;
+      dataUrl = `/${projectSlug}/${pageSlug}.json`;
+    } else if (pageSlug) {
+      url = `/${useSlug ? pageSlug : ''}`;
+      dataUrl = `/${pageSlug}.json`;
+    }
+    url = slugToUrl(url);
+
+    updateFileInfoFromFrontmatter(session, file, frontmatter, url, dataUrl);
+
+    const data: RendererData = {
+      kind: isJupytext ? SourceFileKind.Notebook : kind,
+      file,
+      location,
+      sha256,
+      slug: pageSlug,
+      dependencies: [],
+      frontmatter,
+      mdast,
+      references,
+      identifiers,
+      widgets,
+    } as any;
+    const cachedMdast = cache.$getMdast(file);
+    if (cachedMdast) cachedMdast.post = data;
+    if (extraTransforms) {
+      await Promise.all(
+        extraTransforms.map(async (transform) => {
+          await transform(session, opts);
+        }),
+      );
+    }
+  };
+  await writePostMdast();
+
   logMessagesFromVFile(session, vfile);
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
 }
@@ -349,6 +398,7 @@ export async function postProcessMdast(
     new SphinxTransformer(externalReferences),
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
+
   resolveLinksAndCitationsTransform(mdast, { state, transformers });
   linksTransform(mdast, vfile, {
     transformers,
@@ -368,9 +418,10 @@ export async function postProcessMdast(
   // Ensure there are keys on every node after post processing
   keysTransform(mdast);
   checkLinkTextTransform(mdast, externalReferences, vfile);
-  logMessagesFromVFile(session, vfile);
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
+
   if (checkLinks) await checkLinksTransform(session, file, mdast);
+  logMessagesFromVFile(session, vfile);
 }
 
 export async function finalizeMdast(
