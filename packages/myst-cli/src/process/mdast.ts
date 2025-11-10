@@ -188,36 +188,20 @@ export async function transformMdast(
   const builder = new TransformPipelineBuilder();
 
   // Import additional content from mdast or other files
-  importMdastFromJson(session, file, mdast);
   builder.addTransform('import-mdast-json', (tree) => importMdastFromJson(session, file, tree));
 
-  await includeFilesTransform(session, file, mdast, frontmatter, vfile);
   builder.addTransform('include-files', (tree) =>
     includeFilesTransform(session, file, tree, frontmatter, vfile),
   );
 
-  rawDirectiveTransform(mdast, vfile);
   builder.addTransform('raw-directive', (tree) => rawDirectiveTransform(tree, vfile));
 
   // This needs to come before basic transformations since it may add labels to blocks
-  liftCodeMetadataToBlock(session, vfile, mdast);
-  //builder.addTransform('raw-directive', (tree) => );
   builder.addTransform('lift-code-metadata', (tree) =>
     liftCodeMetadataToBlock(session, vfile, tree),
   );
 
   const executionCachePath = path.join(session.buildPath(), 'execute');
-  if (execute && !frontmatter.execute?.skip) {
-    await kernelExecutionTransform(mdast, vfile, {
-      basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(executionCachePath),
-      sessionFactory: () => session.jupyterSessionManager(),
-      frontmatter: frontmatter,
-      ignoreCache: false,
-      errorIsFatal: false,
-      log: session.log,
-    });
-  }
   builder.addTransform(
     'kernel-execution',
     (tree) =>
@@ -231,30 +215,9 @@ export async function transformMdast(
         log: session.log,
       }),
     {
-      skip: execute && !frontmatter.execute?.skip,
+      skip: !(execute && !frontmatter.execute?.skip),
     },
   );
-
-  const pipe = unified()
-    .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
-    .use(basicTransformationsPlugin, {
-      parser: (content: string) => parseMyst(session, content, file),
-      firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
-    })
-    .use(inlineMathSimplificationPlugin, { replaceSymbol: false })
-    .use(mathPlugin, { macros: frontmatter.math });
-  // Load custom transform plugins
-  //  session.plugins?.transforms.forEach((t) => {
-  //    if (t.stage !== 'document') return;
-  //    pipe.use(t.plugin, undefined, pluginUtils);
-  //  });
-
-  pipe
-    .use(glossaryPlugin) // This should be before the enumerate plugins
-    .use(abbreviationPlugin, { abbreviations: frontmatter.abbreviations })
-    .use(indexIdentifierPlugin);
-  await pipe.run(mdast, vfile);
 
   builder.addTransform('reconstruct-html', reconstructHtmlTransform);
   builder.addTransform('html', (tree) => htmlTransform(tree, { htmlHandlers }));
@@ -287,7 +250,6 @@ export async function transformMdast(
   builder.addTransform('index-identifier', indexIdentifierTransform);
 
   // This needs to come after basic transformations since meta tags are added there
-  propagateBlockDataToCode(session, vfile, mdast);
   builder.addTransform('propogate-block-data-to-code', (tree) =>
     propagateBlockDataToCode(session, vfile, tree),
   );
@@ -312,46 +274,37 @@ export async function transformMdast(
     // Combine file-specific citation renderers with project renderers from bib files
     registerCitationsContext.state = combineCitationRenderers(cache, ...rendererFiles);
   };
-  await registerCitations(mdast);
   builder.addTransform('register-citations', registerCitations);
 
-  transformRenderInlineExpressions(mdast, vfile);
   builder.addTransform('render-inline-expresssions', (tree) =>
     transformRenderInlineExpressions(tree, vfile),
   );
 
-  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  builder.addTransform('outputs-to-cache', (tree) =>
-    transformOutputsToCache(session, tree, kind, { minifyMaxCharacters }),
+  builder.addTransform(
+    'outputs-to-cache',
+    async (tree) => await transformOutputsToCache(session, tree, kind, { minifyMaxCharacters }),
   );
 
-  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   builder.addTransform('filter-output-streams', (tree) =>
     transformFilterOutputStreams(tree, vfile, frontmatter.settings),
   );
 
-  transformCitations(session, file, mdast, registerCitationsContext.state!, references);
   builder.addTransform('citations', (tree) =>
     transformCitations(session, file, tree, registerCitationsContext.state!, references),
   );
 
-  codeTransform(mdast, vfile, { lang: frontmatter?.kernelspec?.language });
   builder.addTransform('code', (tree) =>
     codeTransform(tree, vfile, { lang: frontmatter?.kernelspec?.language }),
   );
 
-  footnotesTransform(mdast, vfile);
   builder.addTransform('footnotes', (tree) => footnotesTransform(tree, vfile));
 
-  transformImagesToEmbed(mdast);
   builder.addTransform('images-to-embed', transformImagesToEmbed);
 
-  transformImagesWithoutExt(session, mdast, file, { imageExtensions });
   builder.addTransform('images-without-ext', (tree) =>
     transformImagesWithoutExt(session, tree, file, { imageExtensions }),
   );
 
-  if (isJupytext) transformLiftCodeBlocksInJupytext(mdast);
   builder.addTransform('lift-code-blocks-in-jupytext', transformLiftCodeBlocksInJupytext, {
     skip: !isJupytext,
   });
@@ -395,10 +348,9 @@ export async function transformMdast(
       );
     }
   };
-  await writePostMdast();
   builder.addTransform('write-post-mdast', writePostMdast);
 
-  // await builder.build().run(mdast);
+  await builder.build().run(mdast);
 
   logMessagesFromVFile(session, vfile);
   if (!watchMode) log.info(toc(`📖 Built ${file} in %s.`));
@@ -435,26 +387,9 @@ export async function postProcessMdast(
   const siteConfig = selectors.selectCurrentSiteConfig(storeState);
   const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
   const builder = new TransformPipelineBuilder();
-  if (site) {
-    buildTocTransform(
-      mdast,
-      vfile,
-      projectPath
-        ? [
-            {
-              title: manifestTitleFromProject(session, projectPath),
-              level: 1,
-              slug: '',
-              enumerator: indexFrontmatterFromProject(session, projectPath).enumerator,
-            },
-            ...(await manifestPagesFromProject(session, projectPath)),
-          ]
-        : undefined,
-      projectSlug,
-    );
-  }
+
   builder.addTransform(
-    'buid-toc',
+    'build-toc',
     async (tree) =>
       buildTocTransform(
         tree,
@@ -487,47 +422,32 @@ export async function postProcessMdast(
     new StaticFileTransformer(session, file), // Links static files and internally linked files
   ];
 
-  resolveLinksAndCitationsTransform(mdast, { state, transformers });
   builder.addTransform('resolve-links-and-citations', (tree) =>
     resolveLinksAndCitationsTransform(tree, { state, transformers }),
   );
 
-  linksTransform(mdast, vfile, {
-    transformers,
-    selector: LINKS_SELECTOR,
-  });
   builder.addTransform('links', (tree) =>
     linksTransform(tree, vfile, { transformers, selector: LINKS_SELECTOR }),
   );
 
-  await transformLinkedRORs(session, vfile, mdast, file);
   builder.addTransform(
     'linked-rors',
     async (tree) => await transformLinkedRORs(session, vfile, tree, file),
   );
 
-  resolveReferencesTransform(mdast, vfile, { state, transformers });
   builder.addTransform('resolve-references', (tree) =>
     resolveReferencesTransform(tree, vfile, { state, transformers }),
   );
 
-  await transformMystXRefs(session, vfile, mdast, frontmatter);
   builder.addTransform(
     'resolve-xrefs',
     async (tree) => await transformMystXRefs(session, vfile, tree, frontmatter),
   );
 
-  await embedTransform(session, mdast, file, dependencies, state);
   builder.addTransform(
     'embed',
     async (tree) => await embedTransform(session, tree, file, dependencies, state),
   );
-
-  const pipe = unified();
-  session.plugins?.transforms.forEach((t) => {
-    pipe.use(t.plugin, undefined, pluginUtils);
-  });
-  await pipe.run(mdast, vfile);
 
   session.plugins?.transforms.forEach((t) => {
     builder.addTransform(
@@ -540,23 +460,20 @@ export async function postProcessMdast(
   });
 
   // Ensure there are keys on every node after post processing
-  keysTransform(mdast);
   builder.addTransform('keys', keysTransform);
 
-  checkLinkTextTransform(mdast, externalReferences, vfile);
   builder.addTransform('check-link-text', (tree) =>
     checkLinkTextTransform(tree, externalReferences, vfile),
   );
 
   log.debug(toc(`Transformed mdast cross references and links for "${file}" in %s`));
 
-  if (checkLinks) await checkLinksTransform(session, file, mdast);
   builder.addTransform(
     'check-links',
     async (tree) => await checkLinksTransform(session, file, tree),
   );
 
-  //builder.build().run(mdast);
+  builder.build().run(mdast);
   logMessagesFromVFile(session, vfile);
 }
 
@@ -589,12 +506,7 @@ export async function finalizeMdast(
 
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
-  if (simplifyFigures) {
-    // Transform output nodes to images / text
-    reduceOutputs(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    });
-  }
+
   builder.addTransform(
     'reduce-outputs',
     (tree) => {
@@ -605,10 +517,6 @@ export async function finalizeMdast(
     { skip: !simplifyFigures },
   );
 
-  transformOutputsToFile(session, mdast, imageWriteFolder, {
-    altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    vfile,
-  });
   // Transform output nodes to images / text
   builder.addTransform('write-outputs', (tree) =>
     transformOutputsToFile(session, tree, imageWriteFolder, {
@@ -619,8 +527,8 @@ export async function finalizeMdast(
 
   builder.addTransform(
     'write-images',
-    (tree) =>
-      transformImagesToDisk(session, tree, file, imageWriteFolder, {
+    async (tree) =>
+      await transformImagesToDisk(session, tree, file, imageWriteFolder, {
         altOutputFolder: imageAltOutputFolder,
         imageExtensions,
       }),
@@ -629,8 +537,8 @@ export async function finalizeMdast(
   // Must happen after transformImages
   builder.addTransform(
     'image-formats',
-    (tree) =>
-      transformImageFormats(session, tree, file, imageWriteFolder, {
+    async (tree) =>
+      await transformImageFormats(session, tree, file, imageWriteFolder, {
         altOutputFolder: imageAltOutputFolder,
         imageExtensions,
       }),
@@ -638,14 +546,14 @@ export async function finalizeMdast(
   );
   builder.addTransform(
     'convert-webp',
-    () => transformWebp(session, { file, imageWriteFolder, maxSizeWebp }),
+    async () => await transformWebp(session, { file, imageWriteFolder, maxSizeWebp }),
     { skip: !(!useExistingImages && optimizeWebp) },
   );
   // Note, the thumbnail transform must be **after** images, as it may read the images
   builder.addTransform(
     'extract-thumbnails',
-    (tree) =>
-      transformThumbnail(session, tree, file, frontmatter, imageWriteFolder, {
+    async (tree) =>
+      await transformThumbnail(session, tree, file, frontmatter, imageWriteFolder, {
         altOutputFolder: imageAltOutputFolder,
         webp: optimizeWebp,
         maxSizeWebp,
@@ -654,49 +562,16 @@ export async function finalizeMdast(
   );
   builder.addTransform(
     'extract-banner',
-    () =>
-      transformBanner(session, file, frontmatter, imageWriteFolder, {
+    async () =>
+      await transformBanner(session, file, frontmatter, imageWriteFolder, {
         altOutputFolder: imageAltOutputFolder,
         webp: optimizeWebp,
         maxSizeWebp,
       }),
     { skip: !(!useExistingImages && processThumbnail) },
   );
-
-  if (!useExistingImages) {
-    await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    // Must happen after transformImages
-    await transformImageFormats(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: imageAltOutputFolder,
-      imageExtensions,
-    });
-    if (optimizeWebp) {
-      await transformWebp(session, { file, imageWriteFolder, maxSizeWebp });
-    }
-    if (processThumbnail) {
-      // Note, the thumbnail transform must be **after** images, as it may read the images
-      await transformThumbnail(session, mdast, file, frontmatter, imageWriteFolder, {
-        altOutputFolder: imageAltOutputFolder,
-        webp: optimizeWebp,
-        maxSizeWebp,
-      });
-      await transformBanner(session, file, frontmatter, imageWriteFolder, {
-        altOutputFolder: imageAltOutputFolder,
-        webp: optimizeWebp,
-        maxSizeWebp,
-      });
-    }
-  }
-  await transformDeleteBase64UrlSource(mdast);
   builder.addTransform('delete-base64', transformDeleteBase64UrlSource);
 
-  if (simplifyFigures) {
-    // This must happen after embedded content is resolved so all children are present on figures
-    transformPlaceholderImages(mdast, { imageExtensions });
-  }
   // This must happen after embedded content is resolved so all children are present on figures
   builder.addTransform(
     'placeholder-images',
@@ -704,7 +579,7 @@ export async function finalizeMdast(
     { skip: !simplifyFigures },
   );
 
-  // await builder.build().run(mdast);
+  await builder.build().run(mdast);
 
   const cache = castSession(session);
   const postData = cache.$getMdast(file)?.post;
