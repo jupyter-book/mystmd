@@ -119,12 +119,12 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
     cachedResults !== undefined
   ) {
     // Apply results to tree
-    log.info(`💾 Adding Cached Notebook Outputs (${vfile.path})`);
+    log.info(`💾 Adding cached notebook outputs (${vfile.path})`);
     applyComputedOutputsToNodes(executableNodes, cachedResults);
     return;
   }
   log.info(
-    `💿 Executing Notebook (${vfile.path}) ${
+    `💿 Executing notebook (${vfile.path}) ${
       opts.ignoreCache ? '[cache ignored]' : '[no execution cache found]'
     }`,
   );
