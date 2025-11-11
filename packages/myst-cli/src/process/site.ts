@@ -47,6 +47,7 @@ import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
 import { SPEC_VERSION } from '../spec-version.js';
+import { cpus } from 'node:os';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -583,7 +584,7 @@ export async function processProject(
   ];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
   
-  const concurrency = executeConcurrency ?? 5;
+  const concurrency = executeConcurrency ?? Math.max(1, cpus().length - 1);
   const limit = pLimit(concurrency);
 
   if (pagesToTransform.length > concurrency) {

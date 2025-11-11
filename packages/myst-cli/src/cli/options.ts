@@ -1,4 +1,5 @@
 import { InvalidArgumentError, Option } from 'commander';
+import { cpus } from 'node:os';
 
 export const MYST_DOI_BIB_FILE = 'myst.doi.bib';
 
@@ -61,12 +62,13 @@ export function makeExecuteOption(description: string) {
 }
 
 export function makeExecuteConcurrencyOption() {
+  const defaultConcurrency = Math.max(1, cpus().length - 1);
   return new Option(
     '--execute-concurrency <n>',
-    'Maximum number of notebooks to execute concurrently',
+    `Maximum number of notebooks to execute concurrently`,
   )
     .argParser(parseInt)
-    .default(5);
+    .default(defaultConcurrency);
 }
 
 export function makeAllOption(description: string) {
