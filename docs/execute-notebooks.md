@@ -39,6 +39,12 @@ If you enable execution with the `--execute` flag as above, the following conten
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
+## Limiting simultaneous executions
+
+By default, executable files are run concurrently in batches of 5.
+
+You can change this by using the `--execute-concurrency <n>` option in your build command, where `<n>` sets the maximum number of executable documents to run at once. For example, using `--execute-concurrency 1` will run the documents one after another.
+
 ## Show raw Python objects like modules and classes
 
 By default, MyST will suppress outputs from cells that return **raw** Python objects - like modules and classes - that don't have a string representation. For example with regular Python, you would observe this:
