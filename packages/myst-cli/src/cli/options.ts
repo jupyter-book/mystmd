@@ -63,7 +63,7 @@ export function makeExecuteOption(description: string) {
 export function makeExecuteConcurrencyOption() {
   return new Option(
     '--execute-concurrency <n>',
-    'Maximum number of notebooks to execute concurrently (default: 5)',
+    'Maximum number of notebooks to execute concurrently',
   )
     .argParser(parseInt)
     .default(5);
