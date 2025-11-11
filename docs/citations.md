@@ -39,6 +39,17 @@ For DOIs with multiple slashes in the identifier you also have to use the full h
 
 :::
 
+### Numbered Citations
+
+The default citations are narrative, for numbered citations, these can be set in the `site.options.numbered_references` in your `myst.yml` (See [](#site-options)).
+
+```{code} yaml
+:filename: myst.yml
+site:
+  options:
+    numbered_references: true
+```
+
 ### Writing DOIs to BibTeX
 
 If you encounter problems fetching DOIs from `https://doi.org`, for example the downloaded citation does not include all the data you expect or requests to `https://doi.org` are failing on an automated continuous integration platform, you may write your DOI citations to file using the MyST command

@@ -3,7 +3,7 @@ release:
 documentation:
   - head-branch: '^docs\b'
   - changed-files:
-      - any-glob-to-any-file: 'docs/*'
+      - any-glob-to-all-files: 'docs/*'
 maintenance:
   - head-branch: '^maint\b'
 enhancement:

@@ -1,5 +1,20 @@
 # myst-parser
 
+## 1.6.0
+
+### Minor Changes
+
+- cd8ee79: Update MarkdownIt to 13 for all dependencies, add types to dependencieswq
+
+### Patch Changes
+
+- Updated dependencies [e293e72]
+- Updated dependencies [cd8ee79]
+  - myst-roles@1.6.0
+  - markdown-it-myst@1.0.13
+  - myst-common@1.8.4
+  - myst-directives@1.6.0
+
 ## 1.5.17
 
 ### Patch Changes
