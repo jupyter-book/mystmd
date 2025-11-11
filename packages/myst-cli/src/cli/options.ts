@@ -64,8 +64,8 @@ export function makeExecuteOption(description: string) {
 export function makeExecuteConcurrencyOption() {
   const defaultConcurrency = Math.max(1, cpus().length - 1);
   return new Option(
-    '--execute-concurrency <n>',
-    `Maximum number of notebooks to execute concurrently`,
+    '--execute-parallel <n>',
+    `Maximum number of notebooks to execute in parallel`,
   )
     .argParser(parseInt)
     .default(defaultConcurrency);
