@@ -65,6 +65,7 @@ export type ProcessFileOptions = {
   extraTransforms?: TransformFn[];
   /** Execute flag for notebooks */
   execute?: boolean;
+  executeConcurrency?: number
   maxSizeWebp?: number;
 };
 
