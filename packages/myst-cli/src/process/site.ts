@@ -67,7 +67,7 @@ export type ProcessFileOptions = {
   extraTransforms?: TransformFn[];
   /** Execute flag for notebooks */
   execute?: boolean;
-  executeConcurrency?: number
+  executeConcurrency?: number;
   maxSizeWebp?: number;
 };
 
@@ -583,13 +583,13 @@ export async function processProject(
     ...projectParts,
   ];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
-  
+
   const concurrency = executeConcurrency ?? Math.max(1, cpus().length - 1);
   const limit = pLimit(concurrency);
 
   if (pagesToTransform.length > concurrency) {
     session.log.info(
-      `${chalk.bold.cyanBright(`🍡 Executing ${pagesToTransform.length} files (max ${concurrency} concurrent)`)}`
+      `${chalk.bold.cyanBright(`🍡 Executing ${pagesToTransform.length} files (max ${concurrency} concurrent)`)}`,
     );
   }
 
