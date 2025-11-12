@@ -41,7 +41,7 @@ In order to execute your MyST content, you must install a Jupyter Server and the
 
 ## Limiting simultaneous executions
 
-By default, executable files are run concurrently in batches of 5.
+By default, up to {math}`N-1` executable files are run concurrently, where {math}`N` is the number of available CPUs.
 
 You can change this by using the `--execute-parallel <n>` option in your build command, where `<n>` sets the maximum number of executable documents to run at once. For example, using `--execute-parallel 1` will run the documents one after another.
 
