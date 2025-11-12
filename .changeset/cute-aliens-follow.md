@@ -2,4 +2,4 @@
 'myst-cli': patch
 ---
 
-Enhancement: Limit simultaneous executions
+Enhancement: Making it possible to configure the maximum number of simultaneous executions
