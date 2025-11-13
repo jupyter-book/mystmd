@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { pipeline } from 'node:stream/promises';
 import mime from 'mime-types';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, plural } from 'myst-common';
@@ -88,15 +89,9 @@ export async function downloadAndSaveImage(
     if (!fs.existsSync(fileFolder)) fs.mkdirSync(fileFolder, { recursive: true });
     // Write to a file
     const fileStream = fs.createWriteStream(`${filePath}.${extension}`);
-    await new Promise((resolve, reject) => {
-      if (!res.body) {
-        reject(`no response body from ${url}`);
-      } else {
-        res.body.pipe(fileStream);
-        res.body.on('error', reject);
-        fileStream.on('finish', resolve as () => void);
-      }
-    });
+    if (!res.body) throw new Error('No response from body');
+
+    await pipeline(res.body, fileStream);
     await new Promise((r) => setTimeout(r, 50));
     const fileName = `${file}.${extension}`;
     session.log.debug(`Image successfully saved to: ${fileName}`);

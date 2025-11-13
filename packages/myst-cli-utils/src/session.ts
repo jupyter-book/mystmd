@@ -1,4 +1,4 @@
-import type { RequestInfo, RequestInit, Response } from 'node-fetch';
+import type { RequestInfo, RequestInit, Response } from 'undici';
 import { chalkLogger, LogLevel } from './logger.js';
 import type { Logger, ISession } from './types.js';
 
