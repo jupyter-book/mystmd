@@ -19,6 +19,10 @@ export const iframeDirective: DirectiveSpec = {
       type: String,
       doc: 'The alignment of the iframe in the page. Choose one of `left`, `center` or `right`',
     },
+    title: {
+      type: String,
+      doc: 'The title attribute for the iframe element, describing its content for accessibility.',
+    },
     placeholder: {
       type: String,
       doc: 'A placeholder image for the iframe in static exports.',
@@ -31,6 +35,7 @@ export const iframeDirective: DirectiveSpec = {
       src: data.arg as string,
       width: data.options?.width as string,
       align: data.options?.align as Iframe['align'],
+      title: data.options?.title as string,
     };
     if (data.options?.placeholder) {
       iframe.children = [
