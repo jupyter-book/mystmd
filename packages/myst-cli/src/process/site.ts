@@ -2,6 +2,7 @@ import yaml from 'js-yaml';
 import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
+import pLimit from 'p-limit';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, toText, plural, slugToUrl } from 'myst-common';
 import type { SiteConfig, SiteProject } from 'myst-config';
@@ -65,6 +66,8 @@ export type ProcessFileOptions = {
   extraTransforms?: TransformFn[];
   /** Execute flag for notebooks */
   execute?: boolean;
+  /** Max number of notebooks to execute concurrently */
+  executeConcurrency?: number;
   maxSizeWebp?: number;
 };
 
@@ -113,6 +116,46 @@ function getReferenceTitleAsText(targetNode: Node): string | undefined {
   }
   const caption = select('caption > paragraph', targetNode);
   if (caption) return toText(caption);
+}
+
+/**
+ * Helper function to group pages by execution order
+ *
+ * Sources (as defined in toc) without an execution order will be run in parallel
+ */
+function groupPagesByExecutionOrder<T extends { execution_order?: number }>(pages: T[]): T[][] {
+  const withOrder = pages.filter((p) => p.execution_order !== undefined);
+  const withoutOrder = pages.filter((p) => p.execution_order === undefined);
+
+  // Lump together the files without order in a batch
+  if (withOrder.length === 0) {
+    return [pages];
+  }
+
+  // Group by order value
+  const batchMap = new Map<number, T[]>();
+  for (const page of withOrder) {
+    const order = page.execution_order!;
+    if (!batchMap.has(order)) {
+      batchMap.set(order, []);
+    }
+    batchMap.get(order)!.push(page);
+  }
+
+  // Sort batches by order (ascending)
+  const batches = Array.from(batchMap.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([_, batch]) => batch);
+
+  // Unordered pages run in parallel with the first batch (no dependencies)
+  if (withoutOrder.length > 0 && batches.length > 0) {
+    batches[0] = [...withoutOrder, ...batches[0]];
+  } else if (withoutOrder.length > 0) {
+    // Only unordered pages
+    batches.push(withoutOrder);
+  }
+
+  return batches;
 }
 
 /**
@@ -542,6 +585,7 @@ export async function processProject(
     writeFiles = true,
     reloadProject,
     execute,
+    executeConcurrency,
     maxSizeWebp,
     checkLinks,
     strict,
@@ -574,28 +618,89 @@ export async function processProject(
     .map((part) => {
       return { file: part };
     });
-  const pagesToTransform: { file: string; slug?: string; level?: number }[] = [
-    ...pages,
-    ...projectParts,
-  ];
+  const pagesToTransform: {
+    file: string;
+    slug?: string;
+    level?: number;
+    execution_order?: number;
+  }[] = [...pages, ...projectParts];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
   // Transform all pages
-  await Promise.all(
-    pagesToTransform.map((page) =>
-      transformMdast(session, {
-        file: page.file,
-        projectPath: project.path,
-        projectSlug: siteProject.slug,
-        pageSlug: page.slug,
-        imageExtensions: usedImageExtensions,
-        watchMode,
-        execute,
-        extraTransforms,
-        index: project.index,
-        offset: page.level ? page.level - 1 : undefined,
-      }),
-    ),
-  );
+  // await Promise.all(
+  //   pagesToTransform.map((page) =>
+  //     transformMdast(session, {
+  //       file: page.file,
+  //       projectPath: project.path,
+  //       projectSlug: siteProject.slug,
+  //       pageSlug: page.slug,
+  //       imageExtensions: usedImageExtensions,
+  //       watchMode,
+  //       execute,
+  //       extraTransforms,
+  //       index: project.index,
+  //       offset: page.level ? page.level - 1 : undefined,
+  //     }),
+  //   ),
+  // );
+  if (execute) {
+    // Group pages by execution_order for sequential batch execution
+    const batches = groupPagesByExecutionOrder(pagesToTransform);
+    const concurrency = executeConcurrency ?? 5;
+    const limit = pLimit(concurrency);
+
+    for (const [batchIndex, batch] of batches.entries()) {
+      if (batches.length > 1) {
+        session.log.info(
+          `🍡 Executing batch ${batchIndex + 1}/${batches.length} (${batch.length} file${batch.length > 1 ? 's' : ''}, max ${concurrency} concurrent)`,
+        );
+      } else if (batch.length > concurrency) {
+        session.log.info(`🍡 Executing ${batch.length} files (max ${concurrency} concurrent)`);
+      }
+
+      // Execute files within batch with concurrency control
+      await Promise.all(
+        batch.map((page) =>
+          limit(() =>
+            transformMdast(session, {
+              file: page.file,
+              projectPath: project.path,
+              projectSlug: siteProject.slug,
+              pageSlug: page.slug,
+              imageExtensions: usedImageExtensions,
+              watchMode,
+              execute: true,
+              extraTransforms,
+              index: project.index,
+              offset: page.level ? page.level - 1 : undefined,
+            }),
+          ),
+        ),
+      );
+
+      if (batches.length > 1) {
+        session.log.info(`✅ Batch ${batchIndex + 1} complete`);
+      }
+    }
+  } else {
+    // Fallback to default behavior
+    await Promise.all(
+      pagesToTransform.map((page) =>
+        transformMdast(session, {
+          file: page.file,
+          projectPath: project.path,
+          projectSlug: siteProject.slug,
+          pageSlug: page.slug,
+          imageExtensions: usedImageExtensions,
+          watchMode,
+          execute: false,
+          extraTransforms,
+          index: project.index,
+          offset: page.level ? page.level - 1 : undefined,
+        }),
+      ),
+    );
+  }
+
   const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
   // Handle all cross references
   await Promise.all(
