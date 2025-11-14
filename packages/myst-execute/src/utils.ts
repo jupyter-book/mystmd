@@ -1,15 +1,14 @@
-import { select } from 'unist-util-select';
 import type { InlineExpression } from 'myst-spec-ext';
 import type { GenericNode } from 'myst-common';
-import { NotebookCellTags } from 'myst-common';
+import { NotebookCell, NotebookCellTags } from 'myst-common';
 import type { CodeBlock } from './types.js';
 /**
  * Return true if the given node is a block over a code node and output node
  *
  * @param node node to test
  */
-export function isCellBlock(node: GenericNode): node is CodeBlock {
-  return node.type === 'block' && select('code', node) !== null && select('output', node) !== null;
+export function isCodeBlock(node: GenericNode): node is CodeBlock {
+  return node.type === 'block' && node.kind === NotebookCell.code;
 }
 
 /**
