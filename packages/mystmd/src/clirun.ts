@@ -2,10 +2,13 @@ import type { Command } from 'commander';
 import type { ISession, Session } from 'myst-cli';
 import { checkNodeVersion, getNodeVersion, logVersions } from 'myst-cli';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
+import { Semaphore } from 'async-mutex';
+import { cpus } from 'node:os';
 
 type SessionOpts = {
   debug?: boolean;
   config?: string;
+  executeParallel?: number;
 };
 
 export function clirun(
@@ -30,7 +33,10 @@ export function clirun(
     const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info, process.cwd());
     // Override default myst.yml if --config option is given.
     const configFiles = opts?.config ? [opts.config] : null;
-    const session = new sessionClass({ logger, configFiles });
+    const executionSemaphore = opts?.executeParallel != null
+      ? new Semaphore(opts.executeParallel)
+      : new Semaphore(Math.max(1, cpus().length - 1));
+    const session = new sessionClass({ logger, configFiles, executionSemaphore });
     await session.reload();
     const versions = await getNodeVersion(session);
     logVersions(session, versions);
