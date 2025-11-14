@@ -129,6 +129,7 @@ export type Iframe = Target & {
   width?: string;
   align?: Image['align'];
   class?: Image['class'];
+  title?: string;
   children?: Image[];
 };
 

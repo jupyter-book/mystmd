@@ -226,7 +226,7 @@ Get up and running with MyST in Jupyter!
 :::
 ```
 
-You can find this URL when clicking share > embed on various platforms. You can also give the {myst:directive}`iframe` directive {myst:directive}`iframe.width` and a {myst:directive}`caption <iframe.body>`.
+You can find this URL when clicking share > embed on various platforms. You can also give the {myst:directive}`iframe` directive {myst:directive}`iframe.width`, {myst:directive}`iframe.title` (for accessibility), and a {myst:directive}`caption <iframe.body>`.
 
 ## Provide Light and Dark Mode images
 
