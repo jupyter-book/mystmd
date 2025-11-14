@@ -1,5 +1,5 @@
 import yaml from 'js-yaml';
-import pLimit from 'p-limit';
+//import pLimit from 'p-limit';
 import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
@@ -584,34 +584,52 @@ export async function processProject(
   ];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
 
-  const concurrency = executeConcurrency ?? Math.max(1, cpus().length - 1);
-  const limit = pLimit(concurrency);
+  // const concurrency = executeConcurrency ?? Math.max(1, cpus().length - 1);
+  // const limit = pLimit(concurrency);
 
-  if (pagesToTransform.length > concurrency) {
-    session.log.info(
-      `${chalk.bold.cyanBright(`🍡 Executing ${pagesToTransform.length} files (max ${concurrency} concurrent)`)}`,
-    );
-  }
+  // if (pagesToTransform.length > concurrency) {
+  //   session.log.info(
+  //     `${chalk.bold.cyanBright(`🍡 Executing ${pagesToTransform.length} files (max ${concurrency} concurrent)`)}`,
+  //   );
+  // }
 
   // Transform all pages with concurrency limit
-  await Promise.all(
+  // await Promise.all(
+  //   pagesToTransform.map((page) =>
+  //     limit(() =>
+  //       transformMdast(session, {
+  //         file: page.file,
+  //         projectPath: project.path,
+  //         projectSlug: siteProject.slug,
+  //         pageSlug: page.slug,
+  //         imageExtensions: usedImageExtensions,
+  //         watchMode,
+  //         execute: true,
+  //         extraTransforms,
+  //         index: project.index,
+  //         offset: page.level ? page.level - 1 : undefined,
+  //       }),
+  //     ),
+  //   ),
+  // );
+
+    await Promise.all(
     pagesToTransform.map((page) =>
-      limit(() =>
-        transformMdast(session, {
-          file: page.file,
-          projectPath: project.path,
-          projectSlug: siteProject.slug,
-          pageSlug: page.slug,
-          imageExtensions: usedImageExtensions,
-          watchMode,
-          execute: true,
-          extraTransforms,
-          index: project.index,
-          offset: page.level ? page.level - 1 : undefined,
-        }),
-      ),
+      transformMdast(session, {
+        file: page.file,
+        projectPath: project.path,
+        projectSlug: siteProject.slug,
+        pageSlug: page.slug,
+        imageExtensions: usedImageExtensions,
+        watchMode,
+        execute,
+        extraTransforms,
+        index: project.index,
+        offset: page.level ? page.level - 1 : undefined,
+      }),
     ),
   );
+
   const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
   // Handle all cross references
   await Promise.all(
