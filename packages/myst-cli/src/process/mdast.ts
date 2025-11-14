@@ -184,14 +184,16 @@ export async function transformMdast(
 
   if (execute && !frontmatter.skip_execution) {
     const cachePath = path.join(session.buildPath(), 'execute');
-    await kernelExecutionTransform(mdast, vfile, {
-      basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
-      sessionFactory: () => session.jupyterSessionManager(),
-      frontmatter: frontmatter,
-      ignoreCache: false,
-      errorIsFatal: false,
-      log: session.log,
+    await session.executionSemaphore.runExclusive(async () => {
+      await kernelExecutionTransform(mdast, vfile, {
+        basePath: session.sourcePath(),
+        cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+        sessionFactory: () => session.jupyterSessionManager(),
+        frontmatter: frontmatter,
+        ignoreCache: false,
+        errorIsFatal: false,
+        log: session.log,
+      });
     });
   }
 
