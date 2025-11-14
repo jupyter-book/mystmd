@@ -311,13 +311,18 @@ When building on Windows, use either WSL or a unix-like shell (such as Git Bash 
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
 
+There are two ways to deploy a theme (AKA React web app): as a server, or as a static build.
+Development procedures are slightly different, depending on which approach you take.
+
+### Approach 1: Theme server
+
 Recall from the [architecture overview](#diagram-app) that `myst-theme` is a React web application. It provides theming, and requires a separate content server for data. When developing, the steps are therefore to:
 
 1. Launch a content server
 2. Launch the `myst-theme` web application server (this is what you browse to)
 3. Run a process to monitor changes and rebuild `myst-theme`
 
-### Content server
+#### Content server
 
 We need some example data to test our theme against, such as [the example landing page](https://github.com/jupyter-book/example-landing-pages). Clone this example content repository and start the content server:
 
@@ -331,7 +336,7 @@ The `--headless` flag tells `myst` not to start a theme server; we want to do th
 
 When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that the _content server_ produces, and that a _theme server_ uses to render a website (in the next step).
 
-### myst-theme server
+#### myst-theme server
 
 We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](<https://en.wikipedia.org/wiki/Hydration_(web_development)>).
 
@@ -366,6 +371,129 @@ npm run dev
 ```
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
+
+### Approach 2: Static build
+
+No content or theme server is required for a static site build.  Steps are:
+
+1. Build the theme for production
+2. Point your site config to the built theme
+3. Build the site statically
+
+We'll use the mystmd docs site as an example.
+
+#### Build theme
+
+To build a static site against a local theme, the theme must be built as it would be for production.  For that we will use the "make" target
+instead of `npm run`:
+
+```{code} bash
+cd myst-theme
+make build-book # because mystmd docs site uses the book theme
+```
+
+That should produce a production ready version of the book theme under `.deploy/book`.
+
+:::{tip}
+While debugging, it helps to work with a theme built against the "development" version of React, which results in unminimized build artifacts (ie preserving whitespace and variable/function names) and more detailed React errors and warnings.  For this, tell remix to run in node "development" mode:
+
+```{code} json
+:filename: myst-theme/themes/book/package.json
+// Add NODE_ENV near the end of the "prod:build" script
+                      v
+"prod:build": "... && NODE_ENV=development remix build",
+                      ^
+```
+:::
+
+#### Configure site
+
+Building a static site against a local theme requires configuring your site's `myst.yml` to point to the built theme's `template.yml`.   Using the mystmd docs site as
+an example:
+
+```{code} yaml
+:filename: mystmd/docs/myst.yml
+site:
+    # assuming your mystmd and myst-theme working directories are siblings
+    template: ../../myst-theme/.deploy/book/template.yml
+```
+(NOTE: This is the _built_ template file, under `.deploy`, not the source template)
+
+#### Build site
+
+```{code} bash
+cd mystmd/docs
+mystmd build --html
+```
+
+Then host the static site locally.  An easy way is with Python's built-in http server:
+```{code} bash
+cd _build/html
+python3 -m http.server  # serves on port 8000 by default
+```
+
+Finally, browse the site at [http://localhost:8000](http://localhost:8000).
+
+## Step Debugging
+
+Sometimes the trusty `console.log` (aka print statement) is not sufficient for your debugging needs.  In more involved situations, a proper step debugger can be your friend.
+You may have used Firefox or Chrome developer tools to debug in-browser code by adding the `debugger` keyword into your javascript source.
+But what about code that runs in node engine on the server?
+Chrome and Firefox dev tools can _also_ debug server-side javascript.  To do this, node must be invoked with the `--inspect`
+or `--inspect-brk` comand-line option.  That will cause the node process to open a socket listening for a debugger to connect.  If "inspect-brk" is used
+(vs "inspect"), then the process will immediately pause, awaiting a debugger connection.  The `debugger` keyword in source will only pause the program if a
+debugger is connected when that keyword is reached.
+
+To connect to an awaiting node debug socket, enter into the browser address bar:
+
+- Firefox: `about:debugging`, or
+- Chrome:  `chrome://inspect`
+
+That opens a debugger control panel in the browser which should list your awaiting node process as available to connect to (if it has been correctly invoked).
+(NOTE: other browsers and IDEs can also connect as debug inspectors - see Inspector Clients reference below)
+
+In most cases we don't call `node` directly, so there is no easy way to add those options to a shell invocation.
+Instead, an `npm` script can be defined with environment variable `NODE_OPTIONS=--inspect` (or "--inspect-brk") set in an appropriate spot (example follows).
+
+### Debug myst-theme service
+
+For example, to debug myst-theme's book theme running as a dynamic application server, alter the npm scripts like so:
+
+```{code} json
+:filename:  myst-theme/themes/book/package.json
+// add NODE_OPTIONS
+//                                                                                    v
+"dev": "npm run dev:copy && npm run build:thebe && concurrently \"npm run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
+```
+Now remove the turbo "--parallel" option, because when turbo runs the theme server in "parallel" (ie multiprocess) mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
+Then your debugger will only connect to the one that succeeded, with no guarantee any subsequent web request will hit the one process connected to the debugger.
+
+```{code} json
+:filename:  myst-theme/package.json
+// remove the --parallel option
+//                           v
+"theme:book": "turbo run dev --filter='./themes/book'",
+```
+
+### Debug static myst-theme
+
+To debug myst-theme running server-side in service of a static build:
+
+**TBD**
+
+### Debug a mystmd subpackage test suite
+
+This requires a handful of options to be passed to vitest to ensure it runs in a single process.  For example, to connect a step debugger to a running `myst-transforms` test:
+
+```{code} json
+:filename: mystmd/packages/myst-transforms/package.json
+"test": "vitest --inspect-brk --pool threads --poolOptions.threads.singleThread --no-file-parallelism run",
+```
+
+### Debugging references
+
+- [Node Inspector Clients](https://nodejs.org/en/learn/getting-started/debugging#inspector-clients)
+
 
 ## Infrastructure we run
 (myst-api-server)=
