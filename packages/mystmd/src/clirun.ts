@@ -29,17 +29,17 @@ export function clirun(
   },
 ) {
   return async function(this: Command, ...args: any[]) {
-    // Use options from 'this' (the command) merged with parent program options
+    // Use options from 'this' merged with parent program options
+    // Needed to pass options from e.g. the build command to the session
     const opts = { ...program.opts(), ...this.opts() } as SessionOpts;
     const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info, process.cwd());
     // Override default myst.yml if --config option is given.
     const configFiles = opts?.config ? [opts.config] : null;
     const parallelCount = opts?.executeParallel ?? Math.max(1, cpus().length - 1);
-    logger.debug(`🍡🍡 Raw executeParallel option value: ${opts?.executeParallel} (type: ${typeof opts?.executeParallel})`);
     const executionSemaphore = new Semaphore(parallelCount);
     const session = new sessionClass({ logger, configFiles, executionSemaphore });
     await session.reload();
-    session.log.info(`🍡🍡 Execution parallelism set to: ${parallelCount}`);
+    session.log.info(`🍡 Execution parallelism set to: ${parallelCount}`);
     const versions = await getNodeVersion(session);
     logVersions(session, versions);
     const versionsInstalled = await checkNodeVersion(session);
