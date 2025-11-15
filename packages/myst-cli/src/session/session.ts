@@ -10,6 +10,8 @@ import chalk from 'chalk';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import pLimit from 'p-limit';
 import type { Limit } from 'p-limit';
+import { Semaphore } from 'async-mutex';
+import { cpus } from 'node:os';
 import {
   findCurrentProjectAndLoad,
   findCurrentSiteAndLoad,
@@ -87,6 +89,7 @@ export class Session implements ISession {
   store: Store<RootState>;
   $logger: Logger;
   doiLimiter: Limit;
+  executionSemaphore: Semaphore;
 
   proxyAgent?: HttpsProxyAgent<string>;
   _shownUpgrade = false;
@@ -97,11 +100,12 @@ export class Session implements ISession {
     return this.$logger;
   }
 
-  constructor(opts: { logger?: Logger; doiLimiter?: Limit; configFiles?: string[] } = {}) {
+  constructor(opts: { logger?: Logger; doiLimiter?: Limit; executionSemaphore?: Semaphore; configFiles?: string[] } = {}) {
     this.API_URL = API_URL;
     this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
+    this.executionSemaphore = opts.executionSemaphore ?? new Semaphore(Math.max(1, cpus().length - 1));
     const proxyUrl = process.env.HTTPS_PROXY;
     if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
     this.store = createStore(rootReducer);
@@ -195,6 +199,7 @@ export class Session implements ISession {
     const cloneSession = new Session({
       logger: this.log,
       doiLimiter: this.doiLimiter,
+      executionSemaphore: this.executionSemaphore,
       configFiles: this.configFiles,
     });
     await cloneSession.reload();

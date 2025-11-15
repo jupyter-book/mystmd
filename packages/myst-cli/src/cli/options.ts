@@ -1,4 +1,5 @@
 import { InvalidArgumentError, Option } from 'commander';
+import { cpus } from 'node:os';
 
 export const MYST_DOI_BIB_FILE = 'myst.doi.bib';
 
@@ -58,6 +59,13 @@ export function makeCacheOption(description: string) {
 
 export function makeExecuteOption(description: string) {
   return new Option('--execute', description).default(false);
+}
+
+export function makeExecuteParallelOption() {
+  const defaultParallelism = Math.max(1, cpus().length - 1);
+  return new Option('--execute-parallel <n>', `Maximum number of notebooks to execute in parallel`)
+    .argParser(parseInt)
+    .default(defaultParallelism);
 }
 
 export function makeAllOption(description: string) {
