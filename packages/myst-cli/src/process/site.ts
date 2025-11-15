@@ -1,5 +1,4 @@
 import yaml from 'js-yaml';
-//import pLimit from 'p-limit';
 import { basename, extname, join } from 'node:path';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
@@ -67,7 +66,6 @@ export type ProcessFileOptions = {
   extraTransforms?: TransformFn[];
   /** Execute flag for notebooks */
   execute?: boolean;
-  executeConcurrency?: number;
   maxSizeWebp?: number;
 };
 
@@ -545,7 +543,6 @@ export async function processProject(
     writeFiles = true,
     reloadProject,
     execute,
-    executeConcurrency,
     maxSizeWebp,
     checkLinks,
     strict,
@@ -583,36 +580,7 @@ export async function processProject(
     ...projectParts,
   ];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
-
-  // const concurrency = executeConcurrency ?? Math.max(1, cpus().length - 1);
-  // const limit = pLimit(concurrency);
-
-  // if (pagesToTransform.length > concurrency) {
-  //   session.log.info(
-  //     `${chalk.bold.cyanBright(`🍡 Executing ${pagesToTransform.length} files (max ${concurrency} concurrent)`)}`,
-  //   );
-  // }
-
-  // Transform all pages with concurrency limit
-  // await Promise.all(
-  //   pagesToTransform.map((page) =>
-  //     limit(() =>
-  //       transformMdast(session, {
-  //         file: page.file,
-  //         projectPath: project.path,
-  //         projectSlug: siteProject.slug,
-  //         pageSlug: page.slug,
-  //         imageExtensions: usedImageExtensions,
-  //         watchMode,
-  //         execute: true,
-  //         extraTransforms,
-  //         index: project.index,
-  //         offset: page.level ? page.level - 1 : undefined,
-  //       }),
-  //     ),
-  //   ),
-  // );
-
+    // Transform all pages
     await Promise.all(
     pagesToTransform.map((page) =>
       transformMdast(session, {

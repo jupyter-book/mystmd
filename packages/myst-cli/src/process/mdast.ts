@@ -184,7 +184,10 @@ export async function transformMdast(
 
   if (execute && !frontmatter.skip_execution) {
     const cachePath = path.join(session.buildPath(), 'execute');
+    const fileName = path.basename(file);
+    session.log.debug(`⏳ Waiting for execution slot: ${fileName}`);
     await session.executionSemaphore.runExclusive(async () => {
+      session.log.info(`▶️  Executing: ${fileName}`);
       await kernelExecutionTransform(mdast, vfile, {
         basePath: session.sourcePath(),
         cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
@@ -194,6 +197,7 @@ export async function transformMdast(
         errorIsFatal: false,
         log: session.log,
       });
+      session.log.info(`✅ Completed execution: ${fileName}`);
     });
   }
 
