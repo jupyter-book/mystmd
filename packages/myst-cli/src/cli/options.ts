@@ -64,7 +64,13 @@ export function makeExecuteOption(description: string) {
 export function makeExecuteParallelOption() {
   const defaultParallelism = Math.max(1, cpus().length - 1);
   return new Option('--execute-parallel <n>', `Maximum number of notebooks to execute in parallel`)
-    .argParser(parseInt)
+    .argParser((value) => {
+      const parsedValue = parseInt(value);
+      if (parsedValue < 1) {
+        throw new InvalidArgumentError('Must be an integer greater than or equal to 1.');
+      }
+      return parsedValue;
+    })
     .default(defaultParallelism);
 }
 
