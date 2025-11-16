@@ -41,9 +41,11 @@ In order to execute your MyST content, you must install a Jupyter Server and the
 
 ## Limiting simultaneous executions
 
-By default, up to {math}`N-1` executable files are run concurrently, where {math}`N` is the number of available CPUs.
+By default, up to {math}`N-1` executable files are run concurrently, where {math}`N` is the number of available CPUs. 
 
-You can change this by using the `--execute-parallel <n>` option in your build command, where `<n>` sets the maximum number of executable documents to run at once. For example, using `--execute-parallel 1` will run the documents one after another.
+You can change this by using the `--execute-parallel <n>` option in your build command, where `<n>` sets the maximum number of executable documents that can run at the same time. This option is useful when your project includes executable content that is resource intensive or starts multiple subprocesses that might interfere with one another when run in parallel.
+
+For example, setting `--execute-parallel 1` will execute the documents sequentially.
 
 ## Show raw Python objects like modules and classes
 
