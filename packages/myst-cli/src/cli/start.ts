@@ -6,7 +6,6 @@ import {
   makeServerPortOption,
   makeTemplateOption,
   makeExecuteOption,
-  makeExecuteParallelOption,
   makeMaxSizeWebpOption,
 } from './options.js';
 
@@ -14,7 +13,6 @@ export function makeStartCommand() {
   const command = new Command('start')
     .description('Start the current project as a website')
     .addOption(makeExecuteOption('Execute Notebooks'))
-    .addOption(makeExecuteParallelOption())
     .addOption(makeKeepHostOption())
     .addOption(makeHeadlessOption())
     .addOption(makePortOption())
