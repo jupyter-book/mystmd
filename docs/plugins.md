@@ -5,11 +5,11 @@ description: Plugins provide powerful ways to extend and customize MyST
 
 Plugins allow you to extend and customize MyST to augment your articles and documentation. They also support custom rendering and transformation pipelines for various export targets including React, HTML, LaTeX, and Microsoft Word.
 
-:::{danger} Plugins are in-progress
-The interfaces and packaging for the plugins may change substantially in the future.\
-**Expect changes!!**
+:::{caution} We are still adding plugin extension points
+We are still in the process of adding and extending plugin functionality.
+There might not yet be the right extension point for you to accomplish your goal.
 
-If you are implementing a plugin, please let us know on [GitHub](https://github.com/jupyter-book/mystmd) or [Discord](https://discord.mystmd.org/).
+If you wish something were possible that does not seem possible, please [let us know on GitHub](https://github.com/jupyter-book/mystmd/issues/new) or [talk to us on Discord](https://discord.mystmd.org/).
 :::
 
 ## Overview of a Plugin

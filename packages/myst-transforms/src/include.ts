@@ -11,9 +11,15 @@ type ParseResult = { mdast: GenericParent; frontmatter?: PageFrontmatter };
 
 export type Options = {
   loadFile: (filename: string) => Promise<string | undefined> | string | undefined;
-  resolveFile: (includeFile: string, sourceFile: string, vfile: VFile) => string | undefined;
+  resolveFile: (
+    includeFile: string,
+    sourceFile: string,
+    sourcePath: string,
+    vfile: VFile,
+  ) => string | undefined;
   parseContent: (filename: string, content: string) => Promise<ParseResult> | ParseResult;
   sourceFile: string;
+  sourcePath: string;
   stack?: string[];
 };
 
@@ -60,7 +66,7 @@ export async function includeDirectiveTransform(
     includeNodes.map(async (node) => {
       // If the transform has already run, don't run it again!
       if (node.children && node.children.length > 0) return;
-      const fullFile = opts.resolveFile(node.file, opts.sourceFile, vfile);
+      const fullFile = opts.resolveFile(node.file, opts.sourceFile, opts.sourcePath, vfile);
       if (!fullFile) return;
       // If we encounter the same include file twice in a single stack, return
       if (opts.stack?.includes(fullFile)) {

@@ -6,7 +6,7 @@ description: Share your custom plugins so that others can use them.
 There is no "official" way to distribute MyST plugins. However, you can use common workflows in the JavaScript ecosystem to distribute your plugins so that others can use them. This page documents a few of them.
 ## Distribute plugins as a single `.mjs` file if they have no dependencies
 
-If your plugin doesn't require any extra dependencies, then you can distributed it as a single `.mjs` file written in JavaScript. You can then use it locally or [distribute it via a URL](#plugin:distribute-url).
+If your plugin doesn't require any extra dependencies, then you can distribute it as a single `.mjs` file written in JavaScript. You can then use it locally or [distribute it via a URL](#plugin:distribute-url).
 
 See [](./javascript-plugins.md) for several example plugins written as individual `.mjs` files with no dependencies.
 
