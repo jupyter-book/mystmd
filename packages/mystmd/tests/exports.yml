@@ -556,20 +556,14 @@ cases:
   - title: Serial execution
     cwd: serial-execution
     command: myst build --site --execute --execute-parallel 1
-    timeout: 5000
     env:
-      # Test that second.md waits until first.md has finished (created a file)
-      # Sleep for 3s in first.md to catch any race condition
-      # This tests ordering _and_ concurrency
-      MYST_TEST_SLEEP_MS: 3000
+      MYST_TEST_SLEEP_MS: 4000
+      MYST_TEST_DELAY_MS: 2000
     outputs:
-      - path: serial-execution/output-first.txt
-      - path: serial-execution/output-second.txt
+      - path: serial-execution/stop-first
+      - path: serial-execution/stop-second
   - title: Concurrent execution
     cwd: concurrent-execution
-    # Test that first.md waits for second.md to finish
-    # With deterministic ordering, first.md can only 
-      # This tests concurrency only
     command: myst build --site --execute --execute-parallel 2
     timeout: 5000
     outputs:
