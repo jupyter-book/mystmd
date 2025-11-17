@@ -8,14 +8,20 @@ kernelspec:
 import time
 import os
 
-# Sleep to ensure that if the second notebook executes in parallel
-# the file won't exist yet. This isn't foolproof -- it doesn't ensure
-# that our process has fully ended before second.md starts, but that's OK.
+# Ensure that new files are not created by a sibling process during execution
 
+this_name = "output-first.txt"
+other_file_name = "output-second.txt"
 sleep_duration_ms = int(os.environ['MYST_TEST_SLEEP_MS'])
-time.sleep(sleep_duration_ms / 1e3)
 
-with open("output-first.txt", "w") as f:
-    f.write("First completed!")
+# Assuming we're the second process, ensure that files are not created during execution
+# Race conditions from interleaving should fail this test.
+exists_before = os.path.exists(other_file_name)
+if not exists_before:
+    time.sleep(sleep_duration_ms / 1e3)
+    exists_after = os.path.exists(other_file_name)
+    assert exists_before == exists_after
 
+with open(this_name, "w") as f:
+    f.write("Done")
 ```
