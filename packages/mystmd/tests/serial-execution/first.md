@@ -22,20 +22,21 @@ import pathlib
 this_start_path = pathlib.Path.cwd() / "start-first"
 other_start_path = pathlib.Path.cwd() / "start-second"
 
-sleep_duration_ms = int(os.environ['MYST_TEST_SLEEP_MS'])
-delay_duration_ms = int(os.environ['MYST_TEST_DELAY_MS'])
+sleep_duration = int(os.environ['MYST_TEST_SLEEP_MS']) * 1e-3
+delay_duration = int(os.environ['MYST_TEST_DELAY_MS']) * 1e-3
 
 ################
 
 # A. Touch start marker
 this_start_path.touch()
 
-# B. Assert other marker doesn't exist
-# Catch case (3)
-assert not other_start_path.exists()
-
-# C. Wait for well-defined period
-time.sleep(sleep_duration_ms / 1e3)
+# B. Assert other marker doesn't exist, and
+# C. isn't created whilst we wait
+# (catch case 3)
+start = time.monotonic()
+while (time.monotonic() - start) < sleep_duration:
+    assert not other_start_path.exists()
+    time.sleep(1e-2)
 
 # D. Touch stop marker
 this_start_path.unlink()
