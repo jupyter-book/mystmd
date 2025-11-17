@@ -2,6 +2,8 @@
 kernelspec:
   name: python3
   display_name: python 3
+execute:
+  cache: false
 ---
 
 ```{code-cell} python3
