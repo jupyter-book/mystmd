@@ -188,6 +188,7 @@ project:
 
 site:
   title: MyST Markdown Guide
+  #template: ../../myst-theme/.deploy/book/template.yml
   domains:
     - mystmd-guide.curve.space
   options:
