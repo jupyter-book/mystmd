@@ -100,12 +100,20 @@ export class Session implements ISession {
     return this.$logger;
   }
 
-  constructor(opts: { logger?: Logger; doiLimiter?: Limit; executionSemaphore?: Semaphore; configFiles?: string[] } = {}) {
+  constructor(
+    opts: {
+      logger?: Logger;
+      doiLimiter?: Limit;
+      executionSemaphore?: Semaphore;
+      configFiles?: string[];
+    } = {},
+  ) {
     this.API_URL = API_URL;
     this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
-    this.executionSemaphore = opts.executionSemaphore ?? new Semaphore(Math.max(1, cpus().length - 1));
+    this.executionSemaphore =
+      opts.executionSemaphore ?? new Semaphore(Math.max(1, cpus().length - 1));
     const proxyUrl = process.env.HTTPS_PROXY;
     if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
     this.store = createStore(rootReducer);

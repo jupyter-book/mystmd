@@ -580,8 +580,8 @@ export async function processProject(
     ...projectParts,
   ];
   const usedImageExtensions = imageExtensions ?? WEB_IMAGE_EXTENSIONS;
-    // Transform all pages
-    await Promise.all(
+  // Transform all pages
+  await Promise.all(
     pagesToTransform.map((page) =>
       transformMdast(session, {
         file: page.file,
