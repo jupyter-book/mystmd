@@ -5,7 +5,7 @@ import type { Logger } from './types.js';
 
 function execWrapper(
   command: string,
-  options?: { cwd?: string },
+  options?: child_process.ExecOptionsWithStringEncoding,
   callback?: (error: child_process.ExecException | null, stdout: string, stderr: string) => void,
 ) {
   const childProcess = child_process.exec(command, options ?? {}, callback);

@@ -1,0 +1,9 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  toc:
+    - file: first.md
+    - file: second.md
+site:
+  template: ../templates/site/myst/book-theme
+
