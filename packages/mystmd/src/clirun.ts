@@ -28,7 +28,7 @@ export function clirun(
     keepAlive?: boolean | ((...args: any[]) => boolean);
   },
 ) {
-  return async function(this: Command, ...args: any[]) {
+  return async function (this: Command, ...args: any[]) {
     // Use options from 'this' merged with parent program options
     // Needed to pass options from e.g. the build command to the session
     const opts = { ...program.opts(), ...this.opts() } as SessionOpts;
