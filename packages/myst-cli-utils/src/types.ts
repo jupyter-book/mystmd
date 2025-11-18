@@ -1,4 +1,4 @@
-import type { RequestInfo, RequestInit, Response } from 'node-fetch';
+import type { RequestInfo, RequestInit, Response } from 'undici';
 
 export type Logger = Pick<typeof console, 'debug' | 'info' | 'warn' | 'error'>;
 

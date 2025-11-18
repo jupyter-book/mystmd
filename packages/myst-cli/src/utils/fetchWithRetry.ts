@@ -1,4 +1,4 @@
-import type { RequestInfo, RequestInit, Response } from 'node-fetch';
+import type { RequestInfo, RequestInit, Response } from 'undici';
 import type { ISession } from '../session/types.js';
 
 /**

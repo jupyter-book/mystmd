@@ -8,7 +8,8 @@ import type { ExecutionResult } from '../src/types.js';
 import type { GenericParent } from 'myst-common';
 import { VFile } from 'vfile';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
-import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
+import { fetch as nodeFetch, Headers, Request, Response } from 'undici';
+import type { IOutput } from '@jupyterlab/nbformat';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
