@@ -119,7 +119,7 @@ export const RULE_DEFAULT_SEVERITY: Record<RuleId, 'error' | 'warn'> = {
   [RuleId.sourceFileCopied]: 'error', // addWarningForFile in packages/myst-cli/src/process/site.ts
   [RuleId.templateFileCopied]: 'error', // addWarningForFile in packages/myst-cli/src/build/site/manifest.ts
   [RuleId.staticActionFileCopied]: 'error', // addWarningForFile in packages/myst-cli/src/build/site/manifest.ts
-  [RuleId.pluginLoads]: 'error', // addWarningForFile in packages/myst-cli/src/plugins.ts
+  [RuleId.pluginLoads]: 'error', // addWarningForFile in packages/myst-cli/src/plugins/load.ts
   // Container rules
   [RuleId.containerChildrenValid]: 'error', // Uses both error (5×) and warn (1×); fileError, fileWarn in packages/myst-transforms/src/container...
   // File rules

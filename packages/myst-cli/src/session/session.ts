@@ -3,7 +3,7 @@ import type { Store } from 'redux';
 import { createStore } from 'redux';
 import type { Logger } from 'myst-cli-utils';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
-import type { RuleId, ValidatedMystPlugin } from 'myst-common';
+import type { RuleId } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
@@ -15,7 +15,7 @@ import {
   findCurrentSiteAndLoad,
   reloadAllConfigsForCurrentSite,
 } from '../config.js';
-import { loadPlugins } from '../plugins.js';
+import { type ValidatedMystPlugin, loadPlugins } from '../plugins/index.js';
 import type { BuildWarning } from '../store/index.js';
 import { selectors } from '../store/index.js';
 import type { RootState } from '../store/reducers.js';

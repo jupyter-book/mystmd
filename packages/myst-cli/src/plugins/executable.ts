@@ -1,12 +1,7 @@
-import type { ISession } from './session/types.js';
-import {
-  type MystPlugin,
-  type DirectiveSpec,
-  type RoleSpec,
-  type TransformSpec,
-  type GenericNode,
-} from 'myst-common';
 import { spawn, spawnSync } from 'node:child_process';
+import type { ISession } from '../session/types.js';
+import type { DirectiveSpec, RoleSpec, GenericNode, } from 'myst-common';
+import type {MystPlugin, TransformSpec } from './types.js';
 
 type DirectiveJSONSpec = Omit<DirectiveSpec, 'run' | 'validate'>;
 type RoleJSONSpec = Omit<RoleSpec, 'run' | 'validate'>;

@@ -50,11 +50,6 @@ export type {
   DirectiveContext,
   RoleSpec,
   ParseTypes,
-  MystPlugin,
-  ValidatedMystPlugin,
-  PluginOptions,
-  PluginUtils,
-  TransformSpec,
   FrontmatterPart,
   FrontmatterParts,
 } from './types.js';

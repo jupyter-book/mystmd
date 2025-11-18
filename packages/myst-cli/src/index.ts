@@ -3,7 +3,7 @@ export * from './cli/index.js';
 export * from './config.js';
 export * from './init/index.js';
 export * from './frontmatter.js';
-export * from './plugins.js';
+export * from './plugins/index.js';
 export * from './process/index.js';
 export * from './project/index.js';
 export * from './session/index.js';

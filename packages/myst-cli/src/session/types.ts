@@ -1,6 +1,6 @@
 import type { CitationRenderer } from 'citation-js-utils';
 import type { Logger } from 'myst-cli-utils';
-import type { MystPlugin, RuleId, ValidatedMystPlugin } from 'myst-common';
+import type { RuleId } from 'myst-common';
 import type { ResolvedExternalReference } from 'myst-transforms';
 import type { MinifiedContentCache } from 'nbtx';
 import type { Store } from 'redux';
@@ -11,6 +11,7 @@ import type { PreRendererData, RendererData, SingleCitationRenderer } from '../t
 import type { SessionManager } from '@jupyterlab/services';
 import type MystTemplate from 'myst-templates';
 import type { PluginInfo } from 'myst-config';
+import type { MystPlugin, ValidatedMystPlugin } from '../plugins/index.js';
 
 export type ISession = {
   API_URL: string;

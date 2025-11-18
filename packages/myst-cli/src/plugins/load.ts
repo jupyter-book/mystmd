@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import type { ISession } from './session/types.js';
-import { RuleId, plural, type MystPlugin, type ValidatedMystPlugin } from 'myst-common';
+import { RuleId, plural } from 'myst-common';
 import type { PluginInfo } from 'myst-config';
-import { addWarningForFile } from './utils/addWarningForFile.js';
-import { loadExecutablePlugin } from './executablePlugin.js';
+import type { ISession } from '../session/index.js';
+import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { loadExecutablePlugin } from './executable.js';
+import type { MystPlugin, ValidatedMystPlugin } from './types.js';
 
 /**
  * Load user-defined plugin modules declared in the project frontmatter
