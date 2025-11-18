@@ -1,5 +1,15 @@
 # myst-directives
 
+## 1.6.1
+
+### Patch Changes
+
+- 1735db4: Add support for iframe title.
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-spec-ext@1.9.0
+  - myst-common@1.9.0
+
 ## 1.6.0
 
 ### Patch Changes
