@@ -31,5 +31,5 @@ runs:
       run: |
         npm install
         npm run build
-        npm link
+        npm run link
       shell: bash
