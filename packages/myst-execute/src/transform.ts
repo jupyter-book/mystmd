@@ -89,19 +89,18 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
 
   const kernelspec = opts.frontmatter.kernelspec;
   const executeConfig = opts.frontmatter.execute;
+  const executableNodes = getExecutableNodes(tree);
+  // If there are no executable nodes then just return
+  if (executableNodes.length === 0) {
+    return;
+  }
 
-  // We need the kernelspec to proceed
+  // Requre kernelspec otherwise Jupyter doesn't know what kernel to use
   if (kernelspec === undefined) {
     return fileError(
       vfile,
       `Notebook does not declare the necessary 'kernelspec' frontmatter key required for execution`,
     );
-  }
-
-  const executableNodes = getExecutableNodes(tree);
-  // Only do something if we have any nodes!
-  if (executableNodes.length === 0) {
-    return;
   }
 
   // See if we already cached this execution
