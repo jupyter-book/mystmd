@@ -51,13 +51,13 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
-      - uses: ./.github/actions/install
+      - uses: actions/setup-python@v5
         with:
-          node: '20'
+          python-version: '3.x'
       - name: Install docs dependencies
         run: |
-          cd docs
-          pip install -r requirements.txt
+          pip install mystmd
+          pip install -r docs/requirements.txt
       - name: Build docs
         run: |
           cd docs
