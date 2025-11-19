@@ -39,7 +39,27 @@ jobs:
         with:
           node: ${{ matrix.node }}
       - run: npm run test
-      # This is just an additional check to make sure the build passes with our docs
-      # Ideally we'd use `--strict` but this will be too brittle (e.g. if labels etc change).
-      - name: Build docs with execution
-        run: cd docs && myst build --html --execute
+  # This is just an additional check to make sure the build passes with our docs
+  # Ideally we'd use `--strict` but this will be too brittle (e.g. if labels etc change).    
+  docs:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    name: Running test docs build
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: ./.github/actions/install
+        with:
+          node: '20'
+      - name: Install docs dependencies
+        run: |
+          cd docs
+          pip install -r requirements.txt
+      - name: Build docs
+        run: |
+          cd docs
+          myst build --html --execute
+      
