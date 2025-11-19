@@ -59,7 +59,7 @@ jobs:
           node-version: 20.x
       - name: Install docs dependencies
         run: |
-          npm install
+          npm install -g
           pip install -r docs/requirements.txt
       - name: Build docs
         run: |
