@@ -39,8 +39,7 @@ jobs:
         with:
           node: ${{ matrix.node }}
       - run: npm run test
-  # This is just an additional check to make sure the build passes with our docs
-  # Ideally we'd use `--strict` but this will be too brittle (e.g. if labels etc change).    
+  # This is just an additional check to make sure the build passes with our docs     
   docs:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
@@ -65,5 +64,5 @@ jobs:
       - name: Build docs
         run: |
           cd docs
-          myst build --html --execute
+          myst build --html --execute --strict
       
