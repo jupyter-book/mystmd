@@ -39,3 +39,28 @@ jobs:
         with:
           node: ${{ matrix.node }}
       - run: npm run test
+  # This is just an additional check to make sure the build passes with our docs     
+  docs:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    name: Running test docs build
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install myst
+        uses: ./.github/actions/install
+        with:
+          node: "20.x"
+      - name: Install docs dependencies
+        run: |
+          pip install -r docs/requirements.txt
+      - name: Build docs
+        run: |
+          cd docs
+          myst build --html --execute
