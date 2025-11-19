@@ -59,10 +59,8 @@ jobs:
           node-version: 20.x
       - name: Install docs dependencies
         run: |
-          npm install -g
           pip install -r docs/requirements.txt
       - name: Build docs
         run: |
           cd docs
           myst build --html --execute --strict
-      
