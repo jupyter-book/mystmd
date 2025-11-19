@@ -124,6 +124,4 @@ export const RULE_DEFAULT_SEVERITY: Record<RuleId, 'error' | 'warn'> = {
   [RuleId.containerChildrenValid]: 'error', // Uses both error (5×) and warn (1×); fileError, fileWarn in packages/myst-transforms/src/container...
   // File rules
   [RuleId.mystJsonValid]: 'error', // Uses both error (2×) and warn (2×); fileError, fileWarn, errorLogFn, warningLogFn in packages/mys...
-  [RuleId.codeCellExecutes]: 'error', // fileError in packages/myst-execute/src/execute.ts
-  [RuleId.inlineExpressionExecutes]: 'error', // fileError in packages/myst-execute/src/execute.ts
 };

@@ -101,7 +101,7 @@ Here again, see [notebook cell tags](#notebook-cell-tags) for more details on ho
 
 ## Skip entire notebooks
 
-You may wish to disable execution for certain notebooks. This can be done by setting the `execute.skip` frontmatter option to `true`, e.g.
+You may wish to disable execution for certain notebooks. This can be done by setting the top-level `skip_execution` frontmatter option to `true`, e.g.
 
 ````markdown
 ---
@@ -109,8 +109,7 @@ kernelspec:
   name: python3
   display_name: Python 3
 
-execute:
-  skip: true
+skip_execution: true
 ---
 
 ```{code-cell}

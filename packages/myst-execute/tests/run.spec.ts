@@ -4,11 +4,11 @@ import path from 'node:path';
 import yaml from 'js-yaml';
 import type { ICache } from '../src';
 import { kernelExecutionTransform, launchJupyterServer } from '../src';
-import type { ExecutionResult } from '../src/types.js';
-import type { GenericParent } from 'myst-common';
+import type { GenericParent, IExpressionResult } from 'myst-common';
 import { VFile } from 'vfile';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
+import type { IOutput } from '@jupyterlab/nbformat';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -30,6 +30,13 @@ type TestCases = {
   cases: TestCase[];
 };
 
+// Don't store or retrieve anything from cache
+const noOpCache: ICache<(IExpressionResult | IOutput[])[]> = {
+  test: (key: string) => false,
+  get: (key: string) => undefined,
+  set: (key: string, value: any) => {},
+};
+
 const only = '';
 
 const casesList: TestCases[] = fs
@@ -39,13 +46,6 @@ const casesList: TestCases[] = fs
     const content = fs.readFileSync(path.join(__dirname, file), { encoding: 'utf-8' });
     return yaml.load(content) as TestCases;
   });
-
-// Don't store or retrieve anything from cache
-const noOpCache: ICache<ExecutionResult[]> = {
-  test: (key: string) => false,
-  get: (key: string) => undefined,
-  set: (key: string, value: any) => {},
-};
 
 class SessionManagerFactory {
   _sessionManager: SessionManager | undefined;
@@ -71,11 +71,11 @@ casesList.forEach(({ title, cases }) => {
   const filtered = cases.filter((c) => !only || c.title === only);
   if (filtered.length === 0) return;
   describe(title, () => {
-    test.each(filtered.map((c, index): [string, TestCase, number] => [c.title, c, index]))(
+    test.each(filtered.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
-      async (_, { before, after, throws }, index) => {
+      async (_, { before, after, throws }) => {
         const file = new VFile();
-        file.path = path.join(__dirname, `notebook-${index}.ipynb`);
+        file.path = path.join(__dirname, 'notebook.ipynb');
 
         await kernelExecutionTransform(before, file, {
           basePath: __dirname,
