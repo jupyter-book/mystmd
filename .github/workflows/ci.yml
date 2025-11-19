@@ -50,10 +50,7 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install myst
+      - name: Install node, Python, and myst
         uses: ./.github/actions/install
         with:
           node: "20.x"
@@ -63,4 +60,4 @@ jobs:
       - name: Build docs
         run: |
           cd docs
-          myst build --html --execute --strict
+          npx myst build --html --execute --strict
