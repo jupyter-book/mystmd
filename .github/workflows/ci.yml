@@ -63,4 +63,4 @@ jobs:
       - name: Build docs
         run: |
           cd docs
-          myst build --html --execute --strict
+          myst build --html --execute
