@@ -241,7 +241,16 @@ options:
       - Curvenote
 ```
 
-The options can be of `type:` `string`, `boolean` or `choice`. For all of your variable names, prefer `lowercase_underscores` for the naming convention. You can also provide a `title` for any `part` or `option`.
+The options can be of `type:` `string`, `boolean`, `choice`, or `file`. You can also provide a `title` for any `part` or `option`.
+
+If you use dashes in option names (i.e., `my-option` instead of `my_option`), you have to access them within brackets in your template:
+
+```
+[#- if options['my-option'] -#]
+#show: somefunction.with(
+  option: "[-options['my-option']-]"
+)
+```
 
 ## Content, Imports and Packages
 
