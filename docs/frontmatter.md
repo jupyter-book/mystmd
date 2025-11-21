@@ -674,7 +674,7 @@ issue:
   doi: 10.62329/MYISSUE
 ```
 
-These fields provide a more complete superset of publication metadata than the ["biblio" object defined by OpenAlex API](https://docs.openalex.org/about-the-data/venue):
+These fields provide a more complete superset of publication metadata than the ["biblio" object defined by OpenAlex API](https://docs.openalex.org/api-entities/works/work-object#biblio):
 
 > Old-timey bibliographic info for this work. This is mostly useful only in citation/reference contexts. These are all strings because sometimes you'll get fun values like "Spring" and "Inside cover."
 
