@@ -553,3 +553,19 @@ cases:
       - path: hidden-pages/_build/html/index.html
       - path: hidden-pages/_build/html/hidden/index.html
       - path: hidden-pages/_build/html/not-hidden/index.html
+  - title: Serial execution
+    cwd: serial-execution
+    command: myst build --site --execute --execute-parallel 1
+    env:
+      MYST_TEST_SLEEP_MS: 4000
+      MYST_TEST_DELAY_MS: 2000
+    outputs:
+      - path: serial-execution/stop-first
+      - path: serial-execution/stop-second
+  - title: Concurrent execution
+    cwd: concurrent-execution
+    command: myst build --site --execute --execute-parallel 2
+    timeout: 5000
+    outputs:
+      - path: concurrent-execution/output-first.txt
+      - path: concurrent-execution/output-second.txt
