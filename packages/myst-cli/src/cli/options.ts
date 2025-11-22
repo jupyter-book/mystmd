@@ -60,6 +60,15 @@ export function makeExecuteOption(description: string) {
   return new Option('--execute', description).default(false);
 }
 
+export function makeExecuteConcurrencyOption() {
+  return new Option(
+    '--execute-concurrency <n>',
+    'Maximum number of notebooks to execute concurrently (default: 5)',
+  )
+    .argParser(parseInt)
+    .default(5);
+}
+
 export function makeAllOption(description: string) {
   return new Option('-a, --all', description).default(false);
 }
