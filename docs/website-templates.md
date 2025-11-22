@@ -96,7 +96,7 @@ site:
 
 ### Page Options
 
-Any option from `site.options` can also be set per-page in the frontmatter under the `site` key.
+Any option from `site.options` can be overridden per-page in the frontmatter under the `site` key.
 Note that the nesting is different: options are placed directly under `site:` in page frontmatter, not under `site.options:`.
 
 ```{code-block} yaml
