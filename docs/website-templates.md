@@ -96,14 +96,15 @@ site:
 
 ### Page Options
 
-Depending on the option, these can also be controlled in the frontmatter on each page under the `site` key.
+Any option from `site.options` can also be set per-page in the frontmatter under the `site` key.
+Note that the nesting is different: options are placed directly under `site:` in page frontmatter, not under `site.options:`.
 
 ```{code-block} yaml
 :filename: my-page.md
 ---
 ...
 site:
-  hide_toc: true
+  hide_toc: true  # This is site.options.hide_toc in myst.yml
 ---
 ```
 
