@@ -144,7 +144,7 @@ project:
             - file: deployment-github-pages.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
-            - file: deployment-httpd.md
+            - file: deployment-webserver.md
         - file: website-landing-pages.md
 
         # - file: publishing.md

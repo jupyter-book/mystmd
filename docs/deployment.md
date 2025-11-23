@@ -138,9 +138,9 @@ Deploy as a static site to GitHub pages using an action.
 Deploy to Netlify as static HTML, and pull-request previews.
 :::
 
-:::{card} Apache HTTPD
-:link: ./deployment-httpd.md
-Deploy on a web server that runs [Apache httpd](https://httpd.apache.org).
+:::{card} Web server
+:link: ./deployment-webserver.md
+Deploy on a web server, for example [Apache httpd](https://httpd.apache.org).
 :::
 
 % TODO: ReadTheDocs
