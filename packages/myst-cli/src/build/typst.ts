@@ -68,9 +68,11 @@ export function mdastToTypst(
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml | null,
   printGlossaries: boolean,
+  filesPath?: string,
 ) {
   const pipe = unified().use(mystToTypst, {
     math: frontmatter?.math,
+    filesPath,
     // citestyle: templateYml?.style?.citation,
     // bibliography: templateYml?.style?.bibliography,
     // printGlossaries,
@@ -90,6 +92,7 @@ export function extractTypstPart(
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
+  filesPath?: string,
 ): TypstResult | TypstResult[] | undefined {
   const part = extractPart(mdast, partDefinition.id, {
     frontmatterParts: resolveFrontmatterParts(session, frontmatter),
@@ -151,6 +154,7 @@ export async function localArticleToTypstRaw(
   const { articles, output } = templateOptions;
   const { projectPath, extraLinkTransformers, execute } = opts ?? {};
   const fileArticles = articlesWithFile(articles);
+  const filesPath = path.join(path.dirname(output), 'files'); // define files path
   const content = await getFileContent(
     session,
     fileArticles.map((article) => article.file),
@@ -170,12 +174,12 @@ export async function localArticleToTypstRaw(
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
       await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
-        imageWriteFolder: path.join(path.dirname(output), 'files'),
+        imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
         simplifyFigures: true,
       });
-      return mdastToTypst(session, mdast, references, frontmatter, null, false);
+      return mdastToTypst(session, mdast, references, frontmatter, null, false, filesPath);
     }),
   );
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
@@ -279,6 +283,7 @@ export async function localArticleToTypstTemplated(
         def,
         projectFrontmatter,
         templateYml,
+        filesPath
       );
       if (Array.isArray(part)) {
         // This is the case if def.as_list is true
@@ -303,7 +308,7 @@ export async function localArticleToTypstTemplated(
       });
 
       partDefinitions.forEach((def) => {
-        const part = extractTypstPart(session, mdast, references, def, frontmatter, templateYml);
+        const part = extractTypstPart(session, mdast, references, def, frontmatter, templateYml, filesPath);
         if (part && parts[def.id]) {
           addWarningForFile(
             session,
@@ -323,7 +328,7 @@ export async function localArticleToTypstTemplated(
           parts[def.id] = part?.value ?? '';
         }
       });
-      const result = mdastToTypst(session, mdast, references, frontmatter, templateYml, true);
+      const result = mdastToTypst(session, mdast, references, frontmatter, templateYml, true, filesPath);
       collected = mergeTypstTemplateImports(collected, result);
       return result;
     }),

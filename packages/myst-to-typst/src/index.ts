@@ -23,6 +23,7 @@ import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
 import type { Admonition, Code, CrossReference, FootnoteDefinition, TabItem } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
+import { mermaidHandler } from './mermaid.js';
 import { proofHandlers } from './proofs.js';
 
 export type { TypstResult } from './types.js';
@@ -318,6 +319,7 @@ const handlers: Record<string, Handler> = {
   table: tableHandler,
   tableRow: tableRowHandler,
   tableCell: tableCellHandler,
+  mermaid: mermaidHandler,
   image(node, state) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;

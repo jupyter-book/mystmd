@@ -20,6 +20,7 @@ export type SimplifiedMathPlugins = Record<string, string>;
 export type Options = {
   handlers?: Record<string, Handler>;
   math?: MathPlugins;
+  filesPath?: string; // Path to the files folder for generated images
 };
 
 export type StateData = {
