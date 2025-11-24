@@ -148,6 +148,22 @@ The landing page inherits its TOC title from `title` field of [the project forma
 Otherwise it will be the title or the top heading of the page.
 :::
 
+### Document titles
+
+The title of the document in the table of contents is drawn from the
+[document frontmatter](frontmatter#in-a-myst-markdown-file) or the first heading
+in the document.
+The [`short_title`](frontmatter#available-frontmatter-fields) field can be used
+to specify a shorter title for navigation elements of the rendered site.
+For example:
+
+```{code} yaml
+---
+title: On the air speed velocity of an unladen African swallow
+short_title: Airspeed Velocity
+---
+```
+
 (hidden-in-toc)=
 
 ## Hiding pages from the Table of Contents
