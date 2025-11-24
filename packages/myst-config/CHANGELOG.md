@@ -1,5 +1,13 @@
 # myst-config
 
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies [a742dda]
+  - myst-common@1.9.1
+  - myst-frontmatter@1.9.1
+
 ## 1.9.0
 
 ### Patch Changes
