@@ -1,7 +1,7 @@
 {
   "name": "myst-migrate",
   "sideEffects": false,
-  "version": "1.6.3",
+  "version": "1.6.6",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",

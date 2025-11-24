@@ -1,5 +1,21 @@
 # myst-config
 
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies [30acc57]
+  - myst-frontmatter@1.9.0
+  - myst-common@1.9.0
+
+## 1.8.4
+
+### Patch Changes
+
+- eba4f34: Favicon on site option is under options.
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+
 ## 1.8.3
 
 ### Patch Changes

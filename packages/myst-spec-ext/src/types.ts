@@ -129,6 +129,7 @@ export type Iframe = Target & {
   width?: string;
   align?: Image['align'];
   class?: Image['class'];
+  title?: string;
   children?: Image[];
 };
 
@@ -261,6 +262,7 @@ export type Output = Node &
     id?: string;
     data?: any[]; // MinifiedOutput[]
     visibility?: Visibility;
+    scroll?: boolean;
     children?: (FlowContent | ListContent | PhrasingContent)[];
   };
 

@@ -1,11 +1,29 @@
 # myst-transforms
 
+## 1.3.42
+
+### Patch Changes
+
+- c7af16c: Add mhchem extension
+- 1735db4: Add support for iframe title.
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-spec-ext@1.9.0
+  - myst-frontmatter@1.9.0
+  - myst-common@1.9.0
+  - myst-to-html@1.6.1
+
 ## 1.3.41
 
 ### Patch Changes
 
+- aab5f02: Handle undefined URLs in formatting link text
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
 - Updated dependencies [cd8ee79]
   - myst-to-html@1.6.0
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+  - myst-spec-ext@1.8.4
 
 ## 1.3.40
 

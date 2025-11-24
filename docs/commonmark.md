@@ -137,6 +137,7 @@ any _text_
 ### Valid HTML
 
 Any valid HTML may also be included in a MyST document and rendered to HTML. However, you must set the option `allowDangerousHtml: true` in the MyST parser.
+This option needs to be set internally in the parser, and is not exposed to the user as a command line flag or `myst.yml` setting.
 
 ## Inline Markup
 

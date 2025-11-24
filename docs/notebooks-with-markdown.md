@@ -238,3 +238,17 @@ The following command will convert a MyST Markdown file `example.md` to the `.ip
 ```shell
 $ jupytext --from md:myst --to notebook example.md
 ```
+
+(execute-config)=
+## Control of execution
+
+The top-level `execute` page frontmatter block accepts several properties for controlling build-time execution of the given page:
+
+`skip`
+: Skip execution of this notebook, even though it has a kernelspec.
+
+`depends_on_env`
+: Define the environment variables upon which this notebook depends. Changes to these variables will invalidate the execution cache.
+
+`cache`
+: Disable the execution cache for this notebook.

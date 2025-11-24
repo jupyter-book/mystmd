@@ -1,5 +1,16 @@
 # myst-parser
 
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies [1735db4]
+- Updated dependencies [6fe5960]
+- Updated dependencies [30acc57]
+  - myst-directives@1.6.1
+  - myst-roles@1.6.1
+  - myst-common@1.9.0
+
 ## 1.6.0
 
 ### Minor Changes
@@ -8,9 +19,11 @@
 
 ### Patch Changes
 
+- Updated dependencies [e293e72]
 - Updated dependencies [cd8ee79]
-  - markdown-it-myst@1.0.13
   - myst-roles@1.6.0
+  - markdown-it-myst@1.0.13
+  - myst-common@1.8.4
   - myst-directives@1.6.0
 
 ## 1.5.17

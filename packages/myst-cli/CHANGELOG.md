@@ -1,5 +1,44 @@
 # myst-cli
 
+## 1.6.6
+
+## 1.6.5
+
+### Patch Changes
+
+- aebfa8c: Enable `port` option for myst build
+- 30acc57: Add cache control for execution
+- e8b356a: Add message for using Jupyter Book < 1 to upgrade
+- Updated dependencies [c7af16c]
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-transforms@1.3.42
+  - myst-spec-ext@1.9.0
+  - myst-frontmatter@1.9.0
+  - myst-execute@0.3.0
+  - myst-common@1.9.0
+  - myst-config@1.9.0
+  - myst-parser@1.6.1
+
+## 1.6.4
+
+### Patch Changes
+
+- 0ddd860: Log debug errors on watch
+- d348d04: Update relative path backslashes with unix-style paths
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
+- eba4f34: Favicon on site option is under options.
+- Updated dependencies [aab5f02]
+- Updated dependencies [4fb0d72]
+- Updated dependencies [eba4f34]
+- Updated dependencies [cd8ee79]
+  - myst-transforms@1.3.41
+  - myst-config@1.8.4
+  - myst-parser@1.6.0
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+  - myst-spec-ext@1.8.4
+
 ## 1.6.3
 
 ### Patch Changes

@@ -104,6 +104,9 @@ export enum RuleId {
   containerChildrenValid = 'container-children-valid',
   // File rules
   mystJsonValid = 'myst-json-valid',
+  // Execution
+  codeCellExecutes = 'code-cell-executes',
+  inlineExpressionExecutes = 'inline-expression-executes',
 }
 
 /**
@@ -221,4 +224,6 @@ export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
   [RuleId.containerChildrenValid]: 'Container has valid child elements',
   // File rules
   [RuleId.mystJsonValid]: 'MyST JSON file is valid',
+  [RuleId.codeCellExecutes]: 'Code cell executes without errors',
+  [RuleId.inlineExpressionExecutes]: 'Inline expression evaluates without errors',
 };

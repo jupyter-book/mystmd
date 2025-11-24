@@ -1,5 +1,13 @@
 # myst-frontmatter
 
+## 1.9.0
+
+### Minor Changes
+
+- 30acc57: Add cache control for execution
+
+## 1.8.4
+
 ## 1.8.3
 
 ### Patch Changes

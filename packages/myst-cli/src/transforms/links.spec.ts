@@ -1,6 +1,7 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
-import { fileFromRelativePath, checkLink } from './links';
+import path from 'path';
+import { fileFromRelativePath, fileFromSourceFolder, getSourceFolder, checkLink } from './links';
 import type { ISession } from '../session/types.js';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
@@ -159,5 +160,88 @@ describe('checkLink', () => {
     // (even if it fails, it shouldn't have the skipped flag)
     expect(result.skipped).toBeUndefined();
     expect(result.url).toBe('https://github.com/user/repo');
+  });
+});
+
+describe('getSourceFolder', () => {
+  const projectFolder = '/project';
+  const sourceFile = '/project/docs/readme.md';
+
+  it('returns project folder when link starts with path separator', () => {
+    const result = getSourceFolder('/images/pic.png', sourceFile, projectFolder);
+    expect(result).toBe(projectFolder);
+  });
+
+  it('returns source file directory when link is relative', () => {
+    const result = getSourceFolder('images/pic.png', sourceFile, projectFolder);
+    expect(result).toBe(path.dirname(sourceFile));
+  });
+
+  it('handles nested source files', () => {
+    const deeplyNested = '/project/docs/notes/intro.md';
+    const result = getSourceFolder('figure.png', deeplyNested, projectFolder);
+    expect(result).toBe(path.dirname(deeplyNested));
+  });
+});
+
+describe('fileFromSourceFolder', () => {
+  it('returns undefined for non-existent file', () => {
+    memfs.vol.fromJSON({});
+    const result = fileFromSourceFolder('missing.md');
+    expect(result).toBeUndefined();
+  });
+
+  it('returns undefined if path is a directory', () => {
+    memfs.vol.fromJSON({ 'folder/': null });
+    const result = fileFromSourceFolder('folder');
+    expect(result).toBeUndefined();
+  });
+
+  it('resolves relative path from folder', () => {
+    memfs.vol.fromJSON({ 'src/readme.md': '' });
+    const result = fileFromSourceFolder('readme.md', 'src');
+    expect(result).toMatch(/src\/readme\.md$/);
+  });
+
+  it('resolves missing extension to .md if available', () => {
+    memfs.vol.fromJSON({ 'docs/readme.md': '' });
+    const result = fileFromSourceFolder('readme', 'docs');
+    expect(result).toMatch(/docs\/readme\.md$/);
+  });
+
+  it('resolves missing extension to .ipynb if .md not available', () => {
+    memfs.vol.fromJSON({ 'docs/readme.ipynb': '' });
+    const result = fileFromSourceFolder('readme', 'docs');
+    expect(result).toMatch(/docs\/readme\.ipynb$/);
+  });
+
+  it('returns undefined if neither .md nor .ipynb exist', () => {
+    memfs.vol.fromJSON({});
+    const result = fileFromSourceFolder('missing', 'docs');
+    expect(result).toBeUndefined();
+  });
+
+  it('preserves hash fragments', () => {
+    memfs.vol.fromJSON({ 'docs/readme.md': '' });
+    const result = fileFromSourceFolder('readme#section-2', 'docs');
+    expect(result).toMatch(/docs\/readme\.md#section-2$/);
+  });
+
+  it('decodes URI components before lookup', () => {
+    memfs.vol.fromJSON({ 'docs/Joint EM inversion.ipynb': '' });
+    const result = fileFromSourceFolder('Joint%20EM%20inversion', 'docs');
+    expect(result).toMatch(/docs\/Joint EM inversion\.ipynb$/);
+  });
+
+  it('resolves absolute path correctly', () => {
+    memfs.vol.fromJSON({ '/project/docs/readme.md': '' });
+    const result = fileFromSourceFolder('/project/docs/readme.md');
+    expect(result).toBe('/project/docs/readme.md');
+  });
+
+  it('handles nested relative path resolution', () => {
+    memfs.vol.fromJSON({ 'project/docs/sub/file.md': '' });
+    const result = fileFromSourceFolder('../docs/sub/file', 'project/notes');
+    expect(result).toMatch(/project\/docs\/sub\/file\.md$/);
   });
 });

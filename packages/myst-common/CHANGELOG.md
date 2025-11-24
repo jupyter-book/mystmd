@@ -1,5 +1,19 @@
 # myst-common
 
+## 1.9.0
+
+### Patch Changes
+
+- 30acc57: Add cache control for execution
+- Updated dependencies [30acc57]
+  - myst-frontmatter@1.9.0
+
+## 1.8.4
+
+### Patch Changes
+
+- myst-frontmatter@1.8.4
+
 ## 1.8.3
 
 ### Patch Changes

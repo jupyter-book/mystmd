@@ -222,7 +222,7 @@ site:
   domains: []
 ```
 :::{note}
-As this is a rapidly-evolving project, the actual generated `myst.yaml` file that you will see may look a bit different.
+As this is a rapidly-evolving project, the actual generated `myst.yml` file that you will see may look a bit different.
 :::
 
 There are two important parts to the `myst.yml`:

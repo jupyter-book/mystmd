@@ -26,7 +26,7 @@ import { watch } from '../store/reducers.js';
 import { castSession } from '../session/cache.js';
 import type { MystData } from './crossReferences.js';
 import { fetchMystLinkData, fetchMystXRefData, nodesFromMystXRefData } from './crossReferences.js';
-import { fileFromRelativePath } from './links.js';
+import { fileFromSourceFolder, getSourceFolder } from './links.js';
 
 function mutateEmbedNode(
   node: Embed,
@@ -199,7 +199,8 @@ export async function embedTransform(
       let hash = label;
       let linkFile: string | undefined;
       if (label.includes('#')) {
-        const linkFileWithTarget = fileFromRelativePath(label, file);
+        const sourceFileFolder = getSourceFolder(label, file, session.sourcePath());
+        const linkFileWithTarget = fileFromSourceFolder(label, sourceFileFolder);
         if (!linkFileWithTarget) return;
         linkFile = linkFileWithTarget.split('#')[0];
         hash = linkFileWithTarget.slice(linkFile.length + 1);

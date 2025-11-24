@@ -130,6 +130,7 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       const attrs = addClassAndIdentifier(node);
       attrs.src = String(node.properties.src || '');
       attrs.width = '100%';
+      if (node.properties.title) attrs.title = node.properties.title;
       return h(node, 'iframe', attrs);
     },
     figure(h: H, node: any) {
