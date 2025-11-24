@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+
 ## 1.9.0
 
 ### Patch Changes
