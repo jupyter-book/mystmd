@@ -158,7 +158,7 @@ The [`short_title`](frontmatter#available-frontmatter-fields) field can be used
 to specify a shorter title for navigation elements of the rendered site.
 For example:
 
-```{code} yaml
+```yaml
 ---
 title: On the airspeed velocity of an unladen African swallow
 short_title: Airspeed Velocity
