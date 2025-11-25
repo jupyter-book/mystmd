@@ -9,7 +9,7 @@ import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { castSession } from '../../session/cache.js';
 
 const DEFAULT_TEMPLATE = 'book-theme';
-const DEFAULT_INSTALL_COMMAND = 'npm install';
+const DEFAULT_INSTALL_COMMAND = 'npm ci';
 
 export async function getSiteTemplate(
   session: ISession,
