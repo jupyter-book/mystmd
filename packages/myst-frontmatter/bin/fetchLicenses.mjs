@@ -1,8 +1,8 @@
 import fs from 'fs';
-import { fetch } from 'undici';
+import { fetch as fetch as nodeFetch } from 'undici';
 
 (async () => {
-  const data = await (await fetch('https://spdx.org/licenses/licenses.json')).json();
+  const data = await (await fetch as nodeFetch('https://spdx.org/licenses/licenses.json')).json();
   fs.writeFileSync(
     'licenses.json',
     JSON.stringify(

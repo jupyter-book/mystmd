@@ -1,7 +1,7 @@
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import type { Logger } from 'myst-cli-utils';
 import type { ISession } from './types.js';
-import { fetch } from 'undici';
+import { fetch as nodeFetch } from 'undici';
 import type { RequestInfo, RequestInit, Response } from 'undici';
 
 export class Session implements ISession {
@@ -12,7 +12,7 @@ export class Session implements ISession {
   }
 
   async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
-    const resp = await fetch(url, init);
+    const resp = await nodeFetch(url, init);
     return resp;
   }
 }
