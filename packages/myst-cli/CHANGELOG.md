@@ -1,5 +1,25 @@
 # myst-cli
 
+## 1.6.6
+
+## 1.6.5
+
+### Patch Changes
+
+- aebfa8c: Enable `port` option for myst build
+- 30acc57: Add cache control for execution
+- e8b356a: Add message for using Jupyter Book < 1 to upgrade
+- Updated dependencies [c7af16c]
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-transforms@1.3.42
+  - myst-spec-ext@1.9.0
+  - myst-frontmatter@1.9.0
+  - myst-execute@0.3.0
+  - myst-common@1.9.0
+  - myst-config@1.9.0
+  - myst-parser@1.6.1
+
 ## 1.6.4
 
 ### Patch Changes

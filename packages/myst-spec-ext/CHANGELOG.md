@@ -1,5 +1,11 @@
 # myst-spec-ext
 
+## 1.9.0
+
+### Patch Changes
+
+- 1735db4: Add support for iframe title.
+
 ## 1.8.4
 
 ## 1.8.3

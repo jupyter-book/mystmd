@@ -200,6 +200,9 @@ export function propagateBlockDataToCode(session: ISession, vfile: VFile, mdast:
         case NotebookCellTags.removeOutput:
           if (outputNode) outputNode.visibility = 'remove';
           break;
+        case NotebookCellTags.scrollOutput:
+          if (outputNode) outputNode.scroll = true;
+          break;
         default:
           session.log.debug(`tag '${tag}' is not valid in code-cell tags'`);
       }

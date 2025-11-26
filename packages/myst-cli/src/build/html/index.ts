@@ -56,7 +56,7 @@ export async function currentSiteRoutes(
           };
         }),
         // Download other assets
-        ...['robots.txt', 'myst-theme.css'].map((asset) => ({
+        ...['robots.txt', 'myst-theme.css', 'sitemap.xml', 'sitemap_style.xsl'].map((asset) => ({
           url: `${host}/${asset}`,
           path: asset,
         })),

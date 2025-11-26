@@ -1,5 +1,22 @@
 # myst-execute
 
+## 0.3.1
+
+### Patch Changes
+
+- a702766: Fix execution bug: no need for kernelspec if no executable content
+
+## 0.3.0
+
+### Minor Changes
+
+- 30acc57: Add cache control for execution
+
+### Patch Changes
+
+- Updated dependencies [30acc57]
+  - myst-common@1.9.0
+
 ## 0.2.0
 
 ### Minor Changes

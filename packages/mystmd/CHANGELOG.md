@@ -1,5 +1,13 @@
 # mystmd
 
+## 1.6.6
+
+### Patch Changes
+
+- 788e12f: Pull in latest myst-execute
+
+## 1.6.5
+
 ## 1.6.4
 
 ## 1.6.3
