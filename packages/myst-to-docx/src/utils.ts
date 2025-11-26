@@ -89,7 +89,8 @@ export function getImageWidth(width?: number | string, maxWidth = MAX_DOCX_IMAGE
 async function getImageDimensions(
   file: Blob | Buffer,
 ): Promise<{ width: number; height: number } | undefined> {
-  if ((globalThis as any).Image === undefined) {
+  // @ts-expect-error Image is not defined
+  if (typeof Image === 'undefined') {
     return Promise.resolve(undefined);
   }
   return new Promise((resolve, reject) => {
