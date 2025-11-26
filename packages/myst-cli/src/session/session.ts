@@ -26,14 +26,7 @@ import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/ser
 import type { JupyterServerSettings } from 'myst-execute';
 import { launchJupyterServer } from 'myst-execute';
 import type { PluginInfo } from 'myst-config';
-import {
-  fetch as fetchImpl,
-  Agent,
-  interceptors,
-  // @ts-expect-error cacheStores is not exported in type decl
-  cacheStores,
-  ProxyAgent,
-} from 'undici';
+import { fetch as fetchImpl, Agent, ProxyAgent } from 'undici';
 import type { RequestInfo, RequestInit, Response, Dispatcher } from 'undici';
 
 const CONFIG_FILES = ['myst.yml'];
@@ -79,44 +72,6 @@ export function logUpdateAvailable({
   );
 }
 
-function createForceCacheInterceptor(maxAge: number) {
-  return (dispatch: any) => {
-    return (opt: any, handler: any) => {
-      const myHandler = {
-        onRequestStart: handler.onRequestStart.bind(handler),
-        onResponseError: handler.onResponseError.bind(handler),
-        onResponseData: handler.onResponseData.bind(handler),
-        onResponseEnd: handler.onResponseEnd.bind(handler),
-        onResponseStart: (controller: any, statusCode: any, headers: any, statusMessage: any) => {
-          if ('cache-control' in headers) {
-            const directives = headers['cache-control']
-              .split(/,\s*/)
-              .map((directive: string) => {
-                const [name] = directive.split('=', 1);
-                switch (name) {
-                  case 'max-age':
-                    return `max-age=${maxAge}`;
-                  case 'must-revalidate':
-                  case 'no-cache':
-                    return null;
-                  default:
-                    return directive;
-                }
-              })
-              .filter((x: any) => x);
-
-            headers['cache-control'] = directives.join(', ');
-            console.log(headers);
-          }
-          handler.onResponseStart(controller, statusCode, headers, statusMessage);
-        },
-      };
-
-      return dispatch(opt, myHandler);
-    };
-  };
-}
-
 export class Session implements ISession {
   API_URL: string;
   configFiles: string[];
@@ -145,10 +100,7 @@ export class Session implements ISession {
     if (proxyUrl !== undefined) {
       this.log.debug(`Using HTTPS proxy ${proxyUrl}`);
     }
-    const cacheDispatchers = this.createCacheDispatchers();
-    this.dispatcher = (proxyUrl ? new ProxyAgent(proxyUrl) : new Agent()).compose(
-      ...cacheDispatchers,
-    );
+    this.dispatcher = proxyUrl ? new ProxyAgent(proxyUrl) : new Agent();
     this.localDispatcher = new Agent();
 
     this.store = createStore(rootReducer);
@@ -158,44 +110,6 @@ export class Session implements ISession {
         this._latestVersion = latest;
       })
       .catch(() => null);
-  }
-
-  createCacheDispatchers() {
-    // Do we want to impose a TTL for responses that do not set maxAge?
-    const cacheByDefault = process.env.MYST_HTTP_CACHE_DEFAULT_MAX_AGE
-      ? parseInt(process.env.MYST_HTTP_CACHE_DEFAULT_MAX_AGE)
-      : undefined;
-    // Do we want to force explicitly non-cacheable items to cache?
-    const forceCache = process.env.MYST_HTTP_CACHE_FORCE
-      ? ['yes', '1', 'true', 'on'].includes(process.env.MYST_HTTP_CACHE_FORCE.toLowerCase())
-      : undefined;
-    // Where, if defined, should the SQLite store be put?
-    const storeLocation = process.env.MYST_HTTP_CACHE_DB;
-
-    // Create an HTTP cache store. Prefer SQLite if we can write to disk.
-    const makeStore = () => {
-      if (storeLocation !== undefined) {
-        try {
-          const store = new cacheStores.SqliteCacheStore({ location: storeLocation });
-          this.log.debug('Using SQLite store for HTTP caching');
-          return store;
-        } catch (e) {
-          this.log.error('Failed to create Sqlite cache', e);
-        }
-      }
-      this.log.debug('Using memory store for HTTP caching');
-      return new cacheStores.MemoryCacheStore();
-    };
-
-    const store = makeStore();
-    // Define an HTTP cache that intercepts HTTP GET and HTTP HEAD requests
-    const cache = interceptors.cache({ store, methods: ['GET', 'HEAD'], cacheByDefault });
-    if (cacheByDefault !== undefined && forceCache !== undefined) {
-      const rewrite = createForceCacheInterceptor(cacheByDefault);
-      return [rewrite, cache];
-    } else {
-      return [cache];
-    }
   }
 
   showUpgradeNotice() {
