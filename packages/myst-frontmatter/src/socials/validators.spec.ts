@@ -226,6 +226,16 @@ describe('validateGitHub', () => {
     expect(result).toBe('https://github.com/orgs/org');
   });
 
+  it('should validate a valid GitHub Enterprise org URL', ({ opts }) => {
+    const result = validateGitHub('https://github.enterprise.com/orgs/myorg', opts);
+    expect(result).toBe('https://github.enterprise.com/orgs/myorg');
+  });
+
+  it('should validate a GitHub Enterprise URL with trailing slash', ({ opts }) => {
+    const result = validateGitHub('https://gh.enterprise.com/team/project/', opts);
+    expect(result).toBe('https://gh.enterprise.com/team/project/');
+  });
+
   it('should return an error for an invalid GitHub username', ({ opts }) => {
     const result = validateGitHub('@asdfg#', opts);
     expect(result).toBeUndefined();
