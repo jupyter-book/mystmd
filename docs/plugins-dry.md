@@ -15,8 +15,8 @@ appearance of repetitive elements by making a change in only one place!
 
 ## An example of a repetitive element
 
-If you're writing a tutorial, you may want to use
-the Diátaxis principle ["point out what the learner should notice"](https://diataxis.fr/tutorials/#point-out-what-the-learner-should-notice)
+If you're writing a tutorial, you may want to use the Diátaxis principle
+["point out what the learner should notice"](https://diataxis.fr/tutorials/#point-out-what-the-learner-should-notice)
 many times throughout your tutorial document.
 
 For example:
