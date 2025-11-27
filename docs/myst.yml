@@ -164,6 +164,7 @@ project:
         - title: "Use cases"
           children:
             - file: plugins-ast.md
+            - file: plugins-dry.md
     - title: Reference
       children:
         - file: install-node.md
