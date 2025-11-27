@@ -62,12 +62,11 @@ const myDirective = {
     const ast = ctx.parseMyst(`
 :::{card} ${data.arg}
 ${data.body}
-::: `);
+:::`);
     return ast.children[0];
   },
 };
 ```
-
 :::
 
 ## Use the MyST Sandbox to identify card AST structure
@@ -122,5 +121,4 @@ The output of the sandbox AST generator can be seen in @code:ast. The highlighte
   ]
 }
 ```
-
 :::
