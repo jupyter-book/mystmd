@@ -29,7 +29,7 @@ const myDirective = {
 `ctx.parseMyst` returns a `root` node, which contains the parsed MyST.
 This function takes the first child of the root node, which is usually better for inserting into the document.
 
-You can also use this to manually construct MyST outputs using the arguments of your directive as data. For example:
+You can also use this to manually construct MyST outputs using the parameters of your directive as data. For example:
 
 ```{code} javascript
 :filename: src/justacard.mjs
