@@ -73,7 +73,7 @@ ${data.body}
 
 The [MyST interactive sandbox](https://mystmd.org/sandbox) is a great way to explore what MyST looks like when it is rendered, and what its underlying AST structure looks like. This is particularly useful if you're generating MyST AST from scratch. For example, as part of a [plugin role or directive](./plugins.md).
 
-```{figure} media/sandbox-demo.mp4
+```{figure} videos/sandbox-demo.mp4
 Here's how you can use [the MyST sandbox](https://mystmd.org/sandbox) to explore the structure of a `card` directive and preview its AST.
 ```
 
