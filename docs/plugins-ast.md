@@ -11,16 +11,16 @@ This page covers a few ways that you can do so.
 
 The easiest way to generate MyST AST in a plugin is by using the `parseMyst` function in the `ctx` variable. It may be easier to parse MyST Markdown into AST nodes rather than [using the MyST sandbox](https://mystmd.org/sandbox) to preview them.
 
-Here's an example of using the `parseMyst` function within a directive plugin to parse the _argument_ of the directive into MyST AST:
+Here's an example of using the `parseMyst` function within a directive plugin to parse the _body_ of the directive into MyST AST:
 
 ```{code} javascript
 :filename: src/myplugin.mjs
 const myDirective = {
   name: "mydirective",
   doc: "My new directive!",
-  arg: { type: String, doc: "To be parsed into MyST AST." },
+  body: { type: String, doc: "To be parsed into MyST AST." },
   run(data, vfile, ctx) {
-    const ast = ctx.parseMyst(data.arg);
+    const ast = ctx.parseMyst(data.body);
     return ast.children[0];
   },
 };
