@@ -44,7 +44,7 @@ console.dir(node, { depth: null, colors: true });
 ## Debug executable plugins by printing to `stderr`
 
 Executable plugins are more complex to debug because of the need to send data back and forth with the MyST build process.
-Because executable plugins rely on reading `stdout` to retrieve data passed to MyST by the plugin, we cannot debug with normal print statements.
+Because MyST relies on reading `stdout` to retrieve the output of an executable plugin, we cannot debug with normal print statements.
 
 Instead, print to `stderr`, which will still be displayed in MyST when run under [debug mode](#debug-mode).
 
