@@ -58,6 +58,7 @@ print("A message to stderr.", file=sys.stderr)
 Or if you wanted to prettify the output of a MyST object (e.g. in a directive) you could use a module like [pretty print](https://docs.python.org/3/library/pprint.html).
 
 ```python
+import sys
 from pprint import pprint
 pprint(data, stream=sys.stderr)
 ```
