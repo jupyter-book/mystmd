@@ -14,7 +14,7 @@ The easiest way to generate MyST AST in a plugin is by using the `parseMyst` fun
 Here's an example of using the `parseMyst` function within a directive plugin to parse the _body_ of the directive into MyST AST:
 
 ```{code} javascript
-:filename: src/myplugin.mjs
+:filename: myplugin.mjs
 const myDirective = {
   name: "mydirective",
   doc: "My new directive!",
@@ -32,7 +32,7 @@ This function takes the first child of the root node, which is usually better fo
 You can also use this to manually construct MyST outputs using the parameters of your directive as data. For example:
 
 ```{code} javascript
-:filename: src/justacard.mjs
+:filename: justacard.mjs
 const myDirective = {
   name: "justacard",
   doc: "Basically does what a card directive does!",
@@ -52,7 +52,7 @@ The example above puts a multi-line string onto one line by manually coding the 
 If you instead want to show a multi-line string in your code, you will need to remove the indentation manually, for example like the following:
 
 ```{code} javascript
-:filename: src/justacard.mjs
+:filename: justacard.mjs
 const myDirective = {
   name: "justacard",
   doc: "Basically does what a card directive does!",
