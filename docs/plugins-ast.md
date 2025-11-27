@@ -46,6 +46,8 @@ const myDirective = {
 ```
 
 :::{tip} If you need to use multi-line strings you must dedent them
+:class: dropdown
+
 The example above puts a multi-line string onto one line by manually coding the `\n` characters.
 If you instead want to show a multi-line string in your code, you will need to remove the indentation manually, for example like the following:
 
