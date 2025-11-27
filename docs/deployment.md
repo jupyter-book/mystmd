@@ -112,17 +112,25 @@ For example:
 
 If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
 
-For example, the following example first defines a `BASE_URL` parameter and then builds the MyST HTML assets.
+In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets. 
 
 ```bash
 export BASE_URL="/repository_name"
 myst build --html
 ```
 
-Using CL, for example in VSC, this become: 
-
-```bash
+```powershell
 $env:BASE_URL = "/folder1/folder2" 
+myst build --html
+```
+
+```fish
+set -x BASE_URL "/folder1/folder2"
+myst build --html
+```
+
+```cmd
+set BASE_URL=/folder1/folder2
 myst build --html
 ```
 
