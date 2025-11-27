@@ -11,10 +11,10 @@ This section describes a few ways to debug MyST plugins.
 You can run MyST in **debug mode** to print a lot more information about what happens under the hood.
 This is useful for printing status messages in your plugins for debugging purposes.
 
-**To run MyST in debug mode**, use the `-d` flag like so:
+**To run MyST in debug mode**, use the `--debug` flag like so:
 
 ```shell
-$ myst start -d
+$ myst --debug start
 ```
 
 ## Use `console.log` to debug JavaScript plugins
