@@ -63,4 +63,3 @@ pprint(data, stream=sys.stderr)
 ```
 
 This will show up in your MyST build if you [run MyST in debug mode](#debug-mode).
-
