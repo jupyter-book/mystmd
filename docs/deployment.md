@@ -119,6 +119,13 @@ export BASE_URL="/repository_name"
 myst build --html
 ```
 
+Using CL, for example in VSC, this become: 
+
+```bash
+$env:BASE_URL = "/folder1/folder2" 
+myst build --html
+```
+
 :::{tip} Set `BASE_URL` in your CI/CD
 You can set environment variables in many CI/CD services like GitHub Actions and Netlify.
 This can be a useful way to ensure the `BASE_URL` is set before your site is deployed.
