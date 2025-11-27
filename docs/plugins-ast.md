@@ -2,7 +2,7 @@
 title: Generate MyST AST with Plugins
 ---
 
-A common usecase with plugins involves generating MyST AST and inserting it into the document.
+A common use case with plugins involves generating MyST AST and inserting it into the document.
 This page covers a few ways that you can do so.
 
 (plugins:ctx)=
