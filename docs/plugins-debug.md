@@ -22,7 +22,7 @@ $ myst --debug start
 The easiest way to debug your MyST plugin is to use `console.log` statements in JavaScript to print the contents of variables in your plugin.
 This allows you to inspect things at build time.
 
-For example, if you put the following in the `run(data)` function of a directive, it will show you the metadata in `data`.
+For example, if you put the following in the `run(data)` function of a directive, it will show you the metadata in `data` as part of the output of `myst build` or `myst start`.
 
 ```javascript
 console.log(data);
