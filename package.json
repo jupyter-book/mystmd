@@ -7,9 +7,8 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
-    "docs": "npm-run-all -l build --parallel dev docs:start",
-    "docs:start": "cd docs && node ../packages/mystmd/dist/myst.cjs start .",
-    "docs:html": "cd docs && node ../packages/mystmd/dist/myst.cjs build --html .",
+    "docs": "npm-run-all -l build --parallel dev docs:run",
+    "docs:run": "cd docs && node ../packages/mystmd/dist/myst.cjs start .",
     "clean": "turbo run clean --parallel && find . -name '.turbo' -type d -prune -exec rimraf '{}' +",
     "link": "turbo run link",
     "lint": "turbo run lint",
