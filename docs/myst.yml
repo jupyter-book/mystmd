@@ -155,12 +155,16 @@ project:
         - file: creating-word-documents.md
         - file: creating-jats-xml.md
         - file: creating-citation-cff.md
-    - title: Extensions
-      file: plugins.md
+    - file: plugins.md
       children:
         - file: javascript-plugins.md
         - file: plugins-distribute.md
         - file: executable-plugins.md
+        - file: plugins-debug.md
+        - title: "Use cases"
+          children:
+            - file: plugins-ast.md
+            - file: plugins-dry.md
     - title: Reference
       children:
         - file: install-node.md
