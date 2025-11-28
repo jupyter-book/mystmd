@@ -1,5 +1,18 @@
 # myst-transforms
 
+## 1.3.43
+
+### Patch Changes
+
+- cc0bcec: Improve robustness of link transform (when a link has no url)
+- c2d895a: Enable key-based ignores of warnings for DOIs
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+  - myst-frontmatter@1.9.1
+  - myst-to-html@1.6.2
+
 ## 1.3.42
 
 ### Patch Changes
