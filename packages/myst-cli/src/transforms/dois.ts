@@ -196,6 +196,7 @@ export async function getCitation(
       node,
       ruleId: RuleId.doiLinkValid,
       note,
+      key: doiString,
     });
     return null;
   }
@@ -212,6 +213,7 @@ export async function getCitation(
         node,
         ruleId: RuleId.doiLinkValid,
         note: `Citation data from ${doiString}:\n\n${JSON.stringify(data)}\n`,
+        key: doiString,
       },
     );
     return null;

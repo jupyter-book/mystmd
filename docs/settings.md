@@ -102,6 +102,8 @@ project:
 
 The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity listed will be adopted rather than the default log message severity. The default severity for rules included in the list is `ignore`, which means that simply listing the rule IDs as strings will ignore those rules. To discover the rule ID, run myst in debug mode (i.e. `myst --debug build`) to get the error (and optional key) printed to the console. For example, the above configuration updates will no longer warn on `math-eqnarray-replaced` and will also ignore the two links when running `myst build --check-links --strict` in continuous integration.
 
+Some error rules support a `key` field that identifies specific instances of the error. This allows you to target particular cases rather than all instances of a rule. For example, the `link-resolves` rule uses the URL as the key, allowing you to ignore specific broken links while still checking others. Similarly, the `doi-link-valid` rule uses the DOI value as the key, so you can ignore specific invalid DOIs while still validating others. When a rule supports keys, you can provide a list of keys (or key patterns) in the `keys` field to match multiple specific instances.
+
 :::{seealso .dropdown} List of Error Rules
 
 The full list of errors and warnings used across MyST with their defaults shown.

@@ -13,12 +13,15 @@ export type MessageInfo = {
   url?: string;
   fatal?: boolean;
   ruleId?: RuleId | string;
+  /** This key can be combined with the ruleId to suppress a warning */
+  key?: string;
 };
 
-function addMessageInfo(message: VFileMessage, info?: MessageInfo) {
+function addMessageInfo(message: VFileMessage & { key?: string }, info?: MessageInfo) {
   if (info?.note) message.note = info.note;
   if (info?.url) message.url = info.url;
   if (info?.ruleId) message.ruleId = info.ruleId as string;
+  if (info?.key) message.key = info.key;
   if (info?.fatal) message.fatal = true;
   return message;
 }
