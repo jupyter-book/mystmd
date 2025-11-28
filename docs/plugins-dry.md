@@ -1,5 +1,5 @@
 ---
-title: '"DRY" your document with plugins'
+title: "Reusable document elements with plugins"
 ---
 
 Sometimes our documents require repetitive elements that must be consistent across a
