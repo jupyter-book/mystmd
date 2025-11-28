@@ -28,8 +28,8 @@ const myDirective = {
 };
 ```
 
-`ctx.parseMyst` returns a `root` node, which contains the parsed MyST.
-This function takes the first child of the root node, which is usually better for inserting into the document.
+`ctx.parseMyst` returns a {term}`root node <Root AST node>` which contains the parsed MyST as children.
+The directive plugin example above returns `ast.children[0]` (the first child of the root node) to avoid creating a malformed document (there can only be one "root").
 
 You can also use this to manually construct MyST outputs using the parameters of your directive as data. For example:
 
