@@ -9,7 +9,9 @@ This page covers a few ways that you can do so.
 
 ## Parse MyST markdown to AST in a directive or role
 
-The easiest way to generate MyST AST in a plugin is by using the `parseMyst` function in the `ctx` variable. It may be easier to parse MyST Markdown into AST nodes rather than [using the MyST sandbox](https://mystmd.org/sandbox) to preview them.
+### Explicitly
+
+The explicit way to generate MyST AST in a plugin is by using the `parseMyst` function in the `ctx` variable. It may be easier to parse MyST Markdown into AST nodes rather than [using the MyST sandbox](https://mystmd.org/sandbox) to preview them.
 
 Here's an example of using the `parseMyst` function within a directive plugin to parse the _body_ of the directive into MyST AST:
 
@@ -68,6 +70,28 @@ ${data.body}
 };
 ```
 :::
+
+### Implicitly
+
+You can also implicitly parse MyST text received as a plugin's argument or body to AST by defining them as `{type: 'myst'}`.
+In this case, `data.body` will be a list of AST nodes:
+
+```{code} javascript
+:filename: myplugin.mjs
+:linenos:
+:empasize-lines: 5
+const myDirective = {
+  name: "mydirective",
+  doc: "My new directive!",
+  body: {
+    type: 'myst',
+    doc: "Pre-parsed and immediately usable as MyST AST.",
+  },
+  run(data) {
+    return data.body[0];
+  },
+};
+```
 
 ## Use the MyST Sandbox to identify AST structure
 
