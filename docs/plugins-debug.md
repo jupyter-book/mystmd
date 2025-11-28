@@ -35,7 +35,7 @@ You should see the contents of `data` printed in your MyST build log.
 ### Show the full depth of a MyST object in JavaScript logs
 
 `console.log` will only show you the first layer of depth, but you may want to inspect _all_ layers of a MyST object or AST node.
-To do so, use a JavaScript call like the following:
+This command will display all layers of an AST node at once:
 
 ```javascript
 console.dir(node, { depth: null, colors: true });

@@ -1,5 +1,5 @@
 ---
-title: "Reusable document elements with plugins"
+title: "Reusable and custom document elements with plugins"
 ---
 
 Sometimes our documents require repetitive elements that must be consistent across a
@@ -13,7 +13,7 @@ Deduplicating our documents can, as a side effect, make it much easier to alter 
 appearance of repetitive elements by making a change in only one place!
 
 
-## An example of a repetitive element
+## An example of a repetitive element: a custom admonition
 
 If you're writing a tutorial, you may want to use the Diátaxis principle
 ["point out what the learner should notice"](https://diataxis.fr/tutorials/#point-out-what-the-learner-should-notice)

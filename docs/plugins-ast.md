@@ -19,8 +19,10 @@ Here's an example of using the `parseMyst` function within a directive plugin to
 const myDirective = {
   name: "mydirective",
   doc: "My new directive!",
+  // Here the body is passed as a string
   body: { type: String, doc: "To be parsed into MyST AST." },
   run(data, vfile, ctx) {
+    // Here we parse the body into MyST AST
     const ast = ctx.parseMyst(data.body);
     return ast.children[0];
   },
@@ -40,6 +42,7 @@ const myDirective = {
   arg: { type: String, doc: "To be parsed into MyST AST." },
   body: { type: String, doc: "The body of the directive." },
   run(data, vfile, ctx) {
+    // Here we parse a string that defines a multi-line card directive
     const ast = ctx.parseMyst(`:::{card} ${data.arg}\n${data.body}\n:::`);
     return ast.children[0];
   },
@@ -60,6 +63,7 @@ const myDirective = {
   arg: { type: String, doc: "To be parsed into MyST AST." },
   body: { type: String, doc: "The body of the directive." },
   run(data, vfile, ctx) {
+    // By removing the indentation white-space the string is correctly parsed
     const ast = ctx.parseMyst(`
 :::{card} ${data.arg}
 ${data.body}
@@ -82,6 +86,7 @@ In this case, `data.body` will be a list of AST nodes instead of text:
 const myDirective = {
   name: "mydirective",
   doc: "My new directive!",
+  // By defining type: 'myst', the directive body will automatically be parsed into MyST AST
   body: {
     type: 'myst',
     doc: "Pre-parsed and immediately usable as MyST AST.",
