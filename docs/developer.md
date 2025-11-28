@@ -302,6 +302,13 @@ npm run link
 
 These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `npm run build` (executed in the top-level source directory).
 
+### Local docs workflows (preview/build)
+
+These two workflows use the local changes in your `mystmd` package and give you an easy way to preview them.
+
+- `npm run docs`: Build packages, start their watchers, and launch `myst start` in `docs/` using the local CLI build.
+- `npm run docs:html`: Build static HTML for `docs/` via `myst build --html`.
+
 ```{warning} Windows users should use unix-like shells
 The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
