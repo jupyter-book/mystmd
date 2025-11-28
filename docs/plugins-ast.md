@@ -2,17 +2,16 @@
 title: Generate MyST AST with Plugins
 ---
 
-A common use case with plugins involves generating MyST AST and inserting it into the document.
+A common use case with plugins involves generating {term}`MyST AST` and inserting it into the document.
 This page covers a few ways that you can do so.
 
 (plugins:ctx)=
 
 ## Parse MyST markdown to AST in a directive or role
 
-### Explicitly
+### With a function call
 
-The explicit way to generate MyST AST in a plugin is by using the `parseMyst` function in the `ctx` variable. It may be easier to parse MyST Markdown into AST nodes rather than [using the MyST sandbox](https://mystmd.org/sandbox) to preview them.
-
+The `parseMyst` function (available in the `ctx` variable) provides an explicit method to parse MyST text into {term}`MyST AST`.
 Here's an example of using the `parseMyst` function within a directive plugin to parse the _body_ of the directive into MyST AST:
 
 ```{code} javascript
@@ -31,7 +30,7 @@ const myDirective = {
 `ctx.parseMyst` returns a {term}`root node <Root AST node>` which contains the parsed MyST as children.
 The directive plugin example above returns `ast.children[0]` (the first child of the root node) to avoid creating a malformed document (there can only be one "root").
 
-You can also use this to manually construct MyST outputs using the parameters of your directive as data. For example:
+You can use the `parseMyst` function to construct MyST outputs from text generated with string interpolation, for example:
 
 ```{code} javascript
 :filename: justacard.mjs
@@ -71,10 +70,10 @@ ${data.body}
 ```
 :::
 
-### Implicitly
+### With automatic parsing
 
-You can also implicitly parse MyST text received as a plugin's argument or body to AST by defining them as `{type: 'myst'}`.
-In this case, `data.body` will be a list of AST nodes:
+You can define a plugin's argument or body as `{type: 'myst'}` instead of `{type: String}` to enable those parameters to be autuomatically parsed into {term}`AST nodes <AST node>`.
+In this case, `data.body` will be a list of AST nodes instead of text:
 
 ```{code} javascript
 :filename: myplugin.mjs
