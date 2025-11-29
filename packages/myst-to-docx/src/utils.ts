@@ -86,8 +86,15 @@ export function getImageWidth(width?: number | string, maxWidth = MAX_DOCX_IMAGE
   return (lineWidth / 100) * maxWidth;
 }
 
-async function getImageDimensions(file: Blob | Buffer): Promise<{ width: number; height: number }> {
+async function getImageDimensions(
+  file: Blob | Buffer,
+): Promise<{ width: number; height: number } | undefined> {
+  // @ts-expect-error Image is not defined
+  if (typeof Image === 'undefined') {
+    return Promise.resolve(undefined);
+  }
   return new Promise((resolve, reject) => {
+    // @ts-expect-error Image not defined
     const img = new Image();
     // the following handler will fire after a successful loading of the image
     img.onload = () => {
@@ -120,7 +127,10 @@ export async function fetchImagesAsBuffers(
       const response = await fetch(image.url);
       const blob = await response.blob();
       const buffer = await blob.arrayBuffer();
-      dimensions[image.url] = await getImageDimensions(blob);
+      const dims = await getImageDimensions(blob);
+      if (dims !== undefined) {
+        dimensions[image.url] = dims;
+      }
       buffers[image.url] = Buffer.from(buffer);
     }),
   );
