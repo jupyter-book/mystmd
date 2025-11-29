@@ -4,7 +4,7 @@ import type { MystPlugin, RuleId, ValidatedMystPlugin } from 'myst-common';
 import type { ResolvedExternalReference } from 'myst-transforms';
 import type { MinifiedContentCache } from 'nbtx';
 import type { Store } from 'redux';
-import type { RequestInfo, RequestInit, Response } from 'node-fetch';
+import type { RequestInfo, RequestInit, Response } from 'undici';
 import type { Limit } from 'p-limit';
 import type { BuildWarning, RootState } from '../store/index.js';
 import type { PreRendererData, RendererData, SingleCitationRenderer } from '../transforms/types.js';

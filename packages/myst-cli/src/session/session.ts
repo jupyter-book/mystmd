@@ -7,7 +7,6 @@ import type { RuleId, ValidatedMystPlugin } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 import pLimit from 'p-limit';
 import type { Limit } from 'p-limit';
 import {
@@ -26,17 +25,9 @@ import { isWhiteLabelled } from '../utils/whiteLabelling.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
 import { launchJupyterServer } from 'myst-execute';
-import type { RequestInfo, RequestInit } from 'node-fetch';
-import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 import type { PluginInfo } from 'myst-config';
-
-// fetch polyfill for node<18
-if (!globalThis.fetch) {
-  globalThis.fetch = nodeFetch as any;
-  globalThis.Headers = Headers as any;
-  globalThis.Request = Request as any;
-  globalThis.Response = Response as any;
-}
+import { fetch as fetchImpl, Agent, ProxyAgent } from 'undici';
+import type { RequestInfo, RequestInit, Response, Dispatcher } from 'undici';
 
 const CONFIG_FILES = ['myst.yml'];
 const API_URL = 'https://api.mystmd.org';
@@ -88,7 +79,9 @@ export class Session implements ISession {
   $logger: Logger;
   doiLimiter: Limit;
 
-  proxyAgent?: HttpsProxyAgent<string>;
+  localDispatcher: Dispatcher;
+  dispatcher: Dispatcher;
+
   _shownUpgrade = false;
   _latestVersion?: string;
   _jupyterSessionManagerPromise?: Promise<SessionManager | undefined>;
@@ -102,8 +95,14 @@ export class Session implements ISession {
     this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
+
     const proxyUrl = process.env.HTTPS_PROXY;
-    if (proxyUrl) this.proxyAgent = new HttpsProxyAgent(proxyUrl);
+    if (proxyUrl !== undefined) {
+      this.log.debug(`Using HTTPS proxy ${proxyUrl}`);
+    }
+    this.dispatcher = proxyUrl ? new ProxyAgent(proxyUrl) : new Agent();
+    this.localDispatcher = new Agent();
+
     this.store = createStore(rootReducer);
     // Allow the latest version to be loaded
     latestVersion('mystmd')
@@ -144,16 +143,21 @@ export class Session implements ISession {
   async fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response> {
     const urlOnly = new URL((url as Request).url ?? (url as URL | string));
     this.log.debug(`Fetching: ${urlOnly}`);
-    if (this.proxyAgent && !LOCALHOSTS.includes(urlOnly.hostname)) {
-      if (!init) init = {};
-      init = { agent: this.proxyAgent, ...init };
-      this.log.debug(`Using HTTPS proxy: ${this.proxyAgent.proxy}`);
+
+    const isLocal = LOCALHOSTS.includes(urlOnly.hostname);
+    if (isLocal) {
+      this.log.debug(`Using local dispatcher for request to ${urlOnly.hostname}`);
     }
+
     const logData = { url: urlOnly, done: false };
     setTimeout(() => {
       if (!logData.done) this.log.info(`⏳ Waiting for response from ${url}`);
     }, 5000);
-    const resp = await nodeFetch(url, init);
+
+    const resp = await fetchImpl(url, {
+      ...init,
+      dispatcher: isLocal ? this.localDispatcher! : this.dispatcher,
+    });
     logData.done = true;
     return resp;
   }

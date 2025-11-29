@@ -1,7 +1,7 @@
 import { describe, expect, beforeEach, it } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
 import licenses from './licenses';
-import fetch from 'node-fetch';
+import { fetch as nodeFetch } from 'undici';
 import {
   licensesToString,
   simplifyLicenses,
@@ -25,7 +25,7 @@ beforeEach(() => {
 
 describe('licenses are upto date with SPDX', () => {
   it('compare with https://spdx.org/licenses/licenses.json', async () => {
-    const data: any = await (await fetch('https://spdx.org/licenses/licenses.json')).json();
+    const data: any = await (await nodeFetch('https://spdx.org/licenses/licenses.json')).json();
     const onlineLicenses = Object.fromEntries(
       (data.licenses as any[])
         .filter((l) => !l.isDeprecatedLicenseId)
