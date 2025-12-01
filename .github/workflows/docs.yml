@@ -31,9 +31,21 @@ jobs:
           sudo apt-get install -y inkscape imagemagick webp
       - name: Install Curvenote
         run: npm install -g curvenote
-      - name: Deploy the site
-        run: curvenote deploy -y -d --ci --execute
+      - name: Deploy the main documentation
+        run: curvenote deploy -y --ci --execute
         shell: bash
         working-directory: docs
+        env:
+          CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
+      - name: Deploy the transforms docs
+        run: curvenote deploy -y --ci --execute
+        shell: bash
+        working-directory: packages/myst-transforms/docs
+        env:
+          CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
+      - name: Deploy the jtex docs
+        run: curvenote deploy -y --ci --execute
+        shell: bash
+        working-directory: packages/jtex/docs
         env:
           CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
