@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+- c2d895a: Enable message info to take a key for error_rules reporting/ignoring
+  - myst-frontmatter@1.9.1
+
 ## 1.9.0
 
 ### Patch Changes
