@@ -1,5 +1,6 @@
 ---
 title: Configuration and content frontmatter
+short_title: Configuration and frontmatter
 description: Frontmatter can be set at the top of your documents and in myst.yml to change the look and feel of your content.
 thumbnail: thumbnails/frontmatter.png
 ---
