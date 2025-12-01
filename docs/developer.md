@@ -108,7 +108,8 @@ MyST has multiple renderers, themes, and templates that allow it to transform My
 - describe the render loop, and how render blocks are registered
 - explain the ThemeProvider
 - explain styling
-  :::
+
+:::
 
 #### Example: Adding an "edit this page" button
 
