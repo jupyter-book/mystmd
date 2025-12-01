@@ -167,7 +167,7 @@ short_title: Airspeed Velocity
 
 (hidden-in-toc)=
 
-## Hiding pages from the Table of Contents
+### Hiding pages from the Table of Contents
 
 In some cases, you may want some pages in your project to be built, but not included in the Table of Contents. You can do this by adding a `hidden: true` attribute to the corresponding `file` or `pattern` entry in your `toc` section:
 
@@ -183,6 +183,71 @@ project:
 
 In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
 
+## URL slugs and folder structure
+
+For web-based exports, unlike other systems that use filenames and paths to create URLs that refer to pages, MyST will create **slugs** to refer to pages.
+
+This means for example that a page whose source page is in `folder1/folder2/01_my_article.md` will be reachable by URL that simply reads `my-article` (from the website root URL)
+
+Of course, internal links will be generated accordingly, and the `file` property in the [MyST document metadata](website-metadata) will contain the original file path for the page.
+
+### Filenames to slugs
+
+In order to compute a page's slug, MyST will use the filename and:
+
+- remove preceding numbers (unless they are year-like, e.g. 1988-02 or 2022);
+- rename any non-url characters (spaces, underscores, etc.) to `-`;
+- lowercase the filename;
+- remove any file extensions (e.g. `.md` or `.ipynb`);
+- and keep the slug less than 50 characters.
+
+So for example
+
+- `01-notebook.ipynb` will become `notebook`
+- `2021_02_presentation.md` will remain `2021-02-presentation`
+
+If there are duplicates, these will be enumerated with a trailing number (e.g. `readme-1`).
+
+### Preserve folders in URLs
+
+By default, MyST will _remove folder information_ when creating URLs, as illustrated in the example above.
+
+To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), set `site.options.folders` to `true` in `myst.yml`. For example:
+
+```{code} yml
+:filename: myst.yml
+:caption: Example of setting folders to true to show nested file structure in the URL
+:linenos:
+:lineno-start: 78
+:emphasize-lines: 82
+...
+site:
+  template: book-theme
+  options:
+    folders: true
+...
+```
+
+### More examples
+
+:::{list-table}
+:header-rows: 1
+:align: center
+
+* - file path
+  - default
+  - folders=true
+* - `simple-page.md`
+  - `simple-page`
+  - `simple-page`
+* - `folder/01-intro-physics.md`
+  - `intro-physics`
+  - `folder/intro-physics`
+* - `f1/f2/2021-02-minutes.md`
+  - `2021-02-minutes`
+  - `f1/f2/2021-02-minutes`
+:::
+
 (implicit-toc)=
 
 ## Implicit Table of Contents from filenames
@@ -190,20 +255,6 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 When there is no `toc` field defined in your root `myst.yml`, the TOC is defined by the file system structure. All Markdown and notebook files will be found in the working directory and all sub-directories. Filenames are not treated as case sensitive, and files are listed before folders. All hidden directories are ignored (e.g. `.git`) and the `_build` directory is also ignored.
 
 The ordering of the table of contents will sort alphabetically as well as order by number, ensuring that, for example, `chapter10` comes after `chapter9`.
-
-### Filename Transformations
-
-The filenames will also be transformed into url-friendly “slugs” that: remove preceding numbers (unless they are year-like, e.g. 1988-02 or 2022); rename any non-url characters (spaces, underscores, etc.) to `-`; lowercase the filename; remove any file extensions (e.g. `.md` or `.ipynb`); and keep the slug less than 50 characters. If there are duplicates, these will be enumerated with a trailing number (e.g. `readme-1`).
-
-- `01-notebook.ipynb` will become `notebook`
-- `2021_02_presentation.md` will remain `2021-02-presentation`
-
-### Title Transformations
-
-If a title is not provided by a notebook or Markdown document in the front matter or first heading, the filename is used. The filename is transformed to a title by splitting on camel case, replacing `-` or `_` with spaces, and transforming to title-case.
-
-- `01_MyNotebook.ipynb` becomes `My Notebook`
-- `my_article.md` becomes `My Article`
 
 ### Root Page
 
@@ -239,51 +290,20 @@ project:
 
 Note that when these files are excluded, they can still be specifically referenced by other files in your project (e.g. in an {myst:directive}`include directives <include>` or as a download), however, a change in those files will not trigger a build. An alternative in this case is to generate a table of contents (see [](./table-of-contents.md)). By default hidden folders (those starting with `.`, like `.git`), `_build` and `node_modules` are excluded.
 
-## Folder structure and URL slugs
+### Default Titles
 
-By default, MyST will _flatten folder structure_ when creating URLs.
-If a file is nested under a folder within your MyST project, for web-based exports its URL will be flattened to have a "slug" that removes folder information.
-For example, a folder structure like:
+If a title is not provided by a notebook or Markdown document in the front matter or first heading, the filename is used. The filename is transformed to a title by splitting on camel case, replacing `-` or `_` with spaces, and transforming to title-case.
 
-- `folder1/folder2/my-article.md`
-
-Produces this URL path:
-
-- `/my-article`
-
-Internal links will automatically be updated (duplicate filenames will have numbers appended, like `myfile-1`), and the `file` property in the [MyST document metadata](./website-metadata.md) will contain the original file path for the page.
-
-### Make your URL match your folder structure
-
-To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), set `site.options.folders` to `true` in `myst.yml`. For example:
-
-```{code} yml
-:filename: myst.yml
-:caption: Example of setting folders to true to show nested file structure in the URL
-:linenos:
-:lineno-start: 78
-:emphasize-lines: 82
-...
-site:
-  template: book-theme
-  options:
-    folders: true
-...
-```
-
-This will make a file like `folder1/folder2/01_my_article.md` render as the following URL slog: `/folder1/folder2/my-article`.
-
-::::{note} Compatibility with Jupyter Book
-:class: dropdown
+- `01_MyNotebook.ipynb` becomes `My Notebook`
+- `my_article.md` becomes `My Article`
 
 (toc-format-legacy)=
 
-## Defining a `_toc.yml` using Jupyter Book v1 format
+## Compatibility with Jupyter Book v1
 
 :::{warning}
-Support for `_toc.yml` exists only for compatibility reasons, and will be removed in future.
+Support for `_toc.yml` exists only for compatibility reasons, and **will be removed in the future**.
 New users should use `myst.yml` instead.
 :::
 
-Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Jupyter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
-::::
+Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can **currently** use a Jupyter Book v1 Table of Contents file (`_toc.yml`) with MyST. The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
