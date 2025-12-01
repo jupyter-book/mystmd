@@ -35,6 +35,9 @@
     "js-yaml": "^4.1.0",
     "vfile": "^5.3.7"
   },
+  "devDependencies": {
+    "markdown-it-footnote": "^4.0.0"
+  },
   "peerDependencies": {
     "@types/markdown-it": "^13.0.1",
     "markdown-it": "^13.0.1"
