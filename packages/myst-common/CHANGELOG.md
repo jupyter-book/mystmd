@@ -1,5 +1,12 @@
 # myst-common
 
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+  - myst-frontmatter@1.9.1
+
 ## 1.9.0
 
 ### Patch Changes
