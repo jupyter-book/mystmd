@@ -1,5 +1,5 @@
 import type { GenericNode, RoleData, RoleSpec, GenericParent } from 'myst-common';
-import { RuleId, fileError, fileWarn, copyNode } from 'myst-common';
+import { RuleId, fileError, fileWarn } from 'myst-common';
 import type { Role } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
