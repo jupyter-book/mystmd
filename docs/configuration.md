@@ -42,10 +42,72 @@ To have properly formatted frontmatter, you can install the `jupyterlab-myst` pl
 Without the extension installed, remember to format the contents of the section as valid `yaml` even though when rendered, the cell will not look well formatted in your notebook.
 :::
 
-:::{note} Using `jupytext` or a Markdown-based notebook?
+::::{note} Using `jupytext` or a Markdown-based notebook?
+
+If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](https://jupytext.readthedocs.io/en/latest/formats-markdown.html), or [MyST](https://jupyterbook.org/en/stable/file-types/myst-notebooks.html)), then this should be included in the frontmatter section, as shown in the examples below.
+
+:::{tip} a Jupytext (md:markdown) example
 :class: dropdown
-If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](https://jupytext.readthedocs.io/en/latest/formats-markdown.html), or [MyST](https://jupyterbook.org/en/stable/file-types/myst-notebooks.html)), then this should be included in the frontmatter section as usual in addition to the `jupyter` key that defines the kernel and jupytext metadata.
+
+````markdown
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .md
+      format_name: markdown
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+  language_info:
+    name: python
+    nbconvert_exporter: python
+    pygments_lexer: ipython3
+  short_title: images
+  title: images and figures
+---
+
+You don't need a level-1 title,
+it is defined in the frontmatter above already
+
+```{code-cell} ipython3
+import numpy as np
+```
+````
 :::
+
+:::{tip} a Jupytext (md:myst) example
+:class: dropdown
+
+````markdown
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+language_info:
+  name: python
+  nbconvert_exporter: python
+  pygments_lexer: ipython3
+title: images and figures
+short_title: images
+---
+
+You don't need a level-1 title,
+it is defined in the frontmatter above already
+
+```{code-cell} ipython3
+import numpy as np
+```
+````
+:::
+
+::::
 
 ### In a `myst.yml` file
 
