@@ -15,7 +15,9 @@ Frontmatter can be set in two places:
 1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a "page" below)
 2. In `myst.yml` file. This will be applied to all content in that project (apart from "page only" fields).
 
-See [](#field-behavior) below about how these two sources of settings interact
+See [](#field-behavior) below about how these two sources of settings interact.
+
+See also [](/frontmatter) for a list of supported frontmatter settings.
 
 ## Page-level frontmatter
 
