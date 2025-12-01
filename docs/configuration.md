@@ -18,7 +18,7 @@ Frontmatter can be set in two places:
 
 See [](#field-behavior) below about how these two sources of settings interact.
 
-See also [](/frontmatter) for a list of supported frontmatter settings.
+See also [](frontmatter.md) for a list of supported frontmatter settings.
 
 ## Page-level frontmatter
 
