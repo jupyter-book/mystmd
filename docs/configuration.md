@@ -53,7 +53,9 @@ If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](
 :::{tip} a Jupytext (md:markdown) example
 :class: dropdown
 
-````markdown
+````{code}
+:linenos:
+:emphasize-lines: 15-16
 ---
 jupyter:
   jupytext:
@@ -84,7 +86,9 @@ import numpy as np
 :::{tip} a Jupytext (md:myst) example
 :class: dropdown
 
-````markdown
+````{code}
+:linenos:
+:emphasize-lines: 14-15
 ---
 jupytext:
   text_representation:
