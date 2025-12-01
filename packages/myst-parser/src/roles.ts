@@ -48,11 +48,6 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
 
     // Only look to the direct children
     const bodyNode = node.children?.find((n) => n.type === 'mystRoleBody') as GenericNode;
-    // Ensure the body node has only **inline** children
-    // There is a bug when footnote references are used that they can interfere with the role body parsing
-    if (bodyNode?.children?.length === 1 && bodyNode.children[0].type === 'paragraph') {
-      bodyNode.children = bodyNode.children[0].children;
-    }
     if (body) {
       if (body.required && !bodyNode) {
         fileError(vfile, `required body not provided for role: ${name}`, {
