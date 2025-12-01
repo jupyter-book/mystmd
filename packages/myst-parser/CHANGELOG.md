@@ -1,5 +1,19 @@
 # myst-parser
 
+## 1.6.2
+
+### Patch Changes
+
+- 770eece: Footnotes and role parsing
+- Updated dependencies [770eece]
+- Updated dependencies [a742dda]
+- Updated dependencies [f1ccba4]
+- Updated dependencies [c2d895a]
+  - markdown-it-myst@1.0.14
+  - myst-common@1.9.1
+  - myst-directives@1.6.2
+  - myst-roles@1.6.2
+
 ## 1.6.1
 
 ### Patch Changes

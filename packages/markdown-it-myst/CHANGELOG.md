@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.14
+
+### Patch Changes
+
+- 770eece: Footnotes and role parsing
+
 ## 1.0.13
 
 ### Patch Changes

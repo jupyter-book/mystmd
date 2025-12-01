@@ -1,5 +1,25 @@
 # myst-cli
 
+## 1.6.7
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+- 39570e5: Fix static build inclusion of sitemap
+- ae32040: Drop hide_authors handling in mystmd
+- c2d895a: Enable key-based ignores of warnings for DOIs
+- Updated dependencies [770eece]
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+- Updated dependencies [cc0bcec]
+- Updated dependencies [c2d895a]
+  - myst-parser@1.6.2
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+  - myst-transforms@1.3.43
+  - myst-config@1.9.1
+  - myst-frontmatter@1.9.1
+
 ## 1.6.6
 
 ## 1.6.5
