@@ -10,12 +10,14 @@ Adding frontmatter ensures that these properties are available to downstream too
 
 ## Where to set frontmatter
 
-Frontmatter can be set in two place:
+Frontmatter can be set in two places:
 
 1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a "page" below)
 2. In `myst.yml` file. This will be applied to all content in that project (apart from "page only" fields).
 
-More detailed examples are below.
+See [](#field-behavior) below about how these two sources of settings interact
+
+## Page-level frontmatter
 
 ### In a MyST markdown file
 
@@ -109,6 +111,8 @@ import numpy as np
 
 ::::
 
+## Project-level frontmatter
+
 ### In a `myst.yml` file
 
 Frontmatter fields can be added directly to any `project:` section within a `myst.yml` file. These will be applied to all pages in your MyST project. Here's an example:
@@ -123,7 +127,7 @@ project:
 
 (field-behavior)=
 
-### How project and page frontmatter interact
+## How project and page frontmatter interact
 
 Frontmatter can be attached to a "page", meaning a local `.md` or `.ipynb` or a "project". However, some frontmatter fields are available across an entire project, while others are only available for a given page.
 
@@ -160,7 +164,7 @@ extends:
   - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml # A remote file
 ```
 
-Each entry listed inside `extends` may be a relative path to a file or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
+Each entry listed inside `extends` may be a relative path to a file, or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
 
 When using `extends` to compose configuration files, list-type fields are combined, rather than replaced. This means, for example, you may define a single export in one file:
 
