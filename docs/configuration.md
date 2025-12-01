@@ -1,5 +1,6 @@
 ---
 title: Configuration and content frontmatter
+short_title: Configuration and frontmatter
 description: Frontmatter can be set at the top of your documents and in myst.yml to change the look and feel of your content.
 thumbnail: thumbnails/frontmatter.png
 ---
@@ -10,12 +11,16 @@ Adding frontmatter ensures that these properties are available to downstream too
 
 ## Where to set frontmatter
 
-Frontmatter can be set in two place:
+Frontmatter can be set in two places:
 
 1. The YAML header of a markdown (`md`) or notebook (`ipynb`) file (described as a "page" below)
 2. In `myst.yml` file. This will be applied to all content in that project (apart from "page only" fields).
 
-More detailed examples are below.
+See [](#field-behavior) below about how these two sources of settings interact.
+
+See also [](frontmatter.md) for a list of supported frontmatter settings.
+
+## Page-level frontmatter
 
 ### In a MyST markdown file
 
@@ -42,10 +47,78 @@ To have properly formatted frontmatter, you can install the `jupyterlab-myst` pl
 Without the extension installed, remember to format the contents of the section as valid `yaml` even though when rendered, the cell will not look well formatted in your notebook.
 :::
 
-:::{note} Using `jupytext` or a Markdown-based notebook?
+::::{note} Using `jupytext` or a Markdown-based notebook?
+
+If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](https://jupytext.readthedocs.io/en/latest/formats-markdown.html), or [MyST](https://jupyterbook.org/en/stable/file-types/myst-notebooks.html)), then this should be included in the frontmatter section, as shown in the examples below.
+
+:::{tip} a Jupytext (md:markdown) example
 :class: dropdown
-If your Jupyter Notebook is described as a markdown file (e.g. using [jupytext](https://jupytext.readthedocs.io/en/latest/formats-markdown.html), or [MyST](https://jupyterbook.org/en/stable/file-types/myst-notebooks.html)), then this should be included in the frontmatter section as usual in addition to the `jupyter` key that defines the kernel and jupytext metadata.
+
+````{code}
+:linenos:
+:emphasize-lines: 15-16
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .md
+      format_name: markdown
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+  language_info:
+    name: python
+    nbconvert_exporter: python
+    pygments_lexer: ipython3
+  short_title: images
+  title: images and figures
+---
+
+You don't need a level-1 title,
+it is defined in the frontmatter above already
+
+```{code-cell} ipython3
+import numpy as np
+```
+````
 :::
+
+:::{tip} a Jupytext (md:myst) example
+:class: dropdown
+
+````{code}
+:linenos:
+:emphasize-lines: 14-15
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+language_info:
+  name: python
+  nbconvert_exporter: python
+  pygments_lexer: ipython3
+title: images and figures
+short_title: images
+---
+
+You don't need a level-1 title,
+it is defined in the frontmatter above already
+
+```{code-cell} ipython3
+import numpy as np
+```
+````
+:::
+
+::::
+
+## Project-level frontmatter
 
 ### In a `myst.yml` file
 
@@ -61,7 +134,7 @@ project:
 
 (field-behavior)=
 
-### How project and page frontmatter interact
+## How project and page frontmatter interact
 
 Frontmatter can be attached to a "page", meaning a local `.md` or `.ipynb` or a "project". However, some frontmatter fields are available across an entire project, while others are only available for a given page.
 
@@ -98,7 +171,7 @@ extends:
   - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml # A remote file
 ```
 
-Each entry listed inside `extends` may be a relative path to a file or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
+Each entry listed inside `extends` may be a relative path to a file, or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
 
 When using `extends` to compose configuration files, list-type fields are combined, rather than replaced. This means, for example, you may define a single export in one file:
 
