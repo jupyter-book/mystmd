@@ -217,6 +217,6 @@ describe('Testing mdast --> html conversions', () => {
 
 if (skipped.length) {
   describe('Skipped Tests', () => {
-    test.skip.each(skipped)('%s', () => null);
+    test.skip.each(skipped)('%s', () => undefined);
   });
 }
