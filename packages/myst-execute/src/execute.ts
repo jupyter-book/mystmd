@@ -9,7 +9,7 @@ import assert from 'node:assert';
 import type { CodeBlock, ExecutionResult, ExecutableNode } from './types.js';
 import { executeCodeCell, evaluateInlineExpression } from './kernel.js';
 import {
-  isCellBlock,
+  isCodeBlock,
   codeBlockRaisesException,
   codeBlockSkipsExecution,
   isInlineExpression,
@@ -35,7 +35,7 @@ export async function computeExecutableNodes(
 
   const results: ExecutionResult[] = [];
   for (const matchedNode of nodes) {
-    if (isCellBlock(matchedNode)) {
+    if (isCodeBlock(matchedNode)) {
       // Pull out code to execute
       const code = select('code', matchedNode) as Code;
       const { status, outputs } = await executeCodeCell(kernel, code.value);
@@ -102,7 +102,7 @@ export function applyComputedOutputsToNodes(
     // Pull out the result for this node
     const thisResult = computedResult.shift();
 
-    if (isCellBlock(matchedNode)) {
+    if (isCodeBlock(matchedNode)) {
       const rawOutputData = (thisResult as IOutput[]) ?? [];
       // Pull out outputs to set data
       const outputs = select('outputs', matchedNode) as Outputs;
@@ -132,6 +132,6 @@ export function getExecutableNodes(tree: GenericParent) {
       )[]
     )
       // Filter out nodes that skip execution
-      .filter((node) => !(isCellBlock(node) && codeBlockSkipsExecution(node)))
+      .filter((node) => !(isCodeBlock(node) && codeBlockSkipsExecution(node)))
   );
 }
