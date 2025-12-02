@@ -254,12 +254,15 @@ export function reduceOutputs(
   const outputsNodes = selectAll('outputs', mdast) as GenericNode[];
   const cache = castSession(session);
   outputsNodes.forEach((outputsNode) => {
-    const outputs = outputsNode.children as GenericNode[];
+    // Hidden nodes should not show up in simplified outputs for static export
+    if (outputsNode.visibility === 'remove' || outputsNode.visibility === 'hide') {
+      outputsNode.type = '__delete__';
+      return;
+    }
 
+    const outputs = outputsNode.children as GenericNode[];
     outputs.forEach((outputNode) => {
-      if (outputNode.visibility === 'remove' || outputNode.visibility === 'hide') {
-        // Hidden nodes should not show up in simplified outputs for static export
-        outputNode.type = '__delete__';
+      if (outputNode.type !== 'output') {
         return;
       }
       // Lift the `output` node into `Outputs`
