@@ -138,7 +138,7 @@ describe('Test blockMetadataTransform', () => {
             data: { key: 'value' },
           },
           [
-            u('outputs', { identifier: 'my_label-output' }, [
+            u('outputs', { identifier: 'my_label-outputs' }, [
               u('output', { identifier: 'my_label-output-0' }, 'We know what we are'),
               u('output', { identifier: 'my_label-output-1' }, 'but know not what we may be.'),
             ]),
