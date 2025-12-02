@@ -266,7 +266,7 @@ export type Output = Node &
 export type Outputs = Node &
   Target & {
     type: 'outputs';
-    children?: (Output | FlowContent | ListContent | PhrasingContent)[]; // Support placeholders in addition to outputs
+    children: (Output | FlowContent | ListContent | PhrasingContent)[]; // Support placeholders in addition to outputs
     visibility?: Visibility;
     scroll?: boolean;
     id?: string;
