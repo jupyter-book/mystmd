@@ -262,15 +262,12 @@ export function reduceOutputs(
         outputNode.type = '__delete__';
         return;
       }
-      if (!outputNode.jupyter_data && !outputNode.children?.length) {
-        outputNode.type = '__delete__';
-        return;
-      }
       // Lift the `output` node into `Outputs`
       outputNode.type = '__lift__';
 
       // If the output already has children, we don't need to do anything
-      if (outputNode.children?.length) {
+      // Or, if it has no output data (should not happen)
+      if (outputNode.children?.length || !outputNode.jupyter_data) {
         return;
       }
 
