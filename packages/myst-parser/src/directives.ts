@@ -3,18 +3,18 @@ import type {
   DirectiveData,
   DirectiveSpec,
   DirectiveContext,
-  ParseTypes,
   GenericParent,
 } from 'myst-common';
 import { RuleId, fileError, fileWarn } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import { contentFromNode } from './utils.js';
+import { contentFromNode, markChildrenAsProcessed } from './utils.js';
 import type { Directive } from 'myst-spec';
 import { parseOptions } from './inlineAttributes.js';
 
 type MystDirectiveNode = GenericNode & {
   name: string;
+  processed?: false;
 };
 /**
  * Apply directive `run()` methods to build directive ASTs.
@@ -47,12 +47,20 @@ export function applyDirectives(
       }
     });
   });
-  // Find all raw directive nodes
+  // Find all raw directive nodes, these will have a `processed` attribute set to `false`
   const nodes = selectAll('mystDirective[processed=false]', tree) as MystDirectiveNode[];
   nodes.forEach((node) => {
-    delete node.processed; // Indicate that the directive has been processed
     const { name } = node;
     const spec = specLookup[name];
+    if (spec && spec.body && spec.body.type !== 'myst') {
+      // Do not process the children of the directive that is not a myst block
+      // Doing so would raise errors (for example, if the parent directive is a code block)
+      // See https://github.com/jupyter-book/mystmd/issues/2530
+      markChildrenAsProcessed(node);
+    }
+    // Re-check if the directive has been processed
+    if (node.processed !== false) return;
+    delete node.processed; // Indicate that the directive has been processed
     if (!spec) {
       fileError(vfile, `unknown directive: ${name}`, { node, ruleId: RuleId.directiveKnown });
       // We probably want to do something better than just delete the children and

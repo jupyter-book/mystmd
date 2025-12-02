@@ -1,5 +1,6 @@
 import { fileError, fileWarn, ParseTypesEnum } from 'myst-common';
 import type { GenericNode, ArgDefinition, RuleId } from 'myst-common';
+import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 
 export function contentFromNode(
@@ -58,4 +59,14 @@ export function contentFromNode(
     }
     return !!value;
   }
+}
+
+export function markChildrenAsProcessed(node: GenericNode) {
+  const children = selectAll('mystDirective,mystRole', {
+    type: 'root',
+    children: node.children,
+  }) as GenericNode[];
+  children.forEach((child) => {
+    delete child.processed;
+  });
 }

@@ -1,7 +1,14 @@
 import { describe, expect, test } from 'vitest';
-import { normalizeLabel, type GenericNode, type RoleData, type RoleSpec } from 'myst-common';
+import {
+  normalizeLabel,
+  RuleId,
+  type GenericNode,
+  type RoleData,
+  type RoleSpec,
+} from 'myst-common';
 import { mystParse } from '../../src';
 import { position, positionFn } from '../position';
+import { VFile } from 'vfile';
 
 describe('role spec with options', () => {
   test('complex inline role with options', () => {
@@ -87,5 +94,18 @@ describe('role spec with options', () => {
         },
       ],
     });
+  });
+  test('Errors not raised for roles that are not processed', () => {
+    const vfile1 = new VFile();
+    mystParse('{cite}`` {noerror}`asdf` ``', { vfile: vfile1 }) as any;
+    expect(vfile1.messages).toEqual([]);
+    const vfile2 = new VFile();
+    mystParse('{error}`asdf`', { vfile: vfile2 }) as any;
+    expect(vfile2.messages).toMatchObject([
+      {
+        message: 'unknown role: error',
+        ruleId: RuleId.roleKnown,
+      },
+    ]);
   });
 });
