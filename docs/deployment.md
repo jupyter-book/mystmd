@@ -112,12 +112,34 @@ For example:
 
 If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
 
-For example, the following example first defines a `BASE_URL` parameter and then builds the MyST HTML assets.
+In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets.
 
+::::{tab-set}
+:::{tab-item} Bash
 ```bash
 export BASE_URL="/repository_name"
 myst build --html
 ```
+:::
+:::{tab-item} Powershell
+```powershell
+$env:BASE_URL = "/folder1/folder2" 
+myst build --html
+```
+:::
+:::{tab-item} Fish
+```fish
+set -x BASE_URL "/folder1/folder2"
+myst build --html
+```
+:::
+:::{tab-item} CMD
+```cmd
+set BASE_URL=/folder1/folder2
+myst build --html
+```
+:::
+::::
 
 :::{tip} Set `BASE_URL` in your CI/CD
 You can set environment variables in many CI/CD services like GitHub Actions and Netlify.
