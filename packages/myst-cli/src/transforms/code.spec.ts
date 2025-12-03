@@ -162,7 +162,10 @@ function build_mdast(tags: string[], has_output: boolean) {
     ],
   };
   if (has_output) {
-    mdast.children[0].children.push({ type: 'output' });
+    mdast.children[0].children.push({
+      type: 'outputs',
+      children: [{ type: 'output', children: [] }],
+    });
   }
   return mdast;
 }
@@ -261,7 +264,7 @@ describe('propagateBlockDataToCode', () => {
           const mdast = build_mdast([tag], has_output);
           propagateBlockDataToCode(new Session(), new VFile(), mdast);
           let result = '';
-          const outputNode = mdast.children[0].children[1];
+          const outputsNode = mdast.children[0].children[1];
           switch (target) {
             case 'cell':
               result = mdast.children[0].visibility;
@@ -270,12 +273,14 @@ describe('propagateBlockDataToCode', () => {
               result = mdast.children[0].children[0].visibility;
               break;
             case 'output':
-              if (!has_output && target == 'output') {
-                expect(outputNode).toEqual(undefined);
+              if (!has_output) {
+                expect(outputsNode).toEqual(undefined);
                 continue;
               }
-              result = outputNode.visibility;
+              result = outputsNode.visibility;
               break;
+            default:
+              throw new Error();
           }
           expect(result).toEqual(action);
         }
@@ -290,18 +295,18 @@ describe('propagateBlockDataToCode', () => {
         propagateBlockDataToCode(new Session(), new VFile(), mdast);
         const blockNode = mdast.children[0];
         const codeNode = mdast.children[0].children[0];
-        const outputNode = mdast.children[0].children[1];
+        const outputsNode = mdast.children[0].children[1];
         expect(blockNode.visibility).toEqual(action);
         expect(codeNode.visibility).toEqual(action);
         if (has_output) {
-          expect(outputNode.visibility).toEqual(action);
+          expect(outputsNode.visibility).toEqual(action);
         } else {
-          expect(outputNode).toEqual(undefined);
+          expect(outputsNode).toEqual(undefined);
         }
       }
     }
   });
-  it('placeholder creates image node child of output', async () => {
+  it('placeholder creates image node child of outputs', async () => {
     const mdast: any = {
       type: 'root',
       children: [
@@ -313,7 +318,8 @@ describe('propagateBlockDataToCode', () => {
               executable: true,
             },
             {
-              type: 'output',
+              type: 'outputs',
+              children: [],
             },
           ],
           data: {
@@ -323,12 +329,12 @@ describe('propagateBlockDataToCode', () => {
       ],
     };
     propagateBlockDataToCode(new Session(), new VFile(), mdast);
-    const outputNode = mdast.children[0].children[1];
-    expect(outputNode.children?.length).toEqual(1);
-    expect(outputNode.children[0].type).toEqual('image');
-    expect(outputNode.children[0].placeholder).toBeTruthy();
+    const outputsNode = mdast.children[0].children[1];
+    expect(outputsNode.children?.length).toEqual(1);
+    expect(outputsNode.children[0].type).toEqual('image');
+    expect(outputsNode.children[0].placeholder).toBeTruthy();
   });
-  it('placeholder passes with no output', async () => {
+  it('placeholder passes with no outputs', async () => {
     const mdast: any = {
       type: 'root',
       children: [

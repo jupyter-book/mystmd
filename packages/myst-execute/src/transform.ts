@@ -11,7 +11,7 @@ import type { Plugin } from 'unified';
 import { createHash } from 'node:crypto';
 import type { ICache } from './cache.js';
 import { createKernelConnection } from './kernel.js';
-import { isCellBlock, isInlineExpression, codeBlockRaisesException } from './utils.js';
+import { isCodeBlock, isInlineExpression, codeBlockRaisesException } from './utils.js';
 import type { ExecutableNode, ExecutionResult } from './types.js';
 import {
   getExecutableNodes,
@@ -35,7 +35,7 @@ function buildCacheKey(
     raisesException: boolean;
   }[] = [];
   for (const node of nodes) {
-    if (isCellBlock(node)) {
+    if (isCodeBlock(node)) {
       hashableItems.push({
         kind: node.type,
         content: (select('code', node) as Code).value,
