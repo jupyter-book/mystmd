@@ -196,7 +196,7 @@ Of course, internal links will be generated accordingly, and the `file` property
 In order to compute a page's slug, MyST will use the filename and:
 
 - remove preceding numbers (unless they are year-like, e.g. 1988-02 or 2022);
-- rename any non-url characters (spaces, underscores, etc.) to `-`;
+- change any non-url characters (spaces, underscores, etc.) to dashes`-`;
 - lowercase the filename;
 - remove any file extensions (e.g. `.md` or `.ipynb`);
 - and keep the slug less than 50 characters.
