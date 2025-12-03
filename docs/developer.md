@@ -309,6 +309,14 @@ The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
 ```
 
+### Local docs workflows (preview/build)
+
+To run a MyST server with your local changes and a preview of the documentation, run:
+
+```shell
+$ npm run docs
+```
+
 ## Local development: myst-theme
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
