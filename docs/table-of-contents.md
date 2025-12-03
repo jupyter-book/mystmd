@@ -185,7 +185,7 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 
 ## URL slugs and folder structure
 
-For web-based exports, unlike other systems that use filenames and paths to create URLs that refer to pages, MyST will create **slugs** to refer to pages.
+For web-based exports, unlike other systems that use filenames and paths to create URLs that refer to pages, MyST will create [slugs](https://en.wikipedia.org/wiki/Clean_URL#Slug) to refer to pages.
 
 This means for example that a page whose source page is in `folder1/folder2/01_my_article.md` will be reachable by URL that simply reads `my-article` (from the website root URL)
 
