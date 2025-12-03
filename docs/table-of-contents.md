@@ -201,10 +201,7 @@ In order to compute a page's slug, MyST will use the filename and:
 - remove any file extensions (e.g. `.md` or `.ipynb`);
 - and keep the slug less than 50 characters.
 
-So for example
-
-- `01-notebook.ipynb` will become `notebook`
-- `2021_02_presentation.md` will remain `2021-02-presentation`
+[See some examples below](#toc-slugs)
 
 If there are duplicates, these will be enumerated with a trailing number (e.g. `readme-1`).
 
@@ -228,11 +225,49 @@ site:
 ...
 ```
 
-### More examples
+### Slug examples
+
+Here are some more examples of how filenames are converted to slugs
 
 :::{list-table}
 :header-rows: 1
 :align: center
+:label: toc-slugs
+
+* - file path
+  - slug
+* - `simple-page.md`
+  - `simple-page`
+* - `multiple---dashes.md`
+  - `multiple-dashes`
+* - `12-01-remove_digits.md`
+  - `remove-digits`
+* - `approx-π-suite.md`
+  - `approx-suite`
+* - `notes-élémentaires.md`
+  - `notes-l-mentaires`
+* - `2025_12_01-dates.md`
+  - `2025-12-01-dates`
+* - `2025_12_01.md`
+  - `2025-12-01`
+* - `2025_12.md`
+  - `2025-12-1`
+* - `2025-12-01-minutes.md`
+  - `2025-12-01-minutes`
+* - `2025-12.md`
+  - `2025-12-1`
+* - `2025.md`
+  - `2025`
+* - `01.md`
+  - `01`
+:::
+
+And here are illustrations of the effect of setting `site.options.folders` to `true` or `false`
+
+:::{list-table}
+:header-rows: 1
+:align: center
+:label: toc-folders
 
 * - file path
   - default
@@ -240,12 +275,9 @@ site:
 * - `simple-page.md`
   - `simple-page`
   - `simple-page`
-* - `folder/01-intro-physics.md`
-  - `intro-physics`
-  - `folder/intro-physics`
-* - `f1/f2/2021-02-minutes.md`
-  - `2021-02-minutes`
-  - `f1/f2/2021-02-minutes`
+* - `f1/f2/nested-file.md`
+  - `nested-file`
+  - `f1/f2/nested-file`
 :::
 
 (implicit-toc)=
