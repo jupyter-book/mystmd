@@ -103,6 +103,22 @@ project:
 ::::
 :::::
 
+#### Reverse order
+
+You can reverse the sort order of files matched by a pattern by adding `reverse: true` to the pattern entry. This is useful for archives where you want the most recent files listed first:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    - file: root.md
+    - pattern: '*.md'
+      reverse: true
+```
+
+This will list files in reverse chronological order (newest first), which is particularly useful for meeting notes, blog posts, or other time-based content.
+
 ### Nesting pages and dropdowns
 
 For larger projects, you can group the content using the `children` key, which can be defined for both `url` and `file` entries:

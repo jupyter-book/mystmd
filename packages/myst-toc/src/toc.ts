@@ -138,7 +138,7 @@ export function validatePatternEntry(
     entry,
     {
       required: ['pattern'],
-      optional: [...COMMON_ENTRY_KEYS],
+      optional: [...COMMON_ENTRY_KEYS, 'reverse'],
     },
     opts,
   );
@@ -152,7 +152,13 @@ export function validatePatternEntry(
   }
 
   const commonEntry = validateCommonEntry(intermediate, opts);
-  return { pattern, ...commonEntry };
+  const output: PatternEntry = { pattern, ...commonEntry };
+
+  if (defined(intermediate.reverse)) {
+    output.reverse = validateBoolean(intermediate.reverse, incrementOptions('reverse', opts));
+  }
+
+  return output;
 }
 
 export function validateParentEntry(entry: any, opts: ValidationOptions): ParentEntry | undefined {
