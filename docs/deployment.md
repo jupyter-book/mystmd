@@ -112,7 +112,7 @@ For example:
 
 If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
 
-In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets. 
+In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets.
 
 ::::{tab-set}
 :::{tab-item} Bash
