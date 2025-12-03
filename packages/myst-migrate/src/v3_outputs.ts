@@ -2,7 +2,7 @@ import { selectAll } from 'unist-util-select';
 import type { IFile } from './types.js';
 
 export const VERSION = 3;
-export const DATE = new Date(Date.parse('2025-07-30'));
+export const DATE = new Date(Date.parse('2025-12-03'));
 
 export const DESCRIPTION = `
 \`Output\` nodes previously could not represent AST trees for each output. 
