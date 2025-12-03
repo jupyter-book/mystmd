@@ -10,6 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSources": false,
     "isolatedModules": true,
+    "lib": ["es2022"],
     "module": "node18",
     "moduleResolution": "node16",
     "allowSyntheticDefaultImports": true,
