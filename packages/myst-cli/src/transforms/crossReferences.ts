@@ -9,6 +9,8 @@ import type { CrossReference, Dependency, Link, SourceFileKind } from 'myst-spec
 import type { ISession } from '../session/types.js';
 import { loadFromCache, writeToCache } from '../session/cache.js';
 import type { SiteAction, SiteExport } from 'myst-config';
+import { migrate } from 'myst-migrate';
+import { SPEC_VERSION } from '../spec-version.js';
 
 export const XREF_MAX_AGE = 1; // in days
 
@@ -58,6 +60,7 @@ async function fetchMystData(
   if (cacheData) {
     return JSON.parse(cacheData) as MystData;
   }
+
   let data: MystData;
   try {
     const resp = await session.fetch(dataUrl);
@@ -67,7 +70,36 @@ async function fetchMystData(
     data = (await resp.json()) as MystData;
   } catch {
     return onError('Could not load fetched data');
-    // data is unset
+  }
+
+  // Migrate external content if version differs from current
+  if (data.mdast && data.version !== undefined && data.version !== SPEC_VERSION) {
+    session.log.info(
+      `Migrating external content from v${data.version} to v${SPEC_VERSION} for ${urlSource}`,
+    );
+    try {
+      const migrateFile = {
+        version: data.version,
+        mdast: data.mdast,
+      };
+
+      const migrated = await migrate(migrateFile, {
+        to: SPEC_VERSION,
+        log: session.log,
+      });
+
+      data.mdast = migrated.mdast;
+      data.version = migrated.version;
+
+      session.log.debug(
+        `Migrated external content from v${migrateFile.version} to v${SPEC_VERSION} for ${urlSource}`,
+      );
+    } catch (error) {
+      session.log.warn(
+        `Failed to migrate external content from v${data.version} to v${SPEC_VERSION}: ${error}`,
+      );
+      // Continue with original content if migration fails
+    }
   }
 
   writeToCache(session, filename, JSON.stringify(data));
