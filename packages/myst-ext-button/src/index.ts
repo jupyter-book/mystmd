@@ -1,7 +1,10 @@
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
 import type { Link } from 'myst-spec-ext';
 
-const REF_PATTERN = /^(.+?)<([^<>]+)>$/;
+// Matches "body<label>" and captures the body text (group 1) and link target (group 2).
+const BODY_TARGET_PATTERN = /^(.+?)<([^<>]+)>$/;
+// Matches an autolink-style "<target>" body.
+const AUTOLINK_PATTERN = /^<([^<>]+)>$/;
 
 export const buttonRole: RoleSpec = {
   name: 'button',
@@ -13,16 +16,43 @@ export const buttonRole: RoleSpec = {
   },
   run(data: RoleData): GenericNode[] {
     const body = data.body as string;
-    const match = REF_PATTERN.exec(body);
-    const [, modified, rawLabel] = match ?? [];
-    const url = rawLabel ?? body;
-    const node: Link = {
-      type: 'link',
-      url,
-      children: [],
-      class: 'button', // TODO: allow users to extend this
-    };
-    if (modified) node.children = [{ type: 'text', value: modified.trim() }];
-    return [node];
+    /**
+     * Behavior:
+     * - `{button}`text`` => button with text only (no link target).
+     * - `{button}`<text>`` => button links to `text`, shows `text`.
+     * - `{button}`text<label>`` => button links to `label`, shows `text`.
+     */
+    const bodyTargetMatch = BODY_TARGET_PATTERN.exec(body);
+    if (bodyTargetMatch) {
+      const [, bodyText, target] = bodyTargetMatch;
+      const displayText = bodyText.trim();
+      const node: Link = {
+        type: 'link',
+        url: target,
+        children: displayText ? [{ type: 'text', value: displayText }] : [],
+        class: 'button', // TODO: allow users to extend this
+      };
+      return [node];
+    }
+
+    const autolinkMatch = AUTOLINK_PATTERN.exec(body);
+    if (autolinkMatch) {
+      const [, target] = autolinkMatch;
+      const node: Link = {
+        type: 'link',
+        url: target,
+        children: [{ type: 'text', value: target }],
+        class: 'button',
+      };
+      return [node];
+    }
+
+    return [
+      {
+        type: 'span',
+        class: 'button',
+        children: [{ type: 'text', value: body }],
+      },
+    ];
   },
 };
