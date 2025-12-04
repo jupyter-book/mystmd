@@ -1,5 +1,12 @@
 # myst-config
 
+## 1.9.2
+
+### Patch Changes
+
+- myst-common@1.9.2
+- myst-frontmatter@1.9.2
+
 ## 1.9.1
 
 ### Patch Changes

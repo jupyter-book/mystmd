@@ -1,5 +1,15 @@
 # myst-to-tex
 
+## 1.0.43
+
+### Patch Changes
+
+- b8ed7ca: Paragraph after table without container
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+
 ## 1.0.42
 
 ### Patch Changes

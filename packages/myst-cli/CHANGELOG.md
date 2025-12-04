@@ -1,5 +1,25 @@
 # myst-cli
 
+## 1.7.0
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [b8ed7ca]
+- Updated dependencies [afb68b1]
+- Updated dependencies [fae1ab1]
+- Updated dependencies [2e6e81f]
+  - myst-to-tex@1.0.43
+  - myst-to-jats@1.0.35
+  - myst-parser@1.6.3
+  - myst-transforms@1.3.44
+  - myst-spec-ext@1.9.2
+  - myst-execute@0.3.2
+  - myst-common@1.9.2
+  - myst-config@1.9.2
+  - myst-frontmatter@1.9.2
+  - tex-to-myst@1.0.43
+
 ## 1.6.7
 
 ### Patch Changes

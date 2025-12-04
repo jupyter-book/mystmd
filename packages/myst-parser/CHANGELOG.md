@@ -1,5 +1,15 @@
 # myst-parser
 
+## 1.6.3
+
+### Patch Changes
+
+- fae1ab1: Do not raise errors on unprocessed nodes
+- Updated dependencies [2e6e81f]
+  - myst-directives@1.6.3
+  - myst-common@1.9.2
+  - myst-roles@1.6.3
+
 ## 1.6.2
 
 ### Patch Changes

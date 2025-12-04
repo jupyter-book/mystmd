@@ -1,5 +1,12 @@
 # myst-execute
 
+## 0.3.2
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+  - myst-common@1.9.2
+
 ## 0.3.1
 
 ### Patch Changes
