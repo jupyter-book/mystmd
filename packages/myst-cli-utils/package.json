@@ -37,6 +37,6 @@
   },
   "devDependencies": {
     "@types/pretty-hrtime": "^1.0.1",
-    "node-fetch": "^3.3.0"
+    "undici": "^7.16.0"
   }
 }

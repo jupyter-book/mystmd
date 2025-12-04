@@ -1,5 +1,6 @@
 import fs, { createWriteStream, mkdirSync } from 'node:fs';
 import { extname, join, parse, sep } from 'node:path';
+import { pipeline } from 'node:stream/promises';
 import { createHash } from 'node:crypto';
 import AdmZip from 'adm-zip';
 import { glob } from 'glob';
@@ -214,12 +215,9 @@ export async function downloadAndUnzipTemplate(
   const { templatePath } = opts;
   const zipFile = join(templatePath, 'template.zip');
   mkdirSync(templatePath, { recursive: true });
-  const fileStream = createWriteStream(zipFile);
-  await new Promise((resolve, reject) => {
-    res.body?.pipe(fileStream);
-    res.body?.on('error', reject);
-    fileStream.on('finish', resolve as () => void);
-  });
+  if (res.body) {
+    await pipeline(res.body, createWriteStream(zipFile));
+  }
   session.log.debug(`Unzipping template on disk ${zipFile}`);
 
   const zip = new AdmZip(zipFile);
