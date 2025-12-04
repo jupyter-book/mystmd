@@ -30,7 +30,7 @@ This has activated GitHub Pages to accept new HTML from GitHub actions.
 To trigger the action, push new commits of code to the branch that you've configured with the action above. You should start seeing your website show up at `<githuborg>.github.io/<githubrepo>`.
 
 ## `BASE_URL` Configuration for GitHub Pages
-The MyST CLI needs to know the destination (base URL) for your site during build time. If you setup deployment to GitHub Pages using the `myst init --gh-pages` command, then _this is handled automatically for you_. Otherwise, if you deploy your website from a repository that's not the default GitHub Pages repository (i.e., not called `<username>.github.io`), you likely need to define a `BASE_URL` that includes the repository name.[^except-custom-domains] 
+The MyST CLI needs to know the destination (base URL) of your site during build time. If you setup deployment to GitHub Pages using the `myst init --gh-pages` command, then _this is handled automatically for you_. Otherwise, if you deploy your website from a repository that's not the default GitHub Pages repository (i.e., not called `<username>.github.io`), you likely need to define a `BASE_URL` that includes the repository name.[^except-custom-domains] 
 [^except-custom-domains]: If you're using a custom domain, you may not need to set `BASE_URL` if the site is served from the base domain (e.g.: `mydomain.org`) without a sub-folder (e.g., `mydomain.org/mydocs/`).
 
 ## Example: A Full GitHub Action
