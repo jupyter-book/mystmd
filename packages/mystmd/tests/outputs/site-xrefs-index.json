@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "kind": "Article",
   "sha256": "3d6a8ef1f1f05f1044bd591cab831ca63d663cdff14e09d39c203b9063fc1059",
   "slug": "index",
@@ -427,7 +427,7 @@
               },
               {
                 "type": "link",
-                "url": "https://docs.python.org/3.7/library/abc.html",
+                "url": "https://docs.python.org/3.13/library/abc.html",
                 "position": {
                   "start": { "line": 31, "column": 1 },
                   "end": { "line": 31, "column": 1 }

@@ -8,11 +8,20 @@ type ProjectPage = {
   title: string;
   level: number;
   slug?: string;
+  url?: string;
   enumerator?: string;
 };
 
+function makeList(children?: ListItem[]): List {
+  return { type: 'list', children: children != null ? children : [] };
+}
+
+function makeListItem(child: Text | Link): ListItem {
+  return { type: 'listItem', children: [child] };
+}
+
 function listFromPages(pages: ProjectPage[], projectSlug?: string): List {
-  if (pages.length === 0) return { type: 'list', children: [] };
+  if (pages.length === 0) return makeList();
   let ignore = false;
   const level = pages[0].level;
   const children = pages
@@ -22,38 +31,60 @@ function listFromPages(pages: ProjectPage[], projectSlug?: string): List {
       if (page.level !== level) return undefined;
       return listItemFromPages(pages.slice(index), projectSlug);
     })
-    .filter((item): item is ListItem => !!item);
-  return { type: 'list', children };
+    // Remove any undefined items.
+    .filter((item): item is ListItem => item !== undefined);
+  return makeList(children);
 }
 
-function listItemFromPages(pages: ProjectPage[], projectSlug?: string) {
-  if (pages.length === 0) return;
-  const { title, slug, enumerator, level } = pages[0];
-  const text: Text = {
-    type: 'text',
-    value: `${enumerator ? `${enumerator} ` : ''}${title}`,
-  };
-  const child: Text | Link =
-    slug != null
-      ? ({
-          type: 'link',
-          url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
-          internal: true,
-          children: [text],
-        } as Link)
-      : text;
-  const item: ListItem = {
-    type: 'listItem',
-    children: [child],
-  };
-  if (pages[1] && pages[1].level > level) {
+function listItemFromPages(pages: ProjectPage[], projectSlug?: string): ListItem {
+  // pages will never be an empty array.
+  const page = pages[0];
+  const child = transformPage(page, projectSlug);
+  const item = makeListItem(child);
+  const nextPage = pages[1];
+
+  // If there is a next page and it is the root of a subtree, recurse into it
+  // and add the resultant List to this item's children.
+  if (nextPage && nextPage.level > page.level) {
     item.children.push(listFromPages(pages.slice(1), projectSlug));
   }
   return item;
 }
 
+/**
+ * transformPage captures the base case of the mutual recursion
+ * implemented by the pair of functions listFromPages/listItemFromPages
+ */
+function transformPage(page: ProjectPage, projectSlug?: string): Text | Link {
+  const { title, slug, url, enumerator, level } = page;
+  const text: Text = {
+    type: 'text',
+    value: `${enumerator ? `${enumerator} ` : ''}${title}`,
+  };
+  // Link to an external site if url is given
+  if (url !== undefined) {
+    return {
+      type: 'link',
+      url: url,
+      internal: false,
+      children: [text],
+    } as Link;
+    // Link to an internal page if slug is given
+  } else if (slug != null) {
+    return {
+      type: 'link',
+      url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
+      internal: true,
+      children: [text],
+    } as Link;
+    // Otherwise plain text
+  } else {
+    return text;
+  }
+}
+
 function listFromHeadings(headings: Heading[]): List {
-  if (headings.length === 0) return { type: 'list', children: [] };
+  if (headings.length === 0) return makeList();
   let ignore = false;
   const depth = headings[0].depth;
   const children = headings
@@ -63,18 +94,37 @@ function listFromHeadings(headings: Heading[]): List {
       if (heading.depth !== depth) return undefined;
       return listItemFromHeadings(headings.slice(index));
     })
-    .filter((item): item is ListItem => !!item);
-  return { type: 'list', children };
+    // Remove any undefined items.
+    .filter((item): item is ListItem => item !== undefined);
+  return makeList(children);
 }
 
-function listItemFromHeadings(headings: Heading[]) {
-  if (headings.length === 0) return;
-  const { children, enumerator, depth, identifier } = headings[0];
+function listItemFromHeadings(headings: Heading[]): ListItem {
+  // headings will never be an empty array.
+  const heading = headings[0];
+  const child = transformHeading(heading);
+  const item = makeListItem(child);
+
+  // If there is a next heading and it is the root of a subtree, recurse into it
+  // and add the resultant List to this item's children.
+  const nextHeading = headings[1];
+  if (nextHeading && nextHeading.depth > heading.depth) {
+    item.children.push(listFromHeadings(headings.slice(1)));
+  }
+  return item;
+}
+
+/**
+ * transformHeading captures the base case of the mutual recursion
+ * implemented by the pair of functions listFromHeadings/listItemFromHeadings
+ */
+function transformHeading(heading: Heading): Text | Link {
+  const { children, enumerator, depth, identifier } = heading;
   const text: Text = {
     type: 'text',
     value: `${enumerator ? `${enumerator} ` : ''}${toText(children)}`,
   };
-  const child: Text | Link = identifier
+  return identifier
     ? ({
         type: 'link',
         url: `#${identifier}`,
@@ -83,14 +133,94 @@ function listItemFromHeadings(headings: Heading[]) {
         suppressImplicitWarning: true,
       } as Link)
     : text;
-  const item: ListItem = {
-    type: 'listItem',
-    children: [child],
-  };
-  if (headings[1] && headings[1].depth > depth) {
-    item.children.push(listFromHeadings(headings.slice(1)));
+}
+
+function transformProjectTocs(
+  vfile: VFile,
+  tocsAndHeadings: GenericNode[],
+  pages?: ProjectPage[],
+  projectSlug?: string,
+) {
+  // Select 'project' type TOC nodes.
+  const projectTocs = tocsAndHeadings.filter(
+    (node) => node.type === 'toc' && node.kind === 'project',
+  );
+  // No project TOCs found, nothing to do.
+  if (projectTocs.length === 0) return;
+
+  if (!pages) {
+    fileError(vfile, `Pages not available to build Table of Contents`);
+    return;
   }
-  return item;
+
+  if (pages[0].level !== 1) {
+    fileWarn(vfile, `First page of Table of Contents must be level 1`);
+  }
+  projectTocs.forEach((toc) => {
+    const filteredPages = toc.depth ? pages.filter((page) => page.level <= toc.depth) : pages;
+    toc.type = 'block';
+    delete toc.kind;
+    toc.data = { part: 'toc:project' };
+    if (!toc.children) toc.children = [];
+    toc.children.push(listFromPages(filteredPages, projectSlug));
+  });
+}
+
+function transformPageTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
+  // Select 'page' type TOC nodes.
+  const pageTocs = tocsAndHeadings.filter((node) => node.type === 'toc' && node.kind === 'page');
+  // No page TOCs found, nothing to do.
+  if (pageTocs.length === 0) return;
+
+  const headings = tocsAndHeadings.filter((node) => node.type === 'heading') as Heading[];
+  if (headings.length === 0) {
+    fileWarn(vfile, `No page headings found for Table of Contents`);
+    return;
+  }
+
+  if (Math.min(...headings.map((h) => h.depth)) !== headings[0].depth) {
+    fileWarn(vfile, 'Page heading levels do not start with highest level');
+  }
+  pageTocs.forEach((toc) => {
+    const filteredHeadings = toc.depth
+      ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
+      : headings;
+    toc.type = 'block';
+    delete toc.kind;
+    toc.data = { part: 'toc:page' };
+    if (!toc.children) toc.children = [];
+    toc.children.push(listFromHeadings(filteredHeadings));
+  });
+}
+
+function transformSectionTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
+  // Select 'section' type TOC nodes.
+  const isSectionToc = (node: GenericNode) => node.type === 'toc' && node.kind === 'section';
+
+  tocsAndHeadings.forEach((toc, index) => {
+    if (!isSectionToc(toc)) return;
+
+    const headings = tocsAndHeadings
+      .slice(index + 1)
+      .filter((h) => h.type === 'heading') as Heading[];
+    if (headings.length === 0) {
+      fileWarn(vfile, `No section headings found for Table of Contents`);
+    } else {
+      const filteredHeadings = toc.depth
+        ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
+        : headings;
+      toc.type = 'block';
+      delete toc.kind;
+      toc.data = { part: 'toc:section' };
+      if (!toc.children) toc.children = [];
+      const nextSection = filteredHeadings.findIndex((h) => h.depth < filteredHeadings[0].depth);
+      toc.children.push(
+        listFromHeadings(
+          nextSection === -1 ? filteredHeadings : filteredHeadings.slice(0, nextSection),
+        ),
+      );
+    }
+  });
 }
 
 export function buildTocTransform(
@@ -104,74 +234,8 @@ export function buildTocTransform(
     // Do not include toc headings anywhere in this transform
     return !tocHeadings.includes(item);
   }) as GenericNode[];
-  if (!tocsAndHeadings.find((node) => node.type === 'toc')) return;
-  const projectTocs = tocsAndHeadings.filter(
-    (node) => node.type === 'toc' && node.kind === 'project',
-  );
-  const pageTocs = tocsAndHeadings.filter((node) => node.type === 'toc' && node.kind === 'page');
-  const sectionTocs = tocsAndHeadings.filter(
-    (node) => node.type === 'toc' && node.kind === 'section',
-  );
-  if (projectTocs.length) {
-    if (!pages) {
-      fileError(vfile, `Pages not available to build Table of Contents`);
-    } else {
-      if (pages[0].level !== 1) {
-        fileWarn(vfile, `First page of Table of Contents must be level 1`);
-      }
-      projectTocs.forEach((toc) => {
-        const filteredPages = toc.depth ? pages.filter((page) => page.level <= toc.depth) : pages;
-        toc.type = 'block';
-        delete toc.kind;
-        toc.data = { part: 'toc:project' };
-        if (!toc.children) toc.children = [];
-        toc.children.push(listFromPages(filteredPages, projectSlug));
-      });
-    }
-  }
-  if (pageTocs.length) {
-    const headings = tocsAndHeadings.filter((node) => node.type === 'heading') as Heading[];
-    if (headings.length === 0) {
-      fileWarn(vfile, `No page headings found for Table of Contents`);
-    } else {
-      if (Math.min(...headings.map((h) => h.depth)) !== headings[0].depth) {
-        fileWarn(vfile, 'Page heading levels do not start with highest level');
-      }
-      pageTocs.forEach((toc) => {
-        const filteredHeadings = toc.depth
-          ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
-          : headings;
-        toc.type = 'block';
-        delete toc.kind;
-        toc.data = { part: 'toc:page' };
-        if (!toc.children) toc.children = [];
-        toc.children.push(listFromHeadings(filteredHeadings));
-      });
-    }
-  }
-  if (sectionTocs.length) {
-    tocsAndHeadings.forEach((toc, index) => {
-      if (toc.type !== 'toc' || toc.kind !== 'section') return;
-      const headings = tocsAndHeadings
-        .slice(index + 1)
-        .filter((h) => h.type === 'heading') as Heading[];
-      if (headings.length === 0) {
-        fileWarn(vfile, `No section headings found for Table of Contents`);
-      } else {
-        const filteredHeadings = toc.depth
-          ? headings.filter((heading) => heading.depth - headings[0].depth < toc.depth)
-          : headings;
-        toc.type = 'block';
-        delete toc.kind;
-        toc.data = { part: 'toc:section' };
-        if (!toc.children) toc.children = [];
-        const nextSection = filteredHeadings.findIndex((h) => h.depth < filteredHeadings[0].depth);
-        toc.children.push(
-          listFromHeadings(
-            nextSection === -1 ? filteredHeadings : filteredHeadings.slice(0, nextSection),
-          ),
-        );
-      }
-    });
-  }
+
+  transformProjectTocs(vfile, tocsAndHeadings, pages, projectSlug);
+  transformPageTocs(vfile, tocsAndHeadings);
+  transformSectionTocs(vfile, tocsAndHeadings);
 }

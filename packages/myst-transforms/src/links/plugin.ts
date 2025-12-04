@@ -20,7 +20,7 @@ export function formatLinkText(link: Link) {
   if (link.children?.length !== 1 || link.children[0].type !== 'text') return;
   const url = link.children[0].value;
   // Add an exception for wiki transforms links.
-  if (url.length < 20 || url.match(/\s/)) return;
+  if (!url || url.length < 20 || url.match(/\s/)) return;
   if (url.includes('​')) return;
   // Split the URL into an array to distinguish double slashes from single slashes
   const doubleSlash = url.split('//');

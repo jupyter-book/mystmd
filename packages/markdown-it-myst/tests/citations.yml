@@ -1,4 +1,6 @@
 title: Citations
+plugins:
+  - citations
 cases:
   - title: basic in-text citation
     md: 'In @simpeg2015, the authors...'

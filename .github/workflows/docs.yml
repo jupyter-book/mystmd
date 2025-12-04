@@ -1,6 +1,10 @@
 name: Deploy Docs
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
 concurrency: ${{ github.workflow }}
 permissions:
   contents: write
@@ -9,6 +13,7 @@ jobs:
   release-docs:
     name: Release Documentation
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -26,9 +31,21 @@ jobs:
           sudo apt-get install -y inkscape imagemagick webp
       - name: Install Curvenote
         run: npm install -g curvenote
-      - name: Deploy the site
-        run: curvenote deploy -y -d --ci --execute
+      - name: Deploy the main documentation
+        run: curvenote deploy -y --ci --execute
         shell: bash
         working-directory: docs
+        env:
+          CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
+      - name: Deploy the transforms docs
+        run: curvenote deploy -y --ci --execute
+        shell: bash
+        working-directory: packages/myst-transforms/docs
+        env:
+          CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
+      - name: Deploy the jtex docs
+        run: curvenote deploy -y --ci --execute
+        shell: bash
+        working-directory: packages/jtex/docs
         env:
           CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}

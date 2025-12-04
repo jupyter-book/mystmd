@@ -11,6 +11,7 @@ export const plugin: Plugin<[Options], Root, VFile> = function (opts) {
     const state = new DocxSerializer(file, opts);
     state.renderChildren(node);
     const doc = createDocFromState(state);
+    // @ts-expect-error document is not defined in node
     if (typeof document === 'undefined') {
       file.result = Packer.toBuffer(doc);
     } else {

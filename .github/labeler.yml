@@ -1,2 +1,16 @@
 release:
   - head-branch: '^changeset-release/main$'
+documentation:
+  - head-branch: '^docs\b'
+  - changed-files:
+      - any-glob-to-all-files: 'docs/*'
+maintenance:
+  - head-branch: '^maint\b'
+enhancement:
+  - head-branch:
+      - '^enh\b'
+      - '^feat\b'
+bug:
+  - head-branch:
+      - '^fix\b'
+      - '^bug\b'

@@ -1,5 +1,67 @@
 # myst-directives
 
+## 1.6.3
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+
+## 1.6.2
+
+### Patch Changes
+
+- f1ccba4: Add docstring to `myst` plugin
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+
+## 1.6.1
+
+### Patch Changes
+
+- 1735db4: Add support for iframe title.
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-spec-ext@1.9.0
+  - myst-common@1.9.0
+
+## 1.6.0
+
+### Patch Changes
+
+- myst-common@1.8.4
+- myst-spec-ext@1.8.4
+
+## 1.5.17
+
+### Patch Changes
+
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+  - myst-common@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 1.5.16
+
+### Patch Changes
+
+- Updated dependencies [9cb280a4b]
+  - myst-spec-ext@1.8.2
+  - myst-common@1.8.2
+
+## 1.5.15
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+  - myst-spec-ext@1.8.1
+  - myst-common@1.8.1
+
 ## 1.5.14
 
 ### Patch Changes

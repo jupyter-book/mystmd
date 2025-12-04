@@ -397,3 +397,26 @@ cases:
                   value: markdown
     typst: |-
       Some % other _markdown_
+  - title: list item with and without paragraph
+    description: |
+      The list item should not add space if there is only a single paragraph.
+      This is resilient to a listItem not having a paragraph as the child.
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A list item'
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'A list item in a paragraph'
+    typst: |-
+      - A list item
+      - A list item in a paragraph

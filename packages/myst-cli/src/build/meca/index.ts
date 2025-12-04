@@ -233,12 +233,12 @@ export async function runMecaExport(
       });
     }
   });
-  // Copy any existing pdf/docx/tex-zip exports
+  // Copy any existing pdf/docx/tex-zip/typst exports
   const manuscriptExports = (
     await collectExportOptions(
       session,
       articleFile ? [articleFile] : [],
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
+      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.typst],
       {
         projectPath,
       },

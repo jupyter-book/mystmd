@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import type { ISession } from 'myst-cli-utils';
 import { writeFileToFolder } from 'myst-cli-utils';
 import { getGithubUrl } from '../../utils/github.js';
-import { binaryName, readableName, npmPackageName } from '../../utils/whiteLabelling.js';
+import { npmBinaryName, readableName, npmPackageName } from '../../utils/whiteLabelling.js';
 import { checkFolderIsGit, checkAtGitRoot } from '../../utils/git.js';
 
 function createGithubPagesAction({
@@ -17,7 +17,7 @@ function createGithubPagesAction({
   defaultBranch?: string;
   isGithubIO?: boolean;
 }) {
-  return `# This file was created automatically with \`${binaryName()} init --gh-pages\` 🪄 💚
+  return `# This file was created automatically with \`${npmBinaryName()} init --gh-pages\` 🪄 💚
 # Ensure your GitHub Pages settings for this repository are set to deploy with **GitHub Actions**.
 
 name: ${readableName()} GitHub Pages Deploy
@@ -61,7 +61,7 @@ jobs:
       - name: Install ${readableName()}
         run: npm install -g ${npmPackageName()}
       - name: Build HTML Assets
-        run: ${binaryName()} build --html
+        run: ${npmBinaryName()} build --html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -73,7 +73,7 @@ jobs:
 }
 
 function createGithubCurvenoteAction({ defaultBranch = 'main' }: { defaultBranch?: string }) {
-  return `# This file was created automatically with \`${binaryName()} init --gh-curvenote\` 🪄 💚
+  return `# This file was created automatically with \`${npmBinaryName()} init --gh-curvenote\` 🪄 💚
 
 name: Curvenote Deploy
 on:
@@ -177,7 +177,7 @@ ${filename}
         ? `at:\n\n    ${githubPagesUrl}\n`
         : 'on your https://{{ organization }}.github.io/{{ repo }} domain'
     }
-7. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
+7. 🎉 Celebrate and tell us about your site on BlueSky or Mastodon! 🐦 🐘
 `,
   );
 }
@@ -218,7 +218,7 @@ ${filename}
 5. Push these changes (and/or merge to ${prompt.branch})
 6. Look for a new action to start${githubUrl ? `\n\n    ${githubUrl}/actions\n` : ''}
 7. Once the action completes, your site should be deployed
-8. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
+8. 🎉 Celebrate and tell us about your site on BlueSky or Mastodon! 🐦 🐘
 `,
   );
 }

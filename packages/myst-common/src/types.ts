@@ -41,6 +41,7 @@ export enum NotebookCellTags {
   'removeCell' = 'remove-cell',
   'removeInput' = 'remove-input',
   'removeOutput' = 'remove-output',
+  'scrollOutput' = 'scroll-output',
   'skipExecution' = 'skip-execution',
   'raisesException' = 'raises-exception',
 }

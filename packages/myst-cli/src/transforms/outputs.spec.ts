@@ -20,17 +20,40 @@ describe('reduceOutputs', () => {
               ],
             },
             {
-              type: 'output',
-              id: 'abc123',
-              data: [],
+              type: 'outputs',
+              children: [
+                {
+                  type: 'output',
+                  id: 'abc123',
+                  jupyter_data: null,
+                  children: [],
+                },
+              ],
             },
           ],
         },
       ],
     };
-    expect(mdast.children[0].children.length).toEqual(2);
     reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast.children[0].children.length).toEqual(1);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'hi',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   });
   it('output with complex data is removed', async () => {
     const mdast = {
@@ -49,18 +72,22 @@ describe('reduceOutputs', () => {
               ],
             },
             {
-              type: 'output',
+              type: 'outputs',
               id: 'abc123',
-              data: [
+              children: [
                 {
-                  output_type: 'display_data',
-                  execution_count: 3,
-                  metadata: {},
-                  data: {
-                    'application/octet-stream': {
-                      content_type: 'application/octet-stream',
-                      hash: 'def456',
-                      path: '/my/path/def456.png',
+                  type: 'output',
+                  children: [],
+                  jupyter_data: {
+                    output_type: 'display_data',
+                    execution_count: 3,
+                    metadata: {},
+                    data: {
+                      'application/octet-stream': {
+                        content_type: 'application/octet-stream',
+                        hash: 'def456',
+                        path: '/my/path/def456.png',
+                      },
                     },
                   },
                 },
@@ -72,9 +99,27 @@ describe('reduceOutputs', () => {
     };
     expect(mdast.children[0].children.length).toEqual(2);
     reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast.children[0].children.length).toEqual(1);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'hi',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
   });
-  it('output is replaced with placeholder image', async () => {
+  it('outputs is replaced with placeholder image', async () => {
     const mdast = {
       type: 'root',
       children: [
@@ -91,9 +136,8 @@ describe('reduceOutputs', () => {
               ],
             },
             {
-              type: 'output',
+              type: 'outputs',
               id: 'abc123',
-              data: [],
               children: [
                 {
                   type: 'image',
@@ -108,11 +152,29 @@ describe('reduceOutputs', () => {
     };
     expect(mdast.children[0].children.length).toEqual(2);
     reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast.children[0].children.length).toEqual(2);
-    expect(mdast.children[0].children[1]).toEqual({
-      type: 'image',
-      placeholder: true,
-      url: 'placeholder.png',
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'paragraph',
+              children: [
+                {
+                  type: 'text',
+                  value: 'hi',
+                },
+              ],
+            },
+            {
+              type: 'image',
+              placeholder: true,
+              url: 'placeholder.png',
+            },
+          ],
+        },
+      ],
     });
   });
   // // These tests now require file IO...

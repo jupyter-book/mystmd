@@ -1,5 +1,38 @@
 # mystmd
 
+## 1.7.0
+
+### Minor Changes
+
+- 2cb54ec: Target Node18
+- 2e6e81f: Add support for new Outputs node
+
+## 1.6.7
+
+## 1.6.6
+
+### Patch Changes
+
+- 788e12f: Pull in latest myst-execute
+
+## 1.6.5
+
+## 1.6.4
+
+## 1.6.3
+
+## 1.6.2
+
+### Patch Changes
+
+- e060c9f1d: Add --config option to CLI to override default myst.yml
+
+## 1.6.1
+
+## 1.6.0
+
+## 1.5.1
+
 ## 1.5.0
 
 ### Patch Changes

@@ -84,6 +84,21 @@ export async function processNotebook(
   return mdast;
 }
 
+/**
+ * Embed the Jupyter output data for a user expression into the AST
+ */
+function embedInlineExpressions(
+  userExpressions: IUserExpressionMetadata[] | undefined,
+  block: GenericNode,
+) {
+  const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
+  inlineNodes.forEach((inlineExpression) => {
+    const data = findExpression(userExpressions, inlineExpression.value);
+    if (!data) return;
+    inlineExpression.result = data.result as unknown as Record<string, unknown>;
+  });
+}
+
 export async function processNotebookFull(
   session: ISession,
   file: string,
@@ -136,17 +151,7 @@ export async function processNotebookFull(
           return acc.concat(...cellMdast.children);
         }
         const block = blockParent(cell, cellMdast.children) as GenericNode;
-
-        // Embed expression results into expression
-        const userExpressions = block.data?.[metadataSection] as
-          | IUserExpressionMetadata[]
-          | undefined;
-        const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
-        inlineNodes.forEach((inlineExpression) => {
-          const data = findExpression(userExpressions, inlineExpression.value);
-          if (!data) return;
-          inlineExpression.result = data.result as unknown as Record<string, unknown>;
-        });
+        embedInlineExpressions(block.data?.[metadataSection], block);
         return acc.concat(block);
       }
       if (cell.cell_type === CELL_TYPES.raw) {
@@ -165,17 +170,16 @@ export async function processNotebookFull(
           value: ensureString(cell.source),
         };
 
-        // Embed outputs in an output block
-        const output: { type: 'output'; id: string; data: IOutput[] } = {
-          type: 'output',
+        const outputs = {
+          type: 'outputs',
           id: nanoid(),
-          data: [],
+          children: (cell.outputs as IOutput[]).map((output) => ({
+            type: 'output',
+            jupyter_data: output,
+            children: [],
+          })),
         };
-
-        if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
-          output.data = cell.outputs as IOutput[];
-        }
-        return acc.concat(blockParent(cell, [code, output]));
+        return acc.concat(blockParent(cell, [code, outputs]));
       }
       return acc;
     },

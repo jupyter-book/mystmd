@@ -1,5 +1,39 @@
 # myst-spec-ext
 
+## 1.9.2
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+
+## 1.9.0
+
+### Patch Changes
+
+- 1735db4: Add support for iframe title.
+
+## 1.8.4
+
+## 1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- 9cb280a4b: Add typst option to inlineMath node
+
+## 1.8.1
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+
 ## 1.8.0
 
 ## 1.7.13

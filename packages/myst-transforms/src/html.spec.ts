@@ -468,6 +468,29 @@ describe('Test reconstructHtmlTransform', () => {
       ],
     });
   });
+  test('iframe tags with title attribute', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value: '<iframe src="https://example.com/video" title="Example Video" />',
+        },
+      ],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'iframe',
+          src: 'https://example.com/video',
+          title: 'Example Video',
+          width: '100%',
+        },
+      ],
+    });
+  });
   test('image tags in html', async () => {
     const mdast = {
       type: 'root',

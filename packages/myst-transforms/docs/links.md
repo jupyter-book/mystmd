@@ -19,7 +19,7 @@ import {
 import { VFile } from 'vfile';
 
 const file = new VFile();
-const intersphinx = [new Inventory({ id: 'python', path: 'https://docs.python.org/3.7' })];
+const intersphinx = [new Inventory({ id: 'python', path: 'https://docs.python.org/3.13' })];
 const transformers = [
   new WikiTransformer(),
   new GithubTransformer(),

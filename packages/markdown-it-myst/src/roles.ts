@@ -1,4 +1,4 @@
-import type MarkdownIt from 'markdown-it/lib';
+import type MarkdownIt from 'markdown-it/lib/index.js';
 import type StateCore from 'markdown-it/lib/rules_core/state_core.js';
 import type StateInline from 'markdown-it/lib/rules_inline/state_inline.js';
 import { nestedPartToTokens } from './nestedParse.js';
@@ -6,7 +6,7 @@ import { inlineOptionsToTokens } from './inlineAttributes.js';
 
 export function rolePlugin(md: MarkdownIt): void {
   md.inline.ruler.before('backticks', 'parse_roles', roleRule);
-  md.core.ruler.after('inline', 'run_roles', runRoles);
+  md.core.ruler.after('text_join', 'run_roles', runRoles);
   // fallback renderer for unhandled roles
   md.renderer.rules['role'] = (tokens, idx) => {
     const token = tokens[idx];

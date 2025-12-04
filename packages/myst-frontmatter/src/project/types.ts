@@ -35,6 +35,7 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'downloads',
   'settings', // We maybe want to move this into site frontmatter in the future
   'edit_url',
+  'source_url',
   ...KNOWN_EXTERNAL_IDENTIFIERS,
   // Do not add any project specific keys here!
   ...SITE_FRONTMATTER_KEYS,
@@ -75,7 +76,9 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   exports?: Export[];
   downloads?: Download[];
   settings?: ProjectSettings;
+  /** URLs to edit or view the current page source - may be disabled by setting to null at project level */
   edit_url?: string | null;
+  source_url?: string | null;
 };
 
 export type ProjectFrontmatter = ProjectAndPageFrontmatter & {

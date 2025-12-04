@@ -1,5 +1,89 @@
 # myst-parser
 
+## 1.6.3
+
+### Patch Changes
+
+- fae1ab1: Do not raise errors on unprocessed nodes
+- Updated dependencies [2e6e81f]
+  - myst-directives@1.6.3
+  - myst-common@1.9.2
+  - myst-roles@1.6.3
+
+## 1.6.2
+
+### Patch Changes
+
+- 770eece: Footnotes and role parsing
+- Updated dependencies [770eece]
+- Updated dependencies [a742dda]
+- Updated dependencies [f1ccba4]
+- Updated dependencies [c2d895a]
+  - markdown-it-myst@1.0.14
+  - myst-common@1.9.1
+  - myst-directives@1.6.2
+  - myst-roles@1.6.2
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies [1735db4]
+- Updated dependencies [6fe5960]
+- Updated dependencies [30acc57]
+  - myst-directives@1.6.1
+  - myst-roles@1.6.1
+  - myst-common@1.9.0
+
+## 1.6.0
+
+### Minor Changes
+
+- cd8ee79: Update MarkdownIt to 13 for all dependencies, add types to dependencieswq
+
+### Patch Changes
+
+- Updated dependencies [e293e72]
+- Updated dependencies [cd8ee79]
+  - myst-roles@1.6.0
+  - markdown-it-myst@1.0.13
+  - myst-common@1.8.4
+  - myst-directives@1.6.0
+
+## 1.5.17
+
+### Patch Changes
+
+- Updated dependencies [a85b321]
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+  - markdown-it-myst@1.0.12
+  - myst-common@1.8.3
+  - myst-roles@1.5.17
+  - myst-directives@1.5.17
+
+## 1.5.16
+
+### Patch Changes
+
+- 8ffa2d33c: Transform lists that have non-block content (text, italic, inlineCode, etc.) to ensure they are in paragraphs.
+- efc29a450: Add footnoteReference to known list elements inline children.
+- a0fbdc419: CiteGroup as another phrasing type
+  - myst-common@1.8.2
+  - myst-roles@1.5.16
+  - myst-directives@1.5.16
+
+## 1.5.15
+
+### Patch Changes
+
+- 0b284816: Ensure that the options are also on the mystRole.
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+  - myst-directives@1.5.15
+  - myst-roles@1.5.15
+  - myst-common@1.8.1
+
 ## 1.5.14
 
 ### Patch Changes

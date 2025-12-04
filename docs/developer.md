@@ -69,6 +69,7 @@ If you are familiar with these tools, you should not find many surprises in the 
 That said, there are a couple of concepts used _only_ in this project, that won't be familiar. These are detailed below:
 
 (develop-renderers-themes)=
+
 ### Concepts: Renderers, themes, and templates
 
 In the diagram above, we saw that `mystmd` produces websites by:
@@ -91,7 +92,7 @@ For example, in the case of the `book` theme, a MyST Document engine serves MyST
 
 #### Where to find renderers, themes, and templates
 
-MyST has multiple renders, themes, and templates that allow it to transform MyST AST into final output formats. The MyST team maintains a few that are worth noting:
+MyST has multiple renderers, themes, and templates that allow it to transform MyST AST into final output formats. The MyST team maintains a few that are worth noting:
 
 - [`github.com/jupyter-book/mystmd`](https://github.com/jupyter-book/mystmd): Has several out-of-the-box renderers in addition to the core document engine.
   - A collection of Renderers, look for the [`myst-to-*` folders in `mystmd/packages`](https://github.com/jupyter-book/mystmd/tree/main/packages). These render MyST AST into components that themes can consume.
@@ -107,6 +108,7 @@ MyST has multiple renders, themes, and templates that allow it to transform MyST
 - describe the render loop, and how render blocks are registered
 - explain the ThemeProvider
 - explain styling
+
 :::
 
 #### Example: Adding an "edit this page" button
@@ -163,7 +165,7 @@ The AST simply encodes that there's a Directive present, with the name `note`.
 
 After initial parsing, all **Directive** nodes are run, triggering the [Admonition Directive logic](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-directives/src/admonition.ts). This converts the `Directive Node` into an `Admonition Node`.
 
-During the **transform** phase, the [Admonition Transforms](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-transforms/src/admonitions.ts) is applied to each Admonition node. These do things like double-check that the admonition has all the necessary information to be rendererd.
+During the **transform** phase, the [Admonition Transforms](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-transforms/src/admonitions.ts) is applied to each Admonition node. These do things like double-check that the admonition has all the necessary information to be rendered.
 
 The final output has more admonition-specific metadata defined, like `admonitionTitle`.
 
@@ -194,7 +196,7 @@ Let's say you have a page that labels some content, and cross-references it else
 A reference to [my label](#label)
 ```
 
-The initial parse of this page nodes where labels are present, and treats our markdown link syntax as a regular URL.
+The initial parse of this page creates nodes where labels are present, and treats our markdown link syntax as a regular URL.
 
 ```{code} yaml
 :filename: page1.json
@@ -247,7 +249,6 @@ During the **Transformations** phase, a number of [enumeration transforms](https
       html_id: label
 ```
 
-
 ## Tools used in development
 
 `mystmd` is built and developed using:
@@ -263,7 +264,9 @@ Below you will see several `npm run x` commands.
 These are simply aliases for other commands, defined in the [`package.json` file](https://github.com/jupyter-book/mystmd/blob/main/package.json) under "scripts".
 ```
 
-## Developer workflow: myst CLI
+(developer:mystmd)=
+
+## Local development: `mystmd`
 
 The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
 
@@ -306,9 +309,22 @@ The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
 ```
 
-## Developer workflow: myst-theme
+### Local docs workflows (preview/build)
+
+To run a MyST server with your local changes and a preview of the documentation, run:
+
+```shell
+$ npm run docs
+```
+
+## Local development: myst-theme
 
 The [`myst-theme` README](https://github.com/jupyter-book/myst-theme/) provides a more detailed overview of the components of that package.
+
+There are two ways to deploy a theme (AKA React web app): as a server, or as a static build.
+Development procedures are slightly different, depending on which approach you take.
+
+### Approach 1: Theme server
 
 Recall from the [architecture overview](#diagram-app) that `myst-theme` is a React web application. It provides theming, and requires a separate content server for data. When developing, the steps are therefore to:
 
@@ -316,7 +332,7 @@ Recall from the [architecture overview](#diagram-app) that `myst-theme` is a Rea
 2. Launch the `myst-theme` web application server (this is what you browse to)
 3. Run a process to monitor changes and rebuild `myst-theme`
 
-### Content server
+#### Content server
 
 We need some example data to test our theme against, such as [the example landing page](https://github.com/jupyter-book/example-landing-pages). Clone this example content repository and start the content server:
 
@@ -330,7 +346,7 @@ The `--headless` flag tells `myst` not to start a theme server; we want to do th
 
 When you start a content server _without_ a theme server, you can still "visit" the pages in your site (often on port `3100`). If you do so, you will see raw JSON and images. These represent the AST that the _content server_ produces, and that a _theme server_ uses to render a website (in the next step).
 
-### myst-theme server
+#### myst-theme server
 
 We now fire up the `myst-theme` React app. This app server fetches the AST `JSON` from the content-server, then converts it to HTML, and serves it to the client where it is [hydrated](<https://en.wikipedia.org/wiki/Hydration_(web_development)>).
 
@@ -366,13 +382,141 @@ npm run dev
 
 Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
+### Approach 2: Static build
+
+No content or theme server is required for a static site build. Steps are:
+
+1. Build the theme for production
+2. Point your site config to the built theme
+3. Build the site statically
+
+We'll use the mystmd docs site as an example.
+
+#### Build theme
+
+To build a static site against a local theme, the theme must be built as it would be for production. For that we will use the "make" target
+instead of `npm run`:
+
+```{code} bash
+cd myst-theme
+make build-book # because mystmd docs site uses the book theme
+```
+
+That should produce a production ready version of the book theme under `.deploy/book`.
+
+:::{tip}
+While debugging, it helps to work with a theme built against the "development" version of React, which results in unminimized build artifacts (ie preserving whitespace and variable/function names) and more detailed React errors and warnings. For this, tell remix to run in node "development" mode:
+
+```{code} json
+:filename: myst-theme/themes/book/package.json
+// Add NODE_ENV near the end of the "prod:build" script
+                      v
+"prod:build": "... && NODE_ENV=development remix build",
+                      ^
+```
+
+:::
+
+#### Configure site
+
+Building a static site against a local theme requires configuring your site's `myst.yml` to point to the built theme's `template.yml`. Using the mystmd docs site as
+an example:
+
+```{code} yaml
+:filename: mystmd/docs/myst.yml
+site:
+    # assuming your mystmd and myst-theme working directories are siblings
+    template: ../../myst-theme/.deploy/book/template.yml
+```
+
+(NOTE: This is the _built_ template file, under `.deploy`, not the source template)
+
+#### Build site
+
+```{code} bash
+cd mystmd/docs
+mystmd build --html
+```
+
+Then host the static site locally. An easy way is with Python's built-in http server:
+
+```{code} bash
+cd _build/html
+python3 -m http.server  # serves on port 8000 by default
+```
+
+Finally, browse the site at [http://localhost:8000](http://localhost:8000).
+
+## Step Debugging
+
+Sometimes the trusty `console.log` (aka print statement) is not sufficient for your debugging needs. In more involved situations, a proper step debugger can be your friend.
+You may have used Firefox or Chrome developer tools to debug in-browser code by adding the `debugger` keyword into your javascript source.
+But what about code that runs in node engine on the server?
+Chrome and Firefox dev tools can _also_ debug server-side javascript. To do this, node must be invoked with the `--inspect`
+or `--inspect-brk` comand-line option. That will cause the node process to open a socket listening for a debugger to connect. If "inspect-brk" is used
+(vs "inspect"), then the process will immediately pause, awaiting a debugger connection. The `debugger` keyword in source will only pause the program if a
+debugger is connected when that keyword is reached.
+
+To connect to an awaiting node debug socket, enter into the browser address bar:
+
+- Firefox: `about:debugging`, or
+- Chrome: `chrome://inspect`
+
+That opens a debugger control panel in the browser which should list your awaiting node process as available to connect to (if it has been correctly invoked).
+(NOTE: other browsers and IDEs can also connect as debug inspectors - see Inspector Clients reference below)
+
+In most cases we don't call `node` directly, so there is no easy way to add those options to a shell invocation.
+Instead, an `npm` script can be defined with environment variable `NODE_OPTIONS=--inspect` (or "--inspect-brk") set in an appropriate spot (example follows).
+
+### Debug myst-theme service
+
+For example, to debug myst-theme's book theme running as a dynamic application server, alter the npm scripts like so:
+
+```{code} json
+:filename:  myst-theme/themes/book/package.json
+// add NODE_OPTIONS
+//                                                                                    v
+"dev": "npm run dev:copy && npm run build:thebe && concurrently \"npm run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
+```
+
+Now remove the turbo "--parallel" option, because when turbo runs the theme server in "parallel" (ie multiprocess) mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
+Then your debugger will only connect to the one that succeeded, with no guarantee any subsequent web request will hit the one process connected to the debugger.
+
+```{code} json
+:filename:  myst-theme/package.json
+// remove the --parallel option
+//                           v
+"theme:book": "turbo run dev --filter='./themes/book'",
+```
+
+### Debug static myst-theme
+
+To debug myst-theme running server-side in service of a static build:
+
+**TBD**
+
+### Debug a mystmd subpackage test suite
+
+This requires a handful of options to be passed to vitest to ensure it runs in a single process. For example, to connect a step debugger to a running `myst-transforms` test:
+
+```{code} json
+:filename: mystmd/packages/myst-transforms/package.json
+"test": "vitest --inspect-brk --pool threads --poolOptions.threads.singleThread --no-file-parallelism run",
+```
+
+### Debugging references
+
+- [Node Inspector Clients](https://nodejs.org/en/learn/getting-started/debugging#inspector-clients)
+
 ## Infrastructure we run
+
 (myst-api-server)=
+
 ### The MyST API server
 
 We run a lightweight server at [`api.mystmd.org`](https://api.mystmd.org/) to help users resolve and download templates. The code for this exists at [the `myst-templates/templates` repository](https://github.com/myst-templates/templates).
 
-For example, to get a list of template types you can `GET` this URL:
+For example, to get a list of template types (i.e. the available output types) you can `GET` this URL:
 
 https://api.mystmd.org/templates
 
@@ -423,51 +567,25 @@ You're done!
 
 The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
 
-- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release:mystmd). [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
-- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
+- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release:mystmd).
+  [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
+- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged.
+  Bias towards action, but use your best judgment on whether to move forward.
 - Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
   - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
 
 You're done!
 
 (release:github)=
-### Make a release on GitHub
+### Automated releases on GitHub
 
-When we publish a new release to NPM, we also make a release on GitHub and share it for our user community. Here's a brief process for what to do:
+After a successful NPM release, our [`release.yml` workflow](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/publish-github-release.yml) will automatically create a new GitHub Release.
+The release notes are generated using [`github-activity`](https://github.com/cheukting/github-activity) and include a summary of all merged PRs and commits since the previous release.
 
-- **Confirm a release has been made**. Go to [the Tags page](https://github.com/jupyter-book/mystmd/tags) and look for a tag from the latest release.
-- **Create a release on GitHub**. Go to [the Releases page](https://github.com/jupyter-book/mystmd/releases) and then click **`Draft a new release`**.
-  - The **title** should be the version from the tag. So if the tag was `mystmd@1.3.26`, the title is `v1.3.26`.
-  - Click **Choose a tag** and link it against the tag for the latest release to NPM (the one you discovered in the first step).
-  - **Generate release notes** by [following these instructions](#release:notes).
-  - For any major changes or new functionality, write a brief description that helps a user understand why it's important and how to learn more. (this is optional)
-  - Write a one or two sentence summary of the big ideas in this release at the top. (this is optional).
-- **Publish the release**. Do this by clicking the **`Publish release`** button at the bottom.
+**Maintainers are encouraged to review the new GitHub Release and edit the description as needed.**
+For example, you may want to add an executive summary, highlight important changes, or clarify upgrade instructions for users.
 
-(release:notes)=
-### Generate release notes
-
-The [`github-activity` project](https://github-activity.readthedocs.io) lets you generate a markdown changelog when making a release that recognizes contributions other than just authoring a PR in the notes. We like to use it for making release notes to recognize the many kinds of contributions that go into making every release.
-
-Here's a brief guide to generate release notes using `github-activity`.
-
-**Install `github-activity`** with `pip`, like so:
-
-```bash
-pip install github-activity
-```
-
-**Generate release notes** by providing the repository, and either a date or tag that marks the _start date_ of the contributions to include in the notes. For example, this command generates release notes for mystmd after July 1st, 2025:
-
-```bash
-github-activity jupyter-book/mystmd -s 2025-07-01
-```
-
-:::{tip} You can also use a tag
-Alternatively you can provide the _git tag_ of the last release, and it will return a list of the PRs _since that tag_. However, here we recommend using the date of the last release bacause many of our packages are monorepos, and have a lot of tags in them.
-:::
-
-Finally, **copy and paste** the output into the GitHub release notes. You can paste over any that are auto-generated by GitHub.
+You can find the latest releases at: https://github.com/jupyter-book/mystmd/releases
 
 (release:docs)=
 ### Update documentation
@@ -514,15 +632,59 @@ Feel free to celebrate new releases and share the news publicly so that others k
 
 We use [Turbo](https://turborepo.com/) to manage our testing and build system.
 
+(developer:testing)=
+
 ### Testing
 
-Tests help ensure that code operates as intended, and that changes do not break existing code. You can run the test suite using:
+We use [vitest](https://vitest.dev/guide/) for all tests in `mystmd`.
+
+#### How to run the test suite
+
+First [install `mystmd` locally](#developer:mystmd).
+
+Then, run the test suite using:
 
 ```shell
 npm run test
 ```
 
-If you are working in a particular package, change your working directory to that specific package, and run the tests there. To run in "watch mode" (runs each time a change is saved), use `npm run test:watch`.
+If you are working in a particular package, change your working directory to that specific package, and run the tests there.
+
+```shell
+cd packages/myst-cli
+npm run test
+```
+
+To run in "watch mode" (runs each time a change is saved), use:
+
+```shell
+npm run test:watch
+```
+
+To run a single test by matching its title, first change the working directory to the package where the test exists. For example:
+
+```shell
+cd packages/mystmd
+```
+
+Then run the `npm test` command like so:
+
+```shell
+npm run test -- -t "Basic tex build"
+```
+
+For integration test titles, see `packages/mystmd/tests/exports.yml`.
+
+#### Types of tests
+
+There are two types of tests in the `mystmd` repository:
+
+**Unit Tests** - are attached to each sub-package in the `packages/` directory. These use [`vitest`](https://vitest.dev/) for basic functionality within each package. They have files like [`config.spec.ts`](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/config.spec.ts).
+
+**Integration Tests** - Test the entire `mystmd` build workflow. Here's how it works:
+
+- `packages/mystmd/tests/endToEnd.spec.ts` runs a build from end to end, similar to the `vitest` tests above.
+- `packages/mystmd/tests/exports.yml` contains several integration tests - each one points to a build configuration (a folder in `packages/mystmd/tests/`) and compares expected to generated outputs.
 
 ### Linting
 
@@ -590,7 +752,7 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 **Transformers**
 
-- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more information](#develop:transforms)).
+- `myst-transforms`: transformations for use with MyST AST to transform, e.g., links, citations, cross-references, and admonitions (see here for more [information](#develop:transforms)).
 
 **Export Tools**
 
@@ -614,3 +776,20 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 - `citation-js-utils`: utility functions to deal with citations.
 - `myst-cli-utils`: shared utils between jtex, and myst-cli.
 - `simple-validators`: validation utilities, that print all sorts of nice warnings.
+
+## Tips and tricks
+
+### Grepping the codebase
+
+While developing, there are a lot of build artifacts lying around,
+making grepping the code harder than it needs to be. Assuming you
+have
+[ripgrep](https://github.com/BurntSushi/ripgrep?tab=readme-ov-file#installation)
+or a compatible alternative installed, you can define a customized
+"myst grep" in your shell config (`~/.zshrc`, `~/.bashrc`, etc.):
+
+```sh
+alias mg="rg --exclude-dir=build --exclude-dir=_build -g '!*.js' -g '!tailwind.css'"
+```
+
+Most notably, this excludes `.js` files, which are generated from TypeScript.

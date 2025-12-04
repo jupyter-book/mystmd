@@ -1,5 +1,31 @@
 # myst-frontmatter
 
+## 1.9.2
+
+## 1.9.1
+
+## 1.9.0
+
+### Minor Changes
+
+- 30acc57: Add cache control for execution
+
+## 1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- 6783dae: Allow math as an alias for equation in numbering.
+
+## 1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- fefffffd: Update licenses
+
 ## 1.8.0
 
 ## 1.7.13

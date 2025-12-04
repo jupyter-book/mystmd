@@ -1,8 +1,8 @@
-== Heading one on page A
+== Heading one on page A <heading-one-on-page-a>
 
 Some text
 
-=== Heading two on page A
+=== Heading two on page A <heading-two-on-page-a>
 
 More text
 

@@ -82,6 +82,24 @@ site:
 If you are using Git, add the `_build` folder to your `.gitignore` so that it is not tracked. This folder contains auto-generated assets that can easily be re-built -- for example in a Continuous Integration system like GitHub Actions.
 :::
 
+:::{tip} Static HTML generates folder-based HTML files
+:class: dropdown
+
+When you generate static HTML using MyST, routes to documents (e.g. `/folder/mydoc`) must be rendered into static HTML files. MyST will turn routes into HTML paths like so:
+
+```
+/myfolder/mydoc/index.html
+```
+
+When the browser sends a request to the route `/folder/mydoc`, the server interprets that as request for the HTML file `/myfolder/mydoc/index.html`, and returns that.
+
+Some SSGs instead return HTML files like `/myfolder/mydoc.html`, and this can trigger different behavior depending on the hosting platform you're using. However, `/myfolder/mydoc/index.html` is generally a safer bet, which is why it is the default.
+
+See [the trailing slash and hosting provider guide](https://github.com/slorber/trailing-slash-guide) for more information about the impact of this behavior across hosting providers.
+
+_Inspired from the [excellent Docusaurus documentation](https://docusaurus.io/docs/advanced/routing#routes-become-html-files)_
+:::
+
 (deploy:base-url)=
 ### Custom domains and the base URL
 
@@ -94,12 +112,34 @@ For example:
 
 If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
 
-For example, the following example first defines a `BASE_URL` parameter and then builds the MyST HTML assets.
+In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets.
 
+::::{tab-set}
+:::{tab-item} Bash
 ```bash
 export BASE_URL="/repository_name"
 myst build --html
 ```
+:::
+:::{tab-item} Powershell
+```powershell
+$env:BASE_URL = "/folder1/folder2" 
+myst build --html
+```
+:::
+:::{tab-item} Fish
+```fish
+set -x BASE_URL "/folder1/folder2"
+myst build --html
+```
+:::
+:::{tab-item} CMD
+```cmd
+set BASE_URL=/folder1/folder2
+myst build --html
+```
+:::
+::::
 
 :::{tip} Set `BASE_URL` in your CI/CD
 You can set environment variables in many CI/CD services like GitHub Actions and Netlify.
@@ -120,9 +160,9 @@ Deploy as a static site to GitHub pages using an action.
 Deploy to Netlify as static HTML, and pull-request previews.
 :::
 
-:::{card} Apache HTTPD
-:link: ./deployment-httpd.md
-Deploy on a web server that runs [Apache httpd](https://httpd.apache.org).
+:::{card} Web server
+:link: ./deployment-webserver.md
+Deploy on a web server, for example [Apache httpd](https://httpd.apache.org).
 :::
 
 % TODO: ReadTheDocs

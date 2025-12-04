@@ -1,5 +1,6 @@
 import type { Jupytext } from '../jupytext/types.js';
 import type { KernelSpec } from '../kernelspec/types.js';
+import type { Execute } from '../execute/types.js';
 import type { ProjectAndPageFrontmatter } from '../project/types.js';
 import { PROJECT_AND_PAGE_FRONTMATTER_KEYS } from '../project/types.js';
 
@@ -14,6 +15,7 @@ export const PAGE_FRONTMATTER_KEYS = [
   'enumerator',
   'content_includes_title',
   'skip_execution',
+  'execute',
 ];
 
 export type PageFrontmatter = ProjectAndPageFrontmatter & {
@@ -22,8 +24,10 @@ export type PageFrontmatter = ProjectAndPageFrontmatter & {
   jupytext?: Jupytext;
   tags?: string[];
   enumerator?: string;
+  execute?: Execute;
   // Disable execution for this page
-  skip_execution?: boolean;
+  // Deprecated
+  // skip_execution?: boolean;
   /** Flag if frontmatter title is duplicated in content
    *
    * Set during initial file/frontmatter load

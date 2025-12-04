@@ -3,6 +3,7 @@
 This section provides a high-level overview of the main concepts and tools in the MyST ecosystem. See the [guiding principles of the MyST ecosystem](../guiding-principles.md) for some more high-level context.
 
 (overview-build-process)=
+
 ## Overview of the MyST build process
 
 The MyST Build process takes input documents from authors and converts them into outputs that are meant for consumption by readers. The [MyST CLI](https://mystmd.org) contains logic to use the MyST Document Engine, renderers, and themes to carry out this entire process. Here's a high-level breakdown of the major steps of that process:
@@ -14,7 +15,7 @@ The MyST Build process takes input documents from authors and converts them into
   - Output
 - - (1) **Writing**: An author writes content with {term}`MyST Markdown` in a file.
   - Ideas
-  - Content (`.md`, `.ipynb`, etc)
+  - Content (`.md`, `.ipynb`, `.tex`, etc)
 - - (2) **Parsing**: A {term}`MyST Document Engine` parses content into structured data called the {term}`MyST AST`. See [](#overview-parsing).
   - Raw content (`.md`, `.ipynb`, etc)
   - Raw MyST AST
@@ -43,6 +44,7 @@ An overview of the "Rendering and Theming" phase using one or more MyST renderer
 :::
 
 (overview-parsing)=
+
 ## How does parsing work?
 
 The MyST Document engine knows how to parse many kinds of documents into {term}`MyST AST`. This is most-commonly done with Markdown files (`.md`) or Jupyter Notebooks (`.ipynb`) written in {term}`MyST Markdown`, a flavor of Markdown that was designed for the MyST Document Engine.
@@ -75,6 +77,7 @@ Here's an example of MyST content, and the same content parsed as MyST AST:
 The easiest way to understand how {term}`MyST Markdown` gets converted to {term}`MyST AST` is to [explore the MyST Sandbox](https://mystmd.org/sandbox). Click the {kbd}`AST` tab to see the underlying AST structure for anything that you type. The {kbd}`PRE` tab represents the initial parsing phase, and the {kbd}`POST` tab represents the AST after the resolving phase.
 
 (overview-transformers)=
+
 ## How do MyST Transformers work?
 
 MyST Transformers are a way to convert a {term}`MyST AST` node into another type of node. Transformers operate on AST rather than on raw Markdown because AST has more standardized structure to work with.
@@ -97,6 +100,7 @@ Some other uses for Transformers include:
 See [](#develop:transforms) for more details about how transforms operate on an AST and what intermediate steps look like.
 
 (overview-themes)=
+
 ## How do MyST themes and templates work?
 
 MyST {term}`themes` and MyST {term}`templates` are both related to _exporting_ a resolved MyST AST into one or more final output formats. They differ in the amount of _customizability_ that a user has in altering their behavior, but the end-result is the same (generating an export artifact).
@@ -115,7 +119,7 @@ For a more technical explanation see [the developer guide on themes, templates, 
 
 The [MyST Specification](https://mystmd.org/spec) and [MyST Markdown Syntax](https://mystmd.org/guide) was designed so that others could implement their own parsers, document engines, and renderers using MyST. Although there are presently no independent examples of a true {term}`MyST Document Engine`, the MyST Parser for Sphinx project fulfills a similar role in the Sphinx ecosystem.
 
-The [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) is an extension for [Sphinx](https://sphinx-doc.org) that can parse MyST Markdown into Sphinx's internal document structure. It was created to allow users to parse MyST Markdown syntax into Sphinx for [V1 of Jupyter Book](https://jupyterbook.org). It now exists as an independent extension for the Sphinx community, as Jupyter Book now uses the MyST Document Engine.
+The [MyST Parser for Sphinx](https://myst-parser.readthedocs.io) is an extension for [Sphinx](https://sphinx-doc.org) that can parse MyST Markdown into Sphinx's internal document structure. It was created to allow users to parse MyST Markdown syntax into Sphinx for [V1 of Jupyter Book](https://jupyterbook.org). It now exists as an independent extension for the Sphinx community, as Jupyter Book V2 now uses the MyST Document Engine.
 
 :::{note} MyST Parser for Sphinx Compatibility
 As the MyST Parser for Sphinx does not support all of the syntax defined in the MyST Guide, or output {term}`MyST AST`, it's not a true {term}`MyST Document Engine` as defined by this project. That's OK! Its goal is to be a useful tool for the Sphinx community that only leverages parts of the MyST ecosystem (the Markdown flavor), which for many people is "good enough."
@@ -145,7 +149,7 @@ Sphinx and MyST take very different approaches to publishing to the web. In Sphi
 
 Although the official engine also supports static HTML outputs, implementing themes as applications makes it easier to build more powerful MyST viewing experiences.
 
-[^api-docs]: In the future, `mystmd` may offer support for Python and JavaScript documentation, and if you want to contribute please reach out!
+[^api-docs]: In the future, `mystmd` may offer support for Python and JavaScript documentation, and if you want to contribute please discuss on [#1259](https://github.com/jupyter-book/mystmd/issues/1259) and this [video](https://www.loom.com/share/589a947389fb49829c9b712b796d8a7d).
 [^docutils]: The Docutils source-code _is_ the specification.
 
 [docutils]: https://docutils.sourceforge.io/

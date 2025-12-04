@@ -199,6 +199,6 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
   state.closeBlock(node);
   state.data.isInTable = false;
   if (!state.data.isInContainer) {
-    state.write('\\bigskip');
+    state.write('\\bigskip\n\n');
   }
 }

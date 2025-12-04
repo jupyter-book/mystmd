@@ -49,3 +49,15 @@ _What's the approach MyST takes that uniquely solves the problem(s) above? For e
 ## What does success look like for MyST?
 
 We imagine a future where MyST is an industry-wide standard for communicating with computational narratives that provides a single toolchain for researchers to communicate their ideas wherever they wish.
+
+## How do I pronounce MyST?
+
+Here's an overly helpful collection of ways to say MyST:
+
+Like the word "missed".
+
+Like the [natural phenomenon caused by small droplets of water aerosols suspended in the cold air, usually by condensation](https://en.wikipedia.org/wiki/Mist).
+
+Like [`/mɪst/`](https://dictionary.cambridge.org/us/pronunciation/english/mist).
+
+Like [the video game](https://en.wikipedia.org/wiki/Myst).

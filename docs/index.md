@@ -59,6 +59,7 @@ TL;DR
 : **Yes**, you can use `mystmd` with your Jupyter Book! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
 : **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in JavaScript not Python!
 : Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+: For more information see this [upgrade guide from Jupyter Book v1 to v2](https://next.jupyterbook.org/upgrade/).
 :::
 
 ## Cite `mystmd`
@@ -132,14 +133,12 @@ flowchart LR
   D <--> J[JATS]
 ```
 
-```{important}
-:class: dropdown
-**Using Sphinx or Python?**
+```{important .dropdown} Using Sphinx or Python?
 
-For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book, which can be found at:
+For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book V1, which can be found at:
 
 - [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
 - [Jupyter Book](https://jupyterbook.org/)
 
-Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the **JavaScript** MyST Markdown CLI.
+Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the `mystmd` CLI.
 ```

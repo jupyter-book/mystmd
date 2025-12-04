@@ -123,6 +123,7 @@ project:
         - file: part-2-second-child.md
 ```
 
+
 You can nest children under a `title` without specifying a parent `file`.
 This will create a dropdown of pages in the Table of Contents.
 
@@ -140,6 +141,28 @@ project:
       children:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
+```
+
+:::{note} Landing page title
+The landing page inherits its TOC title from `title` field of [the project formatter](frontmatter.md#available-frontmatter-fields), if it is defined.
+Otherwise it will be the title or the top heading of the page.
+:::
+
+### Document titles
+
+The title of the document in the table of contents is drawn from the
+[`title` field](frontmatter#titles) in the
+[document frontmatter](frontmatter#in-a-myst-markdown-file) or the first heading
+in the document if `title` isn't specified.
+The [`short_title`](frontmatter#all-available-frontmatter-fields) field can be used
+to specify a shorter title for navigation elements of the rendered site.
+For example:
+
+```yaml
+---
+title: On the airspeed velocity of an unladen African swallow
+short_title: Airspeed Velocity
+---
 ```
 
 (hidden-in-toc)=

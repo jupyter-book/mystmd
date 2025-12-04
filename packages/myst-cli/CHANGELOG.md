@@ -1,5 +1,189 @@
 # myst-cli
 
+## 1.7.0
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [b8ed7ca]
+- Updated dependencies [afb68b1]
+- Updated dependencies [fae1ab1]
+- Updated dependencies [2e6e81f]
+  - myst-to-tex@1.0.43
+  - myst-to-jats@1.0.35
+  - myst-parser@1.6.3
+  - myst-transforms@1.3.44
+  - myst-spec-ext@1.9.2
+  - myst-execute@0.3.2
+  - myst-common@1.9.2
+  - myst-config@1.9.2
+  - myst-frontmatter@1.9.2
+  - tex-to-myst@1.0.43
+
+## 1.6.7
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+- 39570e5: Fix static build inclusion of sitemap
+- ae32040: Drop hide_authors handling in mystmd
+- c2d895a: Enable key-based ignores of warnings for DOIs
+- Updated dependencies [770eece]
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+- Updated dependencies [cc0bcec]
+- Updated dependencies [c2d895a]
+  - myst-parser@1.6.2
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+  - myst-transforms@1.3.43
+  - myst-config@1.9.1
+  - myst-frontmatter@1.9.1
+
+## 1.6.6
+
+## 1.6.5
+
+### Patch Changes
+
+- aebfa8c: Enable `port` option for myst build
+- 30acc57: Add cache control for execution
+- e8b356a: Add message for using Jupyter Book < 1 to upgrade
+- Updated dependencies [c7af16c]
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-transforms@1.3.42
+  - myst-spec-ext@1.9.0
+  - myst-frontmatter@1.9.0
+  - myst-execute@0.3.0
+  - myst-common@1.9.0
+  - myst-config@1.9.0
+  - myst-parser@1.6.1
+
+## 1.6.4
+
+### Patch Changes
+
+- 0ddd860: Log debug errors on watch
+- d348d04: Update relative path backslashes with unix-style paths
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
+- eba4f34: Favicon on site option is under options.
+- Updated dependencies [aab5f02]
+- Updated dependencies [4fb0d72]
+- Updated dependencies [eba4f34]
+- Updated dependencies [cd8ee79]
+  - myst-transforms@1.3.41
+  - myst-config@1.8.4
+  - myst-parser@1.6.0
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+  - myst-spec-ext@1.8.4
+
+## 1.6.3
+
+### Patch Changes
+
+- 53867c3: Ignore example domains by default
+- a85b321: Update to package dependencies and typescript
+- c699bba: Set the HOST environment variable to 127.0.0.1 on ReadTheDocs CI
+- 8492fb0: Add `--keep-host` to the `myst build` command.
+- 53867c3: Add glob patterns to error rules for links
+- 38579e6: Bump @jupyterlab/services pin
+- cc583b5: Non-quiet myst.xref.json load error
+- fb6f430: Throw errors including on the main page when strict.
+- Updated dependencies [6a5fe67]
+- Updated dependencies [13bd33a]
+- Updated dependencies [a85b321]
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [38579e6]
+- Updated dependencies [6783dae]
+- Updated dependencies [6a5fe67]
+- Updated dependencies [956055c]
+  - myst-templates@1.0.26
+  - myst-transforms@1.3.40
+  - myst-cli-utils@2.0.12
+  - myst-to-docx@1.0.15
+  - myst-to-md@1.0.16
+  - myst-common@1.8.3
+  - myst-execute@0.2.0
+  - myst-frontmatter@1.8.3
+  - myst-to-typst@0.0.35
+  - myst-parser@1.5.17
+  - myst-config@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 1.6.2
+
+### Patch Changes
+
+- 1c9c1c9d7: Ensure host is only for local development and is not exposed on local network.
+- e060c9f1d: Add --config option to CLI to override default myst.yml
+- b27afefc5: Include hidden routes in static HTML export
+- Updated dependencies [973db009e]
+  - myst-to-tex@1.0.42
+  - myst-to-typst@0.0.34
+  - tex-to-myst@1.0.42
+
+## 1.6.1
+
+### Patch Changes
+
+- e661f85d9: Change social links to drop Twitter
+- 80bc241e4: Refactor function to expose parsing options
+- a01426ad3: When clicking "edit this page" take the user directly to the GitHub edit interface
+- 4792531: Add typst PDF to the meca bundle
+- 089cbcaff: Load project config before site config
+- Updated dependencies [ae6123412]
+- Updated dependencies [9cb280a4b]
+- Updated dependencies [8ffa2d33c]
+- Updated dependencies [efc29a450]
+- Updated dependencies [a0fbdc419]
+  - myst-transforms@1.3.39
+  - myst-spec-ext@1.8.2
+  - myst-parser@1.5.16
+  - myst-common@1.8.2
+  - myst-config@1.8.2
+  - myst-frontmatter@1.8.2
+
+## 1.6.0
+
+### Minor Changes
+
+- 547a13e5: Currently, the static export triggered by `myst build --html` exports
+  `any/route` to `any/route.html`. This makes it hard to deploy to
+  static page sites like GitHub (or even Apache), which all expect
+  `/any/route` to point to `any/route/index.html`. This change is to
+  update the static export to using that naming convention, i.e. to
+  produce the `index.html` files as expected.
+
+### Patch Changes
+
+- ff61479: Fix whitelabelling bug
+- Updated dependencies [cb76fb71]
+  - myst-transforms@1.3.38
+
+## 1.5.1
+
+### Patch Changes
+
+- 4a745b2b: Incorrect error about .\* image extension, but only when image is not found
+- 7b844a9a: Fix embedding of raw `code` nodes with `remove-input`
+- f1d704ba: Remove time unit from heartbeat message
+- 2db64b6c: Add whitelabelling for myst init
+- c96b0835: Fix indentation of log message
+- Updated dependencies [0b284816]
+- Updated dependencies [0b284816]
+- Updated dependencies [224da08d]
+- Updated dependencies [fefffffd]
+  - myst-parser@1.5.15
+  - myst-spec-ext@1.8.1
+  - myst-to-typst@0.0.33
+  - myst-transforms@1.3.37
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+  - myst-config@1.8.1
+
 ## 1.5.0
 
 ### Minor Changes

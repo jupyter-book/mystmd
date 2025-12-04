@@ -19,7 +19,7 @@ export type RendererAuthor = Omit<
 > & {
   affiliations?: ValueAndIndex[];
   collaborations?: ValueAndIndex[];
-  corresponding?: ValueAndIndex;
+  corresponding?: { value: false } | ValueAndIndex;
   orcid?: string;
   index: number;
   letter?: string;

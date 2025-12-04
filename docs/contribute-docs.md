@@ -50,6 +50,30 @@ To build the MyST guide documentation:
 
 This will build the documentation locally so that you can preview what your changes will look like.
 
+### Build with executable content
+
+Some pages in the MyST documentation include executable code cells that demonstrate features. To build the documentation with execution enabled:
+
+1. Install the Python requirements:
+
+   ```
+   pip install -r requirements.txt
+   ```
+
+2. Build with the `--execute` flag:
+
+   ```
+   myst start --execute
+   ```
+
+   Or for a static build:
+
+   ```
+   myst build --html --execute
+   ```
+
+This will execute all `{code-cell}` directives in the documentation and include their outputs in the built site.
+
 (docs:update-mystmd.org)=
 ## How to update the live website at mystmd.org
 

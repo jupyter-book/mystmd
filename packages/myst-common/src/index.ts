@@ -19,7 +19,8 @@ export {
 export { plural } from './plural.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
 export { parseIndexLine, splitEntryValue, createIndexEntries } from './indices.js';
-export { RuleId } from './ruleids.js';
+export { RuleId, RULE_ID_DESCRIPTIONS } from './ruleids.js';
+export { RULE_DEFAULT_SEVERITY } from './rule-severities.js';
 export { isTargetIdentifierNode, selectMdastNodes } from './selectNodes.js';
 export { TemplateKind, TemplateOptionType } from './templates.js';
 export {

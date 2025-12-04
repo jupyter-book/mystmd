@@ -26,6 +26,29 @@ describe('Test toc transformation', () => {
     expect(mdast.children[0].children[0].children[1].children[0].url).toBe('/two');
     expect(toText(mdast.children[0].children[0].children[1].children[0])).toBe('Two');
   });
+  test('Project Toc - with external link', () => {
+    const externalUrl = 'https://foo.bar/baz';
+    const vfile = new VFile();
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'toc', kind: 'project', children: [] }],
+    } as any;
+    buildTocTransform(mdast, vfile, [
+      { title: 'One', level: 1, url: externalUrl },
+      { title: 'Two', level: 1, slug: 'two', url: externalUrl },
+    ]);
+    expect(mdast.children[0].type).toBe('block');
+    expect(mdast.children[0].data.part).toBe('toc:project');
+    expect(mdast.children[0].children[0].type).toBe('list');
+    expect(mdast.children[0].children[0].children.length).toBe(2);
+    expect(mdast.children[0].children[0].children[0].children.length).toBe(1);
+    expect(mdast.children[0].children[0].children[1].children.length).toBe(1);
+    expect(mdast.children[0].children[0].children[0].children[0].url).toBe(externalUrl);
+    const secondItem = mdast.children[0].children[0].children[1].children[0];
+    expect(secondItem.url).toBe(externalUrl);
+    expect(secondItem.internal).toBe(false);
+    expect(toText(secondItem)).toBe('Two');
+  });
   test('Project Toc - with project slug and enumerators', () => {
     const vfile = new VFile();
     const mdast = {

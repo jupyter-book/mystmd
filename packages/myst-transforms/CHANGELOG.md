@@ -1,5 +1,96 @@
 # myst-transforms
 
+## 1.3.44
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+  - myst-to-html@1.6.3
+
+## 1.3.43
+
+### Patch Changes
+
+- cc0bcec: Improve robustness of link transform (when a link has no url)
+- c2d895a: Enable key-based ignores of warnings for DOIs
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+  - myst-frontmatter@1.9.1
+  - myst-to-html@1.6.2
+
+## 1.3.42
+
+### Patch Changes
+
+- c7af16c: Add mhchem extension
+- 1735db4: Add support for iframe title.
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-spec-ext@1.9.0
+  - myst-frontmatter@1.9.0
+  - myst-common@1.9.0
+  - myst-to-html@1.6.1
+
+## 1.3.41
+
+### Patch Changes
+
+- aab5f02: Handle undefined URLs in formatting link text
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
+- Updated dependencies [cd8ee79]
+  - myst-to-html@1.6.0
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+  - myst-spec-ext@1.8.4
+
+## 1.3.40
+
+### Patch Changes
+
+- 13bd33a: :wrench: Refactorings to clean up table-of-contents transform
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+  - myst-to-html@1.5.17
+
+## 1.3.39
+
+### Patch Changes
+
+- ae6123412: Expose admonition header test function
+- Updated dependencies [9cb280a4b]
+  - myst-spec-ext@1.8.2
+  - myst-common@1.8.2
+  - myst-frontmatter@1.8.2
+  - myst-to-html@1.5.16
+
+## 1.3.38
+
+### Patch Changes
+
+- cb76fb71: Add URLs to toc-directive
+
+## 1.3.37
+
+### Patch Changes
+
+- 224da08d: Underline tag in html is underline not emphasis
+- Updated dependencies [0b284816]
+- Updated dependencies [fefffffd]
+  - myst-spec-ext@1.8.1
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+  - myst-to-html@1.5.15
+
 ## 1.3.36
 
 ### Patch Changes
