@@ -118,6 +118,6 @@ ${READTHEDOCS_FILENAME}
 4. Read the Docs will automatically build your documentation on each push
 5. 🎉 Your documentation will be available at ${chalk.blue('https://YOUR-PROJECT.readthedocs.io')}
 
-For more information, see: ${chalk.blue('https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html')}
+For more information, see: ${chalk.blue('https://docs.readthedocs.com/platform/stable/intro/mystmd.html')}
 `);
 }
