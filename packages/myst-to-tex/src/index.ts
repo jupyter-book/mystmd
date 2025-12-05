@@ -240,7 +240,14 @@ const handlers: Record<string, Handler> = {
     }
   },
   listItem(node, state) {
-    state.write('\\item ');
+    if (node.checked === true) {
+      state.write('\\item[$\\blacksquare$] ');
+    } else if (node.checked === false) {
+      state.write('\\item[$\\square$] ');
+    } else {
+      state.write('\\item ');
+    }
+
     if (node.children?.[0]?.type === 'paragraph' && node.children.length === 1) {
       state.renderChildren(node.children[0], true);
     } else {
