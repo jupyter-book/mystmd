@@ -92,6 +92,10 @@ A button is an element with text content that triggers an action to navigate to 
 {button}`MyST-MD GitHub <https://github.com/jupyter-book/mystmd>`
 ```
 
+```{myst}
+{button}`A button without a link!`
+```
+
 :::{myst:role} button
 :::
 

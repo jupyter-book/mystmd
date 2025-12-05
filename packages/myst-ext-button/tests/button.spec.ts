@@ -3,7 +3,7 @@ import { buttonRole } from '../src';
 import { VFile } from 'vfile';
 
 describe('Button component', () => {
-  it('should process body<label> syntax correctly', () => {
+  it('should process text<link> syntax correctly', () => {
     const result = buttonRole.run(
       { name: 'button', body: 'Click me<http://example.com>' },
       new VFile(),
@@ -49,6 +49,17 @@ describe('Button component', () => {
         type: 'span',
         class: 'button',
         children: [{ type: 'text', value: 'Click me' }],
+      },
+    ]);
+  });
+
+  it('should treat an empty link target as a non-link button', () => {
+    const result = buttonRole.run({ name: 'button', body: 'Click <>' }, new VFile());
+    expect(result).toEqual([
+      {
+        type: 'span',
+        class: 'button',
+        children: [{ type: 'text', value: 'Click' }],
       },
     ]);
   });
