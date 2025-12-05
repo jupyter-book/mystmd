@@ -240,9 +240,9 @@ const handlers: Record<string, Handler> = {
     }
   },
   listItem(node, state) {
-    if (node.checked == true) {
+    if (node.checked === true) {
       state.write('\\item[$\\blacksquare$] ');
-    } else if (node.checked == false) {
+    } else if (node.checked === false) {
       state.write('\\item[$\\square$] ');
     } else {
       state.write('\\item ');
