@@ -97,7 +97,6 @@ async function getImageDimensions(
   file: Blob | Buffer,
 ): Promise<{ width: number; height: number } | undefined> {
   if (typeof (globalThis as any).Image === 'undefined') return undefined;
-  if (typeof Image === 'undefined') return undefined;
   return new Promise((resolve, reject) => {
     const img = new (globalThis as any).Image();
     // the following handler will fire after a successful loading of the image
