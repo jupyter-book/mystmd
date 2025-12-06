@@ -2,6 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { listExplicitFiles, patternsToFileEntries } from './fromTOC';
+import type { PatternEntry } from 'myst-toc';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
@@ -87,6 +88,57 @@ describe('patternsToFileEntries', () => {
       { file: 'foo/file-2.md', implicit: true },
       { file: 'foo/file-3.md', implicit: true },
       { file: 'foo/file-10.md', implicit: true },
+    ]);
+  });
+  it('sort descending reverses the sort order', () => {
+    memfs.vol.fromJSON({
+      '2026-01-01.md': '',
+      '2026-02-01.md': '',
+      '2026-03-01.md': '',
+    });
+    const entry: PatternEntry = { pattern: '*.md', sort: 'descending' };
+    expect(
+      patternsToFileEntries(session, [entry] as PatternEntry[], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
+    ).toEqual([
+      { file: '2026-03-01.md', implicit: true },
+      { file: '2026-02-01.md', implicit: true },
+      { file: '2026-01-01.md', implicit: true },
+    ]);
+  });
+  it('sort ascending maintains normal sort order', () => {
+    memfs.vol.fromJSON({
+      '2026-01-01.md': '',
+      '2026-02-01.md': '',
+      '2026-03-01.md': '',
+    });
+    const entry: PatternEntry = { pattern: '*.md', sort: 'ascending' };
+    expect(
+      patternsToFileEntries(session, [entry] as PatternEntry[], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
+    ).toEqual([
+      { file: '2026-01-01.md', implicit: true },
+      { file: '2026-02-01.md', implicit: true },
+      { file: '2026-03-01.md', implicit: true },
+    ]);
+  });
+  it('sort descending works with nested folders', () => {
+    memfs.vol.fromJSON({
+      'meetings/2026-01-01.md': '',
+      'meetings/2026-02-01.md': '',
+      'meetings/2026-03-01.md': '',
+    });
+    const entry: PatternEntry = { pattern: 'meetings/*.md', sort: 'descending' };
+    expect(
+      patternsToFileEntries(session, [entry] as PatternEntry[], '.', [], '/tmp/warn.txt', {
+        fs: memfs,
+      }),
+    ).toEqual([
+      { file: 'meetings/2026-03-01.md', implicit: true },
+      { file: 'meetings/2026-02-01.md', implicit: true },
+      { file: 'meetings/2026-01-01.md', implicit: true },
     ]);
   });
 });
