@@ -25,7 +25,10 @@ function watchConfigAndPublic(
       ignoreInitial: true,
       awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
     })
-    .on('all', watchProcessor(session, null, serverReload, opts));
+    .on('all', watchProcessor(session, null, serverReload, opts))
+    .on('error', (error) => {
+      session.log.error(`Error watching config and public: ${error}`);
+    });
 }
 
 function triggerProjectReload(
@@ -201,7 +204,10 @@ export function watchContent(
         awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
         cwd: proj.path,
       })
-      .on('all', watchProcessor(session, proj, serverReload, opts));
+      .on('all', watchProcessor(session, proj, serverReload, opts))
+      .on('error', (error) => {
+        session.log.error(`Error watching project ${proj.path}: ${error}`);
+      });
   });
   // Watch the myst.yml
   watchConfigAndPublic(session, serverReload, opts);
