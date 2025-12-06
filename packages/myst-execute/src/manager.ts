@@ -3,6 +3,7 @@ import which from 'which';
 import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
 import type { ISession, Logger } from 'myst-cli-utils';
+import { killProcessTree } from 'myst-cli-utils';
 import chalk from 'chalk';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
@@ -129,5 +130,5 @@ export async function launchJupyterServer(
   log.info(`🪐 ${chalk.greenBright('Jupyter server started')}\n   ${chalk.dim(url)}`);
 
   // Register settings destructor (to kill server)
-  return { ...settings, dispose: () => proc.kill() };
+  return { ...settings, dispose: () => killProcessTree(proc) };
 }

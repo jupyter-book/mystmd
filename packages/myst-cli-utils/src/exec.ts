@@ -2,6 +2,7 @@ import util from 'util';
 import type { ExecOptions } from 'child_process';
 import child_process from 'child_process';
 import type { Logger } from './types.js';
+import treeKill from 'tree-kill';
 
 function execWrapper(
   command: string,
@@ -44,4 +45,20 @@ export function makeExecutable(
   options?: Options,
 ) {
   return util.promisify(makeExecWrapper(command, log, options)) as () => Promise<string>;
+}
+
+/**
+ * On Linux, child processes will not be terminated when attempting to kill their parent
+ * This function uses `tree-kill` to kill the process and all its child processes
+ */
+export function killProcessTree(process: child_process.ChildProcess) {
+  if (!process.pid) {
+    process.kill('SIGTERM');
+    return;
+  }
+  treeKill(process.pid, 'SIGTERM', (err) => {
+    if (err && process.pid) {
+      treeKill(process.pid, 'SIGKILL');
+    }
+  });
 }
