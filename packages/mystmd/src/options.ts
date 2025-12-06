@@ -26,3 +26,10 @@ export function makeGithubCurvenoteOption() {
     'Creates a GitHub action that will deploy your site to Curvenote',
   ).default(false);
 }
+
+export function makeReadTheDocsOption() {
+  return new Option(
+    '--readthedocs',
+    'Creates a .readthedocs.yaml configuration file for deploying to Read the Docs',
+  ).default(false);
+}
