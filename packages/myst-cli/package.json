@@ -71,6 +71,7 @@
     "myst-cli-utils": "^2.0.12",
     "myst-common": "^1.9.2",
     "myst-config": "^1.9.2",
+    "myst-migrate": "^1.7.0",
     "myst-execute": "^0.3.2",
     "myst-ext-button": "^0.0.1",
     "myst-ext-card": "^1.0.9",
