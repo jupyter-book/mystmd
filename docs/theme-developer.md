@@ -16,7 +16,7 @@ Details may change soon.
 The MyST engine runs the content pipeline, while the theme is a web server that renders that content.
 Specifically, when you run `myst start`, the engine builds `_build/site` (content JSON, config, assets), serves it on `CONTENT_CDN_PORT`, and launches your theme with the template’s `build.start` command.
 A theme should read `_build/site/config.json` first, fetch page JSON from `/content/{slug}.json`, and serve the app on `PORT` (Remix/Vite/Next-style).
-Live reload arrives via the CLI websocket at `/socket`, and static assets or file-type options are already copied into `_build/site/public` and served from `/`.
+Live reloads are facilitated by a websocket endpoint at `/socket`, which processes JSON messages. Static assets, and template options with type `file` are copied into `_build/site/public` and served from `/`.
 
 ## Theme metadata (`template.yml`)
 
