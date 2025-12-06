@@ -1,0 +1,16 @@
+export const phrasingTypes = new Set([
+  'text',
+  'strong',
+  'emphasis',
+  'inlineCode',
+  'inlineMath',
+  'subscript',
+  'superscript',
+  'smallcaps',
+  'link',
+  'delete',
+  'crossReference',
+  'image',
+  'html',
+  'mystRole',
+]);
