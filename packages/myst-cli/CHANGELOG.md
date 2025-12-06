@@ -1,5 +1,16 @@
 # myst-cli
 
+## 1.7.1
+
+### Patch Changes
+
+- 8c82b34: Update `ws` version in package to match actual and align types.
+- Updated dependencies [fe6080c]
+- Updated dependencies [8c82b34]
+  - myst-to-tex@1.0.44
+  - myst-to-docx@1.0.16
+  - tex-to-myst@1.0.44
+
 ## 1.7.0
 
 ### Patch Changes

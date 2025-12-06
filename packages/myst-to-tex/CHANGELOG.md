@@ -1,5 +1,11 @@
 # myst-to-tex
 
+## 1.0.44
+
+### Patch Changes
+
+- fe6080c: MyST-to-TeX: add support for checkboxes
+
 ## 1.0.43
 
 ### Patch Changes
