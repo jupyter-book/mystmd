@@ -9,6 +9,7 @@ import { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import type { GenericParent } from 'myst-common';
+import { selectCurrentProjectConfig } from '../store/selectors.js';
 
 /**
  * Boiled-down options for parseMyst
@@ -21,6 +22,16 @@ type Options = {
 };
 
 export function getMystParserOptions(session: ISession, opts?: Options): Partial<AllOptions> {
+  // Get parser settings from project config
+  // Right now this is only project level, but in the future we will allow page level settings.
+  const parserOptions = selectCurrentProjectConfig(session.store.getState())?.settings?.parser;
+  // Configure math extensions based on parser settings
+  let mathExtension: boolean | { dollarmath?: boolean; amsmath?: boolean } = true;
+  if (parserOptions?.dollarmath === false) {
+    // If dollarmath is explicitly disabled, configure math to only enable amsmath
+    mathExtension = { dollarmath: false, amsmath: true };
+  }
+
   return {
     markdownit: { linkify: true },
     directives: [
@@ -33,6 +44,7 @@ export function getMystParserOptions(session: ISession, opts?: Options): Partial
     ],
     extensions: {
       frontmatter: !opts?.ignoreFrontmatter,
+      math: mathExtension,
     },
     roles: [buttonRole, ...(session.plugins?.roles ?? [])],
   };

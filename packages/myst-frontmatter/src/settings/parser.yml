@@ -1,0 +1,47 @@
+title: parser
+frontmatter: project
+cases:
+  - title: unknown option
+    raw:
+      settings:
+        parser:
+          unknown: unknown
+    warnings: 1
+    normalized: {}
+  - title: dollarmath true
+    raw:
+      settings:
+        parser:
+          dollarmath: true
+    errors: 0
+    normalized:
+      settings:
+        parser:
+          dollarmath: true
+  - title: dollarmath false
+    raw:
+      settings:
+        parser:
+          dollarmath: false
+    errors: 0
+    normalized:
+      settings:
+        parser:
+          dollarmath: false
+  - title: dollarmath with alias
+    raw:
+      settings:
+        parser:
+          dollar_math: false
+    errors: 0
+    normalized:
+      settings:
+        parser:
+          dollarmath: false
+  - title: dollarmath invalid boolean
+    raw:
+      settings:
+        parser:
+          dollarmath: invalid
+    errors: 1
+    normalized: {}

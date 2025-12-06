@@ -2,6 +2,7 @@ import type { ValidationOptions } from 'simple-validators';
 import { defined, incrementOptions, validateChoice, validateObjectKeys } from 'simple-validators';
 import type { ProjectSettings } from './types.js';
 import { validateMystToTexSettings } from './validatorsMystToTex.js';
+import { validateParserSettings } from './validatorsParser.js';
 
 const OUTPUT_REMOVAL_OPTIONS: Required<ProjectSettings>['output_stderr'][] = [
   'show',
@@ -16,6 +17,7 @@ export const PROJECT_SETTINGS = [
   'output_stdout',
   'output_matplotlib_strings',
   'myst_to_tex',
+  'parser',
 ];
 export const PROJECT_SETTINGS_ALIAS = {
   stderr_output: 'output_stderr',
@@ -62,6 +64,10 @@ export function validateProjectAndPageSettings(
       incrementOptions('myst_to_tex', opts),
     );
     if (myst_to_tex) output.myst_to_tex = myst_to_tex;
+  }
+  if (defined(settings.parser)) {
+    const parser = validateParserSettings(settings.parser, incrementOptions('parser', opts));
+    if (parser) output.parser = parser;
   }
   if (Object.keys(output).length === 0) return undefined;
   return output;

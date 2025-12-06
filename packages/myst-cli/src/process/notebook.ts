@@ -7,7 +7,6 @@ import type {
   ICell,
   IMimeBundle,
   INotebookContent,
-  INotebookMetadata,
   IOutput,
   MultilineString,
 } from '@jupyterlab/nbformat';
