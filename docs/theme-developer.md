@@ -24,49 +24,17 @@ Live reloads are facilitated by a websocket endpoint at `/socket`, which process
 - Static assets used by the theme should be listed in `files`, and the main compiled entry can override the default as `template` (optional; defaults to `template` in the archive); both must exist in the archive and are copied alongside the build.
 - `tags` are surfaced by the templates API for discovery but are not consumed by the engine; use them to help users find your theme.
 - Runtime hooks live in `build`: `install` runs once before start (defaults to `npm install`), and `start` runs your theme with the content server available (defaults to `npm run start`; see [template.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/site/template.ts)).
-- User options live in `options`/`parts`/`doc` and are typed in [types.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-templates/src/types.ts); `file` options are copied into `_build/site/public` before being handed to the theme (see [manifest.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/site/manifest.ts)).
+- User options live in `options`/`parts`/`doc` (defined in [types.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-templates/src/types.ts)); `file` options are copied into `_build/site/public` before being handed to the theme (see [manifest.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/site/manifest.ts)).
 
-Example `template.yml` skeleton for a site theme:
-
-```yaml
-myst: v1
-kind: site
-title: My Theme
-description: Opinionated site shell for data-heavy docs
-version: 0.1.0
-license: MIT
-source: https://github.com/acme/my-theme
-tags:
-  - demo
-  - docs
-build:
-  install: npm ci
-  start: npm run dev
-template: dist/index.html
-files:
-  - dist/assets/**
-options:
-  - id: logo
-    type: file
-    description: Path or URL to the header logo
-  - id: color_scheme
-    type: choice
-    choices: [light, dark, system]
-doc:
-  - id: title
-    required: true
-parts:
-  - id: abstract
-    max_words: 200
-```
+See the book theme [`template.yml`](https://github.com/jupyter-book/myst-theme/blob/main/themes/book/template.yml) for a detailed example.
 
 ## Engine and theme APIs
 
 During `myst start` the engine resolves/downloads your template (default `book-theme`), validates it as a `site` template, and installs dependencies if needed ([template.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/site/template.ts)).
 It then produces `_build/site/config.json`, validates it against your `doc`/`options`, and copies any `file` options into `_build/site/public` ([manifest.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/site/manifest.ts)).
 The content server provides these entry points (from [start.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/site/start.ts)):
-- `/config.json` typed as `SiteManifest` (see [types.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-config/src/site/types.ts)).
-- `/content/{slug}.json` payloads typed as `MystData` (see [crossReferences.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/transforms/crossReferences.ts)); when the browser requests `/slug`, your theme should fetch `/content/{slug}.json` (and `/content/index.json` for `/`).
+- `/config.json` (see [types.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-config/src/site/types.ts)).
+- `/content/{slug}.json` payloads (see [crossReferences.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/transforms/crossReferences.ts)); when the browser requests `/slug`, your theme should fetch `/content/{slug}.json` (and `/content/index.json` for `/`).
 - Reference and search files at `/objects.inv`, `/myst.xref.json`, `/myst.search.json`.
 - Static assets from `/` and a `/socket` websocket for `LOG` and `RELOAD` events.
 Your start script receives `HOST`, `CONTENT_CDN_PORT`, `PORT`, `MODE` (`app` or `static`), and optional `BASE_URL`; any framework or server is fine as long as it reads these and fetches content from the endpoints above.
