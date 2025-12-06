@@ -1,5 +1,7 @@
 # tex-to-myst
 
+## 1.0.44
+
 ## 1.0.43
 
 ### Patch Changes

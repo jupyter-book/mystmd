@@ -1,6 +1,6 @@
 {
   "name": "myst-to-tex",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "description": "Export from MyST mdast to latex",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-tex",
