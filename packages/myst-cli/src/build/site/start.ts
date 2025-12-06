@@ -63,7 +63,7 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
     noServer: true,
     path: '/socket',
   });
-  const connections: Record<string, WebSocket.WebSocket> = {};
+  const connections: Record<string, WebSocket> = {};
 
   wss.on('connection', function connection(ws) {
     const id = nanoid();
