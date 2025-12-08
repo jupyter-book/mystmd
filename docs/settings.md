@@ -60,6 +60,31 @@ output_matplotlib_strings
     - `"remove-warn"` (default) or `"remove-error"`: remove all matplotlib strings in outputs, and log a warning or error
     - `"warn"` or "error": log a warning or error if matplotlib strings in outputs
 
+## Markdown Parsing Settings
+
+Adding an object of `parser` to the settings will allow you to control various parser behaviors.
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  settings:
+    parser:
+      dollarmath: false
+```
+
+:::{warning}
+Markdown parsing settings currently only work on the `myst.yml` project settings, not the page frontmatter.
+:::
+
+(setting:parser:dollarmath)=
+dollarmath
+: Enable or disable inline dollar math parsing (e.g., `$x^2$` syntax).
+
+    - `true` (default): Enable inline dollar math parsing
+    - `false`: Disable inline dollar math parsing
+
+    When disabled, dollar signs (`$`) will be treated as regular text characters and not parsed as math delimiters. This can be useful if you have frequent uses of dollar signs, such as currency, in your content that are not meant to be math.
+
 ## LaTeX Rendering Settings
 
 Adding an object of `myst_to_tex` to the settings will allow you to control various default parts of how the LaTeX renderer behaves.
