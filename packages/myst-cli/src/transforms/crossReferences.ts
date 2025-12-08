@@ -144,7 +144,6 @@ export async function transformMystXRefs(
       } else {
         const data = await fetchMystXRefData(session, node as CrossReference, vfile);
         if (!data) return;
-        console.debug({ identifier: node.identifier });
         const targets = nodesFromMystXRefData(data, node.identifier, vfile, {
           urlSource: node.urlSource,
           maxNodes: 1,
