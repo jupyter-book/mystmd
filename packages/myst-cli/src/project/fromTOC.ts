@@ -117,13 +117,13 @@ export function patternsToFileEntries(
   return entries
     .map((entry) => {
       if (isPattern(entry)) {
-        const { pattern, reverse, ...leftover } = entry as PatternEntry;
+        const { pattern, sort, ...leftover } = entry as PatternEntry;
         // Glob matches, relative to `path`, ordered naturally
         let matches = globSync(pattern, { cwd: path, nodir: true, ...opts })
           .filter((item) => !ignore || !ignore.includes(item))
           .sort(comparePaths);
-        // Reverse order if requested
-        if (reverse) {
+        // Reverse order if descending sort is requested
+        if (sort === 'descending') {
           matches = matches.reverse();
         }
         // Build file entries

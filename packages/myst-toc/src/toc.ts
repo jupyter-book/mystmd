@@ -20,6 +20,7 @@ import {
   validateString,
   validationError,
   validateBoolean,
+  validateChoice,
 } from 'simple-validators';
 
 const COMMON_ENTRY_KEYS = ['title', 'hidden'];
@@ -138,7 +139,7 @@ export function validatePatternEntry(
     entry,
     {
       required: ['pattern'],
-      optional: [...COMMON_ENTRY_KEYS, 'reverse'],
+      optional: [...COMMON_ENTRY_KEYS, 'sort'],
     },
     opts,
   );
@@ -154,8 +155,14 @@ export function validatePatternEntry(
   const commonEntry = validateCommonEntry(intermediate, opts);
   const output: PatternEntry = { pattern, ...commonEntry };
 
-  if (defined(intermediate.reverse)) {
-    output.reverse = validateBoolean(intermediate.reverse, incrementOptions('reverse', opts));
+  if (defined(intermediate.sort)) {
+    const sort = validateChoice(intermediate.sort, {
+      ...incrementOptions('sort', opts),
+      choices: ['ascending', 'descending'],
+    }) as 'ascending' | 'descending' | undefined;
+    if (sort !== undefined) {
+      output.sort = sort;
+    }
   }
 
   return output;

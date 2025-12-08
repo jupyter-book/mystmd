@@ -103,9 +103,9 @@ project:
 ::::
 :::::
 
-#### Reverse order
+#### Sort order
 
-You can reverse the sort order of files matched by a pattern by adding `reverse: true` to the pattern entry. This is useful for archives where you want the most recent files listed first:
+You can control the sort order of files matched by a pattern by adding `sort: 'ascending'` or `sort: 'descending'` to the pattern entry. By default, files are sorted in ascending order. The `descending` option is useful for archives where you want the most recent files listed first:
 
 ```{code} yaml
 :filename: myst.yml
@@ -114,10 +114,10 @@ project:
   toc:
     - file: root.md
     - pattern: '*.md'
-      reverse: true
+      sort: descending
 ```
 
-This will list files in reverse chronological order (newest first), which is particularly useful for meeting notes, blog posts, or other time-based content.
+If your files are named with a date at the start, for example, `2025-12-03-reverse-toc.md`, this will list files in reverse alphabetical order (newest first), which is particularly useful for meeting notes, blog posts, or other time-based content.
 
 ### Nesting pages and dropdowns
 
@@ -138,7 +138,6 @@ project:
         - file: part-2-first-child.md
         - file: part-2-second-child.md
 ```
-
 
 You can nest children under a `title` without specifying a parent `file`.
 This will create a dropdown of pages in the Table of Contents.
