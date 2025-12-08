@@ -163,7 +163,6 @@ describe('Testing mdast --> html conversions', () => {
   test.each(htmlCases)('%s', (name, { html, mdast }) => {
     const modified = replaceCommentNodes(mdast);
     if (html) {
-      console.log({ name, skip: SKIP_TESTS.some((p) => p.test(name.trim())) });
       if (name.includes('cmark_spec_0.30')) {
         const output = mystToHtml(modified, {
           formatHtml: false,
