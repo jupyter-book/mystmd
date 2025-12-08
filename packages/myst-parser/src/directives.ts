@@ -3,17 +3,18 @@ import type {
   DirectiveData,
   DirectiveSpec,
   DirectiveContext,
-  ParseTypes,
   GenericParent,
 } from 'myst-common';
 import { RuleId, fileError, fileWarn } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import { contentFromNode } from './roles.js';
+import { contentFromNode, markChildrenAsProcessed } from './utils.js';
 import type { Directive } from 'myst-spec';
+import { parseOptions } from './inlineAttributes.js';
 
 type MystDirectiveNode = GenericNode & {
   name: string;
+  processed?: false;
 };
 /**
  * Apply directive `run()` methods to build directive ASTs.
@@ -46,12 +47,20 @@ export function applyDirectives(
       }
     });
   });
-  // Find all raw directive nodes
+  // Find all raw directive nodes, these will have a `processed` attribute set to `false`
   const nodes = selectAll('mystDirective[processed=false]', tree) as MystDirectiveNode[];
   nodes.forEach((node) => {
-    delete node.processed; // Indicate that the directive has been processed
     const { name } = node;
     const spec = specLookup[name];
+    if (spec && spec.body && spec.body.type !== 'myst') {
+      // Do not process the children of the directive that is not a myst block
+      // Doing so would raise errors (for example, if the parent directive is a code block)
+      // See https://github.com/jupyter-book/mystmd/issues/2530
+      markChildrenAsProcessed(node);
+    }
+    // Re-check if the directive has been processed
+    if (node.processed !== false) return;
+    delete node.processed; // Indicate that the directive has been processed
     if (!spec) {
       fileError(vfile, `unknown directive: ${name}`, { node, ruleId: RuleId.directiveKnown });
       // We probably want to do something better than just delete the children and
@@ -76,11 +85,10 @@ export function applyDirectives(
     const argNode = node.children?.filter((c) => c.type === 'mystDirectiveArg')[0];
     if (argSpec) {
       if (argSpec.required && !argNode) {
-        fileError(vfile, `required argument not provided for directive: ${name}`, {
-          node,
-          ruleId: RuleId.directiveArgumentCorrect,
-        });
+        const message = `required argument not provided for directive: ${name}`;
+        fileError(vfile, message, { node, ruleId: RuleId.directiveArgumentCorrect });
         node.type = 'mystDirectiveError';
+        node.message = message;
         delete node.children;
         validationError = true;
       } else if (argNode) {
@@ -96,92 +104,24 @@ export function applyDirectives(
         }
       }
     } else if (argNode) {
-      fileWarn(vfile, `unexpected argument provided for directive: ${name}`, {
-        node: argNode,
-        ruleId: RuleId.directiveArgumentCorrect,
-      });
+      const message = `unexpected argument provided for directive: ${name}`;
+      fileWarn(vfile, message, { node: argNode, ruleId: RuleId.directiveArgumentCorrect });
     }
 
     // Handle options
-    const options: Record<string, ParseTypes> = {};
-    const optionNodes = node.children?.filter((c) => c.type === 'mystDirectiveOption') ?? [];
-    const optionNodeLookup: Record<string, GenericNode> = {};
-    optionNodes.forEach((optionNode) => {
-      if (optionNodeLookup[optionNode.name]) {
-        fileWarn(vfile, `duplicate option "${optionNode.name}" declared for directive: ${name}`, {
-          node: optionNode,
-          ruleId: RuleId.directiveOptionsCorrect,
-        });
-      } else {
-        optionNodeLookup[optionNode.name] = optionNode;
-      }
-    });
-
-    // Deal with each option in the spec
-    Object.entries(optionsSpec || {}).forEach(([optionName, optionSpec]) => {
-      let optionNameUsed = optionName;
-      let optionNode = optionNodeLookup[optionName];
-      // Replace alias options or warn on duplicates
-      optionSpec.alias?.forEach((alias) => {
-        const aliasNode = optionNodeLookup[alias];
-        if (!aliasNode) return;
-        if (!optionNode && aliasNode) {
-          optionNode = aliasNode;
-          optionNameUsed = alias;
-          optionNodeLookup[optionName] = optionNode;
-        } else {
-          fileWarn(
-            vfile,
-            `option "${optionNameUsed}" used instead of "${alias}" for directive: ${name}`,
-            { node, ruleId: RuleId.directiveOptionsCorrect },
-          );
-        }
-        delete optionNodeLookup[alias];
-      });
-
-      if (optionSpec.required && !optionNode) {
-        fileError(vfile, `required option "${optionName}" not provided for directive: ${name}`, {
-          node,
-          ruleId: RuleId.directiveOptionsCorrect,
-        });
-        node.type = 'mystDirectiveError';
-        delete node.children;
-        validationError = true;
-      } else if (optionNode) {
-        const content = contentFromNode(
-          optionNode,
-          optionSpec,
-          vfile,
-          `option "${optionName}" of directive: ${name}`,
-          RuleId.directiveOptionsCorrect,
-        );
-        if (content != null) {
-          options[optionName] = content;
-        } else if (optionSpec.required) {
-          validationError = true;
-        }
-        delete optionNodeLookup[optionName];
-      }
-    });
-    Object.values(optionNodeLookup).forEach((optionNode) => {
-      fileWarn(vfile, `unexpected option "${optionNode.name}" provided for directive: ${name}`, {
-        node: optionNode,
-        ruleId: RuleId.directiveOptionsCorrect,
-      });
-    });
-    if (Object.keys(options).length) {
-      data.options = options;
-    }
+    // const options: Record<string, ParseTypes> = {};
+    const { valid: validOptions, options } = parseOptions(name, node, vfile, optionsSpec);
+    data.options = options;
+    validationError = validationError || validOptions;
 
     // Handle body
     const bodyNode = node.children?.filter((c) => c.type === 'mystDirectiveBody')[0];
     if (bodySpec) {
       if (bodySpec.required && !bodyNode) {
-        fileError(vfile, `required body not provided for directive: ${name}`, {
-          node,
-          ruleId: RuleId.directiveBodyCorrect,
-        });
+        const message = `required body not provided for directive: ${name}`;
+        fileError(vfile, message, { node, ruleId: RuleId.directiveBodyCorrect });
         node.type = 'mystDirectiveError';
+        node.message = message;
         delete node.children;
         validationError = true;
       } else if (bodyNode) {

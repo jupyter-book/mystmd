@@ -1,5 +1,31 @@
 # myst-to-md
 
+## 1.0.16
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+
+## 1.0.15
+
+### Patch Changes
+
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- c5e51589: Do not write out alt text for markdown export when it is auto generated.
+- a11731a1: Add iframes and directives to markdown export
+- 3950dcaa: Do not have code block options exported when they are null
+- 7d6dff27: do not write out implicit references for titles
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+
 ## 1.0.14
 
 ### Patch Changes

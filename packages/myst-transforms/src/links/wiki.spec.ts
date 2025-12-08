@@ -132,4 +132,13 @@ describe('Test WikiTransformer', () => {
     expect(link.data?.wiki).toEqual('https://wiki.seg.org/');
     expect(link.data?.page).toEqual('Knowledge_tree');
   });
+  test('any wiki permalink', async () => {
+    const t = new WikiTransformer();
+    const link: Link = {
+      type: 'link',
+      url: 'https://en.wikipedia.org/w/index.php?title=Ecotourism&oldid=1291722475',
+      children: [],
+    };
+    expect(t.test(link.url)).toBe(false);
+  });
 });

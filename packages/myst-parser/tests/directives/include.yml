@@ -13,3 +13,5 @@ cases:
           children:
             - type: include
               file: my_file.md
+              lang: markdown
+              literal: false

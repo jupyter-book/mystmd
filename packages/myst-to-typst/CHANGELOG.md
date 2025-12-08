@@ -1,5 +1,99 @@
 # myst-to-typst
 
+## 0.0.35
+
+### Patch Changes
+
+- 6a5fe67: Allow implicit headings in typst
+- 956055c: Bump tex-to-typst version
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 0.0.34
+
+### Patch Changes
+
+- 973db009e: Add `toc` node to render Table of Contents in Typst and LaTeX.
+
+## 0.0.33
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+- Updated dependencies [fefffffd]
+  - myst-spec-ext@1.8.1
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+
+## 0.0.32
+
+### Patch Changes
+
+- bd3a2ed: Bump tex-to-typst@0.0.16
+
+## 0.0.31
+
+### Patch Changes
+
+- 68c93b9a: Escape semicolons
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
+## 0.0.30
+
+### Patch Changes
+
+- 74e96e10: Support non-rgb colors in table cells
+- 74e96e10: Fix containers with tables inside divs
+- 7f29af8a: New lines in lists are not written to typst
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+
+## 0.0.29
+
+### Patch Changes
+
+- 6f77bda2: Enable labeling of paragraphs
+- cd69d47: Add exercise and solution handlers
+- a6575fa9: Do not label implicit heading nodes in typst
+- ea19e66c: Support additional greek characters in typst
+- 7afc6917: 𝐁 Bold text in typst in line fixed
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- 9457a8de: Support restarting counter for each typst article in multi-article export
+- 2c8fa97d: Fix typst crossreferences to other pages
+- 4979d3c3: tex-to-typst updates
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 0.0.28
+
+### Patch Changes
+
+- 0dc62c76: Allow overriding default breakable value for typst figures
+- 0dc62c76: Add hook for customizing table columns in typst
+- 0dc62c76: Render table legends below tables in typst
+- 0dc62c76: Support lists that do not start at 1 in typst
+- 0dc62c76: Render cross-references with correct text in typst
+- 0dc62c76: Support table cell background color in typst
+
 ## 0.0.27
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "myst-common",
   "sideEffects": false,
-  "version": "1.7.4",
+  "version": "1.9.2",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,15 +15,16 @@
     "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
     "test": "vitest run",
     "test:watch": "vitest watch",
+    "generate:rule-severities": "node scripts/generate-rule-severities.mjs",
     "build:esm": "tsc",
-    "build": "npm-run-all -l clean -p build:esm"
+    "build": "npm-run-all -l clean generate:rule-severities -p build:esm"
   },
   "dependencies": {
     "css.escape": "^1.5.1",
     "mdast": "^3.0.0",
-    "myst-frontmatter": "^1.7.4",
+    "myst-frontmatter": "^1.9.2",
     "myst-spec": "^0.0.5",
-    "nanoid": "^4.0.0",
+    "nanoid": "^5.1.6",
     "unified": "^11.0.0",
     "unist-util-remove": "^4.0.0",
     "unist-util-select": "^5.0.0",
@@ -35,7 +36,7 @@
     "@jupyterlab/nbformat": "^3.5.2",
     "@lumino/coreutils": "^2.0.0",
     "@types/css.escape": "^1.5.2",
-    "myst-spec-ext": "^1.7.4",
+    "myst-spec-ext": "^1.9.2",
     "unist-builder": "4.0.0"
   }
 }

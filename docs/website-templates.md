@@ -8,8 +8,10 @@ These provide different reading experiences that are designed for different type
 They are defined via the same templating system used for [static document exporting](./documents-exports.md), and a base set of web themes can be found in the [`jupyter-book/myst-theme` repository](https://github.com/jupyter-book/myst-theme/tree/main/themes).
 
 :::{tip} Themes and templates mean the same thing
-For the remainder of this page, assume that "theme" and "template" mean the same thing.
+See [](#overview-themes) for more explanation.
 :::
+
+(default-web-themes)=
 
 ## Themes bundled with MyST
 
@@ -78,20 +80,31 @@ Below is a table of options for each theme bundled with MyST.
 :heading-depth: 3
 ```
 
-### Site URL Options
+(site-url-folders)=
+### Make site URLs respect folder structure
 
-By default, MyST URLs only contain the file name for each page; folder structure is respected in the table of contents but is not reflected in URLs. If you would like to maintain nested folder structure in the URLs, you may provide the site option `folders: true`. This causes each folder in your MyST directory to become a path segment. For this feature to work correctly, your chosen theme must also support `folders` as an option. Both `book-theme` and `article-theme` bundled with MyST support this.
+By default, MyST URLs only contain the file name for each page; folder structure is respected in the table of contents but is not reflected in URLs. If you would like to maintain nested folder structure in the URLs, you may set the site option `folders` to `true`. This causes each folder in your MyST directory to become a path segment. For this feature to work correctly, your chosen theme must also support `folders` as an option. Both `book-theme` and `article-theme` bundled with MyST support this.
+
+```{code-block} yaml
+:filename: myst.yml
+:linenos:
+:emphasize-lines: 3
+site:
+  options:
+    folders: true
+```
 
 ### Page Options
 
-Depending on the option, these can also be controlled in the frontmatter on each page under the `site` key.
+Any option from `site.options` can be overridden per-page in the frontmatter under the `site` key.
+Note that the nesting is different: options are placed directly under `site:` in page frontmatter, not under `site.options:`.
 
 ```{code-block} yaml
 :filename: my-page.md
 ---
 ...
 site:
-  hide_toc: true
+  hide_toc: true  # This is site.options.hide_toc in myst.yml
 ---
 ```
 

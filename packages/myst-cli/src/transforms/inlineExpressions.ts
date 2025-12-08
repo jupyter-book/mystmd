@@ -33,6 +33,10 @@ function processLatex(value: string) {
     .trim();
 }
 
+function stripTextQuotes(content: string) {
+  return content.replace(/^(["'])(.*)\1$/, '$2');
+}
+
 function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingContent[] {
   const result = node.result as IExpressionResult;
   if (!result) return [];
@@ -53,7 +57,14 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
       } else if (mimeType === 'text/html') {
         content = [{ type: 'html', value: value as string }];
       } else if (mimeType === 'text/plain') {
-        content = [{ type: 'text', value: value as string }];
+        // Allow the user / libraries to explicitly indicate that quotes should be preserved
+        const stripQuotes = result.metadata?.['strip-quotes'] ?? true;
+        content = [
+          {
+            type: 'text',
+            value: stripQuotes ? stripTextQuotes(value as string) : (value as string),
+          },
+        ];
       }
     });
     if (content) return content;
@@ -66,14 +77,11 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
 }
 
 export function transformRenderInlineExpressions(mdast: GenericParent, file: VFile) {
-  let count = 0;
   const inlineNodes = selectAll('inlineExpression', mdast) as InlineExpression[];
   inlineNodes.forEach((inlineExpression) => {
-    count += 1;
     if (!inlineExpression.result) {
       return;
     }
-    inlineExpression.identifier = `eval-${count}`;
     inlineExpression.children = renderExpression(inlineExpression, file);
   });
 }

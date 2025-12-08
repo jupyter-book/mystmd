@@ -4,7 +4,7 @@
  */
 export type CommonEntry = {
   title?: string;
-  // hidden?: boolean;
+  hidden?: boolean;
   // numbering?: string;
   // id?: string;
   // class?: string;
@@ -36,6 +36,7 @@ export type FileParentEntry = FileEntry & Omit<ParentEntry, 'title'>;
  */
 export type URLEntry = {
   url: string;
+  open_in_same_tab?: boolean;
 } & CommonEntry;
 
 /**

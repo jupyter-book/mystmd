@@ -60,6 +60,30 @@ cases:
 
       (my-subheading)=
       #### fourth
+  - title: implicitly labeled headings
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          label: first
+          identifier: first
+          implicit: true
+          children:
+            - type: text
+              value: first
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      # first
+
+      Some % *markdown*
   - title: labeled quote
     mdast:
       type: root

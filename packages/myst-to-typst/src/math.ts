@@ -60,20 +60,37 @@ export function resolveRecursiveCommands(plugins: MathPlugins): MathPlugins {
 }
 
 const math: Handler = (node, state) => {
-  const { value, macros } = texToTypst(node.value);
+  // Use typst value if available, otherwise convert LaTeX
+  const mathValue = node.typst || node.value;
+  const { value, macros } = node.typst
+    ? { value: mathValue, macros: undefined } // No conversion needed for typst
+    : texToTypst(node.value); // Convert LaTeX to Typst
+
   macros?.forEach((macro) => {
     state.useMacro(macro);
   });
   const { identifier: label } = normalizeLabel(node.label) ?? {};
   addMacrosToState(value, state);
   state.ensureNewLine();
+  // This resets the typst counter to match MyST numbering.
+  // However, it is dependent on the resolved enumerator value. This will work given
+  // default enumerators, but if the user sets numbering 'template' it will not work.
+  if (node.enumerator?.endsWith('.1')) {
+    state.write(`#set math.equation(numbering: "(${node.enumerator})")\n`);
+    state.write(`#counter(math.equation).update(0)\n\n`);
+  }
   // Note: must have spaces $ math $ for the block!
   state.write(`$ ${value} $${label ? ` <${label}>` : ''}\n\n`);
   state.ensureNewLine(true);
 };
 
 const inlineMath: Handler = (node, state) => {
-  const { value, macros } = texToTypst(node.value);
+  // Use typst value if available, otherwise convert LaTeX
+  const mathValue = node.typst || node.value;
+  const { value, macros } = node.typst
+    ? { value: mathValue, macros: undefined } // No conversion needed for typst
+    : texToTypst(node.value); // Convert LaTeX to Typst
+
   macros?.forEach((macro) => {
     state.useMacro(macro);
   });

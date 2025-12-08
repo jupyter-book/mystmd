@@ -2,7 +2,7 @@
 title: Enumeration
 ---
 
-There are two stages to add information about numbering and cross-referencing of content, specifically, `enumerateTargetsPlugin` and `resolveReferencesPlugin` these can be run at different times depending on if you are in a single-document or multi-document setup.
+There are two stages to add information about numbering and cross-referencing of content, specifically, `enumerateTargetsPlugin` and `resolveReferencesPlugin`. These can be run at different times depending on if you are in a single-document or multi-document setup.
 
 The enumeration transforms require state, and can instantiate a `ReferenceState` object or a `MultiPageReferenceState` for collections with multiple pages. The reference resolution is defined in those classes. To create your own reference management, use the `IReferenceState` interface to pass in.
 

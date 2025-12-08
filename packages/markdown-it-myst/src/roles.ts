@@ -1,11 +1,12 @@
-import type MarkdownIt from 'markdown-it/lib';
+import type MarkdownIt from 'markdown-it/lib/index.js';
 import type StateCore from 'markdown-it/lib/rules_core/state_core.js';
 import type StateInline from 'markdown-it/lib/rules_inline/state_inline.js';
 import { nestedPartToTokens } from './nestedParse.js';
+import { inlineOptionsToTokens } from './inlineAttributes.js';
 
 export function rolePlugin(md: MarkdownIt): void {
   md.inline.ruler.before('backticks', 'parse_roles', roleRule);
-  md.core.ruler.after('inline', 'run_roles', runRoles);
+  md.core.ruler.after('text_join', 'run_roles', runRoles);
   // fallback renderer for unhandled roles
   md.renderer.rules['role'] = (tokens, idx) => {
     const token = tokens[idx];
@@ -21,38 +22,45 @@ export function rolePlugin(md: MarkdownIt): void {
   };
 }
 
+// This captures everything between { and }, then captures backticks + body
+// We keep negative lookahead/lookbehind for avoiding triple-backtick or edge issues
+let _x: RegExp;
+try {
+  // This pattern has three capturing groups:
+  // 1) Everything inside { }, e.g. `something .class #id attr="value"`
+  // 2) The sequence of backticks
+  // 3) The actual content between those backticks
+  _x = new RegExp('^\\{\\s*([^}]+?)\\s*\\}(`+)(?!`)(.+?)(?<!`)\\2(?!`)');
+} catch (err) {
+  // Safari does not support negative look-behinds
+  // This is a slightly down-graded variant, as it does not require a space.
+  _x = /^\{\s*([^}]+?)\s*\}(`+)(?!`)(.+?)\2(?!`)/;
+}
+
+const ROLE_PATTERN = _x;
+
 function roleRule(state: StateInline, silent: boolean): boolean {
   // Check if the role is escaped
-  if (state.src.charCodeAt(state.pos - 1) === 0x5c) {
-    /* \ */
-    // TODO: this could be improved in the case of edge case '\\{', also multi-line
+  if (state.src.charCodeAt(state.pos - 1) === 0x5c /* '\' */) {
     return false;
   }
+
   const match = ROLE_PATTERN.exec(state.src.slice(state.pos));
   if (match == null) return false;
-  const [str, name, , content] = match;
+
+  // match[1] = everything inside the braces
+  // match[2] = sequence of backticks
+  // match[4] = content inside those backticks
+  const [str, header, , content] = match;
   if (!silent) {
     const token = state.push('role', '', 0);
-    token.meta = { name };
+    token.info = header;
     token.content = content;
     (token as any).col = [state.pos, state.pos + str.length];
   }
   state.pos += str.length;
   return true;
 }
-
-// MyST role syntax format e.g. {role}`text`
-// TODO: support role with no value e.g. {role}``
-let _x: RegExp;
-try {
-  // This regex must be defined like this or Safari will crash
-  _x = new RegExp('^\\{\\s*([a-zA-Z_\\-+:]{1,36})\\s*\\}(`+)(?!`)(.+?)(?<!`)\\2(?!`)');
-} catch (error) {
-  // Safari does not support negative look-behinds
-  // This is a slightly down-graded variant, as it does not require a space.
-  _x = /^\{\s*([a-zA-Z_\-+:]{1,36})\s*\}(`+)(?!`)(.+?)\2(?!`)/;
-}
-const ROLE_PATTERN = _x;
 
 /** Run all roles, replacing the original token */
 function runRoles(state: StateCore): boolean {
@@ -64,25 +72,36 @@ function runRoles(state: StateCore): boolean {
           try {
             const { map } = token;
             const { content, col } = child as any;
+            // Note, if default role as `span` is wanted, add a
+            // `name = 'span'` here and remove thrown error below
+            const { name, tokens: optTokens } = inlineOptionsToTokens(
+              child.info,
+              map?.[0] ?? 0,
+              state,
+            );
+            if (!name) {
+              throw new Error('A role name is required, for example, "{sub}`2`"');
+            }
             const roleOpen = new state.Token('parsed_role_open', '', 1);
             roleOpen.content = content;
             roleOpen.hidden = true;
-            roleOpen.info = child.meta.name;
+            roleOpen.info = name;
+            roleOpen.meta = { header: child.info };
             roleOpen.block = false;
             roleOpen.map = map;
             (roleOpen as any).col = col;
-            const contentTokens = roleContentToTokens(content, map ? map[0] : 0, state);
+            const contentTokens = roleContentToTokens(content, map?.[0] ?? 0, state);
             const roleClose = new state.Token('parsed_role_close', '', -1);
             roleClose.block = false;
             roleClose.hidden = true;
-            roleOpen.info = child.meta.name;
-            const newTokens = [roleOpen, ...contentTokens, roleClose];
+            roleOpen.info = name;
+            const newTokens = [roleOpen, ...optTokens, ...contentTokens, roleClose];
             childTokens.push(...newTokens);
           } catch (err) {
             const errorToken = new state.Token('role_error', '', 0);
             errorToken.content = child.content;
             errorToken.info = child.info;
-            errorToken.meta = child.meta;
+            errorToken.meta = child.meta ?? {};
             errorToken.map = child.map;
             errorToken.meta.error_message = (err as Error).message;
             errorToken.meta.error_name = (err as Error).name;

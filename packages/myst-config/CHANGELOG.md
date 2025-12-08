@@ -1,5 +1,158 @@
 # myst-config
 
+## 1.9.2
+
+### Patch Changes
+
+- myst-common@1.9.2
+- myst-frontmatter@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-frontmatter@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies [30acc57]
+  - myst-frontmatter@1.9.0
+  - myst-common@1.9.0
+
+## 1.8.4
+
+### Patch Changes
+
+- eba4f34: Favicon on site option is under options.
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- myst-common@1.8.2
+- myst-frontmatter@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [fefffffd]
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+
+## 1.8.0
+
+### Minor Changes
+
+- febc0de9: Enable external URLs in table of contents
+
+### Patch Changes
+
+- myst-common@1.8.0
+- myst-frontmatter@1.8.0
+
+## 1.7.13
+
+### Patch Changes
+
+- Updated dependencies [5031289b]
+- Updated dependencies [1aa5825]
+  - simple-validators@1.1.1
+  - myst-frontmatter@1.7.13
+  - myst-common@1.7.13
+
+## 1.7.12
+
+### Patch Changes
+
+- Updated dependencies [483f2b7]
+- Updated dependencies [8a0ee19e]
+  - myst-common@1.7.12
+  - myst-frontmatter@1.7.12
+
+## 1.7.11
+
+### Patch Changes
+
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+
+## 1.7.10
+
+### Patch Changes
+
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+  - myst-common@1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+- 75bbb180: Add version to config file
+- Updated dependencies [7448083f]
+  - myst-frontmatter@1.7.9
+  - myst-common@1.7.9
+
+## 1.7.8
+
+### Patch Changes
+
+- myst-common@1.7.8
+- myst-frontmatter@1.7.8
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator to project config
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-common@1.7.7
+
+## 1.7.6
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+
+## 1.7.5
+
+### Patch Changes
+
+- Updated dependencies [8ea9365]
+  - myst-frontmatter@1.7.5
+  - myst-common@1.7.5
+
 ## 1.7.4
 
 ### Patch Changes

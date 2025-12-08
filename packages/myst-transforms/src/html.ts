@@ -137,6 +137,8 @@ const defaultHtmlToMdastOptions: HtmlTransformOptions = {
       const attrs = addClassAndIdentifier(node);
       if (node.properties.title) attrs.title = node.properties.title;
       if (node.properties.alt) attrs.alt = node.properties.alt;
+      if (node.properties.width) attrs.width = node.properties.width;
+      if (node.properties.height) attrs.height = node.properties.height;
       const result = u('image', { ...attrs, url: String(node.properties.src || '') });
       state.patch(node, result);
       return result;
@@ -147,6 +149,15 @@ const defaultHtmlToMdastOptions: HtmlTransformOptions = {
       if (node.properties.title) attrs.title = node.properties.title;
       if (node.properties.alt) attrs.alt = node.properties.alt;
       const result = u('image', { ...attrs, url: String(node.properties.src || '') });
+      state.patch(node, result);
+      return result;
+    },
+    iframe(state, node) {
+      const attrs = addClassAndIdentifier(node);
+      attrs.src = String(node.properties.src || '');
+      attrs.width = '100%';
+      if (node.properties.title) attrs.title = node.properties.title;
+      const result = u('iframe', attrs) as any;
       state.patch(node, result);
       return result;
     },
@@ -192,6 +203,11 @@ const defaultHtmlToMdastOptions: HtmlTransformOptions = {
       const result = u('summary', {}, state.all(node)) as any;
       state.patch(node, result);
       return result;
+    },
+    u(h: H, node: any) {
+      // The default is emphasis
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'underline', attrs, all(h, node));
     },
   },
 };

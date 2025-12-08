@@ -1,5 +1,133 @@
 # myst-common
 
+## 1.9.2
+
+### Patch Changes
+
+- myst-frontmatter@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+- c2d895a: Enable message info to take a key for error_rules reporting/ignoring
+  - myst-frontmatter@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- 30acc57: Add cache control for execution
+- Updated dependencies [30acc57]
+  - myst-frontmatter@1.9.0
+
+## 1.8.4
+
+### Patch Changes
+
+- myst-frontmatter@1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- df8bbb0: add rule default severity
+- c736b16: add descriptions to error rules
+- Updated dependencies [6783dae]
+  - myst-frontmatter@1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- myst-frontmatter@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [fefffffd]
+  - myst-frontmatter@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- myst-frontmatter@1.8.0
+
+## 1.7.13
+
+### Patch Changes
+
+- Updated dependencies [1aa5825]
+  - myst-frontmatter@1.7.13
+
+## 1.7.12
+
+### Patch Changes
+
+- 483f2b7: Load plugins earlier, before parsing frontmatter parts
+- Updated dependencies [8a0ee19e]
+  - myst-frontmatter@1.7.12
+
+## 1.7.11
+
+### Patch Changes
+
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+
+## 1.7.10
+
+### Patch Changes
+
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- Updated dependencies [7448083f]
+  - myst-frontmatter@1.7.9
+
+## 1.7.8
+
+### Patch Changes
+
+- myst-frontmatter@1.7.8
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator to project config
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+  - myst-frontmatter@1.7.7
+
+## 1.7.6
+
+### Patch Changes
+
+- 67bc9b8d: Use NotebookCellTags for raises-exception and skip-execution
+- 0d82810f: Improve label duplication warning
+- Updated dependencies [6f6032b7]
+  - myst-frontmatter@1.7.6
+
+## 1.7.5
+
+### Patch Changes
+
+- Updated dependencies [8ea9365]
+  - myst-frontmatter@1.7.5
+
 ## 1.7.4
 
 ### Patch Changes

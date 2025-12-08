@@ -41,6 +41,9 @@ export enum NotebookCellTags {
   'removeCell' = 'remove-cell',
   'removeInput' = 'remove-input',
   'removeOutput' = 'remove-output',
+  'scrollOutput' = 'scroll-output',
+  'skipExecution' = 'skip-execution',
+  'raisesException' = 'raises-exception',
 }
 
 export type References = {
@@ -83,6 +86,7 @@ export type RoleData = {
   name: string;
   node: Role;
   body?: ParseTypes;
+  options?: Record<string, ParseTypes>;
 };
 
 export type DirectiveContext = {
@@ -104,6 +108,7 @@ export type RoleSpec = {
   name: string;
   alias?: string[];
   doc?: string;
+  options?: Record<string, OptionDefinition>;
   body?: BodyDefinition;
   validate?: (data: RoleData, vfile: VFile) => RoleData;
   run: (data: RoleData, vfile: VFile) => GenericNode[];
@@ -140,7 +145,11 @@ export type MystPlugin = {
   transforms?: TransformSpec[];
 };
 
-export type ValidatedMystPlugin = Required<Pick<MystPlugin, 'directives' | 'roles' | 'transforms'>>;
+export type ValidatedMystPlugin = Required<
+  Pick<MystPlugin, 'directives' | 'roles' | 'transforms'>
+> & {
+  paths: string[];
+};
 
 export enum TargetKind {
   heading = 'heading',

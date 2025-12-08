@@ -52,7 +52,7 @@ MyST is cool!
 
 ## Defining a Role
 
-The core specification for the MyST markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book software stack) agree on the manner in which the content should be parsed and rendered. The process of adding features to the MyST Spec is more formalized, and is described in the [MyST Enhancement Proposals](https://mep.mystmd.org). This tutorial does not cover updating the MyST Spec.
+The core specification for the MyST markup language is defined in [the MyST spec](https://mystmd.org/spec). Most features in MyST should, over time, be incorporated into this specification so that consumers of MyST documents (such as `myst-parser` from the Jupyter Book V1 software stack) agree on the manner in which the content should be parsed and rendered. The process of adding features to the MyST Spec is more formalized, and is described in the [MyST Enhancement Proposals](https://mep.mystmd.org). This tutorial does not cover updating the MyST Spec.
 
 We should begin by asking the question "What is a role?" The spec [defines roles](https://mystmd.org/spec/overview#roles) as:
 
@@ -311,7 +311,7 @@ The MyST AST is inspired by (and re-uses parts of) [the MDAST specification](htt
 - [`Parent`](https://github.com/syntax-tree/unist/blob/main/readme.md#parent)
 - [`Literal`](https://github.com/syntax-tree/unist/blob/main/readme.md#literal)
 
-These nodes form the basic building blocks of any abstract syntax tree, and `unist` defines [some utility functions](https://unifiedjs.com/explore/topic/unist-util/) to manipulate trees composed from them.
+These nodes form the basic building blocks of any abstract syntax tree, and `unist` defines [some utility functions](https://unifiedjs.com/explore/topic/unist-util/) to manipulate trees composed of them.
 
 Given that we want to count _meaningful_ words, we must look at the MyST specification to determine _which_ nodes we need to look at. As MyST AST is a unist AST, and only `Literal` unist nodes can hold values, we can start by only considering `Literal` MyST nodes. The MyST specification contains [a list of all node types](https://mystmd.org/spec/myst-schema), and it can be seen that there are only a few `Literal` types, such as [`Text`](https://mystmd.org/spec/myst-schema#text) or [`HTML`](https://mystmd.org/spec/myst-schema#html).
 
@@ -531,7 +531,7 @@ Now let's see what happens over in our demo!
 (demo)$ myst start
 ```
 
-This will result in the following page with the word count that excludes it's own text!
+This will result in the following page with the word count that excludes its own text!
 
 :::{figure} images/word-count-initial-result.png
 :class: framed

@@ -11,10 +11,6 @@ export const iframeDirective: DirectiveSpec = {
   },
   options: {
     ...commonDirectiveOptions('iframe'),
-    class: {
-      type: String,
-      // class_option: list of strings?
-    },
     width: {
       type: String,
       doc: 'The iframe width, in CSS units, for example `50%` or `300px`.',
@@ -22,6 +18,10 @@ export const iframeDirective: DirectiveSpec = {
     align: {
       type: String,
       doc: 'The alignment of the iframe in the page. Choose one of `left`, `center` or `right`',
+    },
+    title: {
+      type: String,
+      doc: 'The title attribute for the iframe element, describing its content for accessibility.',
     },
     placeholder: {
       type: String,
@@ -35,6 +35,7 @@ export const iframeDirective: DirectiveSpec = {
       src: data.arg as string,
       width: data.options?.width as string,
       align: data.options?.align as Iframe['align'],
+      title: data.options?.title as string,
     };
     if (data.options?.placeholder) {
       iframe.children = [
@@ -50,14 +51,12 @@ export const iframeDirective: DirectiveSpec = {
       ];
     }
     if (!data.body) {
-      iframe.class = data.options?.class as string;
       addCommonDirectiveOptions(data, iframe);
       return [iframe];
     }
     const container = {
       type: 'container',
       kind: 'figure',
-      class: data.options?.class,
       children: [iframe, { type: 'caption', children: data.body as GenericNode[] }],
     };
     addCommonDirectiveOptions(data, container);

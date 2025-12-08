@@ -8,7 +8,7 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 
 :::{important} Objective
 
-The goal of this quickstart guide is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in markdown files or markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
+The goal of this quickstart guide is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in Markdown files or Markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
 :::
 
 :::{tip}
@@ -17,9 +17,9 @@ During this how to guide, you can make changes and experiment with MyST syntax i
 
 ## Overview
 
-{abbr}`MyST (Markedly Structured Text)` is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [reStructuredText](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is is a superset of [CommonMark](./commonmark.md).
+{abbr}`MyST (Markedly Structured Text)` is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [reStructuredText](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is a superset of [CommonMark](./commonmark.md).
 
-MyST allows you to directly create “directives” and “roles” that extend markdown to support technical and scientific documents. Directives are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md). MyST also supports rich information about linking to other documents in common services (like Wikipedia or a DOI link), these allow for rich-previews of the links as well as easy ways to include citations.
+MyST allows you to directly create “directives” and “roles” that extend Markdown to support technical and scientific documents. Directives are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md). MyST also supports rich information about linking to other documents in common services (like Wikipedia or a DOI link), these allow for rich-previews of the links as well as easy ways to include citations.
 
 ## Typography
 
@@ -105,7 +105,7 @@ As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is info
     Designing the user-experience of scientific communication is _really_ important.
 
 [^3]:
-    Just as an example of having lots of helpful information at your finger-tips, it would be nice to see the video of that article, _right_? Well here it is:
+    Just as an example of having lots of helpful information at your fingertips, it would be nice to see the video of that article, _right_? Well here it is:
 
     :::{iframe} https://www.youtube.com/embed/yYcQf-Yq8B0
     :::

@@ -161,8 +161,9 @@ function watchProcessor(
           reloadProject: true,
         });
       }
-    } catch (err: any) {
-      session.log.error(`Error during reload${err.message ? `:\n${err.message}` : ''}`);
+    } catch (error: any) {
+      session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+      session.log.error(`Error during reload${error.message ? `:\n${error.message}` : ''}`);
     }
     session.store.dispatch(watch.actions.markReloading(false));
   };

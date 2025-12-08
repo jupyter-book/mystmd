@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.7
+
+### Patch Changes
+
+- 501f981c: Bump @citation-js/XXX packages
+
 ## 1.2.6
 
 ### Patch Changes

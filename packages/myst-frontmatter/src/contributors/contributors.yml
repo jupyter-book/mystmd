@@ -13,9 +13,18 @@ cases:
             - Validation
           affiliations:
             - example university
-          twitter: '@test'
+          x: '@test'
           github: test
-          url: https://example.com
+          bsky: '@domain.com'
+          mastodon: '@user@fosstodon.org'
+          linkedin: 'https://linkedin.com/in/user'
+          instagram: 'username'
+          youtube: '@user'
+          facebook: 'https://facebook.com/user'
+          discourse: 'https://discourse.example.com'
+          discord: 'https://discord.gg/server'
+          slack: 'https://example.slack.com'
+          website: https://example.com
     normalized:
       contributors:
         - userId: ''
@@ -32,8 +41,17 @@ cases:
             - Validation
           affiliations:
             - example university
-          twitter: '@test'
+          twitter: 'test'
           github: test
+          bluesky: '@domain.com'
+          mastodon: '@user@fosstodon.org'
+          linkedin: 'https://linkedin.com/in/user'
+          threads: username
+          youtube: 'user'
+          facebook: 'https://facebook.com/user'
+          discourse: 'https://discourse.example.com'
+          discord: 'https://discord.gg/server'
+          slack: 'https://example.slack.com'
           url: https://example.com
           id: contributors-generated-uid-0
       affiliations:

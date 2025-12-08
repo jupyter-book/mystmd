@@ -45,4 +45,32 @@ describe('myst-to-tex math', () => {
     const file = pipe.stringify(tree as any);
     expect((file.result as LatexResult).value).toEqual(tex);
   });
+  it('ignores typst value and use LaTeX value', () => {
+    const tree = u('root', [
+      u('math', {
+        value: '\\LaTeX',
+        typst: 'typst',
+      }),
+    ]);
+    const pipe = unified().use(mystToTex);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as LatexResult).value).toContain('\\LaTeX');
+    expect((file.result as LatexResult).value).not.toContain('typst');
+  });
+  it('ignores typst value for inline math and uses LaTeX value', () => {
+    const tree = u('root', [
+      u('paragraph', [
+        u('inlineMath', {
+          value: '\\LaTeX',
+          typst: 'typst',
+        }),
+      ]),
+    ]);
+    const pipe = unified().use(mystToTex);
+    pipe.runSync(tree as any);
+    const file = pipe.stringify(tree as any);
+    expect((file.result as LatexResult).value).toContain('\\LaTeX');
+    expect((file.result as LatexResult).value).not.toContain('typst');
+  });
 });

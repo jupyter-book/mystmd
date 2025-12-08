@@ -17,6 +17,7 @@ function mystDataFilename(dataUrl: string) {
 }
 
 export type MystData = {
+  version: number;
   kind?: SourceFileKind;
   sha256?: string;
   slug?: string;
@@ -38,36 +39,39 @@ async function fetchMystData(
   urlSource: string | undefined,
   vfile: VFile,
 ) {
-  let note: string;
-  if (dataUrl) {
-    const filename = mystDataFilename(dataUrl);
-    const cacheData = loadFromCache(session, filename, { maxAge: XREF_MAX_AGE });
-    if (cacheData) {
-      return JSON.parse(cacheData) as MystData;
-    }
-    try {
-      const resp = await session.fetch(dataUrl);
-      if (resp.ok) {
-        const data = (await resp.json()) as MystData;
-        writeToCache(session, filename, JSON.stringify(data));
-        return data;
-      }
-    } catch {
-      // data is unset
-    }
-    note = 'Could not load data from external project';
-  } else {
-    note = 'Data source URL unavailable';
+  const onError = (note: string): undefined => {
+    fileWarn(
+      vfile,
+      `Unable to resolve link text from external MyST reference: ${urlSource ?? dataUrl ?? ''}`,
+      {
+        ruleId: RuleId.mystLinkValid,
+        note,
+      },
+    );
+  };
+  if (!dataUrl) {
+    return onError('Data source URL unavailable');
   }
-  fileWarn(
-    vfile,
-    `Unable to resolve link text from external MyST reference: ${urlSource ?? dataUrl ?? ''}`,
-    {
-      ruleId: RuleId.mystLinkValid,
-      note,
-    },
-  );
-  return;
+
+  const filename = mystDataFilename(dataUrl);
+  const cacheData = loadFromCache(session, filename, { maxAge: XREF_MAX_AGE });
+  if (cacheData) {
+    return JSON.parse(cacheData) as MystData;
+  }
+  let data: MystData;
+  try {
+    const resp = await session.fetch(dataUrl);
+    if (!resp.ok) {
+      return onError('Could not fetch data from URL');
+    }
+    data = (await resp.json()) as MystData;
+  } catch {
+    return onError('Could not load fetched data');
+    // data is unset
+  }
+
+  writeToCache(session, filename, JSON.stringify(data));
+  return data;
 }
 
 export async function fetchMystLinkData(session: ISession, node: Link, vfile: VFile) {
@@ -146,7 +150,13 @@ export async function transformMystXRefs(
           maxNodes: 1,
         });
         if (targets?.length) {
-          addChildrenFromTargetNode(node as any, targets[0] as any, frontmatter.numbering, vfile);
+          addChildrenFromTargetNode(
+            node as any,
+            targets[0] as any,
+            frontmatter.numbering,
+            vfile,
+            frontmatter.numbering?.title?.offset,
+          );
         }
       }
       number += 1;
@@ -155,7 +165,7 @@ export async function transformMystXRefs(
   const denominator = number === nodes.length ? '' : `/${nodes.length}`;
   session.log.info(
     toc(
-      `🪄  Updated link text for ${plural(`%s${denominator} external MyST reference(s)`, number)} in %s seconds`,
+      `🪄 Updated link text for ${plural(`%s${denominator} external MyST reference(s)`, number)} in %s`,
     ),
   );
 }

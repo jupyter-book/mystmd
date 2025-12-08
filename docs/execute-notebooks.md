@@ -19,48 +19,106 @@ myst start --execute
 myst build --execute
 ```
 
-The following computational content will be executed:
+:::{note} Other flags can be relevant as well
+For example if you want to produce a static HTML output from your content, you may wish to pass the `--html` flag as well:
 
-- **Notebook cells** will be executed in the order they appeared in a notebook (ie, a file ending in `.ipynb`).
-- **{myst:directive}`code-block` directives** will be executed similar to a code block cell. See [](./notebooks-with-markdown.md) for more information.
-- **Inline expressions with the {myst:role}`eval` role** can be used to insert the outputs of a computation in-line with other text.
+```bash
+myst build --execute --html
+```
+:::
+
+## What content will be executed?
+
+If you enable execution with the `--execute` flag as above, the following content will be executed at build time:
+
+- **Cells in a Jupyter Notebook (`.ipynb`)**. These will be executed in the order they appeared in a notebook.
+- **Markdown code cells with [the `code-cell` directive](#code-cell)**. These will be executed similar to a code cell. See [](./notebooks-with-markdown.md) for more information.
+- **Inline expressions with [the `eval` role](#myst:inline-expressions)**. These can be used to insert the outputs of a computation in-line with other text.
 
 :::{note} Jupyter is required for execution
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
-## Expect a code-cell to fail
+## Show raw Python objects like modules and classes
+
+By default, MyST will suppress outputs from cells that return **raw** Python objects - like modules and classes - that don't have a string representation. For example with regular Python, you would observe this:
+
+```{code} Python
+:filename: Input
+import math
+math
+```
+
+```{code} Python
+:filename: Output
+<module 'math' from '/some/path/math.cpython-312-darwin.so'>
+```
+
+But within MyST, this output is suppressed by default. This also applies to results like matplotlib's Axes objects, pandas' GroupBy objects, etc..  
+If you'd like to instead show these outputs, see [](#setting:output_matplotlib_strings).
+
+## Allow a code-cell to error without failing the build
 
 By default, MyST will stop executing a notebook if a cell raises an error.
-If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell.
-If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
+If instead you'd like MyST to continue executing subsequent cells (e.g., in order to demonstrate an expected error message), add the `raises-exception` tag to the cell. If a cell with this tag raises an error, then the error is provided with the cell output, and MyST will continue executing the rest of the cells in a notebook.
 
-The easiest way to add cell tags is via [the JupyterLab interface](https://jupyterlab.readthedocs.io).
-Additionally, you can specify tags (and other cell metadata) with markdown using the {myst:directive}`code-cell` directive.
+:::{tip} How to manage cell tags
+:class: dropdown
 
-Here's an example of adding this tag with a {myst:directive}`code-cell` directive:
+See [notebook cell tags](#notebook-cell-tags) for how to manage cell tags  
+For example, in a [{myst:directive}`code-cell` directive](#code-cell), you would add the `raises-exception` tag as follows:
 
 ````markdown
 ```{code-cell}
-:tags: raises-exception
+:tags: [raises-exception]
 
 print("Hello" + 10001)
 ```
 ````
+:::
 
-## Skip particular code-cells
+## Skip particular code cells
 
-Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book) use to prevent a cell from being executed.
+Sometimes, you might have a notebook containing code that you _don't_ want to execute. For example, you might have code-cells that prompt the user for input, which should be skipped during a website build. MyST understands the same `skip-execution` cell-tag that other Jupyter Notebook tools (such as Jupyter Book V1) use to prevent a cell from being executed.
 
-For [Markdown notebooks using the {myst:directive}`code-cell` directive](notebooks-with-markdown.md#code-cell), the `skip-execution` tag can be added as follows:
+:::{tip} Example of skipping a code cell
+:class: dropdown
+For example, in a [{myst:directive}`code-cell` directive](#code-cell), the `skip-execution` tag can be added as follows:
 
 ````markdown
 ```{code-cell}
-:tags: skip-execution
+:tags: [skip-execution]
 
 name = input("What is your name?")
 ```
 ````
+
+Here again, see [notebook cell tags](#notebook-cell-tags) for more details on how to manage cell tags  
+
+:::
+
+[Additional cell tags](#tbl:notebook-cell-tags), to hide or remove cells inputs or outputs, are also available.
+
+## Skip entire notebooks
+
+You may wish to disable execution for certain notebooks. This can be done by setting the `execute.skip` frontmatter option to `true`, e.g.
+
+````markdown
+---
+kernelspec:
+  name: python3
+  display_name: Python 3
+
+execute:
+  skip: true
+---
+
+```{code-cell}
+print("This will never be executed!")
+```
+````
+
+See also [notebook tags](#notebook-tags-ipynb) for how to set notebook-level metadata on a Jupyter Notebook.
 
 ## Cache execution outputs
 
@@ -83,7 +141,9 @@ Alternatively, you can manually delete the `execute/` folder in your build folde
 rm -rf _build/execute
 ```
 
-## How MyST executes your code
+(install-jupyter-server)=
+
+## Install Jupyter Server
 
 MyST uses a [Jupyter Server](https://jupyter-server.readthedocs.io/) to execute your code.
 Jupyter Server is distributed as a Python package, which can be installed from PyPI or conda-forge, e.g.
@@ -98,7 +158,7 @@ Jupyter Server is only responsible for orchestrating execution of your code. To 
 pip install ipykernel
 ```
 
-If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build`, then MyST will attempt to find a healthy existing Jupyter Server. Internally, this is performed using `python -m jupyter_server list`. If no existing servers are found, then MyST will attempt to launch one using `python -m jupyter_server`.
+If Jupyter Server is installed and the `--execute` flag is passed to `myst start` or `myst build` MyST will attempt to launch a Jupyter Server using `python -m jupyter_server`.
 
 ## Manually launch a Jupyter server
 

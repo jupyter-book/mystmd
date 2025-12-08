@@ -288,6 +288,11 @@ const output: Handler = (state, node) => {
   state.patch(node, result);
   return state.applyData(node, result);
 };
+const keyboard: Handler = (state, node) => {
+  const result = h('kbd', {}, state.all(node));
+  state.patch(node, result);
+  return state.applyData(node, result);
+};
 
 export const mystToHast: Plugin<[Options?], Root, HastRoot> = (opts) => (tree) => {
   return toHast(tree, {
@@ -329,6 +334,7 @@ export const mystToHast: Plugin<[Options?], Root, HastRoot> = (opts) => (tree) =
       mermaid,
       myst,
       output,
+      keyboard,
       ...opts?.handlers,
     },
   }) as HastRoot;

@@ -164,7 +164,7 @@ const handlers: Record<string, Handler> = {
       state.write('\\end{frame}\n\n');
       return;
     }
-    if (node.visibility === 'remove') return;
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     if (metadataTags.includes('no-tex')) return;
     if (metadataTags.includes('no-pdf')) return;
     if (metadataTags.includes('new-page')) {
@@ -202,9 +202,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, true);
   },
   code(node: Code, state) {
-    if (node.visibility === 'remove') {
-      return;
-    }
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     addIndexEntries(node, state);
     let start = '\\begin{verbatim}\n';
     let end = '\n\\end{verbatim}';
@@ -242,8 +240,19 @@ const handlers: Record<string, Handler> = {
     }
   },
   listItem(node, state) {
-    state.write('\\item ');
-    state.renderChildren(node, true);
+    if (node.checked === true) {
+      state.write('\\item[$\\blacksquare$] ');
+    } else if (node.checked === false) {
+      state.write('\\item[$\\square$] ');
+    } else {
+      state.write('\\item ');
+    }
+
+    if (node.children?.[0]?.type === 'paragraph' && node.children.length === 1) {
+      state.renderChildren(node.children[0], true);
+    } else {
+      state.renderChildren(node, true);
+    }
     state.write('\n');
   },
   thematicBreak(node, state) {
@@ -469,6 +478,18 @@ const handlers: Record<string, Handler> = {
     } else if (node.children?.length) {
       state.renderChildren(node);
     }
+  },
+  toc(node, state) {
+    const title = node.children?.[0];
+    if (title) {
+      state.write('\\renewcommand{\\contentsname}{');
+      state.text(toText(title));
+      state.write('}\n');
+    }
+    if (node.depth) {
+      state.write(`\\setcounter{tocdepth}{${node.depth}}\n`);
+    }
+    state.write('\\tableofcontents\n');
   },
 };
 

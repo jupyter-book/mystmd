@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import type { Plugin } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
@@ -15,11 +16,11 @@ type Options = {
  * Uses a zero-width space, same as a `<wbr>` but no fancy rendering required.
  * https://css-tricks.com/better-line-breaks-for-long-urls/
  */
-function formatLinkText(link: Link) {
+export function formatLinkText(link: Link) {
   if (link.children?.length !== 1 || link.children[0].type !== 'text') return;
   const url = link.children[0].value;
   // Add an exception for wiki transforms links.
-  if (url.length < 20 || url.match(/\s/) || url.startsWith('wiki:')) return;
+  if (!url || url.length < 20 || url.match(/\s/)) return;
   if (url.includes('​')) return;
   // Split the URL into an array to distinguish double slashes from single slashes
   const doubleSlash = url.split('//');
@@ -34,7 +35,8 @@ function formatLinkText(link: Link) {
           .replace(/([=&])/giu, '​$1​'),
       // Reconnect the strings with word break opportunities after double slashes
     )
-    .join('//​');
+    .join('//​')
+    .replace(/​(.{1,2})$/, '$1');
   link.children[0].value = formatted;
 }
 
@@ -46,7 +48,10 @@ export function linksTransform(mdast: GenericParent, file: VFile, opts: Options)
     const result = transform?.transform(link, file);
     // The link transform may compare the text
     // Formatting adds no-width spaces to some URLs
-    formatLinkText(link);
+    // Don't format text if transform already does this
+    if (!transform?.formatsText) {
+      formatLinkText(link);
+    }
     if (!transform || result === undefined) return;
     if (result) {
       delete link.error;

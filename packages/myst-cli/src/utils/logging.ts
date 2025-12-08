@@ -1,4 +1,5 @@
 import type { VFile } from 'vfile';
+import type { VFileMessage } from 'vfile-message';
 import type { ISession } from '../session/types.js';
 import type { WarningKind } from '../store/types.js';
 import { addWarningForFile } from './addWarningForFile.js';
@@ -7,7 +8,8 @@ import { join } from 'node:path';
 
 export function logMessagesFromVFile(session: ISession, file?: VFile): void {
   if (!file) return;
-  file.messages.forEach((message) => {
+  const messages = file.messages as (VFileMessage & { key?: string })[];
+  messages.forEach((message) => {
     const kind: WarningKind =
       message.fatal === null ? 'info' : message.fatal === false ? 'warn' : 'error';
     addWarningForFile(session, file.path, message.message, kind, {
@@ -20,6 +22,8 @@ export function logMessagesFromVFile(session: ISession, file?: VFile): void {
       note: message.note,
       url: message.url,
       ruleId: message.ruleId,
+      /** This key can be combined with the ruleId to suppress a warning */
+      key: message.key,
     });
   });
   file.messages = [];

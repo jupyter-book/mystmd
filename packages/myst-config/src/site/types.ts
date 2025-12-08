@@ -29,7 +29,6 @@ export type SiteConfig = SiteFrontmatter & {
   nav?: SiteNavItem[];
   actions?: SiteAction[];
   domains?: string[];
-  favicon?: string;
   template?: string;
 };
 
@@ -51,11 +50,16 @@ type ManifestProjectItem = {
   banner?: string | null;
   bannerOptimized?: string;
   tags?: string[];
+  enumerator?: string;
+  // For external URLs
+  url?: string;
+  open_in_same_tab?: boolean;
 };
 
 type ManifestProject = {
   slug?: string;
   index: string;
+  enumerator?: string;
   title: string;
   pages: ManifestProjectItem[];
   thumbnail?: string | null;
@@ -69,6 +73,7 @@ type ManifestProject = {
 } & Omit<ProjectFrontmatter, 'downloads' | 'exports' | 'parts'>;
 
 export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
+  version: number;
   myst: string;
   id?: string;
   projects?: ManifestProject[];

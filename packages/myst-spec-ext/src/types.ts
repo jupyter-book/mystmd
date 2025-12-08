@@ -68,11 +68,17 @@ export type AlgorithmLine = Parent & {
   enumerator?: string;
 };
 
-export type InlineMath = SpecInlineMath & Target;
+export type InlineMath = SpecInlineMath &
+  Target & {
+    /** Typst-specific math content. If not provided, LaTeX content will be converted to Typst. */
+    typst?: string;
+  };
 
 export type Math = SpecMath & {
   kind?: 'subequation';
   tight?: 'before' | 'after' | boolean;
+  /** Typst-specific math content. If not provided, LaTeX content will be converted to Typst. */
+  typst?: string;
 };
 
 export type MathGroup = Target & {
@@ -83,8 +89,6 @@ export type MathGroup = Target & {
 };
 
 export type FootnoteDefinition = FND & {
-  /** @deprecated this should be enumerator */
-  number?: number;
   enumerator?: string;
 };
 
@@ -125,6 +129,7 @@ export type Iframe = Target & {
   width?: string;
   align?: Image['align'];
   class?: Image['class'];
+  title?: string;
   children?: Image[];
 };
 
@@ -254,10 +259,17 @@ export type Container = Omit<SpecContainer, 'kind'> & {
 export type Output = Node &
   Target & {
     type: 'output';
-    id?: string;
-    data?: any[]; // MinifiedOutput[]
+    children: (FlowContent | ListContent | PhrasingContent)[];
+    jupyter_data: any; // TODO: set this to IOutput
+  };
+
+export type Outputs = Node &
+  Target & {
+    type: 'outputs';
+    children: (Output | FlowContent | ListContent | PhrasingContent)[]; // Support placeholders in addition to outputs
     visibility?: Visibility;
-    children?: (FlowContent | ListContent | PhrasingContent)[];
+    scroll?: boolean;
+    id?: string;
   };
 
 export type Aside = Node &
@@ -275,6 +287,7 @@ export type CrossReference = SpecCrossReference & {
   dataUrl?: string;
   remoteBaseUrl?: string;
   html_id?: string;
+  class?: Image['class'];
 };
 
 export type Link = SpecLink & {
@@ -284,6 +297,7 @@ export type Link = SpecLink & {
   static?: true;
   protocol?: string;
   error?: true;
+  class?: Image['class'];
 };
 
 // Search types

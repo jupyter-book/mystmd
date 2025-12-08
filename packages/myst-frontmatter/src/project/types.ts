@@ -9,6 +9,7 @@ import type { ProjectSettings } from '../settings/types.js';
 import type { SiteFrontmatter } from '../site/types.js';
 import { SITE_FRONTMATTER_KEYS } from '../site/types.js';
 import type { ExpandedThebeFrontmatter } from '../thebe/types.js';
+import type { SocialLinks } from '../socials/types.js';
 
 export const KNOWN_EXTERNAL_IDENTIFIERS = ['arxiv', 'pmid', 'pmcid', 'zenodo'];
 
@@ -33,6 +34,8 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'exports',
   'downloads',
   'settings', // We maybe want to move this into site frontmatter in the future
+  'edit_url',
+  'source_url',
   ...KNOWN_EXTERNAL_IDENTIFIERS,
   // Do not add any project specific keys here!
   ...SITE_FRONTMATTER_KEYS,
@@ -73,6 +76,9 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   exports?: Export[];
   downloads?: Download[];
   settings?: ProjectSettings;
+  /** URLs to edit or view the current page source - may be disabled by setting to null at project level */
+  edit_url?: string | null;
+  source_url?: string | null;
 };
 
 export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
@@ -81,6 +87,7 @@ export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
   references?: ExternalReferences;
   requirements?: string[];
   resources?: string[];
+  social?: SocialLinks;
   thebe?: ExpandedThebeFrontmatter;
   toc?: any[];
 };

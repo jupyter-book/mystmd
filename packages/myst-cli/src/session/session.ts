@@ -22,11 +22,13 @@ import type { RootState } from '../store/reducers.js';
 import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
+import { isWhiteLabelled } from '../utils/whiteLabelling.js';
 import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import type { JupyterServerSettings } from 'myst-execute';
-import { findExistingJupyterServer, launchJupyterServer } from 'myst-execute';
+import { launchJupyterServer } from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
+import type { PluginInfo } from 'myst-config';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -42,25 +44,33 @@ const NPM_COMMAND = 'npm i -g mystmd@latest';
 const PIP_COMMAND = 'pip install -U mystmd';
 const LOCALHOSTS = ['localhost', '127.0.0.1', '::1'];
 
+function socialLink({ twitter, bsky }: { twitter?: string; bsky?: string }): string {
+  if (bsky) {
+    return `Follow ${chalk.yellowBright(`@${bsky}`)} for updates!\nhttps://bsky.app/profile/${bsky}`;
+  }
+  if (twitter) {
+    return `Follow ${chalk.yellowBright(`@${twitter}`)} for updates!\nhttps://x.com/${twitter}`;
+  }
+  return '';
+}
+
 export function logUpdateAvailable({
   current,
   latest,
   upgradeCommand,
   twitter,
+  bsky,
 }: {
   current: string;
   latest: string;
   upgradeCommand: string;
-  twitter: string;
+  twitter?: string;
+  bsky?: string;
 }) {
   return boxen(
     `Update available! ${chalk.dim(`v${current}`)} ≫ ${chalk.green.bold(
       `v${latest}`,
-    )}\n\nRun \`${chalk.cyanBright.bold(
-      upgradeCommand,
-    )}\` to update.\n\nFollow ${chalk.yellowBright(
-      `@${twitter}`,
-    )} for updates!\nhttps://twitter.com/${twitter}`,
+    )}\n\nRun \`${chalk.cyanBright.bold(upgradeCommand)}\` to update.\n\n${socialLink({ bsky, twitter })}`,
     {
       padding: 1,
       margin: 1,
@@ -87,9 +97,9 @@ export class Session implements ISession {
     return this.$logger;
   }
 
-  constructor(opts: { logger?: Logger; doiLimiter?: Limit } = {}) {
+  constructor(opts: { logger?: Logger; doiLimiter?: Limit; configFiles?: string[] } = {}) {
     this.API_URL = API_URL;
-    this.configFiles = CONFIG_FILES;
+    this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
     const proxyUrl = process.env.HTTPS_PROXY;
@@ -104,13 +114,19 @@ export class Session implements ISession {
   }
 
   showUpgradeNotice() {
-    if (this._shownUpgrade || !this._latestVersion || version === this._latestVersion) return;
+    if (
+      this._shownUpgrade ||
+      !this._latestVersion ||
+      version === this._latestVersion ||
+      isWhiteLabelled()
+    )
+      return;
     this.log.info(
       logUpdateAvailable({
         current: version,
         latest: this._latestVersion,
         upgradeCommand: process.env.MYST_LANG === 'PYTHON' ? PIP_COMMAND : NPM_COMMAND,
-        twitter: 'MystMarkdown',
+        bsky: 'mystmd.org',
       }),
     );
     this._shownUpgrade = true;
@@ -144,13 +160,8 @@ export class Session implements ISession {
 
   plugins: ValidatedMystPlugin | undefined;
 
-  _pluginPromise: Promise<ValidatedMystPlugin> | undefined;
-
-  async loadPlugins() {
-    // Early return if a promise has already been initiated
-    if (this._pluginPromise) return this._pluginPromise;
-    this._pluginPromise = loadPlugins(this);
-    this.plugins = await this._pluginPromise;
+  async loadPlugins(plugins: PluginInfo[]) {
+    this.plugins = await loadPlugins(this, plugins);
     return this.plugins;
   }
 
@@ -181,7 +192,11 @@ export class Session implements ISession {
   _clones: ISession[] = [];
 
   async clone() {
-    const cloneSession = new Session({ logger: this.log, doiLimiter: this.doiLimiter });
+    const cloneSession = new Session({
+      logger: this.log,
+      doiLimiter: this.doiLimiter,
+      configFiles: this.configFiles,
+    });
     await cloneSession.reload();
     // TODO: clean this up through better state handling
     cloneSession._jupyterSessionManagerPromise = this._jupyterSessionManagerPromise;
@@ -222,16 +237,10 @@ export class Session implements ISession {
           token: process.env.JUPYTER_TOKEN,
         };
       } else {
-        // Load existing running server
-        const existing = await findExistingJupyterServer(this);
-        if (existing) {
-          this.log.debug(`Found existing server on: ${existing.appUrl}`);
-          partialServerSettings = existing;
-        } else {
-          this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
-          // Create and load new server
-          partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
-        }
+        // Note: To use an existing Jupyter server use `findExistingJupyterServer`, see #1716
+        this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
+        // Create and load new server
+        partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
       }
 
       const serverSettings = ServerConnection.makeSettings(partialServerSettings);

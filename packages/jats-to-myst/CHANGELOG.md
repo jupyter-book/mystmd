@@ -1,5 +1,72 @@
 # jats-to-myst
 
+## 1.0.35
+
+### Patch Changes
+
+- Updated dependencies [2e6e81f]
+  - myst-transforms@1.3.44
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+
+## 1.0.34
+
+### Patch Changes
+
+- Updated dependencies [91bed6d0]
+- Updated dependencies [c6213ed]
+- Updated dependencies [7d68c88e]
+  - myst-frontmatter@1.7.11
+  - myst-transforms@1.3.34
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
+## 1.0.33
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- Updated dependencies [26e8d199]
+- Updated dependencies [0941552]
+  - myst-frontmatter@1.7.10
+  - myst-transforms@1.3.33
+  - myst-common@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.0.32
+
+### Patch Changes
+
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-transforms@1.3.30
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+
+## 1.0.31
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [e3309c24]
+- Updated dependencies [9717b067]
+- Updated dependencies [cefb2a15]
+- Updated dependencies [71018741]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-transforms@1.3.29
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
 ## 1.0.30
 
 ### Patch Changes

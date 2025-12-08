@@ -1,9 +1,16 @@
 ---
-title: Scientific PDFs
+title: Create a PDF
 description: Export to over 400 journal templates from a MyST Markdown file, which uses LaTeX and can create print-ready, multi-column, professional PDF documents.
 ---
 
-You can render your MyST documents as print-ready scientific papers, by converting to $\LaTeX$ and render to over 400 journal templates already available. Alternatively, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
+MyST can create a PDF for print-ready scientific papers or books.
+It does so by first _rendering_ your MyST document into [$\LaTeX$](#render-latex) or [Typst](#render-typst) and then using those engines to create a PDF.
+
+Myst uses **templates** to allow you to control the look and feel of the final PDF output. The [MyST Templates organization](https://github.com/myst-templates) contains templates for rendering MyST documents into the structure of over 400 journals.
+
+:::{seealso}
+In addition to PDF, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
+:::
 
 ```{figure} ./images/pdf-exports.png
 :label: fig-export-to-pdf
@@ -18,9 +25,9 @@ Export to over 400 journal templates from a MyST Markdown file, which uses $\LaT
 See the quickstart tutorial for getting started with exporting to Word documents, $\LaTeX$ and PDFs with various templates.
 :::
 
-## Exporting to PDF
+## How to export to PDF
 
-To create a new `pdf` export type for your MyST document, in your document frontmatter, add an `exports` list:
+To create a new `pdf` export type for your MyST document, add an `exports` list to either your [document frontmatter](./frontmatter.md) or your `myst.yml` configuration file.
 
 (export-frontmatter-pdf)=
 
@@ -43,6 +50,7 @@ myst build my-document.md --pdf
 
 Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-pdf), the PDF and a log file will be written to `exports/my-document.pdf` and any associated log files. If the output file is a folder, the document name will be used with a `.pdf` or `.tex` extension, as appropriate. Any necessary auxiliary files (e.g. for example `*.png` or `*.bib`) will be added to the base folder (`exports/` above).
 
+(render-latex)=
 ## Rendering PDFs with $\LaTeX$
 
 ```{danger}
@@ -93,9 +101,23 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 ## Rendering PDFs with Typst
 
-MyST also provides an option to build PDFs with [Typst](https://typst.app). Typst is a markup-based typesetting language. Compared to $\LaTeX$, syntax is streamlined and consistent, and compile time is significantly faster. To render Typst PDFs locally, you must install the [Typst CLI](https://github.com/typst/typst).
+[Typst](https://typst.app) is a markup-based typesetting language. It is **significantly faster and simpler than using $\LaTeX$** with results of equal or better quality.
 
-To add Typst to your export targets, add `format: typst` and select a Typst template. These templates use the same [MyST templating library](xref:jtex) as $\LaTeX$ templates to support document [frontmatter](./frontmatter.md).
+(typst:install)=
+### How to install Typst
+
+Follow [the Typst installation instructions](https://github.com/typst/typst?tab=readme-ov-file#installation) for several options to install Typst.
+We **strongly recommend using the latest releases of Typst**. If you get a confusing Typst error, a good first step is to upgrade your version of Typst.
+
+:::{warning} Do not use `npm` to install Typst
+The version of Typst on `npm` (or similar community-managed installation services) is often out-of-date, and we recommend [following the Typst instructions directly](https://github.com/typst/typst?tab=readme-ov-file#installation).
+:::
+
+### How to render PDFs with Typst
+
+To render Typst PDFs locally, you must first [install Typst](#typst:install).
+
+Then add Typst to your export targets. Add `format: typst` and select a Typst template. Below is an example that also defines the output PDF to generate:
 
 ```{code-block} yaml
 :filename: article.md
@@ -107,6 +129,14 @@ exports:
     output: exports/my-document.pdf
 ---
 ```
+Finally, build the PDF output with Typst using the following command:
+
+```bash
+myst build article.md --typst
+```
+
+You can use [document frontmatter](./frontmatter.md) to control various aspects of your Typst outputs.
+The Typst templates use the [MyST templating library](xref:jtex) and support the same configuration as [$\LaTeX$](#render-latex).
 
 ## Choosing a Template
 
@@ -247,7 +277,7 @@ exports:
 ---
 ```
 
-As an alternative to listing articles in MyST frontmatter, you may specify a table of contents using the [Jupyter Book format](#toc-format):
+As an alternative to listing articles in MyST frontmatter, you may specify a table of contents using the [Jupyter Book V1 format](#toc-format):
 
 ```{code-block} yaml
 :filename: article.md

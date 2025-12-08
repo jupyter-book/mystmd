@@ -1,5 +1,11 @@
 # simple-validators
 
+## 1.1.1
+
+### Patch Changes
+
+- 5031289b: Add validateDomain
+
 ## 1.1.0
 
 ### Minor Changes

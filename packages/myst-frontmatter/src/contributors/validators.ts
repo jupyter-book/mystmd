@@ -8,7 +8,6 @@ import {
   validateList,
   validateObjectKeys,
   validateString,
-  validateUrl,
   validationError,
   validationWarning,
 } from 'simple-validators';
@@ -26,6 +25,8 @@ import {
   validateAndStashObject,
 } from '../utils/referenceStash.js';
 import type { Contributor, Name } from './types.js';
+import { SOCIAL_LINKS_ALIASES, SOCIAL_LINKS_KEYS } from '../socials/types.js';
+import { validateSocialLinks } from '../socials/validators.js';
 
 const PERSON_KEYS = [
   'id',
@@ -40,19 +41,17 @@ const PERSON_KEYS = [
   'roles',
   'affiliations',
   'collaborations',
-  'twitter',
-  'github',
-  'url',
   'note',
   'phone',
   'fax',
+  ...SOCIAL_LINKS_KEYS,
 ];
 const PERSON_ALIASES = {
   ref: 'id', // Used in QMD to reference a contributor
   role: 'roles',
   'equal-contributor': 'equal_contributor',
   affiliation: 'affiliations',
-  website: 'url',
+  ...SOCIAL_LINKS_ALIASES,
 };
 
 const NAME_KEYS = [
@@ -278,15 +277,7 @@ export function validateContributor(
       );
     });
   }
-  if (defined(value.twitter)) {
-    output.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
-  }
-  if (defined(value.github)) {
-    output.github = validateString(value.github, incrementOptions('github', opts));
-  }
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
+  validateSocialLinks(value, opts, output);
   if (defined(value.phone)) {
     output.phone = validateString(value.phone, incrementOptions('phone', opts));
   }

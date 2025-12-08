@@ -19,13 +19,18 @@ Execution information can be added to MyST Markdown files, which allows you to p
 - [Code cells](#code-cell) for block-level content.
 - [Inline expressions](#inline-expressions) for content inline with surrounding text.
 
+:::{tip} Install Jupyter Server
+:class: dropdown
+To execute your code you will need to [](#install-jupyter-server).
+:::
+
 (kernel-specification)=
 
 ## Kernel specification
 
 Defining a kernel specification (`kernelspec`) informs the Jupyter server of the name of the kernel that should execute your code. When you call `myst build --execute` or `myst start --execute`, the MyST CLI starts a Jupyter kernel to execute your code and gather the execution results. Defining different `kernelspec`s in each notebook makes it possible to flexibly switch the package environment and programming language (e.g. to use R in one notebook, and Julia in another).
 
-The `kernelspec` configuration should be defined in the _page-level_ frontmatter of each executable markdown file (see [](#field-behavior) for more information), and supports the same content that is validated by [`nbformat`'s schema](https://github.com/jupyter/nbformat/blob/main/nbformat/v4/nbformat.v4.5.schema.json):
+The `kernelspec` configuration should be defined in the _page-level_ frontmatter of each executable Markdown file (see [](#field-behavior) for more information), and supports the same content that is validated by [`nbformat`'s schema](https://github.com/jupyter/nbformat/blob/main/nbformat/v4/nbformat.v4.5.schema.json):
 
 ```{list-table} A list of available kernelspec fields
 :header-rows: 1
@@ -39,12 +44,15 @@ The `kernelspec` configuration should be defined in the _page-level_ frontmatter
   - human-readable name for the kernel, e.g. "Python 3.12"
 ```
 
-The following contents is a frontmatter defines a document that uses the `python` kernel:
+The following content is a frontmatter that defines a document that uses the `python` kernel:
 
-```yaml
+```{code} yaml
+:filename: markdown-notebook.md
+---
 kernelspec:
   name: python3
   display_name: 'Python 3'
+---
 ```
 
 After we declare the frontmatter, the contents of each {myst:directive}`code-cell` directive and {myst:role}`eval` role will be executed by the `python` kernel during the building process.
@@ -54,7 +62,7 @@ After we declare the frontmatter, the contents of each {myst:directive}`code-cel
 Furthermore, you can build MyST Markdown content with other programming languages like JavaScript, R, and Julia by installing the corresponding kernel. For example, to build a page that uses JavaScript in the {myst:directive}`code-cell`, we could:
 
 1. Install a JavaScript kernel, e.g. [ijavascript](https://github.com/n-riesco/ijavascript).
-2. Retrieve the kernel name with `jupyter kernelspec list`.  
+2. Retrieve the kernel name with `jupyter kernelspec list`.
    In the default installation, the kernel name is `javascript`.
 3. Set the kernelspec in your document's frontmatter:
    ```yaml
@@ -112,11 +120,11 @@ print(phrase)
 You can add tags to the {myst:directive}`code-cell` directive.
 They will be parsed and used in the same way that cell tag metadata is used in `.ipynb` files.
 
-For example, the following code defines a `remove-input` tag:
+For example, the following code defines a `remove-input` tag (See all [notebook tag options](#tbl:notebook-cell-tags)):
 
 ````markdown
 ```{code-cell} python
-:tags: remove-input
+:tags: [remove-input]
 print("This will show output with no input!")
 ```
 ````
@@ -124,14 +132,14 @@ print("This will show output with no input!")
 and results in the following:
 
 > ```{code-cell} python
-> :tags: remove-input
+> :tags: [remove-input]
 > print("This will show output with no input!")
 > ```
 
 This can be particularly helpful for showing the output of a calculation or plot, which is reproducible in the {download}`source code <./notebooks-with-markdown.md>`, but not shown to the user like this `matplotlib` plot:
 
 ```{code-cell} python
-:tags: remove-input
+:tags: [remove-input]
 # Data for plotting
 t = np.arange(0.0, 2.0, 0.01)
 s = 1 + np.sin(2 * np.pi * t)
@@ -149,12 +157,12 @@ plt.show()
 
 For **multiple tags** you have two ways to provide them:
 
-- If you specify argument options with `:`, tags will be parsed as a comma-separated string.
+- If you specify argument options with `:`, tags will be parsed as a comma-separated list of strings.
   For example:
 
   ````markdown
   ```{code-cell} python
-  :tags: tag1, tag2,tag3
+  :tags: [tag1, tag2,tag3]
   # Note that whitespace is removed from tags!
   print("howdy!")
   ```
@@ -186,6 +194,9 @@ See [](#notebooks:cell-visibility) for more information.
 
 You can use the {myst:role}`eval` role to evaluate code that is surrounded by text.
 This allows you to quickly insert its output in a way that flows with the text around it.
+
+:::{note} You can use inline expressions in the Markdown cells of an `.ipynb` file as well.
+:::
 
 For example, the following MyST Markdown would re-use the variable defined above.
 
@@ -222,8 +233,22 @@ In [](#compatibility-jupytext), the `jupytext` tool for integrating text-based n
 
 [jupytext](https://github.com/mwouts/jupytext) is a Python package that converts between Jupyter Notebooks (ipynb files) and plain text documents (like MyST Markdown files). It provides both a commandline tool to perform these conversions, and an extension for JupyterLab to facilitate opening text-based notebooks with the Notebook viewer. MyST Markdown is understood by jupytext, which defines a `md:myst` format for reading from / writing to MyST Markdown.
 
-The following command will convert a MyST markdown file `example.md` to the `.ipynb` notebook:
+The following command will convert a MyST Markdown file `example.md` to the `.ipynb` notebook:
 
 ```shell
 $ jupytext --from md:myst --to notebook example.md
 ```
+
+(execute-config)=
+## Control of execution
+
+The top-level `execute` page frontmatter block accepts several properties for controlling build-time execution of the given page:
+
+`skip`
+: Skip execution of this notebook, even though it has a kernelspec.
+
+`depends_on_env`
+: Define the environment variables upon which this notebook depends. Changes to these variables will invalidate the execution cache.
+
+`cache`
+: Disable the execution cache for this notebook.

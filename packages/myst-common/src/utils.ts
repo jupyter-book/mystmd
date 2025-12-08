@@ -13,12 +13,15 @@ export type MessageInfo = {
   url?: string;
   fatal?: boolean;
   ruleId?: RuleId | string;
+  /** This key can be combined with the ruleId to suppress a warning */
+  key?: string;
 };
 
-function addMessageInfo(message: VFileMessage, info?: MessageInfo) {
+function addMessageInfo(message: VFileMessage & { key?: string }, info?: MessageInfo) {
   if (info?.note) message.note = info.note;
   if (info?.url) message.url = info.url;
   if (info?.ruleId) message.ruleId = info.ruleId as string;
+  if (info?.key) message.key = info.key;
   if (info?.fatal) message.fatal = true;
   return message;
 }
@@ -93,8 +96,13 @@ export function createHtmlId(identifier?: string): string | undefined {
  */
 export function transferTargetAttrs(sourceNode: GenericNode, destNode: GenericNode, vfile?: VFile) {
   if (sourceNode.label) {
-    if (destNode.label && vfile) {
+    if (destNode.label && vfile && destNode.label !== sourceNode.label) {
       fileWarn(vfile, `label "${destNode.label}" replaced with "${sourceNode.label}"`, {
+        node: destNode,
+      });
+    }
+    if (destNode.label && vfile && destNode.label === sourceNode.label) {
+      fileWarn(vfile, `duplicate label "${destNode.label}" replacement`, {
         node: destNode,
       });
     }

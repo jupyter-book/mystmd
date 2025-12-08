@@ -35,6 +35,7 @@ export const SITE_FRONTMATTER_KEYS = [
   'copyright',
   'options',
   'parts',
+  'social',
   ...PAGE_KNOWN_PARTS,
 ];
 
@@ -66,6 +67,7 @@ export const FRONTMATTER_ALIASES = {
   'key-points': 'keypoints',
   image: 'thumbnail',
   identifier: 'identifiers',
+  socials: 'social',
 };
 
 export type SiteFrontmatter = {

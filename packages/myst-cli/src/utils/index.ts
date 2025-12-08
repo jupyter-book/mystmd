@@ -16,6 +16,8 @@ export * from './toc.js';
 export * from './uniqueArray.js';
 export * from './github.js';
 export * from './whiteLabelling.js';
+export * from './fetchWithRetry.js';
 
+export * as ffmpeg from './ffmpeg.js';
 export * as imagemagick from './imagemagick.js';
 export * as inkscape from './inkscape.js';

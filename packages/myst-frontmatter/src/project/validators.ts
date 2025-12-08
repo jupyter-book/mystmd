@@ -28,6 +28,7 @@ import type { ProjectAndPageFrontmatter, ProjectFrontmatter } from './types.js';
 import { validateProjectAndPageSettings } from '../settings/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
 import { validateMathMacroObject } from '../math/validators.js';
+import { validateSocialLinks } from '../socials/validators.js';
 
 function getExternalIdentifierValidator(
   key: string,
@@ -235,6 +236,16 @@ export function validateProjectAndPageFrontmatterKeys(
     );
     if (settings) output.settings = settings;
   }
+  if (value.edit_url === null) {
+    output.edit_url = null;
+  } else if (defined(value.edit_url)) {
+    output.edit_url = validateUrl(value.edit_url, incrementOptions('edit_url', opts));
+  }
+  if (value.source_url === null) {
+    output.source_url = null;
+  } else if (defined(value.source_url)) {
+    output.source_url = validateUrl(value.source_url, incrementOptions('source_url', opts));
+  }
   return output;
 }
 
@@ -265,6 +276,10 @@ export function validateProjectFrontmatterKeys(
 
   if (defined(value.toc)) {
     output.toc = validateTOC(value.toc, incrementOptions('toc', opts));
+  }
+
+  if (defined(value.social)) {
+    output.social = validateSocialLinks(value.social, incrementOptions('social', opts));
   }
 
   if (defined(value.requirements)) {

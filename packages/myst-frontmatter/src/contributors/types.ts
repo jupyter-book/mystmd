@@ -1,5 +1,6 @@
 import type { CreditRole } from 'credit-roles';
 import type { Affiliation } from '../affiliations/types.js';
+import type { SocialLinks } from '../socials/types.js';
 
 export type ContributorRole = CreditRole | string;
 
@@ -12,7 +13,7 @@ export type Name = {
   suffix?: string;
 };
 
-interface Person {
+type Person = SocialLinks & {
   id?: string;
   name?: string; // may be set to Name object
   userId?: string;
@@ -23,15 +24,12 @@ interface Person {
   email?: string;
   roles?: ContributorRole[];
   affiliations?: string[];
-  twitter?: string;
-  github?: string;
-  url?: string;
   note?: string;
   phone?: string;
   fax?: string;
   // Computed property; only 'name' should be set in frontmatter as string or Name object
   nameParsed?: Name;
-}
+};
 
 /**
  * Person or Collaboration contributor type

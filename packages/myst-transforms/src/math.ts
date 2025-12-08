@@ -1,6 +1,7 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
+import 'katex/contrib/mhchem/mhchem.js';
 import type { InlineMath, Node } from 'myst-spec';
 import type { Math } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
@@ -150,6 +151,7 @@ function tryRender(file: VFile, node: Node, value: string, opts?: Options): Rend
       output: opts?.mathML ? 'mathml' : undefined,
       macros: { ...builtInMacros, ...simplifiedMacros },
       strict: (f: string, m: string) => {
+        if (f === 'newLineInDisplayMode') return;
         warnings.push(`${f}, ${m}`);
       },
     });

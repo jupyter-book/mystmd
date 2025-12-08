@@ -40,3 +40,9 @@ _build
 yalc.lock
 
 *.docx
+
+# backup files
+*~
+
+# vim swap files
+*.swp

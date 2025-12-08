@@ -1,9 +1,10 @@
 import type { DirectiveData, DirectiveSpec, GenericNode } from 'myst-common';
-import { RuleId, fileWarn, normalizeLabel } from 'myst-common';
+import { RuleId, fileWarn } from 'myst-common';
 import { CODE_DIRECTIVE_OPTIONS, getCodeBlockOptions } from './code.js';
 import type { Include } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import { select } from 'unist-util-select';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 /**
  * RST documentation:
@@ -22,10 +23,7 @@ export const includeDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
+    ...commonDirectiveOptions('include'),
     literal: {
       type: Boolean,
       doc: 'Flag the include block as literal, and show the contents as a code block. This can also be set automatically by setting the `language` or using the `literalinclude` directive.',
@@ -70,29 +68,21 @@ export const includeDirective: DirectiveSpec = {
     },
   },
   run(data, vfile): Include[] {
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
+    // Make a literal include if any of "literal", "lang" are defined or "literalinclude" directive is used
     const literal =
       data.name === 'literalinclude' || !!data.options?.literal || !!data.options?.lang;
 
     const file = data.arg as string;
-    if (!literal) {
-      // TODO: warn on unused options
-      return [
-        {
-          type: 'include',
-          file,
-          label,
-          identifier,
-        },
-      ];
-    }
     const lang = (data.options?.lang as string) ?? extToLanguage(file.split('.').pop());
-    const opts = getCodeBlockOptions(
-      data,
-      vfile,
-      // Set the filename in the literal include by default
-      file.split(/\/|\\/).pop(),
-    );
+    const opts = literal
+      ? getCodeBlockOptions(
+          data,
+          vfile,
+          // Set the filename in the literal include by default
+          file.split(/\/|\\/).pop(),
+        )
+      : {};
+    const caption = literal ? (data.options?.caption as any[]) : undefined;
     const filter: Include['filter'] = {};
     ensureOnlyOneOf(data, vfile, ['start-at', 'start-line', 'start-after', 'lines']);
     ensureOnlyOneOf(data, vfile, ['end-at', 'end-line', 'end-before', 'lines']);
@@ -103,7 +93,7 @@ export const includeDirective: DirectiveSpec = {
     if (data.options?.lines) {
       filter.lines = parseLinesString(
         vfile,
-        select('mystDirectiveOption[name="lines"]', data.node) ?? undefined,
+        select('mystOption[name="lines"]', data.node) ?? undefined,
         data.options?.lines as string,
       );
     } else {
@@ -122,19 +112,19 @@ export const includeDirective: DirectiveSpec = {
         ];
       }
     }
-    return [
-      {
-        type: 'include',
-        file,
-        literal,
-        lang,
-        label,
-        identifier,
-        caption: data.options?.caption as any[],
-        filter: Object.keys(filter).length > 0 ? filter : undefined,
-        ...opts,
-      },
-    ];
+    // Are any filter properties set?
+    const usesFilter = Object.values(filter).some((value) => value !== undefined);
+    const include: Include = {
+      type: 'include',
+      file,
+      literal,
+      lang,
+      caption,
+      filter: usesFilter ? filter : undefined,
+      ...opts,
+    };
+    addCommonDirectiveOptions(data, include);
+    return [include];
   },
 };
 

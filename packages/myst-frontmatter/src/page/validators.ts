@@ -6,10 +6,13 @@ import {
   validateString,
   validateBoolean,
   validateObject,
+  validateUrl,
+  validationWarning,
 } from 'simple-validators';
 import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
 import { PAGE_FRONTMATTER_KEYS, type PageFrontmatter } from './types.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
+import { validateExecute } from '../execute/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
 import { FRONTMATTER_ALIASES } from '../site/types.js';
 
@@ -50,6 +53,27 @@ export function validatePageFrontmatterKeys(value: Record<string, any>, opts: Va
   }
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
+  }
+  if (defined(value.execute)) {
+    output.execute = validateExecute(value.execute, incrementOptions('execute', opts));
+  }
+  if (defined(value.skip_execution)) {
+    output.execute ??= {};
+    if (defined(output.execute.skip)) {
+      validationWarning(
+        `both execute.skip and deprecated skip_execution are defined, taking execute.skip`,
+        opts,
+      );
+    } else {
+      validationWarning(`skip_execution is deprecated in favour of execute.skip`, opts);
+      output.execute.skip = validateBoolean(
+        value.skip_execution,
+        incrementOptions('skip_execution', opts),
+      );
+    }
+  }
+  if (defined(value.enumerator)) {
+    output.enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
   }
   if (defined(value.content_includes_title)) {
     output.content_includes_title = validateBoolean(

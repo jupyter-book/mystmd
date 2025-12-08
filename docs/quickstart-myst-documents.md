@@ -73,7 +73,7 @@ Next we will improve the contents of the `01-paper.md`, including:
 The start of the file includes information about the title, subtitle, author, affiliations and license.
 Unfortunately, this way of including this information is not easily machine-readable[^fair], and focuses more on style/typography than on metadata.
 
-[^fair]: [FAIR principles](https://www.go-fair.org/fair-principles/) are at the heart of open-science, and aim to **F**indability, **A**ccessibility, **I**nteroperability, and **R**euse of digital assets. For a resource to be finable, it must be machine-readable!
+[^fair]: [FAIR principles](https://www.go-fair.org/fair-principles/) are at the heart of open-science, and aims for the **F**indability, **A**ccessibility, **I**nteroperability, and **R**euse of digital assets. For a resource to be findable, it must be machine-readable!
 
 ```markdown
 # How to MyST, without being mystified 🧙
@@ -116,14 +116,14 @@ keywords: myst, markdown, open-science
 ```
 
 In this case, we are also adding additional metadata like an ORCID, as well as ensuring the license is an SPDX compatible code.
-Once these are added, the myst theme (in this case the `book-theme` template) can make it look pretty, this can also be customized by other themes, including $\LaTeX$ and Microsoft Word templates!
+Once these are added, the MyST theme (in this case the `book-theme` template) can make it look pretty, this can also be customized by other themes, including $\LaTeX$ and Microsoft Word templates!
 
 :::{figure} ./images/frontmatter-after.png
 :width: 80%
 :label: frontmatter-after
 :class: framed
 
-The myst theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
+The MyST theme for the `01-paper.md` page after the frontmatter changes are added. Compare this to what it looked like before in [](#frontmatter-before-pdf). The structure of the HTML page has also been improved, including meta tags that are available to search engines and other programmatic indexers.
 :::
 
 ### Add an abstract part

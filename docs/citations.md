@@ -5,19 +5,19 @@ description: Add academic citations to your documents easily, have hover-referen
 thumbnail: ./thumbnails/citations.png
 ---
 
-Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
+Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a Markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 (doi-links)=
 
 ## Simple Referencing with a DOI Link
 
-Link to any DOI in your markdown files or Jupyter Notebooks by including a link to the DOI. Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below👇).
+Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI. Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below👇).
 
 ```md
-This is a link in markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
+This is a link in Markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
 ```
 
-It is also possible to to drop the link text, that is:\
+It is also possible to drop the link text, that is:\
 `<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
 which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.). If the DOI is present on a citation from a BibTeX file in your project, that citation will be used. Otherwise, the citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory. This cache may be cleared with `myst clean --cache`.
 
@@ -25,9 +25,9 @@ Providing your DOIs as full links has the advantage that on other rendering plat
 
 :::{note} Dealing with complex DOIs
 :class: dropdown
-If your DOI does not follow modern standards (e.g. strange characters or contains multiple `/`s), you must include the `https://doi.org` in the URL and may have to URL encode the DOI string to be recognized as a URL in markdown.
+If your DOI does not follow modern standards (e.g. strange characters or contains multiple `/`s), you must include the `https://doi.org` in the URL and may have to URL encode the DOI string to be recognized as a URL in Markdown.
 
-For the DOI, `10.1175/1520-0493(1972)100<0081:OTAOSH>2.3.CO;2` there are `<`, `;` and `()` characters that do not work well with markdown URL parsing. There are two options:
+For the DOI, `10.1175/1520-0493(1972)100<0081:OTAOSH>2.3.CO;2` there are `<`, `;` and `()` characters that do not work well with Markdown URL parsing. There are two options:
 
 1. use the service https://shortdoi.org, which will give you a unique, persistent smaller DOI that will parse correctly, in this case `https://doi.org/cr3qwn` (which becomes https://doi.org/cr3qwn); or
 2. URL encode this to: \
@@ -38,6 +38,17 @@ For the DOI, `10.1175/1520-0493(1972)100<0081:OTAOSH>2.3.CO;2` there are `<`, `;
 For DOIs with multiple slashes in the identifier you also have to use the full https://doi.org URL, for example, `https://doi.org/10.3847/1538-4365/ac5f56` becomes <https://doi.org/10.3847/1538-4365/ac5f56>.
 
 :::
+
+### Numbered Citations
+
+The default citations are narrative, for numbered citations, these can be set in the `site.options.numbered_references` in your `myst.yml` (See [](#site-options)).
+
+```{code} yaml
+:filename: myst.yml
+site:
+  options:
+    numbered_references: true
+```
 
 ### Writing DOIs to BibTeX
 
@@ -99,7 +110,7 @@ This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#
 
 ## Citation Roles
 
-MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book. To create a citation role in Markdown, use either a parenthetical or textual citation:
+MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1. To create a citation role in Markdown, use either a parenthetical or textual citation:
 
 ```md
 This is a parenthetical citation {cite:p}`cockett2015`.
@@ -111,7 +122,7 @@ You can also add prefix and suffix {cite:p}`{see}cockett2015{fig 1}`.
 This is the difference between: {cite:p}`cockett2015` and {cite:t}`cockett2015`. You can have many citation keys in a single role, by separating them with a semicolon, `;`, for example: {cite:p}`cockett2015; heagy2017`.
 Including a prefix or suffix is displayed as {cite:p}`{see}cockett2015{fig 1}`.
 
-You can also include DOIs in citations (`cite`, `cite:t`, and `cite:p`) which will be linked in the same way as a simple markdown link, but will match the reference style of the project.
+You can also include DOIs in citations (`cite`, `cite:t`, and `cite:p`) which will be linked in the same way as a simple Markdown link, but will match the reference style of the project.
 
 ```md
 This will be a citation: {cite}`10.1093/nar/22.22.4673`.

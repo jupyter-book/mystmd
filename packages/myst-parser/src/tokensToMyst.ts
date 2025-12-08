@@ -8,6 +8,7 @@ import { selectAll } from 'unist-util-select';
 import { u } from 'unist-builder';
 import { MarkdownParseState, withoutTrailingNewline } from './fromMarkdown.js';
 import type { MdastOptions, TokenHandlerSpec } from './fromMarkdown.js';
+import { listItemParagraphsTransform } from './transforms/index.js';
 
 export function computeAmsmathTightness(
   src: string,
@@ -280,9 +281,10 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   math_inline_double: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t) {
       return {
+        value: t.content.trim(),
         enumerated: t.meta?.enumerated,
       };
     },
@@ -290,10 +292,11 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   math_block: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t) {
       const name = t.info || undefined;
       return {
+        value: t.content.trim(),
         ...normalizeLabel(name),
         enumerated: t.meta?.enumerated,
       };
@@ -302,10 +305,11 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   math_block_label: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t) {
       const name = t.info || undefined;
       return {
+        value: t.content.trim(),
         ...normalizeLabel(name),
         enumerated: t.meta?.enumerated,
       };
@@ -314,10 +318,11 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   amsmath: {
     type: 'math',
     noCloseToken: true,
-    isText: true,
+    isLeaf: true,
     getAttrs(t, tokens, index, state) {
       const tight = computeAmsmathTightness(state.src, t.map);
       const attrs = {
+        value: t.content.trim(),
         enumerated: t.meta?.enumerated,
       } as Record<string, any>;
       if (tight) attrs.tight = tight;
@@ -393,15 +398,6 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
       };
     },
   },
-  directive_option: {
-    type: 'mystDirectiveOption',
-    getAttrs(t) {
-      return {
-        name: t.info,
-        value: t.meta.value,
-      };
-    },
-  },
   directive_body: {
     type: 'mystDirectiveBody',
     getAttrs(t) {
@@ -413,6 +409,21 @@ const defaultMdast: Record<string, TokenHandlerSpec> = {
   directive_error: {
     type: 'mystDirectiveError',
     noCloseToken: true,
+    getAttrs(t) {
+      return {
+        message: t.meta?.error_message,
+      };
+    },
+  },
+  myst_option: {
+    type: 'mystOption',
+    getAttrs(t) {
+      return {
+        name: t.info,
+        location: t.meta.location,
+        value: t.meta.value,
+      };
+    },
   },
   parsed_role: {
     type: 'mystRole',
@@ -509,6 +520,7 @@ function nestSingleImagesIntoParagraphs(tree: GenericParent) {
 const defaultOptions: MdastOptions = {
   handlers: defaultMdast,
   hoistSingleImagesOutofParagraphs: true,
+  listItemParagraphs: true,
   nestBlocks: true,
 };
 
@@ -560,6 +572,11 @@ export function tokensToMyst(
       }
     }
   });
+
+  if (opts.listItemParagraphs) {
+    // Ensure that listItems that are not paragraphs are wrapped in paragraphs
+    listItemParagraphsTransform(tree);
+  }
 
   // Move crossReference text value to children
   visit(tree, 'crossReference', (node: GenericNode) => {

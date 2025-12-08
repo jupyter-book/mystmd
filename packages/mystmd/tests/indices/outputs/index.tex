@@ -1,7 +1,9 @@
 \documentclass{article}
-\PassOptionsToPackage{short, nodayofweek}{datetime}
-
-\input{curvenote.def}
+\usepackage{hyperref}
+\usepackage{datetime}
+\usepackage{graphicx}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%  imports  %%%%%%%%%%%%%%%%%%%
@@ -13,26 +15,22 @@
 
 % colors for hyperlinks
 \hypersetup{colorlinks=true, allcolors=blue}
-\hypersetup{
-pdftitle={\@title},
-pdfsubject={},
-pdfauthor={\@author},
-pdfkeywords={},
-addtopdfcreator={Written in Curvenote}
+
+\newcommand{\logo}{
+  \href{https://curvenote.com}{\includegraphics[width=2cm]{curvenote.png}}
 }
 
-\usepackage{curvenote}
-
 \title{Chicken Thesis}
+
+\author{Franklin Koch}
 
 \newdate{articleDate}{20}{7}{2024}
 \date{\displaydate{articleDate}}
 
-\author{\bfseries Franklin Koch\mdseries\\Curvenote\\}
-
 \begin{document}
-
 \maketitle
+\begin{center}\logo\end{center}
+
 
 \include{index-index}
 
@@ -41,6 +39,8 @@ addtopdfcreator={Written in Curvenote}
 \include{index-recipes}
 
 \include{index-joke}
+
+
 
 
 \end{document}

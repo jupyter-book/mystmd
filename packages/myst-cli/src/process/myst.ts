@@ -1,9 +1,9 @@
-import { mystParse } from 'myst-parser';
+import { mystParse, type AllOptions } from 'myst-parser';
+import { buttonRole } from 'myst-ext-button';
 import { cardDirective } from 'myst-ext-card';
 import { gridDirectives } from 'myst-ext-grid';
 import { proofDirective } from 'myst-ext-proof';
 import { exerciseDirectives } from 'myst-ext-exercise';
-import { reactiveDirective, reactiveRole } from 'myst-ext-reactive';
 import { tabDirectives } from 'myst-ext-tabs';
 import { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
@@ -20,6 +20,24 @@ type Options = {
   ignoreFrontmatter?: boolean;
 };
 
+export function getMystParserOptions(session: ISession, opts?: Options): Partial<AllOptions> {
+  return {
+    markdownit: { linkify: true },
+    directives: [
+      cardDirective,
+      ...gridDirectives,
+      proofDirective,
+      ...exerciseDirectives,
+      ...tabDirectives,
+      ...(session.plugins?.directives ?? []),
+    ],
+    extensions: {
+      frontmatter: !opts?.ignoreFrontmatter,
+    },
+    roles: [buttonRole, ...(session.plugins?.roles ?? [])],
+  };
+}
+
 /**
  * Parse MyST content using the full suite of built-in directives, roles, and plugins
  *
@@ -35,23 +53,8 @@ export function parseMyst(
 ): GenericParent {
   const vfile = new VFile();
   vfile.path = file;
-  const parsed = mystParse(content, {
-    markdownit: { linkify: true },
-    directives: [
-      cardDirective,
-      ...gridDirectives,
-      reactiveDirective,
-      proofDirective,
-      ...exerciseDirectives,
-      ...tabDirectives,
-      ...(session.plugins?.directives ?? []),
-    ],
-    extensions: {
-      frontmatter: !opts?.ignoreFrontmatter,
-    },
-    roles: [reactiveRole, ...(session.plugins?.roles ?? [])],
-    vfile,
-  });
+  const parserOptions = getMystParserOptions(session, opts);
+  const parsed = mystParse(content, { ...parserOptions, vfile });
   logMessagesFromVFile(session, vfile);
   return parsed;
 }

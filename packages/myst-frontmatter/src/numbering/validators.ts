@@ -11,7 +11,7 @@ import {
 } from 'simple-validators';
 import type { Numbering, NumberingItem } from './types.js';
 
-export const NUMBERING_OPTIONS = ['enumerator', 'all', 'headings'];
+export const NUMBERING_OPTIONS = ['enumerator', 'all', 'headings', 'title'];
 
 const HEADING_KEYS = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5', 'heading_6'];
 export const NUMBERING_KEYS = [
@@ -24,7 +24,9 @@ export const NUMBERING_KEYS = [
   ...HEADING_KEYS,
 ];
 
-const NUMBERING_ITEM_KEYS = ['enabled', 'start', 'template'];
+const NUMBERING_ITEM_KEYS = ['enabled', 'start', 'enumerator', 'template', 'continue'];
+
+const CONTINUE_STRINGS = ['continue', 'next'];
 
 export const NUMBERING_ALIAS = {
   sections: 'headings',
@@ -40,6 +42,13 @@ export const NUMBERING_ALIAS = {
   heading4: 'heading_4',
   heading5: 'heading_5',
   heading6: 'heading_6',
+  figures: 'figure',
+  subfigures: 'subfigure',
+  equations: 'equation',
+  math: 'equation',
+  subequations: 'subequation',
+  tables: 'table',
+  titles: 'title',
 };
 
 function isBoolean(input: any) {
@@ -68,6 +77,8 @@ export function validateNumberingItem(
     input = { enabled: input };
   } else if (typeof input === 'number') {
     input = { start: input };
+  } else if (CONTINUE_STRINGS.includes(input)) {
+    input = { continue: true };
   } else if (typeof input === 'string') {
     input = { template: input };
   }
@@ -79,20 +90,75 @@ export function validateNumberingItem(
     if (defined(enabled)) output.enabled = enabled;
   }
   if (defined(value.start)) {
-    const start = validateNumber(value.start, {
-      ...incrementOptions('start', opts),
-      integer: true,
-      min: 1,
-    });
-    if (start) {
-      output.start = start;
+    if (CONTINUE_STRINGS.includes(value.start) && !defined(value.continue)) {
+      output.continue = true;
       output.enabled = output.enabled ?? true;
+    } else {
+      const start = validateNumber(value.start, {
+        ...incrementOptions('start', opts),
+        integer: true,
+        min: 1,
+      });
+      if (start) {
+        output.start = start;
+        output.enabled = output.enabled ?? true;
+      }
     }
   }
   if (defined(value.template)) {
     const template = validateString(value.template, incrementOptions('template', opts));
     if (defined(template)) {
       output.template = template;
+      output.enabled = output.enabled ?? true;
+    }
+  }
+  if (defined(value.enumerator)) {
+    const enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
+    if (defined(enumerator)) {
+      output.enumerator = enumerator;
+      output.enabled = output.enabled ?? true;
+    }
+  }
+  if (defined(value.continue)) {
+    const cont = validateBoolean(value.continue, incrementOptions('continue', opts));
+    if (defined(cont)) {
+      output.continue = cont;
+      output.enabled = output.enabled ?? true;
+    }
+  }
+  if (Object.keys(output).length === 0) return undefined;
+  return output;
+}
+
+export function validateTitleItem(input: any, opts: ValidationOptions): NumberingItem | undefined {
+  if (isBoolean(input)) {
+    input = { enabled: input };
+  } else if (typeof input === 'number') {
+    input = { offset: input };
+  }
+  const value = validateObjectKeys(input, { optional: ['enabled', 'offset', 'enumerator'] }, opts);
+  if (value === undefined) return undefined;
+  const output: { enabled?: boolean; offset?: number; enumerator?: string } = {};
+  if (defined(value.enabled)) {
+    const enabled = validateBoolean(value.enabled, incrementOptions('enabled', opts));
+    if (defined(enabled)) output.enabled = enabled;
+  }
+  if (defined(value.offset)) {
+    const offset = validateNumber(value.offset, {
+      integer: true,
+      min: 0,
+      max: 5,
+      ...incrementOptions('offset', opts),
+    });
+    if (defined(offset)) {
+      output.offset = offset;
+      output.enabled = output.enabled ?? true;
+    }
+  }
+  if (defined(value.enumerator)) {
+    const enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
+    if (defined(enumerator)) {
+      output.enumerator = enumerator;
       output.enabled = output.enabled ?? true;
     }
   }
@@ -117,6 +183,9 @@ export function validateNumbering(input: any, opts: ValidationOptions): Numberin
   let headings: NumberingItem | undefined;
   if (defined(value.enumerator)) {
     const enumeratorOpts = incrementOptions('enumerator', opts);
+    if (typeof value.enumerator === 'string') {
+      value.enumerator = { enumerator: value.enumerator };
+    }
     output.enumerator = validateNumberingItem(value.enumerator, enumeratorOpts);
     if (output.enumerator?.enabled != null) {
       if (output.enumerator.enabled !== true) {
@@ -127,6 +196,13 @@ export function validateNumbering(input: any, opts: ValidationOptions): Numberin
     if (output.enumerator?.start != null) {
       validationWarning("value for 'start' is ignored", enumeratorOpts);
       delete output.enumerator.start;
+    }
+    if (output.enumerator?.continue != null) {
+      validationWarning("value for 'continue' is ignored", enumeratorOpts);
+      delete output.enumerator.continue;
+    }
+    if (!output.enumerator || Object.keys(output.enumerator).length === 0) {
+      delete output.enumerator;
     }
   }
   if (defined(value.all)) {
@@ -140,6 +216,12 @@ export function validateNumbering(input: any, opts: ValidationOptions): Numberin
       validationWarning("value for 'start' is ignored", allOpts);
       delete output.all.start;
     }
+    if (!output.all || Object.keys(output.all).length === 0) {
+      delete output.all;
+    }
+  }
+  if (defined(value.title)) {
+    output.title = validateTitleItem(value.title, incrementOptions('title', opts));
   }
   if (defined(value.headings)) {
     headings = validateNumberingItem(value.headings, incrementOptions('headings', opts));
@@ -174,7 +256,11 @@ export function fillNumbering(base?: Numbering, filler?: Numbering) {
       output[key] = fillMissingKeys(
         base?.[key] ?? {},
         // Enabling/disabling all in base overrides filler
-        { ...val, enabled: base?.all?.enabled ?? val.enabled },
+        {
+          ...val,
+          enabled: base?.all?.enabled ?? val.enabled,
+          continue: base?.all?.continue ?? val.continue,
+        },
         NUMBERING_ITEM_KEYS,
       );
     });

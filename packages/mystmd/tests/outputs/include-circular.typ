@@ -10,7 +10,7 @@ This page includes content from page one:
 
 and content from page three:
 
-= Page three <page-three>
+= Page three
 
 This page includes content from page one:
 

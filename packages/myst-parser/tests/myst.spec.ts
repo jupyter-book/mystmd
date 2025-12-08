@@ -136,6 +136,7 @@ describe('Testing myst --> mdast conversions', () => {
             mystParse(myst, {
               mdast: {
                 hoistSingleImagesOutofParagraphs: false,
+                listItemParagraphs: false,
                 nestBlocks: false,
               },
               extensions: {
@@ -216,6 +217,6 @@ describe('Testing mdast --> html conversions', () => {
 
 if (skipped.length) {
   describe('Skipped Tests', () => {
-    test.skip.each(skipped)('%s', () => null);
+    test.skip.each(skipped)('%s', () => undefined);
   });
 }

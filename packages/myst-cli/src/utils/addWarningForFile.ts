@@ -1,9 +1,43 @@
 import chalk from 'chalk';
 import type { Position } from 'unist';
+import picomatch from 'picomatch';
+import type { VFileMessage } from 'vfile-message';
 import type { ISession } from '../session/types.js';
 import { warnings } from '../store/reducers.js';
 import type { WarningKind } from '../store/types.js';
 import { selectCurrentProjectConfig } from '../store/selectors.js';
+
+/**
+ * Check if a key matches a pattern. Patterns can be:
+ * - Exact matches (e.g., "https://example.com/page")
+ * - Glob patterns (e.g., "*.example.com/*", "https://example.com/**")
+ *
+ * This function uses picomatch for pattern matching, which is the same
+ * library that powers many modern build tools' glob matching.
+ */
+function keyMatchesPattern(key: string | null | undefined, pattern: string): boolean {
+  if (!key) return false;
+
+  // First try exact match (fastest)
+  if (key === pattern) return true;
+
+  // Check if pattern contains wildcards or special characters
+  const hasWildcard = /[*?{}[\]]/.test(pattern);
+  if (!hasWildcard) {
+    // No wildcards, only exact match is possible
+    return false;
+  }
+
+  try {
+    // Use picomatch for glob pattern matching
+    // Options: nocase for case-insensitive matching (useful for URLs)
+    const isMatch = picomatch(pattern, { nocase: false, dot: true });
+    return isMatch(key);
+  } catch (error) {
+    // If pattern is invalid, fall back to exact match
+    return false;
+  }
+}
 
 export function addWarningForFile(
   session: ISession,
@@ -33,7 +67,7 @@ export function addWarningForFile(
     const config = selectCurrentProjectConfig(session.store.getState());
     const handler = config?.error_rules?.find((rule) => {
       if (rule.key) {
-        return rule.id === opts.ruleId && rule.key === opts.key;
+        return rule.id === opts.ruleId && keyMatchesPattern(opts.key, rule.key);
       }
       return rule.id === opts.ruleId;
     });

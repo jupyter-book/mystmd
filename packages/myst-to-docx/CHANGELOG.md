@@ -1,5 +1,40 @@
 # myst-to-docx
 
+## 1.0.15
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 1.0.14
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+
+## 1.0.13
+
+### Patch Changes
+
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
 ## 1.0.12
 
 ### Patch Changes

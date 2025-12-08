@@ -1,9 +1,12 @@
 import { load as loadYAML } from 'js-yaml';
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const mystdemoDirective: DirectiveSpec = {
   name: 'myst',
+  doc: 'Demonstrate some MyST code in an editable code block that displays its output/result interactively. Limited to built-in functionality, as parsing and rendering is done in the browser without access to plugin code or project configuration.',
   options: {
+    ...commonDirectiveOptions('myst'),
     numbering: {
       type: String,
     },
@@ -21,12 +24,12 @@ export const mystdemoDirective: DirectiveSpec = {
         //pass
       }
     }
-    return [
-      {
-        type: 'myst',
-        numbering,
-        value: data.body as string,
-      },
-    ];
+    const myst = {
+      type: 'myst',
+      numbering,
+      value: data.body as string,
+    };
+    addCommonDirectiveOptions(data, myst);
+    return [myst];
   },
 };

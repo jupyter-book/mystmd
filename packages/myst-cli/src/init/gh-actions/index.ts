@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import type { ISession } from 'myst-cli-utils';
 import { writeFileToFolder } from 'myst-cli-utils';
 import { getGithubUrl } from '../../utils/github.js';
+import { npmBinaryName, readableName, npmPackageName } from '../../utils/whiteLabelling.js';
 import { checkFolderIsGit, checkAtGitRoot } from '../../utils/git.js';
 
 function createGithubPagesAction({
@@ -16,18 +17,18 @@ function createGithubPagesAction({
   defaultBranch?: string;
   isGithubIO?: boolean;
 }) {
-  return `# This file was created automatically with \`myst init --gh-pages\` 🪄 💚
+  return `# This file was created automatically with \`${npmBinaryName()} init --gh-pages\` 🪄 💚
+# Ensure your GitHub Pages settings for this repository are set to deploy with **GitHub Actions**.
 
-name: MyST GitHub Pages Deploy
+name: ${readableName()} GitHub Pages Deploy
 on:
   push:
     # Runs on pushes targeting the default branch
     branches: [${defaultBranch}]
 env:
-  # \`BASE_URL\` determines the website is served from, including CSS & JS assets
-  # You may need to change this to \`${
-    isGithubIO ? 'BASE_URL: /${{ github.event.repository.name }}' : "BASE_URL: ''"
-  }\`
+  # \`BASE_URL\` determines, relative to the root of the domain, the URL that your site is served from.
+  # E.g., if your site lives at \`https://mydomain.org/myproject\`, set \`BASE_URL=/myproject\`.
+  # If, instead, your site lives at the root of the domain, at \`https://mydomain.org\`, set \`BASE_URL=''\`.
   ${
     isGithubIO
       ? `BASE_URL: '' # Not required for '${username}.github.io' domain. Other repos will need to set this!`
@@ -57,10 +58,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - name: Install MyST Markdown
-        run: npm install -g mystmd
+      - name: Install ${readableName()}
+        run: npm install -g ${npmPackageName()}
       - name: Build HTML Assets
-        run: myst build --html
+        run: ${npmBinaryName()} build --html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -72,7 +73,7 @@ jobs:
 }
 
 function createGithubCurvenoteAction({ defaultBranch = 'main' }: { defaultBranch?: string }) {
-  return `# This file was created automatically with \`myst init --gh-curvenote\` 🪄 💚
+  return `# This file was created automatically with \`${npmBinaryName()} init --gh-curvenote\` 🪄 💚
 
 name: Curvenote Deploy
 on:
@@ -176,7 +177,7 @@ ${filename}
         ? `at:\n\n    ${githubPagesUrl}\n`
         : 'on your https://{{ organization }}.github.io/{{ repo }} domain'
     }
-7. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
+7. 🎉 Celebrate and tell us about your site on BlueSky or Mastodon! 🐦 🐘
 `,
   );
 }
@@ -217,7 +218,7 @@ ${filename}
 5. Push these changes (and/or merge to ${prompt.branch})
 6. Look for a new action to start${githubUrl ? `\n\n    ${githubUrl}/actions\n` : ''}
 7. Once the action completes, your site should be deployed
-8. 🎉 Celebrate and tell us about your site on Twitter or Mastodon! 🐦 🐘
+8. 🎉 Celebrate and tell us about your site on BlueSky or Mastodon! 🐦 🐘
 `,
   );
 }

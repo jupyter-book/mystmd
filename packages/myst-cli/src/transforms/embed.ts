@@ -17,6 +17,7 @@ import {
   fileError,
   isTargetIdentifierNode,
   selectMdastNodes,
+  NotebookCell,
 } from 'myst-common';
 import type { Dependency, Embed, Container, CrossReference, Link } from 'myst-spec-ext';
 import { selectFile } from '../process/file.js';
@@ -25,7 +26,7 @@ import { watch } from '../store/reducers.js';
 import { castSession } from '../session/cache.js';
 import type { MystData } from './crossReferences.js';
 import { fetchMystLinkData, fetchMystXRefData, nodesFromMystXRefData } from './crossReferences.js';
-import { fileFromRelativePath } from './links.js';
+import { fileFromSourceFolder, getSourceFolder } from './links.js';
 
 function mutateEmbedNode(
   node: Embed,
@@ -35,13 +36,27 @@ function mutateEmbedNode(
   const { url, dataUrl, targetFile, sourceFile } = opts ?? {};
   if (targetNode && node['remove-output']) {
     targetNode = filter(targetNode, (n: GenericNode) => {
+      // This supports nodes of type 'output' or any other node with metadata suggesting it is type output
       return n.type !== 'output' && n.data?.type !== 'output';
     });
   }
   if (targetNode && node['remove-input']) {
-    targetNode = filter(targetNode, (n: GenericNode) => {
-      return n.type !== 'code' || n.data?.type === 'output';
-    });
+    targetNode = filter(
+      targetNode,
+      (
+        n: GenericNode,
+        index: number | null | undefined,
+        parent: GenericNode | undefined | null,
+      ) => {
+        // Remove code nodes that are children of notebook cells and not tagged as outputs
+        return !(
+          n.type === 'code' &&
+          n.data?.type !== 'output' &&
+          parent?.type === 'block' &&
+          parent?.kind === NotebookCell.code
+        );
+      },
+    );
   }
   selectAll('[identifier],[label],[html_id]', targetNode).forEach((idNode: GenericNode) => {
     // Non-target nodes may keep these properties
@@ -184,7 +199,8 @@ export async function embedTransform(
       let hash = label;
       let linkFile: string | undefined;
       if (label.includes('#')) {
-        const linkFileWithTarget = fileFromRelativePath(label, file);
+        const sourceFileFolder = getSourceFolder(label, file, session.sourcePath());
+        const linkFileWithTarget = fileFromSourceFolder(label, sourceFileFolder);
         if (!linkFileWithTarget) return;
         linkFile = linkFileWithTarget.split('#')[0];
         hash = linkFileWithTarget.slice(linkFile.length + 1);

@@ -2,18 +2,19 @@
 import argparse
 import json
 import sys
+import re
 
 
 plugin = {
     "name": "Unsplash Images",
     "directives": [
         {
-            "name": "unsplash-py",
+            "name": "picsum-py",
             "doc": "An example directive for showing a nice random image at a custom size.",
             "alias": ["random-pic-py"],
             "arg": {
                 "type": "string",
-                "doc": "The kinds of images to search for, e.g., `fruit`",
+                "doc": "The ID of the image to use, e.g. 1",
             },
             "options": {
                 "size": {
@@ -44,11 +45,19 @@ def run_directive(name, data):
     :param name: name of the directive to run
     :param data: data of the directive to run
     """
-    assert name == "unsplash-py"
+    assert name == "picsum-py"
 
-    query = data["arg"]
-    size = data["options"].get("size", "500x200")
-    url = f"https://source.unsplash.com/random/{size}/?{query}"
+    raw_id = data.get("arg")
+    raw_size = data["options"].get("size", "500x200")
+    match = re.match("^(\d+)(?:x(\d+))?$", raw_size)
+    if not match:
+        size_query = "200/200"
+    else:
+        size_query = f"{match[1]}/{match[2]}" if match[2] else match[1]
+
+    id_query = f"/id/{raw_id}/" if raw_id else ""
+
+    url = f"https://picsum.photos/{id_query}{size_query}"
     # Insert an image of a landscape
     img = {
         "type": "image",

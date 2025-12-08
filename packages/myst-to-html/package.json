@@ -1,6 +1,6 @@
 {
   "name": "myst-to-html",
-  "version": "1.5.8",
+  "version": "1.6.3",
   "description": "Export from MyST mdast to HTML",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-html",
@@ -41,9 +41,11 @@
     "hast-util-to-mdast": "^10.0.0",
     "hastscript": "^8.0.0",
     "markdown-it": "^13.0.1",
+    "@types/markdown-it": "^13.0.1",
+    "mdast": "^4.0.0",
     "mdast-util-find-and-replace": "^3.0.0",
     "mdast-util-to-hast": "^13.0.0",
-    "myst-common": "^1.7.4",
+    "myst-common": "^1.9.2",
     "rehype-format": "^5.0.0",
     "rehype-parse": "^9.0.0",
     "rehype-remark": "^10.0.0",
@@ -54,5 +56,8 @@
     "unist-util-select": "^5.0.0",
     "unist-util-visit": "^4.1.0",
     "unist-util-find-after": "^4.0.0"
+  },
+  "devDependencies": {
+    "hastscript": "^7.0.0"
   }
 }

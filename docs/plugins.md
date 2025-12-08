@@ -3,18 +3,18 @@ title: Plugins
 description: Plugins provide powerful ways to extend and customize MyST
 ---
 
-Plugins provide powerful ways to extend and customize MyST by adding directives and roles or specific transformations on the AST that can download or augment your articles and documentation. These plugins also support custom rendering and transformation pipelines for various export targets including React, HTML, LaTeX, and Microsoft Word.
+Plugins allow you to extend and customize MyST to augment your articles and documentation. They also support custom rendering and transformation pipelines for various export targets including React, HTML, LaTeX, and Microsoft Word.
 
-:::{danger} Plugins are incomplete and in Beta
-The interfaces and packaging for the plugins may change substantially in the future.\
-**Expect changes!!**
+:::{caution} We are still adding plugin extension points
+We are still in the process of adding and extending plugin functionality.
+There might not yet be the right extension point for you to accomplish your goal.
 
-If you are implementing a plugin, please let us know on [GitHub](https://github.com/jupyter-book/mystmd) or [Discord](https://discord.mystmd.org/).
+If you wish something were possible that does not seem possible, please [let us know on GitHub](https://github.com/jupyter-book/mystmd/issues/new) or [talk to us on Discord](https://discord.mystmd.org/).
 :::
 
 ## Overview of a Plugin
 
-Plugins are executable javascript code that can modify a document source. The supported plugin types are:
+Plugins are executable code that can modify {term}`MyST AST` as part of a build process. The supported plugin types are:
 
 directives
 : Add or overwrite directives, which provide a "block-level" extension point.
@@ -36,18 +36,29 @@ renderers
 : For example, do something special for node in HTML, React, Microsoft Word, or LaTeX.
 :::
 
-## Building a Plugin
+## Write a Plugin
 
-There are two ways to implement a plugin in MyST: JavaScript plugins, and executable plugins. The easiest way to get started in writing a custom plugin is to build a [JavaScript plugin](./javascript-plugins.md), but writing an executable plugin might be a better choice if you unfamiliar with JavaScript but are confident in a non-JS language e.g. Python.
+There are two ways to implement a plugin in MyST:
 
-:::{card} JavaScript Plugins
-:link: ./javascript-plugins.md
+1. [JavaScript plugins](./javascript-plugins.md) are written in MyST's native language. They are the easiest way to write and share plugins if you have some familiarity with JavaScript.
+2. [Language-agnostic executable plugins](./executable-plugins.md) allow you to write plugins in any language that can be executed. They are a better choice if you are unfamiliar with JavaScript, but are confident in a non-JS language (e.g. Python).
 
-Plugins written in JavaScript with access to helpful AST manipulation routines.
-:::
+## Package and distribute plugins
 
-:::{card} Any Executable Plugins (e.g. Python)
-:link: ./executable-plugins.md
+You can build plugins and share them with others for re-use as JavaScript modules.
+See [](./plugins-distribute.md).
 
-Plugins written in other languages which communicate with MyST over stdin and stdout.
-:::
+(plugins:use)=
+## Use plugins in your MyST project
+
+To use a plugin in your MyST project, use the `project.plugins` list in your `myst.yml` configuration. You can link **plugins on local filesystem** or **remote plugins accessible by URL**. Here's an example of each:
+
+```{code} yaml
+:filename: myst.yml
+project:
+  plugins:
+    # Example of a local plugin
+    - local/folder/picsum.mjs
+    # Example of a hosted artifact on github
+    - https://github.com/my-org/plugin-repo/releases/download/latest/myplugin.mjs
+```

@@ -15,9 +15,13 @@ import { castSession } from '../session/cache.js';
 import { watch } from '../store/index.js';
 import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
-import { ImageExtensions, KNOWN_IMAGE_EXTENSIONS } from '../utils/resolveExtension.js';
-import { imagemagick, inkscape } from '../utils/index.js';
-
+import {
+  ImageExtensions,
+  KNOWN_IMAGE_EXTENSIONS,
+  KNOWN_VIDEO_EXTENSIONS,
+} from '../utils/resolveExtension.js';
+import { ffmpeg, imagemagick, inkscape } from '../utils/index.js';
+import { getSourceFolder } from './links.js';
 export const BASE64_HEADER_SPLIT = ';base64,';
 
 function isBase64(data: string) {
@@ -90,7 +94,7 @@ export async function downloadAndSaveImage(
       } else {
         res.body.pipe(fileStream);
         res.body.on('error', reject);
-        fileStream.on('finish', resolve);
+        fileStream.on('finish', resolve as () => void);
       }
     });
     await new Promise((r) => setTimeout(r, 50));
@@ -129,7 +133,7 @@ export async function saveImageInStaticFolder(
   writeFolder: string,
   opts?: { altOutputFolder?: string; position?: Position },
 ): Promise<{ urlSource: string; url: string } | null> {
-  const sourceFileFolder = path.dirname(sourceFile);
+  const sourceFileFolder = getSourceFolder(urlSource, sourceFile, session.sourcePath());
   const imageLocalFile = path.join(sourceFileFolder, urlSource);
   let file: string | undefined;
   if (isUrl(urlSource)) {
@@ -192,7 +196,7 @@ export function transformImagesWithoutExt(
       const sortedExtensions = [
         // Valid extensions
         ...(opts?.imageExtensions ?? []),
-        // Convertable extensions
+        // Convertible extensions
         ...Object.keys(conversionFnLookup),
         // All known extensions
         ...KNOWN_IMAGE_EXTENSIONS,
@@ -245,6 +249,7 @@ type ConversionOpts = {
   inkscapeAvailable: boolean;
   imagemagickAvailable: boolean;
   dwebpAvailable: boolean;
+  ffmpegAvailable: boolean;
 };
 
 type ConversionFn = (
@@ -258,14 +263,27 @@ type ConversionFn = (
  * Factory function for all simple imagemagick conversions
  */
 function imagemagickConvert(
-  to: ImageExtensions,
   from: ImageExtensions,
+  to: ImageExtensions,
   options?: { trim?: boolean },
 ) {
   return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
     const { imagemagickAvailable } = opts;
     if (imagemagickAvailable) {
-      return imagemagick.convert(to, from, session, source, writeFolder, options);
+      return imagemagick.convert(from, to, session, source, writeFolder, options);
+    }
+    return null;
+  };
+}
+
+/**
+ * Factory function for all simple ffmpeg conversions
+ */
+function ffmpegConvert(from: ImageExtensions, to: ImageExtensions) {
+  return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
+    const { ffmpegAvailable } = opts;
+    if (ffmpegAvailable) {
+      return ffmpeg.convert(from, to, session, source, writeFolder);
     }
     return null;
   };
@@ -386,6 +404,12 @@ const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
   [ImageExtensions.tif]: {
     [ImageExtensions.png]: imagemagickConvert(ImageExtensions.tif, ImageExtensions.png),
   },
+  [ImageExtensions.mov]: {
+    [ImageExtensions.mp4]: ffmpegConvert(ImageExtensions.mov, ImageExtensions.mp4),
+  },
+  [ImageExtensions.avi]: {
+    [ImageExtensions.mp4]: ffmpegConvert(ImageExtensions.avi, ImageExtensions.mp4),
+  },
 };
 
 /**
@@ -441,6 +465,7 @@ export async function transformImageFormats(
   const inkscapeAvailable = inkscape.isInkscapeAvailable();
   const imagemagickAvailable = imagemagick.isImageMagickAvailable();
   const dwebpAvailable = imagemagick.isDwebpAvailable();
+  const ffmpegAvailable = ffmpeg.isFfmpegAvailable();
 
   /**
    * convert runs the input conversion functions on the image
@@ -459,6 +484,7 @@ export async function transformImageFormats(
           inkscapeAvailable,
           imagemagickAvailable,
           dwebpAvailable,
+          ffmpegAvailable,
         });
       }
     }
@@ -510,6 +536,11 @@ export async function transformImageFormats(
   }
   unconvertableImages.forEach((image) => {
     const badExt = path.extname(image.url) || '<no extension>';
+    if (badExt === '.*') {
+      // There is already a warning for the wild card extensions.
+      // See https://github.com/jupyter-book/mystmd/issues/2123
+      return;
+    }
     addWarningForFile(
       session,
       file,
@@ -539,7 +570,9 @@ export async function transformThumbnail(
   }
   if (!thumbnail && mdast) {
     // The thumbnail isn't found, grab it from the mdast, excluding videos
-    const [image] = (selectAll('image', mdast) as Image[]).filter((n) => !n.url.endsWith('.mp4'));
+    const [image] = (selectAll('image', mdast) as Image[]).filter((n) => {
+      return !KNOWN_VIDEO_EXTENSIONS.find((ext) => n.url.endsWith(ext));
+    });
     if (!image) {
       session.log.debug(`${file}#frontmatter.thumbnail is not set, and there are no images.`);
       return;

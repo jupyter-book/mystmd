@@ -47,7 +47,6 @@ export const tableDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'table',
-      class: data.options?.class,
       children,
     };
     addCommonDirectiveOptions(data, container);
@@ -156,7 +155,6 @@ export const listTableDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'table',
-      class: data.options?.class,
       children,
     };
     addCommonDirectiveOptions(data, container);
@@ -273,8 +271,7 @@ export const csvTableDirective: DirectiveSpec = {
         headerCells = parseCSV(data.options.header as string, ctx, data.options as ParseCsvOptions);
       } catch (error) {
         fileError(vfile, 'csv-table directive header must be valid CSV-formatted MyST', {
-          node: (select('mystDirectiveOption[name="header"]', data.node) ??
-            data.node) as GenericNode,
+          node: (select('mystOption[name="header"]', data.node) ?? data.node) as GenericNode
           ruleId: RuleId.directiveOptionsCorrect,
         });
       }
@@ -325,7 +322,6 @@ export const csvTableDirective: DirectiveSpec = {
     const container = {
       type: 'container',
       kind: 'table',
-      class: data.options?.class,
       children: [...captions, table],
     };
     addCommonDirectiveOptions(data, container);

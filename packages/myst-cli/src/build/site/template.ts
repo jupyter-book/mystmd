@@ -11,7 +11,10 @@ import { castSession } from '../../session/cache.js';
 const DEFAULT_TEMPLATE = 'book-theme';
 const DEFAULT_INSTALL_COMMAND = 'npm install';
 
-export async function getSiteTemplate(session: ISession, opts?: { defaultTemplate?: string }) {
+export async function getSiteTemplate(
+  session: ISession,
+  opts?: { template?: string; defaultTemplate?: string },
+) {
   const cache = castSession(session);
   const state = cache.store.getState();
   if (cache.$siteTemplate) return cache.$siteTemplate;
@@ -19,7 +22,7 @@ export async function getSiteTemplate(session: ISession, opts?: { defaultTemplat
   const file = selectors.selectCurrentSiteFile(state) ?? session.configFiles[0];
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.site,
-    template: siteConfig?.template ?? opts?.defaultTemplate ?? DEFAULT_TEMPLATE,
+    template: opts?.template ?? siteConfig?.template ?? opts?.defaultTemplate ?? DEFAULT_TEMPLATE,
     buildDir: session.buildPath(),
     errorLogFn: (message: string) => {
       addWarningForFile(session, file, message, 'error', {
@@ -31,6 +34,7 @@ export async function getSiteTemplate(session: ISession, opts?: { defaultTemplat
         ruleId: RuleId.validSiteConfig,
       });
     },
+    validateFiles: opts?.template ? false : true,
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   cache.$siteTemplate = mystTemplate;
