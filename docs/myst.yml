@@ -90,12 +90,12 @@ project:
         - file: quickstart-jupyter-lab-myst.md
     - title: Configuration and setup
       children:
-      - file: configuration.md
-      - file: frontmatter.md
-      - file: settings.md
-      - file: table-of-contents.md
-      - file: document-parts.md
-      - file: authorship.md
+        - file: configuration.md
+        - file: frontmatter.md
+        - file: settings.md
+        - file: table-of-contents.md
+        - file: document-parts.md
+        - file: authorship.md
     - title: Authoring
       children:
         - file: typography.md
@@ -161,7 +161,7 @@ project:
         - file: plugins-distribute.md
         - file: executable-plugins.md
         - file: plugins-debug.md
-        - title: "Use cases"
+        - title: Use cases
           children:
             - file: plugins-ast.md
             - file: plugins-dry.md
