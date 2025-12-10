@@ -30,6 +30,8 @@ jobs:
           fetch-depth: 2
           submodules: recursive
       - uses: ./.github/actions/install
+        with:
+          node: "24"
       - name: Run tests
         run: npm run test
       - name: Ensure npm 11.5.1+ for trusted publishing
