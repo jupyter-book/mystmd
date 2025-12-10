@@ -1,5 +1,34 @@
 # myst-cli
 
+## 1.7.1
+
+### Patch Changes
+
+- 8d382f4: Catch error states of chokidar
+- 3feacef: Add reverse order to the pattern toc items
+- 8c82b34: Update `ws` version in package to match actual and align types.
+- 28d53f8: Generalize the http logger for myst-cli
+- d45faf3: Add dollarmath parser settings to project
+- c447219: Applies the `myst-migrate` functions to embedded xref content
+- 519ef0e: Kill process trees on linux when shutting down the application and jupyter servers
+- Updated dependencies [88d2136]
+- Updated dependencies [3feacef]
+- Updated dependencies [fe6080c]
+- Updated dependencies [d45faf3]
+- Updated dependencies [519ef0e]
+- Updated dependencies [8c82b34]
+  - myst-common@1.9.3
+  - myst-toc@0.1.4
+  - myst-to-tex@1.0.44
+  - myst-frontmatter@1.9.3
+  - myst-cli-utils@2.0.13
+  - myst-execute@0.3.3
+  - myst-to-docx@1.0.16
+  - myst-config@1.9.3
+  - myst-spec-ext@1.9.3
+  - tex-to-myst@1.0.44
+  - myst-migrate@1.7.1
+
 ## 1.7.0
 
 ### Patch Changes
