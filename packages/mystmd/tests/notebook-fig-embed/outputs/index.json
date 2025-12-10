@@ -225,9 +225,7 @@
                       "metadata": {},
                       "data": {
                         "text/html": {
-                          "content_type": "text/html",
-                          "hash": "280b61c8fba6a5767e2191500ef403d3",
-                          "path": "https://cdn.curvenote.com/019afec0-1af0-7b31-8ccf-4f0dfa8cbd8c/public/280b61c8fba6a5767e2191500ef403d3.html"
+                          "content_type": "text/html"
                         },
                         "text/plain": {
                           "content": "alt.VConcatChart(...)",
@@ -336,9 +334,7 @@
                       "metadata": {},
                       "data": {
                         "text/html": {
-                          "content_type": "text/html",
-                          "hash": "280b61c8fba6a5767e2191500ef403d3",
-                          "path": "https://cdn.curvenote.com/019afec0-1af0-7b31-8ccf-4f0dfa8cbd8c/public/280b61c8fba6a5767e2191500ef403d3.html"
+                          "content_type": "text/html"
                         },
                         "text/plain": {
                           "content": "alt.VConcatChart(...)",
