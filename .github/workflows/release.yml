@@ -16,6 +16,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions:
   contents: write
   pull-requests: write
+  id-token: write # Required for OIDC trusted publishing
 jobs:
   release-npm:
     name: Release NPM
@@ -31,6 +32,8 @@ jobs:
       - uses: ./.github/actions/install
       - name: Run tests
         run: npm run test
+      - name: Ensure npm 11.5.1+ for trusted publishing
+        run: npm install -g npm@latest
       - name: Version bump and create pull request OR publish to npm
         id: changesets
         uses: changesets/action@v1
@@ -42,7 +45,6 @@ jobs:
           createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Python package
         run: |
           pip install build
