@@ -23,6 +23,7 @@ export type ParentEntry = {
  */
 export type FileEntry = {
   file: string;
+  execution_order?: number;
 } & CommonEntry;
 
 /**

@@ -20,6 +20,7 @@ import {
   validateString,
   validationError,
   validateBoolean,
+  validateNumber,
 } from 'simple-validators';
 
 const COMMON_ENTRY_KEYS = ['title', 'hidden'];
@@ -58,7 +59,7 @@ export function validateFileEntry(
     entry,
     {
       required: ['file'],
-      optional: [...COMMON_ENTRY_KEYS, 'children'],
+      optional: [...COMMON_ENTRY_KEYS, 'children', 'execution_order'],
     },
     opts,
   );
@@ -74,6 +75,18 @@ export function validateFileEntry(
   const commonEntry = validateCommonEntry(intermediate, opts);
 
   let output: FileEntry | FileParentEntry = { file, ...commonEntry };
+
+  if (defined(intermediate.execution_order)) {
+    const execution_order = validateNumber(intermediate.execution_order, {
+      ...incrementOptions('execution_order', opts),
+      integer: true,
+      min: 0,
+    });
+    if (execution_order !== undefined) {
+      output.execution_order = execution_order;
+    }
+  }
+
   if (defined(entry.children)) {
     const children = validateList(
       intermediate.children,
