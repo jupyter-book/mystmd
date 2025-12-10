@@ -271,7 +271,7 @@ export const csvTableDirective: DirectiveSpec = {
         headerCells = parseCSV(data.options.header as string, ctx, data.options as ParseCsvOptions);
       } catch (error) {
         fileError(vfile, 'csv-table directive header must be valid CSV-formatted MyST', {
-          node: select('mystOption[name="header"]', data.node) ?? data.node,
+          node: (select('mystOption[name="header"]', data.node) ?? data.node) as GenericNode
           ruleId: RuleId.directiveOptionsCorrect,
         });
       }
@@ -292,7 +292,7 @@ export const csvTableDirective: DirectiveSpec = {
       bodyCells = parseCSV(data.body as string, ctx, data.options as ParseCsvOptions);
     } catch (error) {
       fileError(vfile, 'csv-table directive body must be valid CSV-formatted MyST', {
-        node: select('mystDirectiveBody', data.node) ?? data.node,
+        node: (select('mystDirectiveBody', data.node) ?? data.node) as GenericNode,
         ruleId: RuleId.directiveBodyCorrect,
       });
     }

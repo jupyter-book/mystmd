@@ -27,6 +27,13 @@ import { proofHandlers } from './proofs.js';
 
 export type { TypstResult } from './types.js';
 
+// Register return type
+declare module 'unified' {
+  interface CompileResultMap {
+    VFile: VFile;
+  }
+}
+
 const admonition = `#let admonition(body, heading: none, color: blue) = {
   let stroke = (left: 2pt + color.darken(20%))
   let fill = color.lighten(80%)
@@ -293,7 +300,7 @@ const handlers: Record<string, Handler> = {
   admonition(node: Admonition, state) {
     state.useMacro(admonition);
     state.ensureNewLine();
-    const title = select('admonitionTitle', node);
+    const title = select('admonitionTitle', node) as GenericNode;
     if (!node.kind) {
       fileError(state.file, `Unknown admonition kind`, {
         node,
@@ -351,8 +358,8 @@ const handlers: Record<string, Handler> = {
     if (node.remoteBaseUrl) {
       // We don't want to handle remote references, treat them as links
       const url =
-        node.remoteBaseUrl +
-        (node.url === '/' ? '' : node.url ?? '') +
+        (node.remoteBaseUrl ?? '') +
+        (node.url === '/' ? '' : (node.url ?? '')) +
         (node.html_id ? `#${node.html_id}` : '');
       linkHandler({ ...node, url: url }, state);
       return;
@@ -575,8 +582,8 @@ class TypstSerializer implements ITypstSerializer {
 }
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
-  this.Compiler = (node, file) => {
-    const state = new TypstSerializer(file, node, opts ?? { handlers });
+  this.compiler = (node, file) => {
+    const state = new TypstSerializer(file, node as any, opts ?? { handlers });
     const tex = (file.result as string).trim();
     const result: TypstResult = {
       macros: [...state.data.macros],
@@ -585,11 +592,6 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     };
     file.result = result;
     return file;
-  };
-
-  return (node: Root) => {
-    // Preprocess
-    return node;
   };
 };
 

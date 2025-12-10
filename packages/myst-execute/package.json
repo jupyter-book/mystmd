@@ -38,8 +38,8 @@
     "myst-cli-utils": "^2.0.12",
     "myst-common": "^1.9.2",
     "node-fetch": "^3.3.0",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7",
+    "unist-util-select": "^5.0.0",
+    "vfile": "^6.0.0",
     "which": "^4.0.0"
   },
   "devDependencies": {

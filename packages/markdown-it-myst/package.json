@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "vfile": "^5.3.7"
+    "vfile": "^6.0.0"
   },
   "devDependencies": {
     "markdown-it-footnote": "^4.0.0"
