@@ -50,6 +50,7 @@ export type URLParentEntry = URLEntry & Omit<ParentEntry, 'title'>;
  */
 export type PatternEntry = {
   pattern: string;
+  sort?: 'ascending' | 'descending';
 } & CommonEntry;
 
 /**
