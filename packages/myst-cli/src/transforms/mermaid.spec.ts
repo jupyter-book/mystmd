@@ -3,8 +3,8 @@ import { VFile } from 'vfile';
 import type { GenericParent } from 'myst-common';
 import { mermaidTransform, renderMermaidDiagram } from './mermaid.js';
 
-describe('renderMermaidDiagram', { timeout: 15000 }, () => {
-  it('should render simple flowchart to base64 SVG', async () => {
+describe('renderMermaidDiagram', () => {
+  it('should render simple flowchart to base64 SVG', { timeout: 15000 }, async () => {
     const file = new VFile();
     const mermaidNode = {
       type: 'mermaid' as const,
@@ -33,7 +33,7 @@ describe('renderMermaidDiagram', { timeout: 15000 }, () => {
     }
   });
 
-  it('should render complex diagram with decision nodes', async () => {
+  it('should render complex diagram with decision nodes', { timeout: 15000 }, async () => {
     const file = new VFile();
     const mermaidNode = {
       type: 'mermaid' as const,
@@ -61,7 +61,7 @@ describe('renderMermaidDiagram', { timeout: 15000 }, () => {
     }
   });
 
-  it('should render sequence diagram', async () => {
+  it('should render sequence diagram', { timeout: 15000 }, async () => {
     const file = new VFile();
     const mermaidNode = {
       type: 'mermaid' as const,
@@ -91,7 +91,7 @@ describe('renderMermaidDiagram', { timeout: 15000 }, () => {
     }
   });
 
-  it('should preserve node metadata in image output', async () => {
+  it('should preserve node metadata in image output', { timeout: 15000 }, async () => {
     const file = new VFile();
     const mermaidNode = {
       type: 'mermaid' as const,
@@ -113,7 +113,7 @@ describe('renderMermaidDiagram', { timeout: 15000 }, () => {
 });
 
 describe('mermaidTransform - real tree transformation', () => {
-  it('should transform all mermaid nodes in a tree', async () => {
+  it('should transform all mermaid nodes in a tree', { timeout: 15000 }, async () => {
     const file = new VFile();
     const tree: GenericParent = {
       type: 'root',
@@ -154,7 +154,7 @@ describe('mermaidTransform - real tree transformation', () => {
 });
 
 describe('base64 validation - real SVG content', () => {
-  it('should produce valid base64 data URLs with real SVG content', async () => {
+  it('should produce valid base64 data URLs with real SVGs', { timeout: 15000 }, async () => {
     const file = new VFile();
     const mermaidNode = {
       type: 'mermaid' as const,

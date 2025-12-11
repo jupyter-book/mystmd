@@ -14,17 +14,7 @@ import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js'
 import type { ExportWithOutput, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { getFileContent } from '../utils/getFileContent.js';
-import { mermaidPlugin } from '../../transforms/mermaid.js';
-import type { TransformSpec } from 'myst-common';
-
-const mermaidTransform: TransformSpec = {
-  name: 'mermaid',
-  stage: 'document',
-  plugin: mermaidPlugin,
-  options: {
-    format: 'png',
-  },
-};
+import { createMermaidImageMystPlugin } from '../../transforms/mermaid.js';
 
 /**
  * Build a MyST project as JATS XML
@@ -50,7 +40,7 @@ export async function runJatsExport(
       projectPath,
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
-      transforms: [mermaidTransform],
+      transforms: [createMermaidImageMystPlugin],
       preFrontmatters: [
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
       ], // only apply to article, not sub_articles

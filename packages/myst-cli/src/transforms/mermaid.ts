@@ -1,6 +1,6 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
-import type { GenericParent } from 'myst-common';
+import type { GenericParent, TransformSpec } from 'myst-common';
 import type { Image as ImageNode } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import { fileError, fileWarn, RuleId } from 'myst-common';
@@ -150,3 +150,12 @@ export const mermaidPlugin: Plugin<[MermaidOptions?], GenericParent, GenericPare
   (opts) => async (tree, file) => {
     await mermaidTransform(tree, file, opts);
   };
+
+export const createMermaidImageMystPlugin: TransformSpec = {
+  name: 'mermaid',
+  stage: 'document',
+  plugin: mermaidPlugin,
+  options: {
+    format: 'png',
+  },
+};
