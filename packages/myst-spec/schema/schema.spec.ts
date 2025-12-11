@@ -1,3 +1,5 @@
+import { describe, expect, it, beforeEach, vi, test } from 'vitest';
+
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';

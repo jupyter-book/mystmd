@@ -186,7 +186,7 @@ function spliceProperties(primary: Properties, secondary: Properties): void {
  * Extract property information from object definition
  */
 function propsFromObject(schemaDefinitions: Schema, key: string, from?: string): PropertyInfo {
-  let properties: Properties = {};
+  const properties: Properties = {};
   let required: string[] = [];
   schemaDefinitions[key].allOf.forEach((subschema) => {
     // By using simplifyForDocGeneration we ensure all objects have allOf key
@@ -291,7 +291,15 @@ async function generate(myst: Schema) {
   });
   schema = flattenRefs(myst);
   additionalPropsFalse(schema);
-  writeFileSync(join('dist', outputTsFile), await compile(schema, 'Root'));
+  const generatedTypes = await compile(schema, 'Root');
+  writeFileSync(join('dist', outputTsFile), generatedTypes);
+  // Rename the generated type from the $id-based name to Root
+  // json-schema-to-typescript generates a type based on $id, but we want it named Root
+  const rootTypeName = 'HttpsSpecMystToolsJsonSchemaMystSchemaJson';
+  const currentContent = readFileSync(join('dist', outputTsFile), 'utf-8');
+  // Replace all occurrences of the generated type name with Root
+  const renamedContent = currentContent.replace(new RegExp(rootTypeName, 'g'), 'Root');
+  writeFileSync(join('dist', outputTsFile), renamedContent);
   readdirSync(join('docs', 'examples'))
     .filter((name) => name.endsWith('.yml'))
     .forEach((name) =>

@@ -1,9 +1,3 @@
-dist/
-node_modules/
-yalc.lock
-.yalc/
-.DS_Store
-
 index.js
 
 docs/_build
