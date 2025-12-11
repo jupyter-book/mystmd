@@ -130,7 +130,7 @@ export function blockToFigureTransform(
     const caption = block.data?.caption ?? block.data?.['fig-cap'] ?? block.data?.['tbl-cap'];
     if (caption) {
       const kind = block.data?.kind ?? (block.data?.['tbl-cap'] ? 'table' : 'figure');
-      const children = typeof caption === 'string' ? parser(caption).children ?? [] : caption;
+      const children = typeof caption === 'string' ? (parser(caption).children ?? []) : caption;
       children.push(...block.children);
       const container: GenericParent = {
         type: 'container',

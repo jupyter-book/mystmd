@@ -352,7 +352,7 @@ const handlers: Record<string, Handler> = {
       // We don't want to handle remote references, treat them as links
       const url =
         node.remoteBaseUrl +
-        (node.url === '/' ? '' : node.url ?? '') +
+        (node.url === '/' ? '' : (node.url ?? '')) +
         (node.html_id ? `#${node.html_id}` : '');
       linkHandler({ ...node, url: url }, state);
       return;
