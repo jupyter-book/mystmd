@@ -553,7 +553,7 @@ export function addChildrenFromTargetNode(
       select('definitionTerm', targetNode);
     // Ensure we are getting the first paragraph
     const captionParagraph = (
-      caption ? select('paragraph', caption) ?? caption : caption
+      caption ? (select('paragraph', caption) ?? caption) : caption
     ) as Paragraph | null;
     const title = captionParagraph
       ? (copyNode(captionParagraph)?.children as PhrasingContent[])
