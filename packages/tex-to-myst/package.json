@@ -1,0 +1,48 @@
+{
+  "name": "tex-to-myst",
+  "version": "1.0.44",
+  "description": "Read LaTeX and convert to MyST AST",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/tex-to-myst",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "myst-plugin",
+    "tex",
+    "latex"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "dependencies": {
+    "@unified-latex/unified-latex": "^1.2.2",
+    "myst-common": "^1.9.3",
+    "myst-frontmatter": "^1.9.3",
+    "myst-spec-ext": "^1.9.3",
+    "unist-builder": "^3.0.0",
+    "unist-util-remove": "^3.1.0",
+    "unist-util-select": "^4.0.3",
+    "vfile-reporter": "^7.0.4"
+  }
+}

@@ -1,0 +1,51 @@
+title: Quotes
+cases:
+  - title: Quote
+    tex: |-
+      \begin{quote}
+      This is a quote
+      \end{quote}
+    tree:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: This is a quote
+  - title: displayquote
+    tex: |-
+      \begin{displayquote}
+      Sé que tengo un ego del tamaño de un planeta pequeño, pero incluso yo a veces me equivoco
+      \end{displayquote}
+    tree:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Sé que tengo un ego del tamaño de un planeta pequeño, pero incluso yo a veces me equivoco
+  - title: epigraph
+    tex: |-
+      \epigraph{All human things are subject to decay, and when fate summons, Monarchs must obey}{Mac Flecknoe}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: quote
+          children:
+            - type: blockquote
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: All human things are subject to decay, and when fate summons, Monarchs must obey
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Mac Flecknoe

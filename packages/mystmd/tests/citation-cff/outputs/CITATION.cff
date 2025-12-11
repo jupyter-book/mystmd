@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: Please cite the following works when using this project.
+abstract: This is a small MyST project to demonstrate CITATION.cff export
+title: My CFF myst project
+authors:
+  - family-names: Koch
+    given-names: Franklin
+    affiliation: MyST Developers
+    email: example@example.com
+date-released: '2020-01-01'
+contact:
+  - family-names: Koch
+    given-names: Franklin
+    affiliation: MyST Developers
+    email: example@example.com
+keywords:
+  - Citation CFF
+  - MyST
+license: CC-BY-4.0
+license-url: https://creativecommons.org/licenses/by/4.0/
+repository: https://github.com/jupyter-book/mystmd

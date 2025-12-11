@@ -1,0 +1,643 @@
+title: myst-to-tex basic features
+cases:
+  - title: emphasis in paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    latex: |-
+      Some \% \textit{markdown}
+  - title: escapes quotes and unicode
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '“quote” '
+            - type: inlineMath
+              value: '½'
+    latex: |-
+      ``quote'' $\frac{1}{2}$
+  - title: comment
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: |-
+            hello
+            world
+    latex: |-
+      % hello
+      % world
+  - title: comment - empty
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: null
+    latex: |-
+      %
+  - title: figure directive - no caption/legend
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+    latex: |-
+      \begin{figure}[!htbp]
+      \centering
+      \includegraphics[width=0.625\linewidth]{https://example.com}
+      \end{figure}
+  - title: figure directive - with caption
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+    latex: |-
+      \begin{figure}[!htbp]
+      \centering
+      \includegraphics[width=0.625\linewidth]{https://example.com}
+      \caption[]{Some \% \textit{markdown}}
+      \label{My-Fig}
+      \end{figure}
+  - title: list-table
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: table
+          identifier: abc
+          label: ABC
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: My table!
+            - type: table
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Column 1
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Column 2
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Another
+                                - type: break
+                                - type: text
+                                  value: column
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Nice!
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Even another
+                                - type: break
+                                - type: text
+                                  value: column
+                        - type: paragraph
+                          children:
+                            - type: strong
+                              children:
+                                - type: text
+                                  value: Double nice!
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: a
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: b
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: c
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: d
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: e
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: f
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: g
+                    - type: tableCell
+                      children:
+                        - type: paragraph
+                          children:
+                            - type: text
+                              value: h
+    latex: |-
+      \begin{table}
+      \centering
+      \caption[]{My table!}
+      \label{ABC}
+      \begin{tabular}{p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}}
+      \toprule
+      \textbf{Column 1} & \textbf{Column 2} & \textbf{Another\newline
+      column}
+
+      \textbf{Nice!}
+
+       & \textbf{Even another\newline
+      column}
+
+      \textbf{Double nice!}
+
+       \\
+      \hline
+      a & b & c & d \\
+      e & f & g & h \\
+      \bottomrule
+      \end{tabular}
+      \end{table}
+  - title: no container around table
+    mdast:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              children:
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Column 1
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Column 2
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Another
+                            - type: break
+                            - type: text
+                              value: column
+                    - type: paragraph
+                      children:
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Nice!
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Even another
+                            - type: break
+                            - type: text
+                              value: column
+                    - type: paragraph
+                      children:
+                        - type: strong
+                          children:
+                            - type: text
+                              value: Double nice!
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: a
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: b
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: c
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: d
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: e
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: f
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: g
+                - type: tableCell
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: h
+        - type: paragraph
+          children:
+            - type: text
+              value: Some text after the table
+    latex: |-
+      \bigskip\noindent
+      \begin{tabular}{p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}p{\dimexpr 0.250\linewidth-2\tabcolsep}}
+      \toprule
+      \textbf{Column 1} & \textbf{Column 2} & \textbf{Another\newline
+      column}
+
+      \textbf{Nice!}
+
+       & \textbf{Even another\newline
+      column}
+
+      \textbf{Double nice!}
+
+       \\
+      \hline
+      a & b & c & d \\
+      e & f & g & h \\
+      \bottomrule
+      \end{tabular}
+
+      \bigskip
+
+      Some text after the table
+
+  - title: href
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'my link: '
+            - type: link
+              url: https://example.com#^my_example
+              children:
+                - type: text
+                  value: my-example
+    latex: |-
+      my link: \href{https://example.com\#\^my\_example}{my-example}
+  - title: code-block-default
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: my-class
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: my-class
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{verbatim}
+      # here is math
+      1+2
+      \end{verbatim}
+  - title: code-block-minted
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: some-class minted
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: some-class minted
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{minted}[breaklines]{python}
+      # here is math
+      1+2
+      \end{minted}
+  - title: code-block-listings
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: code-block
+          args: python
+          class: some-class listings
+          value: |-
+            # here is math
+            1+2
+          children:
+            - type: code
+              lang: python
+              class: some-class listings
+              value: |-
+                # here is math
+                1+2
+    latex: |-
+      \begin{lstlisting}[language=python]
+      # here is math
+      1+2
+      \end{lstlisting}
+  - title: subscripts
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      H\textsubscript{2}O-CO\textsubscript{2}
+  - title: block visibility removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          visibility: remove
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block no-tex tag removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - some-tag
+              - no-tex
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block no-tex metadata removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-tex: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block no-pdf metadata removes
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-pdf: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: ''
+  - title: block no-typst metadata ignored
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-typst: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      H\textsubscript{2}O-CO\textsubscript{2}
+  - title: block new-page metadata adds newpage
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            new-page: true
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      \newpage
+      H\textsubscript{2}O-CO\textsubscript{2}
+  - title: block page-break tag adds pagebreak
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - page-break
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      \pagebreak
+      H\textsubscript{2}O-CO\textsubscript{2}
+  - title: block new-page takes priority
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - page-break
+              - new-page
+          children:
+            - type: text
+              value: H₂O-CO₂
+    latex: |-
+      \newpage
+      H\textsubscript{2}O-CO\textsubscript{2}
+  - title: emphasis in a div / span
+    mdast:
+      type: root
+      children:
+        - type: div
+          children:
+            - type: text
+              value: 'Some % '
+            - type: span
+              children:
+                - type: text
+                  value: 'other '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    latex: |-
+      Some \% other \textit{markdown}
+  - title: list item with and without paragraph
+    description: |
+      The list item should not add space if there is only a single paragraph.
+      This is resilient to a listItem not having a paragraph as the child.
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A list item'
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'A list item in a paragraph'
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A checkbox'
+              checked: false
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A checked checkbox'
+              checked: true
+    latex: |-
+      \begin{itemize}
+      \item A list item
+      \item A list item in a paragraph
+      \item[$\square$] A checkbox
+      \item[$\blacksquare$] A checked checkbox
+      \end{itemize}

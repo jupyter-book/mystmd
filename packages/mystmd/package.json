@@ -1,0 +1,50 @@
+{
+  "name": "mystmd",
+  "version": "1.7.1",
+  "description": "Command line tools for MyST Markdown",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "license": "MIT",
+  "type": "module",
+  "keywords": [
+    "markdown",
+    "latex",
+    "writing-software",
+    "scientific-visualization",
+    "pdf-generation",
+    "science-research"
+  ],
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyter-book/mystmd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "homepage": "https://github.com/jupyter-book/mystmd",
+  "bin": {
+    "myst": "./dist/myst.cjs"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "unlink": "npm uninstall -g mystmd",
+    "link": "npm run unlink; npm link;",
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
+    "dev": "npm run link && esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --watch",
+    "lint": "npm run copy:version; eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
+    "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
+    "test": "npm run link; npm run copy:version; vitest run",
+    "test:watch": "npm run link; npm run copy:version; vitest watch",
+    "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node18",
+    "build": "npm-run-all -l clean copy:version -p build:cli"
+  },
+  "devDependencies": {
+    "chalk": "^5.2.0",
+    "commander": "^10.0.1",
+    "core-js": "^3.31.1",
+    "js-yaml": "^4.1.0",
+    "myst-cli": "^1.7.1"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "kind": "Article",
+  "sha256": "bee888327f44f26982706f79c7c1f02c0ed5b88a88cd5db4631aa17bbc6eeaab",
+  "slug": "index",
+  "location": "/index.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Chickens",
+    "downloads": [
+      {
+        "title": "index.md",
+        "filename": "index.md",
+        "format": "md",
+        "static": true
+      }
+    ],
+    "authors": [
+      {
+        "nameParsed": { "literal": "Franklin Koch", "given": "Franklin", "family": "Koch" },
+        "name": "Franklin Koch",
+        "affiliations": ["Curvenote"],
+        "id": "contributors-myst-generated-uid-0"
+      }
+    ],
+    "date": "2024-07-20",
+    "affiliations": [{ "id": "Curvenote", "name": "Curvenote" }],
+    "exports": [
+      {
+        "format": "md",
+        "filename": "index.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 11, "column": 1 },
+              "end": { "line": 11, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Introduction",
+                "position": {
+                  "start": { "line": 11, "column": 1 },
+                  "end": { "line": 11, "column": 1 }
+                }
+              }
+            ],
+            "indexEntries": [
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "-cited", "kind": "entry" },
+                "emphasis": false
+              }
+            ],
+            "identifier": "introduction",
+            "label": "Introduction",
+            "html_id": "introduction",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 13, "column": 1 },
+              "end": { "line": 13, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "In this project, we will discuss some important questions about chickens. Enjoy! But don’t get ",
+                "position": {
+                  "start": { "line": 13, "column": 1 },
+                  "end": { "line": 13, "column": 1 }
+                }
+              },
+              {
+                "type": "emphasis",
+                "position": {
+                  "start": { "line": 13, "column": 1 },
+                  "end": { "line": 13, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "too",
+                    "position": {
+                      "start": { "line": 13, "column": 1 },
+                      "end": { "line": 13, "column": 1 }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "value": " egg-cited. 🐣",
+                "position": {
+                  "start": { "line": 13, "column": 1 },
+                  "end": { "line": 13, "column": 1 }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

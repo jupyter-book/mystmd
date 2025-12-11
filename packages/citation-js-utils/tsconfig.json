@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig/base.json",
+  "include": ["."],
+  "exclude": ["dist", "build", "node_modules", "src/**/*.spec.ts", "tests"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types",
+      "../../node_modules/@types",
+      "../../../node_modules/@types"
+    ]
+  }
+}

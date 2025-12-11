@@ -1,0 +1,49 @@
+{
+  "name": "myst-frontmatter",
+  "version": "1.9.3",
+  "sideEffects": false,
+  "license": "MIT",
+  "description": "Frontmatter types and validation for the mystmd ecosystem",
+  "author": "Franklin Koch <franklin@curvenote.com>",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-frontmatter",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "dependencies": {
+    "credit-roles": "^2.1.0",
+    "doi-utils": "^2.0.5",
+    "orcid": "^1.0.0",
+    "simple-validators": "^1.1.1",
+    "spdx-correct": "^3.2.0",
+    "myst-toc": "^0.1.4"
+  },
+  "devDependencies": {
+    "@types/spdx-correct": "^3.1.0",
+    "glob": "^10.3.1",
+    "js-yaml": "^4.1.0",
+    "moment": "^2.29.4",
+    "node-fetch": "^3.3.2"
+  }
+}

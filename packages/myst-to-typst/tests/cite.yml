@@ -1,0 +1,58 @@
+title: myst-to-typst links
+cases:
+  - title: cite single
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: cockett2015
+    typst: |-
+      #cite(<cockett2015>)
+  - title: cite single URL
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: https://doi.org/10.1038/s41586-022-04892-x               
+    typst: |-
+      #cite(label("https://doi.org/10.1038/s41586-022-04892-x"))
+  - title: cite multiple
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              children:
+                - type: cite
+                  label: cockett2015
+                - type: cite
+                  label: jon85
+    typst: |-
+      #cite(<cockett2015>) #cite(<jon85>)
+  - title: cite narrative
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: cockett2015
+              kind: narrative
+    typst: |-
+      #cite(<cockett2015>, form: "prose")
+  - title: cite suffix
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: cockett2015
+              suffix: page 1
+    typst: |-
+      #cite(<cockett2015>, supplement: [page 1])

@@ -1,0 +1,27 @@
+title: myst-to-typst definitions
+cases:
+  - title: definitionList
+    mdast:
+      type: root
+      children:
+        - type: definitionList
+          children:
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Term 1
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: Definition
+            - type: definitionTerm
+              children:
+                - type: text
+                  value: Term 2
+            - type: definitionDescription
+              children:
+                - type: text
+                  value: Definition
+    typst: |-
+      / Term 1: Definition
+      / Term 2: Definition

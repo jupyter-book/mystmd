@@ -1,0 +1,9 @@
+title: Parsing of name edge cases
+cases:
+  - formatted: ',,,,,,'
+    parsed:
+      family: ',,,,'
+  - formatted: ''
+    parsed: {}
+    alternatives:
+      - "  \t "

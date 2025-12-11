@@ -1,0 +1,41 @@
+title: Packages
+cases:
+  - title: simple usepackage
+    tex: \usepackage{amsmath}
+    text: ''
+    data:
+      packages:
+        - amsmath
+  - title: multiple packages
+    tex: |-
+      \usepackage{amsmath,
+      % blah blah bad formmating
+      color ,   graphicx}
+    text: ''
+    data:
+      packages:
+        - amsmath
+        - color
+        - graphicx
+  - title: multiple usepackages
+    tex: |-
+      \usepackage{amsmath, color, graphicx}
+      \usepackage{color}
+      \usepackage{hyperref}
+    text: ''
+    warnings: 1
+    data:
+      packages:
+        - amsmath
+        - color
+        - graphicx
+        - hyperref
+  - title: repeated packages
+    tex: |-
+      \usepackage{amsmath, color, color}
+    text: ''
+    warnings: 1
+    data:
+      packages:
+        - amsmath
+        - color

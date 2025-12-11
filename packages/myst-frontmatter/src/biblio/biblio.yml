@@ -1,0 +1,48 @@
+title: Biblio
+cases:
+  - title: empty object is removed
+    raw:
+      volume: {}
+      issue: {}
+    normalized: {}
+  - title: extra keys removed
+    raw:
+      volume:
+        extra: ''
+    normalized: {}
+    warnings: 1
+  - title: full object returns self
+    raw:
+      volume:
+        number: 12
+        doi: 10.0000/abc123
+        title: test proceedings
+        subject: test subject
+      issue:
+        name: spring
+        doi: 10.0000/abc456
+        title: test proceedings
+        subject: test subject
+    normalized:
+      volume:
+        number: 12
+        doi: 10.0000/abc123
+        title: test proceedings
+        subject: test subject
+      issue:
+        number: spring
+        doi: 10.0000/abc456
+        title: test proceedings
+        subject: test subject
+  - title: number input coerces to number field
+    raw:
+      volume: 12
+    normalized:
+      volume:
+        number: 12
+  - title: string input coerces to number field
+    raw:
+      volume: twelve
+    normalized:
+      volume:
+        number: twelve

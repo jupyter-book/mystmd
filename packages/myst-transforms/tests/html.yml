@@ -1,0 +1,165 @@
+cases:
+  - title: paragraph
+    before:
+      type: root
+      children:
+        - type: html
+          value: <div><p>*some text*</p></div>
+    after:
+      type: root
+      children:
+        - type: div
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*some text*'
+  - title: style
+    before:
+      type: root
+      children:
+        - type: html
+          value: '<div style="background: red"><p><em>some text</em></p></div>'
+    after:
+      type: root
+      children:
+        - type: div
+          style:
+            background: red
+          children:
+            - type: paragraph
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: some text
+  - title: image
+    before:
+      type: root
+      children:
+        - type: html
+          value: <img src="example.jpg" title="example">
+    after:
+      type: root
+      children:
+        - type: image
+          url: example.jpg
+          title: example
+  - title: table
+    before:
+      type: root
+      children:
+        - type: html
+          value: |-
+            <table>
+            <tr style="background-color: #7ec174; border: 3px solid red" class="mt-0">
+            <th colspan="2" align="right">Person 1 and 2</th>
+            <th>Person 3</th>
+            </tr>
+            <tr>
+            <td>Emil</td>
+            <td>Tobias</td>
+            <td>Linus</td>
+            </tr>
+            </table>
+    after:
+      type: root
+      children:
+        - type: table
+          children:
+            - type: tableRow
+              class: mt-0
+              style:
+                backgroundColor: '#7ec174'
+                border: 3px solid red
+              children:
+                - type: tableCell
+                  header: true
+                  align: right
+                  colspan: 2
+                  children:
+                    - type: text
+                      value: Person 1 and 2
+                - type: tableCell
+                  header: true
+                  children:
+                    - type: text
+                      value: Person 3
+            - type: tableRow
+              children:
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Emil
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Tobias
+                - type: tableCell
+                  children:
+                    - type: text
+                      value: Linus
+  - title: horizontal rule
+    before:
+      type: root
+      children:
+        - type: html
+          value: <hr />
+    after:
+      type: root
+      children:
+        - type: thematicBreak
+  - title: break
+    before:
+      type: root
+      children:
+        - type: html
+          value: <br />
+    after:
+      type: root
+      children:
+        - type: break
+  - title: break
+    opts:
+      keepBreaks: false
+    before:
+      type: root
+      children:
+        - type: html
+          value: <br />
+    after:
+      type: root
+      children: []
+
+  - title: inline elements
+    before:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: listItem
+              children:
+                - type: html
+                  value: <code>foo</code>
+    after:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: listItem
+              children:
+                - type: inlineCode
+                  value: foo
+  - title: kbd tag
+    before:
+      type: root
+      children:
+        - type: html
+          value: <kbd>Shift</kbd>
+    after:
+      type: root
+      children:
+        - type: keyboard
+          children:
+            - type: text
+              value: Shift

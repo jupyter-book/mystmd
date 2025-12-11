@@ -1,0 +1,66 @@
+title: Parsing of real names
+cases:
+  - formatted: John Doe
+    parsed:
+      family: Doe
+      given: John
+  - formatted: Mary Jane Watson
+    parsed:
+      family: Watson
+      given: Mary Jane
+  - formatted: Vincent van Gogh
+    parsed:
+      family: Gogh
+      given: Vincent
+      non_dropping_particle: van
+  - formatted: João de Silva
+    parsed:
+      family: Silva
+      given: João
+      non_dropping_particle: de
+  - formatted: Brun, Charles le
+    parsed:
+      family: Brun
+      given: Charles
+      dropping_particle: le
+  - formatted: Jean-Luc Picard
+    parsed:
+      family: Picard
+      given: Jean-Luc
+  - formatted: D'Arcy Wretzky
+    parsed:
+      family: Wretzky
+      given: D'Arcy
+  - formatted: Madeleine L'Engle
+    parsed:
+      family: L'Engle
+      given: Madeleine
+  - formatted: Charles d'Artagnan
+    parsed:
+      family: d'Artagnan
+      given: Charles
+  - formatted: Jean-François Millet
+    parsed:
+      family: Millet
+      given: Jean-François
+  - formatted: Diego J. Rivera-Gutierrez
+    parsed:
+      family: Rivera-Gutierrez
+      given: Diego J.
+  - formatted: Smith, Jr., John
+    parsed:
+      family: Smith
+      given: John
+      suffix: Jr.
+  - formatted: Sir Paul McCartney
+    parsed:
+      family: McCartney
+      given: Sir Paul
+  - formatted: F. Scott Fitzgerald
+    parsed:
+      family: Fitzgerald
+      given: F. Scott
+  - formatted: JRR Tolkien
+    parsed:
+      family: Tolkien
+      given: JRR

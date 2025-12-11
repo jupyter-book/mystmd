@@ -1,0 +1,28 @@
+title: image directive
+cases:
+  - title: image directive parses
+    markdown: |-
+      ```{image} my_image.png
+      :class: my-class
+      :width: 10px
+      :alt: my image
+      :align: left
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: image
+          args: my_image.png
+          options:
+            class: my-class
+            width: 10px
+            alt: my image
+            align: left
+          children:
+            - type: image
+              url: my_image.png
+              class: my-class
+              width: 10px
+              alt: my image
+              align: left

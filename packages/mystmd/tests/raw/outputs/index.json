@@ -1,0 +1,113 @@
+{
+  "kind": "Article",
+  "sha256": "74b7a0f11b2a55264d9aed106453b7e47e4bbcdc5127b6042b508ef30677988e",
+  "slug": "index",
+  "location": "/index.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Project with raw content",
+    "content_includes_title": false,
+    "authors": [{ "id": "Franklin Koch", "name": "Franklin Koch" }],
+    "date": "2024-08-09",
+    "exports": [
+      {
+        "format": "md",
+        "filename": "index.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 3, "column": 1 }, "end": { "line": 3, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "This has raw ",
+                "position": {
+                  "start": { "line": 3, "column": 1 },
+                  "end": { "line": 3, "column": 1 }
+                }
+              },
+              { "type": "raw", "lang": "tex", "tex": "LaTeX" },
+              { "type": "raw", "lang": "typst", "typst": "Typst" },
+              {
+                "type": "text",
+                "value": " content",
+                "position": {
+                  "start": { "line": 3, "column": 1 },
+                  "end": { "line": 3, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "raw",
+            "lang": "tex",
+            "tex": "\n\\section{LaTeX Heading}\n"
+          },
+          { "type": "raw", "lang": "typst", "typst": "\n= Typst Heading\n" },
+          {
+            "type": "raw",
+            "lang": "",
+            "value": "This is *just text*",
+            "children": [
+              {
+                "type": "paragraph",
+                "children": [{ "type": "text", "value": "This is *just text*" }]
+              }
+            ]
+          },
+          {
+            "type": "raw",
+            "lang": "latex",
+            "tex": "\nThis is \\textit{latex}\n",
+            "value": "This is \\textit{latex}",
+            "children": [
+              {
+                "type": "paragraph",
+                "position": {
+                  "start": { "offset": 0, "line": 1, "column": 1 },
+                  "end": { "offset": 4, "line": 1, "column": 5 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "position": {
+                      "start": { "offset": 0, "line": 1, "column": 1 },
+                      "end": { "offset": 4, "line": 1, "column": 5 }
+                    },
+                    "value": "This is "
+                  },
+                  {
+                    "type": "emphasis",
+                    "position": {
+                      "start": { "offset": 8, "line": 1, "column": 9 },
+                      "end": { "offset": 15, "line": 1, "column": 16 }
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "position": {
+                          "start": { "offset": 16, "line": 1, "column": 17 },
+                          "end": { "offset": 21, "line": 1, "column": 22 }
+                        },
+                        "value": "latex"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

@@ -1,0 +1,10 @@
+version: 1
+project:
+  title: MyST to Markdown
+  github: https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-md
+  license: MIT
+  subject: MyST Converters
+site:
+  title: MyST to Markdown
+  domains:
+    - mystmd-myst_to_md.curve.space

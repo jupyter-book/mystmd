@@ -1,0 +1,20 @@
+title: embed directive
+cases:
+  - title: embed directive parses
+    markdown: |-
+      ```{embed} #hi
+      :remove-output:
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: embed
+          args: '#hi'
+          options:
+            remove-output: true
+          children:
+            - type: embed
+              remove-output: true
+              source:
+                label: hi

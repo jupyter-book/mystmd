@@ -1,0 +1,45 @@
+{
+  "name": "myst-to-docx",
+  "version": "1.0.16",
+  "description": "Export from a MyST Markdown document to Microsoft Word (*.docx)",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "myst-plugin",
+    "docx",
+    "word",
+    "export"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst",
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",
+    "lint:format": "prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "dependencies": {
+    "buffer-image-size": "^0.6.4",
+    "docx": "^7.3.0",
+    "myst-common": "^1.9.3",
+    "myst-frontmatter": "^1.9.3",
+    "myst-spec": "^0.0.5",
+    "myst-spec-ext": "^1.9.3",
+    "unist-util-select": "^4.0.3"
+  }
+}

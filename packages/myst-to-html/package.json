@@ -1,0 +1,63 @@
+{
+  "name": "myst-to-html",
+  "version": "1.6.3",
+  "description": "Export from MyST mdast to HTML",
+  "author": "Franklin Koch <franklin@curvenote.com>",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-html",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "keywords": [
+    "myst-plugin",
+    "tex",
+    "latex"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "dependencies": {
+    "classnames": "^2.3.2",
+    "hast": "^1.0.0",
+    "hast-util-to-mdast": "^8.3.1",
+    "markdown-it": "^13.0.1",
+    "@types/markdown-it": "^13.0.1",
+    "mdast": "^3.0.0",
+    "mdast-util-find-and-replace": "^2.1.0",
+    "mdast-util-to-hast": "^12.3.0",
+    "myst-common": "^1.9.2",
+    "rehype-format": "^4.0.1",
+    "rehype-parse": "^8.0.4",
+    "rehype-remark": "^9.1.2",
+    "rehype-stringify": "^9.0.3",
+    "unified": "^10.1.2",
+    "unist-builder": "^3.0.0",
+    "unist-util-find-after": "^4.0.0",
+    "unist-util-remove": "^3.1.0",
+    "unist-util-select": "^4.0.3",
+    "unist-util-visit": "^4.1.0"
+  },
+  "devDependencies": {
+    "hastscript": "^7.0.0"
+  }
+}

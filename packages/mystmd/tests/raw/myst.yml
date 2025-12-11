@@ -1,0 +1,16 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  author: Franklin Koch
+  date: 9 Aug 2024
+  exclude: outputs
+  exports:
+    - output: _build/out.tex
+      template: null
+    - output: _build/out.typ
+      template: null
+site:
+  template: ../templates/site/myst/book-theme
+  # options:
+  #   favicon: favicon.ico
+  #   logo: site_logo.png

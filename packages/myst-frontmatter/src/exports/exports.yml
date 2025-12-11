@@ -1,0 +1,502 @@
+title: Exports
+cases:
+  - title: Exports list
+    raw:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+  - title: Export list (not plural)
+    raw:
+      export:
+        - format: pdf+tex
+          template: arxiv_two_column
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+  - title: Malformed list
+    raw:
+      export:
+        - blah: true
+    normalized: {}
+    errors: 1
+  - title: Malformed value (exports)
+    raw:
+      exports: true
+    normalized: {}
+    errors: 1
+  - title: Malformed value (export)
+    raw:
+      export: true
+    normalized: {}
+    errors: 1
+  - title: Export as a single object
+    raw:
+      export:
+        format: pdf+tex
+        template: arxiv_two_column
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+  - title: Not a format
+    raw:
+      export:
+        format: nope
+        template: arxiv_two_column
+    normalized: {}
+    errors: 1
+  - title: Metadata isn't validated, but is kept
+    raw:
+      export:
+        format: pdf+tex
+        template: arxiv_two_column
+        blah: cool
+    normalized:
+      exports:
+        - format: pdf+tex
+          template: arxiv_two_column
+          blah: cool
+  - title: Simple export as a string of the format
+    raw:
+      export: pdf
+    normalized:
+      exports:
+        - format: pdf
+  - title: Simple export as a string of the format (plural)
+    raw:
+      exports: pdf
+    normalized:
+      exports:
+        - format: pdf
+  - title: Unknown string for export
+    raw:
+      export: nope
+    normalized: {}
+    errors: 1
+  - title: Handle export strings
+    raw:
+      export:
+        - pdf
+        - docx
+    normalized:
+      exports:
+        - format: pdf
+        - format: docx
+  - title: empty object errors
+    raw:
+      exports:
+        - {}
+    normalized: {}
+    errors: 1
+  - title: tex+pdf coerces to pdf+tex
+    raw:
+      exports:
+        - format: tex+pdf
+    normalized:
+      exports:
+        - format: pdf+tex
+  - title: invalid format errors
+    raw:
+      exports:
+        - format: str
+    normalized: {}
+    errors: 1
+  - title: invalid template errors
+    raw:
+      exports:
+        - format: pdf
+          template: true
+    normalized:
+      exports:
+        - format: pdf
+    errors: 1
+  - title: invalid output errors
+    raw:
+      exports:
+        - format: pdf
+          output: true
+    normalized:
+      exports:
+        - format: pdf
+    errors: 1
+  - title: full object returns self
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+  - title: extra keys are maintained
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1
+  - title: article coerces to articles
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1
+          article: index.md
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          output: out.pdf
+          a: 1
+          articles:
+            - file: index.md
+  - title: sub_article coerces to sub_articles
+    raw:
+      exports:
+        - format: jats
+          template: default
+          a: 1
+          sub_article: index.md
+    normalized:
+      exports:
+        - format: xml
+          template: default
+          a: 1
+          sub_articles:
+            - index.md
+  - title: sub_articles not allowed on non-jats
+    raw:
+      exports:
+        - format: pdf
+          template: default
+          a: 1
+          sub_article: index.md
+    normalized:
+      exports:
+        - format: pdf
+          template: default
+          a: 1
+    errors: 1
+  - title: tex/pdf/pdf+tex support multiple articles
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: tex
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: pdf+tex
+          articles:
+            - a.md
+            - b.md
+            - c.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+            - file: b.md
+            - file: c.md
+        - format: tex
+          articles:
+            - file: a.md
+            - file: b.md
+            - file: c.md
+        - format: pdf+tex
+          articles:
+            - file: a.md
+            - file: b.md
+            - file: c.md
+  - title: md/docx/jats do not support multiple articles
+    raw:
+      exports:
+        - format: md
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: docx
+          articles:
+            - a.md
+            - b.md
+            - c.md
+        - format: jats
+          articles:
+            - a.md
+            - b.md
+            - c.md
+    normalized:
+      exports:
+        - format: md
+          articles:
+            - file: a.md
+        - format: docx
+          articles:
+            - file: a.md
+        - format: xml
+          articles:
+            - file: a.md
+    errors: 3
+  - title: pdf filename coerces to format and output
+    raw:
+      exports:
+        - out.pdf
+    normalized:
+      exports:
+        - output: out.pdf
+  - title: pdf extension coerces to format
+    raw:
+      exports:
+        - .pdf
+    normalized:
+      exports:
+        - format: pdf
+  - title: pdf output adds format
+    raw:
+      exports:
+        - output: out.pdf
+    normalized:
+      exports:
+        - output: out.pdf
+  - title: export with only template validates
+    raw:
+      exports:
+        - template: template
+    normalized:
+      exports:
+        - template: template
+  - title: unknown output errors
+    raw:
+      exports:
+        - output: out.bad
+    normalized: {}
+    errors: 1
+  - title: output folder passes
+    raw:
+      exports:
+        - output: my-folder
+    normalized:
+      exports:
+        - output: my-folder
+  - title: output hidden folder passes
+    raw:
+      exports:
+        - output: .my-folder
+    normalized:
+      exports:
+        - output: .my-folder
+  - title: article object passes
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: 1
+              title: My article
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: 1
+              title: My article
+  - title: article objects with only file and only title pass
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - title: My article
+            - file: a.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - title: My article
+            - file: a.md
+  - title: article object with no file/title errors
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - level: 1
+            - file: a.md
+              level: 1
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: 1
+    errors: 1
+  - title: invalid article levels error
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+              level: -2
+            - file: b.md
+              level: -1
+            - file: c.md
+              level: 0.5
+            - file: d.md
+              level: 7
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+            - file: b.md
+              level: -1
+            - file: c.md
+            - file: d.md
+    errors: 3
+  - title: empty articles is removed
+    raw:
+      exports:
+        - format: pdf
+          articles: []
+    normalized:
+      exports:
+        - format: pdf
+  - title: articles with only titles error
+    raw:
+      exports:
+        - format: pdf
+          articles:
+            - title: Article A
+            - title: Article B
+            - title: Article C
+    normalized:
+      exports:
+        - format: pdf
+    errors: 1
+  - title: export toc passes
+    raw:
+      exports:
+        - format: pdf
+          toc:
+            - file: foo.md
+    normalized:
+      exports:
+        - format: pdf
+          toc:
+            - file: foo.md
+  - title: export toc as string coerces to tocFile
+    raw:
+      exports:
+        - format: pdf
+          toc: _toc.yml
+    normalized:
+      exports:
+        - format: pdf
+          tocFile: _toc.yml
+  - title: export toc and article errors
+    raw:
+      exports:
+        - format: pdf
+          toc:
+            - file: foo.md
+          article: a.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+    errors: 1
+  - title: export toc file and article errors
+    raw:
+      exports:
+        - format: pdf
+          toc: _toc.yml
+          article: a.md
+    normalized:
+      exports:
+        - format: pdf
+          articles:
+            - file: a.md
+    errors: 1
+  - title: export toc and sub_article errors
+    raw:
+      exports:
+        - format: xml
+          toc:
+            - file: foo.md
+          sub_article: a.md
+    normalized:
+      exports:
+        - format: xml
+          sub_articles:
+            - a.md
+    errors: 1
+  - title: export with invalid toc errors
+    raw:
+      exports:
+        - format: pdf
+          toc:
+            - foo.md
+    normalized:
+      exports:
+        - format: pdf
+          toc: []
+    errors: 1
+  - title: zip passes
+    raw:
+      exports:
+        - format: pdf
+          zip: true
+    normalized:
+      exports:
+        - format: pdf
+          zip: true
+  - title: invalid zip errors
+    raw:
+      exports:
+        - format: pdf
+          zip: pdf
+    normalized:
+      exports:
+        - format: pdf
+    errors: 1
+  - title: export allows id
+    raw:
+      exports:
+        - format: pdf
+          id: my-pdf
+    normalized:
+      exports:
+        - format: pdf
+          id: my-pdf
+  - title: duplicate id errors
+    raw:
+      exports:
+        - format: pdf
+          id: my-pdf
+        - format: typst
+          id: my-pdf
+    normalized:
+      exports:
+        - format: pdf
+          id: my-pdf
+        - format: typst
+          id: my-pdf
+    errors: 1

@@ -1,0 +1,17 @@
+title: myst-to-typst links
+cases:
+  - title: href
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'my link: '
+            - type: link
+              url: https://example.com#^my_example
+              children:
+                - type: text
+                  value: my-example
+    typst: |-
+      my link: #link("https://example.com\#\^my\_example")[my-example]

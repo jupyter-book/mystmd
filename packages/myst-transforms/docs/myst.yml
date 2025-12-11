@@ -1,0 +1,10 @@
+version: 1
+project:
+  title: MyST Transforms
+  github: https://github.com/jupyter-book/mystmd/tree/main/packages/myst-transforms
+  license: MIT
+  subject: MyST Transforms
+site:
+  title: MyST Transforms
+  domains:
+    - mystmd-myst_transforms.curve.space

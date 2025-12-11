@@ -1,0 +1,365 @@
+title: Project
+frontmatter: project
+cases:
+  - title: invalid type errors
+    raw: frontmatter
+    normalized: {}
+    errors: 1
+  - title: empty object returns self
+    raw: {}
+    normalized: {}
+  - title: full object returns self
+    raw:
+      id: my/project
+      title: frontmatter
+      description: project frontmatter
+      venue:
+        title: test
+      authors:
+        - id: jd
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A
+      date: '14 Dec 2021'
+      doi: 10.1000/abcd/efg012
+      arxiv: https://arxiv.org/example
+      open_access: true
+      license: CC-BY-4.0
+      github: https://github.com/example
+      binder: https://example.com/binder
+      source: https://example.com/source
+      socials:
+        x: 'test'
+        github: test
+        bsky: '@domain.com'
+        mastodon: '@user@fosstodon.org'
+        linkedin: 'https://linkedin.com/@user'
+        instagram: 'username'
+        youtube: 'https://youtube.com/user'
+        facebook: 'https://facebook.com/user'
+        discourse: 'https://discourse.example.com'
+        discord: 'https://discord.gg/server'
+        slack: 'https://example.slack.com'
+        website: https://example.com
+      subject: ''
+      volume:
+        number: 12
+      issue:
+        number: 12
+      first_page: 100
+      last_page: 200
+      oxa: ''
+      math:
+        a: b
+      keywords:
+        - example
+        - test
+      exports:
+        - format: pdf
+          template: default
+          output: out.tex
+          a: 1
+          article: my-file.md
+        - format: xml
+          article: my-file.md
+          sub_articles:
+            - my-notebook.ipynb
+      requirements:
+        - requirements.txt
+      resources:
+        - my-script.sh
+      copyright: Authors et al.
+    normalized:
+      id: my/project
+      title: frontmatter
+      description: project frontmatter
+      venue:
+        title: test
+      authors:
+        - id: jd
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            given: John
+            family: Doe
+          affiliations:
+            - univa
+      affiliations:
+        - id: univa
+          name: University A
+      date: '2021-12-14'
+      doi: 10.1000/abcd/efg012
+      identifiers:
+        arxiv: https://arxiv.org/example
+      open_access: true
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
+      github: https://github.com/example
+      binder: https://example.com/binder
+      source: https://example.com/source
+      social:
+        twitter: 'test'
+        github: test
+        bluesky: '@domain.com'
+        mastodon: '@user@fosstodon.org'
+        linkedin: 'https://linkedin.com/@user'
+        threads: 'username'
+        youtube: 'https://youtube.com/user'
+        facebook: 'https://facebook.com/user'
+        discourse: 'https://discourse.example.com'
+        discord: 'https://discord.gg/server'
+        slack: 'https://example.slack.com'
+        url: https://example.com
+      subject: ''
+      volume:
+        number: 12
+      issue:
+        number: 12
+      first_page: 100
+      last_page: 200
+      oxa: ''
+      math:
+        a:
+          macro: b
+      keywords:
+        - example
+        - test
+      exports:
+        - format: pdf
+          template: default
+          output: out.tex
+          a: 1
+          articles:
+            - file: my-file.md
+        - format: xml
+          articles:
+            - file: my-file.md
+          sub_articles:
+            - my-notebook.ipynb
+      requirements:
+        - requirements.txt
+      resources:
+        - my-script.sh
+      copyright: Authors et al.
+  - title: boolean numbering is valid
+    raw:
+      numbering: 'false'
+    normalized:
+      numbering:
+        all:
+          enabled: false
+  - title: invalid doi errors
+    raw:
+      doi: ''
+    normalized: {}
+    errors: 1
+  - title: github username/repo coerces
+    raw:
+      github: example/repo
+    normalized:
+      github: https://github.com/example/repo
+  - title: invalid github errors
+    raw:
+      github: https://example.com
+    normalized: {}
+    errors: 1
+  - title: invalid arxiv errors
+    raw:
+      arxiv: https://example.com
+    normalized: {}
+    errors: 1
+  - title: invalid math errors
+    raw:
+      math:
+        a: valid
+        b: 0
+    normalized:
+      math:
+        a:
+          macro: valid
+    errors: 1
+  - title: bibliography string coerces
+    raw:
+      bibliography: article.bib
+    normalized:
+      bibliography:
+        - article.bib
+  - title: settings output_stderr
+    raw:
+      settings:
+        output_stderr: remove
+        stdout_output: warn
+    errors: 0
+    normalized:
+      settings:
+        output_stderr: remove
+        output_stdout: warn
+  - title: settings output_stderr bad value
+    raw:
+      settings:
+        output_stderr: ok
+        output_stdout: ok
+    errors: 2
+    normalized: {}
+  - title: settings unknown value
+    raw:
+      settings:
+        what: ok
+    warnings: 1
+    normalized: {}
+  - title: invalid copyright errors
+    raw:
+      copyright: {}
+    normalized: {}
+    errors: 1
+  - title: parts are validated
+    raw:
+      abstract: |-
+        Just an example part!
+      data_availability: Example
+      parts:
+        example_part: |-
+          Another example part!
+    normalized:
+      parts:
+        abstract:
+          - Just an example part!
+        data_availability:
+          - Example
+        example_part:
+          - Another example part!
+  - title: abbreviations can be null
+    raw:
+      abbreviations:
+        false-y: false
+        null-y: null
+        TEST: 'string'
+    normalized:
+      abbreviations:
+        false-y: null
+        null-y: null
+        TEST: 'string'
+  - title: abbreviations not added if invalid
+    raw:
+      abbreviations:
+        TEST: 42
+    normalized: {}
+    errors: 1
+  - title: short abbreviations are invalid
+    raw:
+      abbreviations:
+        A: Abbreviation
+    normalized: {}
+    errors: 1
+  - title: pmcid validates
+    raw:
+      identifiers:
+        pmcid: PMC123
+    normalized:
+      identifiers:
+        pmcid: PMC123
+  - title: invalid pmcid errors
+    raw:
+      identifiers:
+        pmcid: '123'
+    normalized: {}
+    errors: 1
+  - title: pmid string validates
+    raw:
+      identifiers:
+        pmid: '123'
+    normalized:
+      identifiers:
+        pmid: 123
+  - title: pmid number validates
+    raw:
+      identifiers:
+        pmid: 123
+    normalized:
+      identifiers:
+        pmid: 123
+  - title: invalid pmid errors
+    raw:
+      identifiers:
+        pmid: 'abc'
+    normalized: {}
+    errors: 1
+  - title: doi is lifted from identifiers
+    raw:
+      identifiers:
+        doi: 10.1000/abc123
+        pmid: 123
+    normalized:
+      doi: 10.1000/abc123
+      identifiers:
+        pmid: 123
+    warnings: 1
+  - title: unknown string identifier passes
+    raw:
+      identifiers:
+        unknown: '123'
+    normalized:
+      identifiers:
+        unknown: '123'
+  - title: unknown numeric identifier passes
+    raw:
+      identifiers:
+        unknown: 123
+    normalized:
+      identifiers:
+        unknown: 123
+  - title: known identifiers nest under identifiers
+    raw:
+      zenodo: https://zenodo.org/records/13942262
+      pmcid: PMC123
+      pmid: 123
+      arxiv: https://arxiv.org/example
+    normalized:
+      identifiers:
+        zenodo: https://zenodo.org/records/13942262
+        pmcid: PMC123
+        pmid: 123
+        arxiv: https://arxiv.org/example
+  - title: invalid zenodo errors
+    raw:
+      identifiers:
+        zenodo: '13942262'
+    normalized: {}
+    errors: 1
+  - title: identifier coerces to identifiers
+    raw:
+      identifier:
+        unknown: 123
+    normalized:
+      identifiers:
+        unknown: 123
+  - title: duplicate identifiers error
+    raw:
+      pmcid: PMC456
+      identifier:
+        pmcid: PMC123
+    normalized:
+      identifiers:
+        pmcid: PMC123
+    errors: 1
+  - title: duplicate dois error
+    raw:
+      doi: 10.1000/abc456
+      identifier:
+        doi: 10.1000/abc123
+    normalized:
+      doi: 10.1000/abc456
+    errors: 1
+

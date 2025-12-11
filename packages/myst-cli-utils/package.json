@@ -1,0 +1,43 @@
+{
+  "name": "myst-cli-utils",
+  "version": "2.0.13",
+  "sideEffects": false,
+  "license": "MIT",
+  "description": "Utils for logging, error messages and session management",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-cli-utils",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "pretty-hrtime": "^1.0.3",
+    "tree-kill": "^1.2.2"
+  },
+  "devDependencies": {
+    "@types/pretty-hrtime": "^1.0.1",
+    "node-fetch": "^3.3.0"
+  }
+}

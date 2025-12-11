@@ -1,0 +1,47 @@
+title: delete roles
+cases:
+  - title: delete role parses
+    markdown: '{delete}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: delete
+              value: test
+              children:
+                - type: delete
+                  children:
+                    - type: text
+                      value: test
+  - title: del role parses
+    markdown: '{del}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: del
+              value: test
+              children:
+                - type: delete
+                  children:
+                    - type: text
+                      value: test
+  - title: strike role parses
+    markdown: '{strike}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: strike
+              value: test
+              children:
+                - type: delete
+                  children:
+                    - type: text
+                      value: test

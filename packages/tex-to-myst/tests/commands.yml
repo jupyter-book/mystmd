@@ -1,0 +1,72 @@
+title: New Commands
+cases:
+  - title: new commands, including text
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\AA }}
+      \newcommand{\ii}{{i\mkern1mu}}
+      \newcommand{\f}[2][]{\mathcal{F}_{#1}\left[#2\right]}
+      \newcommand{\FFT}{\mathcal{F}_{\mathbf{r}\to\mathbf{k}}}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+        '\ii': '{i\mkern1mu}'
+        '\f': '\mathcal{F}_{#1}\left[#2\right]'
+        '\FFT': '\mathcal{F}_{\mathbf{r}\to\mathbf{k}}'
+  - title: reusing newcommand for same macro warns
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\ZZ }}
+      \newcommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+    warnings: 1
+  - title: newcommand then renewcommand does not warn
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\ZZ }}
+      \renewcommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+  - title: renewcommand without new command warns
+    tex: |-
+      \renewcommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+    warnings: 1
+  - title: providecommand with new macro adds macro
+    tex: |-
+      \providecommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+  - title: providecommand after newcommand does nothing
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\AA }}
+      \providecommand{\angstroms}{\text{\normalfont\ZZ }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+  - title: newtheorem
+    tex: |-
+      \newtheorem{proposition}{Proposition}
+      \newtheorem{example}{Example}
+      \newtheorem{proof}{Proof}
+      \newtheorem{theorem}{Theorem}[section]
+      \newtheorem{corollary}{Corollary}[theorem]
+      \newtheorem{lemma}[theorem]{Lemma}
+    text: ''
+    data:
+      theorems:
+        proposition: { label: Proposition }
+        example: { label: Example }
+        proof: { label: Proof }
+        theorem: { label: Theorem, countAfter: section }
+        corollary: { label: Corollary, countAfter: theorem }
+        lemma: { label: Lemma, countWith: theorem }

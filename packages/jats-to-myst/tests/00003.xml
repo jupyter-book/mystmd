@@ -1,0 +1,806 @@
+<?xml version="1.0" ?>
+<!DOCTYPE pmc-articleset PUBLIC "-//NLM//DTD ARTICLE SET 2.0//EN" "https://dtd.nlm.nih.gov/ncbi/pmc/articleset/nlm-articleset-2.0.dtd">
+<pmc-articleset><article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" article-type="research-article">
+  <?properties open_access?>
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="nlm-ta">eLife</journal-id>
+      <journal-id journal-id-type="iso-abbrev">elife</journal-id>
+      <journal-id journal-id-type="hwp">elife</journal-id>
+      <journal-id journal-id-type="publisher-id">eLife</journal-id>
+      <journal-title-group>
+        <journal-title>eLife</journal-title>
+      </journal-title-group>
+      <issn pub-type="epub">2050-084X</issn>
+      <publisher>
+        <publisher-name>eLife Sciences Publications, Ltd</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="pmid">23150794</article-id>
+      <article-id pub-id-type="pmc">3491588</article-id>
+      <article-id pub-id-type="publisher-id">00003</article-id>
+      <article-id pub-id-type="doi">10.7554/eLife.00003</article-id>
+      <article-categories>
+        <subj-group subj-group-type="display-channel">
+          <subject>Research Article</subject>
+        </subj-group>
+        <subj-group subj-group-type="heading">
+          <subject>Immunology</subject>
+        </subj-group>
+        <subj-group subj-group-type="heading">
+          <subject>Microbiology and Infectious Disease</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>A novel role for lipid droplets in the organismal antibacterial response</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib id="author-1258" contrib-type="author">
+          <name>
+            <surname>Anand</surname>
+            <given-names>Preetha</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">1</xref>
+          <xref ref-type="author-notes" rid="equal-contrib">&#x2020;</xref>
+          <xref ref-type="fn" rid="con1"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1247" contrib-type="author">
+          <name>
+            <surname>Cermelli</surname>
+            <given-names>Silvia</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">1</xref>
+          <xref ref-type="author-notes" rid="equal-contrib">&#x2020;</xref>
+          <xref ref-type="other" rid="par-5"/>
+          <xref ref-type="fn" rid="con2"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1248" contrib-type="author">
+          <name>
+            <surname>Li</surname>
+            <given-names>Zhihuan</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2">2</xref>
+          <xref ref-type="fn" rid="con3"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1249" contrib-type="author">
+          <name>
+            <surname>Kassan</surname>
+            <given-names>Adam</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff3">3</xref>
+          <xref ref-type="fn" rid="con4"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1250" contrib-type="author">
+          <name>
+            <surname>Bosch</surname>
+            <given-names>Marta</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff3">3</xref>
+          <xref ref-type="fn" rid="con5"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1259" contrib-type="author">
+          <name>
+            <surname>Sigua</surname>
+            <given-names>Robilyn</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">1</xref>
+          <xref ref-type="fn" rid="con6"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1252" contrib-type="author">
+          <name>
+            <surname>Huang</surname>
+            <given-names>Lan</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">1</xref>
+          <xref ref-type="aff" rid="aff4">4</xref>
+          <xref ref-type="fn" rid="con7"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1253" contrib-type="author">
+          <name>
+            <surname>Ouellette</surname>
+            <given-names>Andre J</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff5">5</xref>
+          <xref ref-type="fn" rid="con8"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1254" contrib-type="author">
+          <name>
+            <surname>Pol</surname>
+            <given-names>Albert</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff3">3</xref>
+          <xref ref-type="aff" rid="aff6">6</xref>
+          <xref ref-type="other" rid="par-4"/>
+          <xref ref-type="fn" rid="con9"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1255" contrib-type="author">
+          <name>
+            <surname>Welte</surname>
+            <given-names>Michael A</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff2">2</xref>
+          <xref ref-type="other" rid="par-2"/>
+          <xref ref-type="other" rid="par-3"/>
+          <xref ref-type="fn" rid="con10"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <contrib id="author-1211" contrib-type="author">
+          <name>
+            <surname>Gross</surname>
+            <given-names>Steven P</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">1</xref>
+          <xref ref-type="corresp" rid="cor1">*</xref>
+          <xref ref-type="other" rid="par-1"/>
+          <xref ref-type="fn" rid="con11"/>
+          <xref ref-type="fn" rid="conf1"/>
+        </contrib>
+        <aff id="aff1"><label>1</label><addr-line>Department of Developmental and Cell Biology</addr-line>, <institution>University of California Irvine</institution>, <addr-line>Irvine</addr-line>, <country>United States</country></aff>
+        <aff id="aff2"><label>2</label><addr-line>Department of Biology</addr-line>, <institution>University of Rochester</institution>, <addr-line>Rochester</addr-line>, <country>United States</country></aff>
+        <aff id="aff3"><label>3</label><addr-line>Equip de Proliferaci&#xF3; i Senyalitzaci&#xF3; Cel.lular</addr-line>, <institution>Institut d'Investigacions Biom&#xE8;diques August Pi i Sunyer (IDIBAPS)</institution>, <addr-line>Barcelona</addr-line>, <country>Spain</country></aff>
+        <aff id="aff4"><label>4</label><addr-line>Department of Physiology and Biophysics</addr-line>, <institution>University of California Irvine</institution>, <addr-line>Irvine</addr-line>, <country>United States</country></aff>
+        <aff id="aff5"><label>5</label><addr-line>Department of Pathology and Laboratory Medicine, Keck School of Medicine</addr-line>, <institution>University of Southern California</institution>, <addr-line>Los Angeles</addr-line>, <country>United States</country></aff>
+        <aff id="aff6"><label>6</label><institution>Instituci&#xF3; Catalana de Recerca i Estudis Avan&#xE7;ats</institution>, <addr-line>Barcelona</addr-line>, <country>Spain</country></aff>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Kolter</surname>
+            <given-names>Roberto</given-names>
+          </name>
+          <role>Reviewing editor</role>
+          <aff><institution>Harvard Medical School</institution>, <country>United States</country></aff>
+        </contrib>
+      </contrib-group>
+      <author-notes>
+        <corresp id="cor1"><label>*</label>For correspondence: <email>sgross@uci.edu</email></corresp>
+        <fn fn-type="other" id="equal-contrib">
+          <label>&#x2020;</label>
+          <p>These authors contributed equally to this work.</p>
+        </fn>
+      </author-notes>
+      <pub-date pub-type="epub">
+        <day>13</day>
+        <month>11</month>
+        <year>2012</year>
+      </pub-date>
+      <pub-date pub-type="collection">
+        <year>2012</year>
+      </pub-date>
+      <volume>1</volume>
+      <elocation-id>e00003</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>20</day>
+          <month>6</month>
+          <year>2012</year>
+        </date>
+        <date date-type="accepted">
+          <day>05</day>
+          <month>9</month>
+          <year>2012</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright &#xA9; 2012, Anand et al</copyright-statement>
+        <copyright-year>2012</copyright-year>
+        <copyright-holder>Anand et al</copyright-holder>
+        <license license-type="open-access" xlink:href="http://creativecommons.org/licenses/by/3.0/">
+          <license-p>This article is distributed under the terms of the <ext-link ext-link-type="uri" xlink:href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution License</ext-link>, which permits unrestricted use and redistribution provided that the original author and source are credited.</license-p>
+        </license>
+      </permissions>
+      <self-uri content-type="pdf" xlink:type="simple" xlink:href="elife00003.pdf"/>
+      <related-article xlink:href="10.7554/eLife.00302" related-article-type="commentary" ext-link-type="doi" id="d34e326"/>
+      <abstract>
+        <p>We previously discovered histones bound to cytosolic lipid droplets (LDs); here we show that this forms a cellular antibacterial defense system. Sequestered on droplets under normal conditions, in the presence of bacterial lipopolysaccharide (LPS) or lipoteichoic acid (LTA), histones are released from the droplets and kill bacteria efficiently in vitro. Droplet-bound histones also function in vivo: when injected into <italic>Drosophila</italic> embryos lacking droplet-bound histones, bacteria grow rapidly. In contrast, bacteria injected into embryos with droplet-bound histones die. Embryos with droplet-bound histones displayed more than a fourfold survival advantage when challenged with four different bacterial species. Our data suggests that this intracellular antibacterial defense system may function in adult flies, and also potentially in mice.</p>
+        <p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.001">http://dx.doi.org/10.7554/eLife.00003.001</ext-link></p>
+      </abstract>
+      <abstract abstract-type="executive-summary">
+        <title>eLife digest</title>
+        <p>Histones are proteins found in large numbers in most animal cells, where their primary job is to help DNA strands fold into compact and robust structures inside the nucleus. In vitro, histones are very effective at killing bacteria, and there is some evidence that histones secreted from cells provide protection against bacteria living outside cells. However, many types of bacteria are able to enter cells, where they can avoid the immune system and go on to replicate.</p>
+        <p>In principle histones could protect cells against such bacteria from the inside, but for many years this was thought to be unlikely because most histones are bound to DNA strands in the cell nucleus, whereas the bacteria replicate in the cytosol. Moreover, free histones can be extremely damaging to cells, so most species have developed mechanisms to detect and degrade free histones in the cytosol.</p>
+        <p>Recently, however, it was discovered that histones can bind to lipid droplets&#x2014;organelles in the cytosol that are primarily used to store energy&#x2014;in various animal cells and tissues. Now, Anand et al. have demonstrated that histones bound to lipid droplets can protect cells against bacteria without causing any of the harm normally associated with the presence of free histones. In in vitro experiments with lipid droplets purified from <italic>Drosophila</italic> embryos, they showed that histones bound to lipid droplets could be released to kill bacteria. The histones were released by lipopolysaccharide or lipoteichoic acid produced by the bacteria.</p>
+        <p>The effect was also observed in vivo: using four different bacterial species, Anand et al. injected similar numbers of bacteria into <italic>Drosophila</italic> embryos that contained histones bound to lipid droplets, and also into embryos that had been genetically modified so that they did not contain such droplet-bound histones. While most of the normal embryos survived, the vast majority of the embryos without droplet-bound histones died. Similar results were also found in experiments on adult flies, along with evidence which suggests that histones might also provide defenses against bacteria in mice.</p>
+        <p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.002">http://dx.doi.org/10.7554/eLife.00003.002</ext-link></p>
+      </abstract>
+      <kwd-group kwd-group-type="author-keywords">
+        <title>Author keywords</title>
+        <kwd>innate immunity</kwd>
+        <kwd>histones</kwd>
+        <kwd>lipid droplet</kwd>
+        <kwd>anti-bacterial</kwd>
+      </kwd-group>
+      <kwd-group kwd-group-type="research-organism">
+        <title>Research organism</title>
+        <kwd>B. subtilis</kwd>
+        <kwd>D. melanogaster</kwd>
+        <kwd>E. coli</kwd>
+        <kwd>Mouse</kwd>
+      </kwd-group>
+      <funding-group>
+        <award-group id="par-1">
+          <funding-source>National Institutes of Health</funding-source>
+          <award-id>GM64624</award-id>
+          <principal-award-recipient>
+            <name>
+              <surname>Gross</surname>
+              <given-names>Steven P</given-names>
+            </name>
+          </principal-award-recipient>
+        </award-group>
+        <award-group id="par-2">
+          <funding-source>National Institutes of Health</funding-source>
+          <award-id>GM64687</award-id>
+          <principal-award-recipient>
+            <name>
+              <surname>Welte</surname>
+              <given-names>Michael A</given-names>
+            </name>
+          </principal-award-recipient>
+        </award-group>
+        <award-group id="par-3">
+          <funding-source>National Institutes of Health</funding-source>
+          <award-id>AG031531</award-id>
+          <principal-award-recipient>
+            <name>
+              <surname>Welte</surname>
+              <given-names>Michael A</given-names>
+            </name>
+          </principal-award-recipient>
+        </award-group>
+        <award-group id="par-4">
+          <funding-source>Spanish Ministerio de Ciencia e Innovaci&#xF3;n</funding-source>
+          <award-id>BFU2011-23745</award-id>
+          <principal-award-recipient>
+            <name>
+              <surname>Pol</surname>
+              <given-names>Albert</given-names>
+            </name>
+          </principal-award-recipient>
+        </award-group>
+        <award-group id="par-5">
+          <funding-source>National Science Foundation</funding-source>
+          <award-id>LifeChips-IGERT fellowship</award-id>
+          <principal-award-recipient>
+            <name>
+              <surname>Cermelli</surname>
+              <given-names>Silvia</given-names>
+            </name>
+          </principal-award-recipient>
+        </award-group>
+        <funding-statement>The funders had no role in study design, data collection and interpretation, or the decision to submit the work for publication.</funding-statement>
+      </funding-group>
+      <custom-meta-group>
+        <custom-meta>
+          <meta-name>elife-xml-version</meta-name>
+          <meta-value>0.1</meta-value>
+        </custom-meta>
+        <custom-meta specific-use="meta-only">
+          <meta-name>Author impact statement</meta-name>
+          <meta-value>Histones bound to lipid droplets inside cells offer protection against bacteria in flies, and possibly mice, thus suggesting a possible new innate immunity pathway.</meta-value>
+        </custom-meta>
+      </custom-meta-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="s1">
+      <title>Introduction</title>
+      <p>Histones are fundamental components of eukaryotic chromatin, and are therefore abundant in essentially all animal cells, for example, in humans, there are tens of millions of histone molecules per cell. While not generally appreciated, histones and histone fragments are surprisingly bactericidal in in vitro assays (<xref ref-type="bibr" rid="bib15">Hirsch, 1958</xref>). Thus, in principle histones could provide animals with a potent supply of microbicides for protection against bacterial invasion. In some cases, histones are released extracellularly, and then contribute to innate immunity against bacteria. For example, in the skin mucosa of catfish, secreted histone H2A contributes critically to the organismal defense against bacteria (<xref ref-type="bibr" rid="bib9">Cho et al., 2002</xref>), and histones H3 and H4 are prominent antimicrobial agents in sebaceous gland secretions (<xref ref-type="bibr" rid="bib20">Lee et al., 2009</xref>).</p>
+      <p>Many bacterial pathogens invade cells and replicate intracellularly. This infectious strategy allows evasion of many host innate and adaptive immune mechanisms, including antibody-based defenses in vertebrates. In principle, then, histones normally present in cells could confer protection against microbes that exploit intracellular niches. However, until now this has seemed unlikely for two reasons. First, histones typically are located in the nucleus, excluding contact with cytosolic bacteria. Second, histones are generally believed to be predominantly bound to DNA, with only minuscule amounts of excess histones. In fact, because unconfined histones cause genomic instability, hypersensitivity to DNA-damaging agents, and lethality (<xref ref-type="bibr" rid="bib29">Saffarzadeh et al., 2012</xref>), cells minimize excess free histones by active mechanisms (<xref ref-type="bibr" rid="bib31">Singh et al., 2009a</xref>, <xref ref-type="bibr" rid="bib32">2009b</xref>). Given these constraints, it is not surprising that histone-mediated intracellular antibacterial responses have not been investigated extensively.</p>
+      <p>Lipid droplets (LDs) are ubiquitous fat storage organelles that store triglycerides and sterols for energy production and as biosynthetic precursors. In addition to their fundamental role in lipid homeostasis, LDs have recently been proposed to act as protein sequestration sites (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>; <xref ref-type="bibr" rid="bib40">Welte, 2007</xref>). Histones, in particular, have been detected on LDs in a number of animal cells and tissues, including <italic>C. elegans</italic>, fly embryos, moth fat bodies, and mammalian leukocytes, insulin producing &#x3B2;-cells, and muscles (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>; <xref ref-type="bibr" rid="bib38">Wan et al., 2007</xref>; <xref ref-type="bibr" rid="bib42">Yang et al., 2010</xref>; <xref ref-type="bibr" rid="bib43">Zhang et al., 2011</xref>; <xref ref-type="bibr" rid="bib18">Larsson et al., 2012</xref>; <xref ref-type="bibr" rid="bib44">Zhang et al., 2012</xref>). Might these cytosolic extra-nuclear histone deposits allow cells to exploit the antimicrobial properties of histones without incurring the risks typically caused by excess histone accumulation?</p>
+      <p>We address this question using early <italic>Drosophila</italic> embryos. In these embryos, LDs sequester large amounts of histones (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>), and new work has provided mutants lacking droplet-bound histones (<xref ref-type="bibr" rid="bib22">Li et al., 2012</xref>). Here, we report that while histones are usually sequestered on droplets, they are released in response to the presence of bacterial cell wall components. These histones kill Gram-positive as well as Gram-negative bacteria, both in vitro and in vivo. Embryos injected with bacteria have considerably higher survival success when they have droplet-bound histones, establishing that histones on LDs contribute to innate immunity in embryos. A similar survival advantage was observed in adult flies. Simulation of bacterial infection in mice induces histone accumulation on LDs in the liver, a key organ for fighting infection; this observation suggests that lipid droplet histones may represent an ancient host defense strategy.</p>
+    </sec>
+    <sec sec-type="results" id="s2">
+      <title>Results</title>
+      <sec id="s2-1">
+        <title>LDs have antimicrobial activity</title>
+        <p>Our earlier study (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>) established the presence of histones (usually believed to be nuclear) in cytosolic lipid droplets purified from <italic>Drosophila</italic> embryos. Based on our discovery of immunity-related mRNAs on the LDs (unpublished), we considered whether histones might play a role in the flies' immune response. When we found that there was a precedent for histone antibacterial activity (<xref ref-type="bibr" rid="bib15">Hirsch, 1958</xref>), we hypothesized that the histones bound to the cytosolic LDs might act as an antibacterial system. To test whether LDs could indeed inhibit bacterial growth, we performed a traditional plate assay (<xref ref-type="fig" rid="fig1">Figure 1A</xref>). Dilute suspensions of bacteria were grown in the presence or absence of potential antimicrobial agents (LDs equivalent to &#x223C;500 &#x3BC;g total proteins and controls), and colony forming units (CFU) on an agar plate were counted after 24 hr of incubation with the agents. For both Gram-negative (<italic>Escherichia coli</italic>) and Gram-positive (<italic>Staphylococcus epidermidis</italic>) bacteria, LDs decreased the CFU dramatically (<xref ref-type="fig" rid="fig1">Figure 1A</xref>, compare buffer vs LD), indicating that the droplets have an antimicrobial property. These effects were highly reproducible in multiple trials (<xref ref-type="fig" rid="fig1">Figure 1B</xref>). Complementary disc-diffusion assays confirmed the microbicidal effects of the droplets (<xref ref-type="fig" rid="fig1">Figure 1C,D</xref>).<fig id="fig1" orientation="portrait" position="float"><object-id pub-id-type="doi">10.7554/eLife.00003.003</object-id><label>Figure 1.</label><caption><title>LDs kill bacteria via droplet bound histones.</title><p>(<bold>A</bold>). Representative plates in a colony forming assay, showing growth of Gram-negative (<italic>Escherichia coli DH5&#x3B1;</italic>, top) and Gram-positive (<italic>Staphylococcus epidermidis</italic>, bottom) bacteria, where a known amount of bacteria were incubated at 37&#xB0;C either in buffer alone, or with LDs pre-treated with or without anti-histone antibodies. In buffer (left, &#x2018;Buffer&#x2019;), many colonies (white spots) were observed, but in the presence of LDs (LD), the observed number of colonies was greatly decreased, demonstrating an antibacterial effect of the LDs. Pre-treatment of the droplets with anti-histone antibodies abolished this effect (LD + Anti-histones). (<bold>B</bold>). Quantification of colony forming assay in <bold>A</bold>. Each bar represents the mean number of observed colonies, in three independent trials, presented with the standard error. (<bold>C</bold>). Disc diffusion assay over a lawn of <italic>E. coli</italic> DH5&#x3B1;. A potential antibacterial agent is placed on a small sterile piece of filter paper (white circle); a cleared area (darker region) indicates antibacterial activity. Positive control: the antibiotic kanamycin (Antibiotic); growth inhibition region indicated by the red arrow. Negative control: buffer (Buffer). LDs isolated in the presence (LD-CaCO<sub>3</sub>) or absence (LD) of alkaline carbonate were spotted on sterile discs; bacterial inhibition was observed in the untreated droplets (LD) but not in the carbonate-treated droplets (LD-CaCO<sub>3</sub>). The filter papers are 7 mm in diameter. (<bold>D</bold>). Quantification of the size of the clear zone in the disc diffusion assay from <bold>C</bold>. Fifteen independent disc diffusion assays were performed with purified LDs from <italic>Drosophila</italic> embryos, the antibiotic kanamycin, or buffer. Antimicrobial activity of compounds was quantified as the diameter of the clear zones surrounding the filter papers after subtraction of filter papers diameter (1 A.U. = 0.1 mm). (<bold>E</bold>). Use of a gel-overlay assay to determine the identity of the anti-bacterial protein(s) on the LDs. Proteins extracted from LDs (LD, left lane) were run in duplicate on an AU-gel; murine cryptdin 4 (Crp 4, right lane) served as positive control. After electrophoresis, the gel was split. One half (left) was stained by Coomassie Blue; the histone bands are indicated by a blue arrow and the crp 4 control is indicated by the green arrow. The other half (right) was used in a gel overlay assay (see &#x2018;Materials and methods&#x2019;) to reveal regions of the gel able to inhibit bacterial growth (inhibition by LD is indicated by the red arrow and that by crp 4 control is indicated by the violet arrow). Inhibition of bacterial growth due to proteins on the LDs was only observed in a single region, corresponding to the histones (red arrow). Consistent with this, mass spectrometry of proteins cut from the Coomassie gel corresponding to the killing region identified predominantly histones H2A and H2B (see &#x2018;LDs have antimicrobial activity&#x2019;). (<bold>F</bold>). <italic>E. coli ML35</italic> cultures were transiently (&#x223C;1 hr) exposed to commercial calf thymus pan-histone proteins (Sigma) or gel-extracted LD-histones (from the gel-overlay assay). Both preparations show similar potency for bacterial killing.</p><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.003">http://dx.doi.org/10.7554/eLife.00003.003</ext-link></p></caption><graphic xlink:href="elife00003f001"/></fig></p>
+        <p>What is the molecular nature of this killing activity? LDs are complex organelles with both lipids and proteins. Thus, one potential source of antibacterial activity might be fatty acids released due to breakdown of the abundant triglycerides; because of their detergent-like properties, they might destroy bacterial membranes and thus impair bacterial viability. We therefore treated purified LDs with alkaline washes. This treatment removes electrostatically bound droplet proteins, but not lipids and proteins attached via hydrophobic interactions (<xref ref-type="bibr" rid="bib6">Brasaemle et al., 2004</xref>). Indeed, as previously reported (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>), these washes greatly reduced the levels of the electrostatically bound histone H2B, but not of the hydrophobically bound LSD-2. These treated droplets no longer had antibacterial activity (<xref ref-type="fig" rid="fig1">Figure 1C</xref>, LD-CaCO<sub>3</sub>), suggesting that the antimicrobial activity requires electrostatically bound proteins.</p>
+        <p>Our previous study identified hundreds of lipid droplet proteins (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>), many present in low enough copy number to be detectable only by silver stain. In principle, any of them might be responsible for the antibacterial activity, but it seems likely that the active agents would be present in high copy number. We thus performed a traditional gel overlay assay (<xref ref-type="fig" rid="fig1">Figure 1E</xref>), visualizing these high-copy number proteins by Coomassie stain. Droplet proteins were separated by Acid Urea (AU) gel electrophoresis, and the gel was overlain with nutrient agar seeded with bacteria. As in the disc assay, antibacterial proteins diffuse into the agar and locally inhibit bacterial growth, as shown by the positive control mouse &#x3B1;-defensin cryptdin-4 (<xref ref-type="fig" rid="fig1">Figure 1E</xref>, gel overlay violet arrow). The lipid-droplet lane contained significant antibacterial activity in only one location (<xref ref-type="fig" rid="fig1">Figure 1E</xref>, gel overlay red arrow). MS analyses of proteins eluted from this location identified histones H2A and H2B as the predominant proteins present (spectra not shown). Therefore, the bactericidal activity of LDs is most likely due to histones, consistent with their known antimicrobial activities in vitro (<xref ref-type="bibr" rid="bib15">Hirsch, 1958</xref>). Importantly, pretreatment of purified LDs with anti-histone antibodies abolished or markedly reduced the droplet bactericidal activity (<xref ref-type="fig" rid="fig1">Figure 1A</xref>, 1B-LD + Anti-histones). Thus, we conclude that the majority of the in vitro antibacterial activity of LDs from early <italic>Drosophila</italic> embryos is due to histones.</p>
+        <p>We performed two tests to determine if these cytosolic droplet-bound histones are different from nuclear histones. First, using mass spectrometry, we compared post-translational modifications on droplet-bound and nuclear histones and found no major distinctions, suggesting that unique post translation modifications are not responsible for association of histones to LDs. Since our analysis was mostly qualitative, we cannot rule out the possibility that differences might arise from quantitative changes in post-translation modifications. We did identify several acetylation sites in histones H2A (serine 1 and lysines 5 and 8) and histone H2B (lysines 7, 11, 14 and 17). Some of these acetylation sites were previously found in shrimp histones (<xref ref-type="bibr" rid="bib26">Ouvry-Patat and Schey, 2007</xref>). The histones previously examined for antimicrobial activity are reported to be un-acetylated (<xref ref-type="bibr" rid="bib17">Kim et al., 2000</xref>), though there was no indication of whether acetylation affected antimicrobial efficacy. Second, we compared the antibacterial potencies of droplet-derived histones with commercial calf thymus histones isolated from a calf thymus nuclear fraction in both bactericidal (killing bacteria outright) and bacteriostatic (inhibiting the growth or reproduction of bacteria) activity assays. Histones extracted from droplets using AU gel electrophoresis were combined with a suspension of <italic>E. coli</italic> ML35 for 1 hr, and bacterial cell survival was determined by measuring CFU. This assay showed that histones are bactericidal and that droplet-derived histones and commercial pan-histones purified from calf thymus do not differ significantly in antibacterial efficacy (<xref ref-type="fig" rid="fig1">Figure 1F</xref>).</p>
+      </sec>
+      <sec id="s2-2">
+        <title>Enhanced bacterial growth in embryos lacking histone deposits on LDs</title>
+        <p>Although these studies indicate that histones present on embryonic LDs kill bacteria in vitro, it remained unclear whether histones make a meaningful contribution to the overall antibacterial defense in the embryos. In vivo, droplet-bound histones may have different properties, due to the presence of binding partners or the physiological state of the bacteria, their effective concentration might not be high enough to kill, or, relative to other antibacterial mechanisms, the contribution of histones might be negligible.</p>
+        <p>To test the significance of the histones on LDs in vivo, we took advantage of the recent identification of the putative histone receptor on droplets, jabba (CG42351), a novel 42 kDa protein (<xref ref-type="bibr" rid="bib22">Li et al., 2012</xref>). <italic>Jabba</italic> is present on LDs in wild-type flies and is required for histone localization on droplets; in <italic>Jabba</italic> mutants LDs are present, but histones are absent from the LDs (<xref ref-type="fig" rid="fig2">Figure 2</xref>). We used two <italic>Jabba</italic> alleles, derived independently. <italic>Jabba</italic><sup><italic>zl01</italic></sup> is due to imprecise excision of a P element inserted near the <italic>Jabba</italic> promoter, and <italic>Jabba</italic><sup><italic>f07560</italic></sup> is due to the insertion of a PBac element in the middle of the <italic>Jabba</italic> coding region. The two alleles were generated from entirely different genetic backgrounds, ruling out genetic background effects. In the wild type, fusions between GFP and the histone H2Av are present both in nuclei and in cytoplasmic rings (<xref ref-type="fig" rid="fig2">Figure 2A</xref>), a characteristic appearance of droplet-targeted proteins (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>), but cytoplasmic rings are undetectable in <italic>Jabba</italic> embryos. Second, when living embryos are centrifuged, LDs separate from the rest of the embryonic content and form a distinct layer (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>). Immunostaining of such centrifuged embryos reveals abundant histone signal in the droplet layer in the wild type, but not in <italic>Jabba</italic> embryos (<xref ref-type="fig" rid="fig2">Figure 2B,C</xref>). Third, Western blotting reveals high levels of histones on droplets purified from wild-type embryos, but not on droplets purified from <italic>Jabba</italic> mutants (<xref ref-type="fig" rid="fig2">Figure 2D,E</xref>). Such purified droplets also differed in their antimicrobial activity in vitro: droplets from wild-type embryos resulted in a 10-fold decrease in bacterial growth relative to buffer alone, but droplets from two different independently isolated <italic>Jabba</italic> mutant strains displayed essentially no killing activity (<xref ref-type="fig" rid="fig2">Figure 2G</xref>), as expected if the killing activity of wild-type droplets is indeed due to histones.<fig id="fig2" orientation="portrait" position="float"><object-id pub-id-type="doi">10.7554/eLife.00003.004</object-id><label>Figure 2.</label><caption><title>Presence of extranuclear histones depends on the <italic>Jabba</italic> protein.</title><p>(<bold>A</bold>) Histone H2Av GFP is not detectable in cytoplasmic puncta of <italic>Jabba</italic><sup><italic>zl01</italic></sup> embryos. Both genotypes show strong signal in nuclei. (<bold>B</bold>). By immunostaining, endogenous H2A and H2B are absent from the lipid droplet layer (LD) of centrifuged <italic>Jabba</italic><sup><italic>zl01</italic></sup> embryos. (<bold>C</bold>). Histone H2A is absent from the lipid droplet layer in centrifuged <italic>Jabba</italic><sup><italic>f07560</italic></sup> embryos. BF is the bright field image and LD is the lipid droplet layer. (<bold>D</bold>). Equal amounts of proteins from purified LDs were compared by Western analysis. Droplets from <italic>Jabba</italic><sup><italic>zl01</italic></sup> embryos lack histones H2A and H2B. The droplet-bound Khc protein serves as loading control. (<bold>E</bold>). When compared side by side, similar reductions in droplet-bound histones were found for both the independently isolated Jabba alleles <italic>Jabba</italic><sup><italic>f07560</italic></sup> and <italic>Jabba</italic><sup><italic>zlo1</italic></sup>. (<bold>F</bold>). Western blot of equal numbers of unfertilized wild-type and <italic>Jabba</italic> mutant embryos. Overall levels of histone H2A and H2B are significantly reduced in the <italic>Jabba</italic> mutants. (<bold>G</bold>). LDs purified from embryos of two independently isolated <italic>Jabba</italic> mutants revealed no bacterial killing activity in antibacterial plate assays, with bacterial growth comparable to buffer alone, in contrast to droplets purified from wild-type embryos which dramatically decreased bacterial growth.</p><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.004">http://dx.doi.org/10.7554/eLife.00003.004</ext-link></p></caption><graphic xlink:href="elife00003f002"/></fig></p>
+        <p>In <italic>Jabba</italic> mutant embryos, the overall levels of histones are much reduced relative to the wild type (<xref ref-type="fig" rid="fig2">Figure 2F</xref>), presumably because the histones not sequestered on the droplets are degraded. At least in other systems, unconfined histones are rapidly eliminated via proteolysis (<xref ref-type="bibr" rid="bib31">Singh et al., 2009a</xref>, <xref ref-type="bibr" rid="bib32">2009b</xref>), a protective mechanism against the detrimental effects of free histones.</p>
+        <p><italic>Jabba</italic> mutants are viable and fertile and develop into apparently healthy adults (though likely with compromised immune systems, see <xref ref-type="fig" rid="fig4">Figure 4</xref>). In particular, embryos hatch at wild-type rates. These mutants therefore make it possible to ask if the extra-nuclear pool of histones affects the outcome of bacterial infections in vivo. We microinjected (<xref ref-type="fig" rid="fig3">Figure 3A</xref>) very early wild-type or <italic>Jabba</italic> embryos (less than 1-hr old) with a GFP-expressing <italic>E. coli</italic> strain; living bacteria are easily identified by GFP fluorescence; fluorescence fades after bacterial cell death (<xref ref-type="bibr" rid="bib23">Lowder et al., 2000</xref>). Monitoring overall GFP fluorescence provided a measure of live bacteria in the infected embryos. The injection protocol per se does not apparently harm either genotype, since buffer-only injection resulted in high and similar hatching success (<xref ref-type="fig" rid="fig3">Figure 3B</xref>).<fig id="fig3" position="float" orientation="portrait"><object-id pub-id-type="doi">10.7554/eLife.00003.005</object-id><label>Figure 3.</label><caption><title>LD bound histones can kill bacteria in vivo.</title><p>(<bold>A</bold>) Schematic representation of embryo microinjection. Early embryos collected within half an hour of laying were injected with a bacterial suspension, as detailed in &#x2018;Materials and methods&#x2019;. (<bold>B</bold>). Wild-type and <italic>Jabba</italic> mutant embryos show similar survival when injected with buffer alone. Wild-type and <italic>Jabba</italic> mutants (<italic>Jabba</italic><sup><italic>f07560</italic></sup>, <italic>Jabba</italic><sup><italic>zl01</italic></sup>) embryos were injected with microinjection buffer (no bacteria) and the percentage survival was scored 72 hr post injection. (<bold>C</bold>) Bacteria grow only in embryos lacking droplet-bound histones. Approximately equal numbers of GFP labeled bacteria (<italic>E. coli</italic> strain YD133) were injected into wild-type and <italic>Jabba</italic> mutant embryos (<italic>Jabba</italic><sup><italic>f07560</italic></sup>) and the growth of bacteria inside embryos was monitored at various times post injection. (<bold>D</bold>). <italic>Drosophila</italic> embryos lacking droplet-bound histones have reduced survival due to bacterial infection. Approximately equal numbers of bacteria were injected into wild-type and <italic>Jabba</italic> mutant (<italic>Jabba</italic><sup><italic>zl0</italic></sup>
+<italic>and Jabba</italic><sup><italic>f07560</italic></sup>) embryos and embryo survival after 72 hr was normalized to the buffer-only injected embryos (in <bold>B</bold>). The bacterial strains used were <italic>Staphylococcus epidermidis</italic> (Gram-positive); <italic>E. coli DH 5</italic>&#x3B1; (Gram- negative); <italic>Listeria monocytogenes</italic> (Gram-positive and intracellular); and <italic>Bacillus subtilis (hlyA)</italic>, modified <italic>Bacillus subtilis</italic> expressing <italic>listeria</italic> hemolysin-A protein (Gram-positive and intracelluar).</p><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.005">http://dx.doi.org/10.7554/eLife.00003.005</ext-link></p></caption><graphic xlink:href="elife00003f003"/><p content-type="supplemental-figure"><fig id="fig3s1" specific-use="child-fig" orientation="portrait" position="anchor"><object-id pub-id-type="doi">10.7554/eLife.00003.006</object-id><label>Figure 3&#x2014;figure supplement 1.</label><caption><title>2 hr: Additional images of wild-type and Jabba mutant embryos with fluorescent bacteria, 2 hr after bacterial injection.</title><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.006">http://dx.doi.org/10.7554/eLife.00003.006</ext-link></p></caption><graphic xlink:href="elife00003fs001"/></fig></p><p content-type="supplemental-figure"><fig id="fig3s2" specific-use="child-fig" orientation="portrait" position="anchor"><object-id pub-id-type="doi">10.7554/eLife.00003.007</object-id><label>Figure 3&#x2014;figure supplement 2.</label><caption><title>24 hr: Additional images of wild-type and Jabba mutant embryos with fluorescent bacteria, 24 hr after bacterial injection.</title><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.007">http://dx.doi.org/10.7554/eLife.00003.007</ext-link></p></caption><graphic xlink:href="elife00003fs002"/></fig></p><p content-type="supplemental-figure"><fig id="fig3s3" specific-use="child-fig" orientation="portrait" position="anchor"><object-id pub-id-type="doi">10.7554/eLife.00003.008</object-id><label>Figure 3&#x2014;figure supplement 3.</label><caption><title>48 hr: Additional images of wild-type and Jabba mutant embryos with fluorescent bacteria, 48 hr after bacterial injection.</title><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.008">http://dx.doi.org/10.7554/eLife.00003.008</ext-link></p></caption><graphic xlink:href="elife00003fs003"/></fig></p></fig></p>
+        <p>Under the conditions employed, bacterial numbers in wild-type embryos decreased with time (<xref ref-type="fig" rid="fig3">Figure 3C</xref>). 2 hr after injection, numerous individual bacteria were obvious in the embryos, and we estimate on the order of 84 bacteria per embryo (see &#x2018;Materials and methods&#x2019;). By 24 hr, the number of visible bacteria had decreased substantially, and we estimate on the order of 33 bacteria per embryo. By 48 hr, there typically were either no surviving bacteria or only a few detectable bacterial cells, and on average we estimate 2&#x2013;6 bacteria were present. Thus, some innate immune mediator(s) limits bacterial cell viability in wild-type embryos in this experimental system.</p>
+        <p>This limit on bacterial viability was lost in the <italic>Jabba</italic> embryos (<xref ref-type="fig" rid="fig3">Figure 3C</xref>). The appearance of multiple individual bacteria 2 hr post-infection was similar to the wild type, and we estimate approximately 79 bacteria per embryo. However, bacterial cell numbers increased dramatically by 24 hr, with 840 bacteria on average. By 48 hr, we estimate that thousands of bacteria were present in the <italic>Jabba</italic> embryos (<xref ref-type="fig" rid="fig3">Figure 3C</xref>, compare WT to <italic>Jabba</italic><sup><italic>f07560</italic></sup> at 24 and 48 hr; also see <xref ref-type="fig" rid="fig3s1 fig3s2 fig3s3">Figure 3&#x2014;figure supplements 1&#x2013;3</xref>). These results indicate that loss of histones on droplets due to the absence of functional <italic>Jabba</italic> correlates with susceptibility to massive bacterial overgrowth. Because bacterial numbers are controlled, and bacteria are ultimately eliminated in wild-type embryos, it suggests that droplet-associated histones contribute to immunity against the introduced bacteria, consistent with their in vitro bactericidal capability.</p>
+      </sec>
+      <sec id="s2-3">
+        <title>Droplet-bound histones enhance embryo survival in response to a bacterial challenge</title>
+        <p>It seemed likely that the immunity observed in this experimental bacterial infection would have consequences for the embryo. To test this, we challenged wild-type and <italic>Jabba</italic> mutant embryos with different bacterial species (<xref ref-type="fig" rid="fig3">Figure 3A</xref>) and assessed the effects of genotype on survival of the embryos (<xref ref-type="fig" rid="fig3">Figure 3D</xref>). We first injected embryos with two laboratory strains of bacteria: Gram-negative <italic>E. coli</italic> DH5&#x3B1; and Gram-positive <italic>S. epidermidis</italic>. In each case, experiments were done in parallel, with 50&#x2013;100 bacteria being injected into multiple embryos of each genotype. Embryos that hatched into larvae were scored as surviving. Injection of bacteria delayed wild-type embryonic development, but caused only a minimal increase in lethality, relative to buffer-only injected embryos (normalized survival more than 80%; see <xref ref-type="fig" rid="fig3">Figure 3D</xref>, <italic>S. epidermidis</italic> and <italic>E. coli</italic> DH5&#x3B1;, orange bars). In contrast, for the two independently derived <italic>Jabba</italic> mutants (both lacking droplet-bound histones; <xref ref-type="fig" rid="fig2">Figure 2D</xref>), the same treatment resulted in high lethality, with normalized survival of less than 20% (<xref ref-type="fig" rid="fig3">Figure 3D</xref>). Thus, <italic>Jabba</italic> embryos exhibited at least a fourfold decrease in survival when injected with either species of bacteria. Such a difference in survival would provide a huge survival advantage in nature.</p>
+        <p><italic>E. coli</italic> and <italic>S. epidermidis</italic> do not typically grow intracellularly, but bacterial pathogens that grow intracellularly are not well characterized in flies. We therefore took advantage of two species of bacteria with well-characterized intracellular mechanisms of infection, <italic>Bacillus subtilis</italic> engineered to express <italic>Listeria</italic>'s hemolysin-A protein (<xref ref-type="bibr" rid="bib2">Bielecki et al., 1990</xref>), and thus able to enter cells and reproduce in the cytosol, and also <italic>Listeria monocytogenes</italic> whose infectious life cycle typically involves growth in the cytosol of mammalian cells (<xref ref-type="bibr" rid="bib35">Tilney and Portnoy, 1989</xref>). At moderate injection dosages of 50&#x2013;100 bacteria per embryo, there was again good survival for wild-type embryos, but not for the <italic>Jabba</italic> embryos (<xref ref-type="fig" rid="fig3">Figure 3D</xref>, <italic>B. subtilis</italic> and <italic>L. monocytogenes</italic>). In conclusion, a marked survival difference between the wild-type (more survival) and <italic>Jabba</italic> mutant embryos was observed when infected with bacteria, for all of the bacterial species tested.</p>
+      </sec>
+      <sec id="s2-4">
+        <title>Adult flies with droplet-bound histones show enhanced survival in response to a bacterial challenge</title>
+        <p>Could <italic>Jabba</italic> function in adults? Consistent with a possible role in facilitating stable localization of histones to the cytoplasm, <italic>Jabba</italic> is expressed in a variety of adult tissues and in both sexes, with especially high expression levels in fat body and ovaries, according to microarray and RNA-seq data available on FlyBase (<xref ref-type="bibr" rid="bib8">Chintapalli et al., 2007</xref>; <xref ref-type="bibr" rid="bib25">McQuilton et al., 2012</xref>).</p>
+        <p>To test whether this <italic>Jabba</italic> protein present in the adults might contribute to a similar LD-histone system, we used a traditional bacterial challenge assay, where bacteria were introduced into adult flies by pricking the flies under the wing with a metallic needle dipped in either sterile buffer or a concentrated bacterial suspension. Pricking either the wild type (black curve, <xref ref-type="fig" rid="fig4">Figure 4A,B</xref>) or <italic>Jabba</italic>-mutant adults (red curves, <xref ref-type="fig" rid="fig4">Figure 4A,B</xref>) with the buffer-dipped needle resulted in low long-term mortality, with roughly a 20&#x2013;30% mortality at 4 days. At the dose of <italic>Listeria</italic> used, mortality of the pricked wild-type adults was approximately the same as the buffer-pricked adults (the purple mortality curve in <xref ref-type="fig" rid="fig4">Figure 4A</xref> is within experimental error of the black curve). However, for the <italic>Jabba</italic>-mutant adults, pricking with a bacterial-dipped needle was quite lethal (<xref ref-type="fig" rid="fig4">Figure 4A,B</xref>, brown curve), with less than 5% survival at 4 days&#x2014;a 14-fold difference from wild-type survival.<fig id="fig4" orientation="portrait" position="float"><object-id pub-id-type="doi">10.7554/eLife.00003.009</object-id><label>Figure 4.</label><caption><title>The Jabba protein contributes to improved survival for adult flies.</title><p>(<bold>A</bold> and <bold>B</bold>) Adult <italic>Drosophila</italic> lacking <italic>Jabba</italic> (<bold>A</bold>: <italic>Jabba</italic><sup><italic>f07560</italic></sup>; <bold>B</bold>: <italic>Jabba</italic><sup><italic>zl01</italic></sup>) have reduced survival when challenged by bacteria. Wild-type and <italic>Jabba</italic> mutant (<italic>Jabba</italic><sup><italic>zl0</italic></sup>
+<italic>and Jabba</italic><sup><italic>f07560</italic></sup><italic>)</italic> adult flies were infected with <italic>Listeria monocytogenes</italic> as detailed in &#x2018;Materials and methods&#x2019;, and fly survival was monitored over the course of 4 days. (<bold>C</bold>). Representative plates in a colony forming assay, showing bacterial colonies on agar plates streaked with cytosolic extract from bacteria infected adult flies. (<bold>D</bold>) Western blots of histone H2B from equal amounts of cytosolic extracts from wild type and <italic>Jabba</italic> mutant adult flies, showing that overall levels of H2B were significantly reduced in the <italic>Jabba</italic> mutants.</p><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.009">http://dx.doi.org/10.7554/eLife.00003.009</ext-link></p></caption><graphic xlink:href="elife00003f004"/></fig></p>
+        <p>How likely is it that the underpinnings of the survival difference reflect the same mechanism? We first examined relative bacterial load via a plate assay using cytoplasmic extract from the buffer or bacterial-pricked adults to seed the plate. From wild-type or <italic>Jabba</italic>-mutant adult buffer-pricked cytoplasm, typically less than three colonies were observed. In contrast, for the bacterial-pricked adults, initial counts were typically on the order of 400 CFUs (<xref ref-type="fig" rid="fig4">Figure 4C</xref>), and by day 3 went down significantly for the wild type (50) but less so for the surviving <italic>Jabba</italic>-mutant flies (320). Presumably, the <italic>Jabba</italic>-mutant flies that died (not assayed) had even higher bacterial counts. While a complete investigation of the kinetics of bacterial load is beyond the scope of this paper, as in the embryos, these results suggest that the observed lethality correlates with differences in bacterial load.</p>
+        <p>Finally, we looked for the presence of histones in the adult cytoplasm. First, cytoplasmic lysates were made from 1- to 2-day-old adult wild-type or <italic>Jabba</italic>-mutant flies as detailed in &#x2018;Materials and methods&#x2019;, and then equal amounts of the lysates from both classes of adults were blotted to detect histone H2B (<xref ref-type="fig" rid="fig4">Figure 4D</xref>). Compared to the wild-type, the amount of H2B detected was lower in the <italic>Jabba</italic>-mutant background (threefold), consistent with the embryo data. In conclusion, while more work remains to understand the role of <italic>Jabba</italic> and histones in adult immunity, our initial data is consistent with the hypothesis that the embryonic system described above may function in adult flies as well.</p>
+      </sec>
+      <sec id="s2-5">
+        <title>How histones reach bacteria: selective release</title>
+        <p>Since excess free histones are deleterious for the cell overall (<xref ref-type="bibr" rid="bib13">Gunjan and Verreault, 2003</xref>), droplet-bound histones are likely relatively immobilized: we expected them to be sequestered on droplets and not free to diffuse. Indeed, when purified droplets are incubated in excess buffer, there is no detectable loss of histones from the droplets, or appearance of histones in the buffer (<xref ref-type="fig" rid="fig5">Figure 5A,B</xref>, UB control). Thus, the histones indeed appear to be stably bound to LDs. This might limit their ability to reach the bacteria since the diffusion constant of a 0.5-&#xB5;m droplet is expected to be much lower than the diffusion constant of a free histone.<fig id="fig5" orientation="portrait" position="float"><object-id pub-id-type="doi">10.7554/eLife.00003.010</object-id><label>Figure 5.</label><caption><title>Bacterial cell wall components release droplet bounds histones in a dose dependent manner.</title><p>(<bold>A</bold>). Increasing concentrations of lipopolysaccharide (LPS) in the buffer releases droplet bound histones from purified LDs. (<bold>B</bold>). Lipoteichoic acid (LTA) causes the dose dependent release of histones from purified droplets. LDs were purified from wild-type <italic>Drosophila</italic> embryos, re-suspended in buffer, and incubated for 2 hr at room temperature with different concentrations of LPS or LTA. LDs (LD) were then separated from the under-layer buffer (UB) and both were processed for SDS-PAGE. Western Blot analysis was carried out with H2B histone antibodies.</p><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.010">http://dx.doi.org/10.7554/eLife.00003.010</ext-link></p></caption><graphic xlink:href="elife00003f005"/></fig></p>
+        <p>These observations are seemingly contradictory: histones are stably bound to droplets, yet they can kill bacteria well. We thus hypothesized that the bacteria may induce release of the histones from the droplets. Pathogen-Associated Molecular Patterns, components of the bacterial envelope, would be particularly well positioned to induce such a release, as they are present on the surface of bacteria and thus accessible. Indeed, organisms often detect bacterial infections due to the presence of LPS (<xref ref-type="bibr" rid="bib14">Heumann and Roger, 2002</xref>) or LTA (<xref ref-type="bibr" rid="bib41">Wergeland et al., 1989</xref>), major pro-inflammatory constituents of Gram-negative and Gram-positive bacterial cell envelopes, respectively.</p>
+        <p>We therefore incubated purified LDs in the presence or absence of LPS or LTA. Histones were detected in the buffer (UB, <xref ref-type="fig" rid="fig5">Figure 5A,B</xref>) only when LPS or LTA were included, and histone amounts increased with increasing levels of the cell envelope components (<xref ref-type="fig" rid="fig5">Figure 5A,B</xref>); concomitantly, histones attached to the LDs decreased (LD, <xref ref-type="fig" rid="fig5">Figure 5A,B</xref>). Thus, LPS and LTA induce release of histones from the droplets in a dose-dependent manner.</p>
+      </sec>
+      <sec id="s2-6">
+        <title>Potential evolutionary conservation: infection increases droplet-bound histone H1 in mice</title>
+        <p>Histones on LDs are not restricted to <italic>Drosophila</italic>. In particular, specific histones have been identified on LDs purified from a number of mammalian cell lines and tissues (<xref ref-type="bibr" rid="bib34">Smolenski et al., 2007</xref>; <xref ref-type="bibr" rid="bib38">Wan et al., 2007</xref>; <xref ref-type="bibr" rid="bib43">Zhang et al., 2011</xref>; <xref ref-type="bibr" rid="bib18">Larsson et al., 2012</xref>). Thus, this defense system may be widely conserved.</p>
+        <p>As a preliminary test, we looked at droplets in the liver, as this organ removes pathogens and microbial products from the blood, and plays a key role in the body's immune response (<xref ref-type="bibr" rid="bib24">Mackay, 2002</xref>). LDs were purified from murine liver using a previously established protocol (<xref ref-type="bibr" rid="bib36">Turro et al., 2006</xref>); the hepatocyte lipid-droplet resident protein (<xref ref-type="bibr" rid="bib36">Turro et al., 2006</xref>) ALDI was enriched 10<sup>3</sup>-fold (<xref ref-type="fig" rid="fig6">Figure 6A</xref>), confirming the success of the fractionation. By Western blotting, we detected histone H1 in the droplet fraction, using three different specific antibodies generated in different species (<xref ref-type="fig" rid="fig6">Figure 6B</xref>). This does not represent contamination with nuclei or chromatin since histones H2A, H2B and H3 were not detectable (<xref ref-type="fig" rid="fig6">Figure 6A</xref>). Normalized for total protein, the H1 levels on LDs were comparable to the levels of H1 histone in a purified nuclear fraction (<xref ref-type="fig" rid="fig6">Figure 6B</xref>&#x2014;n), and were clearly much higher than in whole-liver homogenates (<xref ref-type="fig" rid="fig6">Figure 6B</xref>&#x2014;h). Like other histones, histone H1 also has antibacterial activity in vitro (<xref ref-type="bibr" rid="bib27">Parseghian and Luhrs, 2006</xref>).<fig id="fig6" orientation="portrait" position="float"><object-id pub-id-type="doi">10.7554/eLife.00003.011</object-id><label>Figure 6.</label><caption><title>Histones are on mammalian LDs and respond to LPS.</title><p>(<bold>A</bold>). Western blot analysis of LDs (LD) purified from hepatocytes of mice injected with (+) or without (&#x2212;) LPS. Antibodies against ALDI, histones H2A, H2B and H3 were used. Whole liver homogenate (h) was used for comparison and as a control. (<bold>B</bold>) The presence of histone H1 (H1) on LDs (LD) purified from hepatocytes of mice injected with (+) or without (&#x2212;) LPS was detected by immunoblot, and more H1 was present on droplets purified from LPS-treated animals. Equal total proteins from the nuclear fraction (n) and from whole liver homogenate (h) were used as comparison. (<bold>C</bold>). Mice were injected intraperitoneally with (+) or without (&#x2212;) LPS, and transaminase levels (AST and ALT) and cytokine levels (IL-6 and TNF&#x3B1;) were quantified in units/l or units/ml in the serum; asterisk indicates statistical significance (p=0.05), confirming that LPS injection provoked the expected biological response. (<bold>D</bold>). Western blot analysis of histone H1 released into the buffer (UB) when purified LDs, from the liver of infection induced mice, were treated with LPS (+). Histone H1 is either minimally detected or not at all detected in the buffer in the absence of LPS (&#x2212;). The band at 97 kDa in <bold>C</bold> and <bold>D</bold> represents histone H1 oligomers.</p><p><bold>DOI:</bold>
+<ext-link ext-link-type="doi" xlink:href="10.7554/eLife.00003.011">http://dx.doi.org/10.7554/eLife.00003.011</ext-link></p></caption><graphic xlink:href="elife00003f006"/></fig></p>
+        <p>Intriguingly, the levels of histone H1 on LDs increased under conditions that mimicked a systemic infection. Mice were intraperitoneally injected with LPS (20 ng), and assayed 16 hr later. LPS injection resulted in the expected hepatic injury (<xref ref-type="bibr" rid="bib30">Senga et al., 2008</xref>), as assessed by the increased presence of serum transaminases (AST and ALT) and cytokines (IL-6 and TNF&#x3B1;; <xref ref-type="fig" rid="fig6">Figure 6C</xref>). Relative to untreated controls, H1 levels in the lipid-droplet fraction were clearly increased in the LPS challenged animals (average ratio of H1 in LPS injected to H1 in uninjected was 1.6 &#xB1; 0.3 (mean &#xB1; SEM), significantly different with a p=0.025 by Student t-test; note that the amount of the lipid droplet marker protein ALDI went down slightly in the LPS-injected samples, and if we use this as a standard, and normalize the detected ratio, it becomes 1.86 instead of 1.6). Like the <italic>Drosophila</italic> histones, H1 was efficiently released from the LDs by LPS (<xref ref-type="fig" rid="fig6">Figure 6D</xref>), consistent with the hypothesis that the accumulated H1 on the hepatic LDs can be released by the presence of cytosolic bacteria, and thus might contribute to an antibacterial response.</p>
+        <p>These two observations&#x2014;that systemic LPS increases histones on murine droplets, but that direct treatment of purified droplets with LPS releases the histones&#x2014;might appear contradictory, but we believe they are not. In the first case, the systemic LPS is known to activate numerous defense pathways which could then result in increased loading of droplets with histones. Further, lacking cytosolic bacteria, the systemic circulating LPS is unlikely to be present inside the cells at high enough dosage to release the histones from the droplets. In the second case, purified droplets with histones are exposed directly to LPS, mimicking the presence of bacteria inside of cells. In this latter case, there are no signaling effects, because in the purified system no signaling apparatus is present. Thus, this second assay looks only at the direct effect of high levels of LPS interacting with histones, causing the histones to release from the droplets.</p>
+      </sec>
+    </sec>
+    <sec sec-type="discussion" id="s3">
+      <title>Discussion</title>
+      <p>Here, we suggest that LDs contribute to host defense by sequestration and regulated release of histones. Analogous to mammalian mothers depositing antibodies across the placenta into the embryo as it develops, we suspect that maternal deposition of the histone laden lipid droplets into the embryo may prevent transmission of any bacterial infection from mother to egg, and may also protect the embryo from subsequent bacterial infections, resulting, for example, from physical damage to the chorion.</p>
+      <p>The histones are stably bound to <italic>Drosophila</italic> and murine LDs, but bacterial cell envelope components promote their release. As tested in the embryos, and in a limited way in adult flies, the system appears efficient, resulting in a more than fourfold improvement in survival for challenges by multiple types of Gram-positive and Gram-negative bacteria, including the known intracellular pathogen <italic>Listeria</italic>. Histones and histone fragments had previously been reported to play a role in extracellular antibacterial defense (<xref ref-type="bibr" rid="bib11">Fernandes et al., 2004</xref>; <xref ref-type="bibr" rid="bib37">von Kockritz-Blickwede and Nizet, 2009</xref>). We propose here that by using histone-droplet sequestration, cells can position histones in the cytosol, so that they are both available to interact with cytosolic bacteria, and also can evade constitutive pathways responsible for degrading free histones. Determining whether the murine droplet-bound histones actively contribute to host defense remains for future studies.</p>
+      <p>In principle, any kind of cell has the ability to form LDs, and thus employing droplet-bound histones as antibacterial defence might be quite general. Indeed, proteomic studies have revealed histones on LDs in tissues from larval and adult insects as well as in a range of mammalian cells (<xref ref-type="bibr" rid="bib34">Smolenski et al., 2007</xref>; <xref ref-type="bibr" rid="bib38">Wan et al., 2007</xref>; <xref ref-type="bibr" rid="bib42">Yang et al., 2010</xref>; <xref ref-type="bibr" rid="bib43">Zhang et al., 2011</xref>; <xref ref-type="bibr" rid="bib18">Larsson et al., 2012</xref>), including mouse liver (<xref ref-type="fig" rid="fig6">Figure 6</xref>). Such a role of droplets in the antibacterial response may in part explain why the number and size of LDs increase in disease, from osteoarthritis to liver degeneration and cartilage overproliferation (<xref ref-type="bibr" rid="bib35">Tilney and Portnoy, 1989</xref>; <xref ref-type="bibr" rid="bib2">Bielecki et al., 1990</xref>; <xref ref-type="bibr" rid="bib23">Lowder et al., 2000</xref>; <xref ref-type="bibr" rid="bib13">Gunjan and Verreault, 2003</xref>; <xref ref-type="bibr" rid="bib12">Figueredo et al., 2009</xref>; <xref ref-type="bibr" rid="bib42">Yang et al., 2010</xref>). In mammalian leukocytes and macrophages, LDs have already been suggested to participate in the regulation of the host response to infection, by modulating the production of inflammation mediators like eicosanoids (<xref ref-type="bibr" rid="bib5">Bozza and Viola, 2010</xref>). Our result discloses an additional role of droplets in innate immunity, a role potentially conserved from flies to mammals. Since many medically relevant bacterial pathogens enter the cytosol (e.g. <italic>Listeria monocytogenes</italic>, <italic>Shigella flexneri</italic>, <italic>Burkholderia pseudomallei</italic>, <italic>Francisella tularensis</italic> and <italic>Rickettsia</italic> spp; <xref ref-type="bibr" rid="bib28">Ray et al., 2009</xref>) and histones are also reported to have anti-fungal properties (<xref ref-type="bibr" rid="bib10">De Lucca et al., 2011</xref>), and many such pathogenic fungi also enter the cytosol (e.g., <italic>Cryptococcus neoformans</italic>; <xref ref-type="bibr" rid="bib3">Bliska and Casadevall, 2009</xref>), it may be that the system described here has surprisingly wide utility.</p>
+      <p>At least in the case of bacteria, histone release from the droplets is triggered by bacterial cell envelope components. This release likely allows an appropriate cellular response: freeing enough histones to kill bacteria, but minimizing problems (<xref ref-type="bibr" rid="bib13">Gunjan and Verreault, 2003</xref>) of excess free histones interfering with endogenous cellular processes. We speculate that this release is achieved via direct binding between LPS and histones, as histones can indeed directly bind LPS (<xref ref-type="bibr" rid="bib4">Bolton and Perry, 1997</xref>; <xref ref-type="bibr" rid="bib1">Augusto et al., 2003</xref>) and the presence of LPS did not significantly affect the antibacterial activity of histones in the plate assay. We propose that the negatively charged LPS or LTA neutralize the positively charged histones and therefore weaken their electrostatic interactions with <italic>Jabba</italic> on the LDs; histone binding to droplets is charge-sensitive, as indicated by the ability of CaCO<sub>3</sub> to detach the histones from the droplets.</p>
+      <p>If histones are so effective, why load them not at high levels onto all LDs? The observation that droplet-bound H1 increases in mouse liver in response to a simulated bacterial infection might suggest that there is a cost to storing histones on droplets. Cells likely have to balance immediate histone availability with possible undesirable uncontrolled histone release from droplets due to metabolic consumption of the underlying droplets, or alternatively, potential secondary effects due to the excess histones causing saturation of histone-modifying enzymes (<xref ref-type="bibr" rid="bib33">Singh et al., 2010</xref>).</p>
+    </sec>
+    <sec sec-type="materials|methods" id="s4">
+      <title>Materials and methods</title>
+      <sec id="s4-1">
+        <title>Isolation of LDs and treatments</title>
+        <p><italic>Drosophila</italic> embryos (Oregon-R strain) were collected, aged and dechorionated with 50% bleach. LDs were purified as previously described (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>). Briefly, LDs were isolated from total embryo lysates by sucrose gradient ultracentrifugation and solubilized in NP40 lysis buffer (10 mM Tris&#x2013;HCl, pH 7.4, 0.5 mM EDTA, 1% NP40). Protein concentration was determined by Bradford dye-binding assay (Sigma-Aldrich, MO, USA). In some cases, the isolation of LDs was performed in the presence of 100 mM sodium/calcium carbonate, according to <xref ref-type="bibr" rid="bib6">Brasaemle et al., (2004)</xref>, to remove proteins bound via electrostatic interactions. The presence of proteins histones H2A and H2B, and kinesin heavy chain in droplets was monitored using immunoblot analysis with anti-H2A (<xref ref-type="bibr" rid="bib19">Leach et al., 2000</xref>), anti-H2B (Upstate Biotechnologies, Lake Placid, NY, USA), and anti-Khc (Cytoskeleton, CO, USA), respectively.</p>
+      </sec>
+      <sec id="s4-2">
+        <title>Immunoblot analysis</title>
+        <p>Proteins were separated by SDS-PAGE and electro transferred to PVDF/nitrocellulose membranes. The membranes were blocked with 5% non-fat milk or 5% bovine serum albumin for an hour and then incubated with appropriate primary antibodies at desired concentrations for 1 hr at room temperature or over night at 4&#xB0;C. Peroxidase conjugated donkey anti-rabbit/goat anti-mouse (1:10,000; Jackson ImmunoReseach) were used as secondary antibodies and the signals were monitored by Novex ECL kit (Invitrogen, CA, USA).</p>
+      </sec>
+      <sec id="s4-3">
+        <title>Immunofluorescence</title>
+        <p>Embryos were centrifuged, heat-fixed, and stained with anti H2A and H2B antibodies (1:2000) as described (<xref ref-type="bibr" rid="bib7">Cermelli et al., 2006</xref>). H2Av-GFP expressing embryos were imaged live without any fixation. Micrographs were acquired on a Leica SP5 confocal microscope or a Nikon Eclipse E600 fluorescence microscope with a 4 MP Spot Insight camera. Images were processed in Adobe Photoshop and assembled with Adobe Illustrator. In order to visualize the GFP bacteria inside microinjected embryos, a LSM710 confocal microscope was used.</p>
+      </sec>
+      <sec id="s4-4">
+        <title>Antibacterial assays</title>
+        <p>To evaluate the antibacterial property of purified LDs/LD components, we performed colony forming assays, gel overlay assays as well as disc diffusion assays.</p>
+        <sec id="s4-4-1">
+          <title>The colony forming units (CFU) assay</title>
+          <p>The antibacterial activity of LDs was evaluated using a CFU assay as described previously (<xref ref-type="bibr" rid="bib12">Figueredo et al., 2009</xref>) but with a slight modification of the conditions. Bacterial strains growing exponentially in Trypticase soy broth (TSB) at 37&#xB0;C were collected by centrifugation, washed, and resuspended in Tris buffer (pH 7.4). Bacteria (5 &#xD7; 10<sup>3</sup> colony-forming units/ml) were incubated with LDs (non-treated or pre-treated) with a mixture of anti-histone antibodies (equal amounts of anti histone antibodies, at concentrations of 200 &#x3BC;g/ml, H1, H2A, H2B, H4 [all from Santa Cruz Biotechnology, CA, USA] and H3 [from Sigma-Aldrich, MO, USA] were mixed and treated with LDs [equivalent to &#x223C;500 &#x3BC;g total proteins] in a 1:100 antibody mix:LD ratio for an hour at 37&#xB0;C) for 24 hr at 37&#xB0;C in 3&#xD7; TSB/LB. Samples were diluted with Tris buffer (pH 7.4), and various dilutions of the samples were plated on Trypticase soy-agar plates. Surviving bacteria were quantitated as CFU/ml on plates after incubation at 37&#xB0;C for 12&#x2013;18 hr.</p>
+          <p>The bactericidal activities of commercial pan-histone (Sigma-Aldrich, MO, USA) and AU-gel extracted histones from LDs sample were tested in vitro against <italic>E. coli</italic> ML35 as described previously (<xref ref-type="bibr" rid="bib12">Figueredo et al., 2009</xref>). Bacteria growing exponentially in Trypticase soy broth (TSB) at 37&#xB0;C were collected by centrifugation, washed, and resuspended in 10 mM PIPES (pH 7.4) supplemented with 0.01 volume (1% vol/vol) TSB (PIPES-TSB). Bacteria (5 &#xD7; 10<sup>6</sup> colony-forming units [CFU]/ml) were incubated with pan-histones (0&#x2013;10 &#x3BC;g/ml) or extracted LD-histones (0&#x2013;2 &#x3BC;g/ml) for 1 hr at 37&#xB0;C in 50 &#xB5;l of PIPES-TSB. Samples were diluted 1:100 with 10 mM PIPES (pH 7.4) and 50 &#xB5;l of the diluted samples were plated on Trypticase soy-agar plates using an Autoplate 4000 (Spiral Biotech Inc., Bethesda, MD). Surviving bacteria were quantitated as CFU/ml on plates after incubation at 37&#xB0;C for 12&#x2013;18 hr, and data were analyzed and plotted using SigmaPlot (Systat Software, Inc., San Jose, CA).</p>
+        </sec>
+        <sec id="s4-4-2">
+          <title>Gel overlay assay</title>
+          <p>The antimicrobial activity of purified LDs was examined by gel overlay assay as described by <xref ref-type="bibr" rid="bib21">Lehrer et al. (1991)</xref>. Briefly, isolated LDs were subjected to acid-urea gel electrophoresis (AU-gel). Next the gels were washed in 10 mM sodium phosphate buffer, pH 7.4 (NAPB) and incubated at 37&#xB0;C on top of 1-mm-thick underlay agar containing mid logarithmic-phase bacteria (<italic>Escherichia coli</italic>, DH5&#x3B1; strain). The underlay agar consisted of 10 mM NAPB, 1% vol/vol trypticase soy broth (TSB), 1% wt/vol of low-electroendosmosis-type agarose and 0.02% vol/vol Tween 20. After allowing 3 hr for diffusion of its proteins into the underlayer, the PAGE gel was removed and a nutrient-rich top agar was added on top of the underlay agar; the plate was then incubated for 18 hr at 37&#xB0;C to allow growth of the bacteria. The location of antimicrobial polypeptides in the gels is revealed by a growth inhibition zone.</p>
+        </sec>
+        <sec id="s4-4-3">
+          <title>Disc diffusion assay</title>
+          <p>An overnight broth culture (200 &#xB5;l of <italic>Escherichia coli</italic>, DH5&#x3B1; strain) was spread over the surface of dried agar plates using a sterile glass spreader and allowed to absorb in the agar for 10 min. The plates were dried, inverted, at 37&#xB0;C for approximately 30 min until the bacterial overlay had dried. Isolated LDs were resuspended in Top solution (25mM Tris-HCl, 1 mM EDTA, 1 mM EGTA) and pipetted (10 &#x3BC;l) onto a 7-mm sterile filter discs and the discs placed onto the agar plate and incubated at 37&#xB0;C for 24 hr. For controls, 10 &#xB5;l of Top Solution and antibiotics (Kanamycin 50 &#xB5;g/ml) were added to the disc.</p>
+        </sec>
+      </sec>
+      <sec id="s4-5">
+        <title>Protein extraction from acid-urea gels</title>
+        <p>Duplicate samples of proteins from purified LDs were separated by AU-gel electrophoresis. One lane was stained by Coomassie Blue and used to identify the approximate position of histones in the unstained lane. This region of the unstained lane was cut out, macerated, and incubated overnight in 5% acetic acid. The solution with extracted proteins was lyophilized, and the pellet resuspended in 1% TSB.</p>
+      </sec>
+      <sec id="s4-6">
+        <title>In gel digestion</title>
+        <p>LDs proteins were separated by 1-D SDS-PAGE and stained by Coomassie Blue. Proteins bands were excised, in-gel digested by trypsin, extracted, and concentrated for LC-MS/MS analysis as described (<xref ref-type="bibr" rid="bib16">Huang et al., 2001</xref>).</p>
+      </sec>
+      <sec id="s4-7">
+        <title>Mass spectrometry analysis by LC-MS/MS</title>
+        <p>The tryptic digests were analyzed by LC-MS/MS using a nanoLC system (Eksigent, Inc., MA, USA) coupled with Linear Ion Trap (LTQ)-Orbitrap XL mass spectrometer (Thermo-Electron Corp, OH, USA). The LC analysis was performed using a capillary column (100 &#x3BC;m i.d. &#xD7; 150 mm length) packed with C18 resins (GL Sciences, CA, USA) and the peptides were eluted using a linear gradient of 2&#x2013;35% B in 105 min; (solvent A, 100% H<sub>2</sub>O/0.1% formic acid; solvent B, 100% acetonitrile/0.1% formic acid). A cycle of one full FT scan mass spectrum (350&#x2013;1800 <italic>m</italic>/<italic>z</italic>, resolution of 60,000 at <italic>m</italic>/<italic>z</italic> 400) was followed by 10 data-dependent MS/MS acquired in the linear ion trap with normalized collision energy (setting of 35%). Target ions selected for MS/MS were dynamically excluded for 30 s.</p>
+      </sec>
+      <sec id="s4-8">
+        <title>Drosophila strains</title>
+        <p>We used Oregon-R as our wild-type stock. We employed two mutant alleles of <italic>Jabba</italic> (also known as CG42351): <italic>Jabba</italic><sup><italic>zl01</italic></sup> is a promoter deletion and expresses no <italic>Jabba</italic> protein in early embryos; <italic>Jabba</italic><sup><italic>f07560</italic></sup> is a transposable element insertion between two coding exons of <italic>Jabba</italic>, resulting in a severely truncated <italic>Jabba</italic> protein. A comprehensive molecular and phenotypic description of <italic>Jabba</italic> mutant alleles will be published elsewhere (<xref ref-type="bibr" rid="bib22">Li et al., 2012</xref>). Alleles <italic>Jabba</italic><sup><italic>zl01</italic></sup> and <italic>Jabba</italic><sup><italic>f07560</italic></sup> were derived independently, and thus likely share few, if any, unknown secondary mutations. Both alleles eliminate droplet-bound histones (<xref ref-type="fig" rid="fig3">Figure 3D</xref>, <xref ref-type="fig" rid="fig3s3">Figure 3&#x2014;figure supplements 1&#x2013;3</xref>).</p>
+      </sec>
+      <sec id="s4-9">
+        <title>Embryo bacterial injections</title>
+        <p>Cultures of the bacterial strain of interest (<italic>E. coli DH5&#x3B1;</italic>, <italic>S. epidermidis</italic>, <italic>L. monocytogenes</italic>, <italic>B. subtilis</italic> [<italic>hly</italic>] and <italic>YD133-GFP</italic>; an <italic>E. coli</italic> K-12 bacterial strain expressing GFP) were grown to the log phase. An appropriate volume of the bacterial suspension was pelletted, washed with PBS and re-suspended in injection buffer (5 mM KCl, 0.1 mM sodium phosphate pH 6.8, 5% [vol/vol] of McCormick green food color). Precellular blastoderm stage embryos were injected manually using a Narishige IM300 microinjector. Injected embryos were maintained at 25&#xB0;C in a fly incubator and the survival was monitored daily until they hatched into larvae. Percentage survival was normalized with respect to the survival of embryos injected with buffer only.</p>
+        <p>An estimate of the bacterial load in the GFP-bacteria injected cases was done by image analysis. We searched in each embryo for the region(s) with the most bacteria visible, and quantified that number, using images with same field of view. At least three different embryos were used in each group. At the same time, we noted how many such high-bacteria fields were typically present in an embryo, as well as typical bacterial counts in the other fields. We estimate the embryo can be covered by approximately 10 independent fields of 40 &#xB5; each. For the wild-type, at t = 2 hr, the average number of bacteria in the (maximal) field of view was 24.3 &#xB1; 6.4, and there were between three and four such fields per embryo, with few bacteria elsewhere, leading to an estimate of &#x223C;84 bacteria per embryo. For the <italic>Jabba</italic> mutant embryo, the average number of bacteria in the (maximal) field of view was 23.3 &#xB1; 3.2, and there were between three and four such fields per embryo, with few bacteria elsewhere, leading to an estimate of &#x223C;79 bacteria per embryo. For the t = 24 wt embryos, the average maximal field had 21.7 &#xB1; 9.2 bacteria, but there was only one such field per embryo, typically with 3&#x2013;4 other areas with 1&#x2013;5 bacteria per field, resulting in an estimate of 33 bacteria per embryo. For the t = 24 <italic>Jabba</italic> mutant embryos, approximately 1/3 of the fields had the high bacterial count (&#x223C;180 &#xB1; 16.1 bacteria), and the rest typically had 10&#x2013;30 bacteria per field, leading to an estimate of 840 bacteria per embryo. Finally, for the t = 48 hr wild-type, at most only one or two fields had any detectable bacteria (some embryos had none) so we estimate between 2&#x2013;6 bacteria per embryo. In contrast, for the t = 48 <italic>Jabba</italic> embryo, every field was full of bacteria (200&#x2013;250 bacteria per field), so assuming 10 such fields we estimate 2000&#x2013;2500 bacteria per embryo.</p>
+      </sec>
+      <sec id="s4-10">
+        <title>Adult fly bacterial infections</title>
+        <p>Adult flies (both wild type and <italic>Jabba</italic> mutant, 2&#x2013;3 days old) were subjected to an infection assay. The flies were anesthetized with CO<sub>2</sub>, and pricked under the wing with a fine metallic needle (33G) which was first dipped into either buffer or a suspension of the bacteria <italic>Listeria monocytogene</italic>. To make the bacterial suspension, a dilute overnight culture was grown to an absorbance of 0.5&#x2013;0.6 at wavelength 595 nm. From this log-phase bacterial suspension, 5 ml was pelletted and the pellet washed with PBS. This bacterial pellet was then suspended in 200 &#x3BC;l of PBS and the metallic needle was dipped in for the bacterial infection assays. After the infection, the flies were maintained in 25&#xB0;C fly incubator. Every 24 hr, the number of dead and live flies was counted. The percentage of survival calculated from these counts was then plotted against days post injection as shown in <xref ref-type="fig" rid="fig4">Figure 4</xref>. Approximately 10 live flies from the both wild type and <italic>Jabba</italic> mutant at days 0 and 3 were sacrificed and cytosolic extracts were prepared using ready prep protein extraction kit (Bio-Rad Laboratories, Inc, CA, USA) according to the manufacturers' protocol. Equal amounts of cytosolic extracts were then plated on agar plates to estimate the relative viable cytosolic bacterial load as shown in <xref ref-type="fig" rid="fig4">Figure 4C</xref>. The quantification of band intensity in the <xref ref-type="fig" rid="fig4">Figure 4C</xref> was done using Image J software.</p>
+      </sec>
+      <sec id="s4-11">
+        <title>Mice injection and hepatic lipid droplet treatment</title>
+        <p>C57BL/6 mice were kept under a controlled humidity and lighting schedule with a 12-hr dark period. All animals received human care in compliance with institutional guidelines regulated by the European Community. Food and water were available ad libitum. Male mice of approximately 8&#x2013;12 weeks old were intraperitoneally injected with 20 ng LPS diluted in NaCl 0.9% or with an equivalent volume of NaCl and fasted for 16 hr. Hepatic LDs were isolated exactly as described in <xref ref-type="bibr" rid="bib36">Turro et al., (2006)</xref> (<xref ref-type="bibr" rid="bib38">Wan et al., 2007</xref>). The protein fraction of LDs was separated by precipitation with 33% of cold TCA and the resulting pellets resuspended in 50 &#x3BC;l of 250 mM Tris, 2% SDS. The protein content was determined by the method of Lowry, and equal amount of protein of LDs was separated by SDS-PAGE. Western blotting was performed as described previously. In some experiments, the LDs obtained from LPS-treated mice were diluted 1:3 in a 250-mM Tris buffer and incubated with 1 mg/ml of LPS or an equivalent volume of NaCl for 2 hr at 4&#xB0;C. A soluble fraction of histones and other proteins was separated from the intact LDs by centrifugation at 16,000&#xD7;<italic>g</italic> for 15 min in an Eppendorf microfuge. Finally, equal volumes of soluble fractions were separated by SDS-PAGE and the presence of H1 determined by Western blotting. The primary antibodies used in immunoblot analysis of mouse samples were anti-histone H1, clone AE-4 from UPSTATE biotechnology (Millipore, MA, USA), Anti histone H1: sc-10806, anti histone H3 (FL-136): sc-10809 and anti histone H2B (FL-126): sc-10808 (from Santa Cruz Biotechnology, CA, USA), anti histone H1.2, anti histone H2A and anti histone H2B (from Abcam, Cambridge, UK). The polyclonal anti-ALDI used in this study is described in <xref ref-type="bibr" rid="bib36">Turro et al., 2006</xref>.</p>
+      </sec>
+    </sec>
+  </body>
+  <back>
+    <sec sec-type="funding-information">
+      <title>Funding Information</title>
+      <p>This paper was supported by the following grants:</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><funding-source>National Institutes of Health</funding-source>
+<award-id>GM64624</award-id> to Steven P Gross.</p>
+        </list-item>
+        <list-item>
+          <p><funding-source>National Institutes of Health</funding-source>
+<award-id>GM64687</award-id> to Michael A Welte.</p>
+        </list-item>
+        <list-item>
+          <p><funding-source>National Institutes of Health</funding-source>
+<award-id>AG031531</award-id> to Michael A Welte.</p>
+        </list-item>
+        <list-item>
+          <p><funding-source>Spanish Ministerio de Ciencia e Innovaci&#xF3;n</funding-source>
+<award-id>BFU2011-23745</award-id> to Albert Pol.</p>
+        </list-item>
+        <list-item>
+          <p><funding-source>National Science Foundation</funding-source>
+<award-id>LifeChips-IGERT fellowship</award-id> to Silvia Cermelli.</p>
+        </list-item>
+      </list>
+    </sec>
+    <ack id="ack">
+      <title>Acknowledgements</title>
+      <p>We thank the Huang, Warrior, Arora and the Ouellette laboratories members for their help during this study, especially Jennifer Mastroianni and Dr. Doug Bornemann for technical support. We thank Dr. Daniel A. Portnoy, UC Berkeley and Dr. Teuta Pilizota, Princeton University for kindly providing the bacterial strains. We also thank Samuel Martinez Gross for his work in quantifying bacterial counts in the fluorescent images.</p>
+    </ack>
+    <sec sec-type="additional-information">
+      <title>Additional information</title>
+      <fn-group content-type="competing-interest">
+        <title>
+          <bold>Competing interests</bold>
+        </title>
+        <fn fn-type="conflict" id="conf1">
+          <p>The authors have declared that no competing interests exist.</p>
+        </fn>
+      </fn-group>
+      <fn-group content-type="author-contribution">
+        <title>
+          <bold>Author contributions</bold>
+        </title>
+        <fn fn-type="con" id="con1">
+          <p>PA: Conception and design, Acquisition of data, Analysis and interpretation of data, Drafting or revising the article.</p>
+        </fn>
+        <fn fn-type="con" id="con2">
+          <p>SC: Conception and design, Acquisition of data, Analysis and interpretation of data, Drafting or revising the article.</p>
+        </fn>
+        <fn fn-type="con" id="con3">
+          <p>ZL: Acquisition of data, Analysis and interpretation of data, Contributed unpublished essential data or reagents.</p>
+        </fn>
+        <fn fn-type="con" id="con4">
+          <p>AK: Acquisition of data, Analysis and interpretation of data.</p>
+        </fn>
+        <fn fn-type="con" id="con5">
+          <p>MB: Conception and design, Acquisition of data, Analysis and interpretation of data.</p>
+        </fn>
+        <fn fn-type="con" id="con6">
+          <p>RS: Acquisition of data.</p>
+        </fn>
+        <fn fn-type="con" id="con7">
+          <p>LH: Analysis and interpretation of data.</p>
+        </fn>
+        <fn fn-type="con" id="con8">
+          <p>AJO: Conception and design, Analysis and interpretation of data, Drafting or revising the article.</p>
+        </fn>
+        <fn fn-type="con" id="con9">
+          <p>AP: Conception and design, Acquisition of data, Analysis and interpretation of data, Drafting or revising the article.</p>
+        </fn>
+        <fn fn-type="con" id="con10">
+          <p>MAW: Conception and design, Analysis and interpretation of data, Drafting or revising the article, Contributed unpublished essential data or reagents.</p>
+        </fn>
+        <fn fn-type="con" id="con11">
+          <p>SPG: Conception and design, Analysis and interpretation of data, Drafting or revising the article.</p>
+        </fn>
+      </fn-group>
+      <fn-group content-type="ethics-information">
+        <title>
+          <bold>Ethics</bold>
+        </title>
+        <fn fn-type="other">
+          <p>Animal experimentation: All animals received human care and experimental treatment authorized by the Animal Experimentation Ethics Committee (CEEA) of the University of Barcelona (expedient number 78/05), in compliance with institutional guidelines regulated by the European Community.</p>
+        </fn>
+      </fn-group>
+    </sec>
+    <ref-list>
+      <title>References</title>
+      <ref id="bib1">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Augusto</surname><given-names>LA</given-names></name><name><surname>Decottignies</surname><given-names>P</given-names></name><name><surname>Synguelakis</surname><given-names>M</given-names></name><name><surname>Nicaise</surname><given-names>M</given-names></name><name><surname>Le Mar&#xE9;chal</surname><given-names>P</given-names></name><name><surname>Chaby</surname><given-names>R</given-names></name></person-group>
+<year>2003</year>
+<article-title>Histones: a novel class of lipopolysaccharide-binding molecules</article-title>. <source>Biochemistry</source><volume>42</volume>:<fpage>3929</fpage>&#x2013;<lpage>38</lpage><pub-id pub-id-type="pmid">12667084</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib2">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Bielecki</surname><given-names>J</given-names></name><name><surname>Youngman</surname><given-names>P</given-names></name><name><surname>Connelly</surname><given-names>P</given-names></name><name><surname>Portnoy</surname><given-names>DA</given-names></name></person-group>
+<year>1990</year>
+<article-title><italic>Bacillus subtilis</italic> expressing a haemolysin gene from <italic>Listeria monocytogenes</italic> can grow in mammalian cells</article-title>. <source>Nature</source><volume>345</volume>:<fpage>175</fpage>&#x2013;<lpage>6</lpage><pub-id pub-id-type="pmid">2110628</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib3">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Bliska</surname><given-names>JB</given-names></name><name><surname>Casadevall</surname><given-names>A</given-names></name></person-group>
+<year>2009</year>
+<article-title>Intracellular pathogenic bacteria and fungi</article-title>&#x2014;<article-title>a case of convergent evolution?</article-title><source>Nat Rev Microbiol</source><volume>7</volume>:<fpage>165</fpage>&#x2013;<lpage>71</lpage></mixed-citation>
+      </ref>
+      <ref id="bib4">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Bolton</surname><given-names>SJ</given-names></name><name><surname>Perry</surname><given-names>VH</given-names></name></person-group>
+<year>1997</year>
+<article-title>Histone H1; a neuronal protein that binds bacterial lipopolysaccharide</article-title>. <source>J Neurocytol</source><volume>26</volume>:<fpage>823</fpage>&#x2013;<lpage>31</lpage><pub-id pub-id-type="pmid">9482158</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib5">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Bozza</surname><given-names>PT</given-names></name><name><surname>Viola</surname><given-names>JP</given-names></name></person-group>
+<year>2010</year>
+<article-title>Lipid droplets in inflammation and cancer</article-title>. <source>Prostaglandins Leukot Essent Fatty Acids</source><volume>82</volume>:<fpage>243</fpage>&#x2013;<lpage>50</lpage><pub-id pub-id-type="pmid">20206487</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib6">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Brasaemle</surname><given-names>DL</given-names></name><name><surname>Dolios</surname><given-names>G</given-names></name><name><surname>Shapiro</surname><given-names>L</given-names></name><name><surname>Wang</surname><given-names>R</given-names></name></person-group>
+<year>2004</year>
+<article-title>Proteomic analysis of proteins associated with lipid droplets of basal and lipolytically stimulated 3T3-L1 adipocytes</article-title>. <source>J Biol Chem</source><volume>279</volume>:<fpage>46835</fpage>&#x2013;<lpage>42</lpage><pub-id pub-id-type="pmid">15337753</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib7">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Cermelli</surname><given-names>S</given-names></name><name><surname>Guo</surname><given-names>Y</given-names></name><name><surname>Gross</surname><given-names>SP</given-names></name><name><surname>Welte</surname><given-names>MA</given-names></name></person-group>
+<year>2006</year>
+<article-title>The lipid-droplet proteome reveals that droplets are a protein-storage depot</article-title>. <source>Curr Biol</source><volume>16</volume>:<fpage>1783</fpage>&#x2013;<lpage>95</lpage><pub-id pub-id-type="pmid">16979555</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib8">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Chintapalli</surname><given-names>VR</given-names></name><name><surname>Wang</surname><given-names>J</given-names></name><name><surname>Dow</surname><given-names>JA</given-names></name></person-group>
+<year>2007</year>
+<article-title>Using FlyAtlas to identify better <italic>Drosophila melanogaster</italic> models of human disease</article-title>. <source>Nat Genet</source><volume>39</volume>:<fpage>715</fpage>&#x2013;<lpage>20</lpage><pub-id pub-id-type="pmid">17534367</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib9">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Cho</surname><given-names>JH</given-names></name><name><surname>Park</surname><given-names>IY</given-names></name><name><surname>Kim</surname><given-names>HS</given-names></name><name><surname>Lee</surname><given-names>WT</given-names></name><name><surname>Kim</surname><given-names>MS</given-names></name><name><surname>Kim</surname><given-names>SC</given-names></name></person-group>
+<year>2002</year>
+<article-title>Cathepsin D produces antimicrobial peptide parasin I from histone H2A in the skin mucosa of fish</article-title>. <source>FASEB J</source><volume>16</volume>:<fpage>429</fpage>&#x2013;<lpage>31</lpage><pub-id pub-id-type="pmid">11821259</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib10">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>De Lucca</surname><given-names>AJ</given-names></name><name><surname>Heden</surname><given-names>LO</given-names></name><name><surname>Ingber</surname><given-names>B</given-names></name><name><surname>Bhatnagar</surname><given-names>D</given-names></name></person-group>
+<year>2011</year>
+<article-title>Antifungal properties of wheat histones (H1-H4) and purified wheat histone H1</article-title>. <source>J Agric Food Chem</source><volume>59</volume>:<fpage>6933</fpage>&#x2013;<lpage>9</lpage><pub-id pub-id-type="pmid">21595494</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib11">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Fernandes</surname><given-names>JM</given-names></name><name><surname>Molle</surname><given-names>G</given-names></name><name><surname>Kemp</surname><given-names>GD</given-names></name><name><surname>Smith</surname><given-names>VJ</given-names></name></person-group>
+<year>2004</year>
+<article-title>Isolation and characterisation of oncorhyncin II, a histone H1-derived antimicrobial peptide from skin secretions of rainbow trout, <italic>Oncorhynchus mykiss</italic></article-title>. <source>Dev Comp Immunol</source><volume>28</volume>:<fpage>127</fpage>&#x2013;<lpage>38</lpage><pub-id pub-id-type="pmid">12969798</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib12">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Figueredo</surname><given-names>SM</given-names></name><name><surname>Weeks</surname><given-names>CS</given-names></name><name><surname>Young</surname><given-names>SK</given-names></name><name><surname>Ouellette</surname><given-names>AJ</given-names></name></person-group>
+<year>2009</year>
+<article-title>Anionic amino acids near the pro-alpha-defensin N terminus mediate inhibition of bactericidal activity in mouse pro-cryptdin-4</article-title>. <source>J Biol Chem</source><volume>284</volume>:<fpage>6826</fpage>&#x2013;<lpage>31</lpage><pub-id pub-id-type="pmid">19106102</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib13">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Gunjan</surname><given-names>A</given-names></name><name><surname>Verreault</surname><given-names>A</given-names></name></person-group>
+<year>2003</year>
+<article-title>A Rad53 kinase-dependent surveillance mechanism that regulates histone protein levels in <italic>S. cerevisiae</italic></article-title>. <source>Cell</source><volume>115</volume>:<fpage>537</fpage>&#x2013;<lpage>49</lpage><pub-id pub-id-type="pmid">14651846</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib14">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Heumann</surname><given-names>D</given-names></name><name><surname>Roger</surname><given-names>T</given-names></name></person-group>
+<year>2002</year>
+<article-title>Initial responses to endotoxins and Gram-negative bacteria</article-title>. <source>Clin Chim Acta</source><volume>323</volume>:<fpage>59</fpage>&#x2013;<lpage>72</lpage><pub-id pub-id-type="pmid">12135807</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib15">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Hirsch</surname><given-names>JG</given-names></name></person-group>
+<year>1958</year>
+<article-title>Bactericidal action of histone</article-title>. <source>J Exp Med</source><volume>108</volume>:<fpage>925</fpage>&#x2013;<lpage>44</lpage><pub-id pub-id-type="pmid">13598820</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib16">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Huang</surname><given-names>L</given-names></name><name><surname>Jacob</surname><given-names>RJ</given-names></name><name><surname>Pegg</surname><given-names>SC</given-names></name><name><surname>Baldwin</surname><given-names>MA</given-names></name><name><surname>Wang</surname><given-names>CC</given-names></name><name><surname>Burlingame</surname><given-names>AL</given-names></name><etal/></person-group>
+<year>2001</year>
+<article-title>Functional assignment of the 20 S proteasome from <italic>Trypanosoma brucei</italic> using mass spectrometry and new bioinformatics approaches</article-title>. <source>J Biol Chem</source><volume>276</volume>:<fpage>28327</fpage>&#x2013;<lpage>39</lpage><pub-id pub-id-type="pmid">11309374</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib17">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Kim</surname><given-names>HS</given-names></name><name><surname>Yoon</surname><given-names>H</given-names></name><name><surname>Minn</surname><given-names>I</given-names></name><name><surname>Park</surname><given-names>CB</given-names></name><name><surname>Lee</surname><given-names>WT</given-names></name><name><surname>Zasloff</surname><given-names>M</given-names></name><etal/></person-group>
+<year>2000</year>
+<article-title>Pepsin-mediated processing of the cytoplasmic histone H2A to strong antimicrobial peptide buforin I</article-title>. <source>J Immunol</source><volume>165</volume>:<fpage>3268</fpage>&#x2013;<lpage>74</lpage><pub-id pub-id-type="pmid">10975843</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib18">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Larsson</surname><given-names>S</given-names></name><name><surname>Resj&#xF6;</surname><given-names>S</given-names></name><name><surname>Gomez</surname><given-names>MF</given-names></name><name><surname>James</surname><given-names>P</given-names></name><name><surname>Holm</surname><given-names>C</given-names></name></person-group>
+<year>2012</year>
+<article-title>Characterization of the lipid droplet proteome of a clonal insulin-producing &#x3B2;-cell line (INS-1 832/13)</article-title>. <source>J Proteome Res</source><volume>11</volume>:<fpage>1264</fpage>&#x2013;<lpage>73</lpage><pub-id pub-id-type="pmid">22268682</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib19">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Leach</surname><given-names>TJ</given-names></name><name><surname>Mazzeo</surname><given-names>M</given-names></name><name><surname>Chotkowski</surname><given-names>HL</given-names></name><name><surname>Madigan</surname><given-names>JP</given-names></name><name><surname>Wotring</surname><given-names>MG</given-names></name><name><surname>Glaser</surname><given-names>RL</given-names></name></person-group>
+<year>2000</year>
+<article-title>Histone H2A.Z is widely but nonrandomly distributed in chromosomes of <italic>Drosophila melanogaster</italic></article-title>. <source>J Biol Chem</source><volume>275</volume>:<fpage>23267</fpage>&#x2013;<lpage>72</lpage><pub-id pub-id-type="pmid">10801889</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib20">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Lee</surname><given-names>DY</given-names></name><name><surname>Huang</surname><given-names>CM</given-names></name><name><surname>Nakatsuji</surname><given-names>T</given-names></name><name><surname>Thiboutot</surname><given-names>D</given-names></name><name><surname>Kang</surname><given-names>SA</given-names></name><name><surname>Monestier</surname><given-names>M</given-names></name><etal/></person-group>
+<year>2009</year>
+<article-title>Histone H4 is a major component of the antimicrobial action of human sebocytes</article-title>. <source>J Invest Dermatol</source><volume>129</volume>:<fpage>2489</fpage>&#x2013;<lpage>96</lpage><pub-id pub-id-type="pmid">19536143</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib21">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Lehrer</surname><given-names>RI</given-names></name><name><surname>Rosenman</surname><given-names>M</given-names></name><name><surname>Harwig</surname><given-names>SS</given-names></name><name><surname>Jackson</surname><given-names>R</given-names></name><name><surname>Eisenhauer</surname><given-names>P</given-names></name></person-group>
+<year>1991</year>
+<article-title>Ultrasensitive assays for endogenous antimicrobial polypeptides</article-title>. <source>J Immunol Methods</source><volume>137</volume>:<fpage>167</fpage>&#x2013;<lpage>73</lpage><pub-id pub-id-type="pmid">1901580</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib22">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Li</surname><given-names>Z</given-names></name><name><surname>Thiel</surname><given-names>K</given-names></name><name><surname>Thul</surname><given-names>PJ</given-names></name><name><surname>Beller</surname><given-names>M</given-names></name><name><surname>K&#xFC;hnlein</surname><given-names>RP</given-names></name><name><surname>Welt</surname><given-names>MA</given-names></name></person-group>
+<year>2012</year>
+<article-title>Lipid droplets control the maternal histone supply of drosophila embryos</article-title>. <source>Current Biology</source> doi: <ext-link ext-link-type="uri" xlink:href="http://dx.doi.org/10.1016/j.cub.2012.09.018">10.1016/j.cub.2012.09.018</ext-link></mixed-citation>
+      </ref>
+      <ref id="bib23">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Lowder</surname><given-names>M</given-names></name><name><surname>Unge</surname><given-names>A</given-names></name><name><surname>Maraha</surname><given-names>N</given-names></name><name><surname>Jansson</surname><given-names>JK</given-names></name><name><surname>Swiggett</surname><given-names>J</given-names></name><name><surname>Oliver</surname><given-names>JD</given-names></name></person-group>
+<year>2000</year>
+<article-title>Effect of starvation and the viable-but-nonculturable state on green fluorescent protein (GFP) fluorescence in GFP-tagged <italic>Pseudomonas fluorescens</italic> A506</article-title>. <source>Appl Environ Microbiol</source><volume>66</volume>:<fpage>3160</fpage>&#x2013;<lpage>5</lpage><pub-id pub-id-type="pmid">10919764</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib24">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Mackay</surname><given-names>IR</given-names></name></person-group>
+<year>2002</year>
+<article-title>Hepatoimmunology: a perspective</article-title>. <source>Immunol Cell Biol</source><volume>80</volume>:<fpage>36</fpage>&#x2013;<lpage>44</lpage><pub-id pub-id-type="pmid">11869361</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib25">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>McQuilton</surname><given-names>P</given-names></name><name><surname>St Pierre</surname><given-names>SE</given-names></name><name><surname>Thurmond</surname><given-names>J</given-names></name></person-group>; <collab>FlyBase Consortium</collab>
+<year>2012</year>
+<article-title>FlyBase 101&#x2014;the basics of navigating FlyBase</article-title>. <source>Nucleic Acids Res</source><volume>40</volume>:<fpage>D706</fpage>&#x2013;<lpage>14</lpage><pub-id pub-id-type="pmid">22127867</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib26">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Ouvry-Patat</surname><given-names>SA</given-names></name><name><surname>Schey</surname><given-names>KL</given-names></name></person-group>
+<year>2007</year>
+<article-title>Characterization of antimicrobial histone sequences and posttranslational modifications by mass spectrometry</article-title>. <source>J Mass Spectrom</source><volume>42</volume>:<fpage>664</fpage>&#x2013;<lpage>74</lpage><pub-id pub-id-type="pmid">17405180</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib27">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Parseghian</surname><given-names>MH</given-names></name><name><surname>Luhrs</surname><given-names>KA</given-names></name></person-group>
+<year>2006</year>
+<article-title>Beyond the walls of the nucleus: the role of histones in cellular signaling and innate immunity</article-title>. <source>Biochem Cell Biol</source><volume>84</volume>:<fpage>589</fpage>&#x2013;<lpage>604</lpage><pub-id pub-id-type="pmid">16936831</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib28">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Ray</surname><given-names>K</given-names></name><name><surname>Marteyn</surname><given-names>B</given-names></name><name><surname>Sansonetti</surname><given-names>PJ</given-names></name><name><surname>Tang</surname><given-names>CM</given-names></name></person-group>
+<year>2009</year>
+<article-title>Life on the inside: the intracellular lifestyle of cytosolic bacteria</article-title>. <source>Nat Rev Microbiol</source><volume>7</volume>:<fpage>333</fpage>&#x2013;<lpage>40</lpage><pub-id pub-id-type="pmid">19369949</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib29">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Saffarzadeh</surname><given-names>M</given-names></name><name><surname>Juenemann</surname><given-names>C</given-names></name><name><surname>Queisser</surname><given-names>MA</given-names></name><name><surname>Lochnit</surname><given-names>G</given-names></name><name><surname>Barreto</surname><given-names>G</given-names></name><name><surname>Galuska</surname><given-names>SP</given-names></name><etal/></person-group>
+<year>2012</year>
+<article-title>Neutrophil extracellular traps directly induce epithelial and endothelial cell death: a predominant role of histones</article-title>. <source>PLoS One</source><volume>7</volume>:<fpage>e32366</fpage><pub-id pub-id-type="pmid">22389696</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib30">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Senga</surname><given-names>F</given-names></name><name><surname>Yin</surname><given-names>L</given-names></name><name><surname>Karasuno</surname><given-names>H</given-names></name><name><surname>Ohtaki</surname><given-names>H</given-names></name><name><surname>Nakamachi</surname><given-names>T</given-names></name><name><surname>Satoh</surname><given-names>K</given-names></name><etal/></person-group>
+<year>2008</year>
+<article-title>Minus charge stimulation prevents LPS-induced liver injury by reduction of nitric oxide</article-title>. <source>J Clin Biochem Nutr</source><volume>42</volume>:<fpage>222</fpage>&#x2013;<lpage>7</lpage><pub-id pub-id-type="pmid">18545644</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib31">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Singh</surname><given-names>RK</given-names></name><name><surname>Kabbaj</surname><given-names>MH</given-names></name><name><surname>Paik</surname><given-names>J</given-names></name><name><surname>Gunjan</surname><given-names>A</given-names></name></person-group>
+<year>2009a</year>
+<article-title>Histone levels are regulated by phosphorylation and ubiquitylation-dependent proteolysis</article-title>. <source>Nat Cell Biol</source><volume>11</volume>:<fpage>925</fpage>&#x2013;<lpage>33</lpage><pub-id pub-id-type="pmid">19578373</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib32">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Singh</surname><given-names>RK</given-names></name><name><surname>Paik</surname><given-names>J</given-names></name><name><surname>Gunjan</surname><given-names>A</given-names></name></person-group>
+<year>2009b</year>
+<article-title>Generation and management of excess histones during the cell cycle</article-title>. <source>Front Biosci</source><volume>14</volume>:<fpage>3145</fpage>&#x2013;<lpage>58</lpage><pub-id pub-id-type="pmid">19273263</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib33">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Singh</surname><given-names>RK</given-names></name><name><surname>Liang</surname><given-names>D</given-names></name><name><surname>Gajjalaiahvari</surname><given-names>UR</given-names></name><name><surname>Kabbaj</surname><given-names>MH</given-names></name><name><surname>Paik</surname><given-names>J</given-names></name><name><surname>Gunjan</surname><given-names>A</given-names></name></person-group>
+<year>2010</year>
+<article-title>Excess histone levels mediate cytotoxicity via multiple mechanisms</article-title>. <source>Cell Cycle</source><volume>9</volume>:<fpage>4236</fpage>&#x2013;<lpage>44</lpage><pub-id pub-id-type="pmid">20948314</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib34">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Smolenski</surname><given-names>G</given-names></name><name><surname>Haines</surname><given-names>S</given-names></name><name><surname>Kwan</surname><given-names>FY</given-names></name><name><surname>Bond</surname><given-names>J</given-names></name><name><surname>Farr</surname><given-names>V</given-names></name><name><surname>Davis</surname><given-names>SR</given-names></name><etal/></person-group>
+<year>2007</year>
+<article-title>Characterisation of host defence proteins in milk using a proteomic approach</article-title>. <source>J Proteome Res</source><volume>6</volume>:<fpage>207</fpage>&#x2013;<lpage>15</lpage><pub-id pub-id-type="pmid">17203965</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib35">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Tilney</surname><given-names>LG</given-names></name><name><surname>Portnoy</surname><given-names>DA</given-names></name></person-group>
+<year>1989</year>
+<article-title>Actin filaments and the growth, movement, and spread of the intracellular bacterial parasite, <italic>Listeria monocytogenes</italic></article-title>. <source>J Cell Biol</source><volume>109</volume>(<issue>Pt 1</issue>):<fpage>1597</fpage>&#x2013;<lpage>608</lpage><pub-id pub-id-type="pmid">2507553</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib36">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Turr&#xF3;</surname><given-names>S</given-names></name><name><surname>Ingelmo-Torres</surname><given-names>M</given-names></name><name><surname>Estanyol</surname><given-names>JM</given-names></name><name><surname>Tebar</surname><given-names>F</given-names></name><name><surname>Fern&#xE1;ndez</surname><given-names>MA</given-names></name><name><surname>Albor</surname><given-names>CV</given-names></name><etal/></person-group>
+<year>2006</year>
+<article-title>Identification and characterization of associated with lipid droplet protein 1: a novel membrane-associated protein that resides on hepatic lipid droplets</article-title>. <source>Traffic</source><volume>7</volume>:<fpage>1254</fpage>&#x2013;<lpage>69</lpage><pub-id pub-id-type="pmid">17004324</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib37">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>von Kockritz-Blickwede</surname><given-names>M</given-names></name><name><surname>Nizet</surname><given-names>V</given-names></name></person-group>
+<year>2009</year>
+<article-title>Innate immunity turned inside-out: antimicrobial defense by phagocyte extracellular traps</article-title>. <source>J Mol Med (Berl)</source><volume>87</volume>:<fpage>775</fpage>&#x2013;<lpage>83</lpage><pub-id pub-id-type="pmid">19444424</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib38">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Wan</surname><given-names>HC</given-names></name><name><surname>Melo</surname><given-names>RC</given-names></name><name><surname>Jin</surname><given-names>Z</given-names></name><name><surname>Dvorak</surname><given-names>AM</given-names></name><name><surname>Weller</surname><given-names>PF</given-names></name></person-group>
+<year>2007</year>
+<article-title>Roles and origins of leukocyte lipid bodies: proteomic and ultrastructural studies</article-title>. <source>FASEB J</source><volume>21</volume>:<fpage>167</fpage>&#x2013;<lpage>78</lpage><pub-id pub-id-type="pmid">17135363</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib39">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Welte</surname><given-names>MA</given-names></name><name><surname>Cermelli</surname><given-names>S</given-names></name><name><surname>Griner</surname><given-names>J</given-names></name><name><surname>Viera</surname><given-names>A</given-names></name><name><surname>Guo</surname><given-names>Y</given-names></name><name><surname>Kim</surname><given-names>DH</given-names></name><etal/></person-group>
+<year>2005</year>
+<article-title>Regulation of lipid-droplet transport by the perilipin homolog LSD2</article-title>. <source>Curr Biol</source><volume>15</volume>:<fpage>1266</fpage>&#x2013;<lpage>75</lpage><pub-id pub-id-type="pmid">16051169</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib40">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Welte</surname><given-names>MA</given-names></name></person-group>
+<year>2007</year>
+<article-title>Proteins under new management: lipid droplets deliver</article-title>. <source>Trends Cell Biol</source><volume>17</volume>:<fpage>363</fpage>&#x2013;<lpage>9</lpage><pub-id pub-id-type="pmid">17766117</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib41">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Wergeland</surname><given-names>HI</given-names></name><name><surname>Haaheim</surname><given-names>LR</given-names></name><name><surname>Nat&#xE5;s</surname><given-names>OB</given-names></name><name><surname>Wesenberg</surname><given-names>F</given-names></name><name><surname>Oeding</surname><given-names>P</given-names></name></person-group>
+<year>1989</year>
+<article-title>Antibodies to staphylococcal peptidoglycan and its peptide epitopes, teichoic acid, and lipoteichoic acid in sera from blood donors and patients with staphylococcal infections</article-title>. <source>J Clin Microbiol</source><volume>27</volume>:<fpage>1286</fpage>&#x2013;<lpage>91</lpage><pub-id pub-id-type="pmid">2473994</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib42">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Yang</surname><given-names>H</given-names></name><name><surname>Zhou</surname><given-names>Z</given-names></name><name><surname>Zhang</surname><given-names>H</given-names></name><name><surname>Chen</surname><given-names>M</given-names></name><name><surname>Li</surname><given-names>J</given-names></name><name><surname>Ma</surname><given-names>Y</given-names></name><etal/></person-group>
+<year>2010</year>
+<article-title>Shotgun proteomic analysis of the fat body during metamorphosis of domesticated silkworm (<italic>Bombyx mori</italic>)</article-title>. <source>Amino Acids</source><volume>38</volume>:<fpage>1333</fpage>&#x2013;<lpage>42</lpage><pub-id pub-id-type="pmid">19730979</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib43">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Zhang</surname><given-names>H</given-names></name><name><surname>Wang</surname><given-names>Y</given-names></name><name><surname>Li</surname><given-names>J</given-names></name><name><surname>Yu</surname><given-names>J</given-names></name><name><surname>Pu</surname><given-names>J</given-names></name><name><surname>Li</surname><given-names>L</given-names></name><etal/></person-group>
+<year>2011</year>
+<article-title>Proteome of skeletal muscle lipid droplet reveals association with mitochondria and apolipoprotein a-I</article-title>. <source>J Proteome Res</source><volume>10</volume>:<fpage>4757</fpage>&#x2013;<lpage>68</lpage><pub-id pub-id-type="pmid">21870882</pub-id></mixed-citation>
+      </ref>
+      <ref id="bib44">
+        <mixed-citation publication-type="journal"><person-group person-group-type="author"><name><surname>Zhang</surname><given-names>P</given-names></name><name><surname>Na</surname><given-names>H</given-names></name><name><surname>Liu</surname><given-names>Z</given-names></name><name><surname>Zhang</surname><given-names>S</given-names></name><name><surname>Xue</surname><given-names>P</given-names></name><name><surname>Chen</surname><given-names>Y</given-names></name><etal/></person-group>
+<year>2012</year>
+<article-title>Proteomic study and marker protein identification of <italic>Caenorhabditis elegans</italic> lipid droplets</article-title>. <source>Mol Cell Proteomics</source><volume>11</volume>:<fpage>317</fpage>&#x2013;<lpage>28</lpage><pub-id pub-id-type="pmid">22493183</pub-id></mixed-citation>
+      </ref>
+    </ref-list>
+  </back>
+  <sub-article id="SA1" article-type="article-commentary">
+    <front>
+      <journal-meta>
+        <journal-id journal-id-type="nlm-ta">eLife</journal-id>
+        <journal-title-group>
+          <journal-title>eLife</journal-title>
+        </journal-title-group>
+        <issn pub-type="epub">2050-084X</issn>
+      </journal-meta>
+      <article-meta>
+        <article-id pub-id-type="doi">10.7554/eLife.00003.012</article-id>
+        <title-group>
+          <article-title>Decision letter</article-title>
+        </title-group>
+        <contrib-group>
+          <contrib contrib-type="editor">
+            <name>
+              <surname>Kolter</surname>
+              <given-names>Roberto</given-names>
+            </name>
+            <role>Reviewing editor</role>
+            <aff><institution>Harvard Medical School</institution>, <country>United States</country></aff>
+          </contrib>
+        </contrib-group>
+      </article-meta>
+    </front>
+    <body>
+      <boxed-text position="float" orientation="portrait">
+        <p>eLife posts the editorial decision letter and author response on a selection of the published articles (subject to the approval of the authors). An edited version of the letter sent to the authors after peer review is shown, indicating the substantive concerns or comments; minor concerns are not usually shown. Reviewers have the opportunity to discuss the decision before the letter is sent (see <ext-link ext-link-type="uri" xlink:href="http://www.elifesciences.org/the-journal/review-process">review process</ext-link>). Similarly, the author response typically shows only responses to the major concerns raised by the reviewers.</p>
+      </boxed-text>
+      <p>Thank you for choosing to send your work entitled &#x201C;A novel role for lipid droplets in the organismal antibacterial response&#x201D; for consideration at <italic>eLife</italic>. Your article has been evaluated by a Senior Editor and 2 reviewers, one of whom is a member of <italic>eLife's</italic> Board of Reviewing Editors. The latter was Roberto Kolter, who wanted to reveal his identity.</p>
+      <p>We discussed our comments and concerns before we reached this decision, and the Reviewing Editor has assembled the following comments based on the reviewers' reports. Our goal is to provide the essential revision requirements as a single set of instructions, so that you have a clear view of the revisions that are necessary for us to publish your work.</p>
+      <p>This is a very nice description of a remarkable new finding &#x2013; bacteria infected into <italic>Drosophila</italic> embryos are killed by the release of histones from lipid droplets. The finding that in Jabba mutants histones do not accumulate in lipid droplets allowed a direct test of the involvement of histones in the process. A large difference in bacterial growth was observed, and a four to five fold difference in embryo survival was observed upon injection with bacteria. While the results are outstanding, the manuscript preparation is a bit wanting. In particular, there should be more quantitative assessment of the effects observed.</p>
+      <p>An important point that is currently not discussed in the paper is that, as of now, this phenomenon has been shown to apply to fly embryos (with some interesting results in murine liver added). But we feel there should be some discussion of whether this might apply to the adult organism &#x2013; perhaps even some presentation as to whether adult Jabba flies are compromised or not when confronted with bacterial pathogens, if such trials have been done. While such experiments are not absolutely required (<italic>eLife</italic> policy is to suggest just the absolutely essential experiments), the text must be modified to bring forth this important limitation; as of now the effect has been seen only in early embryos and not in adult flies.</p>
+      <p>Aside from this important limitation that needs to be addressed, we recommend that the effect of Jabba be tested in another mutant background (jabba/deficiency) to exclude a possible background effect.</p>
+      <p>There were also some issues raised regarding the experiments using mammalian cell lines. Firstly, in the context of immunity, measuring the efficiency of an LPS infection is usually defined by cytokine response rather than hepatic injury. Secondly, if histones do act as cytosolic antibacterial agents in mammalian cells, it might to include a bacterial killing assay with intracellular bacteria and mammalian cells. In short, it would be good to tone down this section as well because the experiments presented are also rather limited, if provocative.</p>
+    </body>
+  </sub-article>
+  <sub-article id="SA2" article-type="reply">
+    <front>
+      <journal-meta>
+        <journal-id journal-id-type="nlm-ta">eLife</journal-id>
+        <journal-title-group>
+          <journal-title>eLife</journal-title>
+        </journal-title-group>
+        <issn pub-type="epub">2050-084X</issn>
+      </journal-meta>
+      <article-meta>
+        <article-id pub-id-type="doi">10.7554/eLife.00003.013</article-id>
+        <title-group>
+          <article-title>Author response</article-title>
+        </title-group>
+      </article-meta>
+    </front>
+    <body>
+      <p><italic>An important point that is currently not discussed in the paper is that, as of now, this phenomenon has been shown to apply to fly embryos (with some interesting results in murine liver added). But we feel there should be some discussion of whether this might apply to the adult organism &#x2013; perhaps even some presentation as to whether adult Jabba flies are compromised or not when confronted with bacterial pathogens, if such trials have been done. While such experiments are not absolutely required (eLife policy is to suggest just the absolutely essential experiments), the text must be modified to bring forth this important limitation; as of now the effect has been seen only in early embryos and not in adult flies</italic>.</p>
+      <p>We agree that this was an interesting and important question. In the new version of the manuscript, we answer it in the affirmative&#x2014;Figure 4 is entirely new, and shows new data quantifying survival of adult flies challenged with bacteria. Further, Figure 4 shows that we can indeed detect histones in the adult cytosol, and that histone levels are decreased in the Jabba mutant background.</p>
+      <p><italic>We recommend that the effect of Jabba be tested in another mutant background (jabba/deficiency) to exclude a possible background effect</italic>.</p>
+      <p>In fact, this was not an issue&#x2014;the experiments presented had been done in two entirely different genetic backgrounds, but our description was lacking. We have now modified the text to show the exact details of the two different mutants used in this study to address the background effect. Alleles <italic>Jabba</italic><sup><italic>zl01</italic></sup> and <italic>Jabba</italic><sup><italic>f07560</italic></sup> were derived independently: <italic>Jabba</italic><sup><italic>zl01</italic></sup> is due to imprecise excision of a P element inserted near the Jabba promoter. <italic>Jabba</italic><sup><italic>f07560</italic></sup> is due to the insertion of a PBac element in the middle of the Jabba coding region. As the two alleles were generated in entirely different genetic backgrounds, this rules out any genetic background effects. This has now been clarified in the text.</p>
+      <p><italic>There were also some issues raised regarding the experiments using mammalian cell lines. Firstly, in the context of immunity, measuring the efficiency of an LPS infection is usually defined by cytokine response rather than hepatic injury. Secondly, if histones do act as cytosolic antibacterial agents in mammalian cells, it might do to include a bacterial killing assay with intracellular bacteria and mammalian cells. In short, it would be good to tone down this section as well because the experiments presented are also rather limited, if provocative</italic>.</p>
+      <p>The cytokine levels in the murine study are now included in the revised version of the manuscript (see Figure 6). We have not been able to do a bacterial killing assay with the murine droplets, because a great deal of research in Spain (where our collaborators are located) is currently on hold due to the financial crisis there; the mouse facility is closed for a month or two. Given our new data on whole-fly data, and the expected large delay in being able to carry out the murine-droplet killing assays, we propose to leave establishing the efficacy of the murine droplets for future work. Accordingly, this section has been toned down as suggested by the reviewers, and in particular, we now include the sentence: &#x201C;Determining whether the murine droplet-bound histones actively contribute to host defense remains for future studies.&#x201D;</p>
+    </body>
+  </sub-article>
+</article>
+</pmc-articleset>

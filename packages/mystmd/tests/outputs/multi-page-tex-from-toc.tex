@@ -1,0 +1,67 @@
+\documentclass[a4paper,11pt,oneside]{book}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+
+% Make list items more compact
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep, topsep=0pt}
+
+
+
+% Style quotes
+\usepackage{xcolor}
+% Change links to basic
+\hypersetup{
+  colorlinks,
+  linkcolor={black},
+  citecolor={black},
+  % urlcolor={blue!80!black}
+  urlcolor={black}
+}
+\usepackage{framed}
+\definecolor{quoteshade}{rgb}{0.95,0.95,1}
+\renewenvironment{quote}{%
+  \def\FrameCommand{%
+    \hspace{1pt}%
+    {\color{darkblue}\vrule width 2pt}%
+    {\color{quoteshade}\vrule width 4pt}%
+    \colorbox{quoteshade}%
+  }%
+  \MakeFramed{\advance\hsize-\width\FrameRestore}
+  \noindent\hspace{-8pt}% disable indenting first paragraph
+  \begin{adjustwidth}
+  \vspace{2pt}\vspace{2pt}%
+}
+{%
+  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
+
+\title{\Huge \textbf{Page Three}}
+\author{\textsc{Franklin Koch}}
+
+\begin{document}
+\sloppy
+
+\frontmatter
+\maketitle
+
+\tableofcontents
+% \listoffigures
+% \listoftables
+
+\mainmatter
+
+% \include{preface.tex}
+% \include{acknowledgements.tex}
+
+Egestas sed tempus urna et pharetra pharetra. Quam elementum pulvinar etiam non. Aliquet lectus proin nibh nisl condimentum. Nulla facilisi cras fermentum odio eu feugiat pretium nibh ipsum. Sit amet facilisis magna etiam tempor orci eu lobortis elementum. Non diam phasellus vestibulum lorem sed risus ultricies tristique. Non curabitur gravida arcu ac tortor dignissim convallis aenean. Felis eget nunc lobortis mattis aliquam. Proin libero nunc consequat interdum varius sit amet mattis. Volutpat sed cras ornare arcu dui vivamus arcu. Elit pellentesque habitant morbi tristique senectus et netus. Nibh tortor id aliquet lectus proin nibh. Lacinia at quis risus sed vulputate odio ut enim blandit. Quis enim lobortis scelerisque fermentum dui faucibus in ornare.
+
+
+
+\end{document}

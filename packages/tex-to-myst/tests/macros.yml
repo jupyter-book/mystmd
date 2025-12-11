@@ -1,0 +1,20 @@
+title: Math and inline macros
+cases:
+  - title: text command in math
+    tex: |-
+      \newcommand{\helloMacro}{   $\text{Hello}$}
+
+      which we refer to as \helloMacro{}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'which we refer to as '
+            - type: inlineMath
+              value: |-
+                \text{Hello}
+    data:
+      macros:
+        \helloMacro: \text{Hello} # dollar signs are removed

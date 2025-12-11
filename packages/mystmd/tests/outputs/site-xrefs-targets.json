@@ -1,0 +1,275 @@
+{
+  "version": 3,
+  "kind": "Article",
+  "sha256": "7d3bc0faa3c9ad00be2ff1150f23e985e8218d71b40926123b1579c29e17ab65",
+  "slug": "targets",
+  "location": "/targets.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Targets",
+    "label": "page-fm-label",
+    "content_includes_title": false,
+    "github": "https://github.com/jupyter-book/mystmd",
+    "keywords": [],
+    "thumbnail": "/image-a67388c32d891c75e793fe7f45fe254b.png",
+    "exports": [
+      {
+        "format": "md",
+        "filename": "targets.md",
+        "url": "/targets-b263bad132d054fc96824fb25c8b9117.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": { "start": { "line": 8, "column": 1 }, "end": { "line": 8, "column": 1 } },
+            "children": [
+              {
+                "type": "text",
+                "value": "Implicit Heading",
+                "position": {
+                  "start": { "line": 8, "column": 1 },
+                  "end": { "line": 8, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "implicit-heading",
+            "label": "Implicit Heading",
+            "html_id": "implicit-heading",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 10, "column": 1 },
+              "end": { "line": 10, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "position": {
+                  "start": { "line": 10, "column": 1 },
+                  "end": { "line": 10, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 13, "column": 1 },
+              "end": { "line": 13, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Here’s lorem ipsum again",
+                "position": {
+                  "start": { "line": 13, "column": 1 },
+                  "end": { "line": 13, "column": 1 }
+                }
+              }
+            ],
+            "label": "explicit-heading",
+            "identifier": "explicit-heading",
+            "html_id": "explicit-heading"
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 15, "column": 1 },
+              "end": { "line": 15, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "position": {
+                  "start": { "line": 15, "column": 1 },
+                  "end": { "line": 15, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 17, "column": 1 },
+              "end": { "line": 17, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "My figure",
+                "position": {
+                  "start": { "line": 17, "column": 1 },
+                  "end": { "line": 17, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "my-figure",
+            "label": "My figure",
+            "html_id": "my-figure",
+            "implicit": true
+          },
+          {
+            "type": "container",
+            "kind": "figure",
+            "children": [
+              {
+                "type": "image",
+                "url": "/image-a67388c32d891c75e793fe7f45fe254b.png",
+                "alt": "This is a graph",
+                "data": { "altTextIsAutoGenerated": true },
+                "urlSource": "image.png"
+              },
+              {
+                "type": "caption",
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "position": {
+                      "start": { "line": 22, "column": 1 },
+                      "end": { "line": 22, "column": 1 }
+                    },
+                    "children": [
+                      {
+                        "type": "captionNumber",
+                        "kind": "figure",
+                        "label": "my-fig",
+                        "identifier": "my-fig",
+                        "html_id": "my-fig",
+                        "enumerator": "1",
+                        "children": [
+                          { "type": "text", "value": "Figure " },
+                          { "type": "text", "value": "1" },
+                          { "type": "text", "value": ":" }
+                        ],
+                        "template": "Figure %s:"
+                      },
+                      {
+                        "type": "text",
+                        "value": "This is a graph",
+                        "position": {
+                          "start": { "line": 22, "column": 1 },
+                          "end": { "line": 22, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "label": "my-fig",
+            "identifier": "my-fig",
+            "enumerator": "1",
+            "html_id": "my-fig"
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 26, "column": 1 },
+              "end": { "line": 26, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Local xref",
+                "position": {
+                  "start": { "line": 26, "column": 1 },
+                  "end": { "line": 26, "column": 1 }
+                }
+              }
+            ],
+            "label": "section-with-xref",
+            "identifier": "section-with-xref",
+            "html_id": "section-with-xref"
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 28, "column": 1 },
+              "end": { "line": 28, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "See: ",
+                "position": {
+                  "start": { "line": 28, "column": 1 },
+                  "end": { "line": 28, "column": 1 }
+                }
+              },
+              {
+                "type": "crossReference",
+                "position": {
+                  "start": { "line": 28, "column": 1 },
+                  "end": { "line": 28, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Here’s lorem ipsum again",
+                    "position": {
+                      "start": { "line": 13, "column": 1 },
+                      "end": { "line": 13, "column": 1 }
+                    }
+                  }
+                ],
+                "identifier": "explicit-heading",
+                "label": "explicit-heading",
+                "kind": "heading",
+                "template": "{name}",
+                "resolved": true,
+                "html_id": "explicit-heading"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 30, "column": 1 },
+              "end": { "line": 30, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "My code block",
+                "position": {
+                  "start": { "line": 30, "column": 1 },
+                  "end": { "line": 30, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "my-code-block",
+            "label": "My code block",
+            "html_id": "my-code-block",
+            "implicit": true
+          },
+          {
+            "type": "code",
+            "lang": "python",
+            "value": "import antigravity",
+            "label": "my-code",
+            "identifier": "my-code",
+            "enumerator": "1",
+            "html_id": "my-code"
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

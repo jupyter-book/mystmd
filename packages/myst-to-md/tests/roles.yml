@@ -1,0 +1,318 @@
+title: myst-to-md roles
+cases:
+  - title: subscript
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: subscript
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      Some % {sub}`*markdown*`
+  - title: superscript
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: superscript
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      Some % {sup}`*markdown*`
+  - title: delete
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: delete
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      Some % {del}`*markdown*`
+  - title: underline
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: underline
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      Some % {u}`*markdown*`
+  - title: smallcaps
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: smallcaps
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      Some % {sc}`*markdown*`
+  - title: inline math
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: inlineMath
+              value: markdown math
+    markdown: |-
+      Some % {math}`markdown math`
+  - title: abbreviation - no title
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: abbreviation
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: md
+    markdown: |-
+      Some % {abbr}`*md*`
+  - title: abbreviation - title
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: abbreviation
+              title: markdown
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: md
+    markdown: |-
+      Some % {abbr}`*md* (markdown)`
+  - title: nested roles
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: smallcaps
+              children:
+                - type: text
+                  value: 'nested '
+                - type: subscript
+                  children:
+                    - type: text
+                      value: markdown
+                - type: text
+                  value: ' content'
+    markdown: |-
+      Some % {sc}``nested {sub}`markdown` content``
+  - title: nested roles requiring trailing space
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: smallcaps
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      Some % {sc}``{sub}`markdown` ``
+  - title: nested roles with inline code
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: abbreviation
+              title: markdown
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: md
+                - type: text
+                  value: ' '
+                - type: inlineCode
+                  value: and code
+    markdown: |-
+      Some % {abbr}``*md* `and code` (markdown)``
+  - title: nested roles with math
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: abbreviation
+              title: markdown
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: md
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: and math
+    markdown: |-
+      Some % {abbr}``*md* {math}`and math` (markdown)``
+  - title: nested roles with inline backtick
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: abbreviation
+              title: markdown
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: md
+                - type: text
+                  value: ' '
+                - type: inlineCode
+                  value: co`de
+    markdown: |-
+      Some % {abbr}```*md* ``co`de`` (markdown)```
+  - title: nested roles with multiple levels
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: abbreviation
+              title: markdown
+              children:
+                - type: underline
+                  children:
+                    - type: subscript
+                      children:
+                        - type: text
+                          value: md
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: and math
+                - type: underline
+                  children:
+                    - type: subscript
+                      children:
+                        - type: inlineCode
+                          value: co`de
+    markdown: |-
+      Some % {abbr}`````{u}``{sub}`md` `` {math}`and math`{u}````{sub}``` ``co`de`` ``` ```` (markdown)`````
+  - title: myst role
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some % '
+            - type: mystRole
+              name: strike
+              value: markdown
+              children:
+                - type: del
+                  children:
+                    - type: text
+                      value: markdown
+    markdown: |-
+      Some % {strike}`markdown`
+  - title: cite
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: Smith_2023
+              identifier: smith_2023
+    markdown: |-
+      {cite}`Smith_2023`
+  - title: cite group - narrative
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  label: Doe_2000
+                  identifier: doe_2000
+                - type: cite
+                  label: Smith_2023
+                  identifier: smith_2023
+    markdown: |-
+      {cite:t}`Doe_2000,Smith_2023`
+  - title: cite group - parenthetical
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  label: Doe_2000
+                  identifier: doe_2000
+                - type: cite
+                  label: Smith_2023
+                  identifier: smith_2023
+    markdown: |-
+      {cite:p}`Doe_2000,Smith_2023`

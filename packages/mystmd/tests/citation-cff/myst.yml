@@ -1,0 +1,15 @@
+version: 1
+project:
+  title: My CFF myst project
+  keywords:
+    - Citation CFF
+    - MyST
+  authors:
+    - name: Franklin Koch
+      email: example@example.com
+      affiliation: MyST Developers
+  abstract: |
+    This is a small MyST project to demonstrate CITATION.cff export
+  date: 2020-01-01
+  license: CC-BY-4.0
+  github: https://github.com/jupyter-book/mystmd

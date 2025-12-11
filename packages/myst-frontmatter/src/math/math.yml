@@ -1,0 +1,32 @@
+title: Math Macros
+cases:
+  - title: String macro coerces
+    raw:
+      math:
+        a: b
+    normalized:
+      math:
+        a:
+          macro: b
+  - title: Macro with only macro passes
+    raw:
+      math:
+        a:
+          macro: b
+    normalized:
+      math:
+        a:
+          macro: b
+  - title: Macro with title/description passes
+    raw:
+      math:
+        a:
+          macro: b
+          title: my macro
+          description: turns a into b
+    normalized:
+      math:
+        a:
+          macro: b
+          title: my macro
+          description: turns a into b

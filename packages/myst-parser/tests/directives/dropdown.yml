@@ -1,0 +1,49 @@
+title: dropdown directive
+cases:
+  - title: basic dropdown directive parses
+    markdown: |-
+      ```{dropdown}
+      Simple dropdown
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: dropdown
+          value: Simple dropdown
+          children:
+            - type: details
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Simple dropdown
+  - title: dropdown directive parses with arg/option
+    markdown: |-
+      ```{dropdown} *My Title*
+      :open:
+      Less simple dropdown
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: dropdown
+          args: '*My Title*'
+          options:
+            open: true
+          value: Less simple dropdown
+          children:
+            - type: details
+              open: true
+              children:
+                - type: summary
+                  children:
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: My Title
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Less simple dropdown

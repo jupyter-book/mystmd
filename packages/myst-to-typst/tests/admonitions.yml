@@ -1,0 +1,40 @@
+title: myst-to-typst admonitions
+cases:
+  - title: important admonition
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: important
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: Important
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is the admonition body!'
+    typst: |-
+      #importantBlock[
+      This is the admonition body!
+      ]
+  - title: important admonition - custom title
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: important
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: NOTE
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is the admonition body!'
+    typst: |-
+      #importantBlock(heading: [NOTE])[
+      This is the admonition body!
+      ]

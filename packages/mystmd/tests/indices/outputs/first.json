@@ -1,0 +1,102 @@
+{
+  "kind": "Article",
+  "sha256": "aec69df4fe22f74334e70b5caf0abe5b1abba9acb93a1dd45f4c9d4e06a8a6d4",
+  "slug": "first",
+  "location": "/first.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Which came first?",
+    "downloads": [
+      {
+        "title": "first.md",
+        "filename": "first.md",
+        "format": "md",
+        "static": true
+      }
+    ],
+    "authors": [
+      {
+        "nameParsed": { "literal": "Franklin Koch", "given": "Franklin", "family": "Koch" },
+        "name": "Franklin Koch",
+        "affiliations": ["Curvenote"],
+        "id": "contributors-myst-generated-uid-0"
+      }
+    ],
+    "date": "2024-07-20",
+    "affiliations": [{ "id": "Curvenote", "name": "Curvenote" }],
+    "exports": [
+      {
+        "format": "md",
+        "filename": "first.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 11, "column": 1 },
+              "end": { "line": 11, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Chicken vs. Egg",
+                "position": {
+                  "start": { "line": 11, "column": 1 },
+                  "end": { "line": 11, "column": 1 }
+                }
+              }
+            ],
+            "indexEntries": [
+              { "entry": "Reptilian ancestors", "emphasis": false },
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Egg", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Reptilian ancestors", "kind": "seealso" },
+                "emphasis": false
+              }
+            ],
+            "identifier": "chicken-vs-egg",
+            "label": "Chicken vs. Egg",
+            "html_id": "chicken-vs-egg",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 13, "column": 1 },
+              "end": { "line": 17, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "The question of whether the chicken or the egg came first is an age-old philosophical and scientific dilemma.\nFrom a biological perspective, evolutionary science suggests that the egg came first.\nThis conclusion is based on the understanding that birds evolved from reptilian ancestors that laid eggs long before chickens existed.\nGenetic mutations over many generations eventually led to the first chicken, which would have hatched from an egg laid by a bird that was not quite a chicken yet.\nTherefore, the egg containing the first true chicken would have been laid by a bird that was very similar but not genetically identical to a modern chicken.",
+                "position": {
+                  "start": { "line": 13, "column": 1 },
+                  "end": { "line": 13, "column": 1 }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

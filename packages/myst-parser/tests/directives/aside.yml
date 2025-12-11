@@ -1,0 +1,90 @@
+title: aside directive
+cases:
+  - title: aside directive parses
+    markdown: |-
+      ```{aside}
+      Some good aside content
+
+      *Cool!*
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: aside
+          value: |-
+            Some good aside content
+
+            *Cool!*
+          children:
+            - type: aside
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some good aside content
+                - type: paragraph
+                  children:
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: Cool!
+  - title: margin directive parses
+    markdown: |-
+      ```{margin}
+      Some good margin content
+
+      *Cool!*
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: margin
+          value: |-
+            Some good margin content
+
+            *Cool!*
+          children:
+            - type: aside
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some good margin content
+                - type: paragraph
+                  children:
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: Cool!
+  - title: sidebar directive parses
+    markdown: |-
+      ```{sidebar}
+      Some good sidebar content
+
+      *Cool!*
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: sidebar
+          value: |-
+            Some good sidebar content
+
+            *Cool!*
+          children:
+            - type: aside
+              kind: sidebar
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Some good sidebar content
+                - type: paragraph
+                  children:
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: Cool!

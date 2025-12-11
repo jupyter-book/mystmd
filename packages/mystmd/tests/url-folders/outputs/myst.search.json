@@ -1,0 +1,99 @@
+{
+  "version": "1",
+  "records": [
+    {
+      "hierarchy": { "lvl1": "Page in folder with dots" },
+      "type": "lvl1",
+      "url": "/one-folder/page",
+      "position": 0
+    },
+    {
+      "hierarchy": { "lvl1": "Page in folder with dots" },
+      "content": "",
+      "type": "content",
+      "url": "/one-folder/page",
+      "position": 1
+    },
+    {
+      "hierarchy": { "lvl1": "Filename with dots" },
+      "type": "lvl1",
+      "url": "/one-with-dots",
+      "position": 0
+    },
+    {
+      "hierarchy": { "lvl1": "Filename with dots" },
+      "content": "",
+      "type": "content",
+      "url": "/one-with-dots",
+      "position": 1
+    },
+    { "hierarchy": { "lvl1": "Readme" }, "type": "lvl1", "url": "/", "position": 0 },
+    {
+      "hierarchy": { "lvl1": "Readme" },
+      "content": "xref to subfolder\n\nexplicit xref to subfolder",
+      "type": "content",
+      "url": "/",
+      "position": 1
+    },
+    { "hierarchy": { "lvl1": "Two" }, "type": "lvl1", "url": "/two", "position": 0 },
+    {
+      "hierarchy": { "lvl1": "Two" },
+      "content": "",
+      "type": "content",
+      "url": "/two",
+      "position": 1
+    },
+    {
+      "hierarchy": { "lvl1": "Page A in subfolder" },
+      "type": "lvl1",
+      "url": "/two/a",
+      "position": 0
+    },
+    {
+      "hierarchy": { "lvl1": "Page A in subfolder" },
+      "content": "",
+      "type": "content",
+      "url": "/two/a",
+      "position": 1
+    },
+    {
+      "hierarchy": { "lvl1": "Index in subfolder" },
+      "type": "lvl1",
+      "url": "/two-1",
+      "position": 0
+    },
+    {
+      "hierarchy": { "lvl1": "Index in subfolder" },
+      "content": "",
+      "type": "content",
+      "url": "/two-1",
+      "position": 1
+    },
+    {
+      "hierarchy": { "lvl1": "Page in subfolder" },
+      "type": "lvl1",
+      "url": "/two/page",
+      "position": 0
+    },
+    {
+      "hierarchy": { "lvl1": "Page in subfolder" },
+      "content": "Hello from this page!",
+      "type": "content",
+      "url": "/two/page",
+      "position": 1
+    },
+    {
+      "hierarchy": { "lvl1": "Page in subfolder", "lvl2": "See this" },
+      "type": "lvl2",
+      "url": "/two/page#my-thing",
+      "position": 2
+    },
+    {
+      "hierarchy": { "lvl1": "Page in subfolder", "lvl2": "See this" },
+      "content": "🦆",
+      "type": "content",
+      "url": "/two/page#my-thing",
+      "position": 3
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+title: Keywords
+cases:
+  - title: Keywords as a list
+    raw:
+      keywords:
+        - First
+        - Second
+    normalized:
+      keywords:
+        - First
+        - Second
+  - title: Keywords string ";"
+    raw:
+      keywords: First;    Second
+    normalized:
+      keywords:
+        - First
+        - Second
+  - title: Keywords string ","
+    raw:
+      keywords: First,    Second
+    normalized:
+      keywords:
+        - First
+        - Second

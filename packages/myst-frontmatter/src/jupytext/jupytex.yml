@@ -1,0 +1,31 @@
+title: Jupytext
+cases:
+  - title: empty object returns self
+    raw:
+      jupytext: {}
+    normalized:
+      jupytext: {}
+  - title: extra keys removed
+    raw:
+      jupytext:
+        extra: ''
+    normalized:
+      jupytext: {}
+    warnings: 1
+  - title: full object returns self
+    raw:
+      jupytext:
+        formats: md:myst
+        text_representation:
+          extension: .md
+          format_name: myst
+          format_version: '0.9'
+          jupytext_version: '1.5.2'
+    normalized:
+      jupytext:
+        formats: md:myst
+        text_representation:
+          extension: .md
+          format_name: myst
+          format_version: '0.9'
+          jupytext_version: '1.5.2'

@@ -1,0 +1,26 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: One Two Three!
+  author: Franklin Koch
+  toc:
+    - file: zero.md
+    - file: one.md
+    - file: two.md
+    - file: three.md
+  exports:
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-with-part.tex
+      top_level: parts
+    - format: tex
+      template: ../templates/tex
+      output: _build/out-without-part.tex
+      top_level: parts
+      toc:
+        - file: zero.md
+        - title: My Part
+          children:
+            - file: one.md
+            - file: two.md
+            - file: three.md

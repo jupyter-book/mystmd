@@ -1,0 +1,962 @@
+title: myst-to-md directives
+cases:
+  - title: myst directive
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          args: My Directive!
+          value: |-
+            :a: b
+            :c: d
+
+            Markdown
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  valeu: markdown
+    markdown: |-
+      ```{abc} My Directive!
+      :a: b
+      :c: d
+
+      Markdown
+      ```
+  - title: myst directive - no args
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          value: |-
+            :a: b
+            :c: d
+
+            Markdown
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ```{abc}
+      :a: b
+      :c: d
+
+      Markdown
+      ```
+  - title: myst directive - no value
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          args: My Directive!
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ```{abc} My Directive!
+      ```
+  - title: myst directive - no args or value
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ```{abc}
+      ```
+  - title: myst directive - nested code
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: abc
+          args: My Directive!
+          value: |-
+            :a: b
+            :c: d
+
+            ```
+            Markdown
+            ```
+          children:
+            - type: text
+              value: 'Some % '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    markdown: |-
+      ````{abc} My Directive!
+      :a: b
+      :c: d
+
+      ```
+      Markdown
+      ```
+      ````
+  - title: math directive - no label
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            5+5
+             ````{abc}
+            ````
+            print("hello world")
+    markdown: |-
+      `````{math}
+      5+5
+       ````{abc}
+      ````
+      print("hello world")
+      `````
+  - title: math directive - label
+    mdast:
+      type: root
+      children:
+        - type: math
+          label: MY-EQN
+          identifier: my-eqn
+          value: |-
+            5+5
+            ````{abc}
+            ````
+            print("hello world")
+    markdown: |-
+      `````{math}
+      :label: MY-EQN
+
+      5+5
+      ````{abc}
+      ````
+      print("hello world")
+      `````
+  - title: embed directive
+    mdast:
+      type: root
+      children:
+        - type: embed
+          label: my-code
+    markdown: |-
+      ```{embed} my-code
+      ```
+  - title: include directive
+    mdast:
+      type: root
+      children:
+        - type: include
+          file: my-file.md
+    markdown: |-
+      ```{include} my-file.md
+      ```
+  - title: code-block directive
+    mdast:
+      type: root
+      children:
+        - type: code
+          label: my-code
+          identifier: my-code
+          showLineNumbers: false
+          value: |-
+            5+5
+            print("hello world")
+    markdown: |-
+      ```{code-block}
+      :name: my-code
+
+      5+5
+      print("hello world")
+      ```
+  - title: code-block directive - all options
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          meta: highlight-line="2"
+          label: my-code
+          identifier: my-code
+          class: my-class
+          showLineNumbers: true
+          startingLineNumber: 2
+          emphasizeLines:
+            - 2
+            - 3
+          value: |-
+            5+5
+            print("hello world")
+             ```
+             ```
+    markdown: |-
+      ````{code-block} python
+      :class: my-class
+      :emphasize-lines: 2,3
+      :name: my-code
+      :linenos:
+      :lineno-start: 2
+      :meta: highlight-line="2"
+
+      5+5
+      print("hello world")
+       ```
+       ```
+      ````
+  - title: code directive - null options
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          meta: null
+          showLineNumbers: null
+          value: |-
+            5+5
+            print("hello world")
+             ```
+             ```
+    markdown: |-
+      ````python
+      5+5
+      print("hello world")
+       ```
+       ```
+      ````
+  - title: image directive
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: https://example.com
+          width: 500px
+          align: center
+          title: my image
+          alt: Some text
+          class: my-class
+    markdown: |-
+      ```{image} https://example.com
+      :class: my-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+      ```
+  - title: image directive with autogenerated alt
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: https://example.com
+          width: 500px
+          align: center
+          title: my image
+          alt: Some text
+          class: my-class
+          data:
+            altTextIsAutoGenerated: true
+    markdown: |-
+      ```{image} https://example.com
+      :class: my-class
+      :width: 500px
+      :align: center
+      :title: my image
+      ```
+  - title: figure directive - no caption/legend
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-fig-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+      :::
+  - title: figure directive - with caption
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-fig-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+
+      Some % *markdown*
+      :::
+  - title: figure directive - with caption/legend
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          children:
+            - type: image
+              url: https://example.com
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+            - type: legend
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Code legend:'
+                - type: code
+                  lang: python
+                  value: |-
+                    print("hello world")
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-img-class
+
+      Some % *markdown*
+
+      Code legend:
+
+      ```python
+      print("hello world")
+      ```
+      :::
+  - title: figure directive - with placeholder image
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          identifier: my-fig
+          label: My-Fig
+          class: my-fig-class
+          children:
+            - type: image
+              url: https://example.com
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: image
+              url: images/example.png
+              placeholder: true
+              width: 500px
+              align: center
+              title: my image
+              alt: Some text
+              class: my-img-class
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'Some % '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: markdown
+    markdown: |-
+      :::{figure} https://example.com
+      :name: My-Fig
+      :class: my-fig-class
+      :width: 500px
+      :align: center
+      :title: my image
+      :alt: Some text
+      :placeholder: images/example.png
+
+      Some % *markdown*
+      :::
+  - title: list-table
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: table
+          identifier: my-table
+          label: my-table
+          class: my-class
+          children:
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: This table is cool
+            - type: table
+              align: right
+              children:
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: a
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: b
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: c
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: '1'
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: '2'
+                    - type: tableCell
+                      header: true
+                      children:
+                        - type: text
+                          value: '3'
+                - type: tableRow
+                  children:
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: '4'
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: '5'
+                    - type: tableCell
+                      children:
+                        - type: text
+                          value: '6'
+    markdown: |-
+      :::{list-table} This table is cool
+      :header-rows: 2
+      :name: my-table
+      :class: my-class
+      :align: right
+
+      *   *   a
+
+          *   b
+
+          *   c
+
+      *   *   1
+
+          *   2
+
+          *   3
+
+      *   *   4
+
+          *   5
+
+          *   6
+      :::
+  - title: admonition - with kind
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: tip
+          children:
+            - type: admonitionTitle
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: tip
+                - type: text
+                  value: ' '
+                - type: mystRole
+                  name: u
+                  value: admonition
+                  children:
+                    - type: underline
+                      children:
+                        - type: text
+                          value: admonition
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: inlineCode
+                  value: tip
+    markdown: |-
+      :::{tip} *tip* {u}`admonition`
+      This is a `tip`
+      :::
+  - title: admonition - no kind
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          class: my-class
+          icon: true
+          children:
+            - type: admonitionTitle
+              children:
+                - type: emphasis
+                  children:
+                    - type: text
+                      value: not tip
+                - type: text
+                  value: ' '
+                - type: mystRole
+                  name: u
+                  value: admonition
+                  children:
+                    - type: underline
+                      children:
+                        - type: text
+                          value: admonition
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is not a '
+                - type: inlineCode
+                  value: tip
+    markdown: |-
+      :::{admonition} *not tip* {u}`admonition`
+      :class: my-class
+      :icon:
+
+      This is not a `tip`
+      :::
+  - title: admonition - no title
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: tip
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: 'This is a '
+                - type: inlineCode
+                  value: tip
+    markdown: |-
+      :::{tip}
+      This is a `tip`
+      :::
+  - title: admonition - nested
+    mdast:
+      type: root
+      children:
+        - type: admonition
+          kind: tip
+          children:
+            - type: admonition
+              kind: tip
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'This is a '
+                    - type: inlineCode
+                      value: tip
+    markdown: |-
+      ::::{tip}
+      :::{tip}
+      This is a `tip`
+      :::
+      ::::
+  - title: mermaid
+    mdast:
+      type: root
+      children:
+        - type: mermaid
+          value: |-
+            flowchart LR
+              A[Jupyter Notebook] --> C
+              B[MyST Markdown] --> C
+              C(mystmd) --> D{AST}
+              D <--> E[LaTeX]
+              E --> F[PDF]
+              D --> G[Word]
+              D --> H[React]
+              D --> I[HTML]
+              D <--> J[JATS]
+    markdown: |-
+      ```{mermaid}
+      flowchart LR
+        A[Jupyter Notebook] --> C
+        B[MyST Markdown] --> C
+        C(mystmd) --> D{AST}
+        D <--> E[LaTeX]
+        E --> F[PDF]
+        D --> G[Word]
+        D --> H[React]
+        D --> I[HTML]
+        D <--> J[JATS]
+      ```
+  - title: dropdown - with summary
+    mdast:
+      type: root
+      children:
+        - type: details
+          open: true
+          children:
+            - type: summary
+              children:
+                - type: text
+                  value: Dropdown Title
+            - type: paragraph
+              children:
+                - type: text
+                  value: Dropdown content
+    markdown: |-
+      :::{dropdown} Dropdown Title
+      :open:
+
+      Dropdown content
+      :::
+  - title: dropdown - no summary
+    mdast:
+      type: root
+      children:
+        - type: details
+          open: true
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Dropdown content
+    markdown: |-
+      :::{dropdown}
+      :open:
+
+      Dropdown content
+      :::
+  - title: card - title/header/footer
+    mdast:
+      type: root
+      children:
+        - type: card
+          url: https://example.com
+          urlSource: https://example.com
+          children:
+            - type: header
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'The '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: Header
+            - type: cardTitle
+              children:
+                - type: text
+                  value: Card title
+            - type: paragraph
+              children:
+                - type: text
+                  value: Card content
+            - type: footer
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Footer
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: with two paragraphs
+    markdown: |-
+      :::{card} Card title
+      ---
+      link: https://example.com
+      header: The *Header*
+      footer: |-
+        Footer
+
+        with two paragraphs
+      ---
+
+      Card content
+      :::
+  - title: card - header/footer only
+    mdast:
+      type: root
+      children:
+        - type: card
+          children:
+            - type: header
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'The '
+                    - type: emphasis
+                      children:
+                        - type: text
+                          value: Header
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: with two paragraphs
+            - type: paragraph
+              children:
+                - type: text
+                  value: Card content
+            - type: footer
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Footer
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: with two paragraphs
+    markdown: |-
+      :::{card}
+      ---
+      header: |-
+        The *Header*
+
+        with two paragraphs
+      footer: |-
+        Footer
+
+        with two paragraphs
+      ---
+
+      Card content
+      :::
+  - title: card - title only
+    mdast:
+      type: root
+      children:
+        - type: card
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Card content
+            - type: cardTitle
+              children:
+                - type: text
+                  value: 'Card '
+                - type: inlineCode
+                  value: title
+    markdown: |-
+      :::{card} Card `title`
+      Card content
+      :::
+  - title: card - content only
+    mdast:
+      type: root
+      children:
+        - type: card
+          children:
+            - type: admonition
+              kind: tip
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'This is a '
+                    - type: inlineCode
+                      value: tip
+    markdown: |-
+      ::::{card}
+      :::{tip}
+      This is a `tip`
+      :::
+      ::::
+  - title: grid
+    mdast:
+      type: root
+      children:
+        - type: grid
+          columns:
+            - 1
+            - 3
+            - 3
+            - 4
+          children:
+            - type: card
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Card one
+            - type: card
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Card two
+    markdown: |-
+      ::::{grid}
+      :columns: 1 3 3 4
+
+      :::{card}
+      Card one
+      :::
+
+      :::{card}
+      Card two
+      :::
+      ::::
+  - title: tabs
+    mdast:
+      type: root
+      children:
+        - type: tabSet
+          children:
+            - type: tabItem
+              title: Tab 1
+              sync: tab1
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Tab one
+            - type: tabItem
+              title: Tab 2
+              sync: tab2
+              selected: true
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Tab two
+    markdown: |-
+      ::::{tab-set}
+      :::{tab-item} Tab 1
+      :sync: tab1
+
+      Tab one
+      :::
+
+      :::{tab-item} Tab 2
+      :sync: tab2
+      :selected:
+
+      Tab two
+      :::
+      ::::
+  - title: iframe
+    mdast:
+      type: root
+      children:
+        - type: iframe
+          src: https://example.com
+          width: 10%
+    markdown: |-
+      ```{iframe} https://example.com
+      :width: 10%
+      ```
+  - title: aside
+    mdast:
+      type: root
+      children:
+        - type: aside
+          class: my-class
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Aside content
+    markdown: |-
+      :::{aside}
+      :class: my-class
+
+      Aside content
+      :::
+  - title: topic
+    mdast:
+      type: root
+      children:
+        - type: aside
+          kind: topic
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Topic content
+    markdown: |-
+      :::{topic}
+      Topic content
+      :::

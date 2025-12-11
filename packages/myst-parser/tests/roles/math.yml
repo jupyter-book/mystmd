@@ -1,0 +1,31 @@
+title: math role
+cases:
+  - title: math role parses
+    markdown: '{math}`1+2`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: math
+              value: 1+2
+              children:
+                - type: inlineMath
+                  value: 1+2
+  - title: math role with typst option
+    markdown: '{math typst="typst"}`x^2`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: math
+              options:
+                typst: typst
+              value: x^2
+              children:
+                - type: inlineMath
+                  value: x^2
+                  typst: typst

@@ -1,0 +1,33 @@
+title: abbreviation role
+cases:
+  - title: abbreviation role parses
+    markdown: '{abbreviation}`CSS`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: abbreviation
+              value: CSS
+              children:
+                - type: abbreviation
+                  children:
+                    - type: text
+                      value: CSS
+  - title: abbr role parses
+    markdown: '{abbr}`CSS (Cascading Style Sheets)`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: abbr
+              value: CSS (Cascading Style Sheets)
+              children:
+                - type: abbreviation
+                  title: Cascading Style Sheets
+                  children:
+                    - type: text
+                      value: CSS

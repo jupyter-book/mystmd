@@ -1,0 +1,132 @@
+title: Verbatim and code
+cases:
+  - title: lstlisting
+    tex: |
+      \begin{lstlisting}[language=python]
+      def f_eps(c, z, v):
+          if c > 0 and c != 0:
+              return rte * np.log(c) + z * f * v * 1.e-6
+          else:
+              print('uy')
+              return rte * np.log(abs(c)) + z * f * v * 1.e-6
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: code
+          lang: python
+          value: |-
+            def f_eps(c, z, v):
+                if c > 0 and c != 0:
+                    return rte * np.log(c) + z * f * v * 1.e-6
+                else:
+                    print('uy')
+                    return rte * np.log(abs(c)) + z * f * v * 1.e-6
+  - title: lstlisting with caption
+    tex: |
+      \begin{lstlisting}[language=python, caption=Hello world]
+      code
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: code
+          children:
+            - type: code
+              lang: python
+              value: code
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Hello world
+  - title: lstlisting with caption -- reversed
+    tex: |
+      \begin{lstlisting}[caption  =   Hello world  , language  =  python]
+      code
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: code
+          children:
+            - type: code
+              lang: python
+              value: code
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Hello world
+  - title: lstlisting with caption in brackets
+    tex: |
+      \begin{lstlisting}[language=Python, caption={RGB Image Tiles}, label= lst:save_rgb_tiles]
+      from rasterio import Window
+      from tifffile import imwrite
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: container
+          kind: code
+          label: lst:save_rgb_tiles
+          identifier: lst:save_rgb_tiles
+          children:
+            - type: code
+              lang: Python
+              value: |-
+                from rasterio import Window
+                from tifffile import imwrite
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: RGB Image Tiles
+  - title: lstlisting with caption that is only brackets
+    tex: |
+      \begin{lstlisting}[language=Python, caption={}, label= lst:save_rgb_tiles]
+      from rasterio import Window
+      from tifffile import imwrite
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: code
+          lang: Python
+          label: lst:save_rgb_tiles
+          identifier: lst:save_rgb_tiles
+          value: |-
+            from rasterio import Window
+            from tifffile import imwrite
+  - title: lstlisting and line numbers
+    tex: |
+      \begin{lstlisting}[language=c,numbers=left,firstnumber=2,label=lst:loop]
+          for (int i = 0; i < 10; i++) {
+              /* do something */
+          }
+      \end{lstlisting}
+    tree:
+      type: root
+      children:
+        - type: code
+          lang: c
+          label: lst:loop
+          identifier: lst:loop
+          showLineNumbers: true
+          startingLineNumber: 2
+          value: "    for (int i = 0; i < 10; i++) {\n        /* do something */\n    }"
+  - title: comment environment
+    tex: |-
+      \begin{comment}
+      This is a comment
+      \end{comment}
+    tree:
+      type: root
+      children:
+        - type: comment
+          value: This is a comment

@@ -1,0 +1,37 @@
+{
+  "name": "myst-spec-ext",
+  "version": "1.9.3",
+  "description": "Extensions for myst-spec that are used in mystmd",
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-spec-ext",
+  "license": "MIT",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "myst-plugin"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "dependencies": {
+    "myst-spec": "^0.0.5"
+  }
+}

@@ -1,0 +1,422 @@
+title: myst-to-typst basic features
+cases:
+  - title: escapes
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is * ` # % @ ;'
+    typst: |-
+      This is \* \` \# % \@ \;
+  - title: text in paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+            - type: text
+              value: ' and '
+            - type: strong
+              children:
+                - type: text
+                  value: strong
+            - type: text
+              value: ' and '
+            - type: inlineCode
+              value: inlineCode
+            - type: text
+              value: ' and '
+            - type: link
+              url: https://example.com
+              children:
+                - type: text
+                  value: a link!
+            - type: text
+              value: '; with a trailing semicolon and not a # comment'
+    typst: |-
+      Some _markdown_ and *strong* and `inlineCode` and #link("https://example.com")[a link!]\; with a trailing semicolon and not a \# comment
+  - title: strong
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: strong
+              children:
+                - type: text
+                  value: 'strong'
+            - type: text
+              value: '.'
+    typst: |-
+      This is *strong*.
+  - title: strong with trailing text
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: strong
+              children:
+                - type: text
+                  value: 'strong'
+            - type: text
+              value: 'with trailing text!'
+    typst: |-
+      This is #strong[strong]with trailing text!
+  - title: strong inside a word
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'We say equation'
+            - type: strong
+              children:
+                - type: text
+                  value: 's'
+            - type: text
+              value: ', plural, because there are...'
+    typst: |-
+      We say equation#strong[s], plural, because there are...
+  - title: emph with trailing text
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: emphasis
+              children:
+                - type: text
+                  value: 'emph'
+            - type: text
+              value: 'with trailing text!'
+    typst: |-
+      This is #emph[emph]with trailing text!
+  - title: strong with children
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is a '
+            - type: strong
+              children:
+                - type: text
+                  value: 'strong '
+                - type: link
+                  url: https://example.com
+                  children:
+                    - type: text
+                      value: link
+            - type: text
+              value: '.'
+    typst: |-
+      This is a #strong[strong #link("https://example.com")[link]].
+  - title: emphasis
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: emphasis
+              children:
+                - type: text
+                  value: 'emphasis'
+            - type: text
+              value: '.'
+    typst: |-
+      This is _emphasis_.
+  - title: emphasis with children
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is a '
+            - type: emphasis
+              children:
+                - type: text
+                  value: 'emphasis '
+                - type: link
+                  url: https://example.com
+                  children:
+                    - type: text
+                      value: link
+            - type: text
+              value: '.'
+    typst: |-
+      This is a #emph[emphasis #link("https://example.com")[link]].
+  - title: subscript
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Revenue'
+            - type: subscript
+              children:
+                - type: text
+                  value: 'yearly'
+    typst: |-
+      Revenue#sub[yearly]
+  - title: superscript
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '1'
+            - type: superscript
+              children:
+                - type: text
+                  value: 'st'
+            - type: text
+              value: ' try!'
+    typst: |-
+      1#super[st] try!
+  - title: strike
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: delete
+              children:
+                - type: text
+                  value: 'not'
+            - type: text
+              value: ' relevant.'
+    typst: |-
+      This is #strike[not] relevant.
+  - title: underline
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is '
+            - type: underline
+              children:
+                - type: text
+                  value: 'important'
+            - type: text
+              value: '.'
+    typst: |-
+      This is #underline[important].
+  - title: smallcaps
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: smallcaps
+              children:
+                - type: text
+                  value: 'SimPEG'
+    typst: |-
+      #smallcaps[SimPEG]
+  - title: escapes quotes
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '“quote”'
+    typst: |-
+      "quote"
+  - title: escapes dollar sign
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: I got an ice cream for $1.50!
+    typst: |-
+      I got an ice cream for \$1.50!
+  - title: line break
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Fleas
+            - type: break
+            - type: text
+              value: Adam
+            - type: break
+            - type: text
+              value: Had 'em.
+    typst: |-
+      Fleas \
+      Adam \
+      Had 'em.
+  - title: escape tilde and backslash
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'This is a tilde: ~ and backslash \\ cool!'
+    typst: 'This is a tilde: $tilde$ and backslash \\\\ cool!'
+  - title: escaped *
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '*escaped symbols*'
+    typst: '\*escaped symbols\*'
+  - title: block hidden
+    mdast:
+      type: root
+      children:
+        - type: block
+          visibility: remove
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
+  - title: block no-typst
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - 'no-typst'
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
+  - title: block no-tex
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - 'no-tex'
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: '\*escaped symbols\*'
+  - title: block no-pdf
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            no-pdf: true
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: ''
+  - title: block page break
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            tags:
+              - page-break
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: |-
+      #pagebreak(weak: true)
+      \*escaped symbols\*
+  - title: block new page
+    mdast:
+      type: root
+      children:
+        - type: block
+          data:
+            new-page: true
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: '*escaped symbols*'
+    typst: |-
+      #pagebreak(weak: true)
+      \*escaped symbols\*
+  - title: emphasis in a div / span
+    mdast:
+      type: root
+      children:
+        - type: div
+          children:
+            - type: text
+              value: 'Some % '
+            - type: span
+              children:
+                - type: text
+                  value: 'other '
+            - type: emphasis
+              children:
+                - type: text
+                  value: markdown
+    typst: |-
+      Some % other _markdown_
+  - title: list item with and without paragraph
+    description: |
+      The list item should not add space if there is only a single paragraph.
+      This is resilient to a listItem not having a paragraph as the child.
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: false
+          children:
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A list item'
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: 'A list item in a paragraph'
+    typst: |-
+      - A list item
+      - A list item in a paragraph

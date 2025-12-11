@@ -1,0 +1,73 @@
+{
+  "version": "1",
+  "references": [
+    { "kind": "page", "data": "/content/index.json", "url": "/" },
+    {
+      "identifier": "from-this-project",
+      "kind": "heading",
+      "data": "/content/index.json",
+      "url": "/",
+      "implicit": true
+    },
+    {
+      "identifier": "from-external-project",
+      "kind": "heading",
+      "data": "/content/index.json",
+      "url": "/",
+      "implicit": true
+    },
+    { "kind": "page", "data": "/content/targets.json", "url": "/targets" },
+    {
+      "identifier": "page-title-label",
+      "kind": "page",
+      "data": "/content/targets.json",
+      "url": "/targets"
+    },
+    {
+      "identifier": "page-fm-label",
+      "kind": "page",
+      "data": "/content/targets.json",
+      "url": "/targets"
+    },
+    {
+      "identifier": "implicit-heading",
+      "kind": "heading",
+      "data": "/content/targets.json",
+      "url": "/targets",
+      "implicit": true
+    },
+    {
+      "identifier": "explicit-heading",
+      "kind": "heading",
+      "data": "/content/targets.json",
+      "url": "/targets"
+    },
+    {
+      "identifier": "my-figure",
+      "kind": "heading",
+      "data": "/content/targets.json",
+      "url": "/targets",
+      "implicit": true
+    },
+    {
+      "identifier": "my-fig",
+      "kind": "figure",
+      "data": "/content/targets.json",
+      "url": "/targets"
+    },
+    {
+      "identifier": "section-with-xref",
+      "kind": "heading",
+      "data": "/content/targets.json",
+      "url": "/targets"
+    },
+    {
+      "identifier": "my-code-block",
+      "kind": "heading",
+      "data": "/content/targets.json",
+      "url": "/targets",
+      "implicit": true
+    },
+    { "identifier": "my-code", "kind": "code", "data": "/content/targets.json", "url": "/targets" }
+  ]
+}

@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      forcePublishPyPI:
+        description: |
+          Force publish to PyPI, even if the NPM release has already occurred.
+        type: boolean
+        default: false
+        required: false
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write # Required for OIDC trusted publishing
+jobs:
+  release-npm:
+    name: Release NPM
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: ./.github/actions/install
+        with:
+          node: "24"
+      - name: Run tests
+        run: npm run test
+      - name: Ensure npm 11.5.1+ for trusted publishing
+        run: npm install -g npm@latest
+      - name: Version bump and create pull request OR publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: npm run version
+          publish: npm run publish:ci
+          commit: 🚀 Release
+          title: 🚀 Release
+          createGithubReleases: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Python package
+        run: |
+          pip install build
+          # Copy over needed files
+          cp ../mystmd/dist/myst.cjs src/mystmd_py/
+          cp ../mystmd/package.json _package.json
+          python -m build
+        working-directory: packages/mystmd-py
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: packages/mystmd-py/dist/
+
+  release-py:
+    name: Release Python
+    runs-on: ubuntu-latest
+    if: ${{ needs.release-npm.outputs.published == 'true' || inputs.forcePublishPyPI }}
+    needs:
+      - release-npm
+    environment:
+      name: pypi
+      url: https://pypi.org/p/mystmd
+    permissions:
+      id-token: write
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  get-tag:
+    name: Get Tag Name
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.get_tag.outputs.tag_name }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Get tag name from package.json
+        id: get_tag
+        run: |
+          # Assume that all releases come with a tag like `mystmd@M.m.p`
+          TAG="mystmd@$(jq -r .version < packages/mystmd/package.json)"
+          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
+
+  release-github:
+    name: Publish GitHub Release
+    needs:
+      - release-npm
+      - release-py
+      - get-tag
+    if: ${{ needs.release-npm.outputs.published == 'true' }}
+    uses: ./.github/workflows/publish-github-release.yml
+    with:
+      tag_name: ${{ needs.get-tag.outputs.tag_name }}
+    secrets: inherit

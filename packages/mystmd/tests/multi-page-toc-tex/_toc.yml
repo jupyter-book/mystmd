@@ -1,0 +1,7 @@
+# This TOC should be ignored for all builds/exports!
+# Exports that do not define articles/toc should fall back to project.toc
+
+format: jb-book
+root: two
+chapters:
+  - file: three

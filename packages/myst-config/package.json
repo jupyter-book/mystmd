@@ -1,0 +1,41 @@
+{
+  "name": "myst-config",
+  "version": "1.9.3",
+  "license": "MIT",
+  "description": "Project and site config types and validation for the mystmd ecosystem",
+  "author": "Franklin Koch <franklin@curvenote.com>",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-config",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
+    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
+  },
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "dependencies": {
+    "myst-common": "^1.9.3",
+    "myst-frontmatter": "^1.9.3",
+    "simple-validators": "^1.1.1"
+  },
+  "devDependencies": {
+    "moment": "^2.29.4"
+  }
+}

@@ -1,0 +1,149 @@
+title: myst-to-tex amsmath tests
+cases:
+  - title: gather
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{gather}
+                E=mc^2
+            \end{gather}
+    latex: |-
+      \begin{gather}
+          E=mc^2
+      \end{gather}
+  - title: alignat*
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{alignat*}{3}
+            & m   \quad && \text{módulo}            \quad && m>0\\
+            & a   \quad && \text{multiplicador}     \quad && 0<a<m\\
+            & c   \quad && \text{constante aditiva} \quad && 0\leq c<m\\
+            & x_0 \quad && \text{valor inicial}     \quad && 0\leq x_0 <m
+            \end{alignat*}
+    latex: |-
+      \begin{alignat*}{3}
+      & m   \quad && \text{módulo}            \quad && m>0\\
+      & a   \quad && \text{multiplicador}     \quad && 0<a<m\\
+      & c   \quad && \text{constante aditiva} \quad && 0\leq c<m\\
+      & x_0 \quad && \text{valor inicial}     \quad && 0\leq x_0 <m
+      \end{alignat*}
+  - title: multiple pmatrix
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{pmatrix}\omega^1 \\ \omega^2 \\ \omega^3 \end{pmatrix}
+            = \frac{1}{r} \begin{pmatrix}- \sin\theta^1 & \cos\theta^1 \\ - \sin\theta^2 & \cos\theta^2 \\ - \sin\theta^3 & \cos\theta^3 \end{pmatrix}
+            \begin{pmatrix}v_x \\ v_y \end{pmatrix}
+    latex: |-
+      \begin{equation}
+      \begin{pmatrix}\omega^1 \\ \omega^2 \\ \omega^3 \end{pmatrix}
+      = \frac{1}{r} \begin{pmatrix}- \sin\theta^1 & \cos\theta^1 \\ - \sin\theta^2 & \cos\theta^2 \\ - \sin\theta^3 & \cos\theta^3 \end{pmatrix}
+      \begin{pmatrix}v_x \\ v_y \end{pmatrix}
+      \end{equation}
+  - title: bmatrix environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{bmatrix}
+            3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+            3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+            \end{bmatrix}
+    latex: |-
+      \begin{equation}
+      \begin{bmatrix}
+      3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+      3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+      \end{bmatrix}
+      \end{equation}
+  - title: align environment
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{align}
+            \begin{bmatrix}
+            3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+            3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+            \end{bmatrix}
+            \end{align}
+    latex: |-
+      \begin{align}
+      \begin{bmatrix}
+      3 & \textbf{3} & \textbf{3} & \textbf{5} & 5 & 5 & 5 & 2 & 2 & 2 \\
+      3 & 0 & \textbf{2} & 2 & 0 & 0 & -3 & -3 & 0 & -2
+      \end{bmatrix}
+      \end{align}
+  - title: align environment around bmatrix
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{align}
+            \begin{bmatrix}
+            P^0 \\ 1
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            R_{1}^{0} & d_{1}^{0}\\
+            0_{2} & 1
+            \end{bmatrix}
+            \begin{bmatrix}
+            P^1 \\ 1
+            \end{bmatrix}
+            \end{align}
+    latex: |-
+      \begin{align}
+      \begin{bmatrix}
+      P^0 \\ 1
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      R_{1}^{0} & d_{1}^{0}\\
+      0_{2} & 1
+      \end{bmatrix}
+      \begin{bmatrix}
+      P^1 \\ 1
+      \end{bmatrix}
+      \end{align}
+  - title: wrapping align environment around bmatrix
+    mdast:
+      type: root
+      children:
+        - type: math
+          value: |-
+            \begin{bmatrix}
+            P^0 \\ 1
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+            R_{1}^{0} & d_{1}^{0}\\
+            0_{2} & 1
+            \end{bmatrix}
+            \begin{bmatrix}
+            P^1 \\ 1
+            \end{bmatrix}
+    latex: |-
+      \begin{equation}
+      \begin{bmatrix}
+      P^0 \\ 1
+      \end{bmatrix}
+      =
+      \begin{bmatrix}
+      R_{1}^{0} & d_{1}^{0}\\
+      0_{2} & 1
+      \end{bmatrix}
+      \begin{bmatrix}
+      P^1 \\ 1
+      \end{bmatrix}
+      \end{equation}

@@ -1,0 +1,31 @@
+title: myst-to-typst comments
+cases:
+  - title: comments
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: |-
+            hello
+            world
+    typst: |-
+      /*
+      hello
+      world
+      */
+  - title: comment - empty
+    mdast:
+      type: root
+      children:
+        - type: comment
+          value: null
+    typst: |-
+      //
+  - title: comment-like text
+    mdast:
+      type: root
+      children:
+        - type: text
+          value: 'When there is // comment-like text'
+    typst: |-
+      When there is \/\/ comment-like text

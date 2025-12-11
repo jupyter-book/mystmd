@@ -1,0 +1,92 @@
+title: math directive
+cases:
+  - title: math directive parses
+    markdown: |-
+      ```{math}
+      :label: addition
+      1+2
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: math
+          options:
+            label: addition
+          value: 1+2
+          children:
+            - type: math
+              identifier: addition
+              label: addition
+              value: 1+2
+  - title: tight math
+    markdown: |-
+      Tight above
+      ```{math}
+      :label: addition
+      1+2
+      ```
+
+      But not below
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Tight above
+        - type: mystDirective
+          name: math
+          tight: before
+          options:
+            label: addition
+          value: 1+2
+          children:
+            - type: math
+              identifier: addition
+              label: addition
+              tight: before
+              value: 1+2
+        - type: paragraph
+          children:
+            - type: text
+              value: But not below
+  - title: math with empty label is not set
+    markdown: |-
+      ```{math}
+      :label:
+      1+2
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: math
+          options:
+            label: true
+          value: 1+2
+          children:
+            - type: math
+              value: 1+2
+  - title: math directive with typst argument
+    markdown: |-
+      ```{math}
+      :label: example
+      :typst: typst
+      x^2 + y^2 = z^2
+      ```
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: math
+          options:
+            label: example
+            typst: typst
+          value: x^2 + y^2 = z^2
+          children:
+            - type: math
+              identifier: example
+              label: example
+              value: x^2 + y^2 = z^2
+              typst: typst

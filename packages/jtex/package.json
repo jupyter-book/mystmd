@@ -1,0 +1,65 @@
+{
+  "name": "jtex",
+  "version": "1.0.20",
+  "description": "Tool for rendering LaTeX documents from jinja-style templates",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "bin": "./dist/jtex.cjs",
+  "scripts": {
+    "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
+    "clean": "rimraf dist _build",
+    "unlink": "npm uninstall -g jtex;",
+    "link": "npm run unlink; npm link;",
+    "dev": "npm run link && esbuild src/cli/index.ts --bundle --outfile=dist/jtex.cjs --platform=node --watch",
+    "lint": "npm run copy:version && eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
+    "lint:format": "npm run copy:version && prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "build:esm": "tsc",
+    "build:cli": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.cjs --platform=node",
+    "build": "npm-run-all -l clean copy:version -p build:esm build:cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
+  "keywords": [
+    "jtex",
+    "latex",
+    "jinja",
+    "templating"
+  ],
+  "author": "Rowan Cockett <rowan@curvenote.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jupyter-book/mystmd/issues"
+  },
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/jtex",
+  "engines": {
+    "node": ">=12",
+    "npm": ">=6"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "chalk": "^5.2.0",
+    "commander": "^10.0.1",
+    "js-yaml": "^4.1.0",
+    "myst-cli-utils": "^2.0.11",
+    "myst-frontmatter": "^1.7.3",
+    "myst-templates": "^1.0.23",
+    "myst-common": "^1.7.3",
+    "node-fetch": "^3.3.1",
+    "nunjucks": "^3.2.4",
+    "pretty-hrtime": "^1.0.3",
+    "simple-validators": "^1.0.6"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.0",
+    "@types/nunjucks": "^3.2.2",
+    "memfs": "^3.5.3"
+  }
+}

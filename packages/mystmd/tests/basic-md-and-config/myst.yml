@@ -1,0 +1,13 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  keywords: []
+  authors: []
+  github: https://github.com/jupyter-book/mystmd
+site:
+  template: book-theme
+  nav: []
+  actions:
+    - title: Learn More
+      url: https://mystmd.org/guide
+  domains: []

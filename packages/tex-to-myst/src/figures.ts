@@ -1,0 +1,76 @@
+import type { GenericNode } from 'myst-common';
+import { u } from 'unist-builder';
+import type { Handler, ITexParser } from './types.js';
+import { getArguments, texToText } from './utils.js';
+
+function renderCaption(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  state.openNode('caption');
+  const args = getArguments(node, 'group');
+  const children = args[args.length - 1];
+  state.openParagraph();
+  state.renderChildren(children);
+  state.closeParagraph();
+  state.closeNode();
+}
+
+function centering(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  const container = state.top();
+  if (container.type === 'container') {
+    container.align = 'center';
+  } else {
+    state.warn('Unknown use of centering, currently this only works for containers', node);
+  }
+}
+
+function renderFigure(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  state.openNode('container', { kind: 'figure' });
+  state.renderChildren(node);
+  state.closeParagraph();
+  state.closeNode();
+}
+
+const FIGURE_HANDLERS: Record<string, Handler> = {
+  env_figure: renderFigure,
+  env_subfigure: renderFigure,
+  env_wrapfigure: renderFigure,
+  env_centering(node, state) {
+    centering(node, state);
+    state.renderChildren(node);
+  },
+  macro_centering: centering,
+  macro_includegraphics(node, state) {
+    state.closeParagraph();
+    const url = texToText(getArguments(node, 'group'));
+    const args = getArguments(node, 'argument')?.[0]?.content ?? [];
+    // TODO: better width, placement, etc.
+    if (
+      args.length === 4 &&
+      args[0].content === 'width' &&
+      args[1].content === '=' &&
+      Number.isFinite(Number.parseFloat(args[2].content))
+    ) {
+      const width = `${Math.round(Number.parseFloat(args[2].content) * 100)}%`;
+      state.pushNode(u('image', { url, width }));
+    } else {
+      state.pushNode(u('image', { url }));
+    }
+  },
+  macro_caption: renderCaption,
+  macro_captionof: renderCaption,
+  macro_framebox(node, state) {
+    state.closeParagraph();
+    const [children] = getArguments(node, 'group');
+    if (!children) return;
+    state.openNode('container', { kind: 'figure' });
+    state.renderChildren(children);
+    state.closeParagraph();
+    state.closeNode();
+  },
+};
+
+FIGURE_HANDLERS['env_figure*'] = FIGURE_HANDLERS.env_figure;
+
+export { FIGURE_HANDLERS };

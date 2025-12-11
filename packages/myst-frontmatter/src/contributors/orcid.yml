@@ -1,0 +1,44 @@
+title: ORCID
+cases:
+  - title: Valid ORCID
+    raw:
+      authors:
+        - name: Just A. Name
+          orcid: 0000-0000-0000-0000
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+          orcid: 0000-0000-0000-0000
+  - title: Using http
+    raw:
+      authors:
+        - name: Just A. Name
+          orcid: https://orcid.org/0000-0000-0000-000X
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+          orcid: 0000-0000-0000-000X
+  - title: Not a valid ORCID
+    raw:
+      authors:
+        - name: Just A. Name
+          orcid: nope
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+    errors: 1

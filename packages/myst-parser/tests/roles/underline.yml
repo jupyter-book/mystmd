@@ -1,0 +1,32 @@
+title: underline roles
+cases:
+  - title: underline role parses
+    markdown: '{underline}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: underline
+              value: test
+              children:
+                - type: underline
+                  children:
+                    - type: text
+                      value: test
+  - title: u role parses
+    markdown: '{u}`test`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: u
+              value: test
+              children:
+                - type: underline
+                  children:
+                    - type: text
+                      value: test

@@ -1,0 +1,84 @@
+\documentclass[a4paper,11pt,oneside]{book}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+
+% Make list items more compact
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep, topsep=0pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%  imports  %%%%%%%%%%%%%%%%%%%
+\usepackage{url}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Style quotes
+\usepackage{xcolor}
+% Change links to basic
+\hypersetup{
+  colorlinks,
+  linkcolor={black},
+  citecolor={black},
+  % urlcolor={blue!80!black}
+  urlcolor={black}
+}
+\usepackage{framed}
+\definecolor{quoteshade}{rgb}{0.95,0.95,1}
+\renewenvironment{quote}{%
+  \def\FrameCommand{%
+    \hspace{1pt}%
+    {\color{darkblue}\vrule width 2pt}%
+    {\color{quoteshade}\vrule width 4pt}%
+    \colorbox{quoteshade}%
+  }%
+  \MakeFramed{\advance\hsize-\width\FrameRestore}
+  \noindent\hspace{-8pt}% disable indenting first paragraph
+  \begin{adjustwidth}
+  \vspace{2pt}\vspace{2pt}%
+}
+{%
+  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
+
+\title{\Huge \textbf{DOI tests}}
+\author{\textsc{}}
+
+\begin{document}
+\sloppy
+
+\frontmatter
+\maketitle
+
+\tableofcontents
+% \listoffigures
+% \listoftables
+
+\mainmatter
+
+% \include{preface.tex}
+% \include{acknowledgements.tex}
+
+Bibtex citation with doi: \cite{Vogel2018systemic}
+
+Bibtex citation without doi: \cite{Meurer2020framework}
+
+Bibtex book citation: \cite{RN1}
+
+Normal DOI citation: \cite{Koch_2012}
+
+Nonexistent DOI citation (errors!): \href{https://doi.org/10.1111/j.1365-246X.2012.99999.x}{}
+
+DOI with with invalid BibTeX: \cite{EFSA2019Dietary}
+
+DOI with with invalid BibTeX as cite node: \cite{EFSA2019Dietary}
+
+
+\bibliography{main.bib}
+
+\end{document}

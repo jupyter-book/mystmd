@@ -1,0 +1,399 @@
+title: Contributors
+cases:
+  - title: full object returns self
+    raw:
+      contributors:
+        - userId: ''
+          name: Test Author
+          orcid: 0000-0000-0000-0000
+          corresponding: true
+          email: test@example.com
+          roles:
+            - Software
+            - Validation
+          affiliations:
+            - example university
+          x: '@test'
+          github: test
+          bsky: '@domain.com'
+          mastodon: '@user@fosstodon.org'
+          linkedin: 'https://linkedin.com/in/user'
+          instagram: 'username'
+          youtube: '@user'
+          facebook: 'https://facebook.com/user'
+          discourse: 'https://discourse.example.com'
+          discord: 'https://discord.gg/server'
+          slack: 'https://example.slack.com'
+          website: https://example.com
+    normalized:
+      contributors:
+        - userId: ''
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            given: Test
+            family: Author
+          orcid: 0000-0000-0000-0000
+          corresponding: true
+          email: test@example.com
+          roles:
+            - Software
+            - Validation
+          affiliations:
+            - example university
+          twitter: 'test'
+          github: test
+          bluesky: '@domain.com'
+          mastodon: '@user@fosstodon.org'
+          linkedin: 'https://linkedin.com/in/user'
+          threads: username
+          youtube: 'user'
+          facebook: 'https://facebook.com/user'
+          discourse: 'https://discourse.example.com'
+          discord: 'https://discord.gg/server'
+          slack: 'https://example.slack.com'
+          url: https://example.com
+          id: contributors-generated-uid-0
+      affiliations:
+        - id: example university
+          name: example university
+  - title: extra keys removed
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          extra: ''
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    warnings: 1
+  - title: invalid orcid errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          orcid: https://exampale.com/example
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: invalid email errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          email: https://exampale.com/example
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: unknown roles warn
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles:
+            - example
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles:
+            - example
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    warnings: 1
+  - title: invalid roles errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles:
+            - 1
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          roles: []
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: corresponding with no email errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          corresponding: true
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          corresponding: false
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: website coerces to url
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          website: https://example.com
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          url: https://example.com
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+  - title: collaboration errors
+    raw:
+      contributors:
+        - id: contrib
+          name: Test Author
+          collaborations:
+            - example collaboration
+    normalized:
+      contributors:
+        - id: contrib
+          name: Test Author
+          nameParsed:
+            literal: Test Author
+            family: Author
+            given: Test
+    errors: 1
+  - title: editor/reviewer added to collaborators
+    raw:
+      reviewer: Jane Doe
+      editor: John Doe
+    normalized:
+      reviewers:
+        - Jane Doe
+      editors:
+        - John Doe
+      contributors:
+        - id: Jane Doe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+        - id: John Doe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+  - title: editor/reviewer collaborators pass
+    raw:
+      reviewers:
+        - janedoe
+      editors:
+        - johndoe
+      contributors:
+        - id: janedoe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+        - id: johndoe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+    normalized:
+      reviewers:
+        - janedoe
+      editors:
+        - johndoe
+      contributors:
+        - id: janedoe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+        - id: johndoe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+  - title: editor/reviewer authors pass
+    raw:
+      reviewers:
+        - janedoe
+      editors:
+        - johndoe
+      authors:
+        - id: janedoe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+        - id: johndoe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+    normalized:
+      reviewers:
+        - janedoe
+      editors:
+        - johndoe
+      authors:
+        - id: janedoe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+        - id: johndoe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+  - title: author as id reference resolves to object
+    raw:
+      reviewers:
+        - id: janedoe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+        - id: johndoe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+      author: janedoe
+    normalized:
+      reviewers:
+        - janedoe
+        - johndoe
+      authors:
+        - id: janedoe
+          name: Jane Doe
+          nameParsed:
+            literal: Jane Doe
+            family: Doe
+            given: Jane
+      contributors:
+        - id: johndoe
+          name: John Doe
+          nameParsed:
+            literal: John Doe
+            family: Doe
+            given: John
+  - title: author as collaboration passes
+    raw:
+      authors:
+        - name: Research Group
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'
+    normalized:
+      authors:
+        - name: Research Group
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'
+          id: contributors-generated-uid-0
+  - title: author as non-collaboration affiliation fails and suggests collab:true
+    raw:
+      authors:
+        - name: Research Group
+          department: Example department
+          isni: '0000000000000000'
+          field_a: extra
+    normalized:
+      authors:
+        - name: Research Group
+          id: contributors-generated-uid-0
+          nameParsed:
+            literal: Research Group
+            given: Research
+            family: Group
+    warnings: 2
+  - title: author with totally unknown fields fails and does not suggest collab:true
+    raw:
+      authors:
+        - name: Research Group
+          field_a: Example department
+          field_b: '0000000000000000'
+    normalized:
+      authors:
+        - name: Research Group
+          id: contributors-generated-uid-0
+          nameParsed:
+            literal: Research Group
+            given: Research
+            family: Group
+    warnings: 1
+  - title: reviewer/editor/contributor as collaboration pass
+    raw:
+      reviewers:
+        - name: Research Group One
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'
+      editors:
+        - name: Research Group Two
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'
+      contributors:
+        - name: Research Group Three
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'
+    normalized:
+      reviewers:
+        - contributors-generated-uid-1
+      editors:
+        - contributors-generated-uid-2
+      contributors:
+        - name: Research Group Three
+          id: contributors-generated-uid-0
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'
+        - name: Research Group One
+          id: contributors-generated-uid-1
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'
+        - name: Research Group Two
+          id: contributors-generated-uid-2
+          collaboration: true
+          department: Example department
+          isni: '0000000000000000'

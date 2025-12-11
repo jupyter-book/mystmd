@@ -1,0 +1,52 @@
+title: mystToTex
+frontmatter: project
+cases:
+  - title: unknown option
+    raw:
+      settings:
+        mystToTex:
+          unknown: unknown
+    warnings: 1
+    normalized: {}
+  - title: minted code style
+    raw:
+      settings:
+        mystToTex:
+          code_style: minted
+    errors: 0
+    normalized:
+      settings:
+        myst_to_tex:
+          codeStyle: minted
+  - title: unknown code style
+    raw:
+      settings:
+        mystToTex:
+          code_style: unknown
+    errors: 1
+    normalized: {}
+  - title: beamer true
+    raw:
+      settings:
+        mystToTex:
+          beamer: true
+    normalized:
+      settings:
+        myst_to_tex:
+          beamer: true
+  - title: beamer false
+    raw:
+      settings:
+        mystToTex:
+          beamer: false
+    normalized:
+      settings:
+        myst_to_tex:
+          beamer: false
+  - title: beamer invalid
+    raw:
+      settings:
+        mystToTex:
+          beamer: invalid
+    errors: 1
+    normalized: {}
