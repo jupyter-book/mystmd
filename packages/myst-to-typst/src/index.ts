@@ -352,7 +352,7 @@ const handlers: Record<string, Handler> = {
       // We don't want to handle remote references, treat them as links
       const url =
         node.remoteBaseUrl +
-        (node.url === '/' ? '' : node.url ?? '') +
+        (node.url === '/' ? '' : (node.url ?? '')) +
         (node.html_id ? `#${node.html_id}` : '');
       linkHandler({ ...node, url: url }, state);
       return;
@@ -538,7 +538,7 @@ class TypstSerializer implements ITypstSerializer {
     opts: RenderChildrenOptions = {},
   ) {
     if (Array.isArray(node)) {
-      this.renderChildren({ children: node } as Parent, trailingNewLines, opts);
+      this.renderChildren({ children: node } as any, trailingNewLines, opts);
       return;
     }
     const { delim = '', trimEnd = true, after } = opts;
