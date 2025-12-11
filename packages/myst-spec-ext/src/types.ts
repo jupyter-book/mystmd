@@ -276,7 +276,7 @@ export type Aside = Node &
   Target & {
     type: 'aside';
     kind?: 'sidebar' | 'margin' | 'topic';
-    children?: (FlowContent | ListContent | PhrasingContent)[];
+    children?: FlowContent[];
     class?: Image['class'];
   };
 
