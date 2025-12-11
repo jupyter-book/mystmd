@@ -24,3 +24,16 @@ flowchart LR
 :::{note}
 Both GitHub and JupyterLab ([#101](https://github.com/jupyter/enhancement-proposals/pull/101)) support the translation of a code-block ` ```mermaid ` to a mermaid diagram directly, this can also be used by default in MyST.
 :::
+
+## Rendering for Static Exports
+
+MyST supports static rendering of Mermaid diagrams for static export formats (PDF, Word, LaTeX, Typst). This feature converts Mermaid syntax to base64-encoded SVG or PNG images during the build process, ensuring consistent rendering across all static output formats.
+
+:::{important} Prerequisites
+To use static Mermaid rendering, you need the Mermaid CLI installed:
+
+```bash
+npm install -g @mermaid-js/mermaid-cli
+```
+
+:::

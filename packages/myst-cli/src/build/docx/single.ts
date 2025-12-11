@@ -12,6 +12,7 @@ import {
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import { htmlTransform } from 'myst-transforms';
+import type { TransformSpec } from 'myst-common';
 import { fileError, fileWarn, RuleId, TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { filterKeys } from 'simple-validators';
@@ -28,6 +29,16 @@ import { cleanOutput } from '../utils/cleanOutput.js';
 import { getFileContent } from '../utils/getFileContent.js';
 import { createFooter } from './footers.js';
 import { createArticleTitle, createReferenceTitle } from './titles.js';
+import { mermaidPlugin } from '../../transforms/mermaid.js';
+
+const mermaidTransform: TransformSpec = {
+  name: 'mermaid',
+  stage: 'document',
+  plugin: mermaidPlugin,
+  options: {
+    format: 'png',
+  },
+};
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
 
@@ -98,6 +109,7 @@ export async function runWordExport(
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
+    transforms: [mermaidTransform],
     preFrontmatters: [
       filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
     ],

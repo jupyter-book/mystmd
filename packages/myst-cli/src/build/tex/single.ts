@@ -3,7 +3,7 @@ import path from 'node:path';
 import type { TexTemplateImports } from 'jtex';
 import { mergeTexTemplateImports, renderTemplate } from 'jtex';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import type { References, GenericParent } from 'myst-common';
+import type { References, GenericParent, TransformSpec } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import {
@@ -34,6 +34,16 @@ import { createTempFolder } from '../../utils/createTempFolder.js';
 import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import type { ExportWithOutput, ExportResults, ExportFnOptions } from '../types.js';
 import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
+import { mermaidPlugin } from '../../transforms/mermaid.js';
+
+const mermaidTransform: TransformSpec = {
+  name: 'mermaid',
+  stage: 'document',
+  plugin: mermaidPlugin,
+  options: {
+    format: 'png',
+  },
+};
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -140,6 +150,7 @@ export async function localArticleToTexRaw(
       projectPath,
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      transforms: [mermaidTransform],
       titleDepths: fileArticles.map((article) => article.level),
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
@@ -206,6 +217,7 @@ export async function localArticleToTexTemplated(
       projectPath,
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      transforms: [mermaidTransform],
       titleDepths: fileArticles.map((article) => article.level),
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
