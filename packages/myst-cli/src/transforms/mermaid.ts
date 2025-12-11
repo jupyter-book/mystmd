@@ -50,9 +50,21 @@ async function renderMermaidToBase64(
   }
 
   try {
+    // Create puppeteer config file for CI environments
+    // See https://github.com/mermaid-js/mermaid-cli/blob/master/docs/linux-sandbox-issue.md
+    const useNoSandbox = process.env.MERMAID_NO_SANDBOX === 'true' || process.env.CI === 'true';
+    let puppeteerConfigFlag = '';
+
+    if (useNoSandbox) {
+      const puppeteerConfigPath = path.join(tempFolder, 'puppeteer-config.json');
+      const puppeteerConfig = { args: ['--no-sandbox'] };
+      await fs.writeFile(puppeteerConfigPath, JSON.stringify(puppeteerConfig, null, 2));
+      puppeteerConfigFlag = ` -p "${puppeteerConfigPath}"`;
+    }
+
     // Render using Mermaid CLI with stdin input
     await execAsync(
-      `echo '${mermaidCode.replace(/'/g, "'\"'\"'")}' | mmdc -i - -o "${outputFile}" -t ${theme} -b transparent`,
+      `echo '${mermaidCode.replace(/'/g, "'\"'\"'")}' | mmdc -i - -o "${outputFile}" -t ${theme} -b transparent${puppeteerConfigFlag}`,
     );
 
     // Read the generated file

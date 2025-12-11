@@ -37,3 +37,19 @@ npm install -g @mermaid-js/mermaid-cli
 ```
 
 :::
+
+:::{note .dropdown} For CI Environments
+
+The Mermaid CLI uses Puppeteer which may require special configuration in CI environments. MyST automatically handles this by detecting the `CI` environment variable or you can manually control it:
+
+```bash
+# Automatic detection (recommended for CI)
+CI=true npm run build
+
+# Manual control
+MERMAID_NO_SANDBOX=true npm run build
+```
+
+This automatically creates a Puppeteer configuration file with `--no-sandbox` flag to resolve sandbox issues in Linux CI environments.
+
+:::
