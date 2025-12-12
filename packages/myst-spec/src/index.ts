@@ -12,6 +12,14 @@ import type {
   PhrasingContent,
   StaticPhrasingContent,
   Table,
+  BlockContentMap,
+  DefinitionContentMap,
+  FrontmatterContentMap,
+  ListContentMap,
+  PhrasingContentMap,
+  RowContentMap,
+  StaticPhrasingContentMap,
+  TableContentMap,
   TopLevelContent as MdastTopLevelContent,
 } from 'mdast';
 import type { IOutput } from '@jupyterlab/nbformat';
@@ -593,8 +601,27 @@ type FlowContent = BlockContent | DefinitionContent;
 // Interfaces
 export type { Enumerated, HasClass, HasAlign };
 
-// Node groups
-export type { TopLevelContent, FlowContent };
+// Export overwritten/new node group types
+export type { FlowContent, TopLevelContent };
+
+// Export mdast node type groups
+export type {
+  BlockContent,
+  DefinitionContent,
+  FrontmatterContent,
+  ListContent,
+  PhrasingContent,
+  StaticPhrasingContent,
+  TableContent,
+  BlockContentMap,
+  DefinitionContentMap,
+  FrontmatterContentMap,
+  ListContentMap,
+  PhrasingContentMap,
+  RowContentMap,
+  StaticPhrasingContentMap,
+  TableContentMap,
+} from 'mdast';
 
 // Non-node types
 export type { CiteKind, Dependency, IncludeFilter, IndexEntry, SubEntryKind, Visibility };
