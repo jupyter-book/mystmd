@@ -2,7 +2,7 @@ import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
 import type { Position } from 'unist';
 import { customAlphabet } from 'nanoid';
-import type { Node, Parent, PhrasingContent } from 'myst-spec';
+import type { Node, Parent, PhrasingContent, Content } from 'myst-spec';
 import type { RuleId } from './ruleids.js';
 import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
 
@@ -153,7 +153,7 @@ export function liftChildren(tree: GenericParent | GenericNode, removeType: stri
 }
 
 export function setTextAsChild(node: Partial<Parent>, text: string) {
-  node.children = [{ type: 'text', value: text } as Node];
+  node.children = [{ type: 'text', value: text } as Content];
 }
 
 /**
@@ -163,7 +163,7 @@ export function setTextAsChild(node: Partial<Parent>, text: string) {
  * @returns A string. An empty string is returned in case no
  * textual representation could be extracted.
  */
-export function toText(content?: Node[] | Node | null): string {
+export function toText(content?: Content[] | Content | null): string {
   if (!content) return '';
   if (!Array.isArray(content)) return toText([content]);
   return (content as PhrasingContent[])
@@ -179,27 +179,32 @@ export function toText(content?: Node[] | Node | null): string {
 export function copyNode<T extends Node | Node[]>(node: T): T {
   return structuredClone(node);
 }
+function nodeHasChildren(node: Content): node is Extract<Content, Parent> {
+  return 'children' in node;
+}
 
-export function mergeTextNodes(node: GenericNode): GenericNode {
-  const children = node.children?.reduce((c, n) => {
-    if (n?.type !== 'text') {
-      c.push(mergeTextNodes(n));
-      return c;
-    }
-    const last = c[c.length - 1];
-    if (last?.type !== 'text') {
-      c.push(n);
-      return c;
-    }
-    if (n.position?.end) {
-      if (!last.position) last.position = {} as Required<GenericNode>['position'];
-      last.position.end = n.position.end;
-    }
-    if (!last.value) last.value = '';
-    if (n.value) last.value += n.value;
-    return c;
-  }, [] as GenericNode[]);
-  if (children) node.children = children;
+export function mergeTextNodes(node: Content): Content {
+  const children = nodeHasChildren(node)
+    ? node.children.reduce((c, n) => {
+        if (n?.type !== 'text') {
+          c.push(mergeTextNodes(n));
+          return c;
+        }
+        const last = c[c.length - 1];
+        if (last?.type !== 'text') {
+          c.push(n);
+          return c;
+        }
+        if (n.position?.end) {
+          if (!last.position) last.position = {} as Required<Node>['position'];
+          last.position.end = n.position.end;
+        }
+        if (!last.value) last.value = '';
+        if (n.value) last.value += n.value;
+        return c;
+      }, [] as Content[])
+    : [];
+  if (children) (node as Parent).children = children;
   return node;
 }
 

@@ -538,7 +538,7 @@ class TypstSerializer implements ITypstSerializer {
     opts: RenderChildrenOptions = {},
   ) {
     if (Array.isArray(node)) {
-      this.renderChildren({ children: node }, trailingNewLines, opts);
+      this.renderChildren({ children: node } as any, trailingNewLines, opts);
       return;
     }
     const { delim = '', trimEnd = true, after } = opts;
