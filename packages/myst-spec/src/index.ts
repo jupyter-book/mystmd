@@ -592,9 +592,14 @@ type TopLevelContent = MdastTopLevelContent | Block;
 // An verbal-spec-based term that we use, so we'll export.
 type FlowContent = BlockContent | DefinitionContent;
 
+// Interfaces
 export type { Enumerated, HasClass, HasAlign };
 
+// Node groups
 export type { TopLevelContent, FlowContent };
+
+// Types
+export type { CiteKind, Dependency, IncludeFilter, SubEntryKind, Visibility };
 
 // Export new nodes and types
 export type {
