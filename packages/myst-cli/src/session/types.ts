@@ -11,6 +11,7 @@ import type { PreRendererData, RendererData, SingleCitationRenderer } from '../t
 import type { SessionManager } from '@jupyterlab/services';
 import type MystTemplate from 'myst-templates';
 import type { PluginInfo } from 'myst-config';
+import type { Semaphore } from 'async-mutex';
 
 export type ISession = {
   API_URL: string;
@@ -18,6 +19,7 @@ export type ISession = {
   store: Store<RootState>;
   log: Logger;
   doiLimiter: Limit;
+  executionSemaphore: Semaphore;
   reload(): Promise<ISession>;
   clone(): Promise<ISession>;
   sourcePath(): string;
