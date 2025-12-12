@@ -142,7 +142,7 @@ To hide the MyST logo at the bottom of the Primary Sidebar, use `site.options.hi
 ```{code-block} yaml
 :filename: myst.yml
 site: 
-  option:
+  options:
     hide_myst_branding: true
 ```
 
