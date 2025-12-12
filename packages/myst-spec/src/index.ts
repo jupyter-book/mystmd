@@ -4,12 +4,14 @@ import type { Node } from 'unist';
 import type {
   Association,
   BlockContent,
+  Content,
   DefinitionContent,
   Image,
   ListContent,
   Literal,
   Parent,
   PhrasingContent,
+  Root,
   StaticPhrasingContent,
   Table,
   TopLevelContent as MdastTopLevelContent,
@@ -597,11 +599,15 @@ type TopLevelContent = MdastTopLevelContent | Block;
 // An verbal-spec-based term that we use, so we'll export.
 type FlowContent = BlockContent | DefinitionContent;
 
+type Nodes = Root | Content;
+type Parents = Extract<Nodes, Parent>;
+type Literals = Extract<Nodes, Literal>;
+
 // Interfaces
 export type { Enumerated, HasClass, HasAlign };
 
 // Export overwritten/new node group types
-export type { FlowContent, TopLevelContent };
+export type { FlowContent, Literals, Nodes, Parents, TopLevelContent };
 
 // Export mdast node type groups
 export type {
