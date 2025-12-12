@@ -34,6 +34,8 @@
     "url": "https://github.com/jupyter-book/myst-spec/issues"
   },
   "dependencies": {
-    "@types/mdast": "^3.0.10"
+    "@types/mdast": "^3.0.10",
+    "@types/unist": "^2",
+    "@jupyterlab/nbformat": "^3.5.2"
   }
 }

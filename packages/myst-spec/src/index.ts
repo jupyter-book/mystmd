@@ -138,19 +138,17 @@ interface BlockBreak extends Node {
 /**
  * Top-level content blocks or cells the myst document, delimited by BlockBreaks.
  */
-interface Block extends Parent {
+interface Block extends Parent, Pick<BlockBreak, 'meta'> {
   /**
    * Node type of myst block.
    */
   type: 'block';
-  /**
-   * Block metadata from preceding break; conventionally, a stringified JSON dictionary but may be any arbitrary string.
-   */
-  meta?: BlockBreak['meta'];
+  kind?: string;
   /**
    * Top-level children of mdast document.
    */
   children: TopLevelContent[];
+  visibility?: Visibility;
 }
 
 interface Cite extends Parent {
@@ -598,8 +596,8 @@ export type { Enumerated, HasClass, HasAlign };
 // Node groups
 export type { TopLevelContent, FlowContent };
 
-// Types
-export type { CiteKind, Dependency, IncludeFilter, SubEntryKind, Visibility };
+// Non-node types
+export type { CiteKind, Dependency, IncludeFilter, IndexEntry, SubEntryKind, Visibility };
 
 // Export new nodes and types
 export type {
@@ -675,3 +673,5 @@ export type {
   ThematicBreak,
   YAML,
 } from 'mdast';
+
+export type { Node } from 'unist';
