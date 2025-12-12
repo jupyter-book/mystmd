@@ -12,14 +12,6 @@ import type {
   PhrasingContent,
   StaticPhrasingContent,
   Table,
-  BlockContentMap,
-  DefinitionContentMap,
-  FrontmatterContentMap,
-  ListContentMap,
-  PhrasingContentMap,
-  RowContentMap,
-  StaticPhrasingContentMap,
-  TableContentMap,
   TopLevelContent as MdastTopLevelContent,
 } from 'mdast';
 import type { IOutput } from '@jupyterlab/nbformat';
@@ -32,6 +24,13 @@ interface HasClass {
 interface HasAlign {
   align: 'left' | 'center' | 'right';
 }
+
+interface HasKey {
+  key: string;
+}
+
+// All MyST MDAST nodes have these properties
+interface BaseInterface extends Partial<Association>, Partial<HasClass>, Partial<HasKey> {}
 
 /**
  * Interface for enumerated MyST content
@@ -132,7 +131,7 @@ interface Aside extends Parent {
 /**
  * Top-level break in the myst document, breaking it into Blocks.
  */
-interface BlockBreak extends Node {
+interface BlockBreak extends Node, BaseInterface {
   /**
    * Node type of myst block break.
    */
@@ -155,7 +154,7 @@ interface Block extends Parent, Pick<BlockBreak, 'meta'> {
   /**
    * Top-level children of mdast document.
    */
-  children: TopLevelContent[];
+  children: FlowContent[];
   visibility?: Visibility;
 }
 
@@ -231,7 +230,7 @@ interface Container extends Parent, Partial<Enumerated> {
  *
  * Unlike other nodes, we need the association
  */
-interface CrossReference extends Association, Pick<Parent, 'children'> {
+interface CrossReference extends Pick<Parent, 'children'> {
   /**
    * Node type of myst crossReference.
    */
@@ -451,7 +450,7 @@ interface TabSet extends Parent {
 /**
  * Target node - provides identifier/label for the following node.
  */
-interface Target extends Node {
+interface Target extends Node, BaseInterface {
   /**
    * Node type of myst mystTarget.
    */
@@ -476,19 +475,19 @@ declare module 'mdast' {
 
   // 2. Make all node types extend Association
   // Make mdast parents associable, and literals
-  interface Literal extends Partial<Association>, Partial<HasClass> {}
-  interface Parent extends Partial<Association>, Partial<HasClass> {}
+  interface Literal extends BaseInterface {}
+  interface Parent extends BaseInterface {}
   // Make non-Parent and non-Literal node types associable. We can't touch Node, because it's not specific to mdast
   // curl -L https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/refs/heads/master/types/mdast/v3/index.d.ts | rg 'export interface (\S+) extends .*(Parent|Literal)'
-  interface Definition extends Partial<Association>, Partial<HasClass> {}
-  interface Break extends Partial<Association>, Partial<HasClass> {}
-  interface Image extends Partial<Association>, Partial<HasClass> {}
-  interface ImageReference extends Partial<Association>, Partial<HasClass> {}
-  interface FootnoteReference extends Partial<Association>, Partial<HasClass> {}
-  interface ThematicBreak extends Partial<Association>, Partial<HasClass> {}
+  interface Definition extends BaseInterface {}
+  interface Break extends BaseInterface {}
+  interface Image extends BaseInterface {}
+  interface ImageReference extends BaseInterface {}
+  interface FootnoteReference extends BaseInterface {}
+  interface ThematicBreak extends BaseInterface {}
 
   // 3. Headings and other types can be enumerated, or otherwise extended
-  interface Heading extends Referenceable, Partial<Enumerated> {
+  interface Heading extends Partial<Enumerated> {
     implicit?: true;
   }
   interface FootnoteReference extends Partial<Pick<Enumerated, 'enumerator'>> {
@@ -502,7 +501,7 @@ declare module 'mdast' {
     height?: string;
     placeholder?: boolean;
   }
-  interface Link extends Partial<HasClass> {
+  interface Link {
     urlSource?: string;
     dataUrl?: string;
     internal?: boolean;
@@ -606,6 +605,7 @@ export type { FlowContent, TopLevelContent };
 
 // Export mdast node type groups
 export type {
+  Content,
   BlockContent,
   DefinitionContent,
   FrontmatterContent,
