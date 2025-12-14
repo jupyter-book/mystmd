@@ -1,5 +1,5 @@
-import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
-import type { PhrasingContent } from 'myst-spec';
+import type { RoleSpec, RoleData } from 'myst-common';
+import type { Superscript, PhrasingContent } from 'myst-spec';
 import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const superscriptRole: RoleSpec = {
@@ -11,7 +11,7 @@ export const superscriptRole: RoleSpec = {
     required: true,
   },
   run(data: RoleData) {
-    const node = { type: 'superscript', children: data.body as PhrasingContent[] };
+    const node: Superscript = { type: 'superscript', children: data.body as PhrasingContent[] };
     addCommonRoleOptions(data, node);
     return [node];
   },

@@ -1,5 +1,6 @@
 import type { GenericNode, RoleSpec, IndexTypeLists } from 'myst-common';
 import { parseIndexLine, createIndexEntries } from 'myst-common';
+import type { Target, Span } from 'myst-spec';
 
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'index entries <pair: index; entry>'
 
@@ -16,7 +17,7 @@ export const indexRole: RoleSpec = {
     const values: IndexTypeLists = { single: [], pair: [], triple: [], see: [], seealso: [] };
     parseIndexLine(indexString ?? body, values, vfile, data.node);
     const entries = createIndexEntries(values, vfile, data.node);
-    const output: GenericNode[] = [
+    const output: (Target | Span)[] = [
       {
         type: 'mystTarget',
         indexEntries: entries,

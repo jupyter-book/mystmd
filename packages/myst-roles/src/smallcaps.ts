@@ -1,5 +1,6 @@
-import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
+import type { RoleSpec, RoleData } from 'myst-common';
 import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
+import type { SmallCaps, PhrasingContent } from 'myst-spec';
 
 export const smallcapsRole: RoleSpec = {
   name: 'smallcaps',
@@ -9,8 +10,8 @@ export const smallcapsRole: RoleSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: RoleData): {
-    const node = { type: 'smallcaps', children: data.body as GenericNode[] };
+  run(data: RoleData) {
+    const node: SmallCaps = { type: 'smallcaps', children: data.body as PhrasingContent[] };
     addCommonRoleOptions(data, node);
     return [node];
   },

@@ -49,6 +49,7 @@ export const citeRole: RoleSpec = {
         kind,
         label: label ?? l,
         identifier,
+        children: [],
       };
       if (data.name.startsWith('cite:year')) {
         cite.partial = 'year';

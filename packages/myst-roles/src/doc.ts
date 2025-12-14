@@ -25,8 +25,11 @@ export const docRole: RoleSpec = {
         ruleId: RuleId.roleBodyCorrect,
       },
     );
-    const link: Link = { type: 'link', url, children: [] };
-    if (modified) link.children = [{ type: 'text', value: modified.trim() }];
+    const link: Link = {
+      type: 'link',
+      url,
+      children: modified ? [{ type: 'text', value: modified.trim() }] : [],
+    };
     return [link];
   },
 };

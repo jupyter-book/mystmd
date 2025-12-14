@@ -1,4 +1,5 @@
-import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
+import type { RoleSpec, RoleData } from 'myst-common';
+import type { Underline, PhrasingContent } from 'myst-spec';
 import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const underlineRole: RoleSpec = {
@@ -9,8 +10,8 @@ export const underlineRole: RoleSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: RoleData): {
-    const node = { type: 'underline', children: data.body as GenericNode[] };
+  run(data: RoleData) {
+    const node: Underline = { type: 'underline', children: data.body as PhrasingContent[] };
     addCommonRoleOptions(data, node);
     return [node];
   },

@@ -1,5 +1,5 @@
 import type { VFile } from 'vfile';
-import type { IndexEntry } from 'myst-spec-ext';
+import type { IndexEntry, Content } from 'myst-spec-ext';
 import { fileError } from './utils.js';
 import type { GenericNode } from './types.js';
 
@@ -15,7 +15,7 @@ export function parseIndexLine(
   line: string,
   { single, pair, triple, see, seealso }: IndexTypeLists,
   vfile: VFile,
-  node: GenericNode,
+  node: Content,
 ) {
   if (line.trim().length === 0) return;
   // This splits on unescaped colons

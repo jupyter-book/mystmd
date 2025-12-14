@@ -1,5 +1,6 @@
-import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
+import type { RoleSpec, RoleData } from 'myst-common';
 import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
+import type { Delete, PhrasingContent } from 'myst-spec';
 
 export const deleteRole: RoleSpec = {
   name: 'delete',
@@ -9,8 +10,8 @@ export const deleteRole: RoleSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: RoleData): {
-    const del = { type: 'delete', children: data.body as GenericNode[] };
+  run(data: RoleData) {
+    const del: Delete = { type: 'delete', children: data.body as PhrasingContent[] };
     addCommonRoleOptions(data, del);
     return [del];
   },

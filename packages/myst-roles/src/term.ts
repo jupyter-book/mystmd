@@ -1,5 +1,6 @@
-import type { GenericNode, RoleSpec } from 'myst-common';
+import type { RoleSpec } from 'myst-common';
 import { fileWarn, normalizeLabel, RuleId } from 'myst-common';
+import type { CrossReference } from 'myst-spec';
 
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Term <term>'
 
@@ -21,7 +22,7 @@ export const termRole: RoleSpec = {
         ruleId: RuleId.roleBodyCorrect,
       });
     }
-    const crossRef: GenericNode = {
+    const crossRef: CrossReference = {
       type: 'crossReference',
       label,
       identifier: `term-${identifier}`,
