@@ -160,9 +160,8 @@ interface Block extends Parent, Pick<BlockBreak, 'meta'> {
   visibility?: Visibility;
 }
 
-interface ChemicalFormula extends Parent {
+interface ChemicalFormula extends Literal {
   type: 'chemicalFormula';
-  children: PhrasingContent[];
 }
 
 interface Cite extends Parent {
