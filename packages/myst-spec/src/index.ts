@@ -292,6 +292,12 @@ interface Directive extends Parent, Literal {
    */
   children: FlowContent[];
 }
+
+interface Div extends Parent, Partial<HasClass> {
+  type: 'div';
+  children: FlowContent[];
+}
+
 interface Embed extends Parent {
   type: 'embed';
   'remove-input'?: boolean;
@@ -430,16 +436,27 @@ interface SIUnit extends Literal {
   alt?: string;
 }
 
+/** @deprecated **/
+type SiUnit = SIUnit;
+
 interface SmallCaps extends Parent {
   type: 'smallcaps';
   children: PhrasingContent[];
 }
+
+/** @deprecated **/
+type Smallcaps = SmallCaps;
+
 enum SourceFileKind {
   Article = 'Article',
   Notebook = 'Notebook',
   Part = 'Part',
 }
 
+interface Span extends Parent, Partial<HasClass> {
+  type: 'span';
+  children: PhrasingContent[];
+}
 // Index information for nodes
 type SubEntryKind = 'entry' | 'see' | 'seealso';
 
@@ -548,6 +565,7 @@ declare module 'mdast' {
     mystRole: Role;
     si: SIUnit;
     smallCaps: SmallCaps;
+    span: Span;
     subscript: Subscript;
     superscript: Superscript;
     underline: Underline;
@@ -601,6 +619,7 @@ declare module 'mdast' {
     aside: Aside;
     container: Container;
     definitionList: DefinitionList;
+    div: Div;
     embed: Embed;
     iframe: Iframe;
     include: Include;
@@ -675,6 +694,7 @@ export type {
   DefinitionList,
   DefinitionTerm,
   Directive,
+  Div,
   Embed,
   Iframe,
   Include,
@@ -688,11 +708,10 @@ export type {
   Raw,
   Role,
   SIUnit,
-  /** @deprecated **/
-  SIUnit as SiUnit,
+  SiUnit,
   SmallCaps,
-  /** @deprecated **/
-  SmallCaps as Smallcaps,
+  Smallcaps,
+  Span,
   Superscript,
   Subscript,
   TabItem,
