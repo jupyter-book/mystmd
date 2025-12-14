@@ -305,6 +305,11 @@ interface Embed extends Parent {
   children: (FlowContent | ListContent | PhrasingContent)[];
 }
 
+interface Keyboard extends Parent {
+  type: 'keyboard';
+  children: PhrasingContent[];
+}
+
 interface Iframe extends Parent, Partial<HasAlign>, Partial<HasClass> {
   type: 'iframe';
   src: string;
@@ -561,6 +566,7 @@ declare module 'mdast' {
     citeGroup: CiteGroup;
     inlineExpression: InlineExpression;
     inlineMath: InlineMath;
+    keyboard: Keyboard;
     mystRole: Role;
     si: SIUnit;
     smallCaps: SmallCaps;
@@ -699,6 +705,7 @@ export type {
   Include,
   InlineExpression,
   InlineMath,
+  Keyboard,
   Legend,
   Math,
   MathGroup,
