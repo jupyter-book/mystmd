@@ -599,6 +599,8 @@ type TopLevelContent = MdastTopLevelContent | Block;
 // An verbal-spec-based term that we use, so we'll export.
 type FlowContent = BlockContent | DefinitionContent;
 
+// Families
+// Nodes will become Root | RootContent in future
 type Nodes = Root | Content;
 type Parents = Extract<Nodes, Parent>;
 type Literals = Extract<Nodes, Literal>;
