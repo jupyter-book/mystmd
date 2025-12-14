@@ -10,7 +10,7 @@ export const refRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const body = data.body as string;
     const match = REF_PATTERN.exec(body);
     const [, modified, rawLabel] = match ?? [];

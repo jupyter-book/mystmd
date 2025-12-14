@@ -9,7 +9,7 @@ export const underlineRole: RoleSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const node = { type: 'underline', children: data.body as GenericNode[] };
     addCommonRoleOptions(data, node);
     return [node];

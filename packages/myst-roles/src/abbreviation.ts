@@ -11,7 +11,7 @@ export const abbreviationRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const body = data.body as string;
     const match = ABBR_PATTERN.exec(body);
     const value = match?.[1]?.trim() ?? body.trim();

@@ -9,7 +9,7 @@ export const chemRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const chem = { type: 'chemicalFormula', value: data.body as string };
     addCommonRoleOptions(data, chem);
     return [chem];

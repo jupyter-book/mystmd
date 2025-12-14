@@ -7,7 +7,7 @@ export const siRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const value = data.body as string;
     const match = value.match(/([0-9]+)\s?<([\\a-zA-Z\s]+)>/);
     if (!match) {

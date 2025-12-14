@@ -9,7 +9,7 @@ export const deleteRole: RoleSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const del = { type: 'delete', children: data.body as GenericNode[] };
     addCommonRoleOptions(data, del);
     return [del];

@@ -14,7 +14,7 @@ export const mathRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const node: GenericNode = { type: 'inlineMath', value: data.body as string };
     addCommonRoleOptions(data, node);
     if (data.options?.typst) {

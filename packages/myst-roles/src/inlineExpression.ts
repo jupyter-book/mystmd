@@ -9,7 +9,7 @@ export const evalRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const node: InlineExpression = { type: 'inlineExpression', value: data.body as string };
     addCommonRoleOptions(data, node);
     return [node];

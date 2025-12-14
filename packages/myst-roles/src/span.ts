@@ -7,7 +7,7 @@ export const spanRole: RoleSpec = {
   body: {
     type: 'myst',
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const node: GenericNode = { type: 'span' };
     if (data.body) {
       node.children = data.body as GenericNode[];

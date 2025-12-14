@@ -9,7 +9,7 @@ export const smallcapsRole: RoleSpec = {
     type: 'myst',
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData): {
     const node = { type: 'smallcaps', children: data.body as GenericNode[] };
     addCommonRoleOptions(data, node);
     return [node];
