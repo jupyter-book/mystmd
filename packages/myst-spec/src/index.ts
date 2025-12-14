@@ -160,6 +160,11 @@ interface Block extends Parent, Pick<BlockBreak, 'meta'> {
   visibility?: Visibility;
 }
 
+interface ChemicalFormula extends Parent {
+  type: 'chemicalFormula';
+  children: PhrasingContent[];
+}
+
 interface Cite extends Parent {
   type: 'cite';
   kind: CiteKind;
@@ -535,6 +540,7 @@ declare module 'mdast' {
   interface StaticPhrasingContentMap {
     abbreviation: Abbreviation;
     captionNumber: CaptionNumber;
+    chemicalFormula: ChemicalFormula;
     cite: Cite;
     citeGroup: CiteGroup;
     inlineExpression: InlineExpression;
@@ -659,6 +665,7 @@ export type {
   BlockBreak,
   Caption,
   CaptionNumber,
+  ChemicalFormula,
   Cite,
   CiteGroup,
   CrossReference,
