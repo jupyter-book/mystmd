@@ -232,7 +232,7 @@ interface Container extends Parent, Partial<Enumerated> {
  *
  * Unlike other nodes, we need the association
  */
-interface CrossReference extends Pick<Parent, 'children'> {
+interface CrossReference extends Parent {
   /**
    * Node type of myst crossReference.
    */
@@ -437,6 +437,17 @@ enum SourceFileKind {
 
 // Index information for nodes
 type SubEntryKind = 'entry' | 'see' | 'seealso';
+
+interface Superscript extends Parent {
+  type: 'superscript';
+  children: PhrasingContent[];
+}
+
+interface Subscript extends Parent {
+  type: 'subscript';
+  children: PhrasingContent[];
+}
+
 interface TabItem extends Parent {
   type: 'tabItem';
   title: string;
@@ -464,6 +475,7 @@ interface Underline extends Parent {
   type: 'underline';
   children: PhrasingContent[];
 }
+
 type Visibility = 'show' | 'hide' | 'remove';
 
 declare module 'mdast' {
@@ -530,6 +542,8 @@ declare module 'mdast' {
     mystRole: Role;
     si: SIUnit;
     smallCaps: SmallCaps;
+    subscript: Subscript;
+    superscript: Superscript;
     underline: Underline;
   }
   /// This interface can be augmented to register custom node types in a phrasing context, excluding links and link references
@@ -647,6 +661,7 @@ export type {
   CaptionNumber,
   Cite,
   CiteGroup,
+  CrossReference,
   Comment,
   Container,
   DefinitionDescription,
@@ -671,6 +686,8 @@ export type {
   SmallCaps,
   /** @deprecated **/
   SmallCaps as Smallcaps,
+  Superscript,
+  Subscript,
   TabItem,
   TabSet,
   Target,
