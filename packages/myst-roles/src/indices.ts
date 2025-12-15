@@ -1,4 +1,4 @@
-import type { GenericNode, RoleSpec, IndexTypeLists } from 'myst-common';
+import type { RoleSpec, IndexTypeLists } from 'myst-common';
 import { parseIndexLine, createIndexEntries } from 'myst-common';
 import type { Target, Span } from 'myst-spec';
 
