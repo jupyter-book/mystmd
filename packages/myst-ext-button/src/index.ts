@@ -1,5 +1,6 @@
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
 import type { Link } from 'myst-spec-ext';
+import { fileWarn, RuleId } from 'myst-common';
 
 // Matches "text<link>" capturing body text (group 1) and an optional "<link>" suffix (group 2).
 // Group 2 keeps the angle brackets; it can also be exactly "<>" to signal an empty target.
@@ -13,7 +14,7 @@ export const buttonRole: RoleSpec = {
     doc: 'The body of the button.',
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data, vfile): GenericNode[] {
     const body = data.body as string;
     /**
      * Behavior:
@@ -24,12 +25,18 @@ export const buttonRole: RoleSpec = {
      */
     const match = TEXT_LINK_PATTERN.exec(body);
     if (!match) {
+      fileWarn(vfile, `Invalid {button} role with body: "${body}"`, {
+        source: 'role:button',
+        node: data.node,
+        ruleId: RuleId.roleBodyCorrect,
+      });
+
       // Fallback if we don't match: degrade to a plain-text button.
       return [
         {
           type: 'span',
           class: 'button',
-          children: [{ type: 'text', value: "❌ could not parse button syntax!" }],
+          children: [{ type: 'text', value: '❌ could not parse button syntax!' }],
         },
       ];
     }
