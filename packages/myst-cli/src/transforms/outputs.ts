@@ -90,19 +90,21 @@ export function liftOutputs(
       if (children) {
         return;
       }
-      const { content_type, content, hash } = obj;
-      const { mimeType: markdownMimeType } = determineMarkdownVariant(content_type) ?? {};
-      // Markdown output
-      if (markdownMimeType) {
-        const [cacheContent] = cache.$outputs[hash] ?? [];
-        const ast = opts.parseMyst(content ?? cacheContent);
-        children = ast.children;
-      }
-      // LaTeX (including math) output
-      else if (content_type === 'text/latex') {
-        const [cacheContent] = cache.$outputs[hash] ?? [];
-        const state = new TexParser(content ?? cacheContent, vfile);
-        children = state.ast.children;
+      if (obj.content_type !== undefined) {
+        const { content_type, content, hash } = obj;
+        const { mimeType: markdownMimeType } = determineMarkdownVariant(content_type) ?? {};
+        // Markdown output
+        if (markdownMimeType) {
+          const [cacheContent] = cache.$outputs[hash] ?? [];
+          const ast = opts.parseMyst(content ?? cacheContent);
+          children = ast.children;
+        }
+        // LaTeX (including math) output
+        else if (content_type === 'text/latex') {
+          const [cacheContent] = cache.$outputs[hash] ?? [];
+          const state = new TexParser(content ?? cacheContent, vfile);
+          children = state.ast.children;
+        }
       }
     });
     if (children) {
