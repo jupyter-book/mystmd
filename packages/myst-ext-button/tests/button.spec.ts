@@ -63,4 +63,17 @@ describe('Button component', () => {
       },
     ]);
   });
+
+  it('should treat an invalid role body as an error, and recover', () => {
+    const file = new VFile();
+    const result = buttonRole.run({ name: 'button', body: 'Click<' }, file);
+    expect(result).toEqual([
+      {
+        type: 'span',
+        class: 'button',
+        children: [{ type: 'text', value: '❌ could not parse button syntax!' }],
+      },
+    ]);
+    expect(file.messages.length > 0);
+  });
 });

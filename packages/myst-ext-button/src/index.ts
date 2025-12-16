@@ -21,7 +21,7 @@ export const buttonRole: RoleSpec = {
      * - `{button}`text`` => button with text, no link target (rendered as span.button).
      * - `{button}`<text>`` => button links to `text`, shows `text`.
      * - `{button}`text<label>`` => button links to `label`, shows `text`.
-     * - `{button}`text<>`` or `{button}`text` (no link) => button with text, no link target.
+     * - `{button}`text<>`` => button with text, no link target (rendered as span.button).
      */
     const match = TEXT_LINK_PATTERN.exec(body);
     if (!match) {
