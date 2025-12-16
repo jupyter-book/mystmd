@@ -195,8 +195,10 @@ export async function transformMdast(
       log: session.log,
     });
   }
-  transformRenderInlineExpressions(mdast, vfile);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
+  transformRenderInlineExpressions(mdast, vfile, {
+    parseMyst: (content: string) => parseMyst(session, content, file),
+  });
   liftOutputs(session, mdast, vfile, {
     parseMyst: (content: string) => parseMyst(session, content, file),
   });

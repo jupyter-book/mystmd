@@ -32,45 +32,6 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
   return join(writeFolder, getFilename(hash, contentType));
 }
 
-const MARKDOWN_MIME_TYPE = 'text/markdown';
-const SUPPORTED_MARKDOWN_VARIANTS = ['Original', 'GFM', 'CommonMark', 'myst'];
-
-/**
- * Extract the `variant` parameter from a Markdown MIME type
- *
- * @param mimeType MIME type of the form `text/markdown;FOO=BAR`
- */
-function extractVariantParameter(mimeType: string): string | undefined {
-  const [variant] = Array.from(mimeType.matchAll(/;([^;]+)=([^;]+)/g))
-    .filter(([name]) => name === 'variant')
-    .map((pair) => pair[1]);
-  return variant;
-}
-
-/*
- * Determine the Markdown variant from a given MIME-type
- *
- * If the MIME-type is not a supported Markdown MIME, return undefined
- *
- * @param mimeType - MIME type
- */
-function determineMarkdownVariant(
-  mimeType: string,
-): { variant?: string; mimeType: string } | undefined {
-  if (!mimeType.startsWith(MARKDOWN_MIME_TYPE)) {
-    return;
-  }
-  const variant = extractVariantParameter(mimeType);
-  if (!variant) {
-    return { mimeType };
-  }
-  if (SUPPORTED_MARKDOWN_VARIANTS.includes(variant)) {
-    return { mimeType, variant };
-  }
-
-  return;
-}
-
 /**
  * Lift outputs that contribute to the global document state
  */
@@ -90,20 +51,24 @@ export function liftOutputs(
       if (children) {
         return;
       }
-      if (obj.content_type !== undefined) {
-        const { content_type, content, hash } = obj;
-        const { mimeType: markdownMimeType } = determineMarkdownVariant(content_type) ?? {};
+      const { content_type, content, hash } = obj;
+      if (content_type === undefined) {
+        return;
+      }
+      switch (content_type) {
         // Markdown output
-        if (markdownMimeType) {
+        case 'text/markdown': {
           const [cacheContent] = cache.$outputs[hash] ?? [];
           const ast = opts.parseMyst(content ?? cacheContent);
           children = ast.children;
+          break;
         }
         // LaTeX (including math) output
-        else if (content_type === 'text/latex') {
+        case 'text/latex': {
           const [cacheContent] = cache.$outputs[hash] ?? [];
           const state = new TexParser(content ?? cacheContent, vfile);
           children = state.ast.children;
+          break;
         }
       }
     });
