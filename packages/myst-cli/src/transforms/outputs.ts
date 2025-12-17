@@ -10,9 +10,15 @@ import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import type { IOutput } from '@jupyterlab/nbformat';
+import type { IOutput, IMimeBundle } from '@jupyterlab/nbformat';
 import type { MinifiedContent } from 'nbtx';
-import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
+import {
+  ensureString,
+  extFromMimeType,
+  minifyCellOutput,
+  walkOutputs,
+  convertToIOutputs,
+} from 'nbtx';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
@@ -28,11 +34,11 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
   return join(writeFolder, getFilename(hash, contentType));
 }
 
-function renderExpression(
+async function renderExpression(
   node: InlineExpression,
   file: VFile,
   opts: LiftOptions,
-): PhrasingContent[] {
+): Promise<PhrasingContent[]> {
   const result = node.result as IExpressionResult;
   if (result?.status !== 'ok') {
     return [];
@@ -43,7 +49,7 @@ function renderExpression(
     if (!preferredMime) {
       continue;
     }
-    return renderer.renderPhrasing(
+    return await renderer.renderPhrasing(
       preferredMime,
       result.data[preferredMime],
       file,
@@ -67,31 +73,31 @@ export interface LiftOptions {
 /**
  * Lift inline expressions from display data to AST nodes
  */
-export function liftExpressions(mdast: GenericParent, file: VFile, opts: LiftOptions) {
+export async function liftExpressions(mdast: GenericParent, file: VFile, opts: LiftOptions) {
   const inlineNodes = selectAll('inlineExpression', mdast) as InlineExpression[];
-  inlineNodes.forEach((inlineExpression) => {
+  for (const inlineExpression of inlineNodes) {
     if (!inlineExpression.result) {
-      return;
+      continue;
     }
-    inlineExpression.children = renderExpression(
+    inlineExpression.children = (await renderExpression(
       inlineExpression,
       file,
       opts,
-    ) as StaticPhrasingContent[];
-  });
+    )) as StaticPhrasingContent[];
+  }
 }
 
 /**
  * Lift inline expressions from display data to AST nodes
  */
-export function liftOutputs(
+export async function liftOutputs(
   session: ISession,
   mdast: GenericParent,
   vfile: VFile,
   opts: LiftOptions,
 ) {
   const cache = castSession(session);
-  selectAll('output', mdast).forEach((output) => {
+  for (const output of selectAll('output', mdast)) {
     const jupyter_output = (output as any).jupyter_data;
 
     // Do we have a MIME bundle?
@@ -106,8 +112,9 @@ export function liftOutputs(
       case 'execute_result':
       case 'update_display_data':
       case 'display_data': {
+        const [properOutput] = convertToIOutputs([jupyter_output], cache.$outputs);
         // Find the preferred mime type
-        const mimeTypes = [...Object.keys(jupyter_output.data)];
+        const mimeTypes = [...Object.keys(properOutput.data as IMimeBundle)];
         const preferredMimeRenderer = MIME_RENDERERS.map(
           (renderer): [string | undefined, MimeRenderer] => [renderer.renders(mimeTypes), renderer],
         ).find(([mimeType]) => mimeType !== undefined);
@@ -119,11 +126,9 @@ export function liftOutputs(
         const [contentType, renderer] = preferredMimeRenderer;
 
         // Pull content from cache if minified
-        const { content: inlineContent, hash } = jupyter_output.data[contentType!];
-        const [cachedContent] = cache.$outputs[hash] ?? [];
-        const content = inlineContent ?? cachedContent;
+        const content = (properOutput.data as IMimeBundle)[contentType!];
 
-        (output as any).children = renderer.renderBlock(
+        (output as any).children = await renderer.renderBlock(
           contentType!,
           content,
           vfile,
@@ -135,7 +140,7 @@ export function liftOutputs(
         break;
       }
     }
-  });
+  }
 }
 
 export function transformLiftExecutionResults(

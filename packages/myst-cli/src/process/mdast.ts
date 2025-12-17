@@ -195,7 +195,7 @@ export async function transformMdast(
     });
   }
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  transformLiftExecutionResults(session, mdast, vfile, {
+  await transformLiftExecutionResults(session, mdast, vfile, {
     parseMyst: (content: string) => parseMyst(session, content, file),
   });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
