@@ -28,24 +28,6 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
   return join(writeFolder, getFilename(hash, contentType));
 }
 
-export const metadataSection = 'user_expressions';
-
-export interface IUserExpressionMetadata {
-  expression: string;
-  result: IExpressionResult;
-}
-
-export interface IUserExpressionsMetadata {
-  [metadataSection]: IUserExpressionMetadata[];
-}
-
-export function findExpression(
-  expressions: IUserExpressionMetadata[] | undefined,
-  value: string,
-): IUserExpressionMetadata | undefined {
-  return expressions?.find((expr) => expr.expression === value);
-}
-
 function renderExpression(
   node: InlineExpression,
   file: VFile,
