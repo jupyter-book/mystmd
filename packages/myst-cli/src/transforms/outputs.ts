@@ -13,13 +13,12 @@ import type { VFile } from 'vfile';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { MinifiedContent } from 'nbtx';
 import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
-import { TexParser } from 'tex-to-myst';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
-import { resolveOutputPath, BASE64_HEADER_SPLIT } from './images.js';
-import type { StaticPhrasingContent } from 'myst-spec';
-import type { Plugin } from 'unified';
-import { argv0 } from 'node:process';
+import { resolveOutputPath } from './images.js';
+import type { StaticPhrasingContent, PhrasingContent } from 'myst-spec';
+import type { MystParser, MimeRenderer } from './rendermime.js';
+import { MIME_RENDERERS } from './rendermime.js';
 
 function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
@@ -47,84 +46,40 @@ export function findExpression(
   return expressions?.find((expr) => expr.expression === value);
 }
 
-function stripTextQuotes(content: string) {
-  return content.replace(/^(["'])(.*)\1$/, '$2');
-}
-
-/*
- * Pull out PhrasingContent children
- */
-function phrasingChildren(root: GenericParent) {
-  if (root.children.length && root.children[0].type === 'paragraph') {
-    return root.children[0].children as StaticPhrasingContent[];
-  } else {
-    return [];
-  }
-}
-
 function renderExpression(
   node: InlineExpression,
   file: VFile,
-  opts: Options,
-): StaticPhrasingContent[] {
+  opts: LiftOptions,
+): PhrasingContent[] {
   const result = node.result as IExpressionResult;
-  if (!result) return [];
-  let content: StaticPhrasingContent[] | undefined;
-  if (result.status === 'ok') {
-    Object.entries(result.data).forEach(([mimeType, value]) => {
-      if (content) {
-        return;
-      }
-      if (mimeType.startsWith('image/')) {
-        content = [
-          {
-            type: 'image',
-            url: `data:${mimeType}${BASE64_HEADER_SPLIT}${value}`,
-          },
-        ];
-      } else {
-        switch (mimeType) {
-          // Markdown output
-          case 'text/markdown': {
-            const ast = opts.parseMyst(value as string);
-            content = phrasingChildren(ast);
-            break;
-          }
-          case 'text/latex': {
-            const parser = new TexParser(value as string, file);
-            // Only accept phrasing content (as part of a paragraph))
-            content = phrasingChildren(parser.ast as GenericParent);
-            break;
-          }
-          case 'text/html': {
-            content = [{ type: 'html', value: value as string }];
-            break;
-          }
-          case 'text/plain': {
-            // Allow the user / libraries to explicitly indicate that quotes should be preserved
-            const stripQuotes = result.metadata?.['strip-quotes'] ?? true;
-            content = [
-              {
-                type: 'text',
-                value: stripQuotes ? stripTextQuotes(value as string) : (value as string),
-              },
-            ];
-            break;
-          }
-        }
-      }
-    });
-    if (content) return content;
-    fileWarn(file, 'Unrecognized mime bundle for inline content', {
-      node,
-      ruleId: RuleId.inlineExpressionRenders,
-    });
+  if (result?.status !== 'ok') {
+    return [];
   }
+  const mimeTypes = [...Object.keys(result.data)];
+  for (const renderer of MIME_RENDERERS) {
+    const preferredMime = renderer.renders(mimeTypes);
+    if (!preferredMime) {
+      continue;
+    }
+    return renderer.renderPhrasing(
+      preferredMime,
+      result.data[preferredMime],
+      file,
+      opts.parseMyst,
+      {
+        stripQuotes: (result.metadata?.['strip-quotes'] as any) ?? true,
+      },
+    );
+  }
+  fileWarn(file, 'Unrecognized mime bundle for inline content', {
+    node,
+    ruleId: RuleId.inlineExpressionRenders,
+  });
   return [];
 }
 
 export interface LiftOptions {
-  parseMyst: (source: string) => GenericParent;
+  parseMyst: MystParser;
 }
 
 /**
@@ -136,7 +91,11 @@ export function liftExpressions(mdast: GenericParent, file: VFile, opts: LiftOpt
     if (!inlineExpression.result) {
       return;
     }
-    inlineExpression.children = renderExpression(inlineExpression, file, opts);
+    inlineExpression.children = renderExpression(
+      inlineExpression,
+      file,
+      opts,
+    ) as StaticPhrasingContent[];
   });
 }
 
@@ -151,37 +110,48 @@ export function liftOutputs(
 ) {
   const cache = castSession(session);
   selectAll('output', mdast).forEach((output) => {
-    let children: GenericNode[] | undefined;
-    // Walk over the outputs, and take the first matching "high-priority" output type
-    // Given that the `IOutput.data` mapping is not ordered, the precedence between sibling
-    // MIME type keys (e.g. LaTeX vs Markdown) is not defined for now.
-    walkOutputs([(output as any).jupyter_data], (obj: any) => {
-      if (children) {
-        return;
+    const jupyter_output = (output as any).jupyter_data;
+
+    // Do we have a MIME bundle?
+    switch (jupyter_output.output_type) {
+      case 'error': {
+        break;
       }
-      const { content_type, content, hash } = obj;
-      if (content_type === undefined) {
-        return;
+
+      case 'stream': {
+        break;
       }
-      switch (content_type) {
-        // Markdown output
-        case 'text/markdown': {
-          const [cacheContent] = cache.$outputs[hash] ?? [];
-          const ast = opts.parseMyst(content ?? cacheContent);
-          children = ast.children;
+      case 'execute_result':
+      case 'update_display_data':
+      case 'display_data': {
+        // Find the preferred mime type
+        const mimeTypes = [...Object.keys(jupyter_output.data)];
+        const preferredMimeRenderer = MIME_RENDERERS.map(
+          (renderer): [string | undefined, MimeRenderer] => [renderer.renders(mimeTypes), renderer],
+        ).find(([mimeType]) => mimeType !== undefined);
+
+        // If we don't need to process any of these MIME types, skip.
+        if (preferredMimeRenderer === undefined) {
           break;
         }
-        // LaTeX (including math) output
-        case 'text/latex': {
-          const [cacheContent] = cache.$outputs[hash] ?? [];
-          const state = new TexParser(content ?? cacheContent, vfile);
-          children = state.ast.children;
-          break;
-        }
+        const [contentType, renderer] = preferredMimeRenderer;
+
+        // Pull content from cache if minified
+        const { content: inlineContent, hash } = jupyter_output.data[contentType!];
+        const [cachedContent] = cache.$outputs[hash] ?? [];
+        const content = inlineContent ?? cachedContent;
+
+        (output as any).children = renderer.renderBlock(
+          contentType!,
+          content,
+          vfile,
+          opts.parseMyst,
+          {
+            stripQuotes: (jupyter_output.metadata?.['strip-quotes'] as any) ?? true,
+          },
+        );
+        break;
       }
-    });
-    if (children) {
-      (output as any).children = children;
     }
   });
 }
