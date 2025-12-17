@@ -1,28 +1,25 @@
 import fs from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
-import type { Image, SourceFileKind, Output } from 'myst-spec-ext';
+import type { Image, SourceFileKind, Output, InlineExpression } from 'myst-spec-ext';
 import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
 import { htmlTransform } from 'myst-transforms';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import type { IOutput, IStream } from '@jupyterlab/nbformat';
-import type { MinifiedContent, MinifiedOutput, MinifiedMimeOutput } from 'nbtx';
-import {
-  convertToIOutputs,
-  ensureString,
-  extFromMimeType,
-  minifyCellOutput,
-  walkOutputs,
-} from 'nbtx';
+import type { IOutput } from '@jupyterlab/nbformat';
+import type { MinifiedContent } from 'nbtx';
+import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import { TexParser } from 'tex-to-myst';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
-import { resolveOutputPath } from './images.js';
+import { resolveOutputPath, BASE64_HEADER_SPLIT } from './images.js';
+import type { StaticPhrasingContent } from 'myst-spec';
+import type { Plugin } from 'unified';
+import { argv0 } from 'node:process';
 
 function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
@@ -32,14 +29,125 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
   return join(writeFolder, getFilename(hash, contentType));
 }
 
+export const metadataSection = 'user_expressions';
+
+export interface IUserExpressionMetadata {
+  expression: string;
+  result: IExpressionResult;
+}
+
+export interface IUserExpressionsMetadata {
+  [metadataSection]: IUserExpressionMetadata[];
+}
+
+export function findExpression(
+  expressions: IUserExpressionMetadata[] | undefined,
+  value: string,
+): IUserExpressionMetadata | undefined {
+  return expressions?.find((expr) => expr.expression === value);
+}
+
+function stripTextQuotes(content: string) {
+  return content.replace(/^(["'])(.*)\1$/, '$2');
+}
+
+/*
+ * Pull out PhrasingContent children
+ */
+function phrasingChildren(root: GenericParent) {
+  if (root.children.length && root.children[0].type === 'paragraph') {
+    return root.children[0].children as StaticPhrasingContent[];
+  } else {
+    return [];
+  }
+}
+
+function renderExpression(
+  node: InlineExpression,
+  file: VFile,
+  opts: Options,
+): StaticPhrasingContent[] {
+  const result = node.result as IExpressionResult;
+  if (!result) return [];
+  let content: StaticPhrasingContent[] | undefined;
+  if (result.status === 'ok') {
+    Object.entries(result.data).forEach(([mimeType, value]) => {
+      if (content) {
+        return;
+      }
+      if (mimeType.startsWith('image/')) {
+        content = [
+          {
+            type: 'image',
+            url: `data:${mimeType}${BASE64_HEADER_SPLIT}${value}`,
+          },
+        ];
+      } else {
+        switch (mimeType) {
+          // Markdown output
+          case 'text/markdown': {
+            const ast = opts.parseMyst(value as string);
+            content = phrasingChildren(ast);
+            break;
+          }
+          case 'text/latex': {
+            const parser = new TexParser(value as string, file);
+            // Only accept phrasing content (as part of a paragraph))
+            content = phrasingChildren(parser.ast as GenericParent);
+            break;
+          }
+          case 'text/html': {
+            content = [{ type: 'html', value: value as string }];
+            break;
+          }
+          case 'text/plain': {
+            // Allow the user / libraries to explicitly indicate that quotes should be preserved
+            const stripQuotes = result.metadata?.['strip-quotes'] ?? true;
+            content = [
+              {
+                type: 'text',
+                value: stripQuotes ? stripTextQuotes(value as string) : (value as string),
+              },
+            ];
+            break;
+          }
+        }
+      }
+    });
+    if (content) return content;
+    fileWarn(file, 'Unrecognized mime bundle for inline content', {
+      node,
+      ruleId: RuleId.inlineExpressionRenders,
+    });
+  }
+  return [];
+}
+
+export interface LiftOptions {
+  parseMyst: (source: string) => GenericParent;
+}
+
 /**
- * Lift outputs that contribute to the global document state
+ * Lift inline expressions from display data to AST nodes
+ */
+export function liftExpressions(mdast: GenericParent, file: VFile, opts: LiftOptions) {
+  const inlineNodes = selectAll('inlineExpression', mdast) as InlineExpression[];
+  inlineNodes.forEach((inlineExpression) => {
+    if (!inlineExpression.result) {
+      return;
+    }
+    inlineExpression.children = renderExpression(inlineExpression, file, opts);
+  });
+}
+
+/**
+ * Lift inline expressions from display data to AST nodes
  */
 export function liftOutputs(
   session: ISession,
   mdast: GenericParent,
   vfile: VFile,
-  opts: { parseMyst: (source: string) => GenericParent },
+  opts: LiftOptions,
 ) {
   const cache = castSession(session);
   selectAll('output', mdast).forEach((output) => {
@@ -76,6 +184,16 @@ export function liftOutputs(
       (output as any).children = children;
     }
   });
+}
+
+export function transformLiftExecutionResults(
+  session: ISession,
+  mdast: GenericParent,
+  vfile: VFile,
+  opts: LiftOptions,
+) {
+  liftOutputs(session, mdast, vfile, opts);
+  liftExpressions(mdast, vfile, opts);
 }
 
 /**

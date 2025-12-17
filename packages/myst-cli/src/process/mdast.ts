@@ -51,7 +51,6 @@ import {
   transformLinkedDOIs,
   transformLinkedRORs,
   transformOutputsToCache,
-  transformRenderInlineExpressions,
   transformThumbnail,
   StaticFileTransformer,
   propagateBlockDataToCode,
@@ -67,7 +66,7 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
-  liftOutputs,
+  transformLiftExecutionResults,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -196,10 +195,7 @@ export async function transformMdast(
     });
   }
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  transformRenderInlineExpressions(mdast, vfile, {
-    parseMyst: (content: string) => parseMyst(session, content, file),
-  });
-  liftOutputs(session, mdast, vfile, {
+  transformLiftExecutionResults(session, mdast, vfile, {
     parseMyst: (content: string) => parseMyst(session, content, file),
   });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
