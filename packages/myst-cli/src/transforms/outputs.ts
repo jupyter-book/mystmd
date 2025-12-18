@@ -143,14 +143,14 @@ export async function liftOutputs(
   }
 }
 
-export function transformLiftExecutionResults(
+export async function transformLiftExecutionResults(
   session: ISession,
   mdast: GenericParent,
   vfile: VFile,
   opts: LiftOptions,
 ) {
-  liftOutputs(session, mdast, vfile, opts);
-  liftExpressions(mdast, vfile, opts);
+  await liftOutputs(session, mdast, vfile, opts);
+  await liftExpressions(mdast, vfile, opts);
 }
 
 /**
