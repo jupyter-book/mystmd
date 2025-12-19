@@ -9,7 +9,7 @@ export const siRole: RoleSpec = {
   },
   run(data: RoleData): GenericNode[] {
     const value = data.body as string;
-    const match = value.match(/([0-9.,]+)\s?<([\\a-zA-Z\s]+)>/);
+    const match = value.match(/([0-9.,e-]+)\s?<([\\a-zA-Z\s]+)>/);
     if (!match) {
       return [{ type: 'si', error: true, value }];
     }
