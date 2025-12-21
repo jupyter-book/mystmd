@@ -69,6 +69,7 @@ If you are familiar with these tools, you should not find many surprises in the 
 That said, there are a couple of concepts used _only_ in this project, that won't be familiar. These are detailed below:
 
 (develop-renderers-themes)=
+
 ### Concepts: Renderers, themes, and templates
 
 In the diagram above, we saw that `mystmd` produces websites by:
@@ -107,6 +108,7 @@ MyST has multiple renderers, themes, and templates that allow it to transform My
 - describe the render loop, and how render blocks are registered
 - explain the ThemeProvider
 - explain styling
+
 :::
 
 #### Example: Adding an "edit this page" button
@@ -247,7 +249,6 @@ During the **Transformations** phase, a number of [enumeration transforms](https
       html_id: label
 ```
 
-
 ## Tools used in development
 
 `mystmd` is built and developed using:
@@ -264,6 +265,7 @@ These are simply aliases for other commands, defined in the [`package.json` file
 ```
 
 (developer:mystmd)=
+
 ## Local development: `mystmd`
 
 The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
@@ -305,6 +307,14 @@ These commands allow you to use the `myst` CLI from any directory; source code c
 ```{warning} Windows users should use unix-like shells
 The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
+```
+
+### Local docs workflows (preview/build)
+
+To run a MyST server with your local changes and a preview of the documentation, run:
+
+```shell
+$ npm run docs
 ```
 
 ## Local development: myst-theme
@@ -374,7 +384,7 @@ Note that you can run `npm run dev` from within any folder if you'd like to watc
 
 ### Approach 2: Static build
 
-No content or theme server is required for a static site build.  Steps are:
+No content or theme server is required for a static site build. Steps are:
 
 1. Build the theme for production
 2. Point your site config to the built theme
@@ -384,7 +394,7 @@ We'll use the mystmd docs site as an example.
 
 #### Build theme
 
-To build a static site against a local theme, the theme must be built as it would be for production.  For that we will use the "make" target
+To build a static site against a local theme, the theme must be built as it would be for production. For that we will use the "make" target
 instead of `npm run`:
 
 ```{code} bash
@@ -395,7 +405,7 @@ make build-book # because mystmd docs site uses the book theme
 That should produce a production ready version of the book theme under `.deploy/book`.
 
 :::{tip}
-While debugging, it helps to work with a theme built against the "development" version of React, which results in unminimized build artifacts (ie preserving whitespace and variable/function names) and more detailed React errors and warnings.  For this, tell remix to run in node "development" mode:
+While debugging, it helps to work with a theme built against the "development" version of React, which results in unminimized build artifacts (ie preserving whitespace and variable/function names) and more detailed React errors and warnings. For this, tell remix to run in node "development" mode:
 
 ```{code} json
 :filename: myst-theme/themes/book/package.json
@@ -404,11 +414,12 @@ While debugging, it helps to work with a theme built against the "development" v
 "prod:build": "... && NODE_ENV=development remix build",
                       ^
 ```
+
 :::
 
 #### Configure site
 
-Building a static site against a local theme requires configuring your site's `myst.yml` to point to the built theme's `template.yml`.   Using the mystmd docs site as
+Building a static site against a local theme requires configuring your site's `myst.yml` to point to the built theme's `template.yml`. Using the mystmd docs site as
 an example:
 
 ```{code} yaml
@@ -417,6 +428,7 @@ site:
     # assuming your mystmd and myst-theme working directories are siblings
     template: ../../myst-theme/.deploy/book/template.yml
 ```
+
 (NOTE: This is the _built_ template file, under `.deploy`, not the source template)
 
 #### Build site
@@ -426,7 +438,8 @@ cd mystmd/docs
 mystmd build --html
 ```
 
-Then host the static site locally.  An easy way is with Python's built-in http server:
+Then host the static site locally. An easy way is with Python's built-in http server:
+
 ```{code} bash
 cd _build/html
 python3 -m http.server  # serves on port 8000 by default
@@ -436,18 +449,18 @@ Finally, browse the site at [http://localhost:8000](http://localhost:8000).
 
 ## Step Debugging
 
-Sometimes the trusty `console.log` (aka print statement) is not sufficient for your debugging needs.  In more involved situations, a proper step debugger can be your friend.
+Sometimes the trusty `console.log` (aka print statement) is not sufficient for your debugging needs. In more involved situations, a proper step debugger can be your friend.
 You may have used Firefox or Chrome developer tools to debug in-browser code by adding the `debugger` keyword into your javascript source.
 But what about code that runs in node engine on the server?
-Chrome and Firefox dev tools can _also_ debug server-side javascript.  To do this, node must be invoked with the `--inspect`
-or `--inspect-brk` comand-line option.  That will cause the node process to open a socket listening for a debugger to connect.  If "inspect-brk" is used
-(vs "inspect"), then the process will immediately pause, awaiting a debugger connection.  The `debugger` keyword in source will only pause the program if a
+Chrome and Firefox dev tools can _also_ debug server-side javascript. To do this, node must be invoked with the `--inspect`
+or `--inspect-brk` comand-line option. That will cause the node process to open a socket listening for a debugger to connect. If "inspect-brk" is used
+(vs "inspect"), then the process will immediately pause, awaiting a debugger connection. The `debugger` keyword in source will only pause the program if a
 debugger is connected when that keyword is reached.
 
 To connect to an awaiting node debug socket, enter into the browser address bar:
 
 - Firefox: `about:debugging`, or
-- Chrome:  `chrome://inspect`
+- Chrome: `chrome://inspect`
 
 That opens a debugger control panel in the browser which should list your awaiting node process as available to connect to (if it has been correctly invoked).
 (NOTE: other browsers and IDEs can also connect as debug inspectors - see Inspector Clients reference below)
@@ -465,6 +478,7 @@ For example, to debug myst-theme's book theme running as a dynamic application s
 //                                                                                    v
 "dev": "npm run dev:copy && npm run build:thebe && concurrently \"npm run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
 ```
+
 Now remove the turbo "--parallel" option, because when turbo runs the theme server in "parallel" (ie multiprocess) mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
 Then your debugger will only connect to the one that succeeded, with no guarantee any subsequent web request will hit the one process connected to the debugger.
 
@@ -483,7 +497,7 @@ To debug myst-theme running server-side in service of a static build:
 
 ### Debug a mystmd subpackage test suite
 
-This requires a handful of options to be passed to vitest to ensure it runs in a single process.  For example, to connect a step debugger to a running `myst-transforms` test:
+This requires a handful of options to be passed to vitest to ensure it runs in a single process. For example, to connect a step debugger to a running `myst-transforms` test:
 
 ```{code} json
 :filename: mystmd/packages/myst-transforms/package.json
@@ -494,9 +508,10 @@ This requires a handful of options to be passed to vitest to ensure it runs in a
 
 - [Node Inspector Clients](https://nodejs.org/en/learn/getting-started/debugging#inspector-clients)
 
-
 ## Infrastructure we run
+
 (myst-api-server)=
+
 ### The MyST API server
 
 We run a lightweight server at [`api.mystmd.org`](https://api.mystmd.org/) to help users resolve and download templates. The code for this exists at [the `myst-templates/templates` repository](https://github.com/myst-templates/templates).
@@ -509,23 +524,34 @@ And to see a list of available templates that can be resolved for Typst, you can
 
 https://api.mystmd.org/templates/typst
 
+(howto:release)=
 ## How to make a release
 
-:::{important} Release Coordination
-We use the [`#release_coordination`](https://discord.com/channels/1083088970059096114/1384242935645737141) Discord channel to coordinate and collaborate on releases. For example, to ensure that features are not half-shipped, additional PRs can make it into a release, or other release responsibilities that can be shared among the team (e.g. release notes, theme deployments, social media posts, documentation updates).
-:::
+This process follows the general steps of making a release in the Jupyter Book community. Here are the basic steps to follow for any project:
 
-### Make a release of `mystmd`
+1. [Tell others about the upcoming release](#release:coordination).
+2. Publish the release in the package repository for the tool. For example:
+   - [How to publish a release of `mystmd`](#release:mystmd).
+   - [How to publish a release of `myst-theme`](#release:myst-theme).
+3. [Make a release on GitHub](#release:github).
+4. [Update the documentation](release:docs).
+5. (optionally) [Create and share a blog post](#release:share).
 
-To publish a new release of `mystmd`, we do two things:
+(release:coordination)=
+### Coordinating the release with the team
 
-1. [Publish to NPM](#release-npm).
-2. [Publish a GitHub release](#release-github).
+We use the [`#release_coordination`](https://discord.com/channels/1083088970059096114/1384242935645737141) Discord channel to coordinate and collaborate on releases.
+This is a way to generate excitement and get any last-second work in before shipping.
+It also gives others a heads-up that some new functionality is about to go live.
 
-We describe each below.
+### Publish a release for the repository
 
-(release-npm)=
+When you publish a release, you upload a new version of the tool for package managers to use. The specifics depend on the toolchain for your package (in particular, it is different for Python vs. JavaScript tools). Here are a few specifics for the `mystmd` repository.
+
+(release:mystmd)=
 #### Publish a `mystmd` release to NPM
+
+`mystmd` is published to NPM via a GitHub Action. Here's how to publish a release.
 
 - Find the **changesets** PR. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
 - Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
@@ -533,51 +559,72 @@ We describe each below.
   - It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
   - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `npm run publish:ci`, which calls `changeset publish`).
   - It creates a git version tag (which you'll use in making the GitHub release).
-- Next, [make a release on GitHub](#release-github).
 
-(release-github)=
-#### Automated releases on GitHub
+You're done!
 
-After a successful NPM release, our [`release.yml` workflow](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/publish-github-release.yml) will automatically create a new GitHub Release. The release notes are generated using [`github-activity`](https://github.com/cheukting/github-activity) and include a summary of all merged PRs and commits since the previous release.
+(release:myst-theme)=
+#### Publish a release of `myst-theme`
 
-**Maintainers are encouraged to review the new GitHub Release and edit the description as needed.** For example, you may want to add an executive summary, highlight important changes, or clarify upgrade instructions for users.
+The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
+
+- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release:mystmd).
+  [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
+- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged.
+  Bias towards action, but use your best judgment on whether to move forward.
+- Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
+  - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
+
+You're done!
+
+(release:github)=
+### Automated releases on GitHub
+
+After a successful NPM release, our [`release.yml` workflow](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/publish-github-release.yml) will automatically create a new GitHub Release.
+The release notes are generated using [`github-activity`](https://github.com/cheukting/github-activity) and include a summary of all merged PRs and commits since the previous release.
+
+**Maintainers are encouraged to review the new GitHub Release and edit the description as needed.**
+For example, you may want to add an executive summary, highlight important changes, or clarify upgrade instructions for users.
 
 You can find the latest releases at: https://github.com/jupyter-book/mystmd/releases
 
-When you've confirmed the release has been made, consider sharing it for others to discover! 
+(release:docs)=
+### Update documentation
 
-:::{note} Here's an announcement snippet you can copy/paste
-:class: dropdown
-```md
-TITLE: 🚀 Release: MySTMD v1.3.26
+When we make a release we should ensure that the documentation is up-to-date with the latest version. This will depend on the tool that you're using.
 
-BODY:
-The [Jupyter Book project](https://compass.jupyterbook.org) recently made a new release! 👇
+**For tools hosted at mystmd.org**, follow these [instructions to update the content at mystmd.org](#docs:update-mystmd.org).
 
-[MySTMD v1.3.26](https://github.com/jupyter-book/mystmd/releases/tag/mystmd%401.3.26)
+**For most other tools**, the documentation should auto-update with new releases (e.g., via a GitHub action).
 
-See the link above for the release notes on GitHub! Many thanks to the [Jupyter Book team](https://compass.jupyterbook.org/team) for stewarding our development and this release.
-```
-:::
+(release:share)=
+### Create and share a blog post
 
+Feel free to use the blog to post release notes as well.
+This should be as simple and quick as possible, don't over-think it. Here are some simple steps:
 
-**Here are a few Jupyter-adjacent spaces to share with** (you can just copy/paste the same text into each):
+1. Copy and paste the [release notes you generated](#release:notes) into a new file [on our blog repository](https://github.com/jupyter-book/blog).
+2. Use the following YAML header metadata for the post:
+
+   ```yaml
+   ---
+   date: <release-date>
+   author: The Jupyter Book Team
+   title: <title from GitHub release>
+   tags: release
+   ---
+
+   <content from GitHub release>
+   ```
+3. Self-merge the blog post.
+
+Feel free to celebrate new releases and share the news publicly so that others know about new enhancements in our projects.
+
+**Spaces to publicize releases**. Here are a few places that are worth sharing (you can just copy/paste the same text into each):
 
 - [The MyST Discord](https://discord.mystmd.org/)
 - [The Jupyter Zulip Forum](https://https://jupyter.zulipchat.com)
 - [The Jupyter Discourse](https://discourse.jupyter.org)
 - Social media spaces of your choosing.
-
-(release-myst-theme)=
-### Make a release of the `myst-theme`
-
-The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
-
-- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release-npm). [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
-- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
-- Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
-  - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
-- Make a release on GitHub, by following the same process in [](#release-github).
 
 ## Practices we follow
 
@@ -586,6 +633,7 @@ The process for releasing `myst-theme` infrastructure is similar to the release 
 We use [Turbo](https://turborepo.com/) to manage our testing and build system.
 
 (developer:testing)=
+
 ### Testing
 
 We use [vitest](https://vitest.dev/guide/) for all tests in `mystmd`.
@@ -728,3 +776,20 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 - `citation-js-utils`: utility functions to deal with citations.
 - `myst-cli-utils`: shared utils between jtex, and myst-cli.
 - `simple-validators`: validation utilities, that print all sorts of nice warnings.
+
+## Tips and tricks
+
+### Grepping the codebase
+
+While developing, there are a lot of build artifacts lying around,
+making grepping the code harder than it needs to be. Assuming you
+have
+[ripgrep](https://github.com/BurntSushi/ripgrep?tab=readme-ov-file#installation)
+or a compatible alternative installed, you can define a customized
+"myst grep" in your shell config (`~/.zshrc`, `~/.bashrc`, etc.):
+
+```sh
+alias mg="rg --exclude-dir=build --exclude-dir=_build -g '!*.js' -g '!tailwind.css'"
+```
+
+Most notably, this excludes `.js` files, which are generated from TypeScript.

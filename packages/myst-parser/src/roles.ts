@@ -3,11 +3,12 @@ import { RuleId, fileError, fileWarn } from 'myst-common';
 import type { Role } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
-import { contentFromNode } from './utils.js';
+import { contentFromNode, markChildrenAsProcessed } from './utils.js';
 import { parseOptions } from './inlineAttributes.js';
 
 type MystRoleNode = GenericNode & {
   name: string;
+  processed?: false;
 };
 
 export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile) {
@@ -27,11 +28,20 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
       }
     });
   });
+  // Find all raw role nodes, these will have a `processed` attribute set to `false`
   const nodes = selectAll('mystRole[processed=false]', tree) as MystRoleNode[];
   nodes.forEach((node) => {
-    delete node.processed; // Indicate that the role has been processed
     const { name } = node;
     const spec = specLookup[name];
+    if (spec && spec.body && spec.body.type !== 'myst') {
+      // Do not process the children of the role that is not a myst block
+      // Doing so would raise errors (for example, if the parent role is a cite)
+      // See https://github.com/jupyter-book/mystmd/issues/2530
+      markChildrenAsProcessed(node);
+    }
+    // Re-check if the role has been processed
+    if (node.processed !== false) return;
+    delete node.processed; // Indicate that the role has been processed
     if (!spec) {
       fileError(vfile, `unknown role: ${name}`, { node, ruleId: RuleId.roleKnown });
       // We probably want to do something better than just delete the children

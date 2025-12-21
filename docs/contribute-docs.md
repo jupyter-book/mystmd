@@ -74,6 +74,7 @@ Some pages in the MyST documentation include executable code cells that demonstr
 
 This will execute all `{code-cell}` directives in the documentation and include their outputs in the built site.
 
+(docs:update-mystmd.org)=
 ## How to update the live website at mystmd.org
 
 When you change the content here or in most other MyST repositories, it will _not_ automatically update mystmd.org. We use [a custom MyST theme](#about:mystmd.org) that aggregates content from several MyST repositories into a single website. The content for the live website mystmd.org is hosted by Curvenote. To update the content of `mystmd.org`, [dispatch the action on `main`](https://github.com/jupyter-book/mystmd/actions/workflows/docs.yml).

@@ -120,8 +120,10 @@ describe('Test blockMetadataTransform', () => {
   test('label is propagated to outputs', async () => {
     const mdast = u('root', [
       u('block', { meta: '{"label": "My_Label", "key": "value"}' }, [
-        u('output', 'We know what we are'),
-        u('output', 'but know not what we may be.'),
+        u('outputs', [
+          u('output', 'We know what we are'),
+          u('output', 'but know not what we may be.'),
+        ]),
       ]),
     ]) as any;
     blockMetadataTransform(mdast, new VFile());
@@ -136,8 +138,10 @@ describe('Test blockMetadataTransform', () => {
             data: { key: 'value' },
           },
           [
-            u('output', { identifier: 'my_label-output-0' }, 'We know what we are'),
-            u('output', { identifier: 'my_label-output-1' }, 'but know not what we may be.'),
+            u('outputs', { identifier: 'my_label-outputs' }, [
+              u('output', { identifier: 'my_label-outputs-0' }, 'We know what we are'),
+              u('output', { identifier: 'my_label-outputs-1' }, 'but know not what we may be.'),
+            ]),
           ],
         ),
       ]),

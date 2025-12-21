@@ -4,6 +4,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const mystdemoDirective: DirectiveSpec = {
   name: 'myst',
+  doc: 'Demonstrate some MyST code in an editable code block that displays its output/result interactively. Limited to built-in functionality, as parsing and rendering is done in the browser without access to plugin code or project configuration.',
   options: {
     ...commonDirectiveOptions('myst'),
     numbering: {

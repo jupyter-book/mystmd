@@ -1,6 +1,6 @@
 {
   "name": "mystmd",
-  "version": "1.6.7",
+  "version": "1.7.1",
   "description": "Command line tools for MyST Markdown",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "test": "npm run link; npm run copy:version; vitest run",
     "test:watch": "npm run link; npm run copy:version; vitest watch",
-    "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node14",
+    "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node18",
     "build": "npm-run-all -l clean copy:version -p build:cli"
   },
   "devDependencies": {
@@ -45,6 +45,6 @@
     "commander": "^10.0.1",
     "core-js": "^3.31.1",
     "js-yaml": "^4.1.0",
-    "myst-cli": "^1.6.7"
+    "myst-cli": "^1.7.1"
   }
 }

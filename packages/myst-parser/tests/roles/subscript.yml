@@ -94,3 +94,63 @@ cases:
                       children:
                         - type: text
                           value: it
+  - title: 'sub role with paragraph'
+    note: This one should be the same as the next test, but exclude the footnotes!
+    markdown: |-
+      A paragraph with a H{sub}`2`O role.
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: A paragraph with a H
+            - type: mystRole
+              name: sub
+              value: '2'
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: '2'
+            - type: text
+              value: O role.
+  - title: 'footnote reference with sub role'
+    markdown: |-
+      Paragraph with a footnote reference [^1]
+
+      Another paragraph with a H{sub}`2`O role.
+
+      [^1]: This is a footnote
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Paragraph with a footnote reference '
+            - type: footnoteReference
+              identifier: '1'
+              label: '1'
+        - type: paragraph
+          children:
+            - type: text
+              value: Another paragraph with a H
+            - type: mystRole
+              name: sub
+              value: '2'
+              children:
+                - type: subscript
+                  children:
+                    - type: text
+                      value: '2'
+            - type: text
+              value: O role.
+        - type: footnoteDefinition
+          identifier: '1'
+          label: '1'
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: This is a footnote

@@ -1,5 +1,13 @@
 # myst-spec-ext
 
+## 1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+
 ## 1.9.1
 
 ### Patch Changes

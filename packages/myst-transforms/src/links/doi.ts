@@ -27,6 +27,7 @@ export class DOITransformer implements LinkTransformer {
         node: link,
         source: TRANSFORM_SOURCE,
         ruleId: RuleId.doiLinkValid,
+        key: urlSource,
       });
       return false;
     }

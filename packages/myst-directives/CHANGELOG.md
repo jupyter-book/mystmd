@@ -1,5 +1,24 @@
 # myst-directives
 
+## 1.6.3
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+
+## 1.6.2
+
+### Patch Changes
+
+- f1ccba4: Add docstring to `myst` plugin
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+
 ## 1.6.1
 
 ### Patch Changes

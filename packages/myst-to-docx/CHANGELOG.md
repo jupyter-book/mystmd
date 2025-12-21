@@ -1,5 +1,16 @@
 # myst-to-docx
 
+## 1.0.16
+
+### Patch Changes
+
+- 8c82b34: Removing `@ts-expect` rules in favour of typed checks
+- Updated dependencies [88d2136]
+- Updated dependencies [d45faf3]
+  - myst-common@1.9.3
+  - myst-frontmatter@1.9.3
+  - myst-spec-ext@1.9.3
+
 ## 1.0.15
 
 ### Patch Changes

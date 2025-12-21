@@ -11,7 +11,7 @@ export function createServerLogger(
       const line = data.trim();
       if (!line || line.startsWith('>') || line.startsWith('Watching')) return;
       if (line.includes('File changed: app/content')) return; // This is shown elsewhere
-      if (line.includes('started at http://')) {
+      if (line.includes('http://')) {
         const [, ipAndPort] = line.split('http://');
         const port = ipAndPort.split(':')[1].replace(/[^0-9]/g, '');
         const local = `http://${opts.host}:${port}`;

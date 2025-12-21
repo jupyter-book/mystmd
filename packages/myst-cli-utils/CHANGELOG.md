@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.13
+
+### Patch Changes
+
+- 519ef0e: Kill process trees on linux when shutting down the application and jupyter servers
+
 ## 2.0.12
 
 ### Patch Changes

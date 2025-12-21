@@ -1,5 +1,54 @@
 # myst-cli
 
+## 1.7.1
+
+### Patch Changes
+
+- 8d382f4: Catch error states of chokidar
+- 3feacef: Add reverse order to the pattern toc items
+- 8c82b34: Update `ws` version in package to match actual and align types.
+- 28d53f8: Generalize the http logger for myst-cli
+- d45faf3: Add dollarmath parser settings to project
+- c447219: Applies the `myst-migrate` functions to embedded xref content
+- 519ef0e: Kill process trees on linux when shutting down the application and jupyter servers
+- Updated dependencies [88d2136]
+- Updated dependencies [3feacef]
+- Updated dependencies [fe6080c]
+- Updated dependencies [d45faf3]
+- Updated dependencies [519ef0e]
+- Updated dependencies [8c82b34]
+  - myst-common@1.9.3
+  - myst-toc@0.1.4
+  - myst-to-tex@1.0.44
+  - myst-frontmatter@1.9.3
+  - myst-cli-utils@2.0.13
+  - myst-execute@0.3.3
+  - myst-to-docx@1.0.16
+  - myst-config@1.9.3
+  - myst-spec-ext@1.9.3
+  - tex-to-myst@1.0.44
+  - myst-migrate@1.7.1
+
+## 1.7.0
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [b8ed7ca]
+- Updated dependencies [afb68b1]
+- Updated dependencies [fae1ab1]
+- Updated dependencies [2e6e81f]
+  - myst-to-tex@1.0.43
+  - myst-to-jats@1.0.35
+  - myst-parser@1.6.3
+  - myst-transforms@1.3.44
+  - myst-spec-ext@1.9.2
+  - myst-execute@0.3.2
+  - myst-common@1.9.2
+  - myst-config@1.9.2
+  - myst-frontmatter@1.9.2
+  - tex-to-myst@1.0.43
+
 ## 1.6.7
 
 ### Patch Changes
@@ -7,9 +56,16 @@
 - a742dda: Add support for notebook cell output scroll metadata
 - 39570e5: Fix static build inclusion of sitemap
 - ae32040: Drop hide_authors handling in mystmd
+- c2d895a: Enable key-based ignores of warnings for DOIs
+- Updated dependencies [770eece]
 - Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+- Updated dependencies [cc0bcec]
+- Updated dependencies [c2d895a]
+  - myst-parser@1.6.2
   - myst-common@1.9.1
   - myst-spec-ext@1.9.1
+  - myst-transforms@1.3.43
   - myst-config@1.9.1
   - myst-frontmatter@1.9.1
 

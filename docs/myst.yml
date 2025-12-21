@@ -56,12 +56,12 @@ project:
         - file: quickstart-jupyter-lab-myst.md
     - title: Configuration and setup
       children:
-      - file: configuration.md
-      - file: frontmatter.md
-      - file: settings.md
-      - file: table-of-contents.md
-      - file: document-parts.md
-      - file: authorship.md
+        - file: configuration.md
+        - file: frontmatter.md
+        - file: settings.md
+        - file: table-of-contents.md
+        - file: document-parts.md
+        - file: authorship.md
     - title: Authoring
       children:
         - file: typography.md
@@ -110,7 +110,7 @@ project:
             - file: deployment-github-pages.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
-            - file: deployment-httpd.md
+            - file: deployment-webserver.md
         - file: website-landing-pages.md
 
         # - file: publishing.md
@@ -121,12 +121,16 @@ project:
         - file: creating-word-documents.md
         - file: creating-jats-xml.md
         - file: creating-citation-cff.md
-    - title: Extensions
-      file: plugins.md
+    - file: plugins.md
       children:
         - file: javascript-plugins.md
         - file: plugins-distribute.md
         - file: executable-plugins.md
+        - file: plugins-debug.md
+        - title: Use cases
+          children:
+            - file: plugins-ast.md
+            - file: plugins-dry.md
     - title: Reference
       children:
         - file: install-node.md

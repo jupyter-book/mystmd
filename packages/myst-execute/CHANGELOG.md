@@ -1,5 +1,22 @@
 # myst-execute
 
+## 0.3.3
+
+### Patch Changes
+
+- 519ef0e: Kill process trees on linux when shutting down the application and jupyter servers
+- Updated dependencies [88d2136]
+- Updated dependencies [519ef0e]
+  - myst-common@1.9.3
+  - myst-cli-utils@2.0.13
+
+## 0.3.2
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+  - myst-common@1.9.2
+
 ## 0.3.1
 
 ### Patch Changes

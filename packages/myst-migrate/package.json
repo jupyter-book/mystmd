@@ -1,7 +1,7 @@
 {
   "name": "myst-migrate",
   "sideEffects": false,
-  "version": "1.6.7",
+  "version": "1.7.1",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,6 +9,10 @@
     "dist"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
