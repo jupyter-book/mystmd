@@ -95,7 +95,7 @@ See [](#my-figure-fruit) for the fruit, and [](#my-figure) to reference both sub
 ```
 
 When referring to subfigures, the `{number}` that is used includes the parent enumerator by default (that is: `1a` rather than just `a`).
-To specifically use the sub-enumerator only, you can use the syntax `{subEnumerator}` in your text link which will be replaced with the sub-enumerator (that is: `a` rather than `1a`).
+To use the sub-enumerator only, you can use the syntax `{subEnumerator}` in your text link which will be replaced with the sub-enumerator (that is: `a` rather than `1a`).
 
 CSS classes can be applied to make subfigures appear side-by-side or in a grid layout.
 `:class: grid grid-cols-2 items-end gap-4` 

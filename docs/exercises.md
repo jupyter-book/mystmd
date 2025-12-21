@@ -333,10 +333,11 @@ This is a hidden exercise directive.
 ```
 ````
 
-## Exporting exercises and solutions
-
-When exporting content which include exercises and solutions to pdf using either LaTeX or Typst, warning errors are raised since these directives are not natively supported in these formats.
-A plugin is [available](https://github.com/jupyter-book/myst-plugins/tree/main/plugins/exercise-admonition-pdf) to enable exporting these directives to pdf formats - including numeration.
+:::{warning} Exercises are not supported in some PDF outputs
+You'll encounter warnings when exporting exercises and solutions to pdf using either LaTeX or Typst.
+This is because these directives are not natively supported in these formats.
+See [this plugin](https://github.com/jupyter-book/myst-plugins/tree/main/plugins/exercise-admonition-pdf) to enable exporting these directives to pdf formats - including numeration.
+:::
 
 
 % TODO: Remove All Solutions

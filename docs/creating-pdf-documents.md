@@ -217,8 +217,8 @@ exports:
 Any unrecognized, or malformed entries will be logged as errors as well as required options that are not provided.
 
 
-### Setting options using extends
-Using [extends](#composing-myst-yml) you can create an `export.yml` file which is referred to in the `myst.yml` file: 
+### Use `extend` to set options
+Using [`extend` configuration](#composing-myst-yml) you can create an `export.yml` file which is referred to in the `myst.yml` file. For example, this configuration tells `myst.yml` to look for an `export.yml` file for configuration:
 
 ```{code-block} yaml
 :filename: myst.yml
@@ -228,7 +228,7 @@ extends:
 ---
 ```
 
-in which you set these parts and options:
+And the `export.yml` file defines the export configuration to use in the project:
 
 ```{code-block} yaml
 :filename: export.yml
