@@ -9,13 +9,17 @@ It describes what the MyST engine expects today, with links to relevant source c
 :::{warning}
 This document tracks the current implementation and is in progress.
 Details may change soon.
+See this MEP for a discussion of changing terminology around themes: https://github.com/jupyter-book/myst-enhancement-proposals/pull/37
 :::
 
 ## Architecture in brief
 
 The MyST engine runs the content pipeline, while the theme is a web server that renders that content.
-Specifically, when you run `myst start`, the engine builds `_build/site` (content JSON, config, assets), serves it on `CONTENT_CDN_PORT`, and launches your theme with the template’s `build.start` command.
-A theme should read `_build/site/config.json` first, fetch page JSON from `/content/{slug}.json`, and serve the app on `PORT` (Remix/Vite/Next-style).
+Specifically:
+
+- When you run `myst start`, the engine builds `_build/site` (content JSON, config, assets), serves it on `CONTENT_CDN_PORT`, and launches your theme with the template’s `build.start` command.
+- A theme should read `_build/site/config.json` first, fetch page JSON from `/content/{slug}.json`, and serve the app on `PORT` (Remix/Vite/Next-style).
+
 Live reloads are facilitated by a websocket endpoint at `/socket`, which processes JSON messages. Static assets, and template options with type `file` are copied into `_build/site/public` and served from `/`.
 
 ## Theme metadata (`template.yml`)
