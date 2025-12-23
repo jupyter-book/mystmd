@@ -135,16 +135,20 @@ site:
     hide_toc: true
 ```
 
-### Hide MyST branding in ToC
+### Edit the primary sidebar footer
 
-To hide the MyST logo at the bottom of the Primary Sidebar, use `site.options.hide_myst_branding` as follows:
+The "Made with MyST" branding at the bottom of the primary sidebar can be customized by providing a markdown file, e.g. `primary-sidebar-footer.md`, and adding the path to the `site.parts.toc_footer` configuration to your `myst.yml`:
 
 ```{code-block} yaml
 :filename: myst.yml
-site: 
-  options:
-    hide_myst_branding: true
+site:
+  parts:
+    primary_sidebar_footer: primary-sidebar-footer.md
 ```
+
+The contents of `primary-sidebar-footer.md` will be rendered at the bottom of the primary sidebar.
+
+Note that this is distinct from the [site-wide footer](navigation:footer).
 
 (navigation:content-window)=
 
