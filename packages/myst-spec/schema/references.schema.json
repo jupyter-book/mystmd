@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/references.schema.json",
+  "description": "reference nodes",
+  "$defs": {
+    "Target": {
+      "description": "Target node - provides identifier/label for the following node",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "mystTarget"
+            },
+            "label": {
+              "description": "unresolved target label",
+              "type": "string"
+            },
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
+    },
+    "CrossReference": {
+      "description": "In-line reference to an associated node",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "type": {
+              "const": "crossReference"
+            },
+            "kind": {
+              "type": "string",
+              "enum": ["eq", "numref", "ref"],
+              "description": "Indicates if the references should be numbered.\n```{warning}\nThe `kind` was based on docutils and is subject to change as we improve the `crossReference` experience.\n```"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "myst.schema.json#/$defs/StaticPhrasingContent"
+              },
+              "description": "Children of the crossReference, can include text with \"%s\" or \"{number}\" and enumerated references will be filled in."
+            },
+            "identifier": {},
+            "label": {},
+            "position": {},
+            "data": {}
+          },
+          "additionalProperties": false
+        },
+        { "$ref": "commonmark.schema.json#/$defs/Association" },
+        { "$ref": "unist.schema.json#/$defs/Node" }
+      ]
+    }
+  }
+}

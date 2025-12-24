@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.9.3
+
+### Patch Changes
+
+- 88d2136: Add a key, results in a react error
+- Updated dependencies [d45faf3]
+  - myst-frontmatter@1.9.3
+
 ## 1.9.2
 
 ### Patch Changes

@@ -49,3 +49,9 @@ jobs:
         working-directory: packages/jtex/docs
         env:
           CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
+      - name: Deploy the myst-spec docs
+        run: curvenote deploy -y --ci --execute
+        shell: bash
+        working-directory: packages/myst-spec/docs
+        env:
+          CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
