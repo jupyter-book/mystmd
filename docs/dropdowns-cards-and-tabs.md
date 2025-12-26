@@ -80,6 +80,7 @@ Note that, card headers and footers are optional. If you don’t include ^^^ or 
 :::{myst:directive} card
 :::
 
+(ui:buttons)=
 ## Buttons
 
 A button is an element with text content that triggers an action to navigate to an internal or external reference upon a user click. Use the {myst:role}`button` role followed by the text content and target path to create a button.
@@ -95,9 +96,6 @@ A button is an element with text content that triggers an action to navigate to 
 ```{myst}
 {button}`A button without a link!`
 ```
-
-:::{myst:role} button
-:::
 
 (grids)=
 ## Grids
