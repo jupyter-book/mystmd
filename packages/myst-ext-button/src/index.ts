@@ -3,8 +3,7 @@ import type { Link } from 'myst-spec-ext';
 import { fileWarn, RuleId } from 'myst-common';
 
 // Matches "text<link>" capturing body text (group 1) and an optional "<link>" suffix (group 2).
-// Group 2 keeps the angle brackets; it can also be exactly "<>" to signal an empty target.
-const TEXT_LINK_PATTERN = /^([^<>]*)(<[^<>]*>)?$/;
+const TEXT_LINK_PATTERN = /^([^<>]*)(<[^<>]+>)?$/;
 
 export const buttonRole: RoleSpec = {
   name: 'button',
@@ -21,7 +20,6 @@ export const buttonRole: RoleSpec = {
      * - `{button}`text`` => button with text, no link target (rendered as span.button).
      * - `{button}`<text>`` => button links to `text`, shows `text`.
      * - `{button}`text<label>`` => button links to `label`, shows `text`.
-     * - `{button}`text<>`` => button with text, no link target (rendered as span.button).
      */
     const match = TEXT_LINK_PATTERN.exec(body);
     if (!match) {
@@ -44,7 +42,7 @@ export const buttonRole: RoleSpec = {
     const [, rawBodyText, rawLink] = match;
     const bodyText = rawBodyText?.trim() ?? '';
     // If no link, return undefined. Otherwise strip brackets and trim.
-    const linkTarget = rawLink && rawLink !== '<>' ? rawLink.slice(1, -1).trim() : undefined;
+    const linkTarget = rawLink ? rawLink.slice(1, -1).trim() : undefined;
 
     // Prefer body text, otherwise fall back to the link text.
     const displayText = bodyText || linkTarget || '';

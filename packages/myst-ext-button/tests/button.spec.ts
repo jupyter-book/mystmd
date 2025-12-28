@@ -53,17 +53,6 @@ describe('Button component', () => {
     ]);
   });
 
-  it('should treat an empty link target as a non-link button', () => {
-    const result = buttonRole.run({ name: 'button', body: 'Click <>' }, new VFile());
-    expect(result).toEqual([
-      {
-        type: 'span',
-        class: 'button',
-        children: [{ type: 'text', value: 'Click' }],
-      },
-    ]);
-  });
-
   it('should treat an invalid role body as an error, and recover', () => {
     const file = new VFile();
     const result = buttonRole.run({ name: 'button', body: 'Click<' }, file);
