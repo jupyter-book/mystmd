@@ -44,10 +44,7 @@ export const buttonRole: RoleSpec = {
     const [, rawBodyText, rawLink] = match;
     const bodyText = rawBodyText?.trim() ?? '';
     // If no link, return undefined. Otherwise strip brackets and trim.
-    const linkTarget =
-      rawLink && rawLink !== '<>'
-        ? rawLink.slice(1, -1).trim()
-        : undefined;
+    const linkTarget = rawLink && rawLink !== '<>' ? rawLink.slice(1, -1).trim() : undefined;
 
     // Prefer body text, otherwise fall back to the link text.
     const displayText = bodyText || linkTarget || '';
