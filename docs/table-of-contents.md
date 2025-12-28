@@ -200,23 +200,23 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 
 ## URL slugs and folder structure
 
-For web-based exports, unlike other systems that use filenames and paths to create URLs that refer to pages, MyST will create [slugs](https://en.wikipedia.org/wiki/Clean_URL#Slug) to refer to pages.
+For web-based exports, MyST creates [slugs](https://en.wikipedia.org/wiki/Clean_URL#Slug) to generate clean URLs for your pages, rather than using raw filenames and folder paths.
 
-This means for example that a page whose source page is in `folder1/folder2/01_my_article.md` will be reachable by URL that simply reads `my-article` (from the website root URL)
+For example, a page at `folder1/folder2/01_my_article.md` will be reachable at the URL `/my-article`.
 
 Of course, internal links will be generated accordingly, and the `file` property in the [MyST document metadata](website-metadata) will contain the original file path for the page.
 
 ### Filenames to slugs
 
-In order to compute a page's slug, MyST will use the filename and:
+To compute a page's slug, MyST uses the filename and takes these steps:
 
-- remove preceding numbers (unless they are year-like, e.g. 1988-02 or 2022);
-- change any non-url characters (spaces, underscores, etc.) to dashes`-`;
-- lowercase the filename;
-- remove any file extensions (e.g. `.md` or `.ipynb`);
-- and keep the slug less than 50 characters.
+- Remove preceding numbers (unless they are year-like, e.g., 1988-02 or 2022)
+- Change non-URL characters (spaces, underscores, etc.) to dashes (`-`)
+- Convert to lowercase
+- Remove file extensions (e.g., `.md` or `.ipynb`)
+- Limit to 50 characters
 
-[See some examples below](#toc-slugs)
+See [some slug examples below](#toc-slugs).
 
 If there are duplicates, these will be enumerated with a trailing number (e.g. `readme-1`).
 
@@ -242,7 +242,7 @@ site:
 
 ### Slug examples
 
-Here are some more examples of how filenames are converted to slugs
+The following examples show how filenames are converted to slugs:
 
 :::{list-table}
 :header-rows: 1
@@ -269,15 +269,13 @@ Here are some more examples of how filenames are converted to slugs
   - `2025-12-1`
 * - `2025-12-01-minutes.md`
   - `2025-12-01-minutes`
-* - `2025-12.md`
-  - `2025-12-1`
 * - `2025.md`
   - `2025`
 * - `01.md`
   - `01`
 :::
 
-And here are illustrations of the effect of setting `site.options.folders` to `true` or `false`
+Here is the effect of setting `site.options.folders` to `true` or `false`:
 
 :::{list-table}
 :header-rows: 1
