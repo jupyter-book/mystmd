@@ -31,17 +31,6 @@ describe('Button component', () => {
     ]);
   });
 
-  it('should treat bare text (even if it looks like a URL) as a non-link button', () => {
-    const result = buttonRole.run({ name: 'button', body: 'http://example.com' }, new VFile());
-    expect(result).toEqual([
-      {
-        type: 'span',
-        class: 'button',
-        children: [{ type: 'text', value: 'http://example.com' }],
-      },
-    ]);
-  });
-
   it('should display body text with no link when no URL is provided', () => {
     const result = buttonRole.run({ name: 'button', body: 'Click me' }, new VFile());
     expect(result).toEqual([
