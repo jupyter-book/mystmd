@@ -51,14 +51,13 @@ export const buttonRole: RoleSpec = {
 
     // Prefer body text, otherwise fall back to the link text.
     const displayText = bodyText || linkTarget || '';
-    const children = displayText ? [{ type: 'text', value: displayText }] : [];
 
     // No link target -> render a <span> button container.
     if (!linkTarget) {
       return [
         {
           type: 'span',
-          children,
+          children: displayText ? [{ type: 'text', value: displayText }] : [],
           class: 'button', // TODO: allow users to extend this
         },
       ];
@@ -68,7 +67,7 @@ export const buttonRole: RoleSpec = {
     const node: Link = {
       type: 'link',
       url: linkTarget,
-      children,
+      children: displayText ? [{ type: 'text', value: displayText }] : [],
       class: 'button', // TODO: allow users to extend this
     };
     return [node];
