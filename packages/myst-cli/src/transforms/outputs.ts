@@ -365,18 +365,3 @@ function isPreferredOutputType(newType: string, existingType: string) {
   if (newType === 'text/html') return true;
   return false;
 }
-
-/**
- * Convert output nodes with minified content to image or code
- *
- * This writes outputs of type image to file, modifies outputs of type
- * text to a code node, and removes other output types.
- */
-
-export function reduceOutputs(
-  session: ISession,
-  mdast: GenericParent,
-  file: string,
-  writeFolder: string,
-  opts?: { altOutputFolder?: string; vfile?: VFile },
-) {}
