@@ -36,28 +36,29 @@ export const buttonRole: RoleSpec = {
         {
           type: 'span',
           class: 'button',
-          children: [{ type: 'text', value: '❌ could not parse button syntax!' }],
+          children: [{ type: 'text', value: body }],
         },
       ];
     }
 
     const [, rawBodyText, rawLink] = match;
     const bodyText = rawBodyText?.trim() ?? '';
-    // If no link, return nothing. Otherwise strip brackets.
+    // If no link, return undefined. Otherwise strip brackets and trim.
     const linkTarget =
       rawLink && rawLink !== '<>'
-        ? rawLink.slice(1, -1) // strip angle brackets
+        ? rawLink.slice(1, -1).trim()
         : undefined;
 
     // Prefer body text, otherwise fall back to the link text.
     const displayText = bodyText || linkTarget || '';
+    const children = displayText ? [{ type: 'text', value: displayText }] : [];
 
     // No link target -> render a <span> button container.
     if (!linkTarget) {
       return [
         {
           type: 'span',
-          children: displayText ? [{ type: 'text', value: displayText }] : [],
+          children,
           class: 'button', // TODO: allow users to extend this
         },
       ];
@@ -67,7 +68,7 @@ export const buttonRole: RoleSpec = {
     const node: Link = {
       type: 'link',
       url: linkTarget,
-      children: displayText ? [{ type: 'text', value: displayText }] : [],
+      children,
       class: 'button', // TODO: allow users to extend this
     };
     return [node];

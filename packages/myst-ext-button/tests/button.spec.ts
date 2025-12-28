@@ -71,7 +71,7 @@ describe('Button component', () => {
       {
         type: 'span',
         class: 'button',
-        children: [{ type: 'text', value: '❌ could not parse button syntax!' }],
+        children: [{ type: 'text', value: 'Click<' }],
       },
     ]);
     expect(file.messages.length > 0);
