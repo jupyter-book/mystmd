@@ -1,5 +1,5 @@
 import { NotebookCell, RuleId, fileWarn } from 'myst-common';
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
 import type {
@@ -17,7 +17,6 @@ import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
-import type { IExpressionResult } from 'myst-common';
 import { frontmatterValidationOpts } from '../frontmatter.js';
 
 import { filterKeys } from 'simple-validators';
