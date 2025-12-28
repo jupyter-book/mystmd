@@ -372,107 +372,11 @@ function isPreferredOutputType(newType: string, existingType: string) {
  * This writes outputs of type image to file, modifies outputs of type
  * text to a code node, and removes other output types.
  */
+
 export function reduceOutputs(
   session: ISession,
   mdast: GenericParent,
   file: string,
   writeFolder: string,
   opts?: { altOutputFolder?: string; vfile?: VFile },
-) {
-  const outputsNodes = selectAll('outputs', mdast) as GenericNode[];
-  const cache = castSession(session);
-  outputsNodes.forEach((outputsNode) => {
-    // Hidden nodes should not show up in simplified outputs for static export
-    if (outputsNode.visibility === 'remove' || outputsNode.visibility === 'hide') {
-      outputsNode.type = '__delete__';
-      return;
-    }
-
-    const outputs = outputsNode.children as GenericNode[];
-    outputs.forEach((outputNode) => {
-      if (outputNode.type !== 'output') {
-        return;
-      }
-      // Lift the `output` node into `Outputs`
-      outputNode.type = '__lift__';
-
-      // If the output already has children, we don't need to do anything
-      // Or, if it has no output data (should not happen)
-      if (outputNode.children?.length || !outputNode.jupyter_data) {
-        return;
-      }
-
-      // Find a preferred IOutput type to render into the AST
-      const selectedOutputs: { content_type: string; hash: string }[] = [];
-      if (outputNode.jupyter_data) {
-        const output = outputNode.jupyter_data;
-
-        let selectedOutput: { content_type: string; hash: string } | undefined;
-        walkOutputs([output], (obj: any) => {
-          const { output_type, content_type, hash } = obj;
-          if (!hash) return undefined;
-          if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
-            if (['error', 'stream'].includes(output_type)) {
-              selectedOutput = { content_type: 'text/plain', hash };
-            } else if (typeof content_type === 'string') {
-              if (
-                content_type.startsWith('image/') ||
-                content_type === 'text/plain' ||
-                content_type === 'text/html'
-              ) {
-                selectedOutput = { content_type, hash };
-              }
-            }
-          }
-        });
-        if (selectedOutput) selectedOutputs.push(selectedOutput);
-      }
-      const children: (Image | GenericNode)[] = selectedOutputs
-        .map((output): Image | GenericNode | GenericNode[] | undefined => {
-          const { content_type, hash } = output ?? {};
-          if (!hash || !cache.$outputs[hash]) return undefined;
-          if (content_type === 'text/html') {
-            const htmlTree = {
-              type: 'root',
-              children: [
-                {
-                  type: 'html',
-                  value: cache.$outputs[hash][0],
-                },
-              ],
-            };
-            htmlTransform(htmlTree);
-            return htmlTree.children;
-          } else if (content_type.startsWith('image/')) {
-            const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
-              ...opts,
-              node: outputNode,
-            });
-            if (!path) return undefined;
-            const relativePath = relative(dirname(file), path);
-            return {
-              type: 'image',
-              data: { type: 'output' },
-              url: relativePath,
-              urlSource: relativePath,
-            };
-          } else if (content_type === 'text/plain' && cache.$outputs[hash]) {
-            const [content] = cache.$outputs[hash];
-            return {
-              type: 'code',
-              data: { type: 'output' },
-              value: stripAnsi(content),
-            };
-          }
-          return undefined;
-        })
-        .flat()
-        .filter((output): output is Image | GenericNode => !!output);
-      outputNode.children = children;
-    });
-    // Lift the `outputs` node
-    outputsNode.type = '__lift__';
-  });
-  remove(mdast, '__delete__');
-  liftChildren(mdast, '__lift__');
-}
+) {}
