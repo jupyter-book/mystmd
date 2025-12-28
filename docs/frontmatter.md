@@ -434,6 +434,10 @@ For usage information, see [](./documents-exports.md).
 Downloads allow you to include downloadable files with a MyST website.
 They are specified in either:
 
++++ {"label": "frontmatter-downloads" }
+
+In **project configuration**:
+
 ```{code-block} yaml
 :filename: myst.yml
 project:
@@ -452,6 +456,8 @@ downloads:
   - id: ...
 ---
 ```
+
++++
 
 See [](./website-downloads.md) information about how to use this feature.
 Below is a list of all possible downloads configuration.

@@ -2,7 +2,7 @@ import type { Block } from 'myst-spec-ext';
 import type { FrontmatterParts, GenericNode, GenericParent } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import { copyNode, toText } from './utils.js';
+import { copyNode, createId, toText } from './utils.js';
 import { FRONTMATTER_ALIASES } from 'myst-frontmatter';
 
 function coercePart(part?: string | string[]): string[] {
@@ -76,7 +76,7 @@ function createPartBlock(
     removePartData?: boolean;
   },
 ) {
-  const block: GenericParent = { type: 'block', children };
+  const block: GenericParent = { type: 'block', key: createId(), children };
   if (!opts?.removePartData) {
     block.data ??= {};
     block.data.part = part;

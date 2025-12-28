@@ -1,28 +1,70 @@
 import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
 import type { Link } from 'myst-spec-ext';
+import { fileWarn, RuleId } from 'myst-common';
 
-const REF_PATTERN = /^(.+?)<([^<>]+)>$/;
+// Matches "text<link>" capturing body text (group 1) and an optional "<link>" suffix (group 2).
+const TEXT_LINK_PATTERN = /^([^<>]*)(<[^<>]+>)?$/;
 
 export const buttonRole: RoleSpec = {
   name: 'button',
-  doc: 'Button element with an action to navigate to internal or external links.',
+  doc: 'Button element with an action to navigate to internal or external links. See [](#ui:buttons).',
   body: {
     type: String,
     doc: 'The body of the button.',
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data, vfile): GenericNode[] {
     const body = data.body as string;
-    const match = REF_PATTERN.exec(body);
-    const [, modified, rawLabel] = match ?? [];
-    const url = rawLabel ?? body;
+    /**
+     * Behavior:
+     * - `{button}`text`` => button with text, no link target (rendered as span.button).
+     * - `{button}`<text>`` => button links to `text`, shows `text`.
+     * - `{button}`text<label>`` => button links to `label`, shows `text`.
+     */
+    const match = TEXT_LINK_PATTERN.exec(body);
+    if (!match) {
+      fileWarn(vfile, `Invalid {button} role with body: "${body}"`, {
+        source: 'role:button',
+        node: data.node,
+        ruleId: RuleId.roleBodyCorrect,
+      });
+
+      // Fallback if we don't match: degrade to a plain-text button.
+      return [
+        {
+          type: 'span',
+          class: 'button',
+          children: [{ type: 'text', value: body }],
+        },
+      ];
+    }
+
+    const [, rawBodyText, rawLink] = match;
+    const bodyText = rawBodyText?.trim() ?? '';
+    // If no link, return undefined. Otherwise strip brackets and trim.
+    const linkTarget = rawLink ? rawLink.slice(1, -1).trim() : undefined;
+
+    // Prefer body text, otherwise fall back to the link text.
+    const displayText = bodyText || linkTarget || '';
+
+    // No link target -> render a <span> button container.
+    if (!linkTarget) {
+      return [
+        {
+          type: 'span',
+          children: displayText ? [{ type: 'text', value: displayText }] : [],
+          class: 'button', // TODO: allow users to extend this
+        },
+      ];
+    }
+
+    // Link target present -> render a link-styled button.
     const node: Link = {
       type: 'link',
-      url,
-      children: [],
+      url: linkTarget,
+      children: displayText ? [{ type: 'text', value: displayText }] : [],
       class: 'button', // TODO: allow users to extend this
     };
-    if (modified) node.children = [{ type: 'text', value: modified.trim() }];
     return [node];
   },
 };

@@ -9,7 +9,7 @@ MyST Markdown can be used to include images and figures in your documents as wel
 
 ## Simple images
 
-The simplest way to create an image is to use the standard Markdown syntax:
+The simplest way to include an image is to use the standard Markdown syntax:
 
 ```md
 ![alt](link 'title')
@@ -17,12 +17,14 @@ The simplest way to create an image is to use the standard Markdown syntax:
 
 You can explore a [demo of images](#md:image) in the discussion of [](./commonmark.md) features of MyST.
 
-Using standard markdown to create an image will render across all output formats (HTML, TeX, Word, PDF, etc). However, this markdown syntax is limited in the configuration that can be applied beyond `alt` text and an optional `title`.
+Using standard markdown to create an image will render across all output formats (HTML, TeX, Word, PDF, etc).
+However, this markdown syntax is limited in the configuration that can be applied beyond `alt` text and an optional `title`.
 
-There are two directives that can be used to add additional information about the layout and metadata associated with an image. For example, {myst:directive}`image.width`, {myst:directive}`alignment <image.align>` or a {myst:directive}`figure caption <figure.body>`.
+There are two directives that can be used to add additional information about the layout and metadata associated with an image.
+For example, {myst:directive}`image.width`, {myst:directive}`alignment <image.align>` or a {myst:directive}`figure caption <figure.body>`.
 
 **image**
-: The {myst:directive}`image` directive allows you to customize {myst:directive}`image.width`, {myst:directive}`alignment <image.align>`, and other {myst:directive}`classes <image.class>` to add to the image
+: The {myst:directive}`image` directive allows you to customize {myst:directive}`image.width`, {myst:directive}`alignment <image.align>`, and other {myst:directive}`classes <image.class>` to add to the image.
 
 **figure**
 : The {myst:directive}`figure` directive can contain a {myst:directive}`figure caption <figure.body>` and allows you to cross-reference this in other parts of your document.
@@ -72,7 +74,9 @@ These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 We saw some great things on our trips this year to Banff, Canada 🇨🇦 and San Francisco, USA 🌉.
 :::
 
-You can also cross-reference either the whole figure [@subFigure], or an individual subfigure [@subFigure-a] or [@subFigure-b]. Each subfigure is given an implicit reference that matches the figure label with a suffix of their letter, for example, a figure with label `my-figure` the two subfigures can be referred to as `my-figure-a` and `my-figure-b`, respectively. If you provide a [specific label for a subfigure](#label-anything), that label will be used instead of the implicit label.
+You can also cross-reference either the whole figure [@subFigure], or an individual subfigure [@subFigure-a] or [@subFigure-b].
+Each subfigure is given an implicit reference that matches the figure label with a suffix of their letter, for example, a figure with label `my-figure` the two subfigures can be referred to as `my-figure-a` and `my-figure-b`, respectively.
+If you provide a [specific label for a subfigure](#label-anything), that label will be used instead of the implicit label.
 
 ```{myst}
 :::{figure}
@@ -90,12 +94,32 @@ Some pictures of fruit and the ocean!
 See [](#my-figure-fruit) for the fruit, and [](#my-figure) to reference both subfigures.
 ```
 
-By default, when referring to subfigures, the `{number}` that is used includes the parent enumerator (that is: `1a` rather than just `a`). To specifically use the sub-enumerator only, you can use the syntax `{subEnumerator}` in your text link which will be replaced with the sub-enumerator (that is: `a` rather than `1a`).
+When referring to subfigures, the `{number}` that is used includes the parent enumerator by default (that is: `1a` rather than just `a`).
+To use the sub-enumerator only, you can use the syntax `{subEnumerator}` in your text link which will be replaced with the sub-enumerator (that is: `a` rather than `1a`).
+
+CSS classes can be applied to make subfigures appear side-by-side or in a grid layout.
+`:class: grid grid-cols-2 items-end gap-4` 
+can be used to create a two-column grid of images with aligned bottoms and a gap between them.
+
+::::{figure}
+:class: grid grid-cols-2 items-end gap-4
+:label: fig_combined2
+:width: 100%
+
+![Banff, Canada](https://github.com/rowanc1/pics/blob/main/banff-wide.png)
+![Golden Gate Bridge, San Francisco](https://github.com/rowanc1/pics/blob/main/sfo-wide.png)
+
+Some lovely pictures
+::::
+
+
 
 ## Supported Image Formats
 
 MyST supports many images formats including `.png`, `.jpg`, `.gif`, `.tiff`, `.svg`, `.pdf`, and `.eps`.
-Many of these image formats are easily supported for HTML themes including `.png`, `.jpg` and `.gif`. However, the raster image formats can be further optimized to [improve site performance](./accessibility-and-performance.md), MyST translates these to the modern `.webp` format while the site is building. The original file-format is also included your site, with a `srcset` and fallback for older web-browsers.
+Many of these image formats are easily supported for HTML themes including `.png`, `.jpg` and `.gif`.
+However, the raster image formats can be further optimized to [improve site performance](./accessibility-and-performance.md), MyST translates these to the modern `.webp` format while the site is building.
+The original file-format is also included your site, with a `srcset` and fallback for older web-browsers.
 
 `````{tab-set}
 ````{tab-item} PNG
@@ -150,7 +174,10 @@ An `.eps` image is not supported by web-browsers or Microsoft Word. The images a
 
 ### Image Transformers
 
-There are formats that are not supported by web-browsers but are common in scientific writing like `.tiff`, `.pdf` and `.eps` for site builds, these are converted to `.svg` or `.png` as appropriate and available. For export to $\LaTeX$, PDF or Microsoft Word, the files are converted to an appropriate format that the export can handle (e.g. $\LaTeX$ can work directly with `.pdf` images). For animated images, `.gif`, the first frame is extracted for static exports.
+There are formats that are not supported by web-browsers but are common in scientific writing like `.tiff`, `.pdf` and `.eps`. 
+For site builds, these are converted to `.svg` or `.png` as appropriate and available.
+For export to $\LaTeX$, PDF or Microsoft Word, the files are converted to an appropriate format that the export can handle (e.g. $\LaTeX$ can work directly with `.pdf` images).
+For animated images, `.gif`, the first frame is extracted for static exports.
 
 :::{tip} Installing Image Converters
 :class: dropdown
@@ -166,13 +193,15 @@ The image transforms and optimizations requires you to have the following packag
 
 ### Multiple Images
 
-If you have manually converted your images or have different images for different formats, use an asterisk (`*`) as the extension. All images matching the provided pattern will be found and the best image out of the available candidates will be used for the export:
+If you have manually converted your images or have different images for different formats, use an asterisk (`*`) as the extension.
+All images matching the provided pattern will be found and the best image available will be used for the export:
 
 ```text
 ![](./images/myst-image.*)
 ```
 
-For example, when exporting to $\LaTeX$ the best format is a `.pdf` if it is available; in a web export, a `.webp` or `.svg` will be chosen before a `.png`. In all cases, if an appropriate format is not available the image will be translated.
+For example, when exporting to $\LaTeX$ the best format is a `.pdf` (if available); in a web export, a `.webp` or `.svg` will be chosen before a `.png`.
+In all cases, if an appropriate format is not available the image will be converted.
 
 ## Videos
 
@@ -182,9 +211,9 @@ To embed a video you can either use a video platforms embed script or directly e
 :::{figure} ./videos/links.mp4
 An embedded video with a caption!
 :::
-
+```
 or
-
+```markdown
 ![](./videos/links.mp4)
 ```
 
@@ -194,7 +223,8 @@ will copy the video to your static files and embed a video in your HTML output.
 An embedded video with a caption!
 :::
 
-If you have [ffmpeg](https://www.ffmpeg.org/) installed, you may also include `.mov` and `.avi` video files, and MyST will convert them to `.mp4` and include them. Videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
+If you have [ffmpeg](https://www.ffmpeg.org/) installed, you may also include `.mov` and `.avi` video files, and MyST will convert them to `.mp4` and include them.
+Videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
 
 ### Use an image in place of a video for static exports
 

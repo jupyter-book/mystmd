@@ -119,7 +119,7 @@ export async function includeDirectiveTransform(
           };
           const container: Container = {
             type: 'container',
-            kind: 'code' as any,
+            kind: 'code',
             children: [code as any, caption],
           };
           // Move the label to the container

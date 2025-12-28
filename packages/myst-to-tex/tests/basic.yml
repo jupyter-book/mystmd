@@ -624,8 +624,20 @@ cases:
                   children:
                     - type: text
                       value: 'A list item in a paragraph'
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A checkbox'
+              checked: false
+            - type: listItem
+              children:
+                - type: text
+                  value: 'A checked checkbox'
+              checked: true
     latex: |-
       \begin{itemize}
       \item A list item
       \item A list item in a paragraph
+      \item[$\square$] A checkbox
+      \item[$\blacksquare$] A checked checkbox
       \end{itemize}

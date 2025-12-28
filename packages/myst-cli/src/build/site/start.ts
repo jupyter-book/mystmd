@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import cors from 'cors';
 import express from 'express';
 import getPort, { portNumbers } from 'get-port';
-import { makeExecutable } from 'myst-cli-utils';
+import { makeExecutable, killProcessTree } from 'myst-cli-utils';
 import type child_process from 'child_process';
 import { nanoid } from 'nanoid';
 import { join } from 'node:path';
@@ -63,7 +63,7 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
     noServer: true,
     path: '/socket',
   });
-  const connections: Record<string, WebSocket.WebSocket> = {};
+  const connections: Record<string, WebSocket> = {};
 
   wss.on('connection', function connection(ws) {
     const id = nanoid();
@@ -177,7 +177,7 @@ export async function startServer(
     start().catch((e) => session.log.debug(e));
   });
   appServer.stop = () => {
-    appServer.process.kill();
+    killProcessTree(appServer.process);
     server.stop();
   };
   return appServer;

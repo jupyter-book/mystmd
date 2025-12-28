@@ -165,7 +165,10 @@ Deploy to Netlify as static HTML, and pull-request previews.
 Deploy on a web server, for example [Apache httpd](https://httpd.apache.org).
 :::
 
-% TODO: ReadTheDocs
+:::{card} Read the Docs
+:link: ./deployment-readthedocs.md
+Deploy to Read the Docs.
+:::
 
 ## Application Websites
 

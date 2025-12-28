@@ -1,0 +1,66 @@
+cases:
+  - title: block break node
+    mdast:
+      type: root
+      children:
+        - type: blockBreak
+    myst: |-
+      +++
+  - title: block break node - with metadata
+    mdast:
+      type: root
+      children:
+        - type: blockBreak
+          meta: '{"meta": "data"}'
+    myst: |-
+      +++ {"meta": "data"}
+  - title: block break node - with broken metadata
+    mdast:
+      type: root
+      children:
+        - type: blockBreak
+          meta: '{"meta: data}'
+    myst: |-
+      +++ {"meta: data}
+  - title: block break nodes - dividing flow content
+    id: blockbreak
+    mdast:
+      type: root
+      children:
+        - type: blockBreak
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: Heading!
+        - type: blockBreak
+    myst: |-
+      +++
+      # Heading!
+      +++
+  - title: block node - resolved from block breaks with flow content
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: heading
+              depth: 1
+              children:
+                - type: text
+                  value: Heading!
+        - type: block
+          children: []
+    html: |-
+      <div class="block">
+        <h1>Heading!</h1>
+      </div>
+      <div class="block"></div>
+  - title: block node - invalid nesting
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: block
