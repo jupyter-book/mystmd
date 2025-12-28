@@ -23,6 +23,7 @@ function createReadTheDocsConfig({
 version: 2
 
 # Set the OS, Python version, and Node.js version
+# Note: Python is included for executing code in notebooks or using Jupyter Book
 build:
   os: ubuntu-22.04
   tools:
@@ -88,7 +89,7 @@ export async function readTheDocsAction(session: ISession) {
   const prompt = await inquirer.prompt([
     {
       name: 'pythonVersion',
-      message: 'What Python version would you like to use?',
+      message: 'What Python version? (For executing notebooks or using Jupyter Book)',
       default: '3.12',
     },
     {
