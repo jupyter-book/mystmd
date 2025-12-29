@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@jupyterlab/services": "^7.3.0",
+    "@mermaid-js/mermaid-cli": "^10.9.1",
     "@reduxjs/toolkit": "^2.1.0",
     "adm-zip": "^0.5.10",
     "boxen": "^7.1.1",
