@@ -17,14 +17,14 @@ See this issue tracking how to make these URLs stable: https://github.com/jupyte
 
 ## Use the `{download}` role
 
-The {myst:role}`download` role takes a path to a file, and generates a download link from it. The file
-They may be defined at the project or the page level.
+The {myst:role}`download` role takes a path to a file, and generates a download link from it.
+Such a role may be defined at the project or the page level.
 
 For example:
 
 ::::{grid} 2
 
-```
+```markdown
 {download}`references.bib`
 ```
 
