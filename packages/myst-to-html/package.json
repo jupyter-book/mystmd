@@ -1,6 +1,6 @@
 {
   "name": "myst-to-html",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "Export from MyST mdast to HTML",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-html",

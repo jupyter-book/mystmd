@@ -1,6 +1,6 @@
 {
   "name": "myst-transforms",
-  "version": "1.3.44",
+  "version": "1.3.45",
   "sideEffects": false,
   "type": "module",
   "exports": "./dist/index.js",
@@ -30,7 +30,7 @@
     "myst-frontmatter": "^1.9.2",
     "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.9.2",
-    "myst-to-html": "1.6.3",
+    "myst-to-html": "1.6.4",
     "rehype-parse": "^8.0.4",
     "rehype-remark": "^9.1.2",
     "unified": "^10.0.0",
