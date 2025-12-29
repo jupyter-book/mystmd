@@ -6,6 +6,7 @@ description: There are two templates for MyST websites, a `book-theme`, based lo
 Web templates allow MyST to render documents as HTML-based sites.
 These provide different reading experiences that are designed for different types of MyST documents.
 They are defined via the same templating system used for [static document exporting](./documents-exports.md), and a base set of web themes can be found in the [`jupyter-book/myst-theme` repository](https://github.com/jupyter-book/myst-theme/tree/main/themes).
+If you want to build or ship your own theme, see the developer guide in [](./theme-developer.md).
 
 :::{tip} Themes and templates mean the same thing
 See [](#overview-themes) for more explanation.

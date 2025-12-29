@@ -81,7 +81,7 @@ In the diagram above, we saw that `mystmd` produces websites by:
 
 This section describes a bit more how **Rendering** and **Exporting** work using **Themes** and **Templates**.
 
-For an introduction to themes and templates, see [](#overview-themes). In addition, below we'll define what a **Renderer** is:
+For an introduction to themes and templates, see [](#overview-themes). For a hands-on guide to building a web theme, read [](./theme-developer.md). In addition, below we'll define what a **Renderer** is:
 
 ```{glossary}
 Renderer
