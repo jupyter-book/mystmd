@@ -1,5 +1,5 @@
 import type { RoleSpec } from 'myst-common';
-import type { Raw } from 'myst-spec-ext';
+import type { Raw } from 'myst-spec';
 
 export const rawLatexRole: RoleSpec = {
   name: 'raw:latex',
@@ -17,6 +17,9 @@ export const rawLatexRole: RoleSpec = {
         type: 'raw',
         lang,
         tex,
+        children: [],
+        // TODO fixme
+        value: '',
       },
     ];
   },
@@ -38,6 +41,8 @@ export const rawTypstRole: RoleSpec = {
         type: 'raw',
         lang,
         typst,
+        children: [],
+        value: '',
       },
     ];
   },
