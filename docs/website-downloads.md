@@ -8,7 +8,7 @@ You can bundle files with your MyST site for others to download and re-use.
 There are two ways to specify downloads with a MyST site.
 
 :::{note} Download URLs will changed based on the file content
-MyST will generated a _hashed filename_ for any files bundled with your site.
+MyST will generate a _hashed filename_ for any files bundled with your site.
 For example: `myfile.[HASH].png`.
 This means download URLs will not be persistent if the content changes.
 
