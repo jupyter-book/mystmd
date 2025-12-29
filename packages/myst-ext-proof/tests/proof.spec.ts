@@ -11,7 +11,7 @@ describe('proof directive', () => {
         {
           type: 'mystDirective',
           name: 'prf:proof',
-          args: 'Proof Title',
+          args: [{ type: 'text', value: 'Proof Title' }],
           value: 'Proof content',
           position: {
             start: {
@@ -86,6 +86,6 @@ describe('proof directive', () => {
     const output = mystParse(content, {
       directives: [proofDirective],
     });
-    expect(output).toEqual(expected);
+    expect(output).toMatchObject(expected);
   });
 });

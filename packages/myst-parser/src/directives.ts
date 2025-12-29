@@ -102,6 +102,7 @@ export function applyDirectives(
         if (argSpec.required && data.arg == null) {
           validationError = true;
         }
+        node.args = data.arg;
       }
     } else if (argNode) {
       const message = `unexpected argument provided for directive: ${name}`;
@@ -112,6 +113,7 @@ export function applyDirectives(
     // const options: Record<string, ParseTypes> = {};
     const { valid: validOptions, options } = parseOptions(name, node, vfile, optionsSpec);
     data.options = options;
+    node.options = options;
     validationError = validationError || validOptions;
 
     // Handle body
@@ -132,6 +134,7 @@ export function applyDirectives(
           `body of directive: ${name}`,
           RuleId.directiveBodyCorrect,
         );
+        node.body = data.body;
         if (bodySpec.required && data.body == null) {
           validationError = true;
         }

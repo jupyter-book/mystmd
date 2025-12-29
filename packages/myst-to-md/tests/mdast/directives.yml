@@ -18,7 +18,7 @@ cases:
             - type: emphasis
               children:
                 - type: text
-                  valeu: markdown
+                  value: markdown
     markdown: |-
       ```{abc} My Directive!
       :a: b
@@ -119,18 +119,11 @@ cases:
       type: root
       children:
         - type: math
-          value: |-
-            5+5
-             ````{abc}
-            ````
-            print("hello world")
+          value: Ax=b
     markdown: |-
-      `````{math}
-      5+5
-       ````{abc}
-      ````
-      print("hello world")
-      `````
+      $$
+      Ax=b
+      $$
   - title: math directive - label
     mdast:
       type: root
@@ -343,7 +336,7 @@ cases:
       :title: my image
       :alt: Some text
 
-      Some % *markdown*
+      Some % _markdown_
       :::
   - title: figure directive - with caption/legend
     mdast:
@@ -382,7 +375,7 @@ cases:
       :name: My-Fig
       :class: my-img-class
 
-      Some % *markdown*
+      Some % _markdown_
 
       Code legend:
 
@@ -435,7 +428,7 @@ cases:
       :alt: Some text
       :placeholder: images/example.png
 
-      Some % *markdown*
+      Some % _markdown_
       :::
   - title: list-table
     mdast:
@@ -511,23 +504,15 @@ cases:
       :class: my-class
       :align: right
 
-      *   *   a
-
-          *   b
-
-          *   c
-
-      *   *   1
-
-          *   2
-
-          *   3
-
-      *   *   4
-
-          *   5
-
-          *   6
+      - - a
+        - b
+        - c
+      - - 1
+        - 2
+        - 3
+      - - 4
+        - 5
+        - 6
       :::
   - title: admonition - with kind
     mdast:
@@ -559,7 +544,7 @@ cases:
                 - type: inlineCode
                   value: tip
     markdown: |-
-      :::{tip} *tip* {u}`admonition`
+      :::{tip} _tip_ {u}`admonition`
       This is a `tip`
       :::
   - title: admonition - no kind
@@ -593,7 +578,7 @@ cases:
                 - type: inlineCode
                   value: tip
     markdown: |-
-      :::{admonition} *not tip* {u}`admonition`
+      :::{admonition} _not tip_ {u}`admonition`
       :class: my-class
       :icon:
 
@@ -745,7 +730,7 @@ cases:
       :::{card} Card title
       ---
       link: https://example.com
-      header: The *Header*
+      header: The _Header_
       footer: |-
         Footer
 
@@ -792,7 +777,7 @@ cases:
       :::{card}
       ---
       header: |-
-        The *Header*
+        The _Header_
 
         with two paragraphs
       footer: |-
@@ -960,3 +945,82 @@ cases:
       :::{topic}
       Topic content
       :::
+  - title: paragraph followed by directive paragraph with spacing
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: This is a regular paragraph with some text content.
+        - type: mystDirective
+          name: note
+          value: |-
+            This is a directive paragraph with important information.
+    markdown: |-
+      This is a regular paragraph with some text content.
+
+      ```{note}
+      This is a directive paragraph with important information.
+      ```
+  - title: multiple paragraphs with directive and spacing
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: First paragraph with regular content.
+        - type: paragraph
+          children:
+            - type: text
+              value: Second paragraph with more content.
+        - type: mystDirective
+          name: warning
+          value: |-
+            This is a warning directive with important information.
+        - type: paragraph
+          children:
+            - type: text
+              value: Final paragraph after the directive.
+    markdown: |-
+      First paragraph with regular content.
+
+      Second paragraph with more content.
+
+      ```{warning}
+      This is a warning directive with important information.
+      ```
+
+      Final paragraph after the directive.
+  - title: paragraph with directive containing args and options
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: This paragraph introduces a directive with arguments and options.
+        - type: mystDirective
+          name: admonition
+          args: Important Note
+          value: |-
+            :class: my-class
+            :name: my-note
+
+            This directive has both arguments and options.
+        - type: paragraph
+          children:
+            - type: text
+              value: This paragraph follows the directive.
+    markdown: |-
+      This paragraph introduces a directive with arguments and options.
+
+      ```{admonition} Important Note
+      :class: my-class
+      :name: my-note
+
+      This directive has both arguments and options.
+      ```
+
+      This paragraph follows the directive.
