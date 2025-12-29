@@ -8,7 +8,7 @@ You can bundle files with your MyST site for others to download and re-use.
 There are two ways to specify downloads with a MyST site.
 
 :::{note} Download URLs will changed based on the file content
-MyST will generated a _hashed filename_ for any files bundled with your site.
+MyST will generate a _hashed filename_ for any files bundled with your site.
 For example: `myfile.[HASH].png`.
 This means download URLs will not be persistent if the content changes.
 
@@ -17,14 +17,14 @@ See this issue tracking how to make these URLs stable: https://github.com/jupyte
 
 ## Use the `{download}` role
 
-The {myst:role}`download` role takes a path to a file, and generates a download link from it. The file
-They may be defined at the project or the page level.
+The {myst:role}`download` role takes a path to a file, and generates a download link from it.
+Such a role may be defined at the project or the page level.
 
 For example:
 
 ::::{grid} 2
 
-```
+```markdown
 {download}`references.bib`
 ```
 
