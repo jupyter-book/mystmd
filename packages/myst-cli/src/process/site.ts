@@ -46,6 +46,7 @@ import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
 import { SPEC_VERSION } from '../spec-version.js';
+import { cpus } from 'node:os';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -596,6 +597,7 @@ export async function processProject(
       }),
     ),
   );
+
   const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
   // Handle all cross references
   await Promise.all(
