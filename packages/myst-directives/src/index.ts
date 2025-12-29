@@ -19,6 +19,7 @@ import { blockquoteDirective } from './blockquote.js';
 import { rawDirective, rawLatexDirective, rawTypstDirective } from './raw.js';
 import { divDirective } from './div.js';
 import { tocDirective } from './toc.js';
+import { widgetDirective } from './widget.js';
 
 export const defaultDirectives = [
   admonitionDirective,
@@ -48,6 +49,7 @@ export const defaultDirectives = [
   rawTypstDirective,
   divDirective,
   tocDirective,
+  widgetDirective,
 ];
 
 export * from './utils.js';
@@ -71,3 +73,4 @@ export { blockquoteDirective } from './blockquote.js';
 export { rawDirective, rawLatexDirective, rawTypstDirective } from './raw.js';
 export { divDirective } from './div.js';
 export { tocDirective } from './toc.js';
+export { widgetDirective } from './widget.js';
