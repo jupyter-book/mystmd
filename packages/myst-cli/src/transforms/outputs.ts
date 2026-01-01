@@ -9,14 +9,8 @@ import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { IOutput, IMimeBundle } from '@jupyterlab/nbformat';
-import type { MinifiedContent, MinifiedContentCache } from 'nbtx';
-import {
-  ensureString,
-  extFromMimeType,
-  minifyCellOutput,
-  walkOutputs,
-  convertToIOutputs,
-} from 'nbtx';
+import type { MinifiedContent } from 'nbtx';
+import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';

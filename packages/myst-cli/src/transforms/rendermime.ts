@@ -1,7 +1,7 @@
 import type { GenericParent } from 'myst-common';
 
 import type { VFile } from 'vfile';
-import type { IMimeBundle } from '@jupyterlab/nbformat';
+import type { IMimeBundle, MultilineString } from '@jupyterlab/nbformat';
 import { TexParser } from 'tex-to-myst';
 import { BASE64_HEADER_SPLIT } from './images.js';
 import type { FlowContent, PhrasingContent } from 'myst-spec';
@@ -53,14 +53,27 @@ export abstract class MimeRenderer {
   ): Promise<FlowContent[]>;
 }
 
+function ensureString(content: MultilineString) {
+  if (typeof content === 'string') {
+    return content;
+  } else {
+    return content.join('');
+  }
+}
+
 export class MarkdownRenderer extends MimeRenderer {
   pattern = /^text\/markdown\b/;
 
-  async renderBlock(_1: string, value: string, _2: VFile, parseMyst: MystParser) {
-    const root = parseMyst(value as string);
+  async renderBlock(_1: string, value: MultilineString, _2: VFile, parseMyst: MystParser) {
+    const root = parseMyst(ensureString(value as any));
     return root.children as FlowContent[];
   }
-  async renderPhrasing(contentType: string, value: string, vfile: VFile, parseMyst: MystParser) {
+  async renderPhrasing(
+    contentType: string,
+    value: MultilineString,
+    vfile: VFile,
+    parseMyst: MystParser,
+  ) {
     const blocks = await this.renderBlock(contentType, value, vfile, parseMyst);
     // Expect that we only have paragraphs here
     return singleParagraphChildren(blocks as GenericParent[]);
@@ -70,12 +83,12 @@ export class MarkdownRenderer extends MimeRenderer {
 export class LaTeXRenderer extends MimeRenderer {
   pattern = /^text\/latex\b/;
 
-  async renderBlock(_1: string, value: string, vfile: VFile) {
+  async renderBlock(_1: string, value: MultilineString, vfile: VFile) {
     const parser = new TexParser(value as string, vfile);
     const root = parser.ast as GenericParent;
     return root.children as FlowContent[];
   }
-  async renderPhrasing(contentType: string, value: string, vfile: VFile) {
+  async renderPhrasing(contentType: string, value: MultilineString, vfile: VFile) {
     const blocks = await this.renderBlock(contentType, value, vfile);
     return singleParagraphChildren(blocks as GenericParent[]);
   }
@@ -91,19 +104,19 @@ export class LaTeXRenderer extends MimeRenderer {
 export class HTMLRenderer extends MimeRenderer {
   pattern = /^text\/html$/;
 
-  async renderBlock(_1: string, value: string) {
+  async renderBlock(_1: string, value: MultilineString) {
     return [
       {
         type: 'html',
-        value,
+        value: ensureString(value),
       },
     ] as FlowContent[];
   }
-  async renderPhrasing(_1: string, value: string) {
+  async renderPhrasing(_1: string, value: MultilineString) {
     return [
       {
         type: 'html',
-        value,
+        value: ensureString(value),
       },
     ] as PhrasingContent[];
   }
@@ -112,11 +125,11 @@ export class HTMLRenderer extends MimeRenderer {
 export class ImageRenderer extends MimeRenderer {
   pattern = /^image\//;
 
-  async renderBlock(contentType: string, value: string) {
+  async renderBlock(contentType: string, value: MultilineString) {
     const phrasingNodes = await this.renderPhrasing(contentType, value);
     return [{ type: 'paragraph', children: phrasingNodes }] as FlowContent[];
   }
-  async renderPhrasing(contentType: string, value: string) {
+  async renderPhrasing(contentType: string, value: MultilineString) {
     return [
       {
         type: 'image',
@@ -131,7 +144,7 @@ export class TextRenderer extends MimeRenderer {
 
   async renderBlock(
     contentType: string,
-    value: string,
+    value: MultilineString,
     vfile: VFile,
     parseMyst: MystParser,
     opts: MimeRendererOptions,
@@ -141,15 +154,16 @@ export class TextRenderer extends MimeRenderer {
   }
   async renderPhrasing(
     _1: string,
-    value: string,
+    value: MultilineString,
     _2: VFile,
     _3: MystParser,
     opts: MimeRendererOptions,
   ) {
+    const content = ensureString(value);
     return [
       {
         type: 'text',
-        value: opts.stripQuotes ? stripTextQuotes(value) : value,
+        value: opts.stripQuotes ? stripTextQuotes(content) : content,
       },
     ] as PhrasingContent[];
   }
