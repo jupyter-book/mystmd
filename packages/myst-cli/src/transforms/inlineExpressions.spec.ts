@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { transformRenderInlineExpressions } from './inlineExpressions';
+import { liftExpressions } from './outputs';
+import { parseMyst } from '../process/myst';
 import { VFile } from 'vfile';
 import type { InlineExpression } from 'myst-spec-ext';
 
@@ -19,7 +20,9 @@ describe('transformRenderInlineExpressions', () => {
       },
     } as InlineExpression;
     const tree = { type: 'root', children: [expr] };
-    transformRenderInlineExpressions(tree, vfile);
+    liftExpressions(tree, vfile, {
+      parseMyst: (content) => parseMyst(session, content, vfile.path),
+    });
     // Children are added and quotes are removed
     expect(expr.children).toEqual([{ type: 'text', value: 'hello there' }]);
   });
@@ -40,7 +43,7 @@ describe('transformRenderInlineExpressions', () => {
       },
     } as InlineExpression;
     const tree = { type: 'root', children: [expr] };
-    transformRenderInlineExpressions(tree, vfile);
+    liftExpressions(tree, vfile);
     // Children are added and quotes are preserved
     expect(expr.children).toEqual([{ type: 'text', value: "'hello there'" }]);
   });

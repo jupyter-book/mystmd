@@ -193,11 +193,11 @@ export async function transformMdast(
       log: session.log,
     });
   }
-  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  await transformLiftExecutionResults(session, mdast, vfile, {
+  await transformLiftExecutionResults(mdast, vfile, {
     parseMyst: (content: string) => parseMyst(session, content, file),
   });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
+  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first

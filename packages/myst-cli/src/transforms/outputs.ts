@@ -1,17 +1,15 @@
 import fs from 'node:fs';
-import { dirname, join, relative } from 'node:path';
+import { join } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
-import type { Image, SourceFileKind, Output, InlineExpression } from 'myst-spec-ext';
-import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
+import type { SourceFileKind, Output, InlineExpression } from 'myst-spec-ext';
+import { fileError, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
-import { htmlTransform } from 'myst-transforms';
-import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { IOutput, IMimeBundle } from '@jupyterlab/nbformat';
-import type { MinifiedContent } from 'nbtx';
+import type { MinifiedContent, MinifiedContentCache } from 'nbtx';
 import {
   ensureString,
   extFromMimeType,
@@ -79,42 +77,34 @@ export async function liftExpressions(mdast: GenericParent, file: VFile, opts: L
     if (!inlineExpression.result) {
       continue;
     }
-    inlineExpression.children = (await renderExpression(
+    const children = (await renderExpression(
       inlineExpression,
       file,
       opts,
     )) as StaticPhrasingContent[];
+    inlineExpression.children = children;
   }
 }
 
 /**
  * Lift inline expressions from display data to AST nodes
  */
-export async function liftOutputs(
-  session: ISession,
-  mdast: GenericParent,
-  vfile: VFile,
-  opts: LiftOptions,
-) {
-  const cache = castSession(session);
+export async function liftOutputs(mdast: GenericParent, vfile: VFile, opts: LiftOptions) {
   for (const output of selectAll('output', mdast)) {
-    const jupyter_output = (output as any).jupyter_data;
+    const jupyterOutput = (output as any).jupyter_data;
 
     // Do we have a MIME bundle?
-    switch (jupyter_output.output_type) {
-      case 'error': {
-        break;
-      }
-
+    switch (jupyterOutput.output_type) {
+      case 'error':
       case 'stream': {
         break;
       }
+      // TODO: take latest by ID
       case 'execute_result':
       case 'update_display_data':
       case 'display_data': {
-        const [properOutput] = convertToIOutputs([jupyter_output], cache.$outputs);
         // Find the preferred mime type
-        const mimeTypes = [...Object.keys(properOutput.data as IMimeBundle)];
+        const mimeTypes = [...Object.keys(jupyterOutput.data as IMimeBundle)];
         const preferredMimeRenderer = MIME_RENDERERS.map(
           (renderer): [string | undefined, MimeRenderer] => [renderer.renders(mimeTypes), renderer],
         ).find(([mimeType]) => mimeType !== undefined);
@@ -126,15 +116,14 @@ export async function liftOutputs(
         const [contentType, renderer] = preferredMimeRenderer;
 
         // Pull content from cache if minified
-        const content = (properOutput.data as IMimeBundle)[contentType!];
-
+        const content = (jupyterOutput.data as IMimeBundle)[contentType!];
         (output as any).children = await renderer.renderBlock(
           contentType!,
           content,
           vfile,
           opts.parseMyst,
           {
-            stripQuotes: (jupyter_output.metadata?.['strip-quotes'] as any) ?? true,
+            stripQuotes: (jupyterOutput.metadata?.['strip-quotes'] as any) ?? true,
           },
         );
         break;
@@ -144,12 +133,11 @@ export async function liftOutputs(
 }
 
 export async function transformLiftExecutionResults(
-  session: ISession,
   mdast: GenericParent,
   vfile: VFile,
   opts: LiftOptions,
 ) {
-  await liftOutputs(session, mdast, vfile, opts);
+  await liftOutputs(mdast, vfile, opts);
   await liftExpressions(mdast, vfile, opts);
 }
 
@@ -348,20 +336,4 @@ export function transformOutputsToFile(
         });
       });
     });
-}
-
-/**
- * Return if new type is preferred output content_type over existing type
- *
- * Since this is for static output, images are top preference, then
- * html, then text.
- *
- * If the new and existing types are the same, always just keep existing.
- */
-function isPreferredOutputType(newType: string, existingType: string) {
-  if (existingType.startsWith('image/')) return false;
-  if (newType.startsWith('image')) return true;
-  if (existingType === 'text/html') return false;
-  if (newType === 'text/html') return true;
-  return false;
 }
