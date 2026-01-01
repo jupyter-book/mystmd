@@ -14,9 +14,9 @@ import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nb
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
-import type { StaticPhrasingContent, PhrasingContent } from 'myst-spec';
+import type { StaticPhrasingContent } from 'myst-spec';
 import type { MystParser, MimeRenderer } from './rendermime.js';
-import { MIME_RENDERERS } from './rendermime.js';
+import { MIME_RENDERERS as DEFAULT_MIME_RENDERERS } from './rendermime.js';
 
 function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
@@ -26,66 +26,60 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
   return join(writeFolder, getFilename(hash, contentType));
 }
 
-async function renderExpression(
-  node: InlineExpression,
-  file: VFile,
-  opts: LiftOptions,
-): Promise<PhrasingContent[]> {
-  const result = node.result as IExpressionResult;
-  if (result?.status !== 'ok') {
-    return [];
-  }
-  const mimeTypes = [...Object.keys(result.data)];
-  for (const renderer of MIME_RENDERERS) {
-    const preferredMime = renderer.renders(mimeTypes);
-    if (!preferredMime) {
-      continue;
-    }
-    return await renderer.renderPhrasing(
-      preferredMime,
-      result.data[preferredMime],
-      file,
-      opts.parseMyst,
-      {
-        stripQuotes: (result.metadata?.['strip-quotes'] as any) ?? true,
-      },
-    );
-  }
-  fileWarn(file, 'Unrecognized mime bundle for inline content', {
-    node,
-    ruleId: RuleId.inlineExpressionRenders,
-  });
-  return [];
-}
-
 export interface LiftOptions {
   parseMyst: MystParser;
+  renderers?: MimeRenderer[];
 }
 
 /**
  * Lift inline expressions from display data to AST nodes
  */
 export async function liftExpressions(mdast: GenericParent, file: VFile, opts: LiftOptions) {
-  const inlineNodes = selectAll('inlineExpression', mdast) as InlineExpression[];
-  for (const inlineExpression of inlineNodes) {
-    if (!inlineExpression.result) {
+  const renderers = opts.renderers ?? DEFAULT_MIME_RENDERERS;
+  const nodes = selectAll('inlineExpression', mdast) as InlineExpression[];
+  for (const node of nodes) {
+    if (!node.result) {
       continue;
     }
-    const children = (await renderExpression(
-      inlineExpression,
-      file,
-      opts,
-    )) as StaticPhrasingContent[];
-    inlineExpression.children = children;
+    const result = node.result as IExpressionResult;
+    if (result?.status !== 'ok') {
+      continue;
+    }
+    const mimeTypes = [...Object.keys(result.data)];
+    // Find the preferred mime type
+    const preferredMimeRenderer = renderers
+      .map((renderer): [string | undefined, MimeRenderer] => [
+        renderer.renders(mimeTypes),
+        renderer,
+      ])
+      .find(([mimeType]) => mimeType !== undefined) as [string, MimeRenderer] | undefined;
+
+    // If we don't need to process any of these MIME types, skip.
+    if (preferredMimeRenderer === undefined) {
+      fileWarn(file, 'Unrecognized MIME bundle for inline content', {
+        node,
+        ruleId: RuleId.inlineExpressionRenders,
+      });
+      break;
+    }
+    const [contentType, renderer] = preferredMimeRenderer;
+
+    // Pull content from cache if minified
+    const content = (result.data as IMimeBundle)[contentType!];
+    const children = await renderer.renderPhrasing(contentType, content, file, opts.parseMyst, {
+      stripQuotes: (result.metadata?.['strip-quotes'] as any) ?? true,
+    });
+    node.children = children as StaticPhrasingContent[];
   }
 }
 
 /**
  * Lift inline expressions from display data to AST nodes
  */
-export async function liftOutputs(mdast: GenericParent, vfile: VFile, opts: LiftOptions) {
-  for (const output of selectAll('output', mdast)) {
-    const jupyterOutput = (output as any).jupyter_data;
+export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftOptions) {
+  const renderers = opts.renderers ?? DEFAULT_MIME_RENDERERS;
+  for (const node of selectAll('output', mdast)) {
+    const jupyterOutput = (node as any).jupyter_data;
 
     // Do we have a MIME bundle?
     switch (jupyterOutput.output_type) {
@@ -99,22 +93,29 @@ export async function liftOutputs(mdast: GenericParent, vfile: VFile, opts: Lift
       case 'display_data': {
         // Find the preferred mime type
         const mimeTypes = [...Object.keys(jupyterOutput.data as IMimeBundle)];
-        const preferredMimeRenderer = MIME_RENDERERS.map(
-          (renderer): [string | undefined, MimeRenderer] => [renderer.renders(mimeTypes), renderer],
-        ).find(([mimeType]) => mimeType !== undefined);
+        const preferredMimeRenderer = renderers
+          .map((renderer): [string | undefined, MimeRenderer] => [
+            renderer.renders(mimeTypes),
+            renderer,
+          ])
+          .find(([mimeType]) => mimeType !== undefined);
 
         // If we don't need to process any of these MIME types, skip.
         if (preferredMimeRenderer === undefined) {
+          fileWarn(file, 'Unrecognized MIME bundle for output content', {
+            node,
+            ruleId: RuleId.inlineExpressionRenders,
+          });
           break;
         }
         const [contentType, renderer] = preferredMimeRenderer;
 
         // Pull content from cache if minified
         const content = (jupyterOutput.data as IMimeBundle)[contentType!];
-        (output as any).children = await renderer.renderBlock(
+        (node as any).children = await renderer.renderBlock(
           contentType!,
           content,
-          vfile,
+          file,
           opts.parseMyst,
           {
             stripQuotes: (jupyterOutput.metadata?.['strip-quotes'] as any) ?? true,
