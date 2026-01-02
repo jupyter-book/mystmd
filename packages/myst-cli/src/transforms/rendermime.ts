@@ -99,26 +99,29 @@ export class LaTeXRenderer extends MimeRenderer {
  *
  * We can parse HTML as MyST AST, but this is a secondary transform.
  * As such, we probably should not treat this as a core part of the execution transforms.
- * This decision is reasonable because HTML to MyST likely shouldn't pull in referenceable content, but if it needs to, it's like a content-author level decision.
+ * This decision is reasonable because HTML to MyST likely shouldn't pull in referenceable content.
+ * If it needs to, it's likely a content-author level decision.
  */
 export class HTMLRenderer extends MimeRenderer {
   pattern = /^text\/html$/;
 
   async renderBlock(_1: string, value: MultilineString) {
-    return [
+    const result: FlowContent[] = [
       {
         type: 'html',
         value: ensureString(value),
       },
-    ] as FlowContent[];
+    ];
+    return result;
   }
   async renderPhrasing(_1: string, value: MultilineString) {
-    return [
+    const result: PhrasingContent[] = [
       {
         type: 'html',
         value: ensureString(value),
       },
-    ] as PhrasingContent[];
+    ];
+    return result;
   }
 }
 
@@ -127,15 +130,17 @@ export class ImageRenderer extends MimeRenderer {
 
   async renderBlock(contentType: string, value: MultilineString) {
     const phrasingNodes = await this.renderPhrasing(contentType, value);
-    return [{ type: 'paragraph', children: phrasingNodes }] as FlowContent[];
+    const result: FlowContent[] = [{ type: 'paragraph', children: phrasingNodes }];
+    return result;
   }
   async renderPhrasing(contentType: string, value: MultilineString) {
-    return [
+    const result: PhrasingContent[] = [
       {
         type: 'image',
         url: `data:${contentType}${BASE64_HEADER_SPLIT}${value}`,
       },
-    ] as PhrasingContent[];
+    ];
+    return result;
   }
 }
 
@@ -150,7 +155,8 @@ export class TextRenderer extends MimeRenderer {
     opts: MimeRendererOptions,
   ) {
     const phrasingNodes = await this.renderPhrasing(contentType, value, vfile, parseMyst, opts);
-    return [{ type: 'paragraph', children: phrasingNodes }] as FlowContent[];
+    const result: FlowContent[] = [{ type: 'paragraph', children: phrasingNodes }];
+    return result;
   }
   async renderPhrasing(
     _1: string,
@@ -160,12 +166,13 @@ export class TextRenderer extends MimeRenderer {
     opts: MimeRendererOptions,
   ) {
     const content = ensureString(value);
-    return [
+    const result: PhrasingContent[] = [
       {
         type: 'text',
         value: opts.stripQuotes ? stripTextQuotes(content) : content,
       },
-    ] as PhrasingContent[];
+    ];
+    return result;
   }
 }
 
