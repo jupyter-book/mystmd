@@ -17,10 +17,18 @@ import {
   SITE_FRONTMATTER_KEYS,
   validateSiteFrontmatterKeys,
 } from 'myst-frontmatter';
-import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
+import type { SiteAction, SiteConfig, SiteNavItem, SiteProject, StaticAsset } from './types.js';
 
 export const SITE_CONFIG_KEYS = {
-  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'template'],
+  optional: [
+    ...SITE_FRONTMATTER_KEYS,
+    'projects',
+    'nav',
+    'actions',
+    'domains',
+    'template',
+    'static',
+  ],
   alias: FRONTMATTER_ALIASES,
 };
 
@@ -104,6 +112,16 @@ export function validateSiteAction(input: any, opts: ValidationOptions) {
   return output;
 }
 
+export function validateStaticAsset(input: any, opts: ValidationOptions) {
+  const value = validateObjectKeys(input, { required: ['url', 'filename'] }, opts);
+  if (value === undefined) return undefined;
+  const filename = validateString(value.filename, incrementOptions('filename', opts));
+  const url = validateString(value.url, incrementOptions('url', opts));
+  if (!filename || !url) return undefined;
+  const output: StaticAsset = { filename, url };
+  return output;
+}
+
 export function validateSiteConfigKeys(
   value: Record<string, any>,
   opts: ValidationOptions,
@@ -131,6 +149,11 @@ export function validateSiteConfigKeys(
         return validateSiteAction(action, incrementOptions(`actions.${index}`, opts));
       },
     );
+  }
+  if (defined(value.static)) {
+    output.static = validateList(value.static, incrementOptions('static', opts), (asset, index) => {
+      return validateStaticAsset(asset, incrementOptions(`static.${index}`, opts));
+    });
   }
   if (defined(value.domains)) {
     const domains = validateList(

@@ -24,12 +24,18 @@ export interface SiteAction {
   static?: boolean;
 }
 
+export interface StaticAsset {
+  url: string;
+  filename: string;
+}
+
 export type SiteConfig = SiteFrontmatter & {
   projects?: SiteProject[];
   nav?: SiteNavItem[];
   actions?: SiteAction[];
   domains?: string[];
   template?: string;
+  static?: StaticAsset[];
 };
 
 export type SiteExport = {
@@ -83,4 +89,5 @@ export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
   favicon?: string;
   template?: string;
   parts?: FrontmatterParts;
+  static?: StaticAsset[];
 };
