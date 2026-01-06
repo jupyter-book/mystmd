@@ -38,17 +38,17 @@ Here's a workflow for producing a rich web application:
 
 ```{mermaid}
 flowchart TB
-  subgraph "<tt>myst start --headless</tt>"
-    subgraph <b>Document conversion</b>
+  subgraph "myst start --headless"
+    subgraph "<b>Document conversion</b>"
     direction LR
     doc[folder_of/myfile.md] --> ast[AST]
     end
-    subgraph <b>Content server</b>
+    subgraph "<b>Content server</b>"
     ast --> content_server[serve AST on http://localhost:3100]
     end
   end
-  subgraph "<tt>npm run theme:book</tt>"
-    subgraph <b>Theme server</b>
+  subgraph "npm run theme:book"
+    subgraph "<b>Theme server</b>"
     direction LR
     theme_server[render themed content at http://localhost:3000] --> content_server
     user[User browser] --> theme_server
