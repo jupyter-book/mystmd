@@ -102,7 +102,7 @@ export class Session implements ISession {
     this.API_URL = process.env.API_URL ?? DEFAULT_API_URL;
     // trailing slashes will cause issues
     this.API_URL = this.API_URL.replace(/\/+$/, '');
-    console.log(`building myst-cli session with API URL: ${this.API_URL}`);
+    console.debug(`building myst-cli session with API URL: ${this.API_URL}`);
     this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
