@@ -66,9 +66,13 @@ export async function liftExpressions(mdast: GenericParent, file: VFile, opts: L
 
     // Pull content from cache if minified
     const content = (result.data as IMimeBundle)[contentType!];
-    const children = await renderer.renderPhrasing(contentType, content, file, opts.parseMyst, {
-      stripQuotes: (result.metadata?.['strip-quotes'] as any) ?? true,
-    });
+    const children = await renderer.renderPhrasing(
+      contentType,
+      content,
+      file,
+      opts.parseMyst,
+      result.metadata as any,
+    );
     node.children = children as StaticPhrasingContent[];
   }
 }
@@ -117,9 +121,7 @@ export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftO
           content,
           file,
           opts.parseMyst,
-          {
-            stripQuotes: (jupyterOutput.metadata?.['strip-quotes'] as any) ?? true,
-          },
+          (jupyterOutput.metadata ?? {}) as any,
         );
         break;
       }

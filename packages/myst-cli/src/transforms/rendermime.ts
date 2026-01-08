@@ -25,9 +25,7 @@ function singleParagraphChildren(parents: GenericParent[]) {
 
 export type MystParser = (source: string) => GenericParent;
 
-export type MimeRendererOptions = {
-  stripQuotes: boolean;
-};
+interface MimeRendererMetadata {}
 
 export abstract class MimeRenderer {
   abstract pattern: RegExp;
@@ -41,7 +39,7 @@ export abstract class MimeRenderer {
     content: IMimeBundle[keyof IMimeBundle],
     vfile: VFile,
     parseMyst: MystParser,
-    opts: MimeRendererOptions,
+    opts: MimeRendererMetadata,
   ): Promise<PhrasingContent[]>;
 
   abstract renderBlock(
@@ -49,7 +47,7 @@ export abstract class MimeRenderer {
     content: IMimeBundle[keyof IMimeBundle],
     vfile: VFile,
     parseMyst: MystParser,
-    opts: MimeRendererOptions,
+    opts: MimeRendererMetadata,
   ): Promise<FlowContent[]>;
 }
 
@@ -80,6 +78,11 @@ export class MarkdownRenderer extends MimeRenderer {
   }
 }
 
+// TODO: if not parsing LaTeX, output raw nodes
+interface MimeRendererMetadata {
+  'parse-latex'?: boolean;
+}
+
 export class LaTeXRenderer extends MimeRenderer {
   pattern = /^text\/latex\b/;
 
@@ -94,6 +97,10 @@ export class LaTeXRenderer extends MimeRenderer {
   }
 }
 
+// TODO: handle this by tagging HTML nodes?
+interface MimeRendererMetadata {
+  'parse-html'?: boolean;
+}
 /*
  * Renderer for HTML content
  *
@@ -144,6 +151,9 @@ export class ImageRenderer extends MimeRenderer {
   }
 }
 
+interface MimeRendererMetadata {
+  'strip-quotes'?: boolean;
+}
 export class TextRenderer extends MimeRenderer {
   pattern = /^text\/plain$/;
 
@@ -152,7 +162,7 @@ export class TextRenderer extends MimeRenderer {
     value: MultilineString,
     vfile: VFile,
     parseMyst: MystParser,
-    opts: MimeRendererOptions,
+    opts: MimeRendererMetadata,
   ) {
     const phrasingNodes = await this.renderPhrasing(contentType, value, vfile, parseMyst, opts);
     const result: FlowContent[] = [{ type: 'paragraph', children: phrasingNodes }];
@@ -163,13 +173,13 @@ export class TextRenderer extends MimeRenderer {
     value: MultilineString,
     _2: VFile,
     _3: MystParser,
-    opts: MimeRendererOptions,
+    opts: MimeRendererMetadata,
   ) {
     const content = ensureString(value);
     const result: PhrasingContent[] = [
       {
         type: 'text',
-        value: opts.stripQuotes ? stripTextQuotes(content) : content,
+        value: opts['strip-quotes'] === false ? content : stripTextQuotes(content),
       },
     ];
     return result;
@@ -184,7 +194,7 @@ export class ASTRenderer extends MimeRenderer {
     value: Record<string, any>,
     _1: VFile,
     _2: MystParser,
-    _3: MimeRendererOptions,
+    _3: MimeRendererMetadata,
   ) {
     let match;
     let version: number;
@@ -204,7 +214,7 @@ export class ASTRenderer extends MimeRenderer {
     value: Record<string, any>,
     vfile: VFile,
     parseMyst: MystParser,
-    opts: MimeRendererOptions,
+    opts: MimeRendererMetadata,
   ) {
     return singleParagraphChildren(
       (await this.renderBlock(contentType, value, vfile, parseMyst, opts)) as GenericParent[],
@@ -220,3 +230,4 @@ export const MIME_RENDERERS: MimeRenderer[] = [
   new HTMLRenderer(),
   new TextRenderer(),
 ];
+export type { MimeRendererMetadata };
