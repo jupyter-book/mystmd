@@ -39,7 +39,8 @@ kernelspec:
   name: python3
   display_name: Python 3
 
-skip_execution: true
+execute:
+  skip: true
 ---
 ```
 

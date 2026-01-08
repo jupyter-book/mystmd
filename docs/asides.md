@@ -6,7 +6,8 @@ description: Asides provide an easy way to represent content that is only indire
 
 (directive:aside)=
 
-Asides provide an easy way to represent content that is only indirectly related to the article's main content. Where supported, MyST will attempt to display an {myst:directive}`aside` _as close as possible_ but separately from the main article, such as in the side-margin.
+Asides provide an easy way to represent content that is only indirectly related to the article's main content.
+Where supported, MyST will attempt to display an {myst:directive}`aside` _as close as possible to_—but separate from—the main article, such as in the side-margin.
 
 ```{aside} Margin Content
 Here’s some margin content! It was created by using the {myst:directive}`margin` directive in a Markdown, we can include images:
@@ -17,8 +18,12 @@ or any other sort of content!
 ```
 
 ```markdown
-:::{aside} An Optional Title
-This is an aside. It is not entirely relevant to the main article.
+:::{aside} Margin Content
+Here’s some margin content! It was created by using the {myst:directive}`margin` directive in a Markdown, we can include images:
+
+![](https://github.com/rowanc1/pics/blob/main/sunset.png)
+
+or any other sort of content!
 :::
 ```
 
@@ -30,6 +35,7 @@ Many of the features on this page are experimental and may change at any time.
 
 These elements can conflict with the document outline when they are both competing for the margin space (see [#170](https://github.com/jupyter-book/myst-theme/issues/170)).
 
+There is, as yet, no plugin available for transforming this directive into Typst.
 :::
 
 % Using bold here, until we fix #170

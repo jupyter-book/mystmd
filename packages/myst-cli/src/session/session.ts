@@ -39,7 +39,7 @@ if (!globalThis.fetch) {
 }
 
 const CONFIG_FILES = ['myst.yml'];
-const API_URL = 'https://api.mystmd.org';
+const DEFAULT_API_URL = 'https://api.mystmd.org';
 const NPM_COMMAND = 'npm i -g mystmd@latest';
 const PIP_COMMAND = 'pip install -U mystmd';
 const LOCALHOSTS = ['localhost', '127.0.0.1', '::1'];
@@ -98,7 +98,11 @@ export class Session implements ISession {
   }
 
   constructor(opts: { logger?: Logger; doiLimiter?: Limit; configFiles?: string[] } = {}) {
-    this.API_URL = API_URL;
+    // use env variable if set
+    this.API_URL = process.env.API_URL ?? DEFAULT_API_URL;
+    // trailing slashes will cause issues
+    this.API_URL = this.API_URL.replace(/\/+$/, '');
+    console.debug(`building myst-cli session with API URL: ${this.API_URL}`);
     this.configFiles = (opts.configFiles ? opts.configFiles : CONFIG_FILES).slice();
     this.$logger = opts.logger ?? chalkLogger(LogLevel.info, process.cwd());
     this.doiLimiter = opts.doiLimiter ?? pLimit(3);
