@@ -491,12 +491,6 @@ const handlers: Record<string, Handler> = {
     }
     state.write('\\tableofcontents\n');
   },
-  outputs(node, state) {
-    state.renderChildren(node);
-  },
-  output(node, state) {
-    state.renderChildren(node);
-  },
 };
 
 class TexSerializer implements ITexSerializer {

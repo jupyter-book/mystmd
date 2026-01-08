@@ -55,6 +55,7 @@ import {
   StaticFileTransformer,
   propagateBlockDataToCode,
   transformBanner,
+  reduceOutputs,
   transformPlaceholderImages,
   transformDeleteBase64UrlSource,
   transformWebp,
@@ -401,6 +402,12 @@ export async function finalizeMdast(
 ) {
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
+  if (simplifyFigures) {
+    // Transform output nodes to images / text
+    reduceOutputs(session, mdast, file, imageWriteFolder, {
+      altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
+    });
+  }
   transformOutputsToFile(session, mdast, imageWriteFolder, {
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     vfile,
