@@ -1,7 +1,12 @@
 ---
 title: Roles
-description: A full list of the roles included in MyST Markdown by default.
+description: A list of all roles included in the MyST Engine.
 ---
+
+A list of all roles included with `mystmd`, and their docstrings.
+To learn more about the syntax and usage of roles, please refer to [](#syntax:roles).
+
+% List these in alphabetical order
 
 :::{myst:role} abbreviation
 :::
@@ -18,22 +23,10 @@ description: A full list of the roles included in MyST Markdown by default.
 :::{myst:role} delete
 :::
 
-:::{myst:role} math
-:::
-
-:::{myst:role} ref
-:::
-
 :::{myst:role} doc
 :::
 
 :::{myst:role} download
-:::
-
-:::{myst:role} term
-:::
-
-:::{myst:role} si
 :::
 
 :::{myst:role} eval
@@ -45,7 +38,19 @@ description: A full list of the roles included in MyST Markdown by default.
 :::{myst:role} keyboard
 :::
 
+:::{myst:role} math
+:::
+
+:::{myst:role} ref
+:::
+
+:::{myst:role} si
+:::
+
 :::{myst:role} smallcaps
+:::
+
+:::{myst:role} span
 :::
 
 :::{myst:role} subscript
@@ -54,8 +59,8 @@ description: A full list of the roles included in MyST Markdown by default.
 :::{myst:role} superscript
 :::
 
-:::{myst:role} underline
+:::{myst:role} term
 :::
 
-:::{myst:role} span
+:::{myst:role} underline
 :::

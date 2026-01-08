@@ -1,10 +1,13 @@
 ---
 title: Directives
-description: A full list of the directives included in MyST Markdown by default.
+description: A list of all directives included in the MyST Engine.
 label: directives_list
 ---
 
-To learn more about the syntax and usage of the directives, please refer to the [](#syntax:directives) section of the documentation.
+A list of all directives included with `mystmd`, and their docstrings.
+To learn more about the syntax and usage of the directives, please refer to [](#syntax:directives).
+
+% List these in alphabetical order
 
 :::{myst:directive} admonition
 :::
