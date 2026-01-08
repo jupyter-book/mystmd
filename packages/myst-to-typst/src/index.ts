@@ -471,6 +471,12 @@ const handlers: Record<string, Handler> = {
   root(node, state) {
     state.renderChildren(node);
   },
+  outputs(node, state) {
+    state.renderChildren(node);
+  },
+  output(node, state) {
+    state.renderChildren(node);
+  },
   footer() {
     return;
   },

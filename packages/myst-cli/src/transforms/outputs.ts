@@ -1,12 +1,10 @@
 import fs from 'node:fs';
-import { dirname, join, relative } from 'node:path';
+import { join } from 'node:path';
 import { computeHash } from 'myst-cli-utils';
-import type { Image, SourceFileKind, Output, InlineExpression } from 'myst-spec-ext';
-import { liftChildren, fileError, RuleId, fileWarn } from 'myst-common';
+import type { SourceFileKind, Output, InlineExpression } from 'myst-spec-ext';
+import { fileError, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
 import type { ProjectSettings } from 'myst-frontmatter';
-import { htmlTransform } from 'myst-transforms';
-import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
@@ -18,15 +16,7 @@ import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
 import type { StaticPhrasingContent } from 'myst-spec';
 import type { MystParser, MimeRenderer } from './rendermime.js';
-import {
-  ASTRenderer,
-  LaTeXRenderer,
-  MarkdownRenderer,
-  ImageRenderer,
-  HTMLRenderer,
-  TextRenderer,
-  findRenderer,
-} from './rendermime.js';
+import { MIME_RENDERERS as DEFAULT_MIME_RENDERERS } from './rendermime.js';
 
 function getFilename(hash: string, contentType: string) {
   return `${hash}${extFromMimeType(contentType)}`;
@@ -41,24 +31,11 @@ export interface LiftOptions {
   renderers?: MimeRenderer[];
 }
 
-const EXPRESSION_MIME_RENDERERS: MimeRenderer[] = [
-  new ASTRenderer(),
-  new MarkdownRenderer(),
-  new LaTeXRenderer(),
-  new ImageRenderer(),
-  new HTMLRenderer(),
-  new TextRenderer(),
-];
-const OUTPUT_MIME_RENDERERS: MimeRenderer[] = [
-  new ASTRenderer(),
-  new MarkdownRenderer(),
-  new LaTeXRenderer(),
-];
-
 /**
  * Lift inline expressions from display data to AST nodes
  */
 export async function liftExpressions(mdast: GenericParent, file: VFile, opts: LiftOptions) {
+  const renderers = opts.renderers ?? DEFAULT_MIME_RENDERERS;
   const nodes = selectAll('inlineExpression', mdast) as InlineExpression[];
   for (const node of nodes) {
     if (!node.result) {
@@ -68,11 +45,14 @@ export async function liftExpressions(mdast: GenericParent, file: VFile, opts: L
     if (result?.status !== 'ok') {
       continue;
     }
+    const mimeTypes = [...Object.keys(result.data)];
     // Find the preferred mime type
-    const preferredMimeRenderer = findRenderer(
-      opts.renderers ?? EXPRESSION_MIME_RENDERERS,
-      result.data,
-    );
+    const preferredMimeRenderer = renderers
+      .map((renderer): [string | undefined, MimeRenderer] => [
+        renderer.renders(mimeTypes),
+        renderer,
+      ])
+      .find(([mimeType]) => mimeType !== undefined) as [string, MimeRenderer] | undefined;
 
     // If we don't need to process any of these MIME types, skip.
     if (preferredMimeRenderer === undefined) {
@@ -82,9 +62,9 @@ export async function liftExpressions(mdast: GenericParent, file: VFile, opts: L
       });
       break;
     }
+    const [contentType, renderer] = preferredMimeRenderer;
 
     // Pull content from cache if minified
-    const [contentType, renderer] = preferredMimeRenderer;
     const content = (result.data as IMimeBundle)[contentType!];
     const children = await renderer.renderPhrasing(contentType, content, file, opts.parseMyst, {
       stripQuotes: (result.metadata?.['strip-quotes'] as any) ?? true,
@@ -97,6 +77,7 @@ export async function liftExpressions(mdast: GenericParent, file: VFile, opts: L
  * Lift inline expressions from display data to AST nodes
  */
 export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftOptions) {
+  const renderers = opts.renderers ?? DEFAULT_MIME_RENDERERS;
   for (const node of selectAll('output', mdast)) {
     const jupyterOutput = (node as any).jupyter_data;
 
@@ -111,22 +92,25 @@ export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftO
       case 'update_display_data':
       case 'display_data': {
         // Find the preferred mime type
-        const preferredMimeRenderer = findRenderer(
-          opts.renderers ?? OUTPUT_MIME_RENDERERS,
-          jupyterOutput.data,
-        );
+        const mimeTypes = [...Object.keys(jupyterOutput.data as IMimeBundle)];
+        const preferredMimeRenderer = renderers
+          .map((renderer): [string | undefined, MimeRenderer] => [
+            renderer.renders(mimeTypes),
+            renderer,
+          ])
+          .find(([mimeType]) => mimeType !== undefined);
 
         // If we don't need to process any of these MIME types, skip.
         if (preferredMimeRenderer === undefined) {
           fileWarn(file, 'Unrecognized MIME bundle for output content', {
             node,
-            ruleId: RuleId.outputRenders,
+            ruleId: RuleId.inlineExpressionRenders,
           });
           break;
         }
+        const [contentType, renderer] = preferredMimeRenderer;
 
         // Pull content from cache if minified
-        const [contentType, renderer] = preferredMimeRenderer;
         const content = (jupyterOutput.data as IMimeBundle)[contentType!];
         (node as any).children = await renderer.renderBlock(
           contentType!,
@@ -347,133 +331,4 @@ export function transformOutputsToFile(
         });
       });
     });
-}
-
-/**
- * Return if new type is preferred output content_type over existing type
- *
- * Since this is for static output, images are top preference, then
- * html, then text.
- *
- * If the new and existing types are the same, always just keep existing.
- */
-function isPreferredOutputType(newType: string, existingType: string) {
-  if (existingType.startsWith('image/')) return false;
-  if (newType.startsWith('image')) return true;
-  if (existingType === 'text/html') return false;
-  if (newType === 'text/html') return true;
-  return false;
-}
-
-/**
- * Convert output nodes with minified content to image or code
- *
- * This writes outputs of type image to file, modifies outputs of type
- * text to a code node, and removes other output types.
- */
-
-export function reduceOutputs(
-  session: ISession,
-  mdast: GenericParent,
-  file: string,
-  writeFolder: string,
-  opts?: { altOutputFolder?: string; vfile?: VFile },
-) {
-  const outputsNodes = selectAll('outputs', mdast) as GenericNode[];
-  const cache = castSession(session);
-  outputsNodes.forEach((outputsNode) => {
-    // TODO: handle this in the exporter!
-    // Hidden nodes should not show up in simplified outputs for static export
-    if (outputsNode.visibility === 'remove' || outputsNode.visibility === 'hide') {
-      outputsNode.type = '__delete__';
-      return;
-    }
-
-    const outputs = outputsNode.children as GenericNode[];
-    outputs.forEach((outputNode) => {
-      if (outputNode.type !== 'output') {
-        return;
-      }
-      // Lift the `output` node into `Outputs`
-      outputNode.type = '__lift__';
-
-      // If the output already has children, we don't need to do anything
-      // Or, if it has no output data (should not happen)
-      if (outputNode.children?.length || !outputNode.jupyter_data) {
-        return;
-      }
-
-      // Find a preferred IOutput type to render into the AST
-      const selectedOutputs: { content_type: string; hash: string }[] = [];
-      if (outputNode.jupyter_data) {
-        const output = outputNode.jupyter_data;
-
-        let selectedOutput: { content_type: string; hash: string } | undefined;
-        walkOutputs([output], (obj: any) => {
-          const { output_type, content_type, hash } = obj;
-          if (!hash) return undefined;
-          if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
-            if (['error', 'stream'].includes(output_type)) {
-              selectedOutput = { content_type: 'text/plain', hash };
-            } else if (typeof content_type === 'string') {
-              if (
-                content_type.startsWith('image/') ||
-                content_type === 'text/plain' ||
-                content_type === 'text/html'
-              ) {
-                selectedOutput = { content_type, hash };
-              }
-            }
-          }
-        });
-        if (selectedOutput) selectedOutputs.push(selectedOutput);
-      }
-      const children: (Image | GenericNode)[] = selectedOutputs
-        .map((output): Image | GenericNode | GenericNode[] | undefined => {
-          const { content_type, hash } = output ?? {};
-          if (!hash || !cache.$outputs[hash]) return undefined;
-          if (content_type === 'text/html') {
-            const htmlTree = {
-              type: 'root',
-              children: [
-                {
-                  type: 'html',
-                  value: cache.$outputs[hash][0],
-                },
-              ],
-            };
-            htmlTransform(htmlTree);
-            return htmlTree.children;
-          } else if (content_type.startsWith('image/')) {
-            const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
-              ...opts,
-              node: outputNode,
-            });
-            if (!path) return undefined;
-            const relativePath = relative(dirname(file), path);
-            return {
-              type: 'image',
-              data: { type: 'output' },
-              url: relativePath,
-              urlSource: relativePath,
-            };
-          } else if (content_type === 'text/plain' && cache.$outputs[hash]) {
-            const [content] = cache.$outputs[hash];
-            return {
-              type: 'code',
-              data: { type: 'output' },
-              value: stripAnsi(content),
-            };
-          }
-          return undefined;
-        })
-        .flat()
-        .filter((output): output is Image | GenericNode => !!output);
-      outputNode.children = children;
-    });
-    // Lift the `outputs` node
-    outputsNode.type = '__lift__';
-  });
-  remove(mdast, '__delete__');
-  liftChildren(mdast, '__lift__');
 }

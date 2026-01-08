@@ -212,10 +212,11 @@ export class ASTRenderer extends MimeRenderer {
   }
 }
 
-export function findRenderer(rankedRenderers: MimeRenderer[], mimeBundle: Record<string, any>) {
-  const mimeTypes = [...Object.keys(mimeBundle)];
-  // Find the preferred mime type
-  return rankedRenderers
-    .map((renderer): [string | undefined, MimeRenderer] => [renderer.renders(mimeTypes), renderer])
-    .find(([mimeType]) => mimeType !== undefined) as [string, MimeRenderer] | undefined;
-}
+export const MIME_RENDERERS: MimeRenderer[] = [
+  new ASTRenderer(),
+  new MarkdownRenderer(),
+  new LaTeXRenderer(),
+  new ImageRenderer(),
+  new HTMLRenderer(),
+  new TextRenderer(),
+];

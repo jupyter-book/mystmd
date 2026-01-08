@@ -112,8 +112,7 @@ export const RULE_DEFAULT_SEVERITY: Record<RuleId, 'error' | 'warn'> = {
   [RuleId.codeLangDefined]: 'warn', // fileWarn in packages/myst-transforms/src/code.ts
   [RuleId.codeMetadataLoads]: 'error', // fileError in packages/myst-cli/src/transforms/code.ts
   [RuleId.inlineCodeMalformed]: 'warn', // fileWarn in packages/myst-transforms/src/code.ts
-  [RuleId.inlineExpressionRenders]: 'warn', // fileWarn in packages/myst-cli/src/transforms/outputs.ts
-  [RuleId.outputRenders]: 'warn', // fileWarn in packages/myst-cli/src/transforms/outputs.ts
+  [RuleId.inlineExpressionRenders]: 'warn', // fileWarn in packages/myst-cli/src/transforms/inlineExpressions.ts
   // Static file rules
   [RuleId.staticFileCopied]: 'error', // fileError in packages/myst-cli/src/transforms/links.ts
   [RuleId.exportFileCopied]: 'error', // addWarningForFile in packages/myst-cli/src/build/site/manifest.ts

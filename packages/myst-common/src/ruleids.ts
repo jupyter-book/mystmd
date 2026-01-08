@@ -92,7 +92,6 @@ export enum RuleId {
   codeMetadataLoads = 'code-metadata-loads',
   inlineCodeMalformed = 'inline-code-malformed',
   inlineExpressionRenders = 'inline-expression-renders',
-  outputRenders = 'output-renders',
   // Static file rules
   staticFileCopied = 'static-file-copied',
   exportFileCopied = 'export-file-copied',
@@ -212,8 +211,7 @@ export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
   [RuleId.codeLangDefined]: 'Code block has a language specified',
   [RuleId.codeMetadataLoads]: 'Code metadata loads successfully',
   [RuleId.inlineCodeMalformed]: 'Inline code has either value or children but not both',
-  [RuleId.inlineExpressionRenders]: 'Inline expression renders successfully',
-  [RuleId.outputRenders]: 'Code cell output renders successfully',
+  [RuleId.inlineExpressionRenders]: 'Inline expression evaluates successfully',
   // Static file rules
   [RuleId.staticFileCopied]: 'Static file copies to output successfully',
   [RuleId.exportFileCopied]: 'Export output file copies to public directory successfully',

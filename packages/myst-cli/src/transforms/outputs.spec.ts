@@ -3,8 +3,6 @@ import { liftExpressions, liftOutputs } from './outputs';
 import { mystParse } from 'myst-parser';
 import type { Output, Outputs, InlineExpression } from 'myst-spec-ext';
 import { VFile } from 'vfile';
-import { reduceOutputs, stringIsMatplotlibOutput } from './outputs';
-import { Session } from '../session/session';
 
 const parseMyst = (content: string) => mystParse(content);
 
@@ -133,15 +131,36 @@ describe('liftExpressions', () => {
   });
 });
 describe('liftOutputs', () => {
-  it('LaTeX is parsed and lifted', async () => {
+  it('text is not quoted by default', async () => {
     const vfile = new VFile();
     const output: Output = {
       type: 'output',
       jupyter_data: {
         output_type: 'execute_result',
-        data: {
-          'text/plain': 'hello there\nx + y',
-          'text/latex': '\\textbf{hello} there\n$$\nx + y\n$$',
+        data: { 'text/plain': 'Hello World' },
+      },
+      children: [],
+    };
+    const outputs: Outputs = {
+      type: 'outputs',
+      children: [output],
+    };
+    const tree = { type: 'root', children: [outputs] };
+    await liftOutputs(tree, vfile, { parseMyst });
+    // Children are added and quotes are removed
+    expect(output.children).toEqual([
+      { type: 'paragraph', children: [{ type: 'text', value: 'Hello World' }] },
+    ]);
+  });
+  it('text is quoted when requested', async () => {
+    const vfile = new VFile();
+    const output: Output = {
+      type: 'output',
+      jupyter_data: {
+        output_type: 'execute_result',
+        data: { 'text/plain': '"Hello World"' },
+        metadata: {
+          'strip-quotes': false,
         },
       },
       children: [],
@@ -150,22 +169,11 @@ describe('liftOutputs', () => {
       type: 'outputs',
       children: [output],
     };
-
     const tree = { type: 'root', children: [outputs] };
     await liftOutputs(tree, vfile, { parseMyst });
-    // Children are added and quotes are preserved
-    expect(output.children).toMatchObject([
-      {
-        type: 'paragraph',
-        children: [
-          { type: 'strong', children: [{ type: 'text', value: 'hello' }] },
-          { type: 'text', value: ' there' },
-        ],
-      },
-      {
-        type: 'math',
-        value: 'x + y',
-      },
+    // Children are added and quotes are removed
+    expect(output.children).toEqual([
+      { type: 'paragraph', children: [{ type: 'text', value: '"Hello World"' }] },
     ]);
   });
   it('Markdown is parsed and lifted', async () => {
@@ -262,194 +270,5 @@ describe('liftOutputs', () => {
         },
       ],
     });
-  });
-});
-
-describe('reduceOutputs', () => {
-  it('output with no data is removed', async () => {
-    const mdast = {
-      type: 'root',
-      children: [
-        {
-          type: 'block',
-          children: [
-            {
-              type: 'paragraph',
-              children: [
-                {
-                  type: 'text',
-                  value: 'hi',
-                },
-              ],
-            },
-            {
-              type: 'outputs',
-              children: [
-                {
-                  type: 'output',
-                  id: 'abc123',
-                  jupyter_data: null,
-                  children: [],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast).toEqual({
-      type: 'root',
-      children: [
-        {
-          type: 'block',
-          children: [
-            {
-              type: 'paragraph',
-              children: [
-                {
-                  type: 'text',
-                  value: 'hi',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
-  });
-  it('output with complex data is removed', async () => {
-    const mdast = {
-      type: 'root',
-      children: [
-        {
-          type: 'block',
-          children: [
-            {
-              type: 'paragraph',
-              children: [
-                {
-                  type: 'text',
-                  value: 'hi',
-                },
-              ],
-            },
-            {
-              type: 'outputs',
-              id: 'abc123',
-              children: [
-                {
-                  type: 'output',
-                  children: [],
-                  jupyter_data: {
-                    output_type: 'display_data',
-                    execution_count: 3,
-                    metadata: {},
-                    data: {
-                      'application/octet-stream': {
-                        content_type: 'application/octet-stream',
-                        hash: 'def456',
-                        path: '/my/path/def456.png',
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-    expect(mdast.children[0].children.length).toEqual(2);
-    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast).toEqual({
-      type: 'root',
-      children: [
-        {
-          type: 'block',
-          children: [
-            {
-              type: 'paragraph',
-              children: [
-                {
-                  type: 'text',
-                  value: 'hi',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
-  });
-  it('outputs is replaced with placeholder image', async () => {
-    const mdast = {
-      type: 'root',
-      children: [
-        {
-          type: 'block',
-          children: [
-            {
-              type: 'paragraph',
-              children: [
-                {
-                  type: 'text',
-                  value: 'hi',
-                },
-              ],
-            },
-            {
-              type: 'outputs',
-              id: 'abc123',
-              children: [
-                {
-                  type: 'image',
-                  placeholder: true,
-                  url: 'placeholder.png',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-    expect(mdast.children[0].children.length).toEqual(2);
-    reduceOutputs(new Session(), mdast, 'notebook.ipynb', '/my/folder');
-    expect(mdast).toEqual({
-      type: 'root',
-      children: [
-        {
-          type: 'block',
-          children: [
-            {
-              type: 'paragraph',
-              children: [
-                {
-                  type: 'text',
-                  value: 'hi',
-                },
-              ],
-            },
-            {
-              type: 'image',
-              placeholder: true,
-              url: 'placeholder.png',
-            },
-          ],
-        },
-      ],
-    });
-  });
-  it.each([
-    ['<Figure size 720x576 with 1 Axes>', true],
-    ['<matplotlib.legend.Legend at 0x7fb7fc701b90>', true],
-    ["Text(0.5, 0.98, 'Test 1')", true],
-    [
-      '(<Figure size 1224x576 with 1 Axes>,\n<matplotlib.axes._subplots.AxesSubplot at 0x7fd733d23e90>)',
-      true,
-    ],
-    ['Not matplotlib', false],
-  ])('%s', (string, bool) => {
-    expect(stringIsMatplotlibOutput(string)).toBe(bool);
   });
 });
