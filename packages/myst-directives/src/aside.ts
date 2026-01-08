@@ -5,7 +5,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const asideDirective: DirectiveSpec = {
   name: 'aside',
-  doc: 'Asides provide an easy way to represent content that is only indirectly related to the article\'s main content. Where supported, MyST will attempt to display an aside as close as possible but separately from the main article, such as in the side-margin. See [](#directive:aside).',
+  doc: "Asides provide an easy way to represent content that is only indirectly related to the article's main content. Where supported, MyST will attempt to display an aside as close as possible but separately from the main article, such as in the side-margin. See [](#directive:aside).",
   alias: ['margin', 'sidebar', 'topic'],
   arg: {
     type: 'myst',
