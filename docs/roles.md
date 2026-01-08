@@ -6,6 +6,8 @@ description: A list of all roles included in the MyST Engine.
 A list of all roles included with `mystmd`, and their docstrings.
 To learn more about the syntax and usage of roles, please refer to [](#syntax:roles).
 
+See [](./directives.md) for a reference list of directives.
+
 % List these in alphabetical order
 
 :::{myst:role} abbreviation

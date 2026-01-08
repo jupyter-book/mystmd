@@ -7,6 +7,8 @@ label: directives_list
 A list of all directives included with `mystmd`, and their docstrings.
 To learn more about the syntax and usage of the directives, please refer to [](#syntax:directives).
 
+See [](./roles.md) for a reference list of roles.
+
 % List these in alphabetical order
 
 :::{myst:directive} admonition
