@@ -30,6 +30,8 @@ If the language is `ipython` or `IPython3`, etc., it will be dynamically convert
 A list of language names supported by the  `myst-react` package is here: [HLJS language identifier strings](https://github.com/react-syntax-highlighter/react-syntax-highlighter/blob/master/AVAILABLE_LANGUAGES_HLJS.MD)
 ```
 
+(directive:code)=
+
 ## Code blocks
 
 The above code is not a directive, it is just standard Markdown syntax, which cannot add a {myst:directive}`code.caption` or {myst:directive}`code.label`. To caption or label blocks of code use the {myst:directive}`code` directive.

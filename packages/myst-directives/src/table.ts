@@ -13,6 +13,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const tableDirective: DirectiveSpec = {
   name: 'table',
+  doc: 'To add more features to your table, you can use the table directive. Here you can add a caption and label. See [](#directive:table).',
   arg: {
     type: 'myst',
     doc: 'An optional table caption',
@@ -56,6 +57,7 @@ export const tableDirective: DirectiveSpec = {
 
 export const listTableDirective: DirectiveSpec = {
   name: 'list-table',
+  doc: 'The list-table directive is used to create a table from data in a uniform two-level bullet list. See [](#directive:list-table).',
   arg: {
     type: 'myst',
     doc: 'An optional table caption',
@@ -197,7 +199,7 @@ function parseCSV(data: string, ctx: DirectiveContext, opts?: ParseCsvOptions): 
 // License is public domain: https://docutils.sourceforge.io/COPYING.html
 export const csvTableDirective: DirectiveSpec = {
   name: 'csv-table',
-  doc: 'The "csv-table" directive is used to create a table from CSV (comma-separated values) data.',
+  doc: 'The "csv-table" directive is used to create a table from CSV (comma-separated values) data. Block markup and inline markup within cells is supported. See [](#directive:csv-table).',
   arg: {
     type: 'myst',
     doc: 'An optional table caption',

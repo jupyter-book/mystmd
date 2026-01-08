@@ -18,6 +18,9 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::{myst:directive} blockquote
 :::
 
+:::{myst:directive} card
+:::
+
 :::{myst:directive} code
 :::
 
@@ -27,16 +30,31 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::{myst:directive} csv-table
 :::
 
+:::{myst:directive} div
+:::
+
 :::{myst:directive} dropdown
 :::
 
 :::{myst:directive} embed
 :::
 
+:::{myst:directive} exercise
+:::
+
+:::{myst:directive} exercise-end
+:::
+
 :::{myst:directive} figure
 :::
 
 :::{myst:directive} glossary
+:::
+
+:::{myst:directive} grid
+:::
+
+:::{myst:directive} grid-item
 :::
 
 :::{myst:directive} iframe
@@ -46,6 +64,9 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::
 
 :::{myst:directive} include
+:::
+
+:::{myst:directive} index
 :::
 
 :::{myst:directive} list-table
@@ -61,6 +82,24 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::
 
 :::{myst:directive} myst
+:::
+
+:::{myst:directive} proof
+:::
+
+:::{myst:directive} raw
+:::
+
+:::{myst:directive} solution
+:::
+
+:::{myst:directive} solution-end
+:::
+
+:::{myst:directive} tab-item
+:::
+
+:::{myst:directive} tab-set
 :::
 
 :::{myst:directive} table

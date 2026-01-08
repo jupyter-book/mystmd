@@ -3,6 +3,7 @@ import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const mathRole: RoleSpec = {
   name: 'math',
+  doc: 'Render inline mathematical expressions. See [](#role:inline-math).',
   options: {
     ...commonRoleOptions('math'),
     typst: {

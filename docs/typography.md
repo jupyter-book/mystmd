@@ -19,6 +19,8 @@ An alternative syntax, {ref}`setex-headings`, is also supported for level 1 and 
 
 To reference a heading in your text, you can use the `(target)=` syntax, see [{name}](#targeting-headers) for more.
 
+(role:inline-formatting)=
+
 ## Inline Text Formatting
 
 Standard inline formatting including bold, italic, code, as well as escaped symbols and line breaks:
@@ -77,6 +79,8 @@ You can use GitHub Flavoured Markdown to create task lists, these may be read on
 - [ ] Revolutionize technical communication
 ```
 
+(role:subscript-superscript)=
+
 ## Subscript & Superscript
 
 For inline typography for subscript and superscript formatting, it is best practice to use a text-based representation over resorting to math exponents, i.e. `4$^{th}$`.
@@ -91,7 +95,7 @@ H{sub}`2`O, and 4{sup}`th` of July
 
 % For chemicals you can use the {chem}`H2O`
 
-(keyboard-input)=
+(role:keyboard-input)=
 
 ## Keyboard Input
 
@@ -103,7 +107,7 @@ To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl` + {kbd}`Spac
 {kbd}`Ctrl` + {kbd}`Space`
 ```
 
-(abbr-role)=
+(role:abbr)=
 
 ## Abbreviations
 

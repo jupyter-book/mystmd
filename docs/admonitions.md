@@ -4,6 +4,8 @@ description: Callout blocks or admonitions, like "notes" or "hints" are outlined
 thumbnail: ./thumbnails/admonitions.png
 ---
 
+(directive:admonition)=
+
 Callouts, or "admonitions", highlight a particular block of text that exists slightly apart from the narrative of your page, such as a note or a warning.
 For example, try changing the following example of a `{tip}` admonition to a `{warning}`:
 

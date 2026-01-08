@@ -3,7 +3,7 @@ import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const keyboardRole: RoleSpec = {
   name: 'keyboard',
-  doc: 'The keyboard role denote textual user input from a keyboard, such as "Ctrl" + "Space".',
+  doc: 'The keyboard role denote textual user input from a keyboard, such as "Ctrl" + "Space". See [](#role:keyboard-input).',
   alias: ['kbd'],
   options: { ...commonRoleOptions('keyboard') },
   body: {

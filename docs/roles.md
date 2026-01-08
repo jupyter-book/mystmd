@@ -39,6 +39,12 @@ description: A full list of the roles included in MyST Markdown by default.
 :::{myst:role} eval
 :::
 
+:::{myst:role} index
+:::
+
+:::{myst:role} keyboard
+:::
+
 :::{myst:role} smallcaps
 :::
 
@@ -51,5 +57,5 @@ description: A full list of the roles included in MyST Markdown by default.
 :::{myst:role} underline
 :::
 
-:::{myst:role} keyboard
+:::{myst:role} span
 :::

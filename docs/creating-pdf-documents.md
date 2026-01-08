@@ -241,6 +241,8 @@ Please consider [contributing your template](/jtex/contribute-a-template) to the
 
 If you have a block or notebook cell that you do not want to render to your $\LaTeX$ output, add the `no-tex` tag to the cell. Similarly, to exclude a cell from Typst, use `no-typst`. To exclude a cell from both formats, use `no-pdf`.
 
+(directive:raw)=
+
 ## Including Content with Specific Exports
 
 If you need to inject some $\LaTeX$- or Typst-specific content into their respective exports, you may use the `{raw:latex}` or `{raw:typst}` role and directive. For example, to insert a new page in Typst with two columns:
