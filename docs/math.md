@@ -19,7 +19,7 @@ $$
 \mathbf{u} \times \mathbf{v}=\left|\begin{array}{ll}u_{2} & u_{3} \\ v_{2} & v_{3}\end{array}\right| \mathbf{i}+\left|\begin{array}{ll}u_{3} & u_{1} \\ v_{3} & v_{1}\end{array}\right| \mathbf{j}+\left|\begin{array}{ll}u_{1} & u_{2} \\ v_{1} & v_{2}\end{array}\right| \mathbf{k}
 $$ (cross)
 
-(role:inline-math)=
+(inline-math)=
 ## Inline Math
 
 There are two ways to write inline math; (1) with a `math` role or (2) by wrapping it in single dollar signs.

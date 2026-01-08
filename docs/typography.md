@@ -95,7 +95,7 @@ H{sub}`2`O, and 4{sup}`th` of July
 
 % For chemicals you can use the {chem}`H2O`
 
-(role:keyboard-input)=
+(keyboard-input)=
 
 ## Keyboard Input
 
@@ -107,7 +107,7 @@ To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl` + {kbd}`Spac
 {kbd}`Ctrl` + {kbd}`Space`
 ```
 
-(role:abbr)=
+(abbr-role)=
 
 ## Abbreviations
 

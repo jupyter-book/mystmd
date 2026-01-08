@@ -6,7 +6,7 @@ const ABBR_PATTERN = /^(.+?)\(([^()]+)\)$/; // e.g. 'CSS (Cascading Style Sheets
 export const abbreviationRole: RoleSpec = {
   name: 'abbreviation',
   alias: ['abbr'],
-  doc: 'Create an abbreviation with hover-tooltip and accessibility improvements. See [](#role:abbr).',
+  doc: 'Create an abbreviation with hover-tooltip and accessibility improvements. See [](#abbr-role).',
   options: { ...commonRoleOptions('abbreviation') },
   body: {
     type: String,

@@ -105,28 +105,28 @@ There several roles that define various kinds of references in MyST.
 In many cases, the short-hand syntax described above are aliases for these roles.
 Below we describe the most commonly-used ones.
 
-(role:ref)=
+(ref-role)=
 
 ref
 : The {myst:role}`ref` role can be used to bring the title or caption directly in line, the role can take a single argument which is the label, for example, `` {ref}`reference-target` ``
 : You can also choose the reference text directly (not taking from the title or caption) by using, `` {ref}`your text here <reference-target>` ``.
 
-(role:numref)=
+(numref-role)=
 
 numref
 : The {myst:role}`numref` role is exactly the same as the above {myst:role}`ref` role, but also allows you to use a `%s` in place of the number, which will get filled in when the content is rendered. For example, ``{numref}`Custom Table %s text <my-table-ref>`.`` will become `Custom Table 3 text`.
 
-(role:eq)=
+(eq-role)=
 
 eq
 : The `` {eq}`my-equation` `` syntax creates a numbered link to the equation, which is equivalent to `[](#my-equation)` as there is no text content to fill in a title or caption.
 
-(role:doc)=
+(doc-role)=
 
 doc
 : The `` {doc}`./my-file.md` `` syntax creates a link to the document, which is equivalent to `[](./my-file.md)`.
 
-(role:download)=
+(download-role)=
 
 download
 : The `` {download}`./my-file.zip` `` syntax creates a download to a document, which is equivalent to `[](./my-file.zip)`.

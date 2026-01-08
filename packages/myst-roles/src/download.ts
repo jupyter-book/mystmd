@@ -4,7 +4,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Download <file.zip>'
 
 export const downloadRole: RoleSpec = {
   name: 'download',
-  doc: 'Create a download link to a file. See [](#role:download).',
+  doc: 'Create a download link to a file. See [](#download-role).',
   body: {
     type: String,
     required: true,
