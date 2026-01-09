@@ -16,7 +16,7 @@ The following table lists the available frontmatter fields, a brief description 
   - page & project
 * - `subtitle`
   - a string (max 500 chars, see [](#titles))
-  - page & project
+  - page
 * - `short_title`
   - a string (max 40 chars, see [](#titles))
   - page & project
