@@ -170,11 +170,10 @@ The title of the document in the table of contents is drawn from the
 [document frontmatter](frontmatter#in-a-myst-markdown-file) or the first heading
 in the document if `title` isn't specified.
 
-**To override the page title** in navigation menus, sidebars, etc, you have two options:
+**To override the page title in navigation menus** without changing the page's primary title, you have two options:
 
-- The [`short_title`](frontmatter#all-available-frontmatter-fields) field can be used
-to specify a shorter title for navigation elements of the rendered site.
-- The `title` field in the Table of Contents entry will set (and over-ride) the `short_title` field for that page.
+- The [`short_title`](frontmatter#all-available-frontmatter-fields) field in page frontmatter.
+- The `title` field in a Table of Contents entry (this will override `short_title` above if both are set).
 
 For example via page frontmatter:
 
