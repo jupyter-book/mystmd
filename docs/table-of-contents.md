@@ -194,6 +194,8 @@ project:
     title: Acts as short-title
 ```
 
+These will not change the title in the page itself, or in the document AST, they will only be used in navigation entries and such.
+
 (hidden-in-toc)=
 
 ### Hiding pages from the Table of Contents
