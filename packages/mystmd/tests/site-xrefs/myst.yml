@@ -13,6 +13,7 @@ project:
     spec: https://mystmd.org/spec/
   toc:
     - file: index.md
+    # This tests short_title over-rides with the title: key
     - file: targets.md
       title: Targets Nav
 site:
