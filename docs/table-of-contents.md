@@ -169,8 +169,13 @@ The title of the document in the table of contents is drawn from the
 [`title` field](frontmatter#titles) in the
 [document frontmatter](frontmatter#in-a-myst-markdown-file) or the first heading
 in the document if `title` isn't specified.
-The [`short_title`](frontmatter#all-available-frontmatter-fields) field can be used
+
+**To over-ride the page title** in the table of contents, you have two options:
+
+- The [`short_title`](frontmatter#all-available-frontmatter-fields) field can be used
 to specify a shorter title for navigation elements of the rendered site.
+- The `title` field in the Table of Contents entry will set (and over-ride) the `short_title` field for that page.
+
 For example:
 
 ```yaml
@@ -178,6 +183,15 @@ For example:
 title: On the airspeed velocity of an unladen African swallow
 short_title: Airspeed Velocity
 ---
+```
+
+Or via `myst.yml`:
+
+```yaml
+project:
+  toc:
+  - file: mypage.md
+    title: Acts as short-title
 ```
 
 (hidden-in-toc)=

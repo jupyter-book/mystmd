@@ -11,6 +11,10 @@ project:
   references:
     python: https://docs.python.org/3.13/
     spec: https://mystmd.org/spec/
+  toc:
+    - file: index.md
+    - file: targets.md
+      title: Targets Nav
 site:
   template: ../templates/site/myst/book-theme
   # title:

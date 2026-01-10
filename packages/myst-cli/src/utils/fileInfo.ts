@@ -42,6 +42,9 @@ export function createSlug(s: string): string {
   return title2name(removeLeadingEnumeration(s));
 }
 
+/**
+ * Create a title from a file path string for a document
+ */
 export function createTitle(s: string): string {
   return (
     removeLeadingEnumeration(s)

@@ -17,8 +17,11 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
       if ('hidden' in page && page.hidden) return null; // skip hidden pages
       if ('file' in page) {
         const fileInfo = selectors.selectFileInfo(state, page.file);
-        const title = fileInfo.title || fileTitle(page.file);
-        const short_title = fileInfo.short_title ?? undefined;
+        const tocTitle = page.title ?? undefined;
+        const pageTitle = fileInfo.title ?? undefined;
+        const filenameTitle = fileTitle(page.file);
+        const title = pageTitle ?? tocTitle ?? filenameTitle;
+        const short_title = tocTitle ?? fileInfo.short_title ?? pageTitle ?? filenameTitle;
         const description = fileInfo.description ?? '';
         const thumbnail = fileInfo.thumbnail ?? '';
         const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
