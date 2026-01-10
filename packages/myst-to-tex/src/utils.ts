@@ -139,7 +139,6 @@ const mathReplacements: Record<string, string> = {
   α: '\\alpha',
   Β: 'B',
   β: '\\beta',
-  ß: '\\beta',
   Γ: '\\Gamma',
   γ: '\\gamma',
   Δ: '\\Delta',
