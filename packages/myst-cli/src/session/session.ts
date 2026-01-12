@@ -105,7 +105,7 @@ export class Session implements ISession {
       logger?: Logger;
       doiLimiter?: Limit;
       executionSemaphore?: Semaphore;
-      configFiles?: string[]
+      configFiles?: string[];
     } = {},
   ) {
     // use env variable if set
