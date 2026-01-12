@@ -16,43 +16,7 @@ project:
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
     biapol: https://biapol.github.io/blog/
-  abbreviations:
-    # Alphabetical order
-    AMS: American Mathematical Society
-    API: Application Programming Interface
-    AST: Abstract Syntax Tree
-    CLI: Command Line Interface
-    CRediT: Contributor Roles Taxonomy
-    CSS: Cascading Style Sheet
-    CSV: comma-separated values
-    DOI: Digital Object Identifier
-    ESM: ECMAScript Modules
-    GPU: Graphics Processing Unit
-    HTML: Hypertext Markup Language
-    ID: Identifier
-    ISNI: International Standard Name Identifier
-    JATS: Journal Article Tag Suite
-    JSON: JavaScript Object Notation
-    LTS: Long Term Support
-    MyST: Markedly Structured Text
-    NISO: National Information Standards Organization
-    OA: Open Access
-    PDF: Portable Document Format
-    PID: Persistent Identifier
-    POSIX: Portable Operating System Interface
-    REES: Reproducible Execution Environment Specification
-    ROR: Research Organization Registry
-    RRID: Research Resource Identifier
-    RST: reStructuredText
-    SPDX: Software Package Data Exchange
-    TLA: Three Letter Acronym
-    TOC: table of contents
-    TPU: Tensor Processing Unit
-    URL: Uniform Resource Locator
-    VoR: Version of Record
-    WASM: WebAssembly
-    YAML: Yet Another Markup Language
-    XML: Extensible Markup Language
+ 
   plugins:
     - directives.mjs
     - picsum.mjs
@@ -66,6 +30,7 @@ project:
       path: markup.py
     - type: javascript
       path: markup.mjs
+
   error_rules:
     - rule: link-resolves
       severity: ignore
@@ -77,6 +42,7 @@ project:
         - /jtex/create-a-latex-template
         - /jtex/create-a-beamer-template
         - /jtex/contribute-a-template
+        
   toc:
     - file: index.md
     - file: installing.md
@@ -88,6 +54,14 @@ project:
         - file: quickstart-static-exports.md
         - file: quickstart-myst-markdown.md
         - file: quickstart-jupyter-lab-myst.md
+    - title: Configuration and setup
+      children:
+        - file: configuration.md
+        - file: frontmatter.md
+        - file: settings.md
+        - file: table-of-contents.md
+        - file: document-parts.md
+        - file: authorship.md
     - title: Authoring
       children:
         - file: typography.md
@@ -108,9 +82,6 @@ project:
         - file: dropdowns-cards-and-tabs.md
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
-        - file: table-of-contents.md
-        - file: document-parts.md
-        - file: authorship.md
         - file: inline-options.md
     - title: Executable Content
       children:
@@ -139,23 +110,28 @@ project:
             - file: deployment-github-pages.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
-            - file: deployment-httpd.md
+            - file: deployment-readthedocs.md
+            - file: deployment-webserver.md
         - file: website-landing-pages.md
 
         # - file: publishing.md
-    - title: Documents
+    - title: Document exports
       children:
         - file: documents-exports.md
         - file: creating-pdf-documents.md
         - file: creating-word-documents.md
         - file: creating-jats-xml.md
         - file: creating-citation-cff.md
-    - title: Extensions
-      file: plugins.md
+    - file: plugins.md
       children:
         - file: javascript-plugins.md
         - file: plugins-distribute.md
         - file: executable-plugins.md
+        - file: plugins-debug.md
+        - title: Use cases
+          children:
+            - file: plugins-ast.md
+            - file: plugins-dry.md
     - title: Reference
       children:
         - file: install-node.md
@@ -164,8 +140,6 @@ project:
         - file: syntax-overview.md
         - file: directives.md
         - file: roles.md
-        - file: frontmatter.md
-        - file: settings.md
         - file: glossary.md
         - file: versions.md
     - title: About MyST
@@ -183,8 +157,12 @@ project:
         - file: contribute-add-feature.md
     - file: cite.md
 
+extends:
+  - abbreviations.yml
+
 site:
   title: MyST Markdown Guide
+  #template: ../../myst-theme/.deploy/book/template.yml
   domains:
     - mystmd-guide.curve.space
   options:

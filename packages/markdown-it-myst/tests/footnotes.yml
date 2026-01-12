@@ -1,0 +1,51 @@
+title: Footnotes
+plugins:
+  - myst
+  - footnote
+cases:
+  - title: 'footnote reference with sub role'
+    md: |-
+      Paragraph with a footnote reference [^1]
+
+      Another paragraph with a H{sub}`2`O role.
+
+      [^1]: This is a footnote
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        content: Paragraph with a footnote reference [^1]
+        children:
+          - type: text
+            content: 'Paragraph with a footnote reference '
+          - type: footnote_ref
+            meta: { label: '1' }
+      - type: paragraph_close
+      - type: paragraph_open
+      - type: inline
+        content: Another paragraph with a H{sub}`2`O role.
+        children:
+          - type: text
+            content: 'Another paragraph with a H'
+          - type: parsed_role_open
+            info: sub
+            content: '2'
+          - type: role_body_open
+          - type: inline
+            children:
+              - type: text
+                content: '2'
+          - type: role_body_close
+          - type: parsed_role_close
+          - type: text
+            content: 'O role.'
+      - type: paragraph_close
+      - type: footnote_block_open
+      - type: footnote_open
+      - type: paragraph_open
+      - type: inline
+        content: This is a footnote
+      - type: footnote_anchor
+        meta: { label: '1' }
+      - type: paragraph_close
+      - type: footnote_close
+      - type: footnote_block_close

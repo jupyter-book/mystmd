@@ -1,0 +1,6 @@
+index.js
+
+docs/_build
+docs/examples/*.md
+docs/nodes
+docs/myst.schema.md

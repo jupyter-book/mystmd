@@ -1,5 +1,23 @@
 # myst-frontmatter
 
+## 1.9.3
+
+### Patch Changes
+
+- d45faf3: Add dollarmath parser settings to project
+- Updated dependencies [3feacef]
+  - myst-toc@0.1.4
+
+## 1.9.2
+
+## 1.9.1
+
+## 1.9.0
+
+### Minor Changes
+
+- 30acc57: Add cache control for execution
+
 ## 1.8.4
 
 ## 1.8.3

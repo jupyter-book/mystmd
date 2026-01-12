@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://spec.myst.tools/json-schema/myst.schema.json",
+  "description": "Myst syntax tree built on existing mdast schemas",
+  "type": "object",
+  "allOf": [
+    {
+      "properties": {
+        "type": {
+          "const": "root"
+        },
+        "children": {
+          "description": "Top-level children of myst document",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "blocks.schema.json#/$defs/Block" },
+                  { "$ref": "blocks.schema.json#/$defs/BlockBreak" },
+                  { "$ref": "#/$defs/FlowContent" }
+                ]
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ListContent"
+              }
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/PhrasingContent"
+              }
+            }
+          ]
+        },
+        "position": {},
+        "data": {}
+      },
+      "additionalProperties": false
+    },
+    { "$ref": "unist.schema.json#/$defs/Parent" }
+  ],
+  "$defs": {
+    "FlowContent": {
+      "anyOf": [
+        { "$ref": "commonmark.schema.json#/$defs/Paragraph" },
+        { "$ref": "commonmark.schema.json#/$defs/Definition" },
+        { "$ref": "commonmark.schema.json#/$defs/Heading" },
+        { "$ref": "commonmark.schema.json#/$defs/ThematicBreak" },
+        { "$ref": "commonmark.schema.json#/$defs/Blockquote" },
+        { "$ref": "commonmark.schema.json#/$defs/List" },
+        { "$ref": "commonmark.schema.json#/$defs/HTML" },
+        { "$ref": "commonmark.schema.json#/$defs/Code" },
+        { "$ref": "comments.schema.json#/$defs/Comment" },
+        { "$ref": "references.schema.json#/$defs/Target" },
+        { "$ref": "directives.schema.json#/$defs/Directive" },
+        { "$ref": "admonitions.schema.json#/$defs/Admonition" },
+        { "$ref": "containers.schema.json#/$defs/Container" },
+        { "$ref": "math.schema.json#/$defs/Math" },
+        { "$ref": "tables.schema.json#/$defs/Table" },
+        { "$ref": "footnotes.schema.json#/$defs/FootnoteDefinition" }
+      ]
+    },
+    "ListContent": {
+      "anyOf": [{ "$ref": "commonmark.schema.json#/$defs/ListItem" }]
+    },
+    "PhrasingContent": {
+      "anyOf": [
+        { "$ref": "#/$defs/StaticPhrasingContent" },
+        { "$ref": "commonmark.schema.json#/$defs/Emphasis" },
+        { "$ref": "commonmark.schema.json#/$defs/Strong" },
+        { "$ref": "commonmark.schema.json#/$defs/Link" },
+        { "$ref": "commonmark.schema.json#/$defs/LinkReference" },
+        { "$ref": "styles.schema.json#/$defs/Subscript" },
+        { "$ref": "styles.schema.json#/$defs/Superscript" },
+        { "$ref": "styles.schema.json#/$defs/Underline" },
+        { "$ref": "abbreviations.schema.json#/$defs/Abbreviation" },
+        { "$ref": "references.schema.json#/$defs/CrossReference" },
+        { "$ref": "footnotes.schema.json#/$defs/FootnoteReference" }
+      ]
+    },
+    "StaticPhrasingContent": {
+      "anyOf": [
+        { "$ref": "commonmark.schema.json#/$defs/Text" },
+        { "$ref": "commonmark.schema.json#/$defs/HTML" },
+        { "$ref": "commonmark.schema.json#/$defs/EmphasisStatic" },
+        { "$ref": "commonmark.schema.json#/$defs/StrongStatic" },
+        { "$ref": "commonmark.schema.json#/$defs/InlineCode" },
+        { "$ref": "commonmark.schema.json#/$defs/Break" },
+        { "$ref": "commonmark.schema.json#/$defs/Image" },
+        { "$ref": "commonmark.schema.json#/$defs/ImageReference" },
+        { "$ref": "roles.schema.json#/$defs/Role" },
+        { "$ref": "styles.schema.json#/$defs/SubscriptStatic" },
+        { "$ref": "styles.schema.json#/$defs/SuperscriptStatic" },
+        { "$ref": "styles.schema.json#/$defs/UnderlineStatic" },
+        { "$ref": "math.schema.json#/$defs/InlineMath" }
+      ]
+    }
+  }
+}

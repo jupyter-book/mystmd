@@ -17,6 +17,8 @@ import {
   TargetKind,
   RuleId,
   isTargetIdentifierNode,
+  toText,
+  fileError,
 } from 'myst-common';
 import type { LinkTransformer } from './links/types.js';
 import { updateLinkTextIfEmpty } from './links/utils.js';
@@ -551,7 +553,7 @@ export function addChildrenFromTargetNode(
       select('definitionTerm', targetNode);
     // Ensure we are getting the first paragraph
     const captionParagraph = (
-      caption ? select('paragraph', caption) ?? caption : caption
+      caption ? (select('paragraph', caption) ?? caption) : caption
     ) as Paragraph | null;
     const title = captionParagraph
       ? (copyNode(captionParagraph)?.children as PhrasingContent[])
@@ -757,6 +759,15 @@ function implicitTargetWarning(target: Target, node: GenericNode, opts: StateRes
 export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateResolverOptions) => {
   selectAll('link', tree).forEach((node) => {
     const link = node as Link;
+    if (!link.url) {
+      fileError(opts.state.vfile, `Link has no URL: ${toText(link.children)}`, {
+        node,
+        source: TRANSFORM_NAME,
+        ruleId: RuleId.mystLinkValid,
+        key: link.urlSource ?? link.url,
+      });
+      return;
+    }
     const identifier = link.url.replace(/^#/, '');
     const reference = normalizeLabel(identifier);
     const target = opts.state.getTarget(identifier) ?? opts.state.getTarget(reference?.identifier);
@@ -768,6 +779,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
         node,
         source: TRANSFORM_NAME,
         ruleId: RuleId.referenceTargetResolves,
+        key: link.urlSource ?? link.url,
       });
       return;
     }
@@ -780,6 +792,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
           note: 'The link target should be of the form `[](#target)`, including the `#` sign.\nThis may be deprecated in the future.',
           source: TRANSFORM_NAME,
           ruleId: RuleId.referenceSyntaxValid,
+          key: link.urlSource ?? link.url,
         },
       );
       const source = (link as any).urlSource;

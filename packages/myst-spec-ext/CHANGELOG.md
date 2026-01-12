@@ -1,5 +1,25 @@
 # myst-spec-ext
 
+## 1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+
+## 1.9.0
+
+### Patch Changes
+
+- 1735db4: Add support for iframe title.
+
 ## 1.8.4
 
 ## 1.8.3

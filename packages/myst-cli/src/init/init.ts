@@ -10,6 +10,7 @@ import { selectors } from '../store/index.js';
 import type { ISession } from '../session/types.js';
 import { startServer } from '../build/site/start.js';
 import { githubCurvenoteAction, githubPagesAction } from './gh-actions/index.js';
+import { readTheDocsAction } from './readthedocs/index.js';
 import { getGithubUrl } from '../utils/github.js';
 import { checkFolderIsGit, checkIgnore } from '../utils/git.js';
 import { upgradeJupyterBook } from './jupyter-book/upgrade.js';
@@ -45,6 +46,7 @@ export type InitOptions = {
   writeTOC?: boolean;
   ghPages?: boolean;
   ghCurvenote?: boolean;
+  readthedocs?: boolean;
 };
 
 const WELCOME = () => `
@@ -77,10 +79,11 @@ async function writeGitignore(session: ISession) {
 }
 
 export async function init(session: ISession, opts: InitOptions) {
-  const { project, site, writeTOC, ghPages, ghCurvenote } = opts;
+  const { project, site, writeTOC, ghPages, ghCurvenote, readthedocs } = opts;
 
   if (ghPages) return githubPagesAction(session);
   if (ghCurvenote) return githubCurvenoteAction(session);
+  if (readthedocs) return readTheDocsAction(session);
 
   if (!project && !site && !writeTOC) {
     session.log.info(WELCOME());
@@ -134,7 +137,11 @@ export async function init(session: ISession, opts: InitOptions) {
 ‣ Rename any modified or unneeded files so that they are hidden
 
 `),
-            `Are you willing to proceed?`,
+            // Just for a few months while people get used to JB2. Remove after Feb 2026.
+            chalk.dim(`If you prefer to continue using Jupyter Book 1.x, run: ${chalk.blue('pip install "jupyter-book<2"')}
+
+`),
+            `Are you willing to proceed with the upgrade?`,
           ].join(''),
           type: 'confirm',
           default: true,

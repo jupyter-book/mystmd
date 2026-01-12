@@ -1,5 +1,11 @@
 # myst-toc
 
+## 0.1.4
+
+### Patch Changes
+
+- 3feacef: Add reverse order to the pattern toc items
+
 ## 0.1.3
 
 ### Patch Changes

@@ -1,1 +1,1 @@
-export const SPEC_VERSION = 2;
+export const SPEC_VERSION = 3;

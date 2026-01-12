@@ -31,7 +31,7 @@ as well as the full content in a parsed form that can be used for an inline refe
 Try adding `.json` at the end of the URL on this page.
 :::
 
-In your project configuration, include the `references` object with named links out to the external MyST projects that you will reference in your project. The example below shows how you would load cross-references that are pulled from the MyST Specification documentation.
+In your project configuration, include the `references` object with links out to the external MyST projects that you will reference in your project. The keys in this object have no special meaning; they are just used within your project to look up the external project. The example below shows how you would load cross-references that are pulled from the MyST Specification documentation.
 
 ```{code-block} yaml
 :label: myst-xref-config
@@ -66,19 +66,19 @@ To delete the cache and manually re-load the references, run `myst clean --cache
 ```
 ````
 
-To reference content in the linked MyST project, use the `xref:` protocol in a link followed by the `project` key (from `references`), the url path and the target.
+To reference content in the linked MyST project, use the `xref:` protocol in a link, followed by the corresponding external project `key` you defined under `references`, the url path and the target.
 For example, `<xref:spec/tables#example>` renders to:\
 "<xref:spec/tables#example>"\
-and is made of a `protocol`, `project`, `path` and `target`.
+and is made of a `protocol` ("xref"), external project `key` ("spec"), `path` ("/tables") and `target` ("#example").
 
 protocol
 : The protocol for this type of link is `xref:`, and is what selects for cross-project referencing.
 
-project
-: the `project` key above is "spec" which is defined in your local [project configuration](#myst-xref-config) above.
+key
+: the external project `key` above is "spec" which is defined in your local [project configuration](#myst-xref-config) above.
 
 path
-: the `path` is everything that follows the project before the `#`. It corresponds directly to the URL path in the MyST site. In the example above, path is `/tables`.
+: the `path` is everything that follows the external project key before the `#`. It corresponds directly to the URL path in the MyST site. In the example above, path is `/tables`.
 : Path is **optional** in most cases; the `target` can be resolved against the entire project without the path. An exception to this is headings without an explicit label in the source markdown — these will require path. Note that these references may not be intended to be persistent by the source author, so use caution in linking to them!
 
 target
@@ -137,16 +137,16 @@ The behavior of these entries is identical to MyST cross references: the remote 
 ```
 ````
 
-To reference a function, class or label in the linked documentation, use the `xref:` protocol in a link followed by the `project` key and the target.
+To reference a function, class or label in the linked documentation, use the `xref:` protocol in a link followed by the project `key` and the target.
 For example, `<xref:python#library/abc>` renders to:\
 "<xref:python#library/abc>"\
-and is made of a `protocol`, `project` and `target`.
+and is made of a `protocol` ("xref"), `key` ("python") and `target` ("#library/abc").
 
 protocol
 : The protocol for this type of link is `xref:`, and is what selects for cross-project referencing.
 
-project
-: the `project` key above is "python" which is defined in your local [project configuration](#intersphinx-config) above.
+key
+: the external project `key` above is "python" which is defined in your local [project configuration](#intersphinx-config) above.
 
 target
 : The target is everything that follows the `#` and is a named reference in the project.

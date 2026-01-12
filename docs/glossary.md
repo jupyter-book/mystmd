@@ -76,6 +76,13 @@ MyST Specification
 MyST AST
 : A structured representation of a MyST Document, typically built from a markup language (like MyST Markdown) by a {term}`MyST Document Engine`, that adheres to the {term}`MyST Specification`. Usually, a MyST [Abstract Syntax Tree (AST)](wiki:Abstract_syntax_tree) is represented as a JSON data structure, with metadata attached to each piece of content that describes its role, relationships with other content, etc. The AST allows us to separate the steps of parsing content (such as {term}`MyST Markdown`) from generating output like HTML, PDF, docx, etc.
 
+AST node
+: A single node in the {term}`MyST AST`. It has an explicit `type` and contains 0 or more children.
+
+Root AST node
+: The top-level {term}`node <AST node>` in the {term}`MyST AST`. Its `type` is `"root"`.
+A MyST AST can contain only one node with a `type` of `"root"`.
+
 MyST Renderer
 : An application that consumes {term}`MyST AST` and uses it to present the contents in a particular format. For example, the MyST Document Engine has a few built-in renderers. See [the HTML renderer](https://github.com/jupyter-book/mystmd/tree/840265e0c055d29b5d5ce80f391ccb1efba7a87e/packages/myst-to-html) for an example that converts {term}`MyST AST` to HTML.
 

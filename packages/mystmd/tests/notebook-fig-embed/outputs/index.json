@@ -1,4 +1,5 @@
 {
+  "version": 3,
   "kind": "Article",
   "sha256": "f55f0890d64d1ed20bdaa8e6af9c0a50fb3bb729e4a11c0e9c89dc4f5fca2ccb",
   "slug": "index",
@@ -20,7 +21,8 @@
     "exports": [
       {
         "format": "md",
-        "filename": "index.md"
+        "filename": "index.md",
+        "url": "/index-6f94b8993969cb04027606b5a32dba77.md"
       }
     ]
   },
@@ -41,35 +43,43 @@
                 "position": {
                   "start": { "line": 3, "column": 1 },
                   "end": { "line": 3, "column": 1 }
-                }
+                },
+                "key": "KH2zUG8u3f"
               }
             ],
             "identifier": "figure-directive-local",
             "label": "Figure directive - local",
             "html_id": "figure-directive-local",
-            "implicit": true
+            "implicit": true,
+            "key": "axK2NQZ4zO"
           },
           {
             "type": "container",
             "kind": "figure",
             "children": [
               {
-                "type": "output",
-                "data": [
+                "type": "outputs",
+                "children": [
                   {
-                    "output_type": "execute_result",
-                    "execution_count": 2,
-                    "metadata": {},
-                    "data": {
-                      "text/html": {
-                        "content_type": "text/html",
-                        "hash": "a16fcedcd26437c820ccfc05d1f48a57",
-                        "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
-                      },
-                      "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
-                    }
+                    "type": "output",
+                    "jupyter_data": {
+                      "output_type": "execute_result",
+                      "execution_count": 2,
+                      "metadata": {},
+                      "data": {
+                        "text/html": {
+                          "content_type": "text/html",
+                          "hash": "a16fcedcd26437c820ccfc05d1f48a57",
+                          "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
+                        },
+                        "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
+                      }
+                    },
+                    "children": [],
+                    "key": "QJazaUG4dm"
                   }
-                ]
+                ],
+                "key": "MbsKRKNyKE"
               },
               {
                 "type": "caption",
@@ -87,11 +97,14 @@
                         "position": {
                           "start": { "line": 7, "column": 1 },
                           "end": { "line": 7, "column": 1 }
-                        }
+                        },
+                        "key": "b0svqGHu3G"
                       }
-                    ]
+                    ],
+                    "key": "HOrpmKDLct"
                   }
-                ]
+                ],
+                "key": "Le1CKCH5xu"
               }
             ],
             "enumerator": "1",
@@ -101,7 +114,8 @@
               "kind": "Notebook",
               "slug": "plot",
               "location": "/plot.ipynb"
-            }
+            },
+            "key": "HiFvMsiM5E"
           },
           {
             "type": "heading",
@@ -117,13 +131,15 @@
                 "position": {
                   "start": { "line": 10, "column": 1 },
                   "end": { "line": 10, "column": 1 }
-                }
+                },
+                "key": "x2svglGSqy"
               }
             ],
             "identifier": "embed-directive-local",
             "label": "Embed directive - local",
             "html_id": "embed-directive-local",
-            "implicit": true
+            "implicit": true,
+            "key": "XGu9UfU69D"
           },
           {
             "type": "embed",
@@ -140,27 +156,35 @@
                 "lang": "python",
                 "executable": true,
                 "value": "points",
-                "enumerator": "1"
+                "enumerator": "1",
+                "key": "I8KaZvlXUY"
               },
               {
-                "type": "output",
-                "data": [
+                "type": "outputs",
+                "children": [
                   {
-                    "output_type": "execute_result",
-                    "execution_count": 2,
-                    "metadata": {},
-                    "data": {
-                      "text/html": {
-                        "content_type": "text/html",
-                        "hash": "a16fcedcd26437c820ccfc05d1f48a57",
-                        "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
-                      },
-                      "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
-                    }
+                    "type": "output",
+                    "jupyter_data": {
+                      "output_type": "execute_result",
+                      "execution_count": 2,
+                      "metadata": {},
+                      "data": {
+                        "text/html": {
+                          "content_type": "text/html",
+                          "hash": "a16fcedcd26437c820ccfc05d1f48a57",
+                          "path": "/a16fcedcd26437c820ccfc05d1f48a57.html"
+                        },
+                        "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
+                      }
+                    },
+                    "children": [],
+                    "key": "F0FppwUlIb"
                   }
-                ]
+                ],
+                "key": "gvmleAToDt"
               }
-            ]
+            ],
+            "key": "okdCcNhScz"
           },
           {
             "type": "heading",
@@ -176,37 +200,43 @@
                 "position": {
                   "start": { "line": 15, "column": 1 },
                   "end": { "line": 15, "column": 1 }
-                }
+                },
+                "key": "DuP6QTzFkd"
               }
             ],
             "identifier": "figure-directive-external",
             "label": "Figure directive - external",
             "html_id": "figure-directive-external",
-            "implicit": true
+            "implicit": true,
+            "key": "BqMjKFS8va"
           },
           {
             "type": "container",
             "kind": "figure",
             "children": [
               {
-                "type": "output",
-                "data": [
+                "type": "outputs",
+                "children": [
                   {
-                    "output_type": "execute_result",
-                    "execution_count": 2,
-                    "metadata": {},
-                    "data": {
-                      "text/html": {
-                        "content_type": "text/html"
-                      },
-                      "text/plain": {
-                        "content": "alt.VConcatChart(...)",
-                        "content_type": "text/plain"
+                    "type": "output",
+                    "jupyter_data": {
+                      "output_type": "execute_result",
+                      "execution_count": 2,
+                      "metadata": {},
+                      "data": {
+                        "text/html": {
+                          "content_type": "text/html"
+                        },
+                        "text/plain": {
+                          "content": "alt.VConcatChart(...)",
+                          "content_type": "text/plain"
+                        }
                       }
                     }
                   }
                 ],
-                "visibility": "show"
+                "visibility": "show",
+                "key": "FTN3p05PMS"
               },
               {
                 "type": "caption",
@@ -224,11 +254,14 @@
                         "position": {
                           "start": { "line": 19, "column": 1 },
                           "end": { "line": 19, "column": 1 }
-                        }
+                        },
+                        "key": "m0gu4rvLJH"
                       }
-                    ]
+                    ],
+                    "key": "yvjMKFtKeO"
                   }
-                ]
+                ],
+                "key": "QZy8YhAHOs"
               }
             ],
             "enumerator": "2",
@@ -239,8 +272,10 @@
               "kind": "Notebook",
               "slug": "interactive-notebooks",
               "location": "/interactive-notebooks.ipynb",
-              "title": "Generate and Display Rich Outputs"
-            }
+              "title": "Generate and Display Rich Outputs",
+              "short_title": "Generate Rich Outputs"
+            },
+            "key": "nb06UVJ4eS"
           },
           {
             "type": "heading",
@@ -256,13 +291,15 @@
                 "position": {
                   "start": { "line": 22, "column": 1 },
                   "end": { "line": 22, "column": 1 }
-                }
+                },
+                "key": "Z52HvWXDGn"
               }
             ],
             "identifier": "embed-directive-external",
             "label": "Embed directive - external",
             "html_id": "embed-directive-external",
-            "implicit": true
+            "implicit": true,
+            "key": "rwCTTgylzc"
           },
           {
             "type": "embed",
@@ -273,7 +310,8 @@
               "kind": "Notebook",
               "slug": "interactive-notebooks",
               "location": "/interactive-notebooks.ipynb",
-              "title": "Generate and Display Rich Outputs"
+              "title": "Generate and Display Rich Outputs",
+              "short_title": "Generate Rich Outputs"
             },
             "children": [
               {
@@ -281,34 +319,42 @@
                 "lang": "python",
                 "executable": true,
                 "value": "points & bars",
+                "visibility": "show",
                 "enumerator": "1",
-                "visibility": "show"
+                "key": "d4dGQ2FQ7j"
               },
               {
-                "type": "output",
-                "data": [
+                "type": "outputs",
+                "children": [
                   {
-                    "output_type": "execute_result",
-                    "execution_count": 2,
-                    "metadata": {},
-                    "data": {
-                      "text/html": {
-                        "content_type": "text/html"
-                      },
-                      "text/plain": {
-                        "content": "alt.VConcatChart(...)",
-                        "content_type": "text/plain"
+                    "type": "output",
+                    "jupyter_data": {
+                      "output_type": "execute_result",
+                      "execution_count": 2,
+                      "metadata": {},
+                      "data": {
+                        "text/html": {
+                          "content_type": "text/html"
+                        },
+                        "text/plain": {
+                          "content": "alt.VConcatChart(...)",
+                          "content_type": "text/plain"
+                        }
                       }
                     }
                   }
                 ],
-                "visibility": "show"
+                "visibility": "show",
+                "key": "FTN3p05PMS"
               }
-            ]
+            ],
+            "key": "hr2VDiLTDh"
           }
-        ]
+        ],
+        "key": "YCERc1a73b"
       }
-    ]
+    ],
+    "key": "kr0hf7l3Pk"
   },
   "references": { "cite": { "order": [], "data": {} } }
 }

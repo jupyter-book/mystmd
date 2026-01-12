@@ -76,7 +76,7 @@ export function processPageFrontmatter(
   const cache = castSession(session);
   const state = session.store.getState();
   const siteFrontmatter = selectors.selectCurrentSiteConfig(state) ?? {};
-  const projectFrontmatter = path ? selectors.selectLocalProjectConfig(state, path) ?? {} : {};
+  const projectFrontmatter = path ? (selectors.selectLocalProjectConfig(state, path) ?? {}) : {};
 
   const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, validationOpts);
   const siteTemplate = cache.$siteTemplate;
@@ -94,9 +94,6 @@ export function processPageFrontmatter(
     session.log.debug(`Site template not available to validate site frontmatter in ${path}`);
   }
 
-  if (siteFrontmatter?.options?.hide_authors || siteFrontmatter?.options?.design?.hide_authors) {
-    delete frontmatter.authors;
-  }
   return frontmatter;
 }
 

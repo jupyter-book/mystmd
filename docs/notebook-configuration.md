@@ -22,6 +22,7 @@ Using Jupyter Lab, you can use the `Property Inspector` builtin extension to man
 Using this tool you can add key-value pairs to the notebook metadata. For
 example, to skip execution of a notebook, you would add the following key-value
 pair inside the notebook metadata dictionary:
+
 ```json
 "tags": [
         "skip-execution"
@@ -38,10 +39,10 @@ kernelspec:
   name: python3
   display_name: Python 3
 
-skip_execution: true
+execute:
+  skip: true
 ---
 ```
-
 
 (notebook-cell-tags)=
 
@@ -72,7 +73,7 @@ You can use the `Property Inspector` builtin extension in Jupyter Lab to manage 
 
 ### Markdown notebooks
 
-In addition, [MyST also supports the {myst-directive}`code-cell` directive](#code-cell), and here's an example of adding the `raises-exception` tag on such a code cell:
+In addition, MyST also supports the {myst:directive}`code-cell` directive for [markdown notebooks](#code-cell); here is an example of adding the `raises-exception` tag on such a code cell:
 
 In Markdown of a jupyter notebook these look like:
 

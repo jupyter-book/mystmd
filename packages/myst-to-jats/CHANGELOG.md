@@ -1,5 +1,16 @@
 # myst-to-jats
 
+## 1.0.35
+
+### Patch Changes
+
+- afb68b1: Incorrect type import `Node`.
+- Updated dependencies [2e6e81f]
+  - myst-transforms@1.3.44
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+
 ## 1.0.34
 
 ### Patch Changes

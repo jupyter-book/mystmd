@@ -1,5 +1,35 @@
 # myst-common
 
+## 1.9.3
+
+### Patch Changes
+
+- 88d2136: Add a key, results in a react error
+- Updated dependencies [d45faf3]
+  - myst-frontmatter@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- myst-frontmatter@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+- c2d895a: Enable message info to take a key for error_rules reporting/ignoring
+  - myst-frontmatter@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- 30acc57: Add cache control for execution
+- Updated dependencies [30acc57]
+  - myst-frontmatter@1.9.0
+
 ## 1.8.4
 
 ### Patch Changes

@@ -1,7 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { extractImplicitPart, extractPart } from './extractParts';
+import { extractImplicitPart as extractImplicitPartOriginal, extractPart } from './extractParts';
 import type { GenericParent } from '../dist';
 import { copyNode } from './utils';
+
+/** Remove keys for testing purposes from the parent nodes */
+function extractImplicitPart(...args: Parameters<typeof extractImplicitPartOriginal>) {
+  const part = extractImplicitPartOriginal(...args);
+  part?.children?.forEach((child) => {
+    delete child.key;
+  });
+  return part;
+}
 
 describe('extractPart', () => {
   it('no part returns undefined', async () => {
@@ -596,6 +605,36 @@ describe('extractImplicitPart', () => {
         },
       ],
     });
+  });
+  it('original extractImplicitPart adds keys to the children', async () => {
+    const tree: GenericParent = {
+      type: 'root',
+      children: [
+        {
+          type: 'block',
+          children: [
+            {
+              type: 'heading',
+              children: [{ type: 'text', value: 'abstract' }],
+            },
+            {
+              type: 'paragraph',
+              children: [{ type: 'text', value: 'two' }],
+            },
+          ],
+        },
+        {
+          type: 'heading',
+          children: [{ type: 'text', value: 'abstract' }],
+        },
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'four' }],
+        },
+      ],
+    };
+    const hasKeys = extractImplicitPartOriginal(tree, 'abstract');
+    expect(hasKeys?.children?.every((child) => child.key)).toBe(true);
   });
   it('part headings with no content remain', async () => {
     const tree: GenericParent = {
