@@ -18,7 +18,7 @@ import pathlib
 # 1. F°         F'--S°        S'--  (serial)
 # 2. --S°        S'--F°         F'  (serial)
 # 3. F°--S      F'--S'             (concur)
-# Below, each notebook (F°→F', and S°→S') touches their start marker, does some work, and touches the stop marker. We're testing for case (3)
+# Below, each notebook (F°→F', and S°→S') touches their start marker, does some work, and touches the stop marker. We're testing that case (3) does _not_ occur.
 ################
 
 this_start_path = pathlib.Path.cwd() / "start-first"
