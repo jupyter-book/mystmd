@@ -39,13 +39,15 @@ If you enable execution with the `--execute` flag as above, the following conten
 In order to execute your MyST content, you must install a Jupyter Server and the kernel needed to execute your code (e.g., the [IPython kernel](https://ipython.readthedocs.io/en/stable/), the [Xeus Python kernel](https://github.com/jupyter-xeus/xeus-python), or the [IRKernel](https://irkernel.github.io/).)
 :::
 
-## Limiting simultaneous executions
+## Limit simultaneous executions
 
 By default, up to {math}`N-1` executable files are run concurrently, where {math}`N` is the number of available CPUs. 
 
 You can change this by using the `--execute-parallel <n>` option in your build command, where `<n>` sets the maximum number of executable documents that can run at the same time. This option is useful when your project includes executable content that is resource intensive or starts multiple subprocesses that might interfere with one another when run in parallel.
 
-For example, setting `--execute-parallel 1` will execute the documents sequentially.
+For example, setting `--execute-parallel 2` will execute the documents two at a time.
+
+**To disable parallel execution**: set `--execute-parallel 1` 
 
 ## Show raw Python objects like modules and classes
 
