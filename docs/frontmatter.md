@@ -163,7 +163,7 @@ The following table lists the available frontmatter fields, a brief description 
 
 ## Titles
 
-There are several fields to title MyST projects and pages. Primary page and project titles can be specified simply as `title`. Pages and projects also both have `short_title`; this should provide a summarized title in less than 40 characters. It is used where space is limited, for example a site navigation panel, running-head titles in an static export, etc. On pages (not projects) you may specify `subtitle`; this conveys complimentary information to the title and may be displayed below the title.
+There are several fields to title MyST projects and pages. Primary page and project titles can be specified simply as `title`. Pages and projects also both have `short_title`; this should provide a summarized title in less than 40 characters. It is used where space is limited, for example a site navigation panel, running-head titles in an static export, etc. You may specify `subtitle`; this conveys complimentary information to the title and may be displayed below the title.
 
 ````{note} Defining Page Title in Markdown
 
