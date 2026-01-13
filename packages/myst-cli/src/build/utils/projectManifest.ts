@@ -16,9 +16,8 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
     proj.pages.map(async (tocEntry) => {
       if ('hidden' in tocEntry && tocEntry.hidden) return null; // skip hidden pages
       if ('file' in tocEntry) {
-        // fileInfo has metdata about the file taken from the toc and file frontmatter
+        // fileInfo has metadata about the file taken from the toc and file frontmatter
         const fileInfo = selectors.selectFileInfo(state, tocEntry.file);
-
         // Choose title and short_title based on hierarchy of metadata
         const title = fileInfo.title ?? fileTitle(tocEntry.file);
         const short_title = tocEntry.title ?? fileInfo.short_title ?? undefined;
