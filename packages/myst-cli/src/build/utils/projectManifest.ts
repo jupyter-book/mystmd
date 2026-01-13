@@ -20,8 +20,8 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
         const fileInfo = selectors.selectFileInfo(state, tocEntry.file);
 
         // Choose title and short_title based on hierarchy of metadata
-        const title = fileInfo.title ?? fileTitle(tocEntry.file);;
-        const short_title = tocEntry.title ?? fileInfo.short_title ?? fileInfo.title;
+        const title = fileInfo.title ?? fileTitle(tocEntry.file);
+        const short_title = tocEntry.title ?? fileInfo.short_title ?? undefined;
         // Everything else we pull from fileInfo
         const description = fileInfo.description ?? '';
         const thumbnail = fileInfo.thumbnail ?? '';
