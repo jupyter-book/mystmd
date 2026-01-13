@@ -31,7 +31,7 @@ export function clirun(
   return async function (this: Command, ...args: any[]) {
     // Use options from 'this' merged with parent program options
     // Needed to pass options from e.g. the build command to the session
-    const opts = { ...program.opts(), ...this.opts() } as SessionOpts;
+    const opts = { ...program.opts(), ...(this?.opts?.() ?? {}) } as SessionOpts;
     const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info, process.cwd());
     // Override default myst.yml if --config option is given.
     const configFiles = opts?.config ? [opts.config] : null;
