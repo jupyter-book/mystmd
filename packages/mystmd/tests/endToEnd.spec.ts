@@ -38,8 +38,8 @@ function cleanHashes(text: string) {
 }
 
 const only = '';
-
-describe.concurrent('End-to-end cli export tests', { timeout: 15000 }, () => {
+const TIMEOUT = 35000;  // Long-ish to allow for the execution tests
+describe.concurrent('End-to-end cli export tests', { timeout: TIMEOUT }, () => {
   const cases = loadCases('exports.yml');
   test.each(
     cases.filter((c) => !only || c.title === only).map((c): [string, TestCase] => [c.title, c]),

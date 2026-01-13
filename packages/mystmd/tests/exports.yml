@@ -560,6 +560,8 @@ cases:
       MYST_TEST_SLEEP_MS: 4000
       MYST_TEST_DELAY_MS: 2000
     # Used to be 15000, increased due to CI slowness
+    # NOTE that the full test suite has a timeout here too: 
+    # mystmd/packages/mystmd/tests/endToEnd.spec.ts
     timeout: 30000
     outputs:
       - path: serial-execution/stop-first
