@@ -4,8 +4,6 @@ project:
   toc:
     - file: second.md
     - file: first.md
-  execute:
-    cache: false
 site:
   template: ../templates/site/myst/book-theme
 
