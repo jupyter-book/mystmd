@@ -734,7 +734,7 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 - `myst-cli`: provides CLI functionality for `mystmd`. It does not export the CLI directly.
 - `jtex`: a templating library ([see docs](https://mystmd.org/jtex)).
-- `myst-frontmater`: definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter)).
+- `myst-frontmatter`: definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter)).
 - `myst-config`: validation and reading of configuration files.
 - `myst-templates`: types and validation for templates (LaTeX, web, and word).
 
