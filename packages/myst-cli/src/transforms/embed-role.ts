@@ -162,13 +162,13 @@ function extractMarkdownFromNodes(nodes: GenericNode[]): string {
 }
 
 /**
- * Transform that processes {embed-markdown}`label` roles
+ * Transform that processes {embed}`label` roles
  *
  * This role extracts content from labeled blocks and embeds it inline.
  * - format=markdown (default): Preserves markdown formatting (bold, italic, links, etc.)
  * - format=text: Extracts plain text only
  */
-export async function embedMarkdownTransform(
+export async function embedTransform(
   session: ISession,
   mdast: GenericParent,
   file: string,
@@ -176,16 +176,16 @@ export async function embedMarkdownTransform(
 ) {
   const references = Object.values(castSession(session).$externalReferences);
   const mystTransformer = new MystTransformer(references);
-  const embedMarkdownNodes = selectAll('embedMarkdown', mdast) as any[];
+  const embedNodes = selectAll('embed', mdast) as any[];
 
   await Promise.all(
-    embedMarkdownNodes.map(async (node) => {
+    embedNodes.map(async (node) => {
       const vfile = state.vfile;
       const label = node.label;
       const format = node.format || 'markdown';
 
       if (!label) {
-        fileError(vfile, 'Embed-markdown node does not have a label', { node });
+        fileError(vfile, 'Embed node does not have a label', { node });
         return;
       }
 
@@ -195,10 +195,10 @@ export async function embedMarkdownTransform(
           let note: string;
           const sphinxTransformer = new SphinxTransformer(references);
           if (sphinxTransformer.test(label)) {
-            note = 'Embed-markdown target must be a MyST project, not intersphinx.';
+            note = 'Embed target must be a MyST project, not intersphinx.';
           } else {
             note =
-              'Embed-markdown target must be a MyST project and included in your project references.';
+              'Embed target must be a MyST project and included in your project references.';
           }
           fileError(vfile, `Cannot embed from "${label}"`, { node, note });
           return;
@@ -237,7 +237,7 @@ export async function embedMarkdownTransform(
               ? extractTextFromNodes(targetNodes)
               : extractMarkdownFromNodes(targetNodes);
 
-          // Replace embedMarkdown node with a text node
+          // Replace embed node with a text node
           node.type = 'text';
           node.value = content;
           delete node.label;
@@ -260,7 +260,7 @@ export async function embedMarkdownTransform(
 
       const { identifier } = normalizeLabel(hash) ?? {};
       if (!identifier) {
-        fileError(vfile, 'Embed-markdown node does not have label', { node });
+        fileError(vfile, 'Embed node does not have label', { node });
         return;
       }
 
@@ -279,7 +279,7 @@ export async function embedMarkdownTransform(
       }
 
       if (!targetNodes?.length) {
-        fileError(vfile, `Embed-markdown target for "${label}" not found`, { node });
+        fileError(vfile, `Embed target for "${label}" not found`, { node });
         return;
       }
 

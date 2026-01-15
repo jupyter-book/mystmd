@@ -71,11 +71,11 @@ It can be used like so:
 
 ![](#myLabel)
 
-(embed-markdown-role)=
+(embed-role)=
 
-### The {myst:role}`embed-markdown` role
+### The {myst:role}`embed` role
 
-The {myst:role}`embed-markdown` role allows you to embed **content from labeled blocks** inline within your text, with control over whether to preserve markdown formatting or extract plain text only.
+The {myst:role}`embed` role allows you to embed **content from labeled blocks** inline within your text, with control over whether to preserve markdown formatting or extract plain text only.
 
 By default, the role preserves all markdown formatting including **bold**, *italic*, `` `inline code` ``, [links](url), inline math, and MyST roles like {sub}`subscript` and {sup}`superscript`.
 
@@ -91,7 +91,7 @@ This is **bold** and *italic* with `code` and [a link](https://example.com).
 You can embed it with formatting preserved:
 
 ```markdown
-The document states: {embed-markdown}`my-text`
+The document states: {embed}`my-text`
 ```
 
 Which renders as: "The document states: This is **bold** and *italic* with `code` and [a link](https://example.com)."
@@ -101,7 +101,7 @@ Which renders as: "The document states: This is **bold** and *italic* with `code
 If you need just the plain text without formatting, use the `format=text` option:
 
 ```markdown
-{embed-markdown format=text}`my-text`
+{embed format=text}`my-text`
 ```
 
 Which renders as: "This is bold and italic with code and a link."
@@ -111,16 +111,16 @@ Which renders as: "This is bold and italic with code and a link."
 You can also explicitly specify markdown format (though this is the default):
 
 ```markdown
-{embed-markdown format=markdown}`my-text`
+{embed format=markdown}`my-text`
 ```
 
 #### Cross-file embedding
 
-Like the {myst:directive}`embed` directive, {myst:role}`embed-markdown` supports cross-file references:
+Like the {myst:directive}`embed` directive, {myst:role}`embed` supports cross-file references:
 
 ```markdown
-{embed-markdown}`other-file.md#my-label`
-{embed-markdown format=text}`other-file.md#my-label`
+{embed}`other-file.md#my-label`
+{embed format=text}`other-file.md#my-label`
 ```
 
 #### External MyST project embedding
@@ -128,16 +128,16 @@ Like the {myst:directive}`embed` directive, {myst:role}`embed-markdown` supports
 You can also embed content from external MyST projects using the `xref:` or `myst:` prefixes (requires the project to be listed in your `references` configuration):
 
 ```markdown
-{embed-markdown}`xref:project#label`
-{embed-markdown format=text}`xref:project#label`
+{embed}`xref:project#label`
+{embed format=text}`xref:project#label`
 ```
 
 ::::{seealso} Comparison with `{embed}` directive
-The {myst:directive}`embed` directive embeds the full content as a block with all its styling (figures, admonitions, code blocks, etc.), while {myst:role}`embed-markdown` extracts content for inline use.
+The {myst:directive}`embed` directive embeds the full content as a block with all its styling (figures, admonitions, code blocks, etc.), while {myst:role}`embed` role extracts content for inline use.
 
 **Use {myst:directive}`embed`** when you want to reuse a complete block of content with its styling.
 
-**Use {myst:role}`embed-markdown`** when you need to reference content inline, with or without markdown formatting.
+**Use {myst:role}`embed`** when you need to reference content inline, with or without markdown formatting.
 
 **Format options:**
 - `format=markdown` (default): Preserves **bold**, *italic*, `code`, [links](url), math, and MyST roles

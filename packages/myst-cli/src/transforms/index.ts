@@ -4,7 +4,7 @@ export * from './crossReferences.js';
 export * from './dois.js';
 export * from './ror.js';
 export * from './embed.js';
-export * from './embed-markdown.js';
+export { embedTransform as embedRoleTransform } from './embed-role.js';
 export * from './images.js';
 export * from './include.js';
 export * from './links.js';

@@ -4,15 +4,15 @@ import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
  * Inline role for embedding markdown content from other blocks
  *
  * Usage:
- * - {embed-markdown}`label` - Embeds content preserving markdown formatting (default)
- * - {embed-markdown format=text}`label` - Embeds plain text only
- * - {embed-markdown format=markdown}`label` - Explicit markdown format
+ * - {embed}`label` - Embeds content preserving markdown formatting (default)
+ * - {embed format=text}`label` - Embeds plain text only
+ * - {embed format=markdown}`label` - Explicit markdown format
  *
- * Creates an embedMarkdown node that will be processed by the embedMarkdownTransform
+ * Creates an embed node that will be processed by the embedTransform
  * to extract and insert content from the referenced block.
  */
-export const embedMarkdownRole: RoleSpec = {
-  name: 'embed-markdown',
+export const embedRole: RoleSpec = {
+  name: 'embed',
   options: {
     format: {
       type: String,
@@ -34,7 +34,7 @@ export const embedMarkdownRole: RoleSpec = {
 
     return [
       {
-        type: 'embedMarkdown',
+        type: 'embed',
         label,
         format,
       },

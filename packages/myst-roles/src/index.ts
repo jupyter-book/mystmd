@@ -17,7 +17,7 @@ import { superscriptRole } from './superscript.js';
 import { underlineRole } from './underline.js';
 import { keyboardRole } from './keyboard.js';
 import { rawLatexRole, rawTypstRole } from './raw.js';
-import { embedMarkdownRole } from './embed-markdown.js';
+import { embedRole } from './embed.js';
 
 export const defaultRoles = [
   spanRole,
@@ -40,7 +40,7 @@ export const defaultRoles = [
   keyboardRole,
   rawLatexRole,
   rawTypstRole,
-  embedMarkdownRole,
+  embedRole,
 ];
 export { spanRole } from './span.js';
 export { abbreviationRole } from './abbreviation.js';
@@ -60,4 +60,4 @@ export { superscriptRole } from './superscript.js';
 export { underlineRole } from './underline.js';
 export { keyboardRole } from './keyboard.js';
 export { rawLatexRole, rawTypstRole } from './raw.js';
-export { embedMarkdownRole } from './embed-markdown.js';
+export { embedRole } from './embed.js';

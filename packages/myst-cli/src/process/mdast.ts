@@ -42,8 +42,8 @@ import type { RendererData } from '../transforms/types.js';
 
 import {
   checkLinksTransform,
-  embedTransform,
-  embedMarkdownTransform,
+  embedTransform as embedDirectiveTransform,
+  embedRoleTransform,
   importMdastFromJson,
   includeFilesTransform,
   liftCodeMetadataToBlock,
@@ -358,8 +358,8 @@ export async function postProcessMdast(
   await transformLinkedRORs(session, vfile, mdast, file);
   resolveReferencesTransform(mdast, vfile, { state, transformers });
   await transformMystXRefs(session, vfile, mdast, frontmatter);
-  await embedTransform(session, mdast, file, dependencies, state);
-  await embedMarkdownTransform(session, mdast, file, state);
+  await embedDirectiveTransform(session, mdast, file, dependencies, state);
+  await embedRoleTransform(session, mdast, file, state);
   const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'project') return;
