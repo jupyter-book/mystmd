@@ -1,6 +1,25 @@
 # Content frontmatter options
 
-The following table lists the available frontmatter fields, a brief description and a note on how the field behaves depending on whether it is set on a page or at the project level. Where a field itself is an object with sub-fields, see the relevant description on the page below.
+The following table lists the available frontmatter fields. If a field has sub-fields, see the relevant description on the page below.
+
+## Where to put these fields
+
+**In page frontmatter**: they are a top-level field. For example:
+
+```{code-block} md
+:filename: page.md
+---
+edit_url: null
+---
+```
+
+**In project-wide configuration**: they are nested under the `project` key. For example:
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  edit_url: null
+```
 
 ## All available frontmatter fields
 
