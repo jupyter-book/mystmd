@@ -1,8 +1,4 @@
-import {
-  MystTransformer,
-  SphinxTransformer,
-  type IReferenceStateResolver,
-} from 'myst-transforms';
+import { MystTransformer, SphinxTransformer, type IReferenceStateResolver } from 'myst-transforms';
 import type { GenericNode } from 'myst-common';
 import { normalizeLabel, fileError, selectMdastNodes } from 'myst-common';
 import type { CrossReference, Link } from 'myst-spec-ext';
