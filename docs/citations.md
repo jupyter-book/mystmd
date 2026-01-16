@@ -30,7 +30,7 @@ This cache may be cleared with `myst clean --cache`.
 
 Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link.
 If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
-You can also modify the formatting of full link DOIs with the styles in `{ref} table-pandoc-citations` without requiring a BibTeX file.
+You can also modify the formatting of full link DOIs with the styles in {ref}`table-pandoc-citations` without requiring a BibTeX file.
 
 :::{note} Dealing with complex DOIs
 :class: dropdown
