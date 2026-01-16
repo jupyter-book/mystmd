@@ -1,21 +1,17 @@
 import { selectAll } from 'unist-util-select';
-import {
-  MystTransformer,
-  SphinxTransformer,
-  type IReferenceStateResolver,
-} from 'myst-transforms';
+import { type IReferenceStateResolver } from 'myst-transforms';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { normalizeLabel, fileError, selectMdastNodes } from 'myst-common';
-import type { CrossReference, Link } from 'myst-spec-ext';
-import { toMarkdown, defaultHandlers } from 'mdast-util-to-markdown';
+import { fileError } from 'myst-common';
+import { toMarkdown } from 'mdast-util-to-markdown';
 import { gfmFootnoteToMarkdown } from 'mdast-util-gfm-footnote';
 import { gfmTableToMarkdown } from 'mdast-util-gfm-table';
 import { mystParse } from 'myst-parser';
 import type { ISession } from '../session/types.js';
-import { castSession } from '../session/cache.js';
-import type { MystData } from './crossReferences.js';
-import { fetchMystLinkData, fetchMystXRefData, nodesFromMystXRefData } from './crossReferences.js';
-import { fileFromSourceFolder, getSourceFolder } from './links.js';
+import {
+  initializeEmbedReferences,
+  resolveRemoteMystReference,
+  resolveLocalReference,
+} from './embed-helpers.js';
 
 /**
  * Recursively extracts plain text content from a node tree (format=text)
@@ -174,8 +170,7 @@ export async function embedTransform(
   file: string,
   state: IReferenceStateResolver,
 ) {
-  const references = Object.values(castSession(session).$externalReferences);
-  const mystTransformer = new MystTransformer(references);
+  const { mystTransformer, sphinxTransformer } = initializeEmbedReferences(session);
   const embedNodes = selectAll('embed', mdast) as any[];
 
   await Promise.all(
@@ -191,97 +186,40 @@ export async function embedTransform(
 
       // Handle remote MyST references (xref: or myst: prefixes)
       if (label.startsWith('xref:') || label.startsWith('myst:')) {
-        if (!mystTransformer.test(label)) {
-          let note: string;
-          const sphinxTransformer = new SphinxTransformer(references);
-          if (sphinxTransformer.test(label)) {
-            note = 'Embed target must be a MyST project, not intersphinx.';
-          } else {
-            note =
-              'Embed target must be a MyST project and included in your project references.';
-          }
-          fileError(vfile, `Cannot embed from "${label}"`, { node, note });
-          return;
-        }
+        const targetNodes = await resolveRemoteMystReference({
+          session,
+          label,
+          mystTransformer,
+          sphinxTransformer,
+          vfile,
+          node,
+        });
+        if (!targetNodes) return;
 
-        const referenceLink: Link = {
-          type: 'link',
-          url: label,
-          urlSource: label,
-          children: [],
-        };
-        const transformed = mystTransformer.transform(referenceLink, vfile);
-        const referenceXRef = referenceLink as any as CrossReference;
+        // Extract content based on format
+        const content =
+          format === 'text'
+            ? extractTextFromNodes(targetNodes)
+            : extractMarkdownFromNodes(targetNodes);
 
-        if (transformed) {
-          let data: MystData | undefined;
-          let targetNodes: GenericNode[] | undefined;
-
-          if (referenceXRef.identifier) {
-            data = await fetchMystXRefData(session, referenceXRef, vfile);
-            if (!data) return;
-            targetNodes = nodesFromMystXRefData(data, referenceXRef.identifier, vfile, {
-              urlSource: label,
-            });
-          } else {
-            data = await fetchMystLinkData(session, referenceLink, vfile);
-            if (!data?.mdast) return;
-            targetNodes = data.mdast.children;
-          }
-
-          if (!targetNodes?.length) return;
-
-          // Extract content based on format
-          const content =
-            format === 'text'
-              ? extractTextFromNodes(targetNodes)
-              : extractMarkdownFromNodes(targetNodes);
-
-          // Replace embed node with a text node
-          node.type = 'text';
-          node.value = content;
-          delete node.label;
-          delete node.format;
-        }
+        // Replace embed node with a text node
+        node.type = 'text';
+        node.value = content;
+        delete node.label;
+        delete node.format;
         return;
       }
 
       // Handle local references
-      let hash = label;
-      let linkFile: string | undefined;
-
-      if (label.includes('#')) {
-        const sourceFileFolder = getSourceFolder(label, file, session.sourcePath());
-        const linkFileWithTarget = fileFromSourceFolder(label, sourceFileFolder);
-        if (!linkFileWithTarget) return;
-        linkFile = linkFileWithTarget.split('#')[0];
-        hash = linkFileWithTarget.slice(linkFile.length + 1);
-      }
-
-      const { identifier } = normalizeLabel(hash) ?? {};
-      if (!identifier) {
-        fileError(vfile, 'Embed node does not have label', { node });
-        return;
-      }
-
-      const stateProvider = state.resolveStateProvider(identifier, linkFile);
-      if (!stateProvider) return;
-
-      const cache = castSession(session);
-      const pageMdast = cache.$getMdast(stateProvider.filePath)?.post?.mdast;
-      if (!pageMdast) return;
-
-      let targetNodes: GenericNode[];
-      if (stateProvider.getFileTarget(identifier)) {
-        targetNodes = pageMdast.children;
-      } else {
-        targetNodes = selectMdastNodes(pageMdast, identifier).nodes;
-      }
-
-      if (!targetNodes?.length) {
-        fileError(vfile, `Embed target for "${label}" not found`, { node });
-        return;
-      }
+      const targetNodes = await resolveLocalReference({
+        session,
+        label,
+        file,
+        state,
+        vfile,
+        node,
+      });
+      if (!targetNodes) return;
 
       // Try to extract from notebook output first (for text/markdown mime type)
       let content = extractMarkdownFromNotebookOutput(targetNodes);
