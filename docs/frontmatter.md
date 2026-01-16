@@ -4,7 +4,14 @@ The following table lists the available frontmatter fields. If a field has sub-f
 
 ## Where to put these fields
 
-**In page frontmatter**: they are a top-level field. For example:
+Placement depends on the **Field Behavior** column below:
+
+- **page & project**: valid in both page frontmatter and `project` in `myst.yml`
+- **page only**: valid only in page frontmatter
+- **project only**: valid only under `project` in `myst.yml`
+- **page can override project**: valid in both, with page values taking precedence
+
+**In page frontmatter**: fields are top-level. For example:
 
 ```{code-block} md
 :filename: page.md
@@ -13,7 +20,7 @@ edit_url: null
 ---
 ```
 
-**In project-wide configuration**: they are nested under the `project` key. For example:
+**In project-wide configuration**: fields are nested under the `project` key. For example:
 
 ```{code-block} yaml
 :filename: myst.yml
