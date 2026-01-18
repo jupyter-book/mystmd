@@ -1,5 +1,11 @@
 # myst-to-typst
 
+## 0.0.36
+
+### Patch Changes
+
+- e49bae8: Update `@preview/subpar` for subfigures in typst export
+
 ## 0.0.35
 
 ### Patch Changes

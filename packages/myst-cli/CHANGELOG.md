@@ -1,5 +1,27 @@
 # myst-cli
 
+## 1.8.0
+
+### Minor Changes
+
+- f20d679: Add support for `--readthedocs` flag on `myst init` to generate ReadTheDocs configuration files
+
+### Patch Changes
+
+- 3909657: Enhancement: Making it possible to configure the maximum number of simultaneous executions
+- e7b8fc3: Add support for pluggable API URL
+- 2dfefe8: 🔐 Use `npm ci` instead of `npm install` for theme dependencies
+- Updated dependencies [e7b8fc3]
+- Updated dependencies [75576e3]
+- Updated dependencies [e49bae8]
+  - myst-templates@1.0.27
+  - myst-to-tex@1.0.45
+  - myst-to-typst@0.0.36
+  - tex-to-myst@1.0.45
+  - myst-parser@1.6.4
+  - myst-migrate@1.8.0
+  - myst-transforms@1.3.45
+
 ## 1.7.1
 
 ### Patch Changes
@@ -1525,7 +1547,6 @@
   This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
 
   Addresses:
-
   - https://github.com/jupyter-book/mystmd/pull/748
   - https://github.com/jupyter-book/mystmd/issues/816
 
