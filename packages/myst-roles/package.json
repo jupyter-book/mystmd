@@ -1,6 +1,6 @@
 {
   "name": "myst-roles",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default role definitions for MyST",

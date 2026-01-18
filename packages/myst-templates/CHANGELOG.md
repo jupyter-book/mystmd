@@ -1,5 +1,11 @@
 # myst-templates
 
+## 1.0.27
+
+### Patch Changes
+
+- e7b8fc3: Add support for pluggable API URL
+
 ## 1.0.26
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "tex-to-myst",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "description": "Read LaTeX and convert to MyST AST",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/tex-to-myst",
