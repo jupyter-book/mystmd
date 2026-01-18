@@ -8,6 +8,36 @@ function gitCommandAvailable(): boolean {
 }
 
 /**
+ * Infer a git branch to use for edit URLs.
+ * Uses git rev-parse, but if this returns something that isn't a branch, it uses the `origin` default branch.
+ * This is because many CI environments check out the repo in a way that rev-parse doesn't return the branch.
+ */
+async function getGitBranch(gitLog: ReturnType<typeof silentLogger>): Promise<string> {
+  // First step try rev-parse
+  const getBranchRevParse = makeExecutable('git rev-parse --abbrev-ref HEAD', gitLog);
+  let gitBranch = (await getBranchRevParse()).trim();
+  // Check for a few common failure-modes and get the origin branch if found
+  // Assume detached HEAD returns "HEAD", and PR checkouts look like "pull/<id>".
+  if (!gitBranch || gitBranch === 'HEAD' || gitBranch.startsWith('pull/')) {
+    try {
+      // origin/HEAD should point to the default branch (e.g. origin/main).
+      const getDefaultBranch = makeExecutable(
+        'git symbolic-ref --short refs/remotes/origin/HEAD',
+        gitLog,
+      );
+      const defaultBranch = (await getDefaultBranch()).trim();
+      if (defaultBranch) {
+        // origin/HEAD should resolve to origin/<branch>; strip the remote prefix for URLs.
+        gitBranch = defaultBranch.slice('origin/'.length);
+      }
+    } catch {
+      // Keep original gitBranch if we cannot resolve a default branch.
+    }
+  }
+  return gitBranch;
+}
+
+/**
  * Compute edit_url and add to frontmatter
  *
  * If edit_url is already defined on the page it will remain unchanged.
@@ -20,8 +50,7 @@ export async function addEditUrl(session: ISession, frontmatter: PageFrontmatter
   if (!gitCommandAvailable()) return;
   try {
     const gitLog = silentLogger();
-    const getGitBranch = makeExecutable('git rev-parse --abbrev-ref HEAD', gitLog);
-    const gitBranch = (await getGitBranch()).trim();
+    const gitBranch = await getGitBranch(gitLog);
     const getGitRoot = makeExecutable('git rev-parse --show-toplevel', gitLog);
     const gitRoot = (await getGitRoot()).trim();
     if (gitBranch && gitRoot && file.startsWith(gitRoot)) {
