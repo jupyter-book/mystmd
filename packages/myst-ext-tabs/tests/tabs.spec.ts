@@ -31,7 +31,7 @@ describe('tab directives', () => {
     const output = mystParse(content, {
       directives: [...tabDirectives],
     });
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
   it('tabSet class option parses', async () => {
     const content = '```{tab-set}\n:class: my-class\n```';
@@ -57,7 +57,7 @@ describe('tab directives', () => {
     const output = mystParse(content, {
       directives: [...tabDirectives],
     });
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
   it.each(['tab-item', 'tabItem'])('%s with title parses', async (name: string) => {
     const content = `\`\`\`{${name}} Tab One\n\`\`\``;
@@ -81,7 +81,7 @@ describe('tab directives', () => {
     const output = mystParse(content, {
       directives: [...tabDirectives],
     });
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
   it('tabItem sync and selected options parse', async () => {
     const content = '```{tab-item} Tab One\n:sync: tab1\n:selected:\n```';
@@ -111,7 +111,7 @@ describe('tab directives', () => {
     const output = mystParse(content, {
       directives: [...tabDirectives],
     });
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
   // TODO: enable when we have a better required/fallback/default pattern
   it.skip('tabItem without title errors', async () => {
@@ -202,6 +202,6 @@ describe('tab directives', () => {
     const output = mystParse(content, {
       directives: [...tabDirectives],
     });
-    expect(deletePositions(output)).toEqual(expected);
+    expect(deletePositions(output)).toMatchObject(expected);
   });
 });

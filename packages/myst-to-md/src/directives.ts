@@ -5,6 +5,7 @@ import type { GenericNode } from 'myst-common';
 import { toText, fileError, RuleId } from 'myst-common';
 import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
+import { longestStreak } from 'longest-streak';
 import type { NestedState, Parent, Validator } from './types.js';
 import { incrementNestedLevel, popNestedLevel } from './utils.js';
 
@@ -74,12 +75,45 @@ function writeStaticDirective(name: string, options?: DirectiveOptions) {
 }
 
 /**
- * Generic MyST directive handler
- *
- * This uses the directive name/args/value and ignores any children nodes
+ * Handler for a raw directive
  */
-function mystDirective(node: any, _: Parent, state: NestedState, info: Info): string {
-  return writeStaticDirective(node.name, { argsKey: 'args' })(node, _, state, info);
+function writeDirective(options?: DirectiveOptions) {
+  return (node: any, _: Parent, state: NestedState, info: Info): string => {
+    incrementNestedLevel('directive', state);
+    const { label, class: className, ...otherOptions } = node.options ?? {};
+    const optLabel = label ? `#${label}` : '';
+    const optClass = className
+      ? className
+          .split(' ')
+          .filter((c: string) => c.trim() !== '')
+          .map((c: string) => `.${c.trim()}`)
+          .join(' ')
+      : '';
+    const optOther = Object.entries(otherOptions)
+      .map(([key, value]) => `${key}=${value}`)
+      .join(' ');
+    const directiveOpts = [optLabel, optClass, optOther].filter(Boolean).join(' ');
+
+    // If the directive has a body which is an array, use it as content.
+    // Otherwise, use the value.
+    const markdownBody = node.body && Array.isArray(node.body);
+    const content = markdownBody
+      ? state.containerFlow({ type: 'root', children: node.body }, info)
+      : node.value;
+
+    const nesting = popNestedLevel('directive', state);
+    const markerChar = markdownBody ? ':' : '`';
+    const markerLength = Math.max(longestStreak(content, markerChar) + 1, nesting + 3);
+    const marker = markerChar.repeat(markerLength);
+    const directiveInline = [node.name, directiveOpts].filter(Boolean).join(' ');
+    const args = Array.isArray(node.args)
+      ? state.containerPhrasing({ type: 'heading', depth: 1, children: node.args }, info)
+      : node.args;
+    const directiveLines = [`${marker}{${directiveInline}}${args ? ' ' : ''}${args ? args : ''}`];
+    if (content) directiveLines.push(content);
+    directiveLines.push(marker);
+    return directiveLines.join('\n');
+  };
 }
 
 const CODE_BLOCK_KEYS = [
@@ -388,6 +422,13 @@ function aside(node: any, _: Parent, state: NestedState, info: Info): string {
   return writeFlowDirective(name, args, options)(nodeCopy, _, state, info);
 }
 
+function math(node: any, _: Parent, state: NestedState, info: Info): string {
+  if (!node.typst && !node.label) {
+    return `$$\n${node.value}\n$$`;
+  }
+  return writeStaticDirective('math', { keys: ['label', 'typst'] })(node, _, state, info);
+}
+
 export const directiveHandlers: Record<string, Handle> = {
   code,
   image,
@@ -403,11 +444,11 @@ export const directiveHandlers: Record<string, Handle> = {
   }),
   tabSet: writeFlowDirective('tab-set'),
   tabItem,
-  math: writeStaticDirective('math', { keys: ['label'] }),
+  math,
   embed: writeStaticDirective('embed', { argsKey: 'label' }),
   include: writeStaticDirective('include', { argsKey: 'file' }),
   mermaid: writeStaticDirective('mermaid'),
-  mystDirective,
+  mystDirective: writeDirective(),
 };
 
 export const directiveValidators: Record<string, Validator> = {
