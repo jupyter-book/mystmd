@@ -30,6 +30,9 @@ description: A full list of the roles included in MyST Markdown by default.
 :::{myst:role} download
 :::
 
+:::{myst:role} embed
+:::
+
 :::{myst:role} term
 :::
 

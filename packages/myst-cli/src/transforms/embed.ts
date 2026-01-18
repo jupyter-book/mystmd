@@ -27,6 +27,11 @@ import { castSession } from '../session/cache.js';
 import type { MystData } from './crossReferences.js';
 import { fetchMystLinkData, fetchMystXRefData, nodesFromMystXRefData } from './crossReferences.js';
 import { fileFromSourceFolder, getSourceFolder } from './links.js';
+import {
+  initializeEmbedReferences,
+  resolveRemoteMystReference,
+  resolveLocalReference,
+} from './embed-helpers.js';
 
 function mutateEmbedNode(
   node: Embed,
@@ -114,8 +119,7 @@ export async function embedTransform(
   dependencies: Dependency[],
   state: IReferenceStateResolver,
 ) {
-  const references = Object.values(castSession(session).$externalReferences);
-  const mystTransformer = new MystTransformer(references);
+  const { references, mystTransformer, sphinxTransformer } = initializeEmbedReferences(session);
   const embedNodes = selectAll('embed', mdast) as Embed[];
   await Promise.all(
     embedNodes.map(async (node) => {
@@ -126,76 +130,79 @@ export async function embedTransform(
         return;
       }
       if (label.startsWith('xref:') || label.startsWith('myst:')) {
-        if (!mystTransformer.test(label)) {
-          let note: string;
-          const sphinxTransformer = new SphinxTransformer(references);
-          if (sphinxTransformer.test(label)) {
-            note = 'Embed target must be a MyST project, not intersphinx.';
-          } else {
-            note = 'Embed target must be a MyST project and included in your project references.';
-          }
-          fileError(vfile, `Cannot embed "${label}"`, { node, note });
-          return;
-        }
+        const targetNodes = await resolveRemoteMystReference({
+          session,
+          label,
+          mystTransformer,
+          sphinxTransformer,
+          vfile,
+          node,
+        });
+        if (!targetNodes) return;
+
+        // Fetch data again for metadata (TODO: refactor helper to return this)
         const referenceLink: Link = {
           type: 'link',
           url: label,
           urlSource: label,
           children: [],
         };
-        const transformed = mystTransformer.transform(referenceLink, vfile);
+        mystTransformer.transform(referenceLink, vfile);
         const referenceXRef = referenceLink as any as CrossReference;
-        if (transformed) {
-          let data: MystData | undefined;
-          let targetNodes: GenericNode[] | undefined;
-          if (referenceXRef.identifier) {
-            data = await fetchMystXRefData(session, referenceXRef, vfile);
-            if (!data) return;
-            targetNodes = nodesFromMystXRefData(data, referenceXRef.identifier, vfile, {
-              urlSource: label,
-              // TODO: maxNodes - settable via embed directive
-            });
-          } else {
-            data = await fetchMystLinkData(session, referenceLink, vfile);
-            if (!data?.mdast) return;
-            targetNodes = data.mdast.children;
-          }
-          if (!targetNodes?.length) return;
-          const targetNode = targetsToTarget(targetNodes);
-          (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
-            // If target xref already has remoteBaseUrl, it can be unchanged in the embedded context
-            if (targetXRef.remoteBaseUrl) return;
-            // Otherwise, the remoteBaseUrl is added from the embed context
-            targetXRef.remoteBaseUrl = referenceXRef.remoteBaseUrl;
-          });
-          (selectAll('link', targetNode) as Link[]).forEach((targetLink) => {
-            if (!targetLink.internal) return;
-            targetLink.internal = false;
-            targetLink.url = `${referenceXRef.remoteBaseUrl}${targetLink.url}`;
-            if (targetLink.dataUrl) {
-              targetLink.dataUrl = `${referenceXRef.remoteBaseUrl}${targetLink.dataUrl}`;
-            }
-          });
-          (selectAll('[source]', targetNode) as { source?: Dependency }[]).forEach((target) => {
-            if (!target.source) return;
-            target.source.remoteBaseUrl = referenceXRef.remoteBaseUrl;
-          });
-          mutateEmbedNode(node, targetNode, referenceXRef);
-          // Remote dependency, not added as local dependency
-          const source: Dependency = {
-            url: referenceXRef.url,
-            remoteBaseUrl: referenceXRef.remoteBaseUrl,
-            label,
-          };
-          if (data.kind) source.kind = data.kind;
-          if (data.slug) source.slug = data.slug;
-          if (data.location) source.location = data.location;
-          if (data.frontmatter?.title) source.title = data.frontmatter.title;
-          if (data.frontmatter?.short_title) source.short_title = data.frontmatter.short_title;
-          node.source = source;
+
+        let data: MystData | undefined;
+        if (referenceXRef.identifier) {
+          data = await fetchMystXRefData(session, referenceXRef, vfile);
+        } else {
+          data = await fetchMystLinkData(session, referenceLink, vfile);
         }
+        if (!data) return;
+        const targetNode = targetsToTarget(targetNodes);
+        (selectAll('crossReference', targetNode) as CrossReference[]).forEach((targetXRef) => {
+          // If target xref already has remoteBaseUrl, it can be unchanged in the embedded context
+          if (targetXRef.remoteBaseUrl) return;
+          // Otherwise, the remoteBaseUrl is added from the embed context
+          targetXRef.remoteBaseUrl = referenceXRef.remoteBaseUrl;
+        });
+        (selectAll('link', targetNode) as Link[]).forEach((targetLink) => {
+          if (!targetLink.internal) return;
+          targetLink.internal = false;
+          targetLink.url = `${referenceXRef.remoteBaseUrl}${targetLink.url}`;
+          if (targetLink.dataUrl) {
+            targetLink.dataUrl = `${referenceXRef.remoteBaseUrl}${targetLink.dataUrl}`;
+          }
+        });
+        (selectAll('[source]', targetNode) as { source?: Dependency }[]).forEach((target) => {
+          if (!target.source) return;
+          target.source.remoteBaseUrl = referenceXRef.remoteBaseUrl;
+        });
+        mutateEmbedNode(node, targetNode, referenceXRef);
+        // Remote dependency, not added as local dependency
+        const source: Dependency = {
+          url: referenceXRef.url,
+          remoteBaseUrl: referenceXRef.remoteBaseUrl,
+          label,
+        };
+        if (data.kind) source.kind = data.kind;
+        if (data.slug) source.slug = data.slug;
+        if (data.location) source.location = data.location;
+        if (data.frontmatter?.title) source.title = data.frontmatter.title;
+        if (data.frontmatter?.short_title) source.short_title = data.frontmatter.short_title;
+        node.source = source;
         return;
       }
+      // Handle local references
+      const targetNodes = await resolveLocalReference({
+        session,
+        label,
+        file,
+        state,
+        vfile,
+        node,
+      });
+      if (!targetNodes) return;
+
+      // Get identifier and stateProvider for local URL/dependency tracking
       let hash = label;
       let linkFile: string | undefined;
       if (label.includes('#')) {
@@ -206,25 +213,8 @@ export async function embedTransform(
         hash = linkFileWithTarget.slice(linkFile.length + 1);
       }
       const { identifier } = normalizeLabel(hash) ?? {};
-      if (!identifier) {
-        fileError(vfile, 'Embed node does not have label', { node });
-        return;
-      }
-      const stateProvider = state.resolveStateProvider(identifier, linkFile);
+      const stateProvider = identifier ? state.resolveStateProvider(identifier, linkFile) : null;
       if (!stateProvider) return;
-      const cache = castSession(session);
-      const pageMdast = cache.$getMdast(stateProvider.filePath)?.post?.mdast;
-      if (!pageMdast) return;
-      let targetNodes: GenericNode[];
-      if (stateProvider.getFileTarget(identifier)) {
-        targetNodes = pageMdast.children;
-      } else {
-        targetNodes = selectMdastNodes(pageMdast, identifier).nodes;
-      }
-      if (!targetNodes?.length) {
-        fileError(vfile, `Embed target for "${label}" not found`, { node });
-        return;
-      }
       const target = targetsToTarget(targetNodes);
       if (!(state as MultiPageReferenceResolver).states) {
         // Single page case - we do not need to update urls/dependencies
