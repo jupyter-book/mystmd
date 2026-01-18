@@ -1,10 +1,15 @@
 ---
 title: Directives
-description: A full list of the directives included in MyST Markdown by default.
+description: A list of all directives included in the MyST Engine.
 label: directives_list
 ---
 
-To learn more about the syntax and usage of the directives, please refer to the [](#syntax:directives) section of the documentation.
+A list of all directives included with `mystmd`, and their docstrings.
+To learn more about the syntax and usage of the directives, please refer to [](#syntax:directives).
+
+See [](./roles.md) for a reference list of roles.
+
+% List these in alphabetical order
 
 :::{myst:directive} admonition
 :::
@@ -18,6 +23,9 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::{myst:directive} blockquote
 :::
 
+:::{myst:directive} card
+:::
+
 :::{myst:directive} code
 :::
 
@@ -27,16 +35,31 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::{myst:directive} csv-table
 :::
 
+:::{myst:directive} div
+:::
+
 :::{myst:directive} dropdown
 :::
 
 :::{myst:directive} embed
 :::
 
+:::{myst:directive} exercise
+:::
+
+:::{myst:directive} exercise-end
+:::
+
 :::{myst:directive} figure
 :::
 
 :::{myst:directive} glossary
+:::
+
+:::{myst:directive} grid
+:::
+
+:::{myst:directive} grid-item
 :::
 
 :::{myst:directive} iframe
@@ -46,6 +69,9 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::
 
 :::{myst:directive} include
+:::
+
+:::{myst:directive} index
 :::
 
 :::{myst:directive} list-table
@@ -61,6 +87,24 @@ To learn more about the syntax and usage of the directives, please refer to the 
 :::
 
 :::{myst:directive} myst
+:::
+
+:::{myst:directive} proof
+:::
+
+:::{myst:directive} raw
+:::
+
+:::{myst:directive} solution
+:::
+
+:::{myst:directive} solution-end
+:::
+
+:::{myst:directive} tab-item
+:::
+
+:::{myst:directive} tab-set
 :::
 
 :::{myst:directive} table

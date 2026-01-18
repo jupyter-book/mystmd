@@ -4,6 +4,7 @@ import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 export const underlineRole: RoleSpec = {
   name: 'underline',
   alias: ['u'],
+  doc: 'Apply underline formatting to text. See [](#role:inline-formatting).',
   options: { ...commonRoleOptions('underline') },
   body: {
     type: 'myst',

@@ -5,6 +5,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Document <doc>'
 
 export const docRole: RoleSpec = {
   name: 'doc',
+  doc: 'Link to another document. See [](#doc-role).',
   body: {
     type: String,
     required: true,

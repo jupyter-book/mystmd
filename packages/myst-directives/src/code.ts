@@ -177,7 +177,7 @@ export function parseTags(input: any, vfile: VFile, node: GenericNode): string[]
 
 export const codeDirective: DirectiveSpec = {
   name: 'code',
-  doc: 'A code-block environment with a language as the argument, and options for highlighting, showing line numbers, and an optional filename.',
+  doc: 'A code-block environment with a language as the argument, and options for highlighting, showing line numbers, and an optional filename. See [](#directive:code).',
   alias: ['code-block', 'sourcecode'],
   arg: {
     type: String,
@@ -224,7 +224,7 @@ export const codeDirective: DirectiveSpec = {
 
 export const codeCellDirective: DirectiveSpec = {
   name: 'code-cell',
-  doc: 'An executable code cell',
+  doc: 'An executable code cell. See [](#code-cell).',
   arg: {
     type: String,
     doc: 'Language for execution and display, for example `python`. It will default to the language of the notebook or containing markdown file.',

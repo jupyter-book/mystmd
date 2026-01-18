@@ -5,7 +5,7 @@ import { commonDirectiveOptions, addCommonDirectiveOptions } from './utils.js';
 
 export const embedDirective: DirectiveSpec = {
   name: 'embed',
-  doc: 'The embed directive allows you to duplicate content from another part of your project. This can also be done through the figure directive.',
+  doc: 'The embed directive allows you to duplicate content from another part of your project. This can also be done through the figure directive. See [](#docs:embed).',
   arg: {
     type: String,
     doc: 'The label of the node that you are embedding.',

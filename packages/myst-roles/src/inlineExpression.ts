@@ -4,6 +4,7 @@ import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const evalRole: RoleSpec = {
   name: 'eval',
+  doc: 'Evaluate code and insert its output inline. See [](#inline-expressions).',
   options: { ...commonRoleOptions('eval') },
   body: {
     type: String,

@@ -5,6 +5,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'index entries <pair: index; en
 
 export const indexRole: RoleSpec = {
   name: 'index',
+  doc: 'Create an index entry with optional text display. See [](#role:index).',
   body: {
     type: String,
     required: true,
