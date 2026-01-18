@@ -1,5 +1,5 @@
 import type { Plugin } from 'unified';
-import type { Directive, Node, Role } from 'myst-spec';
+import type { Directive, Node, Role, Content, Root } from 'myst-spec';
 import type { VFile } from 'vfile';
 import type * as nbformat from '@jupyterlab/nbformat';
 import type { PartialJSONObject } from '@lumino/coreutils';
@@ -90,7 +90,7 @@ export type RoleData = {
 };
 
 export type DirectiveContext = {
-  parseMyst: (source: string, offset?: number) => GenericParent;
+  parseMyst: (source: string, offset?: number) => Root;
 };
 
 export type DirectiveSpec = {
@@ -101,7 +101,7 @@ export type DirectiveSpec = {
   options?: Record<string, OptionDefinition>;
   body?: BodyDefinition;
   validate?: (data: DirectiveData, vfile: VFile) => DirectiveData;
-  run: (data: DirectiveData, vfile: VFile, ctx: DirectiveContext) => GenericNode[];
+  run: (data: DirectiveData, vfile: VFile, ctx: DirectiveContext) => Content[];
 };
 
 export type RoleSpec = {
@@ -111,7 +111,7 @@ export type RoleSpec = {
   options?: Record<string, OptionDefinition>;
   body?: BodyDefinition;
   validate?: (data: RoleData, vfile: VFile) => RoleData;
-  run: (data: RoleData, vfile: VFile) => GenericNode[];
+  run: (data: RoleData, vfile: VFile) => Content[];
 };
 
 type Select = (selector: string, tree?: GenericParent) => GenericNode | null;

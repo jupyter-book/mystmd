@@ -1,5 +1,5 @@
-import type { SiUnit } from 'myst-spec-ext';
-import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
+import type { SIUnit } from 'myst-spec';
+import type { RoleSpec, RoleData } from 'myst-common';
 
 export const siRole: RoleSpec = {
   name: 'si',
@@ -7,7 +7,7 @@ export const siRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
+  run(data: RoleData) {
     const value = data.body as string;
     const match = value.match(/([0-9.,eE-]+)\s?<([\\a-zA-Z\s]+)>/);
     if (!match) {
@@ -17,7 +17,7 @@ export const siRole: RoleSpec = {
     const parsed = [...commands.matchAll(/\\([a-zA-Z]+)/g)];
     const units = parsed.filter((c) => !!c).map(([, c]) => c);
     const translated = units.map((c) => UNITS[c] ?? c);
-    const si: SiUnit = {
+    const si: SIUnit = {
       type: 'si',
       number,
       unit: translated.join(''),
