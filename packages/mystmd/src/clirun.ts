@@ -2,10 +2,13 @@ import type { Command } from 'commander';
 import type { ISession, Session } from 'myst-cli';
 import { checkNodeVersion, getNodeVersion, logVersions } from 'myst-cli';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
+import { Semaphore } from 'async-mutex';
+import { cpus } from 'node:os';
 
 type SessionOpts = {
   debug?: boolean;
   config?: string;
+  executeParallel?: number;
 };
 
 export function clirun(
@@ -25,13 +28,18 @@ export function clirun(
     keepAlive?: boolean | ((...args: any[]) => boolean);
   },
 ) {
-  return async (...args: any[]) => {
-    const opts = program.opts() as SessionOpts;
+  return async function (this: Command, ...args: any[]) {
+    // Use options from 'this' merged with parent program options
+    // Needed to pass options from e.g. the build command to the session
+    const opts = { ...program.opts(), ...(this?.opts?.() ?? {}) } as SessionOpts;
     const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info, process.cwd());
     // Override default myst.yml if --config option is given.
     const configFiles = opts?.config ? [opts.config] : null;
-    const session = new sessionClass({ logger, configFiles });
+    const parallelCount = opts?.executeParallel ?? Math.max(1, cpus().length - 1);
+    const executionSemaphore = new Semaphore(parallelCount);
+    const session = new sessionClass({ logger, configFiles, executionSemaphore });
     await session.reload();
+    session.log.info(`🍡 Execution parallelism set to: ${parallelCount}`);
     const versions = await getNodeVersion(session);
     logVersions(session, versions);
     const versionsInstalled = await checkNodeVersion(session);
