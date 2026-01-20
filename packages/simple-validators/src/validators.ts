@@ -452,7 +452,10 @@ export function validateList<T>(
 }
 
 /**
- * Copy 'base' object and fill any 'keys' that are missing with their values from 'filler'
+ * Copy 'base' object and fill any 'keys' that are missing (undefined) with their values from 'filler'.
+ * We treat `null` as intentional values, not "undefined".
+ * `null` in base is respected and not overwritten.
+ * Explicit `null` in filler is copied when base is undefined.
  */
 export function fillMissingKeys<T extends Record<string, any>>(
   base: T,
@@ -461,7 +464,7 @@ export function fillMissingKeys<T extends Record<string, any>>(
 ): T {
   const output: T = { ...base };
   keys.forEach((key) => {
-    if (!defined(output[key]) && defined(filler[key])) {
+    if (output[key] === undefined && filler[key] !== undefined) {
       const k = key as keyof T;
       output[k] = filler[k];
     }

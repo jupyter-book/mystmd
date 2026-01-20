@@ -8,28 +8,35 @@ function gitCommandAvailable(): boolean {
 }
 
 /**
- * Compute edit_url and add to frontmatter
+ * Compute edit_url/source_url and add to frontmatter.
  *
- * If edit_url is already defined on the page it will remain unchanged.
- * If edit_url is explicitly null or if github url is not defined, edit_url will not be set.
- * If git is not available to determine branch and top-level folder, edit_url will not be set.
+ * If edit_url/source_url is already defined or null it remains unchanged.
+ * "null" is treated as "don't show" at both project and page level
  */
 export async function addEditUrl(session: ISession, frontmatter: PageFrontmatter, file: string) {
   if (!frontmatter.github) return;
-  if (frontmatter.edit_url || frontmatter.edit_url === null) return;
+  // Skip if both URLs are already set (either to a value or explicitly null)
+  if (frontmatter.edit_url !== undefined && frontmatter.source_url !== undefined) return;
   if (!gitCommandAvailable()) return;
+
   try {
     const gitLog = silentLogger();
     const getGitBranch = makeExecutable('git rev-parse --abbrev-ref HEAD', gitLog);
     const gitBranch = (await getGitBranch()).trim();
     const getGitRoot = makeExecutable('git rev-parse --show-toplevel', gitLog);
     const gitRoot = (await getGitRoot()).trim();
-    if (gitBranch && gitRoot && file.startsWith(gitRoot)) {
-      frontmatter.source_url = `${frontmatter.github}/blob/${gitBranch}${file.replace(gitRoot, '')}`;
-      frontmatter.edit_url = `${frontmatter.github}/edit/${gitBranch}${file.replace(gitRoot, '')}`;
-      session.log.debug(`Added edit URL ${frontmatter.edit_url} to ${file}`);
+    if (!gitBranch || !gitRoot || !file.startsWith(gitRoot)) return;
+
+    const filePath = file.replace(gitRoot, '');
+
+    if (frontmatter.source_url === undefined) {
+      frontmatter.source_url = `${frontmatter.github}/blob/${gitBranch}${filePath}`;
+    }
+    if (frontmatter.edit_url === undefined) {
+      frontmatter.edit_url = `${frontmatter.github}/edit/${gitBranch}${filePath}`;
+      session.log.debug(`Added edit URL ${frontmatter.edit_url}`);
     }
   } catch {
-    session.log.debug(`Unable to add edit URL to ${file}`);
+    session.log.debug(`Unable to add edit URL for ${file}`);
   }
 }
