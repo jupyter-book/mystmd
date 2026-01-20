@@ -62,7 +62,11 @@ describe('addEditUrl', () => {
   });
 
   it('skips when both edit_url and source_url are null', async () => {
-    const frontmatter: any = { github: 'https://github.com/org/repo', edit_url: null, source_url: null };
+    const frontmatter: any = {
+      github: 'https://github.com/org/repo',
+      edit_url: null,
+      source_url: null,
+    };
     await addEditUrl({ log: { debug: vi.fn() } } as any, frontmatter, '/repo/docs/index.md');
     expect(frontmatter.edit_url).toBeNull();
     expect(frontmatter.source_url).toBeNull();
