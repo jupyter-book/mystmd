@@ -117,9 +117,10 @@ describe('fillPageFrontmatter', () => {
     expect(fillPageFrontmatter(TEST_PAGE_FRONTMATTER, {}, opts)).toEqual(TEST_PAGE_FRONTMATTER);
   });
   it('project edit/source urls fill into pages (including null)', async () => {
-    expect(
-      fillPageFrontmatter({}, { edit_url: null, source_url: null }, opts),
-    ).toEqual({ edit_url: null, source_url: null });
+    expect(fillPageFrontmatter({}, { edit_url: null, source_url: null }, opts)).toEqual({
+      edit_url: null,
+      source_url: null,
+    });
   });
   it('project frontmatter returns self without title/description/name/etc', async () => {
     const result = { ...TEST_PROJECT_FRONTMATTER };
