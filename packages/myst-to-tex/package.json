@@ -1,6 +1,6 @@
 {
   "name": "myst-to-tex",
-  "version": "1.0.45",
+  "version": "1.0.44",
   "description": "Export from MyST mdast to latex",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-tex",
@@ -37,15 +37,15 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.9.4",
-    "myst-frontmatter": "^1.9.4",
-    "myst-spec-ext": "^1.9.4",
+    "myst-common": "^1.9.3",
+    "myst-frontmatter": "^1.9.3",
+    "myst-spec-ext": "^1.9.3",
     "myst-ext-proof": "^1.0.11",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
-    "myst-parser": "^1.6.4"
+    "myst-parser": "^1.6.3"
   }
 }

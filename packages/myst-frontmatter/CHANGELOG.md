@@ -1,13 +1,5 @@
 # myst-frontmatter
 
-## 1.9.4
-
-### Patch Changes
-
-- dd83780: Inherit edit_url from project config
-- Updated dependencies [dd83780]
-  - simple-validators@1.2.0
-
 ## 1.9.3
 
 ### Patch Changes

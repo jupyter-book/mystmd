@@ -1,15 +1,5 @@
 # myst-to-tex
 
-## 1.0.45
-
-### Patch Changes
-
-- 75576e3: β Remove 'ß' mapping from utils
-- Updated dependencies [dd83780]
-  - myst-frontmatter@1.9.4
-  - myst-common@1.9.4
-  - myst-spec-ext@1.9.4
-
 ## 1.0.44
 
 ### Patch Changes
@@ -410,6 +400,7 @@
 ### Patch Changes
 
 - 74d48372: Add more infinity symbols to recognized LaTeX parsing
+
   - ∞ ∝ ⧜ ⧝ ♾
 
 - 51011604: Add corollary and proof to supported latex proof kinds

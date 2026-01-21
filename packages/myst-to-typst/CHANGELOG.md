@@ -1,15 +1,5 @@
 # myst-to-typst
 
-## 0.0.36
-
-### Patch Changes
-
-- e49bae8: Update `@preview/subpar` for subfigures in typst export
-- Updated dependencies [dd83780]
-  - myst-frontmatter@1.9.4
-  - myst-common@1.9.4
-  - myst-spec-ext@1.9.4
-
 ## 0.0.35
 
 ### Patch Changes
