@@ -566,20 +566,20 @@ When you publish a release, you upload a new version of the tool for package man
 - **Merge the changesets PR**. After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
   - It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
   - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `npm run publish:ci`, which calls `changeset publish`).
-  - It creates multiple git version tag (which you'll use in making the GitHub release).
+  - It creates multiple git version tags (which you'll use in making the GitHub release).
   - It releases to PyPI
   - The release notes are created automatically based on the `mystmd@v...` tag
 - Confirm that NPM, PyPI versions are released and a GitHub release has been made. Once this happens and there are no errors, you're done!
 - A short time later, a Conda PR is opened automatically and needs to be merged.
 
-If there are errors, ask for help in `release_coordination` on discord. The exact fix will depend where in the automated release things broke. Some tips:
+If there are errors, ask for help the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141). The exact fix will depend where in the automated release things broke. Some tips:
 
 - In general, do not revert a release PR, instead fix the errors (permissions, etc. with NPM/tokens) and merge any necessary fixes to `main`.
 - A `mystmd` tag at the right version is necessary for the release notes to run
 - A PyPI release is only triggered if there is a release triggered by NPM
 - Partial NPM releases (e.g. due to permission failures or token access) can be rerun **without** a new changeset. In this case you can:
   - update the token/connection and rerun the action
-  - fix a `package.json` (e.g. add a git trusted publisher), merge to main, and add a tag for `mystmd` (for the release notes) if that package isn't being re-released
+  - fix a `package.json` (e.g. add a git trusted publisher), merge to main, and add a tag for `mystmd` (`git tag mystmd@M.m.p`, for the release notes) if that package isn't being re-released
 - A new NPM package has been created but not created or linked:
   - Create the package, add `ebp-bot` to it, setup trusted publishing in NPM.
 
