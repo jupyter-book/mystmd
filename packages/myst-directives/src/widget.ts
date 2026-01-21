@@ -31,7 +31,7 @@ export function validateStringOptions(
 }
 
 export const widgetDirective: DirectiveSpec = {
-  name: 'widget',
+  name: 'anywidget',
   alias: ['any:widget'],
   doc: 'Embed a MyST Widget (AnyWidget) component with data in the body',
   arg: {
