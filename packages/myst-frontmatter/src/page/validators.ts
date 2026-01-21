@@ -18,6 +18,7 @@ import { FRONTMATTER_ALIASES } from '../site/types.js';
 
 /**
  * Frontmatter keys that inherit from project to page when not set on the page.
+ * Add new keys here if you want them to propagate from project-level config to pages.
  */
 export const USE_PROJECT_FALLBACK = [
   'authors',

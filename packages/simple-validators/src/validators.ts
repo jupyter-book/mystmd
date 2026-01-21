@@ -1,5 +1,12 @@
 import type { KeyOptions, ValidationOptions } from './types.js';
 
+/**
+ * Check if a value is neither null nor undefined.
+ *
+ * NOTE: This returns false for null, which may not be what you want.
+ * Consider using `=== undefined` checks directly if you need null to propagate as a valid value.
+ * See: https://github.com/jupyter-book/mystmd/issues/2659
+ */
 export function defined<T = any>(val: T | null | undefined): val is T {
   return val != null;
 }
@@ -456,6 +463,10 @@ export function validateList<T>(
  * We treat `null` as intentional values, not "undefined".
  * `null` in base is respected and not overwritten.
  * Explicit `null` in filler is copied when base is undefined.
+ *
+ * NOTE: We intentionally use `=== undefined` checks instead of the `defined()` function
+ * because `defined()` treats `null` as "not defined", but we need `null` to propagate
+ * See: https://github.com/jupyter-book/mystmd/issues/2659
  */
 export function fillMissingKeys<T extends Record<string, any>>(
   base: T,
@@ -464,6 +475,7 @@ export function fillMissingKeys<T extends Record<string, any>>(
 ): T {
   const output: T = { ...base };
   keys.forEach((key) => {
+    // Use direct undefined checks, not defined(), to allow null propagation
     if (output[key] === undefined && filler[key] !== undefined) {
       const k = key as keyof T;
       output[k] = filler[k];
