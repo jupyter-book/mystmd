@@ -1,12 +1,5 @@
 # myst-common
 
-## 1.9.4
-
-### Patch Changes
-
-- Updated dependencies [dd83780]
-  - myst-frontmatter@1.9.4
-
 ## 1.9.3
 
 ### Patch Changes

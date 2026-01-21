@@ -1,15 +1,5 @@
 # myst-templates
 
-## 1.0.27
-
-### Patch Changes
-
-- e7b8fc3: Add support for pluggable API URL
-- Updated dependencies [dd83780]
-  - simple-validators@1.2.0
-  - myst-frontmatter@1.9.4
-  - myst-common@1.9.4
-
 ## 1.0.26
 
 ### Patch Changes
