@@ -574,7 +574,7 @@ When you publish a release, you upload a new version of the tool for package man
 
 If there are errors, ask for help in `release_coordination` on discord. The exact fix will depend where in the automated release things broke. Some tips:
 
-- In general, do not revert a release PR, instead fix the errors (permissions, etc. with NPM/tokens).
+- In general, do not revert a release PR, instead fix the errors (permissions, etc. with NPM/tokens) and merge any necessary fixes to `main`.
 - A `mystmd` tag at the right version is necessary for the release notes to run
 - A PyPI release is only triggered if there is a release triggered by NPM
 - Partial NPM releases (e.g. due to permission failures or token access) can be rerun **without** a new changeset. In this case you can:
