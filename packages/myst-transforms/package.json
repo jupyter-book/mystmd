@@ -9,6 +9,10 @@
     "dist"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "test": "vitest run",
