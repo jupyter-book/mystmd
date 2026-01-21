@@ -30,7 +30,31 @@ This cache may be cleared with `myst clean --cache`.
 
 Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link.
 If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
-You can also modify the formatting of full link DOIs with the styles in {ref}`table-pandoc-citations` without requiring a BibTeX file.
+Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI.
+This will be transformed to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be added to the reference section at the bottom of the page. Here's some example syntax:
+
+```md
+This is a link in Markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
+```
+
+To automatically insert the citation text, provide a standalone DOI link without link text:
+
+- `[](doi:10.5281/zenodo.6476040)`
+- `<doi:10.5281/zenodo.6476040>`
+
+For example: <https://doi.org/10.5281/zenodo.6476040>.
+
+If the BibTeX file in your project has this DOI, that citation will be used.
+
+If the BibTex file does not have this DOI, the citation data will be downloaded from `https://doi.org` (and cached to a local file in the `_build` directory).
+
+**Clear the DOI cache** with : `myst clean --cache`.
+
+**To modify the style of the inserted citation text**: Use the styles in {ref}`table-pandoc-citations` (this works with or without a BibTeX file)
+
+:::{warning} Many citations will slow down your build
+If you have many citations that aren't present in a local BibTeX file, it may slow down the build process as the citation information is fetched dynamically.
+:::
 
 :::{note} Dealing with complex DOIs
 :class: dropdown
