@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Mock git commands to avoid system dependencies.
+// Mock git commands to make these more lightweight unit tests and avoid system deps
 // TODO: Improve with integration tests against actual git repos (see PR #2642 discussion).
 vi.mock('which', () => ({ default: { sync: () => '/usr/bin/git' } }));
 
@@ -9,7 +9,9 @@ vi.mock('which', () => ({ default: { sync: () => '/usr/bin/git' } }));
 vi.mock('myst-cli-utils', async (importOriginal) => {
   const actual = await importOriginal<typeof import('myst-cli-utils')>();
   return {
+    // The logger breaks this little test so we are going to mock it
     silentLogger: () => ({ debug: () => {} }),
+    // Mocking makeExecutable so we can intercept git commands
     makeExecutable: (command: string, log: unknown) => {
       // Mock branch detection via git
       if (command.startsWith('git symbolic-ref')) {
