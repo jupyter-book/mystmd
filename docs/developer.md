@@ -533,15 +533,14 @@ https://api.mystmd.org/templates/typst
 (howto:release)=
 ## How to make a release
 
-This process follows the general steps of making a release in the Jupyter Book community. Here are the basic steps to follow for any project:
+Here are the basic steps to follow for any project:
 
-1. [Tell others about the upcoming release](#release:coordination).
+1. [Coordinate the release with the team](#release:coordination).
 2. Publish the release in the package repository for the tool. For example:
    - [How to publish a release of `mystmd`](#release:mystmd).
    - [How to publish a release of `myst-theme`](#release:myst-theme).
-3. [Make a release on GitHub](#release:github).
-4. [Update the documentation](release:docs).
-5. (optionally) [Create and share a blog post](#release:share).
+3. [Confirm that GitHub made a release](#release:github).
+4. (optionally) [Create and share a blog post](#release:share).
 
 (release:coordination)=
 ### Coordinating the release with the team
@@ -559,28 +558,28 @@ When you publish a release, you upload a new version of the tool for package man
 
 `mystmd` is published to NPM via a GitHub Action. Here's how to publish a release.
 
-- Find the **changesets** PR. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
-- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
-- After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
+- **Find the changesets PR**. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
+- **Merge the changesets PR**. After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
   - It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
   - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `npm run publish:ci`, which calls `changeset publish`).
   - It creates a git version tag (which you'll use in making the GitHub release).
-
-You're done!
+- Confirm that a GitHub release has been made. Once this happens and there are no errors, you're done!
 
 (release:myst-theme)=
 #### Publish a release of `myst-theme`
 
 The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
 
-- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release:mystmd).
+- **Find the changesets PR** in `myst-theme`, similar to [the `mystmd` release process](#release:mystmd).
   [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
-- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged.
-  Bias towards action, but use your best judgment on whether to move forward.
-- Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
-  - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
-
-You're done!
+- **Merge the changesets PR**. This will trigger the release process by running our release action.
+- **Check the GitHub Workflow to see if it completes**. Go to the [`myst-theme` workflows page](https://github.com/jupyter-book/myst-theme/actions) to track its progress.
+  - The action will build the latest version of the theme infrastructure.
+  - It updates the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates).
+  - [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/
+  8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
+  - [Here's an example run of this workflow](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
+- Confirm that a GitHub release has been made. Once this happens and there are no errors, you're done!
 
 (release:github)=
 ### Automated releases on GitHub
@@ -596,9 +595,7 @@ You can find the latest releases at: https://github.com/jupyter-book/mystmd/rele
 (release:docs)=
 ### Update documentation
 
-When we make a release we should ensure that the documentation is up-to-date with the latest version. This will depend on the tool that you're using.
-
-**For tools hosted at mystmd.org**, follow these [instructions to update the content at mystmd.org](#docs:update-mystmd.org).
+**For tools hosted at mystmd.org**: when we make a release of `mystmd`, the MyST documentation is automatically updated via [this GitHub Workflow](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/docs.yml). You can also trigger a manual release by following [](#docs:update-mystmd.org).
 
 **For most other tools**, the documentation should auto-update with new releases (e.g., via a GitHub action).
 
