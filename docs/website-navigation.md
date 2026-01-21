@@ -165,7 +165,7 @@ To override this behavior and set a manual edit URL, use the `edit_url` field in
 
 To disable the `Edit this page` button, set the value of `edit_url` to `null`.
 
-**MyST will attempt to automatically detect the base branch to use**. Our goal is to detect the "trunk" branch that a pull request, CI/CD build, etc likely came from. Here's the rough logic we follow when doing so:
+**MyST will attempt to automatically detect the base branch to use** (e.g., `main`). Our goal is to detect the default branch that a pull request, CI/CD build, etc likely came from. Here's the rough logic we follow when doing so:
 
 1. **`GITHUB_BASE_REF`** environment variable (set automatically by GitHub Actions in pull request builds)
 2. **`origin/HEAD`** via git (points to the remote's default branch)

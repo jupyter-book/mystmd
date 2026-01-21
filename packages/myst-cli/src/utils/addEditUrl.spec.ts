@@ -1,17 +1,32 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock git commands to avoid system dependencies.
-// NOTE: These tests verify the logic that processes git output, not the git commands themselves.
+// TODO: Improve with integration tests against actual git repos (see PR #2642 discussion).
 vi.mock('which', () => ({ default: { sync: () => '/usr/bin/git' } }));
-vi.mock('myst-cli-utils', () => ({
-  silentLogger: () => ({ debug: () => {} }),
-  makeExecutable: (command: string) => async () => {
-    if (command.includes('--show-toplevel')) return '/repo\n';
-    if (process.env.MOCK_GIT_FAIL) throw new Error('git failed');
-    if (command.includes('origin/HEAD')) return process.env.MOCK_GIT_BRANCH ?? 'origin/main\n';
-    return '';
-  },
-}));
+
+// Partial mock: intercept specific git commands, pass everything else to real implementation.
+// Uses vitest's importOriginal to get the real module (https://vitest.dev/guide/mocking.html)
+vi.mock('myst-cli-utils', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('myst-cli-utils')>();
+  return {
+    silentLogger: () => ({ debug: () => {} }),
+    makeExecutable: (command: string, log: unknown) => {
+      // Mock branch detection via git
+      if (command.startsWith('git symbolic-ref')) {
+        return async () => {
+          if (process.env.MOCK_GIT_FAIL) throw new Error('git failed');
+          return process.env.MOCK_GIT_BRANCH ?? 'origin/main\n';
+        };
+      }
+      // Mock repo root detection via git
+      if (command.startsWith('git rev-parse --show-toplevel')) {
+        return async () => '/repo\n';
+      }
+      // Fall back to main makeExecutable
+      return actual.makeExecutable(command, log);
+    },
+  };
+});
 
 import { addEditUrl } from './addEditUrl';
 
