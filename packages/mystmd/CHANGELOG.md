@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.8.0
+
+### Minor Changes
+
+- f20d679: Add support for `--readthedocs` flag on `myst init` to generate ReadTheDocs configuration files
+
 ## 1.7.1
 
 ## 1.7.0
