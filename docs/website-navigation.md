@@ -161,9 +161,10 @@ See [](./frontmatter.md) for many kinds of metadata that configure this section.
 
 If you've added [`github` MyST frontmatter](#table-frontmatter), the MyST themes will display an "Edit this page" link for your page. This link will take the user directly to GitHub's editing interface for the given page.
 
-To override this behavior and set a manual edit URL, use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
+**Manually set the edit URL**: use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
 
-To disable the `Edit this page` button, set the value of `edit_url` to `null`.
+**Disable the `Edit this page` button**: set the value of `edit_url` to `null`.
+
 
 **MyST will attempt to automatically detect the base branch to use** (e.g., `main`). Our goal is to detect the default branch that a pull request, CI/CD build, etc likely came from. Here's the rough logic we follow when doing so:
 

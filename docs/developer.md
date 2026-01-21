@@ -249,6 +249,12 @@ During the **Transformations** phase, a number of [enumeration transforms](https
       html_id: label
 ```
 
+### Concepts: Frontmatter inheritance
+
+Some frontmatter fields inherit from project-level config to individual pages.
+This is controlled by the [`USE_PROJECT_FALLBACK` list](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-frontmatter/src/page/validators.ts).
+To make a new field inherit from project to page, add its key to this list.
+
 ## Tools used in development
 
 `mystmd` is built and developed using:

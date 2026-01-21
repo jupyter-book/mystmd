@@ -52,11 +52,8 @@ export async function addEditUrl(session: ISession, frontmatter: PageFrontmatter
   // Need a github URL to construct edit links
   if (!frontmatter.github) return;
 
-  // Users can set these to null in frontmatter to explicitly disable them
-  if (frontmatter.edit_url === null && frontmatter.source_url === null) return;
-
-  // Skip if both URLs are already provided (user override)
-  if (frontmatter.edit_url && frontmatter.source_url) return;
+  // Skip if both URLs are already set (either to a value or explicitly null)
+  if (frontmatter.edit_url !== undefined && frontmatter.source_url !== undefined) return;
 
   if (!gitCommandAvailable()) return;
 
@@ -70,11 +67,11 @@ export async function addEditUrl(session: ISession, frontmatter: PageFrontmatter
     const branch = await getDefaultBranch(session);
     const filePath = file.replace(gitRoot, '');
 
-    // Only set URLs that aren't already defined (and aren't explicitly null)
-    if (!frontmatter.source_url && frontmatter.source_url !== null) {
+    // Only set URLs that aren't already defined (undefined means "compute it")
+    if (frontmatter.source_url === undefined) {
       frontmatter.source_url = `${frontmatter.github}/blob/${branch}${filePath}`;
     }
-    if (!frontmatter.edit_url && frontmatter.edit_url !== null) {
+    if (frontmatter.edit_url === undefined) {
       frontmatter.edit_url = `${frontmatter.github}/edit/${branch}${filePath}`;
       session.log.debug(`Added edit URL ${frontmatter.edit_url}`);
     }
