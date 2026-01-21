@@ -1,5 +1,12 @@
 # myst-directives
 
+## 1.6.4
+
+### Patch Changes
+
+- myst-common@1.9.4
+- myst-spec-ext@1.9.4
+
 ## 1.6.3
 
 ### Patch Changes
@@ -336,7 +343,6 @@
   This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
 
   Addresses:
-
   - https://github.com/jupyter-book/mystmd/pull/748
   - https://github.com/jupyter-book/mystmd/issues/816
 

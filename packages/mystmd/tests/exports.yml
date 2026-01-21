@@ -553,3 +553,24 @@ cases:
       - path: hidden-pages/_build/html/index.html
       - path: hidden-pages/_build/html/hidden/index.html
       - path: hidden-pages/_build/html/not-hidden/index.html
+  - title: Serial execution
+    cwd: serial-execution
+    command: myst build --site --execute --execute-parallel 1
+    env:
+      MYST_TEST_SLEEP_MS: 4000
+      MYST_TEST_DELAY_MS: 2000
+    # Used to be 15000, increased due to CI slowness
+    # NOTE that the full test suite has a timeout here too: 
+    # mystmd/packages/mystmd/tests/endToEnd.spec.ts
+    timeout: 30000
+    outputs:
+      - path: serial-execution/stop-first
+      - path: serial-execution/stop-second
+  - title: Concurrent execution
+    cwd: concurrent-execution
+    command: myst build --site --execute --execute-parallel 2
+    # Used to be 5000, increased due to CI slowness
+    timeout: 15000
+    outputs:
+      - path: concurrent-execution/output-first.txt
+      - path: concurrent-execution/output-second.txt

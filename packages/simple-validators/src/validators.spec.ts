@@ -419,13 +419,19 @@ describe('fillMissingKeys', () => {
       d: 4,
     });
   });
+  it('null in filler copies to base when base is undefined', () => {
+    expect(fillMissingKeys({}, { a: null }, ['a'])).toEqual({ a: null });
+  });
+  it('null in base is not overwritten by filler', () => {
+    expect(fillMissingKeys({ a: null }, { a: 'value' }, ['a'])).toEqual({ a: null });
+  });
 });
 
 describe('filterKeys', () => {
   it('remove existing key', () => {
     expect(filterKeys({ a: 1, b: 2 }, ['a'])).toEqual({ a: 1 });
   });
-  it('remove null', () => {
-    expect(filterKeys({ a: null }, ['a', 'b'])).toEqual({});
+  it('null values are preserved', () => {
+    expect(filterKeys({ a: null }, ['a', 'b'])).toEqual({ a: null });
   });
 });

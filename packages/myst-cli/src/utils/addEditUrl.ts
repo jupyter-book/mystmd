@@ -8,28 +8,74 @@ function gitCommandAvailable(): boolean {
 }
 
 /**
- * Compute edit_url and add to frontmatter
+ * Get the default branch name for edit URLs.
  *
- * If edit_url is already defined on the page it will remain unchanged.
- * If edit_url is explicitly null or if github url is not defined, edit_url will not be set.
- * If git is not available to determine branch and top-level folder, edit_url will not be set.
+ * We always use the repository's default branch (e.g. "main") rather than the current
+ * branch because edit URLs should point to the canonical version that readers can edit,
+ * not a transient feature branch or CI checkout.
+ *
+ * Priority:
+ * 1. GITHUB_BASE_REF env var (set by GitHub Actions in PR builds to the target branch)
+ * 2. origin/HEAD via git (points to the remote's default branch)
+ * 3. Fallback to "main" if git fails (e.g. shallow clone, missing remote)
  */
-export async function addEditUrl(session: ISession, frontmatter: PageFrontmatter, file: string) {
-  if (!frontmatter.github) return;
-  if (frontmatter.edit_url || frontmatter.edit_url === null) return;
-  if (!gitCommandAvailable()) return;
+async function getDefaultBranch(session: ISession): Promise<string> {
+  if (process.env.GITHUB_BASE_REF) return process.env.GITHUB_BASE_REF;
+
   try {
     const gitLog = silentLogger();
-    const getGitBranch = makeExecutable('git rev-parse --abbrev-ref HEAD', gitLog);
-    const gitBranch = (await getGitBranch()).trim();
+    // origin/HEAD is a symbolic ref pointing to the default branch (e.g. origin/main)
+    const exec = makeExecutable('git symbolic-ref --short refs/remotes/origin/HEAD', gitLog);
+    const result = (await exec()).trim().replace(/^origin\//, '');
+    // In detached HEAD state, this can return "HEAD" which isn't useful
+    if (result && result !== 'HEAD') return result;
+  } catch {
+    // Git command can fail in shallow clones or if origin/HEAD isn't set
+  }
+
+  session.log.debug('Could not determine default branch for edit URL, using "main"');
+  return 'main';
+}
+
+/**
+ * Auto-generate edit_url and source_url for a page based on its GitHub repo.
+ *
+ * These URLs let readers view or propose edits to the source file:
+ * - source_url: links to /blob/ (read-only view)
+ * - edit_url: links to /edit/ (GitHub's web editor)
+ *
+ * Users can override by setting these in frontmatter:
+ * - Set to a string: use that URL instead
+ * - Set to null: disable the URL entirely (won't be generated)
+ */
+export async function addEditUrl(session: ISession, frontmatter: PageFrontmatter, file: string) {
+  // Need a github URL to construct edit links
+  if (!frontmatter.github) return;
+
+  // Skip if both URLs are already set (either to a value or explicitly null)
+  if (frontmatter.edit_url !== undefined && frontmatter.source_url !== undefined) return;
+
+  if (!gitCommandAvailable()) return;
+
+  try {
+    // Find the repository root to compute relative file paths
+    const gitLog = silentLogger();
     const getGitRoot = makeExecutable('git rev-parse --show-toplevel', gitLog);
     const gitRoot = (await getGitRoot()).trim();
-    if (gitBranch && gitRoot && file.startsWith(gitRoot)) {
-      frontmatter.source_url = `${frontmatter.github}/blob/${gitBranch}${file.replace(gitRoot, '')}`;
-      frontmatter.edit_url = `${frontmatter.github}/edit/${gitBranch}${file.replace(gitRoot, '')}`;
-      session.log.debug(`Added edit URL ${frontmatter.edit_url} to ${file}`);
+    if (!gitRoot || !file.startsWith(gitRoot)) return;
+
+    const branch = await getDefaultBranch(session);
+    const filePath = file.replace(gitRoot, '');
+
+    // Only set URLs that aren't already defined (undefined means "compute it")
+    if (frontmatter.source_url === undefined) {
+      frontmatter.source_url = `${frontmatter.github}/blob/${branch}${filePath}`;
+    }
+    if (frontmatter.edit_url === undefined) {
+      frontmatter.edit_url = `${frontmatter.github}/edit/${branch}${filePath}`;
+      session.log.debug(`Added edit URL ${frontmatter.edit_url}`);
     }
   } catch {
-    session.log.debug(`Unable to add edit URL to ${file}`);
+    session.log.debug(`Unable to add edit URL for ${file}`);
   }
 }

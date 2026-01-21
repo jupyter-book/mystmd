@@ -1,4 +1,5 @@
 import { InvalidArgumentError, Option } from 'commander';
+import { cpus } from 'node:os';
 
 export const MYST_DOI_BIB_FILE = 'myst.doi.bib';
 
@@ -58,6 +59,19 @@ export function makeCacheOption(description: string) {
 
 export function makeExecuteOption(description: string) {
   return new Option('--execute', description).default(false);
+}
+
+export function makeExecuteParallelOption() {
+  const defaultParallelism = Math.max(1, cpus().length - 1);
+  return new Option('--execute-parallel <n>', `Maximum number of notebooks to execute in parallel`)
+    .argParser((value) => {
+      const parsedValue = parseInt(value);
+      if (parsedValue < 1) {
+        throw new InvalidArgumentError('Must be an integer greater than or equal to 1.');
+      }
+      return parsedValue;
+    })
+    .default(defaultParallelism);
 }
 
 export function makeAllOption(description: string) {

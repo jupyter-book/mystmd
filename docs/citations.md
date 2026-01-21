@@ -15,21 +15,30 @@ There are two different ways to add citations to your documents:
 ## Simple Referencing with a DOI Link
 
 Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI.
-Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below 👇).
+This will be transformed to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be added to the reference section at the bottom of the page. Here's some example syntax:
 
 ```md
 This is a link in Markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
 ```
 
-It is also possible to drop the link text, that is:\
-`<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
-which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.).
-If the DOI is present on a citation from a BibTeX file in your project, that citation will be used.
-Otherwise, the citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory.
-This cache may be cleared with `myst clean --cache`.
+To automatically insert the citation text, provide a standalone DOI link without link text:
 
-Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link.
-If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
+- `[](doi:10.5281/zenodo.6476040)`
+- `<doi:10.5281/zenodo.6476040>`
+
+For example: <https://doi.org/10.5281/zenodo.6476040>.
+
+If the BibTeX file in your project has this DOI, that citation will be used.
+
+If the BibTex file does not have this DOI, the citation data will be downloaded from `https://doi.org` (and cached to a local file in the `_build` directory).
+
+**Clear the DOI cache** with : `myst clean --cache`.
+
+**To modify the style of the inserted citation text**: Use the styles in {ref}`table-pandoc-citations` (this works with or without a BibTeX file)
+
+:::{warning} Many citations will slow down your build
+If you have many citations that aren't present in a local BibTeX file, it may slow down the build process as the citation information is fetched dynamically.
+:::
 
 :::{note} Dealing with complex DOIs
 :class: dropdown

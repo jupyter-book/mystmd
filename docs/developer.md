@@ -81,7 +81,7 @@ In the diagram above, we saw that `mystmd` produces websites by:
 
 This section describes a bit more how **Rendering** and **Exporting** work using **Themes** and **Templates**.
 
-For an introduction to themes and templates, see [](#overview-themes). In addition, below we'll define what a **Renderer** is:
+For an introduction to themes and templates, see [](#overview-themes). For a hands-on guide to building a web theme, read [](./theme-developer.md). In addition, below we'll define what a **Renderer** is:
 
 ```{glossary}
 Renderer
@@ -248,6 +248,12 @@ During the **Transformations** phase, a number of [enumeration transforms](https
       resolved: true
       html_id: label
 ```
+
+### Concepts: Frontmatter inheritance
+
+Some frontmatter fields inherit from project-level config to individual pages.
+This is controlled by the [`USE_PROJECT_FALLBACK` list](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-frontmatter/src/page/validators.ts).
+To make a new field inherit from project to page, add its key to this list.
 
 ## Tools used in development
 
@@ -734,7 +740,7 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 - `myst-cli`: provides CLI functionality for `mystmd`. It does not export the CLI directly.
 - `jtex`: a templating library ([see docs](https://mystmd.org/jtex)).
-- `myst-frontmater`: definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter)).
+- `myst-frontmatter`: definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter)).
 - `myst-config`: validation and reading of configuration files.
 - `myst-templates`: types and validation for templates (LaTeX, web, and word).
 
