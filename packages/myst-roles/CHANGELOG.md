@@ -1,5 +1,13 @@
 # myst-roles
 
+## 1.6.4
+
+### Patch Changes
+
+- 045953f: Add support for parsing decimal numbers in si role
+  - myst-common@1.9.4
+  - myst-spec-ext@1.9.4
+
 ## 1.6.3
 
 ### Patch Changes
