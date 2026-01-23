@@ -216,27 +216,20 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 ## In-page table of contents
 
 The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page.
-By default this only shows the top level headers that follow:
+For example:
 
 ```md
 :::{toc}
-:::
-```
-
-:::{toc}
-:::
-
-**Specify the depth of headers to include** with the `depth:` keyword, like so:
-
-```md
-:::{toc}
+:context: page
 :depth: 2
 :::
 ```
 
 :::{toc}
-:depth: 2
+:context: page
 :::
+
+See the {myst:directive}`toc` docs for more information.
 
 ## URL slugs and folder structure
 
