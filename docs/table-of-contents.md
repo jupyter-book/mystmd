@@ -227,6 +227,7 @@ For example:
 
 :::{toc}
 :context: page
+:depth: 2
 :::
 
 See the {myst:directive}`toc` docs for more information.
