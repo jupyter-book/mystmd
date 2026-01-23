@@ -213,6 +213,31 @@ project:
 
 In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
 
+## In-page table of contents
+
+The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page.
+By default this only shows the top level headers that follow:
+
+```md
+:::{toc}
+:::
+```
+
+:::{toc}
+:::
+
+**Specify the depth of headers to include** with the `depth:` keyword, like so:
+
+```md
+:::{toc}
+:depth: 2
+:::
+```
+
+:::{toc}
+:depth: 2
+:::
+
 ## URL slugs and folder structure
 
 For web-based exports, MyST creates [slugs](https://en.wikipedia.org/wiki/Clean_URL#Slug) to generate clean URLs for your pages, rather than using raw filenames and folder paths.
