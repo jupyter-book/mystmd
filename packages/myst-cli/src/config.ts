@@ -179,31 +179,40 @@ async function getValidatedConfigsFromFile(
   const projectOpts = configValidationOpts(vfile, 'config.project', RuleId.validProjectConfig);
   let extend: string[] | undefined;
   if (conf.extend) {
-    extend = await Promise.all(
-      (
-        validateList(
-          conf.extend,
-          { coerce: true, ...incrementOptions('extend', opts) },
-          (item, index) => {
-            return validateString(item, incrementOptions(`extend.${index}`, opts));
-          },
-        ) ?? []
-      ).map(async (extendFile) => {
-        const resolvedFile = await resolveToAbsolute(session, dirname(file), extendFile, {
-          allowRemote: true,
-        });
-        return resolvedFile;
-      }),
-    );
+    const extendItems =
+      validateList(
+        conf.extend,
+        { coerce: true, ...incrementOptions('extend', opts) },
+        (item, index) => {
+          return validateString(item, incrementOptions(`extend.${index}`, opts));
+        },
+      ) ?? [];
+
+    extend = (
+      await Promise.all(
+        extendItems.map(async (extendFile) => {
+          try {
+            return await resolveToAbsolute(session, dirname(file), extendFile, {
+              allowRemote: true,
+            });
+          } catch (err) {
+            throw new Error(
+              `Unable to locate config file during "config.extend" resolution: ${extendFile}`,
+            );
+          }
+        }),
+      )
+    ).filter((foo) => foo) as any;
     stack = [...(stack ?? []), file];
     await Promise.all(
       (extend ?? []).map(async (extFile) => {
         if (stack?.includes(extFile)) {
-          fileError(vfile, 'Circular dependency encountered during "config.extend" resolution', {
-            ruleId: RuleId.validConfigStructure,
-            note: [...stack, extFile].map((f) => resolveToRelative(session, '.', f)).join(' > '),
-          });
-          return;
+          const path = [...stack, extFile]
+            .map((f) => resolveToRelative(session, '.', f))
+            .join(' > ');
+          throw new Error(
+            `Circular dependency encountered during "config.extend" resolution: ${path}`,
+          );
         }
         const { site: extSite, project: extProject } = await getValidatedConfigsFromFile(
           session,
@@ -297,7 +306,6 @@ export async function resolveToAbsolute(
     allowRemote?: boolean;
   },
 ) {
-  let message: string | undefined;
   if (opts?.allowRemote && isUrl(relativePath)) {
     const cacheFilename = `config-item-${computeHash(relativePath)}${extname(new URL(relativePath).pathname)}`;
     if (!loadFromCache(session, cacheFilename, { maxAge: 30 })) {
@@ -306,10 +314,10 @@ export async function resolveToAbsolute(
         if (resp.ok) {
           writeToCache(session, cacheFilename, Buffer.from(await resp.arrayBuffer()));
         } else {
-          message = `Bad response from config URL: ${relativePath}`;
+          throw new Error(`Bad response from config URL: ${relativePath}`);
         }
       } catch {
-        message = `Error fetching config URL: ${relativePath}`;
+        throw new Error(`Error fetching config URL: ${relativePath}`);
       }
     }
     relativePath = cachePath(session, cacheFilename);
@@ -319,12 +327,10 @@ export async function resolveToAbsolute(
     if (opts?.allowNotExist || fs.existsSync(absPath)) {
       return absPath;
     }
-    message = message ?? `Does not exist as local path: ${absPath}`;
+    throw new Error(`Does not exist as local path: ${absPath}`);
   } catch {
-    message = message ?? `Unable to resolve as local path: ${relativePath}`;
+    throw new Error(`Unable to resolve as local path: ${relativePath}`);
   }
-  session.log.debug(message);
-  return relativePath;
 }
 
 function resolveToRelative(
@@ -335,18 +341,15 @@ function resolveToRelative(
     allowNotExist?: boolean;
   },
 ) {
-  let message: string;
   try {
     if (opts?.allowNotExist || fs.existsSync(absPath)) {
       // If it is the same path, use a '.'
       return relative(basePath, absPath) || '.';
     }
-    message = `Does not exist as local path: ${absPath}`;
+    throw new Error(`Does not exist as local path: ${absPath}`);
   } catch {
-    message = `Unable to resolve as relative path: ${absPath}`;
+    throw new Error(`Unable to resolve as relative path: ${absPath}`);
   }
-  session.log.debug(message);
-  return absPath;
 }
 
 async function resolveSiteConfigPaths(
