@@ -22,7 +22,7 @@
       {
         "format": "md",
         "filename": "index.md",
-        "url": "/index-6f94b8993969cb04027606b5a32dba77.md"
+        "url": "/index-637e64432627cb65d11897de6ea1d178.md"
       }
     ]
   },
@@ -44,14 +44,14 @@
                   "start": { "line": 3, "column": 1 },
                   "end": { "line": 3, "column": 1 }
                 },
-                "key": "KH2zUG8u3f"
+                "key": "FYR2EDhoUW"
               }
             ],
             "identifier": "figure-directive-local",
             "label": "Figure directive - local",
             "html_id": "figure-directive-local",
             "implicit": true,
-            "key": "axK2NQZ4zO"
+            "key": "VZBa63NZ9R"
           },
           {
             "type": "container",
@@ -75,11 +75,11 @@
                         "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
                       }
                     },
-                    "children": [],
-                    "key": "QJazaUG4dm"
+                    "children": [{ "type": "div", "children": [], "key": "V6Oq74nF7d" }],
+                    "key": "G9I9JpLGWG"
                   }
                 ],
-                "key": "MbsKRKNyKE"
+                "key": "Ri825QuLzV"
               },
               {
                 "type": "caption",
@@ -98,13 +98,13 @@
                           "start": { "line": 7, "column": 1 },
                           "end": { "line": 7, "column": 1 }
                         },
-                        "key": "b0svqGHu3G"
+                        "key": "y0dcZkOwLt"
                       }
                     ],
-                    "key": "HOrpmKDLct"
+                    "key": "IiuWNCsmJA"
                   }
                 ],
-                "key": "Le1CKCH5xu"
+                "key": "CTQaE6Z69o"
               }
             ],
             "enumerator": "1",
@@ -115,7 +115,7 @@
               "slug": "plot",
               "location": "/plot.ipynb"
             },
-            "key": "HiFvMsiM5E"
+            "key": "IHGefMggeR"
           },
           {
             "type": "heading",
@@ -132,14 +132,14 @@
                   "start": { "line": 10, "column": 1 },
                   "end": { "line": 10, "column": 1 }
                 },
-                "key": "x2svglGSqy"
+                "key": "EFeIZGKMWG"
               }
             ],
             "identifier": "embed-directive-local",
             "label": "Embed directive - local",
             "html_id": "embed-directive-local",
             "implicit": true,
-            "key": "XGu9UfU69D"
+            "key": "L6KsLF4Y5O"
           },
           {
             "type": "embed",
@@ -157,7 +157,7 @@
                 "executable": true,
                 "value": "points",
                 "enumerator": "1",
-                "key": "I8KaZvlXUY"
+                "key": "aeU5EM2Hb6"
               },
               {
                 "type": "outputs",
@@ -177,14 +177,14 @@
                         "text/plain": { "content": "alt.Chart(...)", "content_type": "text/plain" }
                       }
                     },
-                    "children": [],
-                    "key": "F0FppwUlIb"
+                    "children": [{ "type": "div", "children": [], "key": "ZNUma3NBm4" }],
+                    "key": "RWhmFmSDhq"
                   }
                 ],
-                "key": "gvmleAToDt"
+                "key": "q08l3gQhGF"
               }
             ],
-            "key": "okdCcNhScz"
+            "key": "PVu4KXYb8l"
           },
           {
             "type": "heading",
@@ -201,14 +201,14 @@
                   "start": { "line": 15, "column": 1 },
                   "end": { "line": 15, "column": 1 }
                 },
-                "key": "DuP6QTzFkd"
+                "key": "otgctb2ERt"
               }
             ],
             "identifier": "figure-directive-external",
             "label": "Figure directive - external",
             "html_id": "figure-directive-external",
             "implicit": true,
-            "key": "BqMjKFS8va"
+            "key": "Yy00L2ngzI"
           },
           {
             "type": "container",
@@ -219,24 +219,28 @@
                 "children": [
                   {
                     "type": "output",
+                    "children": [],
                     "jupyter_data": {
                       "output_type": "execute_result",
                       "execution_count": 2,
                       "metadata": {},
                       "data": {
                         "text/html": {
-                          "content_type": "text/html"
+                          "content_type": "text/html",
+                          "hash": "373af288c587a72faf9c19eec08c556d",
+                          "path": "https://cdn.curvenote.com/019b6a97-2940-7135-8d95-dc40c17f3036/public/373af288c587a72faf9c19eec08c556d.html"
                         },
                         "text/plain": {
                           "content": "alt.VConcatChart(...)",
                           "content_type": "text/plain"
                         }
                       }
-                    }
+                    },
+                    "key": "buK8GyE7Le"
                   }
                 ],
                 "visibility": "show",
-                "key": "FTN3p05PMS"
+                "key": "cNZTF34kQJ"
               },
               {
                 "type": "caption",
@@ -255,13 +259,13 @@
                           "start": { "line": 19, "column": 1 },
                           "end": { "line": 19, "column": 1 }
                         },
-                        "key": "m0gu4rvLJH"
+                        "key": "QsjOmWMWEh"
                       }
                     ],
-                    "key": "yvjMKFtKeO"
+                    "key": "PEaa2rtdqj"
                   }
                 ],
-                "key": "QZy8YhAHOs"
+                "key": "jVJKL7dts9"
               }
             ],
             "enumerator": "2",
@@ -275,7 +279,7 @@
               "title": "Generate and Display Rich Outputs",
               "short_title": "Generate Rich Outputs"
             },
-            "key": "nb06UVJ4eS"
+            "key": "l9n0OnM8lN"
           },
           {
             "type": "heading",
@@ -292,14 +296,14 @@
                   "start": { "line": 22, "column": 1 },
                   "end": { "line": 22, "column": 1 }
                 },
-                "key": "Z52HvWXDGn"
+                "key": "oHkQ5nkTq6"
               }
             ],
             "identifier": "embed-directive-external",
             "label": "Embed directive - external",
             "html_id": "embed-directive-external",
             "implicit": true,
-            "key": "rwCTTgylzc"
+            "key": "F9M4eQDi00"
           },
           {
             "type": "embed",
@@ -321,40 +325,44 @@
                 "value": "points & bars",
                 "visibility": "show",
                 "enumerator": "1",
-                "key": "d4dGQ2FQ7j"
+                "key": "RXuZuOZUeP"
               },
               {
                 "type": "outputs",
                 "children": [
                   {
                     "type": "output",
+                    "children": [],
                     "jupyter_data": {
                       "output_type": "execute_result",
                       "execution_count": 2,
                       "metadata": {},
                       "data": {
                         "text/html": {
-                          "content_type": "text/html"
+                          "content_type": "text/html",
+                          "hash": "373af288c587a72faf9c19eec08c556d",
+                          "path": "https://cdn.curvenote.com/019b6a97-2940-7135-8d95-dc40c17f3036/public/373af288c587a72faf9c19eec08c556d.html"
                         },
                         "text/plain": {
                           "content": "alt.VConcatChart(...)",
                           "content_type": "text/plain"
                         }
                       }
-                    }
+                    },
+                    "key": "buK8GyE7Le"
                   }
                 ],
                 "visibility": "show",
-                "key": "FTN3p05PMS"
+                "key": "cNZTF34kQJ"
               }
             ],
-            "key": "hr2VDiLTDh"
+            "key": "OWHML32K8h"
           }
         ],
-        "key": "YCERc1a73b"
+        "key": "KDq06MCdXz"
       }
     ],
-    "key": "kr0hf7l3Pk"
+    "key": "b5xg9eVESx"
   },
   "references": { "cite": { "order": [], "data": {} } }
 }
