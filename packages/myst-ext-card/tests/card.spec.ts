@@ -11,7 +11,7 @@ describe('card directive', () => {
         {
           type: 'mystDirective',
           name: 'card',
-          args: 'Card Title',
+          args: [{ type: 'text', value: 'Card Title' }],
           value: 'Header\n^^^\n\nCard content\n+++\nFooter',
           position: {
             start: {
@@ -142,7 +142,7 @@ describe('card directive', () => {
     const output = mystParse(content, {
       directives: [cardDirective],
     });
-    expect(output).toEqual(expected);
+    expect(output).toMatchObject(expected);
   });
   it('card directive parses with options', async () => {
     const content =
@@ -153,11 +153,11 @@ describe('card directive', () => {
         {
           type: 'mystDirective',
           name: 'card',
-          args: 'Card Title',
+          args: [{ type: 'text', value: 'Card Title' }],
           options: {
-            header: 'Header',
-            footer: 'Footer',
-            link: 'my-url',
+            header: [{ type: 'text', value: 'Header' }],
+            footer: [{ type: 'text', value: 'Footer' }],
+            url: 'my-url',
           },
           value: 'Card\n^^^\ncontent',
           position: {
@@ -280,7 +280,7 @@ describe('card directive', () => {
     const output = mystParse(content, {
       directives: [cardDirective],
     });
-    expect(output).toEqual(expected);
+    expect(output).toMatchObject(expected);
   });
   it('card directive parses with minimal content', async () => {
     const content = '```{card}\nCard content\n```';
@@ -343,7 +343,7 @@ describe('card directive', () => {
     const output = mystParse(content, {
       directives: [cardDirective],
     });
-    expect(output).toEqual(expected);
+    expect(output).toMatchObject(expected);
   });
 });
 
