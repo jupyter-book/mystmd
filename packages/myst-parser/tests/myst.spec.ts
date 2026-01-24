@@ -35,9 +35,9 @@ const SKIP_TESTS = [
 ];
 
 // TODO: import this from myst-spec properly!
-const directory = fs.existsSync('../../node_modules/myst-spec/dist/examples')
-  ? '../../node_modules/myst-spec/dist/examples'
-  : '../../../node_modules/myst-spec/dist/examples';
+const directory = fs.existsSync('../../node_modules/myst-spec/docs/examples')
+  ? '../../node_modules/myst-spec/docs/examples'
+  : '../../../node_modules/myst-spec/docs/examples';
 
 const files: string[] = fs.readdirSync(directory).filter((name) => name.endsWith('.yml'));
 

@@ -113,7 +113,7 @@ export class State {
     const headings = selectAll('heading', tree).filter(
       (node) => (node as Heading).enumerated !== false,
     );
-    const headingDepths = new Set(headings.map((node) => (node as Heading).depth));
+    const headingDepths = new Set(headings.map((node) => (node as Heading).depth as number));
     this.targetCounts.heading = [1, 2, 3, 4, 5, 6].map((depth) =>
       headingDepths.has(depth) ? 0 : null,
     );
