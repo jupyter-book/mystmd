@@ -5,6 +5,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Term <term>'
 
 export const termRole: RoleSpec = {
   name: 'term',
+  doc: 'Reference a term in a glossary with hover-tooltip. See [](#role:term).',
   body: {
     type: String,
     required: true,

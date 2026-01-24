@@ -4,6 +4,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const figureDirective: DirectiveSpec = {
   name: 'figure',
+  doc: 'The figure directive allows you to create a figure with a caption and allows you to cross-reference this in other parts of your document. See [](#figure-directive).',
   arg: {
     type: String,
     doc: 'The filename of an image (e.g. `my-fig.png`), or an ID of a Jupyter Notebook cell (e.g. `#my-cell`).',

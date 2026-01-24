@@ -131,6 +131,8 @@ As with a link to a DOI, you can also use the DOI directly instead of the BibTeX
   - Citation using a DOI directly
 ```
 
+(role:cite)=
+
 ## Citation Roles
 
 MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1.

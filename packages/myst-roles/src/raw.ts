@@ -4,7 +4,7 @@ import type { Raw } from 'myst-spec-ext';
 export const rawLatexRole: RoleSpec = {
   name: 'raw:latex',
   alias: ['raw:tex'],
-  doc: 'Allows you to include tex in your document that will only be included in tex exports',
+  doc: 'Allows you to include tex in your document that will only be included in tex exports. See [](#directive:raw).',
   body: {
     type: String,
     doc: 'Raw tex content',
@@ -25,7 +25,7 @@ export const rawLatexRole: RoleSpec = {
 export const rawTypstRole: RoleSpec = {
   name: 'raw:typst',
   alias: ['raw:typ'],
-  doc: 'Allows you to include typst in your document that will only be included in typst exports',
+  doc: 'Allows you to include typst in your document that will only be included in typst exports. See [](#directive:raw).',
   body: {
     type: String,
     doc: 'Raw typst content',

@@ -4,6 +4,7 @@ import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 export const deleteRole: RoleSpec = {
   name: 'delete',
   alias: ['del', 'strike'],
+  doc: 'Apply strikethrough formatting to text. See [](#role:inline-formatting).',
   options: { ...commonRoleOptions('delete') },
   body: {
     type: 'myst',

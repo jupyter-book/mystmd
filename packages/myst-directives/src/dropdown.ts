@@ -3,6 +3,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const dropdownDirective: DirectiveSpec = {
   name: 'dropdown',
+  doc: 'Dropdowns can be used to toggle content and show it only when a user clicks on the header panel. These use the standard HTML <details> element. See [](#dropdowns).',
   arg: {
     type: 'myst',
   },

@@ -16,7 +16,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 export const includeDirective: DirectiveSpec = {
   name: 'include',
   alias: ['literalinclude'],
-  doc: 'Allows you to include the source or parsed version of a separate file into your document tree.',
+  doc: 'Allows you to include the source or parsed version of a separate file into your document tree. See [](#docs:include).',
   arg: {
     type: String,
     doc: 'The file path, which is relative to the file from which it was referenced.',

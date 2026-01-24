@@ -22,6 +22,8 @@ Cells in a column can be aligned using the `:` character:
 
 % TODO: The centering isn't working!?
 
+(directive:table)=
+
 ## Table directive
 
 To add more features to your table, you can use the {myst:directive}`table` directive. Here you can add a caption and label. Adding a label enables [cross-referencing](cross-references.md) .
@@ -42,6 +44,8 @@ To add more features to your table, you can use the {myst:directive}`table` dire
 You may have inline Markdown in the table caption, however, if it includes backticks, you must use a [colon fence](#example-fence).
 ```
 
+(directive:list-table)=
+
 ## List Tables
 
 The {myst:directive}`list-table` directive is used to create a table from data in a uniform two-level bullet list.
@@ -60,6 +64,8 @@ The {myst:directive}`list-table` directive is used to create a table from data i
   - 2744
 ```
 ````
+
+(directive:csv-table)=
 
 ## CSV Tables
 

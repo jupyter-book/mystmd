@@ -4,6 +4,8 @@ short_title: Asides & Margins
 description: Asides provide an easy way to represent content that is only indirectly related to the article's main content, such as in the sidebar or margin.
 ---
 
+(directive:aside)=
+
 Asides provide an easy way to represent content that is only indirectly related to the article's main content.
 Where supported, MyST will attempt to display an {myst:directive}`aside` _as close as possible to_—but separate from—the main article, such as in the side-margin.
 
