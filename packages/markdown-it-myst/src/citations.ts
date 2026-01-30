@@ -33,6 +33,7 @@ export const citationsPlugin: PluginWithOptions = (md) => {
   };
 
   md.inline.ruler.after('emphasis', 'citation', (state, silent) => {
+    // If we're inside a link, assume we don't want to parse as a citation
     if (isLinkContext(state)) return false;
     // const max = state.posMax;
     const char = state.src.charCodeAt(state.pos);
