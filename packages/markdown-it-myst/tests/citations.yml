@@ -204,6 +204,32 @@ cases:
           - type: text
             content: ', the authors...'
       - type: paragraph_close
+  # None of the children below should be 'cite' tokens
+  - title: Citations not parsed inside URLs, links, or code
+    md: 'Not [@linked](https://google.com) or https://google.com/@path or [text](https://mystmd.org/@path/foo) or `@code`.'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'Not '
+          - type: link_open
+          - type: text
+            content: '@linked'
+          - type: link_close
+          - type: text
+            content: ' or https://google.com/@path or '
+          - type: link_open
+          - type: text
+            content: 'text'
+          - type: link_close
+          - type: text
+            content: ' or '
+          - type: code_inline
+            content: '@code'
+          - type: text
+            content: '.'
+      - type: paragraph_close
   - title: Nested labels
     md: 'These include experimentally produced alkaline magmas from @iacovino2016 [`alkaline.xlsx`], basaltic melt inclusions from Kilauea [@tucker2019] and Gakkel Ridge [@bennett2019 `basalts.xlsx`], basaltic melt inclusions from Cerro Negro volcano, Nicaragua [@roggensack2001 `cerro_negro.xlsx`], and rhyolite melt inclusions from the Taupo Volcanic Center, New Zealand [@myers2019] and a topaz rhyolite from the Rio Grande Rift @mercer2015 [`rhyolites.xlsx`].'
     tokens:
