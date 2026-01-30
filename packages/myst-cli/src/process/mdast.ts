@@ -66,6 +66,7 @@ import {
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
   transformLiftExecutionResults,
+  transformReduceOutputVariants,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -405,6 +406,10 @@ export async function finalizeMdast(
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     vfile,
   });
+  if (simplifyFigures) {
+    // Transform output nodes to images / text
+    transformReduceOutputVariants(mdast);
+  }
   if (!useExistingImages) {
     await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,

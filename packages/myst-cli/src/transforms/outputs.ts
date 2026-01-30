@@ -30,6 +30,24 @@ export interface LiftOptions {
   renderers?: MimeRenderer[];
 }
 
+export function transformReduceOutputVariants(mdast: GenericParent) {
+  selectAll('output', mdast).forEach((node) => {
+    let hasVariant = false;
+    const retainedChildren: GenericNode[] = [];
+    for (const child of (node as any).children) {
+      if (child?.data?.mimeType === undefined) {
+        retainedChildren.push(child);
+      }
+      // Take the first rendered variant!
+      else if (!hasVariant && child.data.mimeType) {
+        retainedChildren.push(node);
+        hasVariant = true;
+      }
+    }
+    (node as any).children = retainedChildren;
+  });
+}
+
 async function renderBundle(
   bundle: Record<string, any>,
   metadata: Record<string, any>,
@@ -154,7 +172,7 @@ export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftO
         if (!renderedNodes.length) {
           fileWarn(file, 'No recognised MIME types in bundle for output', {
             node,
-            ruleId: RuleId.outputRenders,
+            ruleId: RuleId.codeCellOutputRenders,
           });
           break;
         }
