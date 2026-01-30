@@ -207,7 +207,7 @@ cases:
   # Don't parse @ as a citation if in link text, URLs, and code as literal text.
   # None of the children below should be 'cite' tokens
   - title: Citations not parsed inside URLs, links, or code
-    md: 'Not [@linked](https://google.com) or https://google.com/@path or [text](https://mystmd.org/@path/foo) or `@code` or hello@jupyter.org.'
+    md: 'Not [@linked](https://google.com) or https://google.com/@path or [text](https://mystmd.org/@path/foo) or hackmd.com/@rowanc1 or `@code` or hello@jupyter.org.'
     tokens:
       - type: paragraph_open
       - type: inline
@@ -225,7 +225,7 @@ cases:
             content: 'text'
           - type: link_close
           - type: text
-            content: ' or '
+            content: ' or hackmd.com/@rowanc1 or '
           - type: code_inline
             content: '@code'
           - type: text

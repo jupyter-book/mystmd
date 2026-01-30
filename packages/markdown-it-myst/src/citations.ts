@@ -145,5 +145,7 @@ function isUrlContext(state: InlineState): boolean {
   const wordStart = lastSpace === -1 ? 0 : lastSpace + 1;
   const word = left.slice(wordStart);
   // If the word already looks like a URL, treat @ as part of the URL.
-  return word.includes('://') || word.startsWith('www.');
+  if (word.includes('://') || word.startsWith('www.')) return true;
+  // Also treat common TLDs as URL-like (e.g. hackmd.com/@user).
+  return /\.(com|org|net|io|edu|gov)(\/|$)/.test(word);
 }

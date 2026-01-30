@@ -134,6 +134,14 @@ As with a link to a DOI, you can also use the DOI directly instead of the BibTeX
 Citations that are embedded in links will _not_ be parsed as citations.
 For example: [@jupyter-book](https://github.com/jupyter-book) or https://hackmd.io/@turingway/B1OnVLe-3.
 
+:::{note} Mixing URLs and `@citations`
+If you have citations around URLs, add a space or use `<...>` around the URL to make the citation parse.
+
+If you use bare URLs without a scheme (e.g. `hackmd.com/@user`), the `@user` part may be treated as a citation.
+Similarly, if a URL is followed immediately by a citation without a space (e.g. `https://mystmd.org,@scipy2025`), the `@scipy2025` will be treated as part of the URL and *not* a citation.
+Angle brackets `<...>` help avoid both outcomes.
+:::
+
 ## Citation Roles
 
 MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1.
