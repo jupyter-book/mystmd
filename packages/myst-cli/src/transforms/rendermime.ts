@@ -224,6 +224,36 @@ export class ASTRenderer extends MimeRenderer {
     );
   }
 }
+/*
+ * Renderer for Typst content
+ *
+ */
+export class TypstRenderer extends MimeRenderer {
+  pattern = /^mime:text\/vnd\.typst$/;
+
+  async renderBlock(_1: string, value: MultilineString) {
+    const result: FlowContent[] = [
+      {
+        type: 'raw',
+        lang: 'typst',
+        typst: ensureString(value),
+      } as any,
+    ];
+    return result;
+  }
+  async renderPhrasing(_1: string, value: MultilineString) {
+    const result: PhrasingContent[] = [
+      {
+        type: 'raw',
+        lang: 'typst',
+        value: ensureString(value),
+      } as any,
+    ];
+    return result;
+  }
+}
+
+// TODO: hook up options for latex/html rendering
 
 export const MIME_RENDERERS: MimeRenderer[] = [
   new ASTRenderer(),
@@ -232,5 +262,6 @@ export const MIME_RENDERERS: MimeRenderer[] = [
   new ImageRenderer(),
   new HTMLRenderer(),
   new TextRenderer(),
+  new TypstRenderer(),
 ];
 export type { MimeRendererMetadata };
