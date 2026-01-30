@@ -130,11 +130,14 @@ function isLinkContext(state: { parentType?: string; linkLevel?: number }): bool
 }
 
 // Skip parsing inside URL-like text such as https://.../@path or www.example.com/@path.
+// This lets us keep allowing `/` before citations, but still filter our URLs
 function isUrlContext(state: { src?: string; pos?: number }): boolean {
   if (!state.src || state.pos == null) return false;
+  // Look at the current "word" before @ (from the last whitespace to the cursor).
   const left = state.src.slice(0, state.pos);
   const lastSpace = left.search(/\s\S*$/);
-  const tokenStart = lastSpace === -1 ? 0 : lastSpace + 1;
-  const chunk = left.slice(tokenStart);
-  return chunk.includes('://') || chunk.startsWith('www.');
+  const wordStart = lastSpace === -1 ? 0 : lastSpace + 1;
+  const word = left.slice(wordStart);
+  // If the word already looks like a URL, treat @ as part of the URL.
+  return word.includes('://') || word.startsWith('www.');
 }
