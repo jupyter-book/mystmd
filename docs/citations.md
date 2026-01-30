@@ -131,6 +131,9 @@ As with a link to a DOI, you can also use the DOI directly instead of the BibTeX
   - Citation using a DOI directly
 ```
 
+Citations that are embedded in links will _not_ be parsed as citations.
+For example: [@jupyter-book](https://github.com/jupyter-book) or https://hackmd.io/@turingway/B1OnVLe-3.
+
 ## Citation Roles
 
 MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1.

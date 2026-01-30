@@ -27,10 +27,13 @@ export const citationsPlugin: PluginWithOptions = (md) => {
     citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
     // Only allow a short [suffix] for in text citations (e.g. 50 characters)
     inText: /^@((?:[\w|{][\w:.#$%&\-+?<>~/]*[\w|}])|\w)(\s*)(\[([^\]]{1,50})\])?/,
-    allowedBefore: /^[^a-zA-Z.0-9]$/,
+    // Check for a simple boundary before @
+    // Allows separators like ',', ';', or '|' in case we have grouped cites like @citeA|@citeB
+    allowedBefore: /^[\s(*_,;|]$/,
   };
 
   md.inline.ruler.after('emphasis', 'citation', (state, silent) => {
+    if (isLinkContext(state)) return false;
     // const max = state.posMax;
     const char = state.src.charCodeAt(state.pos);
     if (
@@ -40,6 +43,13 @@ export const citationsPlugin: PluginWithOptions = (md) => {
       // in-text
       const match = state.src.slice(state.pos).match(regexes.inText);
       if (match) {
+        // Check for punctuation/whitespace/emphasis after the match
+        const afterPos = state.pos + match[0].length;
+        if (afterPos < state.src.length) {
+          const after = state.src[afterPos];
+          // Not a citation if the next character is not a space, punctuation, or emphasis
+          if (!/[\s).,;:!?*_]/.test(after)) return false;
+        }
         const citation: Citation = {
           label: trimBraces(match[1]),
           kind: 'narrative',
@@ -120,4 +130,9 @@ export const citationsPlugin: PluginWithOptions = (md) => {
 
 function trimBraces(label: string): string {
   return label.replace(/^\{(.*)\}$/, '$1');
+}
+
+// Skip parsing when inside link text or label.
+function isLinkContext(state: { parentType?: string; linkLevel?: number }): boolean {
+  return (state.linkLevel ?? 0) > 0;
 }
