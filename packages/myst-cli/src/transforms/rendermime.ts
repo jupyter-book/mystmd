@@ -30,8 +30,11 @@ interface MimeRendererMetadata {}
 export abstract class MimeRenderer {
   abstract pattern: RegExp;
 
-  renders(contentTypes: string[]): string | undefined {
-    return contentTypes.find((contentType) => this.pattern.test(contentType));
+  canRender(contentType: string): boolean {
+    return this.pattern.test(contentType);
+  }
+  canRenderAny(contentTypes: string[]): string | undefined {
+    return contentTypes.find((contentType) => this.canRender(contentType));
   }
 
   abstract renderPhrasing(
