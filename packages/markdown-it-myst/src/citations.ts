@@ -27,14 +27,12 @@ export const citationsPlugin: PluginWithOptions = (md) => {
     citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
     // Only allow a short [suffix] for in text citations (e.g. 50 characters)
     inText: /^@((?:[\w|{][\w:.#$%&\-+?<>~/]*[\w|}])|\w)(\s*)(\[([^\]]{1,50})\])?/,
-    // Check for a simple boundary before @
-    // Allows separators like ',', ';', or '|' in case we have grouped cites like @citeA|@citeB
-    allowedBefore: /^[\s(*_,;|]$/,
+    allowedBefore: /^[^a-zA-Z.0-9]$/,
   };
 
   md.inline.ruler.after('emphasis', 'citation', (state, silent) => {
-    // If we're inside a link, assume we don't want to parse as a citation
-    if (isLinkContext(state)) return false;
+    // Skip parsing inside links or URL-like contexts.
+    if (isLinkContext(state) || isUrlContext(state)) return false;
     // const max = state.posMax;
     const char = state.src.charCodeAt(state.pos);
     if (
@@ -44,13 +42,6 @@ export const citationsPlugin: PluginWithOptions = (md) => {
       // in-text
       const match = state.src.slice(state.pos).match(regexes.inText);
       if (match) {
-        // Check for punctuation/whitespace/emphasis after the match
-        const afterPos = state.pos + match[0].length;
-        if (afterPos < state.src.length) {
-          const after = state.src[afterPos];
-          // Not a citation if the next character is not a space, punctuation, or emphasis
-          if (!/[\s).,;:!?*_]/.test(after)) return false;
-        }
         const citation: Citation = {
           label: trimBraces(match[1]),
           kind: 'narrative',
@@ -136,4 +127,14 @@ function trimBraces(label: string): string {
 // Skip parsing when inside link text or label.
 function isLinkContext(state: { parentType?: string; linkLevel?: number }): boolean {
   return (state.linkLevel ?? 0) > 0;
+}
+
+// Skip parsing inside URL-like text such as https://.../@path or www.example.com/@path.
+function isUrlContext(state: { src?: string; pos?: number }): boolean {
+  if (!state.src || state.pos == null) return false;
+  const left = state.src.slice(0, state.pos);
+  const lastSpace = left.search(/\s\S*$/);
+  const tokenStart = lastSpace === -1 ? 0 : lastSpace + 1;
+  const chunk = left.slice(tokenStart);
+  return chunk.includes('://') || chunk.startsWith('www.');
 }
