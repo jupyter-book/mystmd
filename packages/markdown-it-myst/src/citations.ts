@@ -22,6 +22,13 @@ export interface Citation {
   suffix?: Token[];
 }
 
+// Minimal inline state shape used by the guard functions at the bottom
+type InlineState = {
+  src: string;
+  pos: number;
+  linkLevel?: number;
+};
+
 export const citationsPlugin: PluginWithOptions = (md) => {
   const regexes = {
     citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
@@ -125,14 +132,13 @@ function trimBraces(label: string): string {
 }
 
 // Skip parsing when inside link text or label.
-function isLinkContext(state: { parentType?: string; linkLevel?: number }): boolean {
+function isLinkContext(state: InlineState): boolean {
   return (state.linkLevel ?? 0) > 0;
 }
 
 // Skip parsing inside URL-like text such as https://.../@path or www.example.com/@path.
-// This lets us keep allowing `/` before citations, but still filter our URLs
-function isUrlContext(state: { src?: string; pos?: number }): boolean {
-  if (!state.src || state.pos == null) return false;
+// This lets us keep allowing `/` before citations, while still filtering out URLs.
+function isUrlContext(state: InlineState): boolean {
   // Look at the current "word" before @ (from the last whitespace to the cursor).
   const left = state.src.slice(0, state.pos);
   const lastSpace = left.search(/\s\S*$/);
