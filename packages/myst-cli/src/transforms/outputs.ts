@@ -15,6 +15,7 @@ import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
 import type { MystParser, MimeRenderer } from './rendermime.js';
+import stripAnsi from 'strip-ansi';
 import { MIME_RENDERERS as DEFAULT_MIME_RENDERERS } from './rendermime.js';
 
 function getFilename(hash: string, contentType: string) {
@@ -152,6 +153,14 @@ export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftO
     switch (jupyterOutput.output_type) {
       case 'error':
       case 'stream': {
+        console.log({ foo: jupyterOutput.traceback ?? jupyterOutput.text });
+        (node as any).children = [
+          {
+            type: 'code',
+            data: { type: 'output' },
+            value: stripAnsi(ensureString(jupyterOutput.traceback ?? jupyterOutput.text)),
+          },
+        ];
         break;
       }
       // TODO: take latest by ID

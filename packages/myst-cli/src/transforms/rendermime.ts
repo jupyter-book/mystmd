@@ -7,6 +7,7 @@ import { BASE64_HEADER_SPLIT } from './images.js';
 import type { FlowContent, PhrasingContent } from 'myst-spec';
 import { migrate } from 'myst-migrate';
 import { SPEC_VERSION } from '../spec-version.js';
+import { ensureString } from 'nbtx';
 
 function stripTextQuotes(content: string) {
   return content.replace(/^(["'])(.*)\1$/, '$2');
@@ -52,14 +53,6 @@ export abstract class MimeRenderer {
     parseMyst: MystParser,
     opts: MimeRendererMetadata,
   ): Promise<FlowContent[]>;
-}
-
-function ensureString(content: MultilineString) {
-  if (typeof content === 'string') {
-    return content;
-  } else {
-    return content.join('');
-  }
 }
 
 export class MarkdownRenderer extends MimeRenderer {
