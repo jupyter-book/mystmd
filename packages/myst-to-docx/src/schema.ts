@@ -74,6 +74,7 @@ import {
 } from './utils.js';
 import { createNumbering } from './numbering.js';
 import sizeOf from 'buffer-image-size';
+import stripAnsi from 'strip-ansi';
 
 const text: Handler<Text> = (state, node) => {
   state.text(node.value ?? '');
@@ -227,7 +228,8 @@ const blockquote: Handler<Blockquote> = (state, node) => {
 const code: Handler<Code> = (state, node) => {
   // TODO: render with color etc.
   // put each line in a new paragraph
-  node.value.split('\n').forEach((line) => {
+  const value: string = node.lang === 'ansi' ? stripAnsi(node.value) : node.value;
+  value.split('\n').forEach((line) => {
     state.text(line, {
       font: {
         name: 'Monospace',

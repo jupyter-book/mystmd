@@ -1,6 +1,7 @@
 import type { Root, Parent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
+import stripAnsi from 'strip-ansi';
 import type { GenericNode } from 'myst-common';
 import { fileError, fileWarn, toText, getMetadataTags } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
@@ -176,7 +177,7 @@ const handlers: Record<string, Handler> = {
     const start = `${ticks}${node.lang ?? ''}\n`;
     const end = `\n${ticks}`;
     state.write(start);
-    state.write(node.value);
+    state.write(node.lang === 'ansi' ? stripAnsi(node.value) : node.value);
     state.write(end);
     state.ensureNewLine(true);
     state.addNewLine();

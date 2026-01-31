@@ -37,6 +37,7 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
+    "strip-ansi": "^7.0.1",
     "myst-common": "^1.8.3",
     "myst-frontmatter": "^1.8.3",
     "myst-spec-ext": "^1.8.3",

@@ -100,7 +100,6 @@
     "picomatch": "^2.3.1",
     "redux": "^5.0.1",
     "simple-validators": "^1.1.0",
-    "strip-ansi": "^7.0.1",
     "tex-to-myst": "^1.0.44",
     "unified": "^10.1.2",
     "unist-util-filter": "^4.0.0",
