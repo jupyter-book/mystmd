@@ -157,7 +157,11 @@ export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftO
           {
             type: 'code',
             lang: 'ansi',
-            data: { type: jupyterOutput.output_type },
+            data: {
+              outputType: jupyterOutput.output_type,
+              // Make it easy to pull this out as a MIME type
+              mimeType: 'text/plain',
+            },
             value: ensureString(jupyterOutput.traceback ?? jupyterOutput.text),
           },
         ];
