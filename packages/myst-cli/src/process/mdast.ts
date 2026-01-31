@@ -51,12 +51,10 @@ import {
   transformLinkedDOIs,
   transformLinkedRORs,
   transformOutputsToCache,
-  transformRenderInlineExpressions,
   transformThumbnail,
   StaticFileTransformer,
   propagateBlockDataToCode,
   transformBanner,
-  reduceOutputs,
   transformPlaceholderImages,
   transformDeleteBase64UrlSource,
   transformWebp,
@@ -67,6 +65,8 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
+  transformLiftExecutionResults,
+  transformReduceOutputVariants,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -200,6 +200,11 @@ export async function transformMdast(
       session.log.debug(`✅ Completed execution: ${fileName}`);
     });
   }
+  await transformLiftExecutionResults(mdast, vfile, {
+    parseMyst: (content: string) => parseMyst(session, content, file),
+  });
+  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
+  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
@@ -244,9 +249,6 @@ export async function transformMdast(
   // Combine file-specific citation renderers with project renderers from bib files
   const fileCitationRenderer = combineCitationRenderers(cache, ...rendererFiles);
 
-  transformRenderInlineExpressions(mdast, vfile);
-  await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
-  transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   transformCitations(session, file, mdast, fileCitationRenderer, references);
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
@@ -406,16 +408,14 @@ export async function finalizeMdast(
 ) {
   const vfile = new VFile(); // Collect errors on this file
   vfile.path = file;
-  if (simplifyFigures) {
-    // Transform output nodes to images / text
-    reduceOutputs(session, mdast, file, imageWriteFolder, {
-      altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
-    });
-  }
   transformOutputsToFile(session, mdast, imageWriteFolder, {
     altOutputFolder: simplifyFigures ? undefined : imageAltOutputFolder,
     vfile,
   });
+  if (simplifyFigures) {
+    // Transform output nodes to images / text
+    transformReduceOutputVariants(mdast);
+  }
   if (!useExistingImages) {
     await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,

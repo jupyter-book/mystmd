@@ -1,5 +1,5 @@
 import { NotebookCell, RuleId, fileWarn } from 'myst-common';
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent, IExpressionResult } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
 import type {
@@ -17,8 +17,6 @@ import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
 import type { Code, InlineExpression } from 'myst-spec-ext';
-import type { IUserExpressionMetadata } from '../transforms/inlineExpressions.js';
-import { findExpression, metadataSection } from '../transforms/inlineExpressions.js';
 import { frontmatterValidationOpts } from '../frontmatter.js';
 
 import { filterKeys } from 'simple-validators';
@@ -32,6 +30,28 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
   return { type: 'block', kind, data: JSON.parse(JSON.stringify(cell.metadata)), children };
+}
+
+/*
+ * Where to find user expressions stored in Jupyter Notebook metadata
+ * This derives from jupyterlab-myst
+ */
+export const metadataSection = 'user_expressions';
+
+export interface IUserExpressionMetadata {
+  expression: string;
+  result: IExpressionResult;
+}
+
+export interface IUserExpressionsMetadata {
+  [metadataSection]: IUserExpressionMetadata[];
+}
+
+export function findExpression(
+  expressions: IUserExpressionMetadata[] | undefined,
+  value: string,
+): IUserExpressionMetadata | undefined {
+  return expressions?.find((expr) => expr.expression === value);
 }
 
 /**
