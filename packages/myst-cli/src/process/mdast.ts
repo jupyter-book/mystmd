@@ -30,7 +30,10 @@ import {
   checkLinkTextTransform,
   indexIdentifierPlugin,
   buildTocTransform,
+  // FIXME: move HTML parsing to `html-to-myst` package
+  parseHtml as parseHtmlImpl,
 } from 'myst-transforms';
+import { TexParser } from 'tex-to-myst';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
@@ -195,7 +198,15 @@ export async function transformMdast(
     });
   }
   await transformLiftExecutionResults(mdast, vfile, {
-    parseMyst: (content: string) => parseMyst(session, content, file),
+    registry: {
+      parseMyst: (content: string) => parseMyst(session, content, file),
+      parseHtml: (content: string) =>
+        parseHtmlImpl(content, { htmlHandlers, keepBreaks: false }) as any,
+      parseLatex: (content: string) => {
+        const parser = new TexParser(content, vfile);
+        return parser.ast as GenericParent;
+      },
+    },
   });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });

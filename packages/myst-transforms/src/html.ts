@@ -172,25 +172,31 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
   },
 };
 
+export function parseHtml(
+  content: string,
+  opts?: Pick<HtmlTransformOptions, 'htmlHandlers' | 'keepBreaks'>,
+) {
+  const resolvedHandlers = { ...defaultHtmlToMdastOptions.htmlHandlers, ...opts?.htmlHandlers };
+  const hast = unified()
+    .use(rehypeParse, { fragment: true } as Options)
+    .parse(content);
+  // hast-util-to-mdast removes breaks if they are the first/last children
+  // and nests standalone breaks in paragraphs.
+  // However, since HTML nodes may just be fragments in the middle of markdown text,
+  // there is an option to `keepBreaks` which will simply convert `<br />`
+  // tags to `break` nodes, without the special hast-util-to-mdast behavior.
+  if (opts?.keepBreaks) {
+    selectAll('[tagName=br]', hast).forEach((n: any) => {
+      n.tagName = '_brKeep';
+    });
+  }
+  return unified().use(rehypeRemark, { resolvedHandlers, document: false }).runSync(hast);
+}
+
 export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) {
-  const handlers = { ...defaultHtmlToMdastOptions.htmlHandlers, ...opts?.htmlHandlers };
-  const otherOptions = { ...defaultHtmlToMdastOptions, ...opts };
   const htmlNodes = selectAll('html', tree) as Parent[];
   htmlNodes.forEach((node) => {
-    const hast = unified()
-      .use(rehypeParse, { fragment: true } as Options)
-      .parse((node as any).value);
-    // hast-util-to-mdast removes breaks if they are the first/last children
-    // and nests standalone breaks in paragraphs.
-    // However, since HTML nodes may just be fragments in the middle of markdown text,
-    // there is an option to `keepBreaks` which will simply convert `<br />`
-    // tags to `break` nodes, without the special hast-util-to-mdast behavior.
-    if (otherOptions.keepBreaks) {
-      selectAll('[tagName=br]', hast).forEach((n: any) => {
-        n.tagName = '_brKeep';
-      });
-    }
-    const mdast = unified().use(rehypeRemark, { handlers, document: false }).runSync(hast);
+    const mdast = parseHtml((node as any).value, opts);
     node.type = 'htmlParsed';
     node.children = mdast.children as Parent[];
     visit(node, (n: any) => delete n.position);

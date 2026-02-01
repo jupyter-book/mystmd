@@ -14,7 +14,7 @@ import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nb
 import { castSession } from '../session/cache.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
-import type { MystParser, MimeRenderer } from './rendermime.js';
+import type { ParserRegistry, MimeRenderer } from './rendermime.js';
 import { MIME_RENDERERS as DEFAULT_MIME_RENDERERS } from './rendermime.js';
 
 function getFilename(hash: string, contentType: string) {
@@ -26,7 +26,7 @@ function getWriteDestination(hash: string, contentType: string, writeFolder: str
 }
 
 export interface LiftOptions {
-  parseMyst: MystParser;
+  registry: ParserRegistry;
   renderers?: MimeRenderer[];
 }
 
@@ -76,7 +76,7 @@ async function renderBundle(
               contentType,
               content,
               vfile,
-              opts.parseMyst,
+              opts.registry,
               metadata,
             );
             break;
@@ -86,7 +86,7 @@ async function renderBundle(
               contentType,
               content,
               vfile,
-              opts.parseMyst,
+              opts.registry,
               metadata,
             );
             break;

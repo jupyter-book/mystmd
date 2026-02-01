@@ -2,7 +2,6 @@ import type { GenericParent } from 'myst-common';
 
 import type { VFile } from 'vfile';
 import type { IMimeBundle, MultilineString } from '@jupyterlab/nbformat';
-import { TexParser } from 'tex-to-myst';
 import { BASE64_HEADER_SPLIT } from './images.js';
 import type { FlowContent, PhrasingContent } from 'myst-spec';
 import { migrate } from 'myst-migrate';
@@ -24,7 +23,12 @@ function singleParagraphChildren(parents: GenericParent[]) {
   }
 }
 
-export type MystParser = (source: string) => GenericParent;
+export type ContentParser = (source: string) => GenericParent;
+export interface ParserRegistry {
+  parseMyst: ContentParser;
+  parseLatex: ContentParser;
+  parseHtml: ContentParser;
+}
 
 interface MimeRendererMetadata {}
 
@@ -42,7 +46,7 @@ export abstract class MimeRenderer {
     contentType: string,
     content: IMimeBundle[keyof IMimeBundle],
     vfile: VFile,
-    parseMyst: MystParser,
+    registry: ParserRegistry,
     opts: MimeRendererMetadata,
   ): Promise<PhrasingContent[]>;
 
@@ -50,7 +54,7 @@ export abstract class MimeRenderer {
     contentType: string,
     content: IMimeBundle[keyof IMimeBundle],
     vfile: VFile,
-    parseMyst: MystParser,
+    registry: ParserRegistry,
     opts: MimeRendererMetadata,
   ): Promise<FlowContent[]>;
 }
@@ -58,17 +62,17 @@ export abstract class MimeRenderer {
 export class MarkdownRenderer extends MimeRenderer {
   pattern = /^text\/markdown\b/;
 
-  async renderBlock(_1: string, value: MultilineString, _2: VFile, parseMyst: MystParser) {
-    const root = parseMyst(ensureString(value as any));
+  async renderBlock(_1: string, value: MultilineString, _2: VFile, registry: ParserRegistry) {
+    const root = registry.parseMyst(ensureString(value as any));
     return root.children as FlowContent[];
   }
   async renderPhrasing(
     contentType: string,
     value: MultilineString,
     vfile: VFile,
-    parseMyst: MystParser,
+    registry: ParserRegistry,
   ) {
-    const blocks = await this.renderBlock(contentType, value, vfile, parseMyst);
+    const blocks = await this.renderBlock(contentType, value, vfile, registry);
     // Expect that we only have paragraphs here
     return singleParagraphChildren(blocks as GenericParent[]);
   }
@@ -82,14 +86,39 @@ interface MimeRendererMetadata {
 export class LaTeXRenderer extends MimeRenderer {
   pattern = /^text\/latex\b/;
 
-  async renderBlock(_1: string, value: MultilineString, vfile: VFile) {
-    const parser = new TexParser(value as string, vfile);
-    const root = parser.ast as GenericParent;
-    return root.children as FlowContent[];
+  async renderBlock(
+    _1: string,
+    value: MultilineString,
+    vfile: VFile,
+    registry: ParserRegistry,
+    opts: MimeRendererMetadata,
+  ) {
+    // Require explicit opt-out
+    if (opts['parse-latex'] !== false) {
+      const root = registry.parseLatex(ensureString(value));
+      return root.children as FlowContent[];
+    } else {
+      const tex = ensureString(value);
+      // TODO: should raw drop tex and typst keys -> add new alternation?
+      const result: FlowContent[] = [{ type: 'raw', lang: 'tex', tex, value: tex } as any];
+      return result;
+    }
   }
-  async renderPhrasing(contentType: string, value: MultilineString, vfile: VFile) {
-    const blocks = await this.renderBlock(contentType, value, vfile);
-    return singleParagraphChildren(blocks as GenericParent[]);
+  async renderPhrasing(
+    _1: string,
+    value: MultilineString,
+    vfile: VFile,
+    registry: ParserRegistry,
+    opts: MimeRendererMetadata,
+  ) {
+    // Require explicit opt-out
+    if (opts['parse-latex']) {
+      return singleParagraphChildren(registry.parseLatex(ensureString(value)).children as any[]);
+    } else {
+      const tex = ensureString(value);
+      const result: PhrasingContent[] = [{ type: 'raw', lang: 'tex', tex, value: tex } as any];
+      return result;
+    }
   }
 }
 
@@ -105,26 +134,48 @@ interface MimeRendererMetadata {
  * This decision is reasonable because HTML to MyST likely shouldn't pull in referenceable content.
  * If it needs to, it's likely a content-author level decision.
  */
-export class HTMLRenderer extends MimeRenderer {
+export class HtmlRenderer extends MimeRenderer {
   pattern = /^text\/html$/;
 
-  async renderBlock(_1: string, value: MultilineString) {
-    const result: FlowContent[] = [
-      {
-        type: 'html',
-        value: ensureString(value),
-      },
-    ];
-    return result;
+  async renderBlock(
+    _1: string,
+    value: MultilineString,
+    vfile: VFile,
+    registry: ParserRegistry,
+    opts: MimeRendererMetadata,
+  ) {
+    // Require explicit opt-in
+    if (opts['parse-html']) {
+      return registry.parseHtml(ensureString(value)).children as FlowContent[];
+    } else {
+      const result: FlowContent[] = [
+        {
+          type: 'html',
+          value: ensureString(value),
+        },
+      ];
+      return result;
+    }
   }
-  async renderPhrasing(_1: string, value: MultilineString) {
-    const result: PhrasingContent[] = [
-      {
-        type: 'html',
-        value: ensureString(value),
-      },
-    ];
-    return result;
+  async renderPhrasing(
+    _1: string,
+    value: MultilineString,
+    vfile: VFile,
+    registry: ParserRegistry,
+    opts: MimeRendererMetadata,
+  ) {
+    // Require explicit opt-in
+    if (opts['parse-html']) {
+      return singleParagraphChildren(registry.parseHtml(ensureString(value)).children as any[]);
+    } else {
+      const result: PhrasingContent[] = [
+        {
+          type: 'html',
+          value: ensureString(value),
+        },
+      ];
+      return result;
+    }
   }
 }
 
@@ -157,10 +208,10 @@ export class TextRenderer extends MimeRenderer {
     contentType: string,
     value: MultilineString,
     vfile: VFile,
-    parseMyst: MystParser,
+    registry: ParserRegistry,
     opts: MimeRendererMetadata,
   ) {
-    const phrasingNodes = await this.renderPhrasing(contentType, value, vfile, parseMyst, opts);
+    const phrasingNodes = await this.renderPhrasing(contentType, value, vfile, registry, opts);
     const result: FlowContent[] = [{ type: 'paragraph', children: phrasingNodes }];
     return result;
   }
@@ -168,7 +219,7 @@ export class TextRenderer extends MimeRenderer {
     _1: string,
     value: MultilineString,
     _2: VFile,
-    _3: MystParser,
+    _3: ParserRegistry,
     opts: MimeRendererMetadata,
   ) {
     const content = ensureString(value);
@@ -185,13 +236,7 @@ export class TextRenderer extends MimeRenderer {
 export class ASTRenderer extends MimeRenderer {
   pattern = /^application\/vnd\.mystmd\.ast\+json\b/;
 
-  async renderBlock(
-    contentType: string,
-    value: Record<string, any>,
-    _1: VFile,
-    _2: MystParser,
-    _3: MimeRendererMetadata,
-  ) {
+  async renderBlock(contentType: string, value: Record<string, any>) {
     let match;
     let version: number;
     if ((match = contentType.match(/;version=(\d+)$/))) {
@@ -205,16 +250,8 @@ export class ASTRenderer extends MimeRenderer {
     );
     return validFile.mdast.children as FlowContent[];
   }
-  async renderPhrasing(
-    contentType: string,
-    value: Record<string, any>,
-    vfile: VFile,
-    parseMyst: MystParser,
-    opts: MimeRendererMetadata,
-  ) {
-    return singleParagraphChildren(
-      (await this.renderBlock(contentType, value, vfile, parseMyst, opts)) as GenericParent[],
-    );
+  async renderPhrasing(contentType: string, value: Record<string, any>) {
+    return singleParagraphChildren((await this.renderBlock(contentType, value)) as GenericParent[]);
   }
 }
 /*
@@ -253,7 +290,7 @@ export const MIME_RENDERERS: MimeRenderer[] = [
   new MarkdownRenderer(),
   new LaTeXRenderer(),
   new ImageRenderer(),
-  new HTMLRenderer(),
+  new HtmlRenderer(),
   new TextRenderer(),
   new TypstRenderer(),
 ];

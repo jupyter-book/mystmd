@@ -14,6 +14,7 @@ export {
   htmlTransform,
   reconstructHtmlTransform,
   reconstructHtmlPlugin,
+  parseHtml,
 } from './html.js';
 export { htmlIdsPlugin, htmlIdsTransform } from './htmlIds.js';
 export { keysPlugin, keysTransform } from './keys.js';
