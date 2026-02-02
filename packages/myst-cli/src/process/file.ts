@@ -354,7 +354,7 @@ export async function loadFrontmatterParts(
           kind: SourceFileKind.Part,
           preFrontmatter: pageFrontmatter,
         });
-      // Local file - load and register for file watching
+        // Local file - load and register for file watching
       } else if (contents.length === 1 && isValidFile(contents[0])) {
         partFile = path.resolve(path.dirname(file), contents[0]);
         if (!fs.existsSync(partFile)) {
@@ -391,8 +391,8 @@ export async function loadFrontmatterParts(
           const newProj = { ...proj, pages: filteredPages };
           session.store.dispatch(projects.actions.receive(newProj));
         }
-      // Inline content - parse markdown and cache with synthetic path
-      // Note: multiple entries (contents.length > 1) are always treated as inline markdown blocks.
+        // Inline content - parse markdown and cache with synthetic path
+        // Note: multiple entries (contents.length > 1) are always treated as inline markdown blocks.
       } else {
         const cache = castSession(session);
         partFile = `${path.resolve(file)}#${property}.${part}`;
