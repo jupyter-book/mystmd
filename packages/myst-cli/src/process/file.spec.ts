@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { loadFile, loadFrontmatterParts } from './file';
-import * as configModule from '../config.js';
+import * as resolveModule from '../utils/resolveToAbsolute.js';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
@@ -21,7 +21,7 @@ describe('loadFrontmatterParts', () => {
   it('loads remote URL parts from cache', async () => {
     // This mocks the step that does a URL fetch so we don't do it here.
     // resolveToAbsolute should return the path where remote file is cached
-    vi.spyOn(configModule, 'resolveToAbsolute').mockResolvedValue('/cache/footer.md');
+    vi.spyOn(resolveModule, 'resolveToAbsolute').mockResolvedValue('/cache/footer.md');
     // Create the cached file that would have been fetched
     memfs.vol.fromJSON({
       '/project/myst.yml': 'version: 1',

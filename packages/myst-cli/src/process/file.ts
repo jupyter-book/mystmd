@@ -18,7 +18,7 @@ import type { PreRendererData, RendererData } from '../transforms/types.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { isValidFile, parseFilePath } from '../utils/resolveExtension.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
-import { resolveToAbsolute } from '../config.js';
+import { resolveToAbsolute } from '../utils/resolveToAbsolute.js';
 import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebookFull } from './notebook.js';
