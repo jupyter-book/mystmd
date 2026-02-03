@@ -152,7 +152,6 @@ export async function liftOutputs(mdast: GenericParent, file: VFile, opts: LiftO
     switch (jupyterOutput.output_type) {
       case 'error':
       case 'stream': {
-        console.log({ foo: jupyterOutput.traceback ?? jupyterOutput.text });
         (node as any).children = [
           {
             type: 'code',
