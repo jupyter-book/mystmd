@@ -146,6 +146,7 @@ function isUrlContext(state: InlineState): boolean {
   const word = left.slice(wordStart);
   // If the word already looks like a URL, treat @ as part of the URL.
   if (word.includes('://') || word.startsWith('www.')) return true;
-  // Also treat common TLDs as URL-like (e.g. hackmd.com/@user).
-  return /\.(com|org|net|io|edu|gov)(\/|$)/.test(word);
+  // Also treat domain-like patterns as URL-like (e.g. hackmd.com/@user, foo.co.uk/@path).
+  // Matches: one or more domain segments followed by a TLD (2+ letters) and optional path.
+  return /^([a-z0-9-]+\.)+[a-z]{2,}(\/|$)/i.test(word);
 }
