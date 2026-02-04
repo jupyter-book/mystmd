@@ -139,12 +139,16 @@ function isLinkContext(state: InlineState): boolean {
 // Skip parsing inside URL-like text such as https://.../@path or www.example.com/@path.
 // This lets us keep allowing `/` before citations, while still filtering out URLs.
 function isUrlContext(state: InlineState): boolean {
-  // Look at the current "word" before @ (from the last whitespace to the cursor).
   const left = state.src.slice(0, state.pos);
-  const lastSpace = left.search(/\s\S*$/);
-  const wordStart = lastSpace === -1 ? 0 : lastSpace + 1;
-  const word = left.slice(wordStart);
-  // If the word already looks like a URL, treat @ as part of the URL.
+  if (left.length === 0) return false;
+  // If the character immediately before @ is whitespace, not in URL context.
+  const charBefore = left[left.length - 1];
+  if (/\s/.test(charBefore)) return false;
+  // Find the word directly before @ (from the last whitespace to the cursor).
+  const match = left.match(/(\S+)$/);
+  if (!match) return false;
+  const word = match[1];
+  // If the word looks like a URL, treat @ as part of the URL.
   if (word.includes('://') || word.startsWith('www.')) return true;
   // Also treat domain-like patterns as URL-like (e.g. hackmd.com/@user, foo.co.uk/@path).
   // Matches: one or more domain segments followed by a TLD (2+ letters) and optional path.

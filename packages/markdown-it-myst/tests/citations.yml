@@ -204,32 +204,24 @@ cases:
           - type: text
             content: ', the authors...'
       - type: paragraph_close
-  # Don't parse @ as a citation if in link text, URLs, and code as literal text.
-  # None of the children below should be 'cite' tokens
-  - title: Citations not parsed inside URLs, links, or code
-    md: 'Not [@linked](https://google.com) or https://google.com/@path or [text](https://mystmd.org/@path/foo) or hackmd.com/@rowanc1 or `@code` or hello@jupyter.org.'
+  # Don't parse @ as a citation if inside URLs or email-like text.
+  # The children below should all be text tokens, no cite tokens.
+  - title: Citations not parsed inside URLs
+    md: 'Not https://google.com/@path or hackmd.com/@rowanc1 or hello@jupyter.org or https://mystmd.org,@nospace or example.co.uk/@user or [@linked](https://google.com) or `@code`'
     tokens:
       - type: paragraph_open
       - type: inline
         children:
           - type: text
-            content: 'Not '
+            content: 'Not https://google.com/@path or hackmd.com/@rowanc1 or hello@jupyter.org or https://mystmd.org,@nospace or example.co.uk/@user or '
           - type: link_open
           - type: text
             content: '@linked'
           - type: link_close
           - type: text
-            content: ' or https://google.com/@path or '
-          - type: link_open
-          - type: text
-            content: 'text'
-          - type: link_close
-          - type: text
-            content: ' or hackmd.com/@rowanc1 or '
+            content: ' or '
           - type: code_inline
             content: '@code'
-          - type: text
-            content: ' or hello@jupyter.org.'
       - type: paragraph_close
   - title: Nested labels
     md: 'These include experimentally produced alkaline magmas from @iacovino2016 [`alkaline.xlsx`], basaltic melt inclusions from Kilauea [@tucker2019] and Gakkel Ridge [@bennett2019 `basalts.xlsx`], basaltic melt inclusions from Cerro Negro volcano, Nicaragua [@roggensack2001 `cerro_negro.xlsx`], and rhyolite melt inclusions from the Taupo Volcanic Center, New Zealand [@myers2019] and a topaz rhyolite from the Rio Grande Rift @mercer2015 [`rhyolites.xlsx`].'
