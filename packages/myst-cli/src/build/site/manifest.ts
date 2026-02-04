@@ -13,7 +13,7 @@ import {
 } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
-import { resolveToAbsolute } from '../../config.js';
+import { resolveToAbsolute } from '../../utils/resolveToAbsolute.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';

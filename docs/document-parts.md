@@ -182,6 +182,18 @@ site:
   ...
 ```
 
+You can also specify a URL to a remote markdown file:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+site:
+  template: ...
+  parts:
+    footer: https://example.com/shared-footer.md
+  ...
+```
+
 Content in parts will generally be parsed similarly to other MyST content (though some functionality like code execution will not work).
 
 ### Share the same part across multiple sites

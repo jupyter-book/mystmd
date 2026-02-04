@@ -168,3 +168,7 @@ site:
     - mystmd-guide.curve.space
   options:
     style: public/style.css
+  parts:
+    # This just tests this locally, it shouldn't be in the mystmd.org/guide site
+    # Note the CSS won't work because we aren't pulling it in
+    footer: https://github.com/jupyter-book/jupyterbook.org/raw/refs/heads/main/docs/_site/footer.md
