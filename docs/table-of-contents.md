@@ -216,11 +216,6 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 ## In-page table of contents
 
 The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page. This can be done at the `project`, `page`, or `section`, level.
-For example here's the `{toc}` for the current section:
-
-:::{toc}
-:context: section
-:::
 
 A few examples follow, see the {myst:directive}`toc` docs for more information.
 
