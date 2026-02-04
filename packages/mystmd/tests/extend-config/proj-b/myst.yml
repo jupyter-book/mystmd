@@ -9,6 +9,8 @@ project:
   math:
     a: defined-in-project-b
     c: defined-in-project-b
+  parts:
+    footer: "Footer from **extended** config"
 site:
   template: book-theme
   nav: []

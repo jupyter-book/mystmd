@@ -140,11 +140,12 @@ export function handleDeprecatedFields(
  *
  * Returns validated site and project configs.
  *
- * Throws errors config file is malformed or invalid.
+ * Throws errors if config file is malformed or invalid.
  */
 async function getValidatedConfigsFromFile(
   session: ISession,
   file: string,
+  projectPath: string,
   vfile?: VFile,
   stack?: string[],
 ) {
@@ -208,6 +209,7 @@ async function getValidatedConfigsFromFile(
         const { site: extSite, project: extProject } = await getValidatedConfigsFromFile(
           session,
           extFile,
+          projectPath,
           vfile,
           stack,
         );
@@ -222,10 +224,9 @@ async function getValidatedConfigsFromFile(
     );
   }
   const { site: rawSite, project: rawProject } = conf ?? {};
-  const path = dirname(file);
   if (rawProject) {
     project = fillProjectFrontmatter(
-      await validateProjectConfigAndThrow(session, path, vfile, rawProject),
+      await validateProjectConfigAndThrow(session, projectPath, vfile, rawProject),
       project ?? {},
       projectOpts,
     );
@@ -237,7 +238,7 @@ async function getValidatedConfigsFromFile(
   }
   if (rawSite) {
     site = fillSiteConfig(
-      await validateSiteConfigAndThrow(session, path, vfile, rawSite),
+      await validateSiteConfigAndThrow(session, projectPath, vfile, rawSite),
       site ?? {},
       incrementOptions('extend', opts),
     );
@@ -273,7 +274,7 @@ export async function loadConfig(
       return existingConf.validated;
     }
   }
-  const { site, project, extend } = await getValidatedConfigsFromFile(session, file);
+  const { site, project, extend } = await getValidatedConfigsFromFile(session, file, path);
   const validated = { ...rawConf, site, project, extend };
   session.store.dispatch(
     config.actions.receiveRawConfig({
