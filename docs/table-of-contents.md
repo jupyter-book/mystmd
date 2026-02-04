@@ -280,10 +280,12 @@ For example, to display only the first two layers of headers across the entire p
 :::
 ```
 
+::::{dropdown}
 :::{toc}
 :context: project
-:depth: 1
+:depth: 2
 :::
+::::
 
 ## URL slugs and folder structure
 
