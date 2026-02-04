@@ -209,6 +209,8 @@ Using relative paths in the configuration you're extending can lead to unpredict
 Try to keep your "extended" configuration self-contained rather than reliant on local files.
 For example, a configuration like the following won't work, because the main `myst.yml` file does not have the same path to the `.css` file listed below:
 
+❌ won't work:
+
 ```{code-block} yaml
 :filename: config/small.yml
 site:
@@ -221,10 +223,10 @@ site:
 extends: config/small.yml
 ```
 
-:::{note} Use remote URLs if you must point to files with "extended" configuration
+**Use remote URLs if you must point to files with "extended" configuration**.
 This ensures that MyST can find and include the file regardless of where the `small.yml` file is.
 
-For example:
+✅ will work:
 
 ```{code-block} yaml
 :filename: config/small.yml
@@ -232,7 +234,6 @@ site:
   options:
     style: https://github.com/jupyter-book/jupyterbook.org/raw/refs/heads/main/docs/_site/footer.md
 ```
-:::
 
 :::{note} Use `raw` links to point to GitHub artifacts
 If you wish to refer to a remote resource hosted on GitHub, make sure you use the "raw" GitHub link, not the link that you get when you click on that item in the GitHub UI.
