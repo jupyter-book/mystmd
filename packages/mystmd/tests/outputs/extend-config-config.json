@@ -28,14 +28,7 @@
       "exports": [],
       "bibliography": [],
       "index": "index",
-      "pages": [],
-      "parts": {
-        "footer": {
-          "mdast": {
-            "type": "root"
-          }
-        }
-      }
+      "pages": []
     }
   ]
 }
