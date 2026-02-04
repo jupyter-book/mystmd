@@ -223,6 +223,22 @@ cases:
           - type: code_inline
             content: '@code'
       - type: paragraph_close
+  # URL followed by space then citation - citation IS parsed (whitespace breaks URL context)
+  - title: Citation after URL with space is parsed
+    md: 'See https://mystmd.org, @scipy2025 for details.'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: 'See https://mystmd.org, '
+          - type: cite
+            meta:
+              label: scipy2025
+              kind: narrative
+          - type: text
+            content: ' for details.'
+      - type: paragraph_close
   - title: Nested labels
     md: 'These include experimentally produced alkaline magmas from @iacovino2016 [`alkaline.xlsx`], basaltic melt inclusions from Kilauea [@tucker2019] and Gakkel Ridge [@bennett2019 `basalts.xlsx`], basaltic melt inclusions from Cerro Negro volcano, Nicaragua [@roggensack2001 `cerro_negro.xlsx`], and rhyolite melt inclusions from the Taupo Volcanic Center, New Zealand [@myers2019] and a topaz rhyolite from the Rio Grande Rift @mercer2015 [`rhyolites.xlsx`].'
     tokens:
