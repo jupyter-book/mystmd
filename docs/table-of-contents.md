@@ -217,7 +217,7 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 
 The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page. This can be done at the `project`, `page`, or `section`, level.
 
-A few examples follow, see the {myst:directive}`toc` docs for more information.
+There are a few specific examples below and see the {myst:directive}`toc` docs for more information.
 
 ### Display headings in a section
 
