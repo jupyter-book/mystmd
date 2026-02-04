@@ -222,7 +222,7 @@ There are a few specific examples below and see the {myst:directive}`toc` docs f
 ### Display headings in a section
 
 Set `:context: section` to list the remaining **Headings** in the current section.
-It will detect the parent header where the directive is placed, and list all _child_ headings that come _after_ the location of the directive. For example, note how *this section* header is omitted, whereas the `{toc}` just above includes it.
+It will detect the parent header where the directive is placed, and list all _child_ headings that come _after_ the location of the directive. For example, note how *this section* header is omitted.
 
 ```md
 :::{toc}
