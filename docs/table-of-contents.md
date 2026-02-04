@@ -230,7 +230,6 @@ It will detect the parent header where the directive is placed, and list all _ch
 :::
 ```
 
-It will display all section headers
 
 :::{toc}
 :context: section
