@@ -4,7 +4,7 @@ import JSON5 from 'json5';
 
 export type AnyWidgetDirective = {
   /** The type of the directive */
-  type: 'widget';
+  type: 'anywidget';
   /** The ES module to import */
   esm: string;
   /** The JSON data to initialize the widget */
@@ -32,7 +32,6 @@ export function validateStringOptions(
 
 export const widgetDirective: DirectiveSpec = {
   name: 'anywidget',
-  alias: ['any:widget'],
   doc: 'Embed a MyST Widget (AnyWidget) component with data in the body',
   arg: {
     type: String,
@@ -98,7 +97,7 @@ export const widgetDirective: DirectiveSpec = {
 
     return [
       {
-        type: 'widget',
+        type: 'anywidget',
         esm: data.arg as string,
         json,
         css: (data.options?.css ?? data.options?.styles) as string | undefined,
