@@ -135,11 +135,9 @@ Citations that are embedded in links will _not_ be parsed as citations.
 For example: [@jupyter-book](https://github.com/jupyter-book) or https://hackmd.io/@turingway/B1OnVLe-3.
 
 :::{note} Mixing URLs and `@citations`
-If you have citations around URLs, wrap the URL in angle brackets (`<...>`) or add whitespace to ensure the citation is parsed correctly.
+If you have a citation directly after a URL without whitespace, it may be treated as part of the URL rather than as a citation.
 
-For example, `hackmd.com/@user` will treat `@user` as a citation because there's no scheme. To avoid this, write `<hackmd.com/@user>` instead.
-
-Similarly, `https://mystmd.org,@scipy2025` will treat `@scipy2025` as part of the URL. To cite after a URL, add a space (`See https://mystmd.org, @scipy2025`) or use angle brackets (`See <https://mystmd.org>,@scipy2025`)
+For example, `https://mystmd.org,@scipy2025` will treat `@scipy2025` as part of the URL. To cite after a URL, add a space (`See https://mystmd.org, @scipy2025`) or use angle brackets (`See <https://mystmd.org>,@scipy2025`).
 :::
 
 ## Citation Roles
