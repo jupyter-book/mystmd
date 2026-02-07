@@ -138,6 +138,8 @@ For example: [@jupyter-book](https://github.com/jupyter-book) or https://hackmd.
 If you have a citation directly after a URL without whitespace, it may be treated as part of the URL rather than as a citation.
 
 For example, `https://mystmd.org,@scipy2025` will treat `@scipy2025` as part of the URL. To cite after a URL, add a space (`See https://mystmd.org, @scipy2025`) or use angle brackets (`See <https://mystmd.org>,@scipy2025`).
+
+**Avoid URLs with @ in square brackets**. A URL with `@` inside square brackets like `[https://hackmd.io/@user]` will be parsed as a citation.
 :::
 
 ## Citation Roles
