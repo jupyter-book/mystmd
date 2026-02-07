@@ -194,7 +194,7 @@ version: 1
 extends: ./small.yml
 project:
   exports:
-    format: pdf
+    - format: pdf
 ```
 
 The final build will include **both** a `meca` and a `pdf` export.
