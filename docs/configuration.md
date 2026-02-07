@@ -197,7 +197,7 @@ project:
     - format: pdf
 ```
 
-The final build will include **both** a `meca` and a `pdf` export.
+The final project configuration will include **both** a `meca` and a `pdf` export.
 
 :::{note}
 The fields `exports` and `downloads` are deduplicated by `id`, so if you wish to override a value from an inherited configuration you may assign it the same `id`. Other fields cannot be overridden; instead, shared configurations should be as granular and shareable as possible.
