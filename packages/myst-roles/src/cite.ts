@@ -27,6 +27,7 @@ export const citeRole: RoleSpec = {
     'cite:cauthors',
     // 'cite:empty',
   ],
+  doc: 'Create citations with support for parenthetical and narrative styles. See [](#role:cite).',
   options: { ...commonRoleOptions('cite') },
   body: {
     type: String,

@@ -3,6 +3,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const mathDirective: DirectiveSpec = {
   name: 'math',
+  doc: 'The math directive takes no arguments and the body of the directive is the LaTeX style math. You can have an optional label parameter for cross-referencing. See [](#directive:math).',
   options: {
     ...commonDirectiveOptions('math'),
     typst: {

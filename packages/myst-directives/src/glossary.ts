@@ -3,6 +3,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const glossaryDirective: DirectiveSpec = {
   name: 'glossary',
+  doc: 'Glossaries are a collection of definitions for Terms in your documents. See [](#directive:glossary).',
   body: {
     type: 'myst',
     required: true,

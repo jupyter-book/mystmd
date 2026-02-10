@@ -42,6 +42,8 @@ There are three ways to create an equation block:
 (2) wrap the equation in two dollar-signs, `$$`; or
 (3) use a `\begin{equation}` statement directly (i.e. using AMS math).
 
+(directive:math)=
+
 ### Math directives
 
 The math directive takes no arguments and the body of the directive is the $\LaTeX$ style math.

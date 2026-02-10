@@ -12,6 +12,8 @@ You can define Terms and generate reference pages for them with Glossaries and I
 
 :::
 
+(directive:glossary)=
+
 ## Glossaries
 
 Glossaries are a collection of definitions for Terms in your documents.
@@ -61,6 +63,8 @@ A second term
 [^drawback]: Note that this has a challenge of not being able to have two terms for the same definition.
 
 :::
+
+(role:term)=
 
 ## Terms
 
@@ -166,6 +170,8 @@ To emphasize any index entry, add an exclamation point before the index term. Th
 :::{index} ! index one
 :::
 ```
+
+(role:index)=
 
 ### Index entry role
 

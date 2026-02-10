@@ -109,6 +109,8 @@ My directive content.
 Specifying directive keywords with `:key:` or `---` will make no difference. Use the `:key: val` syntax as a shorthand for just one or two keywords. Use the `---` syntax if you have many keywords you wish to specify, or if some values will span multiple lines.
 ```
 
+(syntax:roles)=
+
 ### Roles
 
 Roles are very similar to directives, but they are written entirely in one line. The syntax of a role is:

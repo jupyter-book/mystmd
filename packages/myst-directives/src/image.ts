@@ -4,6 +4,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const imageDirective: DirectiveSpec = {
   name: 'image',
+  doc: 'The image directive allows you to customize width, alignment, and other classes to add to the image. See [](#image-directive).',
   arg: {
     type: String,
     doc: 'The filename of an image (e.g. `my-fig.png`).',

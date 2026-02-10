@@ -4,6 +4,7 @@ import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 export const subscriptRole: RoleSpec = {
   name: 'subscript',
   alias: ['sub'],
+  doc: 'Format text as subscript. See [](#role:subscript-superscript).',
   options: { ...commonRoleOptions('subscript') },
   body: {
     type: 'myst',

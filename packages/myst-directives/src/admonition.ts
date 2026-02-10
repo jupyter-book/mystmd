@@ -4,7 +4,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const admonitionDirective: DirectiveSpec = {
   name: 'admonition',
-  doc: 'Callouts, or "admonitions", highlight a particular block of text that exists slightly apart from the narrative of your page, such as a note or a warning. \n\n The admonition kind can be determined by the directive name used (e.g. `:::{tip}` or `:::{note}`).',
+  doc: 'Callouts, or "admonitions", highlight a particular block of text that exists slightly apart from the narrative of your page, such as a note or a warning. The admonition kind can be determined by the directive name used (e.g. `:::{tip}` or `:::{note}`). See [](#directive:admonition).',
   alias: [
     'attention',
     'caution',

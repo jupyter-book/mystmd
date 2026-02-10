@@ -19,6 +19,8 @@ An alternative syntax, {ref}`setex-headings`, is also supported for level 1 and 
 
 To reference a heading in your text, you can use the `(target)=` syntax, see [{name}](#targeting-headers) for more.
 
+(role:inline-formatting)=
+
 ## Inline Text Formatting
 
 Standard inline formatting including bold, italic, code, as well as escaped symbols and line breaks:
@@ -76,6 +78,8 @@ You can use GitHub Flavoured Markdown to create task lists, these may be read on
 - [x] Create a community around MyST
 - [ ] Revolutionize technical communication
 ```
+
+(role:subscript-superscript)=
 
 ## Subscript & Superscript
 
