@@ -418,6 +418,9 @@ const handlers: Record<string, Handler> = {
   },
   span(node, state) {
     state.renderChildren(node, 0, { trimEnd: false });
+    if (node.identifier) {
+      state.write(` <${node.identifier}>`);
+    }
   },
   raw(node, state) {
     if (node.typst) {
