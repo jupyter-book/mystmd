@@ -26,6 +26,18 @@ describe('Test toc transformation', () => {
     expect(mdast.children[0].children[0].children[1].children[0].url).toBe('/two');
     expect(toText(mdast.children[0].children[0].children[1].children[0])).toBe('Two');
   });
+  test('Project Toc - folder slugs use / not . in URLs', () => {
+    const vfile = new VFile();
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'toc', kind: 'project', children: [] }],
+    } as any;
+    buildTocTransform(mdast, vfile, [
+      // Slug should only ever have `.` in it when folders: true, so we don't need to explicitly configure that
+      { title: 'Intro', level: 1, slug: 'execution.execution' },
+    ]);
+    expect(mdast.children[0].children[0].children[0].children[0].url).toBe('/execution/execution');
+  });
   test('Project Toc - with external link', () => {
     const externalUrl = 'https://foo.bar/baz';
     const vfile = new VFile();
