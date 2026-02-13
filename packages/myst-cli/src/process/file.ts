@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { tic } from 'myst-cli-utils';
+import { tic, isUrl } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
 import { doi } from 'doi-utils';
@@ -18,6 +18,7 @@ import type { PreRendererData, RendererData } from '../transforms/types.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { isValidFile, parseFilePath } from '../utils/resolveExtension.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { resolveToAbsolute } from '../utils/resolveToAbsolute.js';
 import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
 import { processNotebookFull } from './notebook.js';
@@ -315,6 +316,17 @@ export async function loadFile(
   return pre;
 }
 
+/**
+ * Load and process frontmatter parts (e.g., footer, sidebar) from various sources.
+ *
+ * Parts can be a few things in the frontmatter:
+ * - Remote URLs (https://example.com/footer.md) - fetched and cached locally
+ * - Local file paths (footer.md) - loaded relative to the config file
+ * - Inline content (e.g. `footer: Foo *bar*.`) - parsed and cached using a synthetic path so we can refer to it
+ *
+ * Returns a modified parts object where each part value is replaced with the
+ * resolved file path (or synthetic path for inline content).
+ */
 export async function loadFrontmatterParts(
   session: ISession,
   file: string,
@@ -328,7 +340,22 @@ export async function loadFrontmatterParts(
   const modifiedParts: [string, string[]][] = await Promise.all(
     Object.entries(parts ?? {}).map(async ([part, contents]) => {
       let partFile: string;
-      if (contents.length === 1 && isValidFile(contents[0])) {
+      // Remote URL - fetch and cache locally
+      if (contents.length === 1 && isUrl(contents[0])) {
+        partFile = await resolveToAbsolute(session, path.dirname(file), contents[0], {
+          allowRemote: true,
+        });
+        // If for some reason it didn't download the file won't exist so we just return
+        if (!fs.existsSync(partFile)) {
+          fileWarn(vfile, `Failed to fetch remote part file: ${contents[0]}`);
+          return [part, contents];
+        }
+        await loadFile(session, partFile, projectPath, undefined, {
+          kind: SourceFileKind.Part,
+          preFrontmatter: pageFrontmatter,
+        });
+        // Local file - load and register for file watching
+      } else if (contents.length === 1 && isValidFile(contents[0])) {
         partFile = path.resolve(path.dirname(file), contents[0]);
         if (!fs.existsSync(partFile)) {
           fileWarn(vfile, `Part file does not exist: ${partFile}`);
@@ -339,6 +366,7 @@ export async function loadFrontmatterParts(
           /** Frontmatter from the source page is prioritized over frontmatter from the part file itself */
           preFrontmatter: pageFrontmatter,
         });
+        // Track local dependencies so watch mode can rebuild when part files change.
         session.store.dispatch(
           watch.actions.addLocalDependency({
             path: file,
@@ -346,6 +374,8 @@ export async function loadFrontmatterParts(
           }),
         );
         const proj = selectors.selectLocalProject(session.store.getState(), projectPath ?? '.');
+        // If a part is also listed as a project page, warn on explicit entries and drop implicit
+        // ones (from patterns/auto-discovery) to avoid duplicate processing.
         if (proj?.index === partFile) {
           fileWarn(vfile, `index file is also used as a part: ${partFile}`);
         } else if (proj) {
@@ -361,6 +391,8 @@ export async function loadFrontmatterParts(
           const newProj = { ...proj, pages: filteredPages };
           session.store.dispatch(projects.actions.receive(newProj));
         }
+        // Inline content - parse markdown and cache with synthetic path
+        // Note: multiple entries (contents.length > 1) are always treated as inline markdown blocks.
       } else {
         const cache = castSession(session);
         partFile = `${path.resolve(file)}#${property}.${part}`;

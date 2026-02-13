@@ -38,7 +38,7 @@ function cleanHashes(text: string) {
 }
 
 const only = '';
-const TIMEOUT = 35000;  // Long-ish to allow for the execution tests
+const TIMEOUT = 35000; // Long-ish to allow for the execution tests
 describe.concurrent('End-to-end cli export tests', { timeout: TIMEOUT }, () => {
   const cases = loadCases('exports.yml');
   test.each(

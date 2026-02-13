@@ -169,19 +169,87 @@ project: ...
 extends:
   - ../macros.yml # A local file
   - https://raw.githubusercontent.com/myorg/myrepo/refs/heads/main/funding.yaml # A remote file
+...other-config:
 ```
 
-Each entry listed inside `extends` may be a relative path to a file, or a URL. URLs must be direct links to files which are downloaded and cached locally. The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys. They may also have additional entries listed under `extends`.
+- Each entry listed inside `extends` may be a relative path to a file, or a URL.
+- URLs must be direct links to files which are downloaded and cached locally.
+- The files must contain valid `myst.yml` structure with `version: 1` and `site` or `project` keys.
 
-When using `extends` to compose configuration files, list-type fields are combined, rather than replaced. This means, for example, you may define a single export in one file:
+**List-type fields are combined, not replaced**. This means, for example, you may define a single export in one file:
 
-```yaml
+```{code-block} yaml
+:filename: small.yml
 version: 1
 project:
-  export:
-    format: meca
+  exports:
+    - format: meca
 ```
 
-Then, any `myst.yml` file that extends this file will have a `meca` export in addition to any other exports it defines. This behavior applies to the list fields: `tags`, `keywords`, `exports`, `downloads`, `funding`, `resources`, `requirements`, `bibliography`, `editors`, and `reviewers`. The fields `exports` and `downloads` are deduplicated by `id`, so if you wish to override a value from an inherited configuration you may assign it the same `id`. Other fields cannot be overridden; instead, shared configurations should be as granular and shareable as possible.
+and another format in your main `myst.yml` file:
+
+```{code-block} yaml
+:filename: myst.yml
+version: 1
+extends: ./small.yml
+project:
+  exports:
+    - format: pdf
+```
+
+The final project configuration will include **both** a `meca` and a `pdf` export.
+
+:::{note}
+The fields `exports` and `downloads` are deduplicated by `id`, so if you wish to override a value from an inherited configuration you may assign it the same `id`. Other fields cannot be overridden; instead, shared configurations should be as granular and shareable as possible.
+:::
+
+### Avoid using relative paths in extended configuration
+
+Using relative paths in the configuration you're extending can lead to unpredictable outcomes, especially if the file you're extending is in a different folder or remote location.
+Try to keep your "extended" configuration self-contained rather than reliant on local files.
+For example, a configuration like the following won't work, because the main `myst.yml` file does not have the same path to the `.css` file listed below:
+
+❌ won't work:
+
+```{code-block} yaml
+:filename: config/small.yml
+site:
+  options:
+    style: myfile.css
+```
+
+```{code-block} yaml
+:filename: myst.yml
+extends: config/small.yml
+```
+
+**Use remote URLs if you must point to files with "extended" configuration**.
+This ensures that MyST can find and include the file regardless of where the `small.yml` file is.
+
+✅ will work:
+
+```{code-block} yaml
+:filename: config/small.yml
+site:
+  options:
+    style: https://github.com/jupyter-book/jupyterbook.org/raw/refs/heads/main/docs/_site/footer.md
+```
+
+:::{note} Use `raw` links to point to GitHub artifacts
+If you wish to refer to a remote resource hosted on GitHub, make sure you use the "raw" GitHub link, not the link that you get when you click on that item in the GitHub UI.
+For example:
+
+This is the GitHub URL for a footer hosted on GitHub:
+
+```
+https://github.com/jupyter-book/jupyterbook.org/blob/main/docs/_site/footer.md
+```
+
+But this is the "raw link" that MyST can use:
+
+```
+https://github.com/jupyter-book/jupyterbook.org/raw/refs/heads/main/docs/_site/footer.md
+```
+:::
 
 +++

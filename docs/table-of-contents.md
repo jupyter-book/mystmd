@@ -215,22 +215,77 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 
 ## In-page table of contents
 
-The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page.
-For example:
+The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page. This can be done at the `project`, `page`, or `section`, level.
+
+There are a few specific examples below and see the {myst:directive}`toc` docs for more information.
+
+### Display headings in a section
+
+Set `:context: section` to list the remaining **Headings** in the current section.
+It will detect the parent header where the directive is placed, and list all _child_ headings that come _after_ the location of the directive. For example, note how *this section* header is omitted.
+
+```md
+:::{toc}
+:context: section
+:::
+```
+
+
+:::{toc}
+:context: section
+:depth: 2
+:::
+
+### Display headings on the page
+
+Set `:context: page` to list the **Headings** on the current page.
+It will display all headings on the page regardless of where you call `{toc}`.
 
 ```md
 :::{toc}
 :context: page
-:depth: 2
 :::
 ```
 
 :::{toc}
 :context: page
-:depth: 2
 :::
 
-See the {myst:directive}`toc` docs for more information.
+### Display pages in the entire project
+
+Set `:context: project` to list the Table of Contents for the entire project.
+It will essentially mirror the structure of `project.toc` and display the page titles across the project. It will not display the headers within each page.
+
+```md
+:::{toc}
+:context: project
+:::
+```
+
+::::{dropdown} Click here to see full project TOC
+:::{toc}
+:context: project
+:::
+::::
+
+### Control the depth of toc entries
+
+The `:depth:` option will display headers that are nested underneath sections.
+For example, to display only the first two layers of headers across the entire project:
+
+```md
+:::{toc}
+:context: project
+:depth: 2
+:::
+```
+
+::::{dropdown}
+:::{toc}
+:context: project
+:depth: 2
+:::
+::::
 
 ## URL slugs and folder structure
 

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
-import { dirname, extname, relative, resolve } from 'node:path';
+import { dirname, relative, resolve } from 'node:path';
 import yaml from 'js-yaml';
-import { writeFileToFolder, isUrl, computeHash } from 'myst-cli-utils';
+import { writeFileToFolder } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
@@ -17,12 +17,12 @@ import {
 import { VFile } from 'vfile';
 import { prepareToWrite } from './frontmatter.js';
 import { loadFrontmatterParts } from './process/file.js';
-import { cachePath, loadFromCache, writeToCache } from './session/cache.js';
 import type { ISession } from './session/types.js';
 import { selectors } from './store/index.js';
 import { config } from './store/reducers.js';
 import { logMessagesFromVFile } from './utils/logging.js';
 import { addWarningForFile } from './utils/addWarningForFile.js';
+import { resolveToAbsolute } from './utils/resolveToAbsolute.js';
 
 const VERSION = 1;
 
@@ -140,11 +140,12 @@ export function handleDeprecatedFields(
  *
  * Returns validated site and project configs.
  *
- * Throws errors config file is malformed or invalid.
+ * Throws errors if config file is malformed or invalid.
  */
 async function getValidatedConfigsFromFile(
   session: ISession,
   file: string,
+  projectPath: string,
   vfile?: VFile,
   stack?: string[],
 ) {
@@ -208,6 +209,7 @@ async function getValidatedConfigsFromFile(
         const { site: extSite, project: extProject } = await getValidatedConfigsFromFile(
           session,
           extFile,
+          projectPath,
           vfile,
           stack,
         );
@@ -222,10 +224,9 @@ async function getValidatedConfigsFromFile(
     );
   }
   const { site: rawSite, project: rawProject } = conf ?? {};
-  const path = dirname(file);
   if (rawProject) {
     project = fillProjectFrontmatter(
-      await validateProjectConfigAndThrow(session, path, vfile, rawProject),
+      await validateProjectConfigAndThrow(session, projectPath, vfile, rawProject),
       project ?? {},
       projectOpts,
     );
@@ -237,7 +238,7 @@ async function getValidatedConfigsFromFile(
   }
   if (rawSite) {
     site = fillSiteConfig(
-      await validateSiteConfigAndThrow(session, path, vfile, rawSite),
+      await validateSiteConfigAndThrow(session, projectPath, vfile, rawSite),
       site ?? {},
       incrementOptions('extend', opts),
     );
@@ -273,7 +274,7 @@ export async function loadConfig(
       return existingConf.validated;
     }
   }
-  const { site, project, extend } = await getValidatedConfigsFromFile(session, file);
+  const { site, project, extend } = await getValidatedConfigsFromFile(session, file, path);
   const validated = { ...rawConf, site, project, extend };
   session.store.dispatch(
     config.actions.receiveRawConfig({
@@ -288,45 +289,12 @@ export async function loadConfig(
   return validated;
 }
 
-export async function resolveToAbsolute(
-  session: ISession,
-  basePath: string,
-  relativePath: string,
-  opts?: {
-    allowNotExist?: boolean;
-    allowRemote?: boolean;
-  },
-) {
-  let message: string | undefined;
-  if (opts?.allowRemote && isUrl(relativePath)) {
-    const cacheFilename = `config-item-${computeHash(relativePath)}${extname(new URL(relativePath).pathname)}`;
-    if (!loadFromCache(session, cacheFilename, { maxAge: 30 })) {
-      try {
-        const resp = await session.fetch(relativePath);
-        if (resp.ok) {
-          writeToCache(session, cacheFilename, Buffer.from(await resp.arrayBuffer()));
-        } else {
-          message = `Bad response from config URL: ${relativePath}`;
-        }
-      } catch {
-        message = `Error fetching config URL: ${relativePath}`;
-      }
-    }
-    relativePath = cachePath(session, cacheFilename);
-  }
-  try {
-    const absPath = resolve(basePath, relativePath);
-    if (opts?.allowNotExist || fs.existsSync(absPath)) {
-      return absPath;
-    }
-    message = message ?? `Does not exist as local path: ${absPath}`;
-  } catch {
-    message = message ?? `Unable to resolve as local path: ${relativePath}`;
-  }
-  session.log.debug(message);
-  return relativePath;
-}
-
+/**
+ * Resolve an absolute path to a relative path.
+ *
+ * Note: the absolute-path helper lives in `utils/resolveToAbsolute.ts`
+ * We moved it there to avoid circular dependencies.
+ */
 function resolveToRelative(
   session: ISession,
   basePath: string,
