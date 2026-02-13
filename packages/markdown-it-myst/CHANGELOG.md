@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.15
+
+### Patch Changes
+
+- bc240a8: Make citation parsing less aggressive
+
 ## 1.0.14
 
 ### Patch Changes
