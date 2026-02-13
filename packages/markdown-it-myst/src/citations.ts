@@ -22,15 +22,24 @@ export interface Citation {
   suffix?: Token[];
 }
 
+// Minimal inline state shape used by the guard functions at the bottom
+type InlineState = {
+  src: string;
+  pos: number;
+  linkLevel?: number;
+};
+
 export const citationsPlugin: PluginWithOptions = (md) => {
   const regexes = {
     citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
     // Only allow a short [suffix] for in text citations (e.g. 50 characters)
     inText: /^@((?:[\w|{][\w:.#$%&\-+?<>~/]*[\w|}])|\w)(\s*)(\[([^\]]{1,50})\])?/,
-    allowedBefore: /^[^a-zA-Z.0-9]$/,
+    allowedBefore: /^[^a-zA-Z0-9]$/,
   };
 
   md.inline.ruler.after('emphasis', 'citation', (state, silent) => {
+    // Skip parsing inside links or URL-like contexts.
+    if (isLinkContext(state) || isUrlContext(state)) return false;
     // const max = state.posMax;
     const char = state.src.charCodeAt(state.pos);
     if (
@@ -120,4 +129,30 @@ export const citationsPlugin: PluginWithOptions = (md) => {
 
 function trimBraces(label: string): string {
   return label.replace(/^\{(.*)\}$/, '$1');
+}
+
+// Skip parsing when inside link text or label.
+function isLinkContext(state: InlineState): boolean {
+  return (state.linkLevel ?? 0) > 0;
+}
+
+// Skip parsing inside URL-like text such as https://.../@path or www.example.com/@path.
+// This lets us keep allowing `/` before citations, while still filtering out URLs.
+function isUrlContext(state: InlineState): boolean {
+  const left = state.src.slice(0, state.pos);
+  if (left.length === 0) return false;
+  // If the character immediately before @ is whitespace, not in URL context.
+  const charBefore = left[left.length - 1];
+  if (/\s/.test(charBefore)) return false;
+  // Find the word directly before @ (from the last whitespace to the cursor).
+  const match = left.match(/(\S+)$/);
+  if (!match) return false;
+  const word = match[1];
+  // Autolink already closed: <...> so the @ after it is not part of the URL.
+  if (word.startsWith('<') && word.includes('>')) return false;
+  // If the word looks like a URL, treat @ as part of the URL.
+  if (word.includes('://') || word.startsWith('www.')) return true;
+  // Also treat domain-like patterns as URL-like (e.g. hackmd.com/@user, foo.co.uk/@path).
+  // Matches: one or more domain segments followed by a TLD (2+ letters) and optional path.
+  return /^([a-z0-9-]+\.)+[a-z]{2,}(\/|$)/i.test(word);
 }
