@@ -1,5 +1,12 @@
 # myst-transforms
 
+## 1.3.46
+
+### Patch Changes
+
+- 72505e1: Fix URL generation bug in toc directive
+  - myst-to-html@1.6.5
+
 ## 1.3.45
 
 ### Patch Changes
