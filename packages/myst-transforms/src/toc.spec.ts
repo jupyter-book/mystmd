@@ -36,9 +36,7 @@ describe('Test toc transformation', () => {
       // Slug should only ever have `.` in it when folders: true, so we don't need to explicitly configure that
       { title: 'Intro', level: 1, slug: 'execution.execution' },
     ]);
-    expect(mdast.children[0].children[0].children[0].children[0].url).toBe(
-      '/execution/execution',
-    );
+    expect(mdast.children[0].children[0].children[0].children[0].url).toBe('/execution/execution');
   });
   test('Project Toc - with external link', () => {
     const externalUrl = 'https://foo.bar/baz';
