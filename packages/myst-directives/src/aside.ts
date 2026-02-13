@@ -1,6 +1,6 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import type { Aside } from 'myst-spec-ext';
-import type { FlowContent, ListContent, PhrasingContent } from 'myst-spec';
+import type { FlowContent } from 'myst-spec';
 import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const asideDirective: DirectiveSpec = {
@@ -18,7 +18,7 @@ export const asideDirective: DirectiveSpec = {
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {
-    const children = [...(data.body as unknown as (FlowContent | ListContent | PhrasingContent)[])];
+    const children = [...(data.body as unknown as FlowContent[])];
     if (data.arg) {
       children.unshift({
         type: 'admonitionTitle',
