@@ -1,4 +1,4 @@
-import { fileError, fileWarn, toText, type GenericNode, type GenericParent } from 'myst-common';
+import { fileError, fileWarn, slugToUrl, toText, type GenericNode, type GenericParent } from 'myst-common';
 import type { List, Text } from 'myst-spec';
 import type { Heading, Link, ListItem } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
@@ -73,7 +73,7 @@ function transformPage(page: ProjectPage, projectSlug?: string): Text | Link {
   } else if (slug != null) {
     return {
       type: 'link',
-      url: `${projectSlug ? `/${projectSlug}` : ''}/${slug}`,
+      url: `${projectSlug ? `/${projectSlug}` : ''}/${slugToUrl(slug)}`,
       internal: true,
       children: [text],
     } as Link;
