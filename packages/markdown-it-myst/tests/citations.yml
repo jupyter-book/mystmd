@@ -251,6 +251,32 @@ cases:
               label: nospace
               kind: narrative
       - type: paragraph_close
+  # Bracket URL with @ is parsed as citation (prefix + label).
+  - title: Bracket URL with `@` is citation
+    md: '[https://hackmd.io/@user]'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: cite_group_open
+          - type: cite
+            content: 'https://hackmd.io/@user'
+            meta:
+              label: user
+              kind: parenthetical
+              prefix:
+                - content: 'https://hackmd.io/'
+          - type: cite_group_close
+      - type: paragraph_close
+  - title: Escaped bracket URL with `@` is parsed normally.
+    md: '\[https://hackmd.io/@user]'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: text
+            content: '[https://hackmd.io/@user]'
+      - type: paragraph_close
   # Autolink then text with @: @ is not citation (no allowed char before it), so literal text.
   - title: Autolink then letters@nospace is link and text
     md: '<https://mystmd.org>letters@nospace'
