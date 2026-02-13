@@ -227,7 +227,7 @@ cases:
       - type: paragraph_close
   # URL followed by space then citation - citation IS parsed (whitespace breaks URL context)
   - title: Citation after URL with space is parsed
-    md: 'See https://mystmd.org, @scipy2025 for details.'
+    md: 'See https://mystmd.org, @scipy2025 for details or <https://mystmd.org>.@nospace'
     tokens:
       - type: paragraph_open
       - type: inline
@@ -239,7 +239,31 @@ cases:
               label: scipy2025
               kind: narrative
           - type: text
-            content: ' for details.'
+            content: ' for details or '
+          - type: link_open
+          - type: text
+            content: 'https://mystmd.org'
+          - type: link_close
+          - type: text
+            content: '.'
+          - type: cite
+            meta:
+              label: nospace
+              kind: narrative
+      - type: paragraph_close
+  # Autolink then text with @: @ is not citation (no allowed char before it), so literal text.
+  - title: Autolink then letters@nospace is link and text
+    md: '<https://mystmd.org>letters@nospace'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: link_open
+          - type: text
+            content: 'https://mystmd.org'
+          - type: link_close
+          - type: text
+            content: 'letters@nospace'
       - type: paragraph_close
   - title: Nested labels
     md: 'These include experimentally produced alkaline magmas from @iacovino2016 [`alkaline.xlsx`], basaltic melt inclusions from Kilauea [@tucker2019] and Gakkel Ridge [@bennett2019 `basalts.xlsx`], basaltic melt inclusions from Cerro Negro volcano, Nicaragua [@roggensack2001 `cerro_negro.xlsx`], and rhyolite melt inclusions from the Taupo Volcanic Center, New Zealand [@myers2019] and a topaz rhyolite from the Rio Grande Rift @mercer2015 [`rhyolites.xlsx`].'
