@@ -433,4 +433,51 @@ describe('Test toc transformation', () => {
     expect(toText(mdast.children[1].children[1].children[0].children[0])).toBe('Two');
     expect(mdast.children[1].children[1].children[1].children[0].url).toBe('#four');
   });
+  // Shared pages for children toc tests
+  const childrenPages = [
+    { title: 'Parent', level: 1, slug: 'parent' },
+    { title: 'Child A', level: 2, slug: 'child-a' },
+    { title: 'Child B', level: 2, slug: 'child-b' },
+    { title: 'Grandchild', level: 3, slug: 'grandchild' },
+    { title: 'Sibling', level: 1, slug: 'sibling' },
+  ];
+  test('Children Toc - lists children and grandchildren', () => {
+    const vfile = new VFile();
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'toc', kind: 'children', children: [] }],
+    } as any;
+    buildTocTransform(mdast, vfile, childrenPages, 'proj', 'parent');
+    expect(mdast.children[0].data.part).toBe('toc:children');
+    const list = mdast.children[0].children[0];
+    // Only the level 2 pages are at the top of the toc list
+    expect(list.children.length).toBe(2);
+    expect(list.children[0].children[0].url).toBe('/proj/child-a');
+    expect(list.children[1].children[0].url).toBe('/proj/child-b');
+    // Grandchild is nested under Child B
+    expect(list.children[1].children.length).toBe(2);
+  });
+  test('Children Toc - depth filter excludes grandchildren', () => {
+    const vfile = new VFile();
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'toc', kind: 'children', depth: 1, children: [] }],
+    } as any;
+    buildTocTransform(mdast, vfile, childrenPages, undefined, 'parent');
+    const list = mdast.children[0].children[0];
+    // Same as above, but grandchild is now excluded
+    expect(list.children.length).toBe(2);
+    expect(list.children[0].children.length).toBe(1);
+    expect(list.children[1].children.length).toBe(1);
+  });
+  test('Children Toc - empty toc for leaf page', () => {
+    const vfile = new VFile();
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'toc', kind: 'children', children: [] }],
+    } as any;
+    buildTocTransform(mdast, vfile, childrenPages, undefined, 'sibling');
+    expect(mdast.children[0].data.part).toBe('toc:children');
+    expect(mdast.children[0].children[0].children.length).toBe(0);
+  });
 });

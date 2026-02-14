@@ -135,6 +135,7 @@ function transformHeading(heading: Heading): Text | Link {
     : text;
 }
 
+/** List every page in the project, mirroring the project's table of contents. */
 function transformProjectTocs(
   vfile: VFile,
   tocsAndHeadings: GenericNode[],
@@ -166,8 +167,53 @@ function transformProjectTocs(
   });
 }
 
+/** List only the child pages nested under the current page in the project TOC. */
+function transformChildrenTocs(
+  vfile: VFile,
+  tocsAndHeadings: GenericNode[],
+  pages?: ProjectPage[],
+  projectSlug?: string,
+  currentSlug?: string,
+) {
+  const childrenTocs = tocsAndHeadings.filter(
+    (node) => node.type === 'toc' && node.kind === 'children',
+  );
+  if (childrenTocs.length === 0) return;
+
+  if (!pages || currentSlug === undefined) {
+    fileError(vfile, `Pages not available to build children Table of Contents`);
+    return;
+  }
+
+  // Find the current page index
+  const currentIndex = pages.findIndex((page) => page.slug === currentSlug);
+  if (currentIndex === -1) {
+    fileWarn(vfile, `Current page not found in project pages for children Table of Contents`);
+    return;
+  }
+
+  const currentLevel = pages[currentIndex].level;
+  // Extract child pages: pages after the current one with deeper level, stopping at equal/shallower
+  const childPages: ProjectPage[] = [];
+  for (let i = currentIndex + 1; i < pages.length; i++) {
+    if (pages[i].level <= currentLevel) break;
+    childPages.push(pages[i]);
+  }
+
+  childrenTocs.forEach((toc) => {
+    const filteredPages = toc.depth
+      ? childPages.filter((page) => page.level - currentLevel <= toc.depth)
+      : childPages;
+    toc.type = 'block';
+    delete toc.kind;
+    toc.data = { part: 'toc:children' };
+    if (!toc.children) toc.children = [];
+    toc.children.push(listFromPages(filteredPages, projectSlug));
+  });
+}
+
+/** List all headings on the current page. */
 function transformPageTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
-  // Select 'page' type TOC nodes.
   const pageTocs = tocsAndHeadings.filter((node) => node.type === 'toc' && node.kind === 'page');
   // No page TOCs found, nothing to do.
   if (pageTocs.length === 0) return;
@@ -193,8 +239,8 @@ function transformPageTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
   });
 }
 
+/** List headings that follow the toc node in the current section. */
 function transformSectionTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
-  // Select 'section' type TOC nodes.
   const isSectionToc = (node: GenericNode) => node.type === 'toc' && node.kind === 'section';
 
   tocsAndHeadings.forEach((toc, index) => {
@@ -223,11 +269,19 @@ function transformSectionTocs(vfile: VFile, tocsAndHeadings: GenericNode[]) {
   });
 }
 
+/**
+ * Replace `{toc}` directive nodes with rendered lists.
+ *
+ * A page may contain multiple `{toc}` directives, each with a different
+ * `:context:` value (project, children, page, section). This runs a transform
+ * function for each context, but each one only touches `toc` nodes that match its kind.
+ */
 export function buildTocTransform(
   mdast: GenericParent,
   vfile: VFile,
   pages?: ProjectPage[],
   projectSlug?: string,
+  currentSlug?: string,
 ) {
   const tocHeadings = selectAll('toc > heading', mdast);
   const tocsAndHeadings = selectAll('toc,heading', mdast).filter((item) => {
@@ -236,6 +290,7 @@ export function buildTocTransform(
   }) as GenericNode[];
 
   transformProjectTocs(vfile, tocsAndHeadings, pages, projectSlug);
+  transformChildrenTocs(vfile, tocsAndHeadings, pages, projectSlug, currentSlug);
   transformPageTocs(vfile, tocsAndHeadings);
   transformSectionTocs(vfile, tocsAndHeadings);
 }

@@ -2,11 +2,11 @@ import type { VFile } from 'vfile';
 import { type DirectiveSpec, type DirectiveData, type GenericNode, fileError } from 'myst-common';
 import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
-const CONTEXTS = ['project', 'page', 'section'];
+const CONTEXTS = ['project', 'children', 'page', 'section'];
 
 export const tocDirective: DirectiveSpec = {
   name: 'toc',
-  doc: 'Inserts table of contents in the page. This may be for the project (each page has an entry), the current page (each heading has an entry), or the current section (only headings in the section have an entry).',
+  doc: 'Inserts table of contents in the page. This may be for every page of the project, children of the current page, headings on the current page, or headings in the current section.',
   alias: ['tableofcontents', 'table-of-contents', 'toctree', 'contents'],
   arg: {
     type: 'myst',
@@ -15,7 +15,7 @@ export const tocDirective: DirectiveSpec = {
   options: {
     context: {
       type: String,
-      doc: 'Table of Contents context; one of project, page, or section',
+      doc: 'Table of Contents context; one of project, children, page, or section',
       alias: ['kind'],
     },
     depth: {
