@@ -65,6 +65,9 @@ function defaultWordRenderer(
     });
   if (referencesDocStates.length > 0) {
     serializer.render(createReferenceTitle());
+    referencesDocStates.forEach((child) => {
+      child.value += "<br />";
+    });
     const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
     serializer.renderChildren(referencesRoot);
     serializer.closeBlock();
