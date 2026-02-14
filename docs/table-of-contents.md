@@ -311,76 +311,8 @@ If there are duplicates, these will be enumerated with a trailing number (e.g. `
 
 ### Preserve folders in URLs
 
-By default, MyST will _remove folder information_ when creating URLs, as illustrated in the example above.
-
-To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), set `site.options.folders` to `true` in `myst.yml`. For example:
-
-```{code} yml
-:filename: myst.yml
-:caption: Example of setting folders to true to show nested file structure in the URL
-:linenos:
-:lineno-start: 78
-:emphasize-lines: 82
-...
-site:
-  template: book-theme
-  options:
-    folders: true
-...
-```
-
-### Slug examples
-
-The following examples show how filenames are converted to slugs:
-
-:::{list-table}
-:header-rows: 1
-:align: center
-:label: toc-slugs
-
-* - file path
-  - slug
-* - `simple-page.md`
-  - `simple-page`
-* - `multiple---dashes.md`
-  - `multiple-dashes`
-* - `12-01-remove_digits.md`
-  - `remove-digits`
-* - `approx-π-suite.md`
-  - `approx-suite`
-* - `notes-élémentaires.md`
-  - `notes-l-mentaires`
-* - `2025_12_01-dates.md`
-  - `2025-12-01-dates`
-* - `2025_12_01.md`
-  - `2025-12-01`
-* - `2025_12.md`
-  - `2025-12-1`
-* - `2025-12-01-minutes.md`
-  - `2025-12-01-minutes`
-* - `2025.md`
-  - `2025`
-* - `01.md`
-  - `01`
-:::
-
-Here is the effect of setting `site.options.folders` to `true` or `false`:
-
-:::{list-table}
-:header-rows: 1
-:align: center
-:label: toc-folders
-
-* - file path
-  - default
-  - folders=true
-* - `simple-page.md`
-  - `simple-page`
-  - `simple-page`
-* - `f1/f2/nested-file.md`
-  - `nested-file`
-  - `f1/f2/nested-file`
-:::
+By default, MyST will _remove folder information_ when creating URLs.
+To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), see [](#site-url-folders).
 
 (implicit-toc)=
 
