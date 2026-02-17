@@ -1,5 +1,16 @@
 # myst-cli
 
+## 1.8.1
+
+### Patch Changes
+
+- 4617460: Add support for remote parts
+- 0e81477: Fix extends configuration with parts
+- Updated dependencies [72505e1]
+  - myst-transforms@1.3.46
+  - myst-parser@1.6.5
+  - myst-migrate@1.8.1
+
 ## 1.8.0
 
 ### Minor Changes

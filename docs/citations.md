@@ -7,11 +7,13 @@ thumbnail: ./thumbnails/citations.png
 
 Citations automatically show up in your site, including a references section at the bottom of the page.
 These citations are able to be clicked on to see more information, like the abstract.
-There are two different ways to add citations to your documents: 
-1. Add a Markdown link to a [DOI](wiki:Digital_object_identifier); and 
+There are two different ways to add citations to your documents:
+
+1. Add a Markdown link to a [DOI](wiki:Digital_object_identifier); and
 2. Add a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 (doi-links)=
+
 ## Simple Referencing with a DOI Link
 
 Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI.
@@ -130,6 +132,17 @@ As with a link to a DOI, you can also use the DOI directly instead of the BibTeX
   - @10.1093/nar/22.22.4673
   - Citation using a DOI directly
 ```
+
+Citations that are embedded in links will _not_ be parsed as citations.
+For example: [@jupyter-book](https://github.com/jupyter-book) or https://hackmd.io/@turingway/B1OnVLe-3.
+
+:::{note} Mixing URLs and `@citations`
+If you have a citation directly after a URL without whitespace, it may be treated as part of the URL rather than as a citation.
+
+For example, `https://mystmd.org,@scipy2025` will treat `@scipy2025` as part of the URL. To cite after a URL, add a space (`See https://mystmd.org, @scipy2025`) or use angle brackets (`See <https://mystmd.org>,@scipy2025`).
+
+**Avoid URLs with @ in square brackets**. A URL with `@` inside square brackets like `[https://hackmd.io/@user]` will be parsed as a citation, to avoid this you can escape the first bracket with a backslash `\[`.
+:::
 
 ## Citation Roles
 
