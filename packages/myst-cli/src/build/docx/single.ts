@@ -77,12 +77,9 @@ function defaultWordRenderer(
   if (referenceNodes.length > 0) {
     serializer.render(createReferenceTitle());
 
-    const breakNode = {
-      type: 'break',
-    };
     const referencesRoot = {
       type: 'root',
-      children: referenceNodes.map((node) => [node, breakNode]).flat(),
+      children: referenceNodes,
     };
     serializer.renderChildren(referencesRoot);
     serializer.closeBlock();
