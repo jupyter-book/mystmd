@@ -135,7 +135,7 @@ const handlers: Record<string, Handler> = {
       state.write('#pagebreak(weak: true)\n');
     }
     if (node.data?.part === 'index') {
-      state.data.hasIndex = true;
+      state.data.isInIndex = true;
     }
     state.renderChildren(node, 2);
   },
@@ -421,8 +421,8 @@ const handlers: Record<string, Handler> = {
   },
   span(node, state) {
     state.renderChildren(node, 0, { trimEnd: false });
-    if (node.identifier && !state.data.hasIndex) {
-      state.write(`#label("${node.identifier}")`);
+    if (node.identifier && !state.data.isInIndex) {
+      state.write(` #label("${node.identifier}")`);
     }
   },
   raw(node, state) {
