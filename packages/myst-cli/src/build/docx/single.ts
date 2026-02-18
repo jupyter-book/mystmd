@@ -12,7 +12,7 @@ import {
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import { htmlTransform } from 'myst-transforms';
-import { fileError, fileWarn, RuleId, TemplateKind } from 'myst-common';
+import { fileError, fileWarn, RuleId, TemplateKind, toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
@@ -57,18 +57,33 @@ function defaultWordRenderer(
     serializer.render(node);
   });
   serializer.renderChildren(mdast);
-  const referencesDocStates = Object.values(references.cite?.data ?? {})
-    .map(({ html }) => html)
-    .sort((a, b) => a.localeCompare(b))
-    .map((html) => {
-      return { type: 'html', value: html };
-    });
-  if (referencesDocStates.length > 0) {
+
+  // Take each reference
+  const referenceNodes = Object.values(references.cite?.data ?? {})
+    // Parse the HTML into mdast
+    .map(({ html }) => htmlTransform({ type: 'root', children: [{ type: 'html', value: html }] }))
+    // Replace "root of phrasing" with "paragraph of phrasing"
+    .map((root) => ({ type: 'paragraph', children: root.children }))
+    // Parse out the string representation (to drop formatting)
+    .map((node) => ({
+      repr: toText(node),
+      node,
+    }))
+    // Sort the string representation
+    .sort((a, b) => a.repr.localeCompare(b.repr))
+    // Drop the string representation
+    .map(({ node }) => node);
+
+  if (referenceNodes.length > 0) {
     serializer.render(createReferenceTitle());
-    referencesDocStates.forEach((child) => {
-      child.value += "<br />";
-    });
-    const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
+
+    const breakNode = {
+      type: 'break',
+    };
+    const referencesRoot = {
+      type: 'root',
+      children: referenceNodes.map((node) => [node, breakNode]).flat(),
+    };
     serializer.renderChildren(referencesRoot);
     serializer.closeBlock();
   }
