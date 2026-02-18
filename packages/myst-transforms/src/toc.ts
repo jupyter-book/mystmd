@@ -201,6 +201,7 @@ function transformChildrenTocs(
   }
 
   childrenTocs.forEach((toc) => {
+    // Filter out pages based on `depth` kwarg
     const filteredPages = toc.depth
       ? childPages.filter((page) => page.level - currentLevel <= toc.depth)
       : childPages;
