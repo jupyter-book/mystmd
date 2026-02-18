@@ -105,7 +105,7 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
  *
  * @param session session with logging
  */
-function get_baseurl(session: ISession): string | undefined {
+function getBaseUrl(session: ISession): string | undefined {
   let baseurl;
   // BASE_URL always takes precedence. If it's not defined, check common deployment environments.
   if ((baseurl = process.env.BASE_URL)) {
@@ -138,7 +138,7 @@ function get_baseurl(session: ISession): string | undefined {
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
-  const baseurl = get_baseurl(session);
+  const baseurl = getBaseUrl(session);
   // Note, this process is really only for Remix templates
   // We could add a flag in the future for other templates
   const htmlDir = path.join(session.buildPath(), 'html');
