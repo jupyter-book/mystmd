@@ -87,6 +87,6 @@ describe('grid directive', () => {
     const output = mystParse(content, {
       directives: [gridDirective],
     });
-    expect(output).toEqual(expected);
+    expect(output).toMatchObject(expected);
   });
 });

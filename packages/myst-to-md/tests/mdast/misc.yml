@@ -1,4 +1,4 @@
-title: myst-to-md references
+title: myst-to-md miscellaneous
 cases:
   - title: comment
     mdast:
@@ -15,7 +15,7 @@ cases:
         - type: comment
           value: and a comment
     markdown: |-
-      Some % *markdown*
+      Some % _markdown_
 
       % and a comment
   - title: comment
@@ -35,7 +35,7 @@ cases:
     markdown: |-
       % a comment
 
-      Some % *markdown*
+      Some % _markdown_
   - title: block - no meta
     mdast:
       type: root
@@ -52,7 +52,8 @@ cases:
                       value: markdown
     markdown: |-
       +++
-      Some % *markdown*
+
+      Some % _markdown_
   - title: block - with meta
     mdast:
       type: root
@@ -70,7 +71,8 @@ cases:
                       value: markdown
     markdown: |-
       +++ {"a": "b"}
-      Some % *markdown*
+
+      Some % _markdown_
   - title: footnote - numbered
     mdast:
       type: root
@@ -204,7 +206,9 @@ cases:
             - type: paragraph
               children:
                 - type: text
-                  value: Definition 1
+                  value: 'Definition '
+                - type: inlineCode
+                  value: '1'
         - type: definitionTerm
           children:
             - type: text
@@ -228,18 +232,16 @@ cases:
                   value: Third paragraph of definition 2.
     markdown: |-
       Term 1
+      : Definition `1`
 
-      :   Definition 1
+      Term 2 with _inline markup_
+      : Definition 2
 
-      Term 2 with *inline markup*
+        ```python
+        some code, part of Definition 2
+        ```
 
-      :   Definition 2
-
-          ```python
-          some code, part of Definition 2
-          ```
-
-          Third paragraph of definition 2.
+        Third paragraph of definition 2.
   - title: definition list - nested
     mdast:
       type: root
@@ -266,10 +268,8 @@ cases:
                       value: Definition a
     markdown: |-
       Term 1
-
-      :   Term a
-
-          :   Definition a
+      : Term a
+        : Definition a
   - title: unknown phrasing passes
     mdast:
       type: root
@@ -293,7 +293,7 @@ cases:
             - type: inlineCode
               value: style`s
     markdown: |-
-      Some % *markdown* with  ``style`s``
+      Some % _markdown_ with  ``style`s``
   - title: styles in paragraph
     mdast:
       type: root
@@ -319,4 +319,4 @@ cases:
             - type: inlineCode
               value: style`s
     markdown: |-
-      Some % *markdown* with **different** ``style`s``
+      Some % _markdown_ with **different** ``style`s``

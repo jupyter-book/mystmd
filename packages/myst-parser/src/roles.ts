@@ -75,6 +75,7 @@ export function applyRoles(tree: GenericParent, specs: RoleSpec[], vfile: VFile)
           `body of role: ${name}`,
           RuleId.roleBodyCorrect,
         );
+        node.body = data.body;
         if (body.required && data.body == null) {
           validationError = true;
         }

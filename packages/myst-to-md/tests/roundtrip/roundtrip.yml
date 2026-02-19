@@ -1,0 +1,67 @@
+title: myst-to-md roundtrip features
+cases:
+  - title: styles in paragraph - emphasis
+    markdown: |-
+      # Heading
+
+      Paragraph with *emphasis* and __strong__ and ``code``.
+    result: |-
+      # Heading
+
+      Paragraph with _emphasis_ and **strong** and `code`.
+  - title: Bullet list
+    markdown: |-
+      # Heading
+
+      * first `item`
+        * nested `item`
+      * another `item`
+
+        paragraph
+    result: |-
+      # Heading
+
+      - first `item`
+        - nested `item`
+      - another `item`
+
+        paragraph
+  - title: Simple Directive
+    markdown: |-
+      (my-label)=
+
+      # Heading
+
+      ```   {admonition }   Admonition title
+      :class: dropdown
+      :label: my-label
+      This is a directive
+
+      And another paragraph
+      ```
+
+      Paragraph after directive
+    result: |-
+      (my-label)=
+      # Heading
+
+      :::{admonition #my-label .dropdown} Admonition title
+      This is a directive
+
+      And another paragraph
+      :::
+
+      Paragraph after directive
+  - title: Single horizontal rule
+    markdown: |-
+      paragraph
+
+      ---
+
+      some horizontal lines
+    result: |-
+      paragraph
+
+      ---
+
+      some horizontal lines

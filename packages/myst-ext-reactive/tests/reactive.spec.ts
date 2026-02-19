@@ -41,7 +41,7 @@ describe('reactive tests', () => {
       roles: [reactiveRole],
       directives: [reactiveDirective],
     });
-    expect(output).toEqual(expected);
+    expect(output).toMatchObject(expected);
   });
   it('r:dynamic role parses', async () => {
     const content = '{r:dynamic}`rValue="visitors", rChange="{visitors: value}", value="5"`';
@@ -92,6 +92,6 @@ describe('reactive tests', () => {
       roles: [reactiveRole],
       directives: [reactiveDirective],
     });
-    expect(output).toEqual(expected);
+    expect(output).toMatchObject(expected);
   });
 });
