@@ -149,6 +149,7 @@ const BookShorthandInnerSubtree: z.ZodType<BookShorthandInnerSubtreeType> = z.ob
 
 const BookHasOuterSubtrees = z.object({
   parts: BookOuterSubtree.array(),
+  options: TOCTreeOptions.optional(),
 });
 
 const BookHasInnerSubtrees = z.object({
@@ -281,7 +282,10 @@ function convertNoFormat(session: ISession, dir: string, data: z.infer<typeof No
  *
  * @param data - validated TOC
  */
-function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof NoFormatTOC> {
+function convertBookToNoFormat(
+  data: z.infer<typeof BookTOC>,
+  session: ISession,
+): z.infer<typeof NoFormatTOC> {
   const convertEntry = (item: z.infer<typeof BookEntry>): z.infer<typeof NoFormatEntry> => {
     // Drop subtrees and sections
     // eslint-disable-next-line prefer-const, @typescript-eslint/no-unused-vars
@@ -324,6 +328,10 @@ function convertBookToNoFormat(data: z.infer<typeof BookTOC>): z.infer<typeof No
     item: z.infer<typeof BookShorthandOuterSubtree> | z.infer<typeof BookHasOuterSubtrees>,
   ): z.infer<typeof NoFormatShorthandSubtree> | z.infer<typeof NoFormatHasSubtrees> => {
     if ('parts' in item) {
+      if ('options' in item) {
+        session.log.warn('The "options" key in your _toc.yml has no effect and will be ignored.');
+        delete item.options;
+      }
       const { parts, ...rest } = item;
       return { ...rest, subtrees: parts.map(convertOuterSubtree) };
     } else {
@@ -402,7 +410,7 @@ export function upgradeTOC(session: ISession, data: SphinxExternalTOC): MySTEntr
     switch (data.format) {
       case 'jb-book':
         {
-          dataNoFormat = convertBookToNoFormat(data);
+          dataNoFormat = convertBookToNoFormat(data, session);
         }
         break;
       case 'jb-article':
