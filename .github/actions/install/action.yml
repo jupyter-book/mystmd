@@ -5,6 +5,11 @@ inputs:
     description: 'Node version to install'
     required: true
     default: '18'
+  artifactName:
+    description: 'Upload the built MyST binary'
+    required: false
+    type: string
+    default: null
 runs:
   using: 'composite'
   steps:
@@ -34,3 +39,13 @@ runs:
         npm run build
         npm run link
       shell: bash
+    - name: Upload built artifact
+      if: ${{ inputs.artifactName != null }}
+      uses: actions/upload-artifact@v4
+      with:
+        # Name of the artifact to upload.
+        # Optional. Default is 'artifact'
+        name: ${{ inputs.artifactName }}
+        path: packages/mystmd/dist/myst.cjs
+        retention-days: 7
+        overwrite: false

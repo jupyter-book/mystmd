@@ -38,6 +38,7 @@ jobs:
       - uses: ./.github/actions/install
         with:
           node: ${{ matrix.node }}
+          artifactName: ${{ (matrix.node == "18") && "mystmd" || null }}
       - run: npm run test
   # This is just an additional check to make sure the build passes with our docs     
   docs:
