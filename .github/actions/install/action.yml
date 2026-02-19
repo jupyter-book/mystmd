@@ -5,11 +5,16 @@ inputs:
     description: 'Node version to install'
     required: true
     default: '18'
-  artifactName:
+  uploadArtifact:
     description: 'Upload the built MyST binary'
     required: false
+    type: boolean
+    default: false
+  artifactName:
+    description: 'Name of the MyST artifact'
+    required: false
     type: string
-    default: null
+    default: 'mystmd'
 runs:
   using: 'composite'
   steps:
@@ -40,7 +45,7 @@ runs:
         npm run link
       shell: bash
     - name: Upload built artifact
-      if: ${{ inputs.artifactName != null }}
+      if: ${{ inputs.uploadArtifact }}
       uses: actions/upload-artifact@v4
       with:
         # Name of the artifact to upload.
