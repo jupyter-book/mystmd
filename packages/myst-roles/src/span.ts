@@ -1,4 +1,5 @@
-import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
+import type { RoleSpec, RoleData } from 'myst-common';
+import type { Span, PhrasingContent } from 'myst-spec';
 import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const spanRole: RoleSpec = {
@@ -7,11 +8,12 @@ export const spanRole: RoleSpec = {
   body: {
     type: 'myst',
   },
-  run(data: RoleData): GenericNode[] {
-    const node: GenericNode = { type: 'span' };
-    if (data.body) {
-      node.children = data.body as GenericNode[];
-    }
+  run(data: RoleData) {
+    const node: Span = {
+      type: 'span',
+      children: data.body ? (data.body as PhrasingContent[]) : [],
+    };
+
     addCommonRoleOptions(data, node);
     return [node];
   },

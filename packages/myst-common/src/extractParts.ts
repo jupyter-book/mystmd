@@ -1,5 +1,5 @@
-import type { Block } from 'myst-spec-ext';
-import type { FrontmatterParts, GenericNode, GenericParent } from './types.js';
+import type { Content, Block, Root, Parent, Paragraph } from 'myst-spec-ext';
+import type { FrontmatterParts } from './types.js';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { copyNode, createId, toText } from './utils.js';
@@ -30,7 +30,7 @@ function coercePart(part?: string | string[]): string[] {
  * Selects the block node(s) based on part (string) or tags (string[]).
  * If `part` is a string array, any of the parts will be treated equally.
  */
-export function selectBlockParts(tree: GenericParent, part?: string | string[]): Block[] {
+export function selectBlockParts(tree: Content | Root, part?: string | string[]): Block[] {
   const parts = coercePart(part);
   if (parts.length === 0) return [];
   const blockParts = selectAll('block', tree).filter((block) => {
@@ -70,13 +70,13 @@ export function selectFrontmatterParts(
 }
 
 function createPartBlock(
-  children: GenericNode[],
+  children: Block['children'],
   part: string,
   opts?: {
     removePartData?: boolean;
   },
 ) {
-  const block: GenericParent = { type: 'block', key: createId(), children };
+  const block: Block = { type: 'block', key: createId(), children };
   if (!opts?.removePartData) {
     block.data ??= {};
     block.data.part = part;
@@ -84,12 +84,16 @@ function createPartBlock(
   return block;
 }
 
-function forcedRemove(tree: GenericParent, test: string) {
+function forcedRemove(tree: Content | Root, test: string) {
   let success = remove(tree, test);
   if (!success) {
     success = remove(tree, { cascade: false }, test);
   }
   return success;
+}
+
+function isParent(node: Content | Root): node is Extract<Content | Root, Parent> {
+  return 'children' in node;
 }
 
 /**
@@ -103,53 +107,55 @@ function forcedRemove(tree: GenericParent, test: string) {
  * Ignores anything that is already part of a block with explicit part.
  */
 export function extractImplicitPart(
-  tree: GenericParent,
+  tree: Content | Root,
   part?: string | string[],
   opts?: {
     removePartData?: boolean;
   },
-): GenericParent | undefined {
+) {
   const parts = coercePart(part);
   if (parts.length === 0) return;
   let insideImplicitPart = false;
-  const blockParts: GenericNode[] = [];
-  let paragraphs: GenericNode[] = [];
-  tree.children?.forEach((child, index) => {
-    // Add this paragraph to the part
-    if (insideImplicitPart && child.type === 'paragraph') {
-      paragraphs.push(copyNode(child));
-      child.type = '__part_delete__';
-    }
-    // Stop adding things if we didn't just add a paragraph OR we are at the last child
-    if (child.type !== '__part_delete__' || index === tree.children.length - 1) {
-      insideImplicitPart = false;
-      if (paragraphs.length > 0) {
-        blockParts.push(createPartBlock(paragraphs, parts[0], opts));
-        paragraphs = [];
-        selectAll('__part_heading__', tree).forEach((node) => {
-          node.type = '__part_delete__';
-        });
+  const blockParts: Block[] = [];
+  let paragraphs: Paragraph[] = [];
+  if (isParent(tree)) {
+    tree.children?.forEach((child, index) => {
+      // Add this paragraph to the part
+      if (insideImplicitPart && child.type === 'paragraph') {
+        paragraphs.push(copyNode(child));
+        (child as any).type = '__part_delete__';
       }
-    }
-    if (child.type === 'block') {
-      // Do not search blocks already marked explicitly as parts
-      if (child.data?.part) return;
-      // Do not recursively search beyond top-level blocks on root node
-      if (tree.type !== 'root') return;
-      const blockPartsTree = extractImplicitPart(child as GenericParent, parts);
-      if (blockPartsTree) blockParts.push(...blockPartsTree.children);
-    } else if (child.type === 'heading' && parts.includes(toText(child).toLowerCase())) {
-      // Start adding paragraphs to the part after this heading
-      insideImplicitPart = true;
-      child.type = '__part_heading__';
-    }
-  });
+      // Stop adding things if we didn't just add a paragraph OR we are at the last child
+      if ((child as any).type !== '__part_delete__' || index === tree.children.length - 1) {
+        insideImplicitPart = false;
+        if (paragraphs.length > 0) {
+          blockParts.push(createPartBlock(paragraphs, parts[0], opts));
+          paragraphs = [];
+          selectAll('__part_heading__', tree).forEach((node) => {
+            node.type = '__part_delete__';
+          });
+        }
+      }
+      if (child.type === 'block') {
+        // Do not search blocks already marked explicitly as parts
+        if (child.data?.part) return;
+        // Do not recursively search beyond top-level blocks on root node
+        if (tree.type !== 'root') return;
+        const blockPartsTree = extractImplicitPart(child, parts);
+        if (blockPartsTree) blockParts.push(...blockPartsTree.children);
+      } else if (child.type === 'heading' && parts.includes(toText(child).toLowerCase())) {
+        // Start adding paragraphs to the part after this heading
+        insideImplicitPart = true;
+        (child as any).type = '__part_heading__';
+      }
+    });
+  }
   // Restore part headings if they did not contain any paragraphs
   selectAll('__part_heading__', tree).forEach((node) => {
     node.type = 'heading';
   });
   if (blockParts.length === 0) return;
-  const partsTree = { type: 'root', children: blockParts } as GenericParent;
+  const partsTree = { type: 'root', children: blockParts };
   forcedRemove(tree, '__part_delete__');
   return partsTree;
 }
@@ -160,7 +166,7 @@ export function extractImplicitPart(
  * This does not look at parts defined in frontmatter.
  */
 export function extractPart(
-  tree: GenericParent,
+  tree: Root | Content,
   part?: string | string[],
   opts?: {
     /** Helpful for when we are doing recursions, we don't want to extract the part again. */
@@ -172,7 +178,7 @@ export function extractPart(
     /** Dictionary of part trees, processed from frontmatter */
     frontmatterParts?: FrontmatterParts;
   },
-): GenericParent | undefined {
+) {
   const partStrings = coercePart(part);
   if (partStrings.length === 0) return;
   const frontmatterParts = selectFrontmatterParts(opts?.frontmatterParts, part);
@@ -204,7 +210,7 @@ export function extractPart(
       return block;
     },
   );
-  const partsTree = { type: 'root', children } as GenericParent;
+  const partsTree = { type: 'root', children };
   // Remove the block parts from the main document, even if frontmatter parts are returned
   blockParts.forEach((block) => {
     (block as any).type = '__delete__';

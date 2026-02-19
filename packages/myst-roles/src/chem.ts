@@ -1,5 +1,6 @@
-import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
+import type { RoleSpec, RoleData } from 'myst-common';
 import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
+import type { ChemicalFormula } from 'myst-spec';
 
 export const chemRole: RoleSpec = {
   name: 'chemicalFormula',
@@ -9,8 +10,8 @@ export const chemRole: RoleSpec = {
     type: String,
     required: true,
   },
-  run(data: RoleData): GenericNode[] {
-    const chem = { type: 'chemicalFormula', value: data.body as string };
+  run(data: RoleData) {
+    const chem: ChemicalFormula = { type: 'chemicalFormula', value: data.body as string };
     addCommonRoleOptions(data, chem);
     return [chem];
   },

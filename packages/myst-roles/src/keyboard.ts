@@ -1,5 +1,6 @@
-import type { GenericNode, RoleSpec } from 'myst-common';
+import type { RoleSpec } from 'myst-common';
 import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
+import type { Keyboard } from 'myst-spec';
 
 export const keyboardRole: RoleSpec = {
   name: 'keyboard',
@@ -11,7 +12,7 @@ export const keyboardRole: RoleSpec = {
     required: true,
   },
   run(data) {
-    const node: GenericNode = {
+    const node: Keyboard = {
       type: 'keyboard',
       children: [{ type: 'text', value: data.body as string }],
     };

@@ -4,6 +4,7 @@
   "description": "MyST schema, testcases, and typescript types",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/myst-spec",
+  "type": "module",
   "license": "MIT",
   "types": "dist/index.d.ts",
   "files": [
@@ -23,18 +24,18 @@
     "url": "git+https://github.com/jupyter-book/mystmd.git"
   },
   "scripts": {
-    "clean": "rimraf index.js dist",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
-    "build": "npm run clean && tsc index.ts && node index.js"
+    "clean": "rimraf dist",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
+    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "build:esm": "tsc",
+    "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
     "url": "https://github.com/jupyter-book/myst-spec/issues"
   },
-  "devDependencies": {
-    "ajv": "^8.17.1",
-    "ajv-formats": "^3.0.1",
-    "js-yaml": "^4.1.0",
-    "json-schema-to-typescript": "^15.0.4"
+  "dependencies": {
+    "@types/mdast": "^3.0.10",
+    "@types/unist": "^2",
+    "@jupyterlab/nbformat": "^3.5.2"
   }
 }
