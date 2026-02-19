@@ -78,6 +78,6 @@ export async function fetchRemoteAsset(
     }
   });
   await new Promise((r) => setTimeout(r, 50));
-  session.log.debug(`Image successfully saved to: ${destName}`);
+  session.log.debug(`Asset successfully saved to: ${destName}`);
   return { name: destName, contentType };
 }
