@@ -1,5 +1,13 @@
 # myst-cli
 
+## 1.8.2
+
+### Patch Changes
+
+- 8dd363d: Fix references in DOCX export
+- f7ff135: Change internal `get_baseurl` function to match naming conventions
+  - myst-migrate@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes
