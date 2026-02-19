@@ -39,7 +39,7 @@ jobs:
         with:
           node: ${{ matrix.node }}
       - run: npm run test
-  # This is just an additional check to make sure the build passes with our docs     
+  # This is just an additional check to make sure the build passes with our docs
   docs:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
@@ -56,7 +56,8 @@ jobs:
       - name: Install myst
         uses: ./.github/actions/install
         with:
-          node: "20.x"
+          node: '20.x'
+          uploadArtifact: true
       - name: Install docs dependencies
         run: |
           pip install -r docs/requirements.txt
