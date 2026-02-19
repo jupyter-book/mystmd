@@ -8,12 +8,10 @@ inputs:
   uploadArtifact:
     description: 'Upload the built MyST binary'
     required: false
-    type: boolean
-    default: false
+    default: 'false'
   artifactName:
     description: 'Name of the MyST artifact'
     required: false
-    type: string
     default: 'mystmd'
 runs:
   using: 'composite'
@@ -45,7 +43,7 @@ runs:
         npm run link
       shell: bash
     - name: Upload built artifact
-      if: ${{ inputs.uploadArtifact }}
+      if: ${{ inputs.uploadArtifact == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         # Name of the artifact to upload.
