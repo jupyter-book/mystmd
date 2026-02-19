@@ -38,7 +38,6 @@ jobs:
       - uses: ./.github/actions/install
         with:
           node: ${{ matrix.node }}
-          uploadArtifact: ${{ matrix.node == '18' }}
       - run: npm run test
   # This is just an additional check to make sure the build passes with our docs     
   docs:
