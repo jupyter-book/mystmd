@@ -3,7 +3,7 @@ import path from 'node:path';
 import { SPEC_VERSION } from '../../spec-version.js';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
+import type { SiteAction, StaticAsset, SiteExport, SiteManifest } from 'myst-config';
 import type { Download } from 'myst-frontmatter';
 import {
   EXT_TO_FORMAT,
@@ -340,6 +340,51 @@ function resolveSiteAction(
   };
 }
 
+/**
+ * Resolves a Static Asset, including hashing and copying the files
+ */
+function resolveStaticAsset(
+  session: ISession,
+  asset: StaticAsset,
+  file: string,
+  property: string,
+): StaticAsset | undefined {
+  const resolvedFile = path.resolve(path.dirname(file), asset.filename);
+  if (!fs.existsSync(resolvedFile)) {
+    addWarningForFile(
+      session,
+      file,
+      `Could not find static resource at "${asset.filename}" in ${property}`,
+      'error',
+      { ruleId: RuleId.staticActionFileCopied },
+    );
+    return undefined;
+  }
+  if (!isUrl(asset.url)) {
+    addWarningForFile(
+      session,
+      file,
+      `Resource "${asset.url}" in ${property} should be a URL`,
+      'error',
+    );
+    return undefined;
+  }
+  const fileHash = hashAndCopyStaticFile(
+    session,
+    resolvedFile,
+    session.publicPath(),
+    (m: string) => {
+      addWarningForFile(session, resolvedFile, m, 'error', {
+        ruleId: RuleId.staticActionFileCopied,
+      });
+    },
+  );
+  return {
+    url: `/${fileHash}`,
+    filename: asset.filename,
+  };
+}
+
 export type SiteManifestOptions = {
   defaultTemplate?: string;
 };
@@ -367,6 +412,9 @@ export async function getSiteManifest(
   const actions = siteConfig.actions
     ?.map((action) => resolveSiteAction(session, action, siteConfigFile, 'actions'))
     .filter((action): action is SiteAction => !!action);
+  const staticAssets = siteConfig.static
+    ?.map((asset) => resolveStaticAsset(session, asset, siteConfigFile, 'static'))
+    .filter((asset): asset is StaticAsset => !!asset);
   const siteFrontmatter = filterKeys(siteConfig as Record<string, any>, SITE_FRONTMATTER_KEYS);
   const mystTemplate = await getSiteTemplate(session, opts);
   const validatedOptions = mystTemplate.validateOptions(
@@ -391,6 +439,7 @@ export async function getSiteManifest(
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,
+    static: staticAssets || [],
   };
   return manifest;
 }
