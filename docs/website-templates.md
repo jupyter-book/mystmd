@@ -82,18 +82,38 @@ Below is a table of options for each theme bundled with MyST.
 ```
 
 (site-url-folders)=
-### Make site URLs respect folder structure
+### Folder-based URL structures
 
-By default, MyST URLs only contain the file name for each page; folder structure is respected in the table of contents but is not reflected in URLs. If you would like to maintain nested folder structure in the URLs, you may set the site option `folders` to `true`. This causes each folder in your MyST directory to become a path segment. For this feature to work correctly, your chosen theme must also support `folders` as an option. Both `book-theme` and `article-theme` bundled with MyST support this.
+By default, MyST URLs only contain the file name for each page, not folder names. To maintain nested folder structure in the URLs (e.g., `folder/page.md` -> `/folder/page/`), use `site.options.folders` like so:
 
-```{code-block} yaml
+
+```{code} yml
 :filename: myst.yml
+:caption: Example of setting folders to true to show nested file structure in the URL
 :linenos:
-:emphasize-lines: 3
+...
 site:
+  template: book-theme
   options:
     folders: true
+...
 ```
+
+#### Use index files as folder landing pages
+
+With `folders: true`, you can use `index.md` (or `readme.md`) inside a folder as a landing page for that folder.
+This lets you organize all of a section's content in a single folder:
+
+```
+getting-started/
+  ├── index.md           # Landing page at /getting-started/
+  ├── install.md         # /getting-started/install/
+  └── configuration.md   # /getting-started/configuration/
+```
+
+:::{warning}
+If both `getting-started.md` and `getting-started/index.md` exist, the sibling file takes the slug `getting-started` first, and the folder's index file gets a deduplicated slug like `getting-started-1`.
+:::
 
 ### Page Options
 
