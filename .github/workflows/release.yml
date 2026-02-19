@@ -112,3 +112,14 @@ jobs:
     with:
       tag_name: ${{ needs.get-tag.outputs.tag_name }}
     secrets: inherit
+
+  # Update our documentation if we've successfully released
+  deploy-docs:
+    name: Deploy Documentation
+    needs:
+      - release-npm
+    if: ${{ always() && needs.release-npm.result == 'success' }}
+    uses: ./.github/workflows/docs.yml
+    with:
+      published: ${{ needs.release-npm.outputs.published == 'true' }}
+    secrets: inherit
