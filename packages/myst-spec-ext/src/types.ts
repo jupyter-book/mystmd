@@ -300,6 +300,18 @@ export type Link = SpecLink & {
   class?: Image['class'];
 };
 
+export type AnyWidget = {
+  /** The type of the directive */
+  type: 'anywidget';
+  /** The ES module to import */
+  esm: string;
+  /** The JSON data to initialize the widget */
+  json: Record<string, unknown>;
+  /** URL to a css stylesheet to load for the widget */
+  css?: string;
+  /** Tailwind classes to apply to the container element */
+  class?: string;
+};
 // Search types
 
 /**

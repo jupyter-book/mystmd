@@ -1,21 +1,7 @@
 import type { DirectiveSpec } from 'myst-common';
+import type { AnyWidget } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import JSON5 from 'json5';
-
-export type AnyWidgetDirective = {
-  /** The type of the directive */
-  type: 'anywidget';
-  /** The ES module to import */
-  esm: string;
-  /** The JSON data to initialize the widget */
-  json: Record<string, unknown>;
-  /** URL to a css stylesheet to load for the widget */
-  css?: string;
-  /** Tailwind classes to apply to the container element */
-  class?: string;
-  /** A static filepaths, folder paths or glob patterns to static files to make available to the module */
-  static?: string[];
-};
 
 export function validateStringOptions(
   vfile: VFile,
@@ -36,7 +22,7 @@ export const widgetDirective: DirectiveSpec = {
   arg: {
     type: String,
     required: true,
-    doc: 'A Remote URL to the ESM JS module for the widget',
+    doc: 'Path or URL to the ESM JS module for the widget',
   },
   options: {
     class: {
@@ -47,12 +33,7 @@ export const widgetDirective: DirectiveSpec = {
     css: {
       type: String,
       required: false,
-      doc: 'URL to a CSS file',
-    },
-    static: {
-      type: String,
-      required: false,
-      doc: 'A file path, folder path or glob pattern to static files to make available to the module',
+      doc: 'Path or URL to a CSS file',
     },
   },
   body: {
@@ -65,15 +46,6 @@ export const widgetDirective: DirectiveSpec = {
     if (data.options?.css) validateStringOptions(vfile, 'css', data.options?.css);
     // TODO?: validate existence of the ESM/CSS files
     if (data.options?.class) validateStringOptions(vfile, 'class', data.options?.class);
-    if (data.options?.static) {
-      if (!Array.isArray(data.options?.static)) {
-        vfile.message('Invalid static supplied must be an array of strings.');
-      }
-      const staticPaths = data.options?.static as unknown[] as string[];
-      for (const s of staticPaths) {
-        validateStringOptions(vfile, 'static', s);
-      }
-    }
     validateStringOptions(vfile, 'body', data.body);
     try {
       const json = JSON5.parse(data.body as string);
@@ -102,8 +74,7 @@ export const widgetDirective: DirectiveSpec = {
         json,
         css: (data.options?.css ?? data.options?.styles) as string | undefined,
         class: data.options?.class as string | undefined,
-        static: data.options?.static as string[] | undefined,
-      } satisfies AnyWidgetDirective,
+      } satisfies AnyWidget,
     ];
   },
 };
