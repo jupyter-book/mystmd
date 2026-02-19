@@ -1,6 +1,12 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
+import type {
+  GenericParent,
+  IExpressionResult,
+  PluginUtils,
+  References,
+  TransformSpec,
+} from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -112,6 +118,8 @@ export async function transformMdast(
     imageExtensions?: ImageExtensions[];
     watchMode?: boolean;
     execute?: boolean;
+    transforms?: TransformSpec[];
+    /** @deprecated Use `session.plugins?.transforms` instead */
     extraTransforms?: TransformFn[];
     minifyMaxCharacters?: number;
     index?: string;
@@ -125,6 +133,7 @@ export async function transformMdast(
     pageSlug,
     projectSlug,
     imageExtensions,
+    transforms,
     extraTransforms,
     watchMode = false,
     minifyMaxCharacters,
@@ -210,10 +219,15 @@ export async function transformMdast(
     })
     .use(inlineMathSimplificationPlugin, { replaceSymbol: false })
     .use(mathPlugin, { macros: frontmatter.math });
+  // Load transform functions from options (we always run all of them)
+  transforms?.forEach((t) => {
+    pipe.use(t.plugin, t.options, pluginUtils);
+  });
+
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
-    pipe.use(t.plugin, undefined, pluginUtils);
+    pipe.use(t.plugin, t.options, pluginUtils);
   });
 
   pipe
@@ -367,7 +381,7 @@ export async function postProcessMdast(
   const pipe = unified();
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'project') return;
-    pipe.use(t.plugin, undefined, pluginUtils);
+    pipe.use(t.plugin, t.options, pluginUtils);
   });
   await pipe.run(mdast, vfile);
 

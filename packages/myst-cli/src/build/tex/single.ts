@@ -34,6 +34,7 @@ import { createTempFolder } from '../../utils/createTempFolder.js';
 import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import type { ExportWithOutput, ExportResults, ExportFnOptions } from '../types.js';
 import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
+import { createMermaidImageMystPlugin } from '../../transforms/mermaid.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -140,6 +141,7 @@ export async function localArticleToTexRaw(
       projectPath,
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      transforms: [createMermaidImageMystPlugin],
       titleDepths: fileArticles.map((article) => article.level),
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
@@ -206,6 +208,7 @@ export async function localArticleToTexTemplated(
       projectPath,
       imageExtensions: TEX_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      transforms: [createMermaidImageMystPlugin],
       titleDepths: fileArticles.map((article) => article.level),
       preFrontmatters: fileArticles.map((article) =>
         filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
