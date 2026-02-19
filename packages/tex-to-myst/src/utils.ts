@@ -138,6 +138,23 @@ export function getArguments(
   );
 }
 
+export function extractParams(args: { content: string }[]): Record<string, string | number> {
+  const params: Record<string, string | number> = {};
+
+  for (let i = 0; i < args.length - 2; i++) {
+    const param = args[i].content;
+    const equalsSign = args[i + 1].content;
+    const value = args[i + 2].content;
+
+    if (equalsSign === '=' && (Number.isFinite(Number.parseFloat(value)) || value)) {
+      params[param] = Number.isFinite(Number.parseFloat(value)) ? Number.parseFloat(value) : value;
+      i += 2; // Skip the processed elements
+    }
+  }
+
+  return params;
+}
+
 export function renderInfoIndex(node: GenericNode, name: string): number {
   return node._renderInfo?.namedArguments?.findIndex((a: string) => a === name);
 }

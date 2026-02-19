@@ -1,7 +1,7 @@
 import type { GenericNode } from 'myst-common';
 import { u } from 'unist-builder';
 import type { Handler, ITexParser } from './types.js';
-import { getArguments, texToText } from './utils.js';
+import { getArguments, extractParams, texToText } from './utils.js';
 
 function renderCaption(node: GenericNode, state: ITexParser) {
   state.closeParagraph();
@@ -45,18 +45,33 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
     state.closeParagraph();
     const url = texToText(getArguments(node, 'group'));
     const args = getArguments(node, 'argument')?.[0]?.content ?? [];
-    // TODO: better width, placement, etc.
-    if (
-      args.length === 4 &&
-      args[0].content === 'width' &&
-      args[1].content === '=' &&
-      Number.isFinite(Number.parseFloat(args[2].content))
-    ) {
-      const width = `${Math.round(Number.parseFloat(args[2].content) * 100)}%`;
-      state.pushNode(u('image', { url, width }));
-    } else {
-      state.pushNode(u('image', { url }));
+    const params = extractParams(args);
+
+    // Only support width and page for now
+    for (const key in params) {
+      if (key !== 'width' && key !== 'page') {
+        delete params[key];
+      }
     }
+
+    // TODO: better width, placement, etc.
+
+    // Convert width to percentage if present
+    if (params.width) {
+      if (typeof params.width === 'number'  && Number.isFinite(params.width)) {
+        params.width = `${Math.round(params.width * 100)}%`;
+      } else {
+        delete params.width; // If width is a string, we don't know what it is, so we ignore it
+      }
+    }
+    if (params.page) {
+      if (typeof params.page === 'number' && Number.isFinite(params.page)) {
+        params.page = Math.round(Number(params.page)) - 1; // Convert to 0-based for imagemagick
+      } else {
+        delete params.page;
+      }
+    }
+    state.pushNode(u('image', { url: url, ...params }));
   },
   macro_caption: renderCaption,
   macro_captionof: renderCaption,

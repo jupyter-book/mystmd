@@ -138,12 +138,12 @@ export async function convert(
   session: ISession,
   input: string,
   writeFolder: string,
-  options?: { trim?: boolean },
+  options?: { trim?: boolean; page?: number },
 ) {
   if (!fs.existsSync(input)) return null;
   const { name, ext } = path.parse(input);
   if (ext !== inputExtension) return null;
-  const filename = `${name}${outputExtension}`;
+  const filename = `${name}${options?.page ? '-' + options.page : ''}${outputExtension}`;
   const output = path.join(writeFolder, filename);
   const inputFormatUpper = inputExtension.slice(1).toUpperCase();
   const outputFormatUpper = outputExtension.slice(1).toUpperCase();
@@ -151,9 +151,10 @@ export async function convert(
     session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
     return filename;
   } else {
-    const executable = `${imageMagickCommand()} -density 600 -colorspace RGB ${input}${
+    const executable = `${imageMagickCommand()} -density 600 -colorspace RGB ${input}${options?.page ? '[' + options.page + ']' : ''}${
       options?.trim ? ' -trim' : ''
     } ${output}`;
+
     session.log.debug(`Executing: ${executable}`);
     const exec = makeExecutable(executable, createImagemagikLogger(session));
     try {
