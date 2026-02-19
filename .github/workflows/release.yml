@@ -55,11 +55,16 @@ jobs:
           cp ../mystmd/package.json _package.json
           python -m build
         working-directory: packages/mystmd-py
-      - name: Store the distribution packages
+      - name: Store the Python packages
         uses: actions/upload-artifact@v4
         with:
           name: python-package-distributions
           path: packages/mystmd-py/dist/
+      - name: Store the JS packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: js-package-distributions
+          path: packages/mystmd/dist/
 
   release-py:
     name: Release Python
