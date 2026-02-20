@@ -19,9 +19,13 @@ The MyST Document Engine uses the anywidget specification to provide support for
 
 Here's an example that creates a clickable button:
 
+:::{card} Confetti Example
+
 ```{anywidget} https://github.com/jupyter-book/example-js-anywidget/releases/latest/download/widget.mjs
 
 ```
+
+:::
 
 Anywidgets are incredibly simple. They only need a tiny amount of JavaScript to define how they run. Here's a tiny counter widget:
 
@@ -31,11 +35,15 @@ Anywidgets are incredibly simple. They only need a tiny amount of JavaScript to 
 
 This creates the following button:
 
+:::{card} Naked Button Example
+
 ```{anywidget} ./example-widget.mjs
 {
   "count": 0
 }
 ```
+
+:::
 
 This is cool! But, it has no styles. Without a style-sheet, the created button inherits the default styles (which are designed to remove all styling)!
 
@@ -47,12 +55,16 @@ We can add a stylesheet ourselves:
 
 These styles are added to a <wiki:Shadow_DOM> that isolates the anywidget from the rest of the page styles.
 
+:::{card} Styled Button Example
+
 ```{anywidget} ./example-widget.mjs
 :css: ./example-widget-style.css
 {
   "count": 0
 }
 ```
+
+:::
 
 ## Future Development
 
