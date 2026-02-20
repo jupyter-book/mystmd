@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import mime from 'mime-types';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, plural } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
@@ -13,8 +12,8 @@ import { extFromMimeType } from 'nbtx';
 import type { ISession } from '../session/types.js';
 import { castSession } from '../session/cache.js';
 import { watch } from '../store/index.js';
-import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { fetchRemoteAsset } from '../utils/fetchRemoteAsset.js';
 import {
   ImageExtensions,
   KNOWN_IMAGE_EXTENSIONS,
@@ -26,12 +25,6 @@ export const BASE64_HEADER_SPLIT = ';base64,';
 
 function isBase64(data: string) {
   return data.split(BASE64_HEADER_SPLIT).length === 2;
-}
-
-function getGithubRawUrl(url?: string): string | undefined {
-  const GITHUB_BLOB = /^(?:https?:\/\/)?github\.com\/([^/]+)\/([^/]+)\/blob\//;
-  if (!url?.match(GITHUB_BLOB)) return undefined;
-  return url.replace(GITHUB_BLOB, 'https://raw.githubusercontent.com/$1/$2/');
 }
 
 /**
@@ -65,47 +58,30 @@ async function writeBase64(
 export async function downloadAndSaveImage(
   session: ISession,
   url: string,
-  file: string,
+  stem: string,
   fileFolder: string,
 ): Promise<string | undefined> {
   const exists = fs.existsSync(fileFolder);
-  const fileMatch = exists && fs.readdirSync(fileFolder).find((f) => path.parse(f).name === file);
-  if (exists && fileMatch) {
+  // Check whether file with stem exists (but unknown extension)
+  const existingName =
+    exists && fs.readdirSync(fileFolder).find((f) => path.parse(f).name === stem);
+
+  if (exists && existingName) {
     session.log.debug(`Cached image found for: ${url}...`);
-    return fileMatch;
+    return existingName;
   }
-  const filePath = path.join(fileFolder, file);
-  session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
+  session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${stem}`);
   try {
-    const github = getGithubRawUrl(url);
-    const res = await session.fetch(github ?? url, { headers: EXT_REQUEST_HEADERS });
-    const contentType = res.headers.get('content-type') || '';
-    const extension = mime.extension(contentType);
-    if (!extension || !contentType) throw new Error('No content-type for image found.');
+    const { name, contentType } = await fetchRemoteAsset(session, url, fileFolder, stem);
     if (!contentType.startsWith('image/')) {
-      throw new Error(`ContentType "${contentType}" is not an image`);
+      throw new Error(`${url} content-type "${contentType}" is not an image`);
     }
-    if (!fs.existsSync(fileFolder)) fs.mkdirSync(fileFolder, { recursive: true });
-    // Write to a file
-    const fileStream = fs.createWriteStream(`${filePath}.${extension}`);
-    await new Promise((resolve, reject) => {
-      if (!res.body) {
-        reject(`no response body from ${url}`);
-      } else {
-        res.body.pipe(fileStream);
-        res.body.on('error', reject);
-        fileStream.on('finish', resolve as () => void);
-      }
-    });
-    await new Promise((r) => setTimeout(r, 50));
-    const fileName = `${file}.${extension}`;
-    session.log.debug(`Image successfully saved to: ${fileName}`);
-    return fileName;
+    return name;
   } catch (error) {
     session.log.debug(`\n\n${(error as Error).stack}\n\n`);
     addWarningForFile(
       session,
-      file,
+      stem,
       `Error saving image "${url}": ${(error as Error).message}`,
       'error',
       { ruleId: RuleId.imageDownloads },

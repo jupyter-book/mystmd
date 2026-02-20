@@ -67,6 +67,7 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
+  transformWidgetStaticAssetsToDisk,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -417,6 +418,13 @@ export async function finalizeMdast(
     vfile,
   });
   if (!useExistingImages) {
+    transformWidgetStaticAssetsToDisk(
+      session,
+      mdast,
+      file,
+      imageWriteFolder,
+      simplifyFigures ? imageWriteFolder : (imageAltOutputFolder ?? imageWriteFolder),
+    );
     await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
       imageExtensions,

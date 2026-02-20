@@ -16,7 +16,7 @@ project:
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
     biapol: https://biapol.github.io/blog/
- 
+
   plugins:
     - directives.mjs
     - picsum.mjs
@@ -42,7 +42,7 @@ project:
         - /jtex/create-a-latex-template
         - /jtex/create-a-beamer-template
         - /jtex/contribute-a-template
-        
+
   toc:
     - file: index.md
     - file: installing.md
@@ -81,6 +81,7 @@ project:
         - file: asides.md
         - file: dropdowns-cards-and-tabs.md
         - file: glossaries-and-terms.md
+        - file: anywidgets.md
         - file: writing-in-latex.md
         - file: inline-options.md
     - title: Executable Content
