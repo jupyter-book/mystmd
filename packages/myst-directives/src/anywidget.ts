@@ -25,10 +25,11 @@ export const widgetDirective: DirectiveSpec = {
     doc: 'Path or URL to the ESM JS module for the widget',
   },
   options: {
+    // TODO: use commonDirectiveOptions when we're confident
     class: {
       type: String,
       required: false,
-      doc: 'Tailwind classes to apply to the container element',
+      doc: 'Annotate the anywidget with a set of space-delimited class names.',
     },
     css: {
       type: String,
