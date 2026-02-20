@@ -11,12 +11,26 @@ import { getSourceFolder } from './links.js';
 import { resolveOutputPath } from './images.js';
 import type { AnyWidget } from 'myst-spec-ext';
 
+/**
+ * Transform to resolve and stash static assets for anywidgets.
+ * This is temporary — the problem of pulling out assets is generaliseable.
+ *
+ * Note — the `resourceFolder` is what we include in the AST. If we write to `/public/file.png`,
+ * and the content server serves `/public` under `/`, then the `writeFolder` is `/public` and
+ * the `resourceFolder` is `/`
+ *
+ * @param session session object
+ * @param tree document AST
+ * @param filePath path of source document
+ * @param writeFolder path of folder to write to
+ * @param resourceFolder alternative representation of writeFolder that is written to AST
+ */
 export async function transformWidgetStaticAssetsToDisk(
   session: ISession,
   tree: GenericParent,
-  sourceFile: string,
+  filePath: string,
   writeFolder: string,
-  altWriteFolder: string,
+  resourceFolder: string,
 ) {
   for (const widgetNode of selectAll('anywidget', tree) as (AnyWidget & GenericParent)[]) {
     for (const [attr, ext] of [
@@ -27,15 +41,16 @@ export async function transformWidgetStaticAssetsToDisk(
       if (attrPath === undefined) {
         continue;
       }
-      const attrSourceFolder = getSourceFolder(attrPath, sourceFile, session.sourcePath());
-      console.log(attrSourceFolder, attrPath, '1');
+      const attrSourceFolder = getSourceFolder(attrPath, filePath, session.sourcePath());
       const attrLocalPath = path.join(attrSourceFolder, attrPath);
+
+      // File name of the form `name.ext`, a single path component
       let fileName: string | undefined;
       if (isUrl(attrPath)) {
         const stem = computeHash(attrPath);
 
-        const exists = fs.existsSync(writeFolder);
         // Check whether file with stem exists (but unknown extension)
+        const exists = fs.existsSync(writeFolder);
         const existingName = fs.readdirSync(writeFolder).find((f) => path.parse(f).name === stem);
         if (exists && existingName !== undefined) {
           session.log.debug(`Cached asset found for '${attr}' (${attrPath})...`);
@@ -68,13 +83,13 @@ export async function transformWidgetStaticAssetsToDisk(
           fileName = path.basename(attrLocalPath);
         } else {
           fileName = hashAndCopyStaticFile(session, attrLocalPath, writeFolder, (m: string) => {
-            addWarningForFile(session, sourceFile, m, 'error', { ruleId: RuleId.imageCopied });
+            addWarningForFile(session, filePath, m, 'error', { ruleId: RuleId.imageCopied });
           });
         }
         if (!fileName) continue;
       } else {
         const message = `Cannot find asset for '${attr}' "${attrPath}" in ${attrSourceFolder}`;
-        addWarningForFile(session, sourceFile, message, 'error', {
+        addWarningForFile(session, filePath, message, 'error', {
           position: widgetNode.position,
           // TODO: add "asset exists" rule?
         });
@@ -82,7 +97,7 @@ export async function transformWidgetStaticAssetsToDisk(
       }
       // Update mdast with new file name
       if (fileName !== undefined) {
-        widgetNode[attr] = resolveOutputPath(fileName, writeFolder, altWriteFolder);
+        widgetNode[attr] = resolveOutputPath(fileName, writeFolder, resourceFolder);
       }
     }
   }
