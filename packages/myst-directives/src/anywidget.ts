@@ -39,32 +39,36 @@ export const widgetDirective: DirectiveSpec = {
   body: {
     doc: 'JSON5 (or JSON) object with props to pass down to the component',
     type: String,
-    required: true,
+    required: false,
   },
   validate(data, vfile) {
     validateStringOptions(vfile, 'arg', data.arg);
     if (data.options?.css) validateStringOptions(vfile, 'css', data.options?.css);
-    // TODO?: validate existence of the ESM/CSS files
     if (data.options?.class) validateStringOptions(vfile, 'class', data.options?.class);
-    validateStringOptions(vfile, 'body', data.body);
-    try {
-      const json = JSON5.parse(data.body as string);
-      if (typeof json !== 'object' || json === null) {
+    if (data.body !== undefined) {
+      validateStringOptions(vfile, 'body', data.body);
+      try {
+        const json = JSON5.parse(data.body as string);
+        if (typeof json !== 'object' || json === null) {
+          vfile.message('Invalid JSON5/JSON supplied.');
+        }
+      } catch (e) {
         vfile.message('Invalid JSON5/JSON supplied.');
       }
-    } catch (e) {
-      vfile.message('Invalid JSON5/JSON supplied.');
     }
     return data;
   },
   run(data, _vfile, _opts) {
-    const body = data.body as string;
-    let json: Record<string, unknown>;
-
-    try {
-      json = JSON5.parse(body);
-    } catch (e) {
-      json = { error: 'Invalid JSON5/JSON supplied.' };
+    let json: ReturnType<typeof JSON5.parse>;
+    if (data.body === undefined) {
+      json = {};
+    } else {
+      const body = data.body as string;
+      try {
+        json = JSON5.parse(body);
+      } catch (e) {
+        json = { error: 'Invalid JSON5/JSON supplied.' };
+      }
     }
 
     return [
