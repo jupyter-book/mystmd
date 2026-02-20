@@ -59,15 +59,15 @@ export const widgetDirective: DirectiveSpec = {
     return data;
   },
   run(data, _vfile, _opts) {
-    let json: ReturnType<typeof JSON5.parse>;
+    let model: ReturnType<typeof JSON5.parse>;
     if (data.body === undefined) {
-      json = {};
+      model = {};
     } else {
       const body = data.body as string;
       try {
-        json = JSON5.parse(body);
+        model = JSON5.parse(body);
       } catch (e) {
-        json = { error: 'Invalid JSON5/JSON supplied.' };
+        model = { error: 'Invalid JSON5/JSON supplied.' };
       }
     }
 
@@ -75,7 +75,7 @@ export const widgetDirective: DirectiveSpec = {
       {
         type: 'anywidget',
         esm: data.arg as string,
-        json,
+        model,
         css: (data.options?.css ?? data.options?.styles) as string | undefined,
         class: data.options?.class as string | undefined,
       } satisfies AnyWidget,
