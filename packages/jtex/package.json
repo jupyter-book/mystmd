@@ -40,8 +40,8 @@
   },
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/jtex",
   "engines": {
-    "node": ">=12",
-    "npm": ">=6"
+    "node": ">=20",
+    "npm": ">=10"
   },
   "dependencies": {
     "adm-zip": "^0.5.10",

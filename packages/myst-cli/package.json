@@ -38,8 +38,8 @@
     "build": "npm-run-all -l clean copy:version -p build:esm"
   },
   "engines": {
-    "node": ">=16",
-    "npm": ">=6"
+    "node": ">=20",
+    "npm": ">=10"
   },
   "dependencies": {
     "@jupyterlab/services": "^7.3.0",

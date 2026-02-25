@@ -31,8 +31,8 @@
   },
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/citation-js-utils",
   "engines": {
-    "node": ">=12",
-    "npm": ">=6"
+    "node": ">=20",
+    "npm": ">=10"
   },
   "dependencies": {
     "@citation-js/core": "^0.7.18",
