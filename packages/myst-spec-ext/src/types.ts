@@ -305,6 +305,8 @@ export type AnyWidget = {
   type: 'anywidget';
   /** The ES module to import */
   esm: string;
+  /** A unique ID of this widget */
+  id: string;
   /** The model data to initialize the widget */
   model: Record<string, unknown>;
   /** URL to a css stylesheet to load for the widget */

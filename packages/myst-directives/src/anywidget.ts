@@ -1,6 +1,7 @@
 import type { DirectiveSpec } from 'myst-common';
 import type { AnyWidget } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
+import { nanoid } from 'nanoid';
 import JSON5 from 'json5';
 
 export function validateStringOptions(
@@ -79,6 +80,7 @@ export const widgetDirective: DirectiveSpec = {
         model,
         css: (data.options?.css ?? data.options?.styles) as string | undefined,
         class: data.options?.class as string | undefined,
+        id: nanoid(),
       } satisfies AnyWidget,
     ];
   },
