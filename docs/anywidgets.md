@@ -122,12 +122,13 @@ There are three ways you can style widgets.
 :context: section
 ```
 
-### Style with the `:css:` argument
+### Style with a CSS stylesheet
 
 You can create your own stylesheet (`.css` file) and link it to the Widget output.
 For example, create a stylesheet like the following:
 
 ```{literalinclude} example-widget-style.css
+
 ```
 
 And then add it to the widget like so:
@@ -152,10 +153,9 @@ And then add it to the widget like so:
 
 :::
 
-
 These styles are added to a <wiki:Shadow_DOM> that isolates the widget from the rest of the page styles.
 
-### Add `style` attributes to DOM elements within `el`
+### Add style attributes to DOM elements
 
 If you wish to keep your styles entirely contained within the widget module, you can assign them directly to elements you create.
 For example:
@@ -173,9 +173,9 @@ function render({ model, el }) {
 ```
 
 This is the simplest approach, but note that inline styles have
-high specificity - they cannot be overridden by a `:css:` stylesheet unless you use `!important` rules.
+high specificity - they cannot be overridden by a CSS stylesheet unless you use `!important` rules.
 
-### Style with a stylesheet within the `el` DOM
+### Style with a stylesheet within the DOM
 
 Combine the two approaches above by injecting a `<style>` tag into the `el` DOM and attaching a class to your widget elements.
 This allows you to use CSS styling that a user could over-ride more easily if they wish.
@@ -194,29 +194,39 @@ function render({ model, el }) {
 
 ## Return a cleanup function
 
-The `render` function can optionally return a cleanup function.
-This is called when the widget is removed from the page - for example, when a user navigates to a different page.
-Use it to clean up any resources your widget created.
+The `render` function can optionally return a cleanup function. This is called when the widget is removed from the page — for example, when a user navigates to a different page. Use it to clean up any resources your widget created, such as if you create JavaScript timers.
 
-For example, the following cleanup function resets the `model` by setting `count` to `0`:
+For example, the following cleanup function cleans up a timer that would otherwise run after the widget was destroyed:
 
 ```javascript
 function render({ model, el }) {
-  // ...same widget logic as above...
+  // UI
+  const span = document.createElement('span');
+  el.appendChild(span);
+
+  // Update UI from model
+  model.on('change:timestamp', () => {
+    el.innerText = model.get('timestamp');
+  });
+
+  // Update model from events
+  let timeoutID;
+  const step = () => {
+    model.set('timestamp', new Date().toLocaleTimeString());
+    timeoutID = setTimeout(step, 1000);
+  };
+  step();
 
   // Clean up when the widget is removed from the page
-  return () => model.set("count", 0);
+  return () => clearTimeout(timeoutID);
 }
 export default { render };
 ```
 
-**Note**: This is only relevant when running MyST as a server-side application.
-Static HTML builds will reset the state of widgets on every new page load.
-
 ## Security and best practices
 
 :::{warning} Only load widgets from sources you trust!
-Widget modules run arbitrary JavaScript - if you're loading a widget from a remote source, ensure that you can trust it!
+Widget modules run arbitrary JavaScript — if you're loading a widget from a remote source, ensure that you can trust it!
 :::
 
 Widgets have full access to the page's `document`, which means they can select, modify, or remove any element on the page, not just their own `el` DOM.
