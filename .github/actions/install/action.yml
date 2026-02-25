@@ -4,7 +4,7 @@ inputs:
   node:
     description: 'Node version to install'
     required: true
-    default: '18'
+    default: '20'
 runs:
   using: 'composite'
   steps:
