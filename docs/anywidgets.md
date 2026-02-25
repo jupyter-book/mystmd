@@ -173,7 +173,7 @@ function render({ model, el }) {
 ```
 
 This is the simplest approach, but note that inline styles have
-high specificity - they cannot be overridden by a `:css:` or a user stylesheet.
+high specificity - they cannot be overridden by a `:css:` stylesheet unless you use `!important` rules.
 
 ### Style with a stylesheet within the `el` DOM
 
