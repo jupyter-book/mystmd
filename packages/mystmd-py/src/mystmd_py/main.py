@@ -9,7 +9,7 @@ import textwrap
 from .nodeenv import find_any_node, PermissionDeniedError, NodeEnvCreationError
 
 
-NODEENV_VERSION = "18.0.0"
+NODEENV_VERSION = "20.0.0"
 
 
 def ensure_valid_version(node_path, node_env):
@@ -22,9 +22,10 @@ def ensure_valid_version(node_path, node_env):
     if major_version_match is None:
         raise SystemExit(f"MyST could not determine the version of Node.js: {_version}")
     major_version = int(major_version_match[1])
-    if not (major_version in {18, 20, 22} or major_version > 22):
+    # Require an LTS release
+    if major_version < 20:
         raise SystemExit(
-            f"MyST requires node 18, 20, or 22+; you are running node {major_version}.\n\n"
+            f"MyST requires Node.js >= 20; you are running node {major_version}.\n\n"
             "Please update to the latest LTS release, using your preferred package manager\n"
             "or following instructions here: https://nodejs.org/en/download"
         )

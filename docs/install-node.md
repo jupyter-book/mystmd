@@ -1,7 +1,7 @@
 ---
 title: Install NodeJS
 subject: Advanced Installation
-subtitle: Install the NodeJS runtime that powers MyST 
+subtitle: Install the NodeJS runtime that powers MyST
 description: The MyST Command Line Interface (CLI) is built on NodeJS, a JavaScript runtime that is widely used in many projects including well-known Python projects such as Jupyter Lab. MyST can be installed by the package manager npm, PyPI, Conda or Mamba.
 ---
 
@@ -11,16 +11,16 @@ There are a number of ways to install `node` and you can choose one that is suit
 
 :::{important} Node Versions
 
-MyST currently supports `node` v18, v20, and v22. Note that odd-numbered releases of `node` are not long-lived and you should prefer even-numbered releases when installing (see [Node release schedule](https://nodejs.org/en/about/previous-releases)).
+MyST currently supports `node` v20+. Note that odd-numbered releases of `node` are not long-lived and you should prefer even-numbered releases when installing (see [Node release schedule](https://nodejs.org/en/about/previous-releases)).
 :::
 
 Following any of the install methods below, verify your installation and ensure that `node` and `npm` are available on your system _PATH_ by opening a new terminal window or command line prompt and typing:
 
 ```shell
 % node -v
-v18.16.1
+v20.19.5
 % npm -v
-v9.5.1
+10.8.2
 ```
 
 ## Manual Installation (all platforms)
