@@ -127,7 +127,7 @@ project:
         - file: javascript-plugins.md
         - file: plugins-distribute.md
         - file: executable-plugins.md
-        - file: anywidgets.md
+        - file: widgets.md
         - file: plugins-debug.md
         - title: Use cases
           children:
