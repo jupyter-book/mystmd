@@ -1,5 +1,14 @@
 # myst-config
 
+## 1.9.5
+
+### Patch Changes
+
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-common@1.9.5
+
 ## 1.9.4
 
 ### Patch Changes
