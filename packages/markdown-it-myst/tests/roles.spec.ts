@@ -79,6 +79,20 @@ describe('parses roles', () => {
     expect(tokens.map((t) => t.type)).toEqual(['paragraph_open', 'inline', 'paragraph_close']);
     expect(tokens[1].children?.map((t) => t.type)).toEqual(['role_error']);
   });
+  it('role body spanning multiple lines parses', () => {
+    const mdit = MarkdownIt().use(plugin);
+    const tokens = mdit.parse('{ref}`hello\nworld`', {});
+    expect(tokens.map((t) => t.type)).toEqual(['paragraph_open', 'inline', 'paragraph_close']);
+    expect(tokens[1].children?.map((t) => t.type)).toEqual([
+      'parsed_role_open',
+      'role_body_open',
+      'inline',
+      'role_body_close',
+      'parsed_role_close',
+    ]);
+    expect(tokens[1].children?.[0].info).toEqual('ref');
+    expect(tokens[1].children?.[0].content).toEqual('hello\nworld');
+  });
   it('inline role has attributes', () => {
     const mdit = MarkdownIt().use(plugin);
     const tokens = mdit.parse('{ab .c #my-id something="_blah_"}`hello`', {});

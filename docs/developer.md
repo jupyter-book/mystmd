@@ -763,10 +763,14 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 **Markdown Parsing**
 
+MyST parsing builds on the [markdown-it](https://github.com/markdown-it/markdown-it) parser.
+`markdown-it` handles "standard" syntax (paragraphs, bold, links, etc), and `markdown-it-myst` adds rules for MyST-specific syntax (e.g., roles and directives).
+The MyST engine first uses `markdown-it` to parse raw text into tokens, and then `myst-parser` converts them into the MyST AST (using [mdast](https://github.com/syntax-tree/mdast)).
+
 - `markdown-it-myst`: markdown-it plugin to handle tokenizing roles and directives.
 - `myst-directives`: core directives for MyST.
 - `myst-roles`: core roles for MyST.
-- `myst-parser`: converts a [markdown-it](https://github.com/markdown-it/markdown-it) token stream to Markdown AST ([mdast](https://github.com/syntax-tree/mdast)).
+- `myst-parser`: converts the markdown-it token stream to MyST AST.
 
 **Readers**
 
