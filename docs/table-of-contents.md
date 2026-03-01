@@ -236,7 +236,7 @@ It will detect the parent header where the directive is placed, and list all _ch
 :depth: 2
 :::
 
-### Display headings on the page
+### Display all headings on the page
 
 Set `:context: page` to list the **Headings** on the current page.
 It will display all headings on the page regardless of where you call `{toc}`.
@@ -251,7 +251,22 @@ It will display all headings on the page regardless of where you call `{toc}`.
 :context: page
 :::
 
-### Display pages in the entire project
+
+### Display child pages of a page
+
+Set `:context: children` to list the **child pages** of the current page.
+This is useful for landing pages that want to show their sub-pages without listing the entire project TOC.
+
+```md
+:::{toc}
+:context: children
+:::
+```
+
+See [](#static-web-services-dropdown) for an example of this in action.
+
+
+### Display all pages in the project
 
 Set `:context: project` to list the Table of Contents for the entire project.
 It will essentially mirror the structure of `project.toc` and display the page titles across the project. It will not display the headers within each page.
@@ -280,7 +295,7 @@ For example, to display only the first two layers of headers across the entire p
 :::
 ```
 
-::::{dropdown}
+::::{dropdown} Click here to see full project toc
 :::{toc}
 :context: project
 :depth: 2

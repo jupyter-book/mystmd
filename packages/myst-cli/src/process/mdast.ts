@@ -342,6 +342,7 @@ export async function postProcessMdast(
           ]
         : undefined,
       projectSlug,
+      mdastPost.slug,
     );
   }
   // NOTE: This is doing things in place, we should potentially make this a different state?
