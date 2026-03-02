@@ -188,7 +188,23 @@ affiliations:
 
 See [the frontmatter affiliations table](#table-frontmatter-affiliations) for a complete list of the affiliations metadata you can use.
 
-## Add social media links 
+(author:email)=
+## Display author emails
+
+An author's `email` is only shown if `corresponding: true` is also set.
+To display the email icon for multiple authors, add `corresponding: true` to each one:
+
+```yaml
+authors:
+  - name: Marissa Myst
+    email: marissa@example.com
+    corresponding: true
+  - name: Miles Mysterson
+    email: miles@example.com
+    corresponding: true
+```
+
+## Add social media links
 
 You can add social media links to authors and affiliations.
 To do so, use the following fields in an entry for either `author` or the `affiliation`:
