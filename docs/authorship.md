@@ -192,6 +192,7 @@ See [the frontmatter affiliations table](#table-frontmatter-affiliations) for a 
 ## Display author emails
 
 An author's `email` is only shown if `corresponding: true` is also set.
+If `corresponding` is unset, the first author in the list who has an email is chosen as the corresponding author.
 To display the email icon for multiple authors, add `corresponding: true` to each one:
 
 ```yaml
