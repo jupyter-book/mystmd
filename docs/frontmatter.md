@@ -256,7 +256,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 * - `corresponding`
   - boolean (true/false) - flags any corresponding authors, you must include an `email` if true.
 * - `email`
-  - a string - email of the author, required if `corresponding` is `true`
+  - a string - email of the author. Only displayed in the rendered output when `corresponding` is `true`. See [](#author:email)
 * - `roles`
   - a list of strings - must be valid [CRediT Contributor Roles](https://credit.niso.org/)
 
