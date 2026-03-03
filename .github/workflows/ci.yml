@@ -22,6 +22,7 @@ jobs:
       - run: npm run lint:format
       - run: npm run lint
       - run: npm run lint:circular
+      - run: npx changeset status
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
