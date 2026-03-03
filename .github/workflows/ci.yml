@@ -19,9 +19,14 @@ jobs:
         with:
           node-version: 20.x
       - run: npm install
-      - run: npm run lint:format
-      - run: npm run lint
-      - run: npm run lint:circular
+      - name: Check formatting (style rules etc)
+        run: npm run lint:format
+      - name: Run linter (code correctness etc)
+        run: npm run lint
+      - name: Check for circular dependencies
+        run: npm run lint:circular
+      - name: Ensure changeset has the right structure and doesn't contain ignored packages
+        run: npm run version
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
@@ -38,7 +43,8 @@ jobs:
       - uses: ./.github/actions/install
         with:
           node: ${{ matrix.node }}
-      - run: npm run test
+      - name: Run tests
+        run: npm run test
   # This is just an additional check to make sure the build passes with our docs
   docs:
     if: github.actor != 'dependabot[bot]'
