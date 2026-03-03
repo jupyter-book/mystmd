@@ -22,7 +22,8 @@ jobs:
       - run: npm run lint:format
       - run: npm run lint
       - run: npm run lint:circular
-      - run: npx changeset status
+      - name: Ensure changeset has the right structure and doesn't contain ignored packages
+        run: npm run version
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
