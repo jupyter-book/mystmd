@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.3.47
+
+### Patch Changes
+
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+  - myst-to-html@1.7.0
+
 ## 1.3.46
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-frontmatter
 
+## 1.9.5
+
+### Patch Changes
+
+- 7b989d4: Updates to latest SPDX JLOB
+
 ## 1.9.4
 
 ### Patch Changes

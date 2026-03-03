@@ -1,5 +1,18 @@
 # myst-directives
 
+## 1.7.0
+
+### Minor Changes
+
+- 7b989d4: Adding the MyST widget directive (AnyWidget compatible)
+
+### Patch Changes
+
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+
 ## 1.6.5
 
 ## 1.6.4
