@@ -61,7 +61,7 @@ export const widgetDirective: DirectiveSpec = {
     return data;
   },
   run(data, _vfile, _opts) {
-    let model: ReturnType<typeof JSON5.parse>;
+    let model: Record<string, unknown>;
     if (data.body === undefined) {
       model = {};
     } else {
