@@ -8,7 +8,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "docs": "npm-run-all -l build --parallel dev docs:run",
-    "docs:run": "cd docs && node ../packages/mystmd/dist/myst.cjs start",
+    "docs:run": "cd docs && bun ../packages/mystmd/dist/myst.cjs start",
     "clean": "turbo run clean --parallel && find . -name '.turbo' -type d -prune -exec rimraf '{}' +",
     "link": "turbo run link",
     "lint": "turbo run lint",
@@ -17,9 +17,9 @@
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
-    "version": "changeset version && npm install",
-    "publish": "npm run clean && npm run build -- --force && changeset publish && git push --follow-tags",
-    "publish:ci": "npm run build && changeset publish && git push --follow-tags",
+    "version": "changeset version && bun install",
+    "publish": "bun run clean && bun run build -- --force && changeset publish && git push --follow-tags",
+    "publish:ci": "bun run build && changeset publish && git push --follow-tags",
     "install-pre-commit": "husky"
   },
   "devDependencies": {
@@ -38,10 +38,9 @@
     "vitest": "^3.2.4"
   },
   "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=14.0.0"
+    "node": ">=20.0.0"
   },
-  "packageManager": "npm@8.10.0",
+  "packageManager": "bun@1.2.2",
   "lint-staged": {
     "*.ts": "eslint --config ./.eslintrc.cjs --fix",
     "*.{js,jsx,ts,tsx,md,html,css,json}": "prettier --write"

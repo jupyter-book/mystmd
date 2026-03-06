@@ -47,7 +47,7 @@ flowchart TB
     ast --> content_server[serve AST on http://localhost:3100]
     end
   end
-  subgraph "npm run theme:book"
+  subgraph "bun run theme:book"
     subgraph "<b>Theme server</b>"
     direction LR
     theme_server[render themed content at http://localhost:3000] --> content_server
@@ -259,14 +259,14 @@ To make a new field inherit from project to page, add its key to this list.
 
 `mystmd` is built and developed using:
 
-- [NodeJS and npm](https://nodejs.org), which provides a JavaScript runtime and package management;
+- [Bun](https://bun.sh), which provides a JavaScript runtime and package management;
 - [TypeScript](https://www.typescriptlang.org/) for static type checking;
 - [ESLint](https://eslint.org/) for code linting;
 - [Prettier](https://prettier.io) for code formatting; and
 - [Changesets](https://github.com/changesets/changesets) for versioning and changelogs.
 
 ```{note}
-Below you will see several `npm run x` commands.
+Below you will see several `bun run x` commands.
 These are simply aliases for other commands, defined in the [`package.json` file](https://github.com/jupyter-book/mystmd/blob/main/package.json) under "scripts".
 ```
 
@@ -274,7 +274,7 @@ These are simply aliases for other commands, defined in the [`package.json` file
 
 ## Local development: `mystmd`
 
-The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
+The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [Bun](https://bun.sh) for local development.
 
 :::{warning} Don't use `mystmd-py` and the NPM installation at the same time
 :class: dropdown
@@ -289,30 +289,30 @@ git clone git@github.com:jupyter-book/mystmd.git
 cd mystmd
 ```
 
-Then, install dependencies via npm.
+Then, install dependencies via bun.
 You need to do this each time you pull from upstream, since dependency versions may change:
 
 ```shell
-npm install
+bun install
 ```
 
 Now, build `mystmd`:
 
 ```shell
-npm run build
+bun run build
 ```
 
 Optionally, you can link the built executable as your globally installed `mystmd`:
 
 ```shell
-npm run link
+bun run link
 ```
 
-These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `npm run build` (executed in the top-level source directory).
+These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `bun run build` (executed in the top-level source directory).
 
 ```{warning} Windows users should use unix-like shells
 The build process uses unix commands that might not work properly on Windows.
-When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
+When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2).
 ```
 
 ### Local docs workflows (preview/build)
@@ -320,7 +320,7 @@ When building on Windows, use either WSL or a unix-like shell (such as Git Bash 
 To run a MyST server with your local changes and a preview of the documentation, run:
 
 ```shell
-$ npm run docs
+$ bun run docs
 ```
 
 ## Local development: myst-theme
@@ -361,32 +361,32 @@ First, clone [the `myst-theme` repository](https://github.com/jupyter-book/myst-
 ```shell
 git clone https://github.com/jupyter-book/myst-theme/
 cd myst-theme
-npm install
+bun install
 ```
 
 Then, see if you can build the package:
 
 ```shell
-npm run build
+bun run build
 ```
 
 After the build succeeds, launch the theme server:
 
 ```shell
-npm run theme:book
+bun run theme:book
 ```
 
 After a while, it should tell you that the server has been started at http://localhost:3000. Browse there, and confirm that you can see the landing-page content.
 
-Each time you change the myst-theme source, you must recompile by re-running `npm run build`. This allows you to preview the changes locally.
+Each time you change the myst-theme source, you must recompile by re-running `bun run build`. This allows you to preview the changes locally.
 
 To automatically watch for changes and reload, use the following command:
 
 ```shell
-npm run dev
+bun run dev
 ```
 
-Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
+Note that you can run `bun run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
 ### Approach 2: Static build
 
@@ -401,7 +401,7 @@ We'll use the mystmd docs site as an example.
 #### Build theme
 
 To build a static site against a local theme, the theme must be built as it would be for production. For that we will use the "make" target
-instead of `npm run`:
+instead of `bun run`:
 
 ```{code} bash
 cd myst-theme
@@ -472,17 +472,17 @@ That opens a debugger control panel in the browser which should list your awaiti
 (NOTE: other browsers and IDEs can also connect as debug inspectors - see Inspector Clients reference below)
 
 In most cases we don't call `node` directly, so there is no easy way to add those options to a shell invocation.
-Instead, an `npm` script can be defined with environment variable `NODE_OPTIONS=--inspect` (or "--inspect-brk") set in an appropriate spot (example follows).
+Instead, a script can be defined with environment variable `NODE_OPTIONS=--inspect` (or "--inspect-brk") set in an appropriate spot (example follows).
 
 ### Debug myst-theme service
 
-For example, to debug myst-theme's book theme running as a dynamic application server, alter the npm scripts like so:
+For example, to debug myst-theme's book theme running as a dynamic application server, alter the scripts like so:
 
 ```{code} json
 :filename:  myst-theme/themes/book/package.json
 // add NODE_OPTIONS
 //                                                                                    v
-"dev": "npm run dev:copy && npm run build:thebe && concurrently \"npm run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
+"dev": "bun run dev:copy && bun run build:thebe && concurrently \"bun run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
 ```
 
 Now remove the turbo "--parallel" option, because when turbo runs the theme server in "parallel" (ie multiprocess) mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
@@ -564,8 +564,8 @@ When you publish a release, you upload a new version of the tool for package man
   - Ensure that private or non-existent packages like docs, etc. are not in the changesets (these will cause an early failure)
   - Ensure that there are no **new** myst packages that need to be created/linked
 - **Merge the changesets PR**. After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
-  - It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
-  - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `npm run publish:ci`, which calls `changeset publish`).
+  - It calls `bun run version` to generate the changelog (to review the changelog, you can run that command locally too).
+  - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `bun run publish:ci`, which calls `changeset publish`).
   - It creates multiple git version tags (which you'll use in making the GitHub release).
   - It releases to PyPI
   - The release notes are created automatically based on the `mystmd@v...` tag
@@ -668,20 +668,20 @@ First [install `mystmd` locally](#developer:mystmd).
 Then, run the test suite using:
 
 ```shell
-npm run test
+bun run test
 ```
 
 If you are working in a particular package, change your working directory to that specific package, and run the tests there.
 
 ```shell
 cd packages/myst-cli
-npm run test
+bun run test
 ```
 
 To run in "watch mode" (runs each time a change is saved), use:
 
 ```shell
-npm run test:watch
+bun run test:watch
 ```
 
 To run a single test by matching its title, first change the working directory to the package where the test exists. For example:
@@ -690,10 +690,10 @@ To run a single test by matching its title, first change the working directory t
 cd packages/mystmd
 ```
 
-Then run the `npm test` command like so:
+Then run the test command like so:
 
 ```shell
-npm run test -- -t "Basic tex build"
+bun run test -- -t "Basic tex build"
 ```
 
 For integration test titles, see `packages/mystmd/tests/exports.yml`.
@@ -712,12 +712,12 @@ There are two types of tests in the `mystmd` repository:
 ### Linting
 
 When contributing code, continuous integration will run linting and formatting on your pull request.
-You can also run `npm run lint` and `npm run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `npm run install-pre-commit`.[^uninstall-pre-commit]
+You can also run `bun run lint` and `bun run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `bun run install-pre-commit`.[^uninstall-pre-commit]
 If you are using the VSCode editor, it can be setup to show changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
 
 [^uninstall-pre-commit]: Uninstall the pre-commit hook with `git config --unset core.hooksPath`.
 
-Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
+Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `bun run build`; this can be run using `bun run dev`. If your changes aren't showing up, use `bun run build` as normal.
 
 ### Versioning and changesets
 
@@ -725,9 +725,9 @@ We use [changesets](https://github.com/changesets/changesets) for tracking chang
 To learn about changesets, see [this introductory guide to changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
 We use this [`changesets` GitHub Action](https://github.com/changesets/action) when we publish a release.
 
-Before submitting your Pull Request, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change.
+Before submitting your Pull Request, please add a changeset using `bun run changeset`, which will ask you questions about the package and ask for a brief description of the change.
 Commit the changeset file to the repository as a part of your pull request.
-You can use `npm run version` to preview the generated changelog.
+You can use `bun run version` to preview the generated changelog.
 
 Our current versioning procedure is a little loose compared to strict semantic versioning; as `mystmd` continues to mature, this policy may need to be updated.
 For now, we try to abide by the following rules for version bumps:
