@@ -6,6 +6,7 @@ import { renderTemplate } from '../src';
 
 describe(
   'Download Template',
+  { timeout: 15000 },
   () => {
     it('Download default template', async () => {
       const session = new Session();
@@ -56,5 +57,4 @@ describe(
       expect(content.includes('My abstract!')).toBe(true);
     });
   },
-  { timeout: 15000 },
 );
