@@ -52,6 +52,7 @@ In @my-program, we create a mesh for simulation using [SimPEG](https://discretiz
 ## Numbering and Highlighting
 
 To add numbers and emphasis to lines use the {myst:directive}`code` directive. You can use {myst:directive}`code.linenos` which is a flag, with no value, and {myst:directive}`code.emphasize-lines` with a comma-separated list of line numbers to emphasize.
+These options also work with {myst:directive}`code-cell` directives (see [](#code-cell:linenos)).
 
 ````{code} md
 :linenos:
