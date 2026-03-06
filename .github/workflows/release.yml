@@ -30,18 +30,14 @@ jobs:
           fetch-depth: 2
           submodules: recursive
       - uses: ./.github/actions/install
-        with:
-          node: "24"
       - name: Run tests
-        run: npm run test
-      - name: Ensure npm 11.5.1+ for trusted publishing
-        run: npm install -g npm@latest
+        run: bun run test
       - name: Version bump and create pull request OR publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          version: npm run version
-          publish: npm run publish:ci
+          version: bun run version
+          publish: bun run publish:ci
           commit: 🚀 Release
           title: 🚀 Release
           createGithubReleases: false

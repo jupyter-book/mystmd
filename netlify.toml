@@ -1,8 +1,10 @@
 [build]
+  environment = { BUN_VERSION = "latest" }
   command = """
   pip install -r docs/requirements.txt;
-  npm run build;
-  npm run --workspace packages/mystmd link;
+  bun install;
+  bun run build;
+  bun run link;
   cd docs;
   myst build --html --execute
   echo "User-agent: *\nDisallow: /" > _build/html/robots.txt

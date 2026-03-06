@@ -208,9 +208,9 @@ In order to try out our new `word-count` role, we need to build the `myst` appli
 🛠 Install packages, build and link myst. See [](./contribute-build-locally.md) for more details.
 
 ```shell
-$ npm install
-$ npm run build
-$ npm run link
+$ bun install
+$ bun run build
+$ bun run link
 ```
 
 After running these steps, the MyST CLI (as described in [](./quickstart-myst-documents.md)) can be used.
@@ -478,7 +478,7 @@ export const wordCountPlugin: Plugin<[], GenericParent, GenericParent> =
 
 This pattern, of mutating existing nodes using a transform, is commonly used in the MyST ecosystem. If you want to keep information about the node's source, for example, to style it differently, you could store a flag on `data` or `kind`. If you are introducing a new node into the final rendered document, that will require you to add a new renderer. By staying within the existing node types, all existing renderers will work out of the box.
 
-If we build MyST with `npm run build`, we'd notice that this transform never runs. Like our earlier `word-count` role, we need to include the `wordCountTransform` in the set of MyST transforms that run during building.
+If we build MyST with `bun run build`, we'd notice that this transform never runs. Like our earlier `word-count` role, we need to include the `wordCountTransform` in the set of MyST transforms that run during building.
 
 🛠 Add a new _export_ line in `packages/myst-transforms/src/index.ts`
 
@@ -521,7 +521,7 @@ export async function transformMdast(...) {
 
 Having modified all of the source files required to implement our word count feature.
 
-🛠 Run `npm run build` to build the `myst` package
+🛠 Run `bun run build` to build the `myst` package
 
 Now let's see what happens over in our demo!
 
@@ -542,7 +542,7 @@ The result of running `myst start` with support for our new `word-count` role in
 
 ## Contributing
 
-The next steps to bring this into being a core feature would be [adding documentation](./contribute-docs.md) and running `npm run changeset` to add a description of what you have completed. You can then open a pull request, and the developers of MyST will aim to get this into MyST and released so everyone can use it!
+The next steps to bring this into being a core feature would be [adding documentation](./contribute-docs.md) and running `bun run changeset` to add a description of what you have completed. You can then open a pull request, and the developers of MyST will aim to get this into MyST and released so everyone can use it!
 
 A full, unmerged pull request of this feature is available in [#1027](https://github.com/jupyter-book/mystmd/pull/1027) to see the end-result.
 

@@ -1,0 +1,7 @@
+[install]
+# Use the new text-based lockfile (Bun 1.2+)
+lockfile = "bun.lock"
+
+[test]
+# Enable some Bun test features, in case we decide to use bun test
+root = "."
