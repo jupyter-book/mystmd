@@ -1,7 +1,9 @@
 import { describe, test, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import yaml from 'js-yaml';
+import which from 'which';
 import type { ICache } from '../src';
 import { kernelExecutionTransform, launchJupyterServer } from '../src';
 import type { ExecutionResult } from '../src/types.js';
@@ -29,6 +31,14 @@ type TestCases = {
   title: string;
   cases: TestCase[];
 };
+
+const pythonPath = which.sync('python', { nothrow: true });
+if (pythonPath === null) {
+  throw new Error('python not found in PATH; install it to run myst-execute tests');
+}
+if (spawnSync(pythonPath, ['-c', 'import jupyter_server']).status !== 0) {
+  throw new Error('jupyter_server not found; run `pip install jupyter-server` to run myst-execute tests');
+}
 
 const only = '';
 
