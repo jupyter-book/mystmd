@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
@@ -66,6 +66,10 @@ class SessionManagerFactory {
 }
 
 const sessionManagerFactory = new SessionManagerFactory();
+
+beforeAll(async () => {
+  await sessionManagerFactory.load();
+}, 60_000);
 
 casesList.forEach(({ title, cases }) => {
   const filtered = cases.filter((c) => !only || c.title === only);
