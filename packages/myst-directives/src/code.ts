@@ -252,7 +252,7 @@ export const codeCellDirective: DirectiveSpec = {
       lang: data.arg as string,
       executable: true,
       value: (data.body ?? '') as string,
-      ...getCodeBlockOptions(data, vfile)
+      ...getCodeBlockOptions(data, vfile),
     };
     const outputs = {
       type: 'outputs',
