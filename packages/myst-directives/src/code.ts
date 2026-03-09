@@ -247,7 +247,6 @@ export const codeCellDirective: DirectiveSpec = {
     doc: 'The code to be executed and displayed.',
   },
   run(data, vfile): GenericNode[] {
-    const opts = getCodeBlockOptions(data, vfile);
     const code: Code = {
       type: 'code',
       lang: data.arg as string,
