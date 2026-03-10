@@ -30,7 +30,10 @@ jobs:
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
-    name: Testing
+    strategy:
+      matrix:
+        node: ["20", "22", "24"]
+    name: Testing with bun and node ${{ matrix.node }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -38,6 +41,8 @@ jobs:
           fetch-depth: 2
           submodules: recursive
       - uses: ./.github/actions/install
+        with:
+          node: ${{ matrix.node }}
       - name: Run tests
         run: bun run test
   # This is just an additional check to make sure the build passes with our docs
@@ -53,7 +58,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.x"
       - name: Install myst
         uses: ./.github/actions/install
       - name: Install docs dependencies
