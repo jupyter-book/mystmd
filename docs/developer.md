@@ -562,7 +562,7 @@ When you publish a release, you upload a new version of the tool for package man
 - Review the changeset PR.
   - Ensure that `mystmd` is in the changesets. Or you are intentially **not** releasing `mystmd` (this generally shouldn't happen), in which case the python and release notes are expected to fail.
   - Ensure that private or non-existent packages like docs, etc. are not in the changesets (these will cause an early failure)
-  - Ensure that there are no **new** myst packages that need to be created/linked
+  - Ensure that there are no **new** myst packages that need to be published (see [](#release:new-package))
 - **Merge the changesets PR**. After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
   - It calls `bun run version` to generate the changelog (to review the changelog, you can run that command locally too).
   - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `bun run publish:ci`, which calls `changeset publish`).
@@ -584,6 +584,26 @@ Ask for help the [`#release_coordination` Discord channel](https://discord.com/c
   - fix a `package.json` (e.g. add a git trusted publisher), merge to main, and add a tag for `mystmd` (`git tag mystmd@M.m.p`, for the release notes) if that package isn't being re-released
 - A new NPM package has been created but not created or linked:
   - Create the package, add `ebp-bot` to it, setup trusted publishing in NPM.
+
+(release:new-package)=
+#### Publishing a new NPM package for the first time
+
+If a PR introduces a new package, you must publish it to NPM manually before merging the changesets PR.
+For example, [PR #2602](https://github.com/jupyter-book/mystmd/pull/2602) and its [myst-theme counterpart](https://github.com/jupyter-book/myst-theme/pull/795) added the new `anywidget` package.
+
+Before proceeding, ask about this in [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141) and ensure that we are (a) about to make a release; and (b) there are no last-minute changes to the package name. Creating a new NPM package cannot be undone and packages cannot be renamed.
+
+Steps to publish a new package:
+
+1. **Build and test the package** to confirm it works as expected.
+2. **Set the version to `0.0.0`** in the package's `package.json`. Changesets will overwrite this on the first automated release.
+3. **Publish the package** manually with public access:
+   ```shell
+   npm publish --access=public
+   ```
+4. **Set up [trusted publishing](https://docs.npmjs.com/trusted-publishers)** in the NPM admin so that GitHub Actions can publish future releases automatically.
+5. **Add `ebp-bot` as a maintainer** on the NPM package page. This is not needed if the package belongs to a team (e.g., `@myst-theme`).
+6. **Announce the new package** in the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141) so the team is aware and comment on the relevant GitHub Release PR that this package has been created.
 
 (release:myst-theme)=
 #### Publish a release of `myst-theme`
