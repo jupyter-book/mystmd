@@ -4,11 +4,11 @@ import 'core-js/actual'; // This adds backwards compatible functionality for var
 // This suppresses the punycode deprecation warning
 // https://github.com/jupyter-book/mystmd/issues/1166
 const { emit: originalEmit } = process;
-function suppressor(event: string, error: Error) {
+function suppressor(event: string, ...args: any[]) {
+  const error = args[0] as Error;
   return event === 'warning' && error.name === 'DeprecationWarning'
     ? false
-    : // eslint-disable-next-line prefer-rest-params
-      originalEmit.apply(process, arguments);
+    : (originalEmit as (...args: any[]) => boolean).apply(process, [event, ...args]);
 }
 (process as any).emit = suppressor;
 
