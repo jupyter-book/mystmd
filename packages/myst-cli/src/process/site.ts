@@ -682,7 +682,12 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
             const buildWarnings = selectors.selectFileWarnings(session.store.getState(), page.file);
             if (!buildWarnings || buildWarnings.length === 0) return [0, 0];
             const resp = buildWarnings
-              .map(({ message, kind }) => chalk[kind === 'error' ? 'red' : 'yellow'](message))
+              .map(({ message, kind }) => {
+                const isError = kind === 'error';
+                const color = isError ? 'red' : 'yellow';
+                const icon = isError ? '⛔' : '⚠️ ';
+                return chalk[color](`${icon} ${message}`);
+              })
               .join('\n  - ');
             session.log.info(`\n${page.file}\n  - ${resp}\n`);
             return [
