@@ -686,7 +686,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
                 const isError = kind === 'error';
                 const color = isError ? 'red' : 'yellow';
                 const icon = isError ? '⛔' : '⚠️';
-                chalk[color](`${icon} ${message}`)
+                return chalk[color](`${icon} ${message}`);
               })
               .join('\n  - ');
             session.log.info(`\n${page.file}\n  - ${resp}\n`);
