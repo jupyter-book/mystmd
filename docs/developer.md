@@ -591,6 +591,8 @@ Ask for help the [`#release_coordination` Discord channel](https://discord.com/c
 If a PR introduces a new package, you must publish it to NPM manually before merging the changesets PR.
 For example, [PR #2602](https://github.com/jupyter-book/mystmd/pull/2602) and its [myst-theme counterpart](https://github.com/jupyter-book/myst-theme/pull/795) added the new `anywidget` package.
 
+Before proceeding, ask about this in [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141) and ensure that we are (a) about to make a release; and (b) there are no last-minute changes to the package name. Creating a new NPM package cannot be undone and packages cannot be renamed.
+
 Steps to publish a new package:
 
 1. **Build and test the package** to confirm it works as expected.
@@ -599,9 +601,9 @@ Steps to publish a new package:
    ```shell
    npm publish --access=public
    ```
-4. **Set up trusted publishing** in the NPM admin so that GitHub Actions can publish future releases automatically.
+4. **Set up [trusted publishing](https://docs.npmjs.com/trusted-publishers)** in the NPM admin so that GitHub Actions can publish future releases automatically.
 5. **Add `ebp-bot` as a maintainer** on the NPM package page. This is not needed if the package belongs to a team (e.g., `@myst-theme`).
-6. **Announce the new package** in the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141) so the team is aware.
+6. **Announce the new package** in the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141) so the team is aware and comment on the relevant GitHub Release PR that this package has been created.
 
 (release:myst-theme)=
 #### Publish a release of `myst-theme`
