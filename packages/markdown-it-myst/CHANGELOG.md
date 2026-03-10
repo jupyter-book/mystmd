@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.16
+
+### Patch Changes
+
+- 9355519: Add multi-line to role parsing
+
 ## 1.0.15
 
 ### Patch Changes

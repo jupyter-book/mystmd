@@ -1,3 +1,4 @@
+export * from './anywidgets.js';
 export * from './citations.js';
 export * from './code.js';
 export * from './crossReferences.js';

@@ -11,7 +11,11 @@ const ROR_MAX_AGE = 30; // in days
 
 type RORResponse = {
   id: string;
-  name: string;
+  names: {
+    lang: string | null;
+    types: string[];
+    value: string;
+  }[];
 };
 
 /**
@@ -34,7 +38,7 @@ export async function resolveRORAsJSON(
   session: ISession,
   ror: string,
 ): Promise<RORResponse | undefined> {
-  const url = `https://api.ror.org/organizations/${ror}`;
+  const url = `https://api.ror.org/v2/organizations/${ror}`;
   session.log.debug(`Fetching ROR JSON from ${url}`);
   const response = await session.fetch(url).catch(() => {
     session.log.debug(`Request to ${url} failed.`);
@@ -105,22 +109,30 @@ export async function transformLinkedRORs(
   const linkedRORs = selectAll('link[protocol=ror]', mdast) as Link[];
   if (linkedRORs.length === 0) return;
   session.log.debug(`Found ${plural('%s ROR(s)', linkedRORs.length)} to auto link.`);
-  let number = 0;
-  await Promise.all([
-    ...linkedRORs.map(async (node) => {
+  const statuses = await Promise.all(
+    linkedRORs.map(async (node) => {
       const ror = node.data?.ror as string;
-      if (!ror) return;
-      number += 1;
+      if (!ror) return false;
       const rorData = await resolveROR(session, vfile, node, ror);
-      if (rorData && toText(node.children) === ror) {
-        // If the link text is the ROR, update with a organization name
-        node.children = [{ type: 'text', value: rorData.name }];
+      if (rorData === undefined) {
+        return false;
       }
+      if (toText(node.children) !== ror) {
+        return true;
+      }
+      const displayEntry = rorData.names.find((entry) => entry.types.includes('ror_display'));
+      if (displayEntry === undefined) {
+        return true;
+      }
+
+      // If the link text is the ROR, update with a organization name
+      node.children = [{ type: 'text', value: displayEntry.value }];
       return true;
     }),
-  ]);
-  if (number > 0) {
-    session.log.info(toc(`🪄  Linked ${plural('%s ROR(s)', number)} in %s for ${path}`));
+  );
+  const nLinked = statuses.reduce((total, current) => total + +current, 0);
+  if (nLinked > 0) {
+    session.log.info(toc(`🪄  Linked ${plural('%s ROR(s)', nLinked)} in %s for ${path}`));
   }
   return;
 }

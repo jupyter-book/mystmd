@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.9.5
+
+### Patch Changes
+
+- 7b989d4: Cheanges to suport first version of anywidget
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+
 ## 1.9.4
 
 ### Patch Changes

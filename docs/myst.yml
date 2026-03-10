@@ -16,7 +16,7 @@ project:
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
     biapol: https://biapol.github.io/blog/
- 
+
   plugins:
     - directives.mjs
     - picsum.mjs
@@ -42,7 +42,7 @@ project:
         - /jtex/create-a-latex-template
         - /jtex/create-a-beamer-template
         - /jtex/contribute-a-template
-        
+
   toc:
     - file: index.md
     - file: installing.md
@@ -127,6 +127,7 @@ project:
         - file: javascript-plugins.md
         - file: plugins-distribute.md
         - file: executable-plugins.md
+        - file: widgets.md
         - file: plugins-debug.md
         - title: Use cases
           children:

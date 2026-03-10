@@ -1,6 +1,6 @@
 {
   "name": "markdown-it-myst",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "sideEffects": false,
   "license": "MIT",
   "description": "markdown-it tokenizer for MyST roles and directives",
@@ -23,8 +23,8 @@
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },

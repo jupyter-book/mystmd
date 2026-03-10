@@ -67,6 +67,7 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
+  transformWidgetStaticAssetsToDisk,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -341,6 +342,7 @@ export async function postProcessMdast(
           ]
         : undefined,
       projectSlug,
+      mdastPost.slug,
     );
   }
   // NOTE: This is doing things in place, we should potentially make this a different state?
@@ -417,6 +419,13 @@ export async function finalizeMdast(
     vfile,
   });
   if (!useExistingImages) {
+    await transformWidgetStaticAssetsToDisk(
+      session,
+      mdast,
+      file,
+      imageWriteFolder,
+      simplifyFigures ? imageWriteFolder : (imageAltOutputFolder ?? imageWriteFolder),
+    );
     await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
       imageExtensions,

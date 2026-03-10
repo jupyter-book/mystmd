@@ -1,5 +1,29 @@
 # myst-cli
 
+## 1.8.2
+
+### Patch Changes
+
+- 8dd363d: Fix references in DOCX export
+- 89dd74a: Use V2 ROR API
+- f7ff135: Change internal `get_baseurl` function to match naming conventions
+- ef5a928: Update node version
+- 7b989d4: Cheanges to suport first version of anywidget
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+- Updated dependencies [ef5a928]
+- Updated dependencies [7b989d4]
+- Updated dependencies [e78417e]
+  - myst-frontmatter@1.9.5
+  - citation-js-utils@1.2.8
+  - jtex@1.0.21
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+  - myst-transforms@1.3.47
+  - myst-parser@1.7.0
+  - myst-config@1.9.5
+  - myst-migrate@1.8.2
+
 ## 1.8.1
 
 ### Patch Changes
