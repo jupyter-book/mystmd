@@ -27,6 +27,7 @@ export type StateData = {
   isInFigure?: boolean;
   isInBlockquote?: boolean;
   isInTable?: boolean;
+  isInIndex?: boolean;
   longFigure?: boolean;
   definitionIndent?: number;
   nextCaptionNumbered?: boolean;
