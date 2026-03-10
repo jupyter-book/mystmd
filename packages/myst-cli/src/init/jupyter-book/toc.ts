@@ -201,7 +201,8 @@ function assertNever(): never {
 function maybeResolveDocument(dir: string, name: string, session: ISession): string {
   const resolved = resolveExtension(join(dir, name));
   if (resolved) {
-    return relative(dir, resolved);
+    // Use forward slashes for cross-platform compatibility (Windows path.relative uses backslashes)
+    return relative(dir, resolved).replace(/\\/g, '/');
   }
   session.log.error(`Could not find a file named ${name} (declared in table of contents)`);
 
