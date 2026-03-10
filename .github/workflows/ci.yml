@@ -19,9 +19,14 @@ jobs:
         with:
           bun-version: latest
       - run: bun install
-      - run: bun run lint:format
-      - run: bun run lint
-      - run: bun run lint:circular
+      - name: Check formatting (style rules etc)
+        run: bun run lint:format
+      - name: Run linter (code correctness etc)
+        run: bun run lint
+      - name: Check for circular dependencies
+        run: bun run lint:circular
+      - name: Ensure changeset has the right structure and doesn't contain ignored packages
+        run: bun run version
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
@@ -33,7 +38,8 @@ jobs:
           fetch-depth: 2
           submodules: recursive
       - uses: ./.github/actions/install
-      - run: bun run test
+      - name: Run tests
+        run: bun run test
   # This is just an additional check to make sure the build passes with our docs
   docs:
     if: github.actor != 'dependabot[bot]'
