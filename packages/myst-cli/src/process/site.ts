@@ -685,7 +685,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
               .map(({ message, kind }) => {
                 const isError = kind === 'error';
                 const color = isError ? 'red' : 'yellow';
-                const icon = isError ? '⛔' : '⚠️';
+                const icon = isError ? '⛔' : '⚠️ ';
                 return chalk[color](`${icon} ${message}`);
               })
               .join('\n  - ');
