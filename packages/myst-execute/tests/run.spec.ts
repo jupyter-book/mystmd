@@ -98,7 +98,7 @@ casesList.forEach(({ title, cases }) => {
         }
         expect(before).toMatchObject(after);
       },
-      { timeout: 30_000 },
+      30_000,
     );
   });
 });
