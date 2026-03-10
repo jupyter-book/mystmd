@@ -14,29 +14,29 @@ jobs:
         with:
           fetch-depth: 2
           submodules: recursive
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20.x
-      - run: npm install
+          bun-version: latest
+      - run: bun install
       - name: Check formatting (style rules etc)
-        run: npm run lint:format
+        run: bun run lint:format
       - name: Run linter (code correctness etc)
-        run: npm run lint
+        run: bun run lint
       - name: Check for circular dependencies
-        run: npm run lint:circular
+        run: bun run lint:circular
       - name: Ensure changeset has the right structure and doesn't contain ignored packages
-        run: npm run version
+        run: bun run version
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ['20', '22.4.x', '24']
-    name: Testing on node ${{ matrix.node }}
+        node: ["20", "22", "24"]
+    name: Testing with bun and node ${{ matrix.node }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
           submodules: recursive
@@ -44,7 +44,7 @@ jobs:
         with:
           node: ${{ matrix.node }}
       - name: Run tests
-        run: npm run test
+        run: bun run test
   # This is just an additional check to make sure the build passes with our docs
   docs:
     if: github.actor != 'dependabot[bot]'
@@ -52,17 +52,15 @@ jobs:
     name: Running test docs build
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
           submodules: recursive
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.x"
       - name: Install myst
         uses: ./.github/actions/install
-        with:
-          node: '20.x'
       - name: Install docs dependencies
         run: |
           pip install -r docs/requirements.txt
