@@ -28,6 +28,7 @@ import { cleanOutput } from '../utils/cleanOutput.js';
 import { getFileContent } from '../utils/getFileContent.js';
 import { createFooter } from './footers.js';
 import { createArticleTitle, createReferenceTitle } from './titles.js';
+import { createMermaidImageMystPlugin } from '../../transforms/mermaid.js';
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
 
@@ -113,6 +114,7 @@ export async function runWordExport(
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
+    transforms: [createMermaidImageMystPlugin],
     preFrontmatters: [
       filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
     ],
