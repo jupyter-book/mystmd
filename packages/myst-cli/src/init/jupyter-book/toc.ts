@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { resolveExtension } from '../../utils/resolveExtension.js';
-import { join, relative } from 'node:path';
+import path, { join, relative } from 'node:path';
 import { cwd } from 'node:process';
 import type { ISession } from '../../session/types.js';
 import type { Entry as MySTEntry, ParentEntry as MySTParentEntry } from 'myst-toc';
@@ -201,8 +201,8 @@ function assertNever(): never {
 function maybeResolveDocument(dir: string, name: string, session: ISession): string {
   const resolved = resolveExtension(join(dir, name));
   if (resolved) {
-    // Use forward slashes for cross-platform compatibility (Windows path.relative uses backslashes)
-    return relative(dir, resolved).replace(/\\/g, '/');
+    // Use POSIX slashes for cross-platform compatibility (Windows path.relative uses backslashes)
+    return relative(dir, resolved).replaceAll(path.sep, path.posix.sep);
   }
   session.log.error(`Could not find a file named ${name} (declared in table of contents)`);
 
