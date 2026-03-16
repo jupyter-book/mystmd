@@ -58,6 +58,9 @@ export const gridItemDirective: DirectiveSpec = {
     class: {
       type: String,
     },
+    columns: {
+      type: Number,
+    }
   },
   body: {
     type: 'myst',
@@ -66,7 +69,8 @@ export const gridItemDirective: DirectiveSpec = {
   run(data: DirectiveData): GenericNode[] {
     const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
     const div: GenericNode = {
-      type: 'div',
+      type: 'grid-item',
+      columns: data.options?.columns as number | undefined,
       children: data.body as unknown as GenericNode[],
       class: data.options?.class as string | undefined,
       label,
