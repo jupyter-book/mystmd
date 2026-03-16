@@ -50,6 +50,14 @@ export const gridDirective: DirectiveSpec = {
 
 export const gridItemDirective: DirectiveSpec = {
   name: 'grid-item',
+  // options:
+  // // https://sphinx-design.readthedocs.io/en/furo-theme/grids.html#grid-item-options
+  // margin
+  // padding
+  // child-direction
+  // child-align
+  // outline
+  // class
   options: {
     label: {
       type: String,
