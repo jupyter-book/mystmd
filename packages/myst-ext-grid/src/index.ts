@@ -60,7 +60,7 @@ export const gridItemDirective: DirectiveSpec = {
     },
     columns: {
       type: Number,
-    }
+    },
   },
   body: {
     type: 'myst',
