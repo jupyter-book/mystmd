@@ -20,7 +20,15 @@ import {
 import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
 
 export const SITE_CONFIG_KEYS = {
-  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'template', 'static_files'],
+  optional: [
+    ...SITE_FRONTMATTER_KEYS,
+    'projects',
+    'nav',
+    'actions',
+    'domains',
+    'template',
+    'static_files',
+  ],
   alias: FRONTMATTER_ALIASES,
 };
 
