@@ -181,6 +181,12 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
 
   // Copy all of the static assets
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
+
+  // Copy user static files to html build root
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  for (const fn of siteConfig?.static_files ?? []) {
+    fs.copySync(fn, path.join(htmlDir, path.basename(fn)));
+  }
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
   fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
 
