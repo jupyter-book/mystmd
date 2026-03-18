@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
 import { basename, extname, join } from 'node:path';
+import fs from 'fs-extra';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
@@ -77,6 +78,7 @@ export type ProcessProjectOptions = ProcessFileOptions & {
   reloadProject?: boolean;
   checkLinks?: boolean;
   strict?: boolean;
+  staticFiles?: string[];
 };
 
 export type ProcessSiteOptions = ProcessProjectOptions & SiteManifestOptions;
@@ -627,6 +629,13 @@ export async function processProject(
         }
       }),
     );
+    // Write all static files
+    const staticFiles = opts?.staticFiles ?? [];
+    await Promise.all(
+      staticFiles.map(async (fn) => {
+        fs.copySync(fn, join(session.publicPath(), basename(fn)));
+      }),
+    );
     await Promise.all(
       pages.map(async (page) => {
         return writeFile(session, {
@@ -669,6 +678,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
         ...opts,
         imageWriteFolder: session.publicPath(),
         imageAltOutputFolder: '/',
+        staticFiles: siteConfig.static_files,
       }),
     ),
   );

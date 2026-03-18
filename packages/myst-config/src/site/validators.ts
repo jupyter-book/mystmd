@@ -20,7 +20,7 @@ import {
 import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
 
 export const SITE_CONFIG_KEYS = {
-  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'template'],
+  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'template', 'static_files'],
   alias: FRONTMATTER_ALIASES,
 };
 
@@ -144,6 +144,15 @@ export function validateSiteConfigKeys(
   }
   if (defined(value.template)) {
     output.template = validateString(value.template, incrementOptions('template', opts));
+  }
+  if (defined(value.static_files)) {
+    output.static_files = validateList(
+      value.static_files,
+      incrementOptions('static_files', opts),
+      (file, index) => {
+        return validateString(file, incrementOptions(`static_files.${index}`, opts));
+      },
+    );
   }
   return output;
 }
