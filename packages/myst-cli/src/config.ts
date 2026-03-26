@@ -274,7 +274,9 @@ export async function loadConfig(
       return existingConf.validated;
     }
   }
-  const { site, project, extend } = await getValidatedConfigsFromFile(session, file, path);
+  const { extend, ...configs } = await getValidatedConfigsFromFile(session, file, path);
+  const site = await loadAndResolveConfigParts(session, path, configs.site, file, 'site');
+  const project = await loadAndResolveConfigParts(session, path, configs.project, file, 'project');
   const validated = { ...rawConf, site, project, extend };
   session.store.dispatch(
     config.actions.receiveRawConfig({
@@ -330,7 +332,6 @@ async function resolveSiteConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
-  file: string,
 ) {
   const resolvedFields: SiteConfig = {};
   if (siteConfig.projects) {
@@ -341,15 +342,6 @@ async function resolveSiteConfigPaths(
         }
         return proj;
       }),
-    );
-  }
-  if (siteConfig.parts) {
-    resolvedFields.parts = await loadFrontmatterParts(
-      session,
-      file,
-      'site.parts',
-      { parts: siteConfig.parts },
-      path,
     );
   }
   return { ...siteConfig, ...resolvedFields };
@@ -368,7 +360,6 @@ async function resolveProjectConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
-  file: string,
 ) {
   const resolvedFields: ProjectConfig = {};
   if (projectConfig.bibliography) {
@@ -397,16 +388,26 @@ async function resolveProjectConfigPaths(
     );
     await session.loadPlugins(resolvedFields.plugins);
   }
-  if (projectConfig.parts) {
-    resolvedFields.parts = await loadFrontmatterParts(
-      session,
-      file,
-      'project.parts',
-      { parts: projectConfig.parts },
-      path,
-    );
-  }
   return { ...projectConfig, ...resolvedFields };
+}
+
+export async function loadAndResolveConfigParts<T extends { parts?: Record<string, string[]> }>(
+  session: ISession,
+  path: string,
+  configWithParts: T | undefined,
+  file: string,
+  property: 'project' | 'site',
+) {
+  if (!configWithParts) return undefined;
+  if (!configWithParts.parts) return { ...configWithParts };
+  const resolvedParts = await loadFrontmatterParts(
+    session,
+    file,
+    `${property}.parts`,
+    { parts: configWithParts.parts },
+    path,
+  );
+  return { ...configWithParts, parts: resolvedParts };
 }
 
 async function validateSiteConfigAndThrow(
@@ -424,7 +425,7 @@ async function validateSiteConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
-  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute, vfile.path);
+  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute);
 }
 
 function saveSiteConfig(session: ISession, path: string, site: SiteConfig) {
@@ -446,7 +447,7 @@ async function validateProjectConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
-  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute, vfile.path);
+  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute);
 }
 
 function saveProjectConfig(session: ISession, path: string, project: ProjectConfig) {
@@ -493,8 +494,8 @@ export async function writeConfigs(
       path,
       projectConfig,
       resolveToRelative,
-      file,
     );
+    projectConfig = await loadAndResolveConfigParts(session, path, projectConfig, file, 'project');
   }
   if (siteConfig) {
     saveSiteConfig(
@@ -505,7 +506,8 @@ export async function writeConfigs(
   }
   siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
   if (siteConfig) {
-    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
+    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative);
+    siteConfig = await loadAndResolveConfigParts(session, path, siteConfig, file, 'site');
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {
