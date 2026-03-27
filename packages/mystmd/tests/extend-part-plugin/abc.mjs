@@ -28,7 +28,7 @@ var abcDirective = {
   }
 };
 
-var plugin = { name: "Alphabet (abc) by Curvenote", directives: [abcDirective] };
+var plugin = { name: "Alphabet (abc) by MyST", directives: [abcDirective] };
 
 export default plugin;
 

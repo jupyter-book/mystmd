@@ -507,13 +507,18 @@ function saveProjectConfig(session: ISession, path: string, project: ProjectConf
 }
 
 /**
- * Write site config and config to path, if available
+ * Write site config and project config to file
  *
  * If newConfigs are provided, the redux store will be updated with these
  * configs before writing.
  *
- * If a config file exists on the path, this will override the
- * site portion of the config and leave the rest.
+ * If a config file exists on the path, this will override only the new portions
+ * of the config and leave the rest (i.e. if `newConfigs.siteConfig` is undefined,
+ * everything under the `site` key in the existing config will be unchanged).
+ *
+ * @param session with logging and redux store
+ * @param path directory to write config to
+ * @param newConfigs site and project configs to write
  */
 export async function writeConfigs(
   session: ISession,
