@@ -36,6 +36,14 @@ export function defaultConfigFile(session: ISession, path: string) {
   return resolve(path, session.configFiles[0]);
 }
 
+/**
+ * Find config file at the specified path
+ *
+ * @param session with valid config filenames
+ * @param path directory to look for config file
+ * @returns the resolved path to the config file, or undefined if no config file is found
+ * @throws an error if multiple config files are found in the path
+ */
 export function configFromPath(session: ISession, path: string) {
   const configs = session.configFiles
     .map((file) => {
@@ -138,9 +146,8 @@ export function handleDeprecatedFields(
 /**
  * Load and validate a file as yaml config file
  *
- * Returns validated site and project configs.
- *
- * Throws errors if config file is malformed or invalid.
+ * @returns the validated site and project configs and list of extended config files
+ * @throws an error if the config file is malformed or invalid
  */
 async function getValidatedConfigsFromFile(
   session: ISession,
@@ -255,7 +262,13 @@ async function getValidatedConfigsFromFile(
 /**
  * Load site/project config from local path to redux store
  *
- * Errors if config file does not exist or if config file exists but is invalid.
+ * Validates the loaded config and stores raw/validated values in redux.
+ *
+ * @param session with logging and redux store
+ * @param path local directory to load config from
+ * @param opts.reloadProject if true, reload the project config even if it already exists in the redux store
+ * @returns the validated config, or undefined when no config file exists at the path
+ * @throws an error if the config is invalid
  */
 export async function loadConfig(
   session: ISession,
@@ -319,6 +332,18 @@ function resolveToRelative(
   return absPath;
 }
 
+/**
+ * Resolve path-based fields in a site config.
+ *
+ * This function may be used for resolving relative local paths or resolving remote paths on a server,
+ * depending on the implementation of the resolutionFn.
+ *
+ * @param session session with logging
+ * @param path base path for config file directory, used for relative path resolution
+ * @param siteConfig site config to resolve
+ * @param resolutionFn function to resolve each path value
+ * @returns copy of the site config with resolved path fields
+ */
 async function resolveSiteConfigPaths(
   session: ISession,
   path: string,
@@ -347,6 +372,20 @@ async function resolveSiteConfigPaths(
   return { ...siteConfig, ...resolvedFields };
 }
 
+/**
+ * Resolve path-based fields in a project config.
+ *
+ * This function may be used for resolving relative local paths or resolving remote paths on a server,
+ * depending on the implementation of the resolutionFn.
+ *
+ * Additionally, this function loads configured plugins immediately once the paths are resolved
+ *
+ * @param session session with logging
+ * @param path base path for config file directory, used for relative path resolution
+ * @param projectConfig project config to resolve
+ * @param resolutionFn function used to resolve each path value
+ * @returns copy of the project config with resolved path fields
+ */
 async function resolveProjectConfigPaths(
   session: ISession,
   path: string,
@@ -391,6 +430,19 @@ async function resolveProjectConfigPaths(
   return { ...projectConfig, ...resolvedFields };
 }
 
+/**
+ * Resolve `parts` entries in a site or project config.
+ *
+ * This will process markdown written directly in the config file and save it to the session store.
+ * It will replace the `parts` entry in the config with a reference to the stored part.
+ *
+ * @param session session with logging
+ * @param path base path for config file directory
+ * @param configWithParts site/project config that may define `parts`
+ * @param file config file path for error reporting
+ * @param property config key used for validation messages (`site` or `project`)
+ * @returns a shallow copy of the config with resolved parts, or undefined if no config is provided
+ */
 export async function loadAndResolveConfigParts<T extends { parts?: Record<string, string[]> }>(
   session: ISession,
   path: string,
