@@ -1,19 +1,5 @@
 // Minimal Myst plugin that deterministically emits the alphabet.
 
-function u(type, props, value) {
-  const node = { type: String(type) };
-  if ((value === void 0 || value === null) && (typeof props === "string" || Array.isArray(props))) {
-    value = props;
-  } else {
-    Object.assign(node, props);
-  }
-  if (Array.isArray(value)) {
-    node.children = value;
-  } else if (value !== void 0 && value !== null) {
-    node.value = String(value);
-  }
-  return node;
-}
 
 var abcDirective = {
   name: "abc",
