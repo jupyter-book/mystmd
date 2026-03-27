@@ -10,7 +10,7 @@ var abcDirective = {
   run(data) {
     const count = Number(data.arg) || 1;
     const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    return Array.from({ length: count }, () => u("paragraph", [{ type: "text", value: alphabet }]));
+    return Array.from({ length: count }, () => ({type: "paragraph", children: [{ type: "text", value: alphabet }]}));
   }
 };
 
