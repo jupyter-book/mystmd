@@ -574,3 +574,11 @@ cases:
     outputs:
       - path: concurrent-execution/output-first.txt
       - path: concurrent-execution/output-second.txt
+  - title: Plugins load before parts in extend yml files
+    cwd: extend-part-plugin
+    command: myst build
+    outputs:
+      - path: extend-part-plugin/_build/site/content/index.json
+        content: extend-part-plugin/outputs/index.json
+      - path: extend-part-plugin/_build/site/config.json
+        content: extend-part-plugin/outputs/config.json

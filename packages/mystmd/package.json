@@ -36,7 +36,7 @@
     "lint": "npm run copy:version; eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
-    "test": "npm run link; npm run copy:version; vitest run; bun run typecheck",
+    "test": "npm run link && npm run copy:version && vitest run && bun run typecheck",
     "test:watch": "npm run link; npm run copy:version; vitest watch",
     "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node20",
     "build": "npm-run-all -l clean copy:version -p build:cli"
