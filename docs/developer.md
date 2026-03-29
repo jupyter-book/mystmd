@@ -574,7 +574,7 @@ When you publish a release, you upload a new version of the tool for package man
 
 #### Fixing errors during a release
 
-Ask for help the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141). The exact fix will depend where in the automated release things broke. Some tips:
+Ask for help in the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141). The exact fix will depend where in the automated release things broke. Some tips:
 
 - In general, do not revert a release PR, instead fix the errors (permissions, etc. with NPM/tokens) and merge any necessary fixes to `main`.
 - A `mystmd` tag at the right version is necessary for the release notes to run
