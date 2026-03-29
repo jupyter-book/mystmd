@@ -23,8 +23,240 @@ import { config } from './store/reducers.js';
 import { logMessagesFromVFile } from './utils/logging.js';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 import { resolveToAbsolute } from './utils/resolveToAbsolute.js';
+import { warn } from 'node:console';
 
 const VERSION = 1;
+
+export class TaggedValue {
+  data: object;
+  tag: string;
+  constructor(strategy: string, data: object) {
+    this.data = data;
+    this.tag = strategy;
+  }
+
+  erase() {
+    return this.data;
+  }
+}
+
+function makeTaggedType(tag: string, kind: Exclude<yaml.Type['kind'], null>) {
+  return new yaml.Type(`!${tag}`, {
+    kind,
+
+    resolve: function () {
+      return true;
+    },
+
+    construct: function (data) {
+      return new TaggedValue(tag, data);
+    },
+
+    instanceOf: TaggedValue,
+
+    represent: function (obj: object) {
+      return (obj as TaggedValue).erase();
+    },
+  });
+}
+
+const TAGGED_YAML_SCHEMA = yaml.DEFAULT_SCHEMA.extend([
+  ...['extends', 'joins'].map((tag) => makeTaggedType(tag, 'sequence')),
+  makeTaggedType('replaces', 'mapping'),
+]);
+
+const configParseOpts = {
+  schema: TAGGED_YAML_SCHEMA,
+};
+
+/**
+ * Lazily set a value at a given path in an object.
+ * Paths may contain strings for object keys, or numbers
+ * for array indices.
+ *
+ * @param object the object to modify
+ * @param path a tuple containing path components
+ * @param value the value to set
+ */
+function setValueByPath(object: any, path: (string | number)[], value: any) {
+  if (!path.length) {
+    return;
+  }
+  let dest = object;
+  let prevItem = undefined;
+  let prevDest = undefined;
+  for (const item of path) {
+    // If the destination for this key is unset,
+    // we choose its type and set the value in its parent
+    if (dest === undefined) {
+      if (typeof item === 'number') {
+        prevDest[prevItem!] = dest = [];
+      } else {
+        prevDest[prevItem!] = dest = {};
+      }
+    }
+
+    // Update references
+    prevDest = dest;
+    dest = dest[item];
+    prevItem = item;
+  }
+  // Set the terminal value
+  prevDest[path.at(-1)!] = value;
+}
+
+type TagStructure = {
+  value?: string;
+  children?: { [key: string | number]: TagStructure };
+};
+
+type ParseType = ReturnType<typeof yaml.load>;
+
+/**
+ * Parse YAML into JS types
+ *
+ * YAML may include tags that are recorded and returned
+ *
+ * @param content content to parse into js
+ */
+export function parseYaml(content: string): {
+  content: ParseType;
+  tags: TagStructure;
+} {
+  const tags = {};
+  const cfg = yaml.load(content, configParseOpts);
+
+  // After potentially more merges, realise the config
+  function eraseTags(value: any, path: (string | number)[]): void {
+    if (value instanceof TaggedValue) {
+      const { tag } = value;
+      // Erase the tag type
+      value = value.erase();
+      // Replace config value with erased value
+      setValueByPath(cfg, path, value);
+      // Record tags in node-based scheme of the form
+      // { value: ..., children: [] } or  { value: ..., children: {} }
+      const tagsPath = path.flatMap((item) => ['children', item]);
+      setValueByPath(tags, tagsPath, { value: tag });
+    }
+
+    // Recurse into maps
+    if (isMap(value)) {
+      for (const [childKey, childValue] of Object.entries(value)) {
+        eraseTags(childValue, [...path, childKey]);
+      }
+    }
+    // Recurse into sequences
+    else if (Array.isArray(value)) {
+      value.forEach((elem, i) => {
+        eraseTags(elem, [...path, i]);
+      });
+    }
+  }
+  eraseTags(cfg, []);
+
+  return { content: cfg, tags };
+}
+
+/**
+ * Helper function to determine if YAML-loaded value is a mapping
+ *
+ * @param object value to test
+ */
+function isMap(object: any): object is Record<string, any> {
+  return typeof object === 'object' && !Array.isArray(object);
+}
+
+// Ensure that we have array of non-map to join onto
+function isJoinableArray(obj: any): obj is { id: string }[] {
+  return Array.isArray(obj) && obj.every((p) => isMap(p) && p.id !== undefined);
+}
+/**
+ * Extend one record with another using a particular merging strategy
+ *
+ * @param parent parent object
+ * @param child child object
+ * @param strategy object with tree structure matching tag annotations of document,
+ *                 of the form { value: ..., children: [] } or  { value: ..., children: {} }
+ */
+export function extendConfig(
+  parent: ParseType,
+  child: ParseType,
+  strategy: TagStructure | undefined,
+) {
+  function impl(
+    _parent: ParseType,
+    _child: ParseType,
+    _strategy: TagStructure | undefined,
+    _path: (string | number)[],
+  ): ParseType {
+    function throwError(message: string): never {
+      throw new Error(`${message}: ${_path.join('.')}`);
+    }
+
+    const strategyValue = _strategy?.value;
+
+    // parent: ??, child: sequence
+    if (Array.isArray(_child)) {
+      if (strategyValue === 'extends') {
+        // Ensure we're extending an array
+        if (Array.isArray(_parent)) {
+          return [..._parent, ..._child];
+        } else {
+          throwError('Cannot extend non-array with array');
+        }
+      } else if (strategyValue === 'joins') {
+        // Ensure we have array of map
+        if (!isJoinableArray(_child)) {
+          throwError('Join must be performed from an array of maps containing `id`');
+        }
+
+        if (!isJoinableArray(_parent)) {
+          throwError('Join must be performed onto an array of maps containing `id`');
+        }
+        // Perform join
+        const result = [..._parent];
+        for (let i = 0; i < _child.length; i++) {
+          const childItem = _child.at(i)!;
+
+          // First, are we joining or adding a new member
+          const joinIndex = _parent.findIndex((p) => p.id === childItem.id);
+          if (joinIndex !== -1) {
+            // Perform join and update parent
+            result[joinIndex] = impl(_parent[joinIndex], childItem, _strategy?.children?.[i], [
+              ..._path,
+              i,
+            ]) as any;
+          } else {
+            result.push(childItem);
+          }
+        }
+        return result;
+      } else {
+        // Preserve new value
+        return _child;
+      }
+    }
+    // parent: ??, child: map
+    else if (isMap(_child)) {
+      if (strategyValue === 'replaces' || !isMap(_parent)) {
+        return _child;
+      } else {
+        // Merge from child into parent
+        const result = { ..._parent };
+        for (const [key, value] of Object.entries(_child)) {
+          result[key] = impl(_parent[key], value, _strategy?.children?.[key], [..._path, key]);
+        }
+        return result;
+      }
+    }
+    // parent: ??, child: ??
+    else {
+      return _child;
+    }
+  }
+  return impl(parent, child, strategy, []);
+}
 
 function emptyConfig(): Config {
   return {
