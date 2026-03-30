@@ -5,7 +5,6 @@ import { writeFileToFolder } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
-import { fillProjectFrontmatter, fillSiteFrontmatter } from 'myst-frontmatter';
 import type { ValidationOptions } from 'simple-validators';
 import {
   incrementOptions,
@@ -23,7 +22,6 @@ import { config } from './store/reducers.js';
 import { logMessagesFromVFile } from './utils/logging.js';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 import { resolveToAbsolute } from './utils/resolveToAbsolute.js';
-import { warn } from 'node:console';
 
 const VERSION = 1;
 
@@ -119,7 +117,7 @@ type ParseType = ReturnType<typeof yaml.load>;
  *
  * @param content content to parse into js
  */
-export function parseYaml(content: string): {
+export function parseTaggedYaml(content: string): {
   content: ParseType;
   tags: TagStructure;
 } {
@@ -183,7 +181,7 @@ export function extendConfig(
   parent: ParseType,
   child: ParseType,
   strategy: TagStructure | undefined,
-) {
+): ParseType {
   function impl(
     _parent: ParseType,
     _child: ParseType,
@@ -322,13 +320,6 @@ function configValidationOpts(vfile: VFile, property: string, ruleId: RuleId): V
 }
 
 /**
- * Function to add filler keys to base if the keys are not defined in base
- */
-function fillSiteConfig(base: SiteConfig, filler: SiteConfig, opts: ValidationOptions) {
-  return fillSiteFrontmatter(base, filler, opts, Object.keys(filler));
-}
-
-/**
  * Mutate config object to coerce deprecated frontmatter fields to valid schema
  */
 export function handleDeprecatedFields(
@@ -381,7 +372,7 @@ export function handleDeprecatedFields(
  * @returns the validated site and project configs and list of extended config files
  * @throws an error if the config file is malformed or invalid
  */
-async function getValidatedConfigsFromFile(
+async function resolveConfigFile(
   session: ISession,
   file: string,
   projectPath: string,
@@ -393,8 +384,9 @@ async function getValidatedConfigsFromFile(
     vfile.path = file;
   }
   const opts = configValidationOpts(vfile, 'config', RuleId.validConfigStructure);
+  const { content, tags } = parseTaggedYaml(fs.readFileSync(file, { encoding: 'utf-8' }));
   const conf = validateObjectKeys(
-    loadConfigYaml(file),
+    content,
     {
       required: ['version'],
       optional: ['site', 'project', 'extend'],
@@ -416,7 +408,6 @@ async function getValidatedConfigsFromFile(
   handleDeprecatedFields(conf, file, vfile);
   let site: SiteConfig | undefined;
   let project: ProjectConfig | undefined;
-  const projectOpts = configValidationOpts(vfile, 'config.project', RuleId.validProjectConfig);
   let extend: string[] | undefined;
   if (conf.extend) {
     extend = await Promise.all(
@@ -445,7 +436,8 @@ async function getValidatedConfigsFromFile(
           });
           return;
         }
-        const { site: extSite, project: extProject } = await getValidatedConfigsFromFile(
+
+        const { config: extConfig, tags: extTags } = await resolveConfigFile(
           session,
           extFile,
           projectPath,
@@ -453,22 +445,21 @@ async function getValidatedConfigsFromFile(
           stack,
         );
         session.store.dispatch(config.actions.receiveConfigExtension({ file: extFile }));
+        const { site: siteTags, project: projectTags } = extTags.children ?? {};
+
+        const { site: extSite, project: extProject } = extConfig;
         if (extSite) {
-          site = site ? fillSiteConfig(extSite, site, incrementOptions('extend', opts)) : extSite;
+          site = extendConfig(site ?? {}, extSite, siteTags) as any;
         }
         if (extProject) {
-          project = project ? fillProjectFrontmatter(extProject, project, projectOpts) : extProject;
+          project = extendConfig(project ?? {}, extProject, projectTags) as any;
         }
       }),
     );
   }
   const { site: rawSite, project: rawProject } = conf ?? {};
   if (rawProject) {
-    project = fillProjectFrontmatter(
-      await validateProjectConfigAndThrow(session, projectPath, vfile, rawProject),
-      project ?? {},
-      projectOpts,
-    );
+    project = extendConfig(rawProject, project ?? {}, (tags as any).project) as ProjectConfig;
   }
   if (project) {
     session.log.debug(`Loaded project config from ${file}`);
@@ -476,11 +467,7 @@ async function getValidatedConfigsFromFile(
     session.log.debug(`No project config defined in ${file}`);
   }
   if (rawSite) {
-    site = fillSiteConfig(
-      await validateSiteConfigAndThrow(session, projectPath, vfile, rawSite),
-      site ?? {},
-      incrementOptions('extend', opts),
-    );
+    site = extendConfig(rawSite, site ?? {}, (tags as any).project) as SiteConfig;
   }
   if (site) {
     session.log.debug(`Loaded site config from ${file}`);
@@ -488,7 +475,26 @@ async function getValidatedConfigsFromFile(
     session.log.debug(`No site config in ${file}`);
   }
   logMessagesFromVFile(session, vfile);
-  return { site, project, extend };
+  const resolvedConfig = { site, project };
+  return { config: resolvedConfig, tags };
+}
+
+async function getValidatedConfigsFromFile(
+  session: ISession,
+  file: string,
+  projectPath: string,
+  vfile?: VFile,
+) {
+  if (!vfile) {
+    vfile = new VFile();
+    vfile.path = file;
+  }
+  const { config: rawConfig } = await resolveConfigFile(session, file, projectPath, vfile, []);
+  let { site, project } = rawConfig;
+  project = await validateProjectConfigAndThrow(session, projectPath, vfile, project ?? {});
+  site = await validateSiteConfigAndThrow(session, projectPath, vfile, site ?? {});
+
+  return { site, project };
 }
 
 /**
@@ -519,10 +525,10 @@ export async function loadConfig(
       return existingConf.validated;
     }
   }
-  const { extend, ...configs } = await getValidatedConfigsFromFile(session, file, path);
+  const { ...configs } = await getValidatedConfigsFromFile(session, file, path);
   const site = await loadAndResolveConfigParts(session, path, configs.site, file, 'site');
   const project = await loadAndResolveConfigParts(session, path, configs.project, file, 'project');
-  const validated = { ...rawConf, site, project, extend };
+  const validated = { ...rawConf, site, project };
   session.store.dispatch(
     config.actions.receiveRawConfig({
       path,
