@@ -65,7 +65,8 @@ pages:
 
 A `HOST` is set to fix a known [issue](https://github.com/jupyter-book/mystmd/issues/2471).
 
-deploy -> pages
+Note that a pixi.toml and pixi.lock file should be included!
+
 
 ## External server through GitLab CI/CD
 Another option is to deploy your MyST site to an external server through GitLab CI/CD. A main difference is setting 'variables' (settings $\rightArrow$ CI/CD $\rightArrow$ variables) for connecting to the server. 
