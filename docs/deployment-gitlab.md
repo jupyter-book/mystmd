@@ -4,7 +4,7 @@ short_title: GitLab Pages
 description: Deploy your MyST site to GitLab pages.
 ---
 
-GitLab Pages allows you to host static HTML files online from GitLab repositories using GitLab CI/CD.
+GitLab Pages allows you to host static HTML files online from GitLab repositories using [GitLab CI/CD](https://docs.gitlab.com/ci/).
 This page has important information for how to do so.
 
 ## Instructions
