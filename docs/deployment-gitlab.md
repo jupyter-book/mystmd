@@ -174,9 +174,11 @@ before_script:
 deploy:
   stage: deploy
   script:
-    # Build (belangrijk: geef het projectpad mee)
+    # Build (important: define the project path)
     - myst build --html 
    
     - rsync -ravz "${LOCAL_BUILD_DIR}/" -e "${SSH_COMMAND} -i ${WEBSITE_UPLOAD_KEY}" "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
 
 ```
+
+Note that this way of deploying requires a gitlab runner.
