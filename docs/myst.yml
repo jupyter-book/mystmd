@@ -108,6 +108,7 @@ project:
         - file: deployment.md
           children:
             - file: deployment-github-pages.md
+            - file: deployment-gitlab.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
             - file: deployment-readthedocs.md
