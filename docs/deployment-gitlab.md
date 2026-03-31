@@ -133,7 +133,7 @@ Note that a pixi.toml and pixi.lock file should be included!
 
 
 ## External server through GitLab CI/CD
-Another option is to deploy your MyST site to an external server through GitLab CI/CD. A main difference is setting 'variables' (settings $\rightArrow$ CI/CD $\rightArrow$ variables) for connecting to the server. 
+Another option is to deploy your MyST site to an external server through GitLab CI/CD. A main difference is setting 'variables' (settings $\rightarrow$ CI/CD $\rightarrow$ variables) for connecting to the server. 
 
 An example `.gitlab-ci.yml` file for this deployment method is shown below.
 
@@ -156,7 +156,7 @@ before_script:
   - apt-get update
   - apt-get install -y --no-install-recommends curl rsync openssh-client git
 
-  # Node.js (MyST tooling kan node nodig hebben)
+  # Node.js 
   - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   - apt-get install -y --no-install-recommends nodejs
   - node --version
@@ -166,7 +166,7 @@ before_script:
   - python -m pip install --upgrade pip
   - pip install mystmd
 
-  # SSH key laden
+  # Load SSH key 
   - eval "$(ssh-agent -s)"
   - chmod 400 "$WEBSITE_UPLOAD_KEY"
   - ssh-add "$WEBSITE_UPLOAD_KEY"
