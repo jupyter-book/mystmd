@@ -1,5 +1,11 @@
 # myst-directives
 
+## 1.7.1
+
+### Patch Changes
+
+- a5b550d: Allow code-cell directive to use code options
+
 ## 1.7.0
 
 ### Minor Changes
