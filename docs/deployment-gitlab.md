@@ -13,9 +13,8 @@ To get setup with GitLab Pages, ensure that your repository is hosted in GitLab 
 Create a file called `.gitlab-ci.yml` with the following content:
 
 
-:::{note} GitLab CI/CD Example
-:class: dropdown
-
+`````{tab-set}
+````{tab-item} Pixi based
 ```{code} yaml
 :filename: .gitlab-ci.yml
 
@@ -60,8 +59,73 @@ pages:
   only:
     - main
 ```
+```` 
+````{tab-item} Poetry based
+```{code} yaml
+:filename: .gitlab-ci.yml
+variables:
+  PYTHON_VERSION: 3.13
+  POETRY_VERSION: 2.3.0
 
-:::
+default:
+  image:
+    name: python:$PYTHON_VERSION
+    pull_policy: if-not-present
+
+.install_poetry_linux: &install_poetry_linux
+  - python -m pip install --user pipx
+  - python -m pipx ensurepath
+  - source ~/.bashrc
+  - pipx install poetry==$POETRY_VERSION
+
+build_book:
+  stage: build
+  before_script:
+    - *install_poetry_linux
+  script:
+    - poetry install --extras "book"
+    # Install Node.js, which is required by Jupyter Book 2.
+    # Download and install nvm:
+    - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+    # in lieu of restarting the shell
+    - \. "$HOME/.nvm/nvm.sh"
+    # Download and install Node.js. This version must be compatible with Jupyter Book.
+    - nvm install 24
+    # Download imagemagick, which is needed by Jupyter Book 2 to build pdf.
+    # - curl https://imagemagick.org/archive/binaries/magick -o "magick"
+    # Set the base URL, which is required by static builds.
+    - export BASE_URL="/my-website"
+    # Set the HOST because of https://github.com/jupyter-book/mystmd/issues/2471
+    - export HOST="127.0.0.1"  # Needed to avoid binding to ::1.
+    # Build book.
+    - cd my_jupyter_book
+    - poetry run jupyter-book build --html --check-links --ci
+  interruptible: true
+  artifacts:
+    paths:
+      - my_jupyter_book/_build/html/
+    expire_in: 1d
+  tags:
+    - ubuntu
+
+pages:
+  stage: deploy
+  dependencies: ["build_book"]
+  script:
+    - mv my_jupyter_book/_build/html public
+  interruptible: false
+  artifacts:
+    paths:
+      - public
+    expire_in: 1h
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  tags:
+    - ubuntu
+```
+````
+`````
+
 
 A `HOST` is set to fix a known [issue](https://github.com/jupyter-book/mystmd/issues/2471).
 
