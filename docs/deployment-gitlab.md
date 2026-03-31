@@ -127,7 +127,7 @@ pages:
 `````
 
 
-A `HOST` is set to fix a known [issue](https://github.com/jupyter-book/mystmd/issues/2471).
+You must set the `HOST` - this is a fix for a [known issue](https://github.com/jupyter-book/mystmd/issues/2471).
 
 Note that a pixi.toml and pixi.lock file should be included!
 
