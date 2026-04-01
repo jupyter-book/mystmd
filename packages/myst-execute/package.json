@@ -1,6 +1,6 @@
 {
   "name": "myst-execute",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "sideEffects": false,
   "license": "MIT",
   "description": "Execute MyST content with Jupyter",

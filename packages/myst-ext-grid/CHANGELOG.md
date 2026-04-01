@@ -1,5 +1,11 @@
 # myst-ext-grid
 
+## 1.1.0
+
+### Minor Changes
+
+- 6cc5e3e: Pass through columns to grid-item
+
 ## 1.0.9
 
 ### Patch Changes
