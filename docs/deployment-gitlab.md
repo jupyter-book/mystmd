@@ -129,7 +129,27 @@ pages:
 
 You must set the `HOST` - this is a fix for a [known issue](https://github.com/jupyter-book/mystmd/issues/2471).
 
-Note that a pixi.toml and pixi.lock file should be included!
+Note that a [pixi.toml](https://pixi.prefix.dev/latest/python/pyproject_toml/) and pixi.lock file should be included!
+
+A minimal version is shown below.
+
+```{code-block} toml
+:filename: pixi.toml
+
+[workspace]
+authors = [{name = "Me", email = "me@me.com"}]
+channels = ["conda-forge"]
+name = "jbtest"
+platforms = ["win-64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.14.3,<3.15"
+jupyter-book = ">=2.1.2,<3"
+```
+
 
 
 ## External server through GitLab CI/CD
