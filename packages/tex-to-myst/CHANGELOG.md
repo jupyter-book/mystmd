@@ -1,5 +1,12 @@
 # tex-to-myst
 
+## 1.0.46
+
+### Patch Changes
+
+- 2b2177f: Fix \string macro leaking its name into image filenames in tex-to-myst.
+  Remove quotes when reading filenames from includegraphics.
+
 ## 1.0.45
 
 ### Patch Changes
