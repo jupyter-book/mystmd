@@ -258,7 +258,7 @@ The `authors` field is a list of `author` objects. Available fields in the autho
 * - `email`
   - a string - email of the author. Only displayed in the rendered output when `corresponding` is `true`. See [](#author:email)
 * - `roles`
-  - a list of strings - must be valid [CRediT Contributor Roles](https://credit.niso.org/)
+  - a list of strings - must be valid [CRediT Contributor Roles](https://credit.niso.org/). See [](#credit-roles) for more information.
 
     ```yaml
     authors:
