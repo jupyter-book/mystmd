@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import { access, readdir } from 'node:fs/promises';
 import type { GenericParent } from 'myst-common';
 import { RuleId } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
@@ -50,9 +50,15 @@ export async function transformWidgetStaticAssetsToDisk(
         const stem = computeHash(attrPath);
 
         // Check whether file with stem exists (but unknown extension)
-        const exists = fs.existsSync(writeFolder);
-        const existingName = fs.readdirSync(writeFolder).find((f) => path.parse(f).name === stem);
-        if (exists && existingName !== undefined) {
+        let existingName: string | undefined;
+        try {
+          const entries = await readdir(writeFolder);
+          existingName = entries.find((f) => path.parse(f).name === stem);
+        } catch (err) {
+          const code = (err as NodeJS.ErrnoException).code;
+          if (code !== 'ENOENT') throw err;
+        }
+        if (existingName !== undefined) {
           session.log.debug(`Cached asset found for '${attr}' (${attrPath})...`);
           fileName = existingName;
         } else {
@@ -76,8 +82,18 @@ export async function transformWidgetStaticAssetsToDisk(
             continue;
           }
         }
-      } else if (fs.existsSync(attrLocalPath)) {
-        // Non-oxa, non-url local image paths relative to the config.section.path
+      } else {
+        try {
+          await access(attrLocalPath);
+        } catch {
+          const message = `Cannot find asset for '${attr}' "${attrPath}" in ${attrSourceFolder}`;
+          addWarningForFile(session, filePath, message, 'error', {
+            position: widgetNode.position,
+            // TODO: add "asset exists" rule?
+          });
+          continue;
+        }
+        // non-url local image paths relative to the config.section.path
         if (path.resolve(path.dirname(attrLocalPath)) === path.resolve(writeFolder)) {
           // If file is already in write folder, don't hash/copy
           fileName = path.basename(attrLocalPath);
@@ -87,13 +103,6 @@ export async function transformWidgetStaticAssetsToDisk(
           });
         }
         if (!fileName) continue;
-      } else {
-        const message = `Cannot find asset for '${attr}' "${attrPath}" in ${attrSourceFolder}`;
-        addWarningForFile(session, filePath, message, 'error', {
-          position: widgetNode.position,
-          // TODO: add "asset exists" rule?
-        });
-        continue;
       }
       // Update mdast with new file name
       if (fileName !== undefined) {
