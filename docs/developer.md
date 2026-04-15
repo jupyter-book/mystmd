@@ -101,7 +101,7 @@ MyST has multiple renderers, themes, and templates that allow it to transform My
   - The [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) generates React components out of MyST AST for use by the default MyST Themes. It provides a `<MyST />` component which can render MyST AST into a React tree.
   - The source code of the [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes), each of which use the React renderer. These themes are built and then published at the [`myst-templates` GitHub organization](https://github.com/myst-templates/book-theme) for consumption by users.
   - A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
-- [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to product static outputs.
+- [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to produce static outputs.
 
 :::{error} to do — explain rendering
 
