@@ -616,8 +616,7 @@ The process for releasing `myst-theme` infrastructure is similar to the release 
 - **Check the GitHub Workflow to see if it completes**. Go to the [`myst-theme` workflows page](https://github.com/jupyter-book/myst-theme/actions) to track its progress.
   - The action will build the latest version of the theme infrastructure.
   - It updates the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates).
-  - [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/
-  8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
+  - [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
   - [Here's an example run of this workflow](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
 - Confirm that a GitHub release has been made. Once this happens and there are no errors, you're done!
 
