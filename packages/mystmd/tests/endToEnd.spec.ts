@@ -13,6 +13,7 @@ type TestCase = {
   env?: Record<string, any>;
   timeout?: number;
   command: string;
+  expectFailure?: boolean;
   outputs: {
     path: string;
     content?: string;
@@ -43,7 +44,7 @@ describe.concurrent('End-to-end cli export tests', { timeout: TIMEOUT }, () => {
   const cases = loadCases('exports.yml');
   test.each(
     cases.filter((c) => !only || c.title === only).map((c): [string, TestCase] => [c.title, c]),
-  )('%s', async (_, { cwd, env, command, outputs, timeout }) => {
+  )('%s', async (_, { cwd, env, command, expectFailure, outputs, timeout }) => {
     // Clean expected outputs if they already exist
     await Promise.all(
       outputs.map(async (output) => {
@@ -52,8 +53,13 @@ describe.concurrent('End-to-end cli export tests', { timeout: TIMEOUT }, () => {
         }
       }),
     );
-    // Run CLI command
-    await exec(command, { cwd: resolve(cwd), env: { ...process.env, ...env }, timeout });
+    // Run CLI command and assert non-zero exit when expectFailure is set
+    const run = exec(command, { cwd: resolve(cwd), env: { ...process.env, ...env }, timeout });
+    if (expectFailure) {
+      await expect(run).rejects.toThrow();
+    } else {
+      await run;
+    }
     // Expect correct output
     outputs.forEach((output) => {
       expect(fs.existsSync(resolve(output.path))).toBeTruthy();

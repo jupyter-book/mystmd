@@ -183,6 +183,11 @@ cases:
     cwd: strict-no-check-links
     command: myst build --strict
     outputs: []
+  - title: Check-links with strict fails on broken links
+    cwd: strict-no-check-links
+    command: myst build --check-links --strict
+    expectFailure: true
+    outputs: []
   - title: Basic site build
     cwd: basic-site
     command: myst build
