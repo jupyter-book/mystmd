@@ -42,6 +42,14 @@ describe('Test reference rendering', () => {
     expect(citations['cury2020sparse'].getDOI()).toBe(TEST_DOI_IN_OTHER_FIELD);
     expect(citations['cury2020sparse'].getURL()).toBe(`https://doi.org/${TEST_DOI_IN_OTHER_FIELD}`);
   });
+  it('non-standard month=sept is normalized to September', async () => {
+    const data = parseBibTeX('@article{a, year={1997}, month=sept}');
+    expect(data[0].issued).toEqual({ 'date-parts': [[1997, 9]] });
+  });
+  it('standard month=sep still parses as September', async () => {
+    const data = parseBibTeX('@article{a, year={1997}, month=sep}');
+    expect(data[0].issued).toEqual({ 'date-parts': [[1997, 9]] });
+  });
 });
 
 describe('yearFromCitation', () => {

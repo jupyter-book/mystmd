@@ -180,13 +180,25 @@ function parseCitationStyle(style: string): string {
 }
 
 /**
+ * Normalize non-standard BibTeX month string macros that citation-js does not recognize.
+ * Add to this if we find other edge-cases / one-offs to fix.
+ */
+function normalizeBibTeXMonths(source: string): string {
+  // Crossref's BibTeX export from doi.org sometimes emits `month=sept` for
+  // September. citation-js drops it when this happens because it only
+  // expects "sep". So convert sept -> sep below.
+  source = source.replace(/(\bmonth\s*=\s*\{?)sept(\b)/gi, '$1sep$2');
+  return source;
+}
+
+/**
  * Parse a BibTeX string into an array of CSL items
  *
  * @param source - BibTeX string
  *
  */
 export function parseBibTeX(source: string): CSL[] {
-  return new Cite(source).data;
+  return new Cite(normalizeBibTeXMonths(source)).data;
 }
 
 /**
