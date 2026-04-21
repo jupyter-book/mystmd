@@ -79,10 +79,16 @@ MyST can check for broken links when building a site. To report bad links:
 myst build --check-links
 ```
 
-And use `--strict` to fail the build if there are errors, such as bad links, or other [rules](#setting:error_rules) set to error severity:
+And use `--strict` to fail the build if there are errors from [rules](#setting:error_rules) set to error severity:
 
 ```
 myst build --strict
+```
+
+Combine the two to check links and fail the build on broken links or other errors:
+
+```
+myst build --check-links --strict
 ```
 
 If a link successfully resolves during `--check-links`, the status will be cached to disk and the link will not be rechecked. If you need to recheck for broken links, you may clear this cache with `myst clean --cache`.

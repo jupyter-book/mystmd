@@ -179,6 +179,10 @@ cases:
         content: dois/outputs/dois.tex
       - path: dois/_build/main.bib
         content: dois/outputs/dois.bib
+  - title: Strict build does not check external links
+    cwd: strict-no-check-links
+    command: myst build --strict
+    outputs: []
   - title: Basic site build
     cwd: basic-site
     command: myst build

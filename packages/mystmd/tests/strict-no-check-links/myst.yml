@@ -1,0 +1,5 @@
+# Regression fixture for https://github.com/jupyter-book/mystmd/issues/2122
+# --strict should NOT trigger external link checking.
+version: 1
+project:
+  id: 9e6a0c77-2122-4444-8888-222233334444
