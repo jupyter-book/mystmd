@@ -3,3 +3,5 @@
 version: 1
 project:
   id: 9e6a0c77-2122-4444-8888-222233334444
+site:
+  template: ../templates/site/myst/book-theme
