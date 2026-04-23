@@ -104,10 +104,7 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
     }
     if (!['.html', '.js', '.json'].includes(path.extname(file))) return;
     let data = fs.readFileSync(file).toString();
-    data = data.replace(
-      new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'),
-      `${baseurl || ''}/build/`,
-    );
+    data = data.replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`);
     if (filename === 'index.html') {
       data = data.replace('<head>', `<head>${INDEX_REDIRECT_SCRIPT}`);
     }
