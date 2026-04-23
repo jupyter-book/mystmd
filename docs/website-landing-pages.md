@@ -111,6 +111,17 @@ A helpful description in the body of the CTA. {button}`Go to Wiki <https://wikip
 
 I am a Subtitle
 
+The image will automatically scale with the size of the screen. If you want to have a fixed sized figure (no scaling), you can use custom CSS to override the styling. The code below provides a work around that can be included in your CSS file.
+
+```{code-block} CSS
+.myst-landing-split-img-image img {
+  height: 100%;
+  width: auto;
+  object-fit: contain !important;
+  display: block;
+}
+```
+
 (justified-cta)=
 
 ### Justified
