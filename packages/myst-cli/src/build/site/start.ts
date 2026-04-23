@@ -83,20 +83,25 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
       ws.send(JSON.stringify(data));
     });
   };
-  // Create log and reload functions for later
-  const log = (message: string) => sendJson({ type: 'LOG', message });
-  const reload = () => sendJson({ type: 'RELOAD' });
+
+  /**
+   * @deprecated Use the websocket server exposed via `sockets.wss` to broadcast
+   * messages directly instead.
+   */
+  const sendReload = () => sendJson({ type: 'RELOAD' });
 
   server.on('upgrade', (request, socket, head) => {
     wss.handleUpgrade(request, socket, head, (websocket) => {
       wss.emit('connection', websocket, request);
     });
   });
+
   const stop = () => {
     server.close();
     wss.close();
   };
-  return { host, port, reload, log, stop };
+
+  return { host, port, stop, sendReload, sendJson, wss, connections };
 }
 
 export function warnOnHostEnvironmentVariable(session: ISession, opts?: StartOptions): string {
@@ -126,6 +131,7 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: StartOpt
 export type AppServer = {
   port: number;
   process: child_process.ChildProcess;
+  contentServer: Awaited<ReturnType<typeof startContentServer>>;
   stop: () => void;
 };
 
@@ -139,14 +145,14 @@ export async function startServer(
   const mystTemplate = await getSiteTemplate(session, opts);
   if (!opts.headless && !opts.template) await installSiteTemplate(session, mystTemplate);
   await buildSite(session, opts);
-  const server = await startContentServer(session, { ...opts, serverHost: host });
+  const contentServer = await startContentServer(session, { ...opts, serverHost: host });
   if (!opts.buildStatic) {
-    watchContent(session, server.reload, opts);
+    watchContent(session, contentServer.sendReload, opts);
   }
   if (opts.headless) {
-    const local = chalk.green(`http://${host}:${server.port}`);
+    const local = chalk.green(`http://${host}:${contentServer.port}`);
     session.log.info(
-      `\n🔌 Content server started on port ${server.port}!  🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
+      `\n🔌 Content server started on port ${contentServer.port}!  🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
     );
     return undefined;
   }
@@ -154,7 +160,7 @@ export async function startServer(
     `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
   );
   const port = opts?.port ?? (await getPort({ port: portNumbers(3000, 3100) }));
-  const appServer = { port } as AppServer;
+  const appServer = { port, contentServer } as AppServer;
   await new Promise<void>((resolve) => {
     const start = makeExecutable(
       mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
@@ -164,7 +170,7 @@ export async function startServer(
         env: {
           ...process.env,
           HOST: host,
-          CONTENT_CDN_PORT: String(server.port),
+          CONTENT_CDN_PORT: String(contentServer.port),
           PORT: String(port),
           MODE: opts.buildStatic ? 'static' : 'app',
           BASE_URL: opts.baseurl || undefined,
@@ -178,7 +184,7 @@ export async function startServer(
   });
   appServer.stop = () => {
     killProcessTree(appServer.process);
-    server.stop();
+    contentServer.stop();
   };
-  return appServer;
+  return appServer satisfies AppServer;
 }
