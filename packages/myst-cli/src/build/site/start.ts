@@ -78,7 +78,7 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
   /**
    * Send a message to all connections.
    */
-  const sendJson = (data: { type: 'LOG' | 'RELOAD'; message?: string }) => {
+  const sendJson = (data: { type: 'LOG' | 'RELOAD'; message?: string; [s: string]: any }) => {
     Object.entries(connections).forEach(([, ws]) => {
       ws.send(JSON.stringify(data));
     });
@@ -186,5 +186,6 @@ export async function startServer(
     killProcessTree(appServer.process);
     contentServer.stop();
   };
+
   return appServer satisfies AppServer;
 }
