@@ -1,5 +1,11 @@
 # myst-execute
 
+## 0.3.4
+
+### Patch Changes
+
+- 0ddb337: Fix handling of update_display_data
+
 ## 0.3.3
 
 ### Patch Changes

@@ -1,5 +1,7 @@
 # myst-to-tex
 
+## 1.0.46
+
 ## 1.0.45
 
 ### Patch Changes

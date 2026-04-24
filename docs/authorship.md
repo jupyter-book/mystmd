@@ -212,6 +212,49 @@ To do so, use the following fields in an entry for either `author` or the `affil
 
 ![](#table-frontmatter-social-links)
 
+(credit-roles)=
+## CRediT Contributor Roles
+
+The [CRediT (Contributor Roles Taxonomy)](https://credit.niso.org/) is a standardized way to represent the contributions of each author to a scholarly work.
+It defines 14 roles that describe common types of contributions, such as writing, data curation, and software development.
+
+When you add roles to your authors, they are validated against the CRediT standard and included in the AST of your built projrect.
+
+:::{warning} MyST will remove Credit roles that are not part of the standard
+Similar to other unrecognized metadata, if MyST does does not recognize a role, it won't include it in the final AST and will issue a warning.
+:::
+
+### Example usage
+
+You can define roles either at a project level or in [page frontmatter](./frontmatter.md).
+It is particularly useful to use the [`extends:` key](#composing-myst-yml) for splitting author information into a [separate configuration file](#re-use-author-information-across-repositories-and-projects).
+
+Below is an example of two authors that covers all 14 CRediT roles:
+
+```yaml
+authors:
+  - name: Marissa Myst
+    orcid: 0000-0000-0000-0001
+    roles:
+      - Conceptualization
+      - Methodology
+      - Software
+      - Writing – original draft
+      - Supervision
+      - Project administration
+      - Funding acquisition
+  - name: Miles Mysterson
+    orcid: 0000-0000-0000-0002
+    roles:
+      - Data curation
+      - Formal analysis
+      - Investigation
+      - Resources
+      - Validation
+      - Visualization
+      - Writing – review & editing
+```
+
 (other-contributors)=
 ## Reviewers, Editors, Funding Recipients
 

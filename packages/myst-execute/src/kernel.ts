@@ -65,14 +65,46 @@ export async function executeCodeCell(kernel: Kernel.IKernelConnection, code: st
       return;
     }
     switch (msg.header.msg_type) {
+      case 'status':
+      case 'execute_input':
+      case 'clear_output':
+        // TODO: implement clear_output
+        break;
       case 'stream':
       case 'execute_result':
       case 'error':
-      case 'display_data':
+      case 'display_data': {
         outputs.push(IOPubAsOutput(msg));
         break;
-      default:
-        return;
+      }
+      case 'update_display_data': {
+        // Rewrite message as display_data
+        const displayMsg = structuredClone(msg);
+        displayMsg.header.msg_type = 'display_data';
+        const displayOutput = IOPubAsOutput(displayMsg);
+        // Find display ID
+        const displayId = (displayOutput as any).transient?.display_id;
+        // Explicitly bail here. This is a choice — we could try to render it
+        // but this feels like malformed input
+        if (displayId === undefined) {
+          break;
+        }
+        // Find existing display_data output(s)
+        // Assume we _have_ to find an output(s),
+        // so drop this output if we can't (create a visual bug!)
+        for (const output of outputs) {
+          if ((output as any)?.transient?.display_id !== displayId) {
+            continue;
+          }
+          output.data = displayOutput.data;
+          output.metadata = displayOutput.metadata;
+        }
+        break;
+      }
+      default: {
+        // msg.header.msg_type.startsWith('comm')
+        break;
+      }
     }
   };
   let status: 'abort' | 'error' | 'ok' | undefined;

@@ -36,6 +36,14 @@ export function defaultConfigFile(session: ISession, path: string) {
   return resolve(path, session.configFiles[0]);
 }
 
+/**
+ * Find config file at the specified path
+ *
+ * @param session with valid config filenames
+ * @param path directory to look for config file
+ * @returns the resolved path to the config file, or undefined if no config file is found
+ * @throws an error if multiple config files are found in the path
+ */
 export function configFromPath(session: ISession, path: string) {
   const configs = session.configFiles
     .map((file) => {
@@ -138,9 +146,8 @@ export function handleDeprecatedFields(
 /**
  * Load and validate a file as yaml config file
  *
- * Returns validated site and project configs.
- *
- * Throws errors if config file is malformed or invalid.
+ * @returns the validated site and project configs and list of extended config files
+ * @throws an error if the config file is malformed or invalid
  */
 async function getValidatedConfigsFromFile(
   session: ISession,
@@ -255,7 +262,13 @@ async function getValidatedConfigsFromFile(
 /**
  * Load site/project config from local path to redux store
  *
- * Errors if config file does not exist or if config file exists but is invalid.
+ * Validates the loaded config and stores raw/validated values in redux.
+ *
+ * @param session with logging and redux store
+ * @param path local directory to load config from
+ * @param opts.reloadProject if true, reload the project config even if it already exists in the redux store
+ * @returns the validated config, or undefined when no config file exists at the path
+ * @throws an error if the config is invalid
  */
 export async function loadConfig(
   session: ISession,
@@ -274,7 +287,9 @@ export async function loadConfig(
       return existingConf.validated;
     }
   }
-  const { site, project, extend } = await getValidatedConfigsFromFile(session, file, path);
+  const { extend, ...configs } = await getValidatedConfigsFromFile(session, file, path);
+  const site = await loadAndResolveConfigParts(session, path, configs.site, file, 'site');
+  const project = await loadAndResolveConfigParts(session, path, configs.project, file, 'project');
   const validated = { ...rawConf, site, project, extend };
   session.store.dispatch(
     config.actions.receiveRawConfig({
@@ -317,6 +332,18 @@ function resolveToRelative(
   return absPath;
 }
 
+/**
+ * Resolve path-based fields in a site config.
+ *
+ * This function may be used for resolving relative local paths or resolving remote paths on a server,
+ * depending on the implementation of the resolutionFn.
+ *
+ * @param session session with logging
+ * @param path base path for config file directory, used for relative path resolution
+ * @param siteConfig site config to resolve
+ * @param resolutionFn function to resolve each path value
+ * @returns copy of the site config with resolved path fields
+ */
 async function resolveSiteConfigPaths(
   session: ISession,
   path: string,
@@ -330,7 +357,6 @@ async function resolveSiteConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
-  file: string,
 ) {
   const resolvedFields: SiteConfig = {};
   if (siteConfig.projects) {
@@ -343,18 +369,23 @@ async function resolveSiteConfigPaths(
       }),
     );
   }
-  if (siteConfig.parts) {
-    resolvedFields.parts = await loadFrontmatterParts(
-      session,
-      file,
-      'site.parts',
-      { parts: siteConfig.parts },
-      path,
-    );
-  }
   return { ...siteConfig, ...resolvedFields };
 }
 
+/**
+ * Resolve path-based fields in a project config.
+ *
+ * This function may be used for resolving relative local paths or resolving remote paths on a server,
+ * depending on the implementation of the resolutionFn.
+ *
+ * Additionally, this function loads configured plugins immediately once the paths are resolved
+ *
+ * @param session session with logging
+ * @param path base path for config file directory, used for relative path resolution
+ * @param projectConfig project config to resolve
+ * @param resolutionFn function used to resolve each path value
+ * @returns copy of the project config with resolved path fields
+ */
 async function resolveProjectConfigPaths(
   session: ISession,
   path: string,
@@ -368,7 +399,6 @@ async function resolveProjectConfigPaths(
       allowRemote?: boolean;
     },
   ) => string | Promise<string>,
-  file: string,
 ) {
   const resolvedFields: ProjectConfig = {};
   if (projectConfig.bibliography) {
@@ -397,16 +427,39 @@ async function resolveProjectConfigPaths(
     );
     await session.loadPlugins(resolvedFields.plugins);
   }
-  if (projectConfig.parts) {
-    resolvedFields.parts = await loadFrontmatterParts(
-      session,
-      file,
-      'project.parts',
-      { parts: projectConfig.parts },
-      path,
-    );
-  }
   return { ...projectConfig, ...resolvedFields };
+}
+
+/**
+ * Resolve `parts` entries in a site or project config.
+ *
+ * This will process markdown written directly in the config file and save it to the session store.
+ * It will replace the `parts` entry in the config with a reference to the stored part.
+ *
+ * @param session session with logging
+ * @param path base path for config file directory
+ * @param configWithParts site/project config that may define `parts`
+ * @param file config file path for error reporting
+ * @param property config key used for validation messages (`site` or `project`)
+ * @returns a shallow copy of the config with resolved parts, or undefined if no config is provided
+ */
+export async function loadAndResolveConfigParts<T extends { parts?: Record<string, string[]> }>(
+  session: ISession,
+  path: string,
+  configWithParts: T | undefined,
+  file: string,
+  property: 'project' | 'site',
+) {
+  if (!configWithParts) return undefined;
+  if (!configWithParts.parts) return { ...configWithParts };
+  const resolvedParts = await loadFrontmatterParts(
+    session,
+    file,
+    `${property}.parts`,
+    { parts: configWithParts.parts },
+    path,
+  );
+  return { ...configWithParts, parts: resolvedParts };
 }
 
 async function validateSiteConfigAndThrow(
@@ -424,7 +477,7 @@ async function validateSiteConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid site config${errorSuffix}`);
   }
-  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute, vfile.path);
+  return resolveSiteConfigPaths(session, path, site, resolveToAbsolute);
 }
 
 function saveSiteConfig(session: ISession, path: string, site: SiteConfig) {
@@ -446,7 +499,7 @@ async function validateProjectConfigAndThrow(
     const errorSuffix = vfile.path ? ` in ${vfile.path}` : '';
     throw Error(`Please address invalid project config${errorSuffix}`);
   }
-  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute, vfile.path);
+  return resolveProjectConfigPaths(session, path, project, resolveToAbsolute);
 }
 
 function saveProjectConfig(session: ISession, path: string, project: ProjectConfig) {
@@ -454,13 +507,18 @@ function saveProjectConfig(session: ISession, path: string, project: ProjectConf
 }
 
 /**
- * Write site config and config to path, if available
+ * Write site config and project config to file
  *
  * If newConfigs are provided, the redux store will be updated with these
  * configs before writing.
  *
- * If a config file exists on the path, this will override the
- * site portion of the config and leave the rest.
+ * If a config file exists on the path, this will override only the new portions
+ * of the config and leave the rest (i.e. if `newConfigs.siteConfig` is undefined,
+ * everything under the `site` key in the existing config will be unchanged).
+ *
+ * @param session with logging and redux store
+ * @param path directory to write config to
+ * @param newConfigs site and project configs to write
  */
 export async function writeConfigs(
   session: ISession,
@@ -493,8 +551,8 @@ export async function writeConfigs(
       path,
       projectConfig,
       resolveToRelative,
-      file,
     );
+    projectConfig = await loadAndResolveConfigParts(session, path, projectConfig, file, 'project');
   }
   if (siteConfig) {
     saveSiteConfig(
@@ -505,7 +563,8 @@ export async function writeConfigs(
   }
   siteConfig = selectors.selectLocalSiteConfig(session.store.getState(), path);
   if (siteConfig) {
-    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative, file);
+    siteConfig = await resolveSiteConfigPaths(session, path, siteConfig, resolveToRelative);
+    siteConfig = await loadAndResolveConfigParts(session, path, siteConfig, file, 'site');
   }
   // Return early if nothing new to save
   if (!siteConfig && !projectConfig) {

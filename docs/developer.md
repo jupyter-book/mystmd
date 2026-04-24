@@ -101,7 +101,7 @@ MyST has multiple renderers, themes, and templates that allow it to transform My
   - The [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) generates React components out of MyST AST for use by the default MyST Themes. It provides a `<MyST />` component which can render MyST AST into a React tree.
   - The source code of the [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes), each of which use the React renderer. These themes are built and then published at the [`myst-templates` GitHub organization](https://github.com/myst-templates/book-theme) for consumption by users.
   - A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
-- [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to product static outputs.
+- [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to produce static outputs.
 
 :::{error} to do — explain rendering
 
@@ -574,7 +574,7 @@ When you publish a release, you upload a new version of the tool for package man
 
 #### Fixing errors during a release
 
-Ask for help the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141). The exact fix will depend where in the automated release things broke. Some tips:
+Ask for help in the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141). The exact fix will depend where in the automated release things broke. Some tips:
 
 - In general, do not revert a release PR, instead fix the errors (permissions, etc. with NPM/tokens) and merge any necessary fixes to `main`.
 - A `mystmd` tag at the right version is necessary for the release notes to run
@@ -616,8 +616,7 @@ The process for releasing `myst-theme` infrastructure is similar to the release 
 - **Check the GitHub Workflow to see if it completes**. Go to the [`myst-theme` workflows page](https://github.com/jupyter-book/myst-theme/actions) to track its progress.
   - The action will build the latest version of the theme infrastructure.
   - It updates the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates).
-  - [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/
-  8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
+  - [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
   - [Here's an example run of this workflow](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
 - Confirm that a GitHub release has been made. Once this happens and there are no errors, you're done!
 
