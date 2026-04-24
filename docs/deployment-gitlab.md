@@ -129,11 +129,31 @@ pages:
 
 You must set the `HOST` - this is a fix for a [known issue](https://github.com/jupyter-book/mystmd/issues/2471).
 
-Note that a pixi.toml and pixi.lock file should be included!
+Note that a [pixi.toml](https://pixi.prefix.dev/latest/python/pyproject_toml/) and pixi.lock file should be included!
+
+A minimal version is shown below.
+
+```{code-block} toml
+:filename: pixi.toml
+
+[workspace]
+authors = [{name = "Me", email = "me@me.com"}]
+channels = ["conda-forge"]
+name = "jbtest"
+platforms = ["win-64", "linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.14.3,<3.15"
+jupyter-book = ">=2.1.2,<3"
+```
+
 
 
 ## External server through GitLab CI/CD
-Another option is to deploy your MyST site to an external server through GitLab CI/CD. A main difference is setting 'variables' (settings $\rightArrow$ CI/CD $\rightArrow$ variables) for connecting to the server. 
+Another option is to deploy your MyST site to an external server through GitLab CI/CD. A main difference is setting 'variables' (settings $\rightarrow$ CI/CD $\rightarrow$ variables) for connecting to the server. 
 
 An example `.gitlab-ci.yml` file for this deployment method is shown below.
 
@@ -156,7 +176,7 @@ before_script:
   - apt-get update
   - apt-get install -y --no-install-recommends curl rsync openssh-client git
 
-  # Node.js (MyST tooling kan node nodig hebben)
+  # Node.js 
   - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   - apt-get install -y --no-install-recommends nodejs
   - node --version
@@ -166,7 +186,7 @@ before_script:
   - python -m pip install --upgrade pip
   - pip install mystmd
 
-  # SSH key laden
+  # Load SSH key 
   - eval "$(ssh-agent -s)"
   - chmod 400 "$WEBSITE_UPLOAD_KEY"
   - ssh-add "$WEBSITE_UPLOAD_KEY"
