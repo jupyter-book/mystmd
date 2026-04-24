@@ -128,9 +128,9 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: StartOpt
   return DEFAULT_HOST;
 }
 
-export type AppServer = {
-  port: number;
-  process: child_process.ChildProcess;
+export type ServerInfo = {
+  port?: number;
+  process?: child_process.ChildProcess;
   contentServer: Awaited<ReturnType<typeof startContentServer>>;
   stop: () => void;
 };
@@ -138,7 +138,7 @@ export type AppServer = {
 export async function startServer(
   session: ISession,
   opts: StartOptions,
-): Promise<AppServer | undefined> {
+): Promise<ServerInfo | undefined> {
   // Ensure we are on the latest version of the configs
   await session.reload();
   const host = warnOnHostEnvironmentVariable(session, opts);
@@ -154,13 +154,20 @@ export async function startServer(
     session.log.info(
       `\n🔌 Content server started on port ${contentServer.port}!  🥳 🎉\n\n\n\t👉  ${local}  👈\n\n`,
     );
-    return undefined;
+    // Return a headless AppServer so callers (e.g. curvenote-cli's
+    // startServerWithLoggers) can still reach contentServer.sendJson to wire
+    // up websocket loggers. `port` and `process` are intentionally omitted
+    // since no template server is spawned.
+    return {
+      contentServer,
+      stop: () => contentServer.stop(),
+    } satisfies ServerInfo;
   }
   session.log.info(
     `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
   );
   const port = opts?.port ?? (await getPort({ port: portNumbers(3000, 3100) }));
-  const appServer = { port, contentServer } as AppServer;
+  const appServer = { port, contentServer } as ServerInfo;
   await new Promise<void>((resolve) => {
     const start = makeExecutable(
       mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
@@ -183,9 +190,9 @@ export async function startServer(
     start().catch((e) => session.log.debug(e));
   });
   appServer.stop = () => {
-    killProcessTree(appServer.process);
+    if (appServer.process) killProcessTree(appServer.process);
     contentServer.stop();
   };
 
-  return appServer satisfies AppServer;
+  return appServer satisfies ServerInfo;
 }
