@@ -73,19 +73,26 @@ You may specify `--site` if you only wish to build the site content. The first t
 myst build --site
 ```
 
-MyST can check for broken links when building a site. To report bad links:
+**Broken links**: MyST can check for broken links when building a site. To report bad links in the build log:
 
 ```
 myst build --check-links
 ```
 
-And use `--strict` to fail the build if there are errors, such as bad links, or other [rules](#setting:error_rules) set to error severity:
+On its own, `--check-links` only _reports_ broken links - the build still exits successfully.
+If a link successfully resolves during `--check-links`, the status will be cached to disk and the link will not be rechecked. If you need to recheck for broken links, you may clear this cache with `myst clean --cache`.
+
+**Fail on errors**: To make the build exit non-zero on any errors, use `--strict`:
 
 ```
 myst build --strict
 ```
 
-If a link successfully resolves during `--check-links`, the status will be cached to disk and the link will not be rechecked. If you need to recheck for broken links, you may clear this cache with `myst clean --cache`.
+**Fail on broken links**: Combine both check links and fail the build on broken links (the typical CI setup):
+
+```
+myst build --check-links --strict
+```
 
 ## MyST Start
 
