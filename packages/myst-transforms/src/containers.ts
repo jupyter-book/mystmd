@@ -23,6 +23,7 @@ const SUBFIGURE_TYPES = [
   'table',
   'code',
   'output',
+  'card'
 ];
 
 /** Raise a warning if caption includes content that is expected to be directly on the figure */
@@ -197,7 +198,7 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
         {
           node: container,
           ruleId: RuleId.containerChildrenValid,
-          note: 'Valid content types include image, referenced notebook cell, table, code, iframe, subfigure',
+          note: 'Valid content types include image, referenced notebook cell, table, code, cards, iframe, subfigure',
         },
       );
     }
