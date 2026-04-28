@@ -155,7 +155,7 @@ The advantage of this method is that the content is not rendered in your documen
 
 ## Add website parts
 
-[Website themes](./website-templates.md) have additional parts because they render user interface elements that are not part of a standard "document" structure. These are theme-dependent: for example, the [default myst themes](#default-web-themes) support a [`footer` part](#navigation:footer).
+[Website themes](./website-templates.md) have additional parts because they render user interface elements that are not part of a standard "document" structure. These are theme-dependent: for example, the [default myst themes](#default-web-themes) support a [`footer` part](#navigation:footer) and [`banner` part](#navigation:banner).
 
 Specify the content of a site `part` in the `site.parts` key of the `myst.yml` configuration file:
 
@@ -167,6 +167,7 @@ site:
   parts:
     footer: |
       (c) MyST Markdown
+    banner: My banner [content](https://mystmd.org)!
   ...
 ```
 
@@ -179,6 +180,7 @@ site:
   template: ...
   parts:
     footer: parts/myfooter.md
+    banner: _site/banner.md
   ...
 ```
 
