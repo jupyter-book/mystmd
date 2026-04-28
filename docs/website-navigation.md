@@ -26,6 +26,7 @@ Other themes may have slightly different structure.
 - **[Primary sidebar](#navigation:sidebar-primary)**: Cross-page navigation defined in the [Table of Contents](./table-of-contents.md).
 - **[Content window](#navigation:content-window)**: Contains content and metadata for the current page.
 - **[Secondary sidebar](#navigation:sidebar-secondary)**: Contains in-page navigation and links.
+- **[Banner](#navigation:banner)** Adds a bar above the header.
 - **[Footer](#navigation:footer)**: (work in progress) Contains more in-depth site navigation.
 
 (navigation:header)=
@@ -210,6 +211,34 @@ Yes it will!
 ```
 
 You could also attach the CSS class to a [content block](./blocks.md).
+
+(navigation:banner)=
+
+## Banner
+
+Add a site wide banner at the top of each page by using [site "parts"](#parts:site).
+Add a banner to your `myst.yml` like so:
+
+```{code} yaml
+:filename: myst.yml
+site:
+  parts:
+    banner: banner.md
+```
+
+or use text directly.
+
+```{code} yaml
+:filename: myst.yml
+site:
+  parts:
+    banner: Updates will be released soon!
+```
+
+The contents of `banner.md` will be rendered at the very top of each page, users can dismiss it by clicking the X button. The banner will only appear again when the cache is cleared.
+
+
+
 
 (navigation:footer)=
 
