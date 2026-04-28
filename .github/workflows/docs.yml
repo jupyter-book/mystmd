@@ -1,10 +1,13 @@
 name: Deploy Docs
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Release"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      published:
+        description: 'Whether packages were actually published (from changesets)'
+        required: false
+        type: boolean
+        default: false
 concurrency: ${{ github.workflow }}
 permissions:
   contents: write
@@ -13,7 +16,8 @@ jobs:
   release-docs:
     name: Release Documentation
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    # Run if: manual dispatch OR called with published=true
+    if: ${{ github.event_name == 'workflow_dispatch' || inputs.published == true }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
