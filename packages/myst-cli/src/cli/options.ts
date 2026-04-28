@@ -96,7 +96,10 @@ export function makeNamedExportOption(description: string) {
 }
 
 export function makeStrictOption() {
-  return new Option('--strict', 'Summarize build warnings and stop on any errors.').default(false);
+  return new Option(
+    '--strict',
+    'Summarize build warnings and exit non-zero on any errors.',
+  ).default(false);
 }
 
 export function makeForceOption(description: string) {
@@ -104,7 +107,10 @@ export function makeForceOption(description: string) {
 }
 
 export function makeCheckLinksOption() {
-  return new Option('--check-links', 'Check all links to websites resolve.').default(false);
+  return new Option(
+    '--check-links',
+    'Check all external links resolve and report broken ones in the build log.',
+  ).default(false);
 }
 
 export function makeKeepHostOption() {

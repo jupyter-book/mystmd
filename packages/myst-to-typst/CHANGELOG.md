@@ -1,5 +1,11 @@
 # myst-to-typst
 
+## 0.0.37
+
+### Patch Changes
+
+- 0b6ea12: update span renderer to include node identifiers as Typst tags
+
 ## 0.0.36
 
 ### Patch Changes

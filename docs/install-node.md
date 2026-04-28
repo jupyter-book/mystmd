@@ -35,7 +35,7 @@ Download the installer package, and follow instructions to execute the installer
 
 `nodejs` is available as a package on `conda-forge`, although a limited number of versions are available on that channel. If you are a `conda` user, installation is straightforward but please note that MyST requires even-numbered node versions, and odd-numbered releases can be found on `conda-forge`.
 
-🛠️ Use the following command can be used to lock down the version you are installing, adjust as necessary for the even-numbered version you are targeting:
+🛠️ The following command can be used to lock down the version you are installing, adjust as necessary for the even-numbered version you are targeting:
 
 ```shell
 (my-conda-env)% conda install -c conda-forge 'nodejs>=20,<21'
