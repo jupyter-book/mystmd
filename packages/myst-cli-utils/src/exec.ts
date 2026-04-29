@@ -49,7 +49,7 @@ export function makeExecutable(
 
 /**
  * On Unix-like systems, killing a process does not propagate to its children,
- * they get re-parented and keep running. This uses                           
+ * they get re-parented and keep running. This uses
  * `tree-kill` to discover and kill the parent process *and* all of its descendants.
  *
  * Returns a Promise that resolves once `tree-kill` has issued its signals.
