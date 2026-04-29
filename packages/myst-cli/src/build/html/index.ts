@@ -185,7 +185,7 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
       }),
     ),
   );
-  appServer.stop();
+  await appServer.stop();
 
   // Copy the files for the template used
   const templateBuildDir = path.join(template.templatePath, 'public');

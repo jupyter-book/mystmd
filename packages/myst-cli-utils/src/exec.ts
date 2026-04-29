@@ -48,17 +48,27 @@ export function makeExecutable(
 }
 
 /**
- * On Linux, child processes will not be terminated when attempting to kill their parent
- * This function uses `tree-kill` to kill the process and all its child processes
+ * On Unix-like systems, killing a process does not propagate to its children,
+ * they get re-parented and keep running. This uses                           
+ * `tree-kill` to discover and kill the parent process *and* all of its descendants.
+ *
+ * Returns a Promise that resolves once `tree-kill` has issued its signals.
+ * This allows callers to await these signals before moving on, which prevents a case
+ * where node exits before the signals are sent, and we're left with orphaned processes.
  */
-export function killProcessTree(process: child_process.ChildProcess) {
-  if (!process.pid) {
-    process.kill('SIGTERM');
-    return;
-  }
-  treeKill(process.pid, 'SIGTERM', (err) => {
-    if (err && process.pid) {
-      treeKill(process.pid, 'SIGKILL');
+export function killProcessTree(process: child_process.ChildProcess): Promise<void> {
+  return new Promise<void>((resolve) => {
+    if (!process.pid) {
+      process.kill('SIGTERM');
+      resolve();
+      return;
     }
+    treeKill(process.pid, 'SIGTERM', (err) => {
+      if (err && process.pid) {
+        treeKill(process.pid, 'SIGKILL', () => resolve());
+      } else {
+        resolve();
+      }
+    });
   });
 }
