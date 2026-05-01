@@ -1,5 +1,23 @@
 # myst-cli
 
+## 1.9.0
+
+### Minor Changes
+
+- 9ea79df: Redirect /foo/index.html to canonical URL (/foo/) to fix hydration.
+
+### Patch Changes
+
+- a819489: Don't check links with strict mode.
+- e3b45d7: Await signals to terminate processes
+- Updated dependencies [ff237eb]
+- Updated dependencies [e3b45d7]
+- Updated dependencies [09d1466]
+  - myst-transforms@1.3.49
+  - myst-cli-utils@2.0.14
+  - myst-parser@1.7.2
+  - myst-migrate@1.9.0
+
 ## 1.8.3
 
 ### Patch Changes
