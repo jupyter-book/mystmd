@@ -126,7 +126,7 @@ export function warnOnHostEnvironmentVariable(session: ISession, opts?: StartOpt
 export type AppServer = {
   port: number;
   process: child_process.ChildProcess;
-  stop: () => void;
+  stop: () => Promise<void>;
 };
 
 export async function startServer(
@@ -176,8 +176,9 @@ export async function startServer(
     );
     start().catch((e) => session.log.debug(e));
   });
-  appServer.stop = () => {
-    killProcessTree(appServer.process);
+  appServer.stop = async () => {
+    // Await to ensure that all processes have completed
+    await killProcessTree(appServer.process);
     server.stop();
   };
   return appServer;
