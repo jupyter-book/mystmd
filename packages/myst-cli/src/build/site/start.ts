@@ -160,7 +160,7 @@ export async function startServer(
     // since no template server is spawned.
     return {
       contentServer,
-      stop: () => contentServer.stop(),
+      stop: async () => contentServer.stop(),
     } satisfies ServerInfo;
   }
   session.log.info(
