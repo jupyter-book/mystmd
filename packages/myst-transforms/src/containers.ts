@@ -23,6 +23,7 @@ const SUBFIGURE_TYPES = [
   'table',
   'code',
   'output',
+  'anywidget',
 ];
 
 /** Raise a warning if caption includes content that is expected to be directly on the figure */
@@ -113,7 +114,7 @@ function hoistContentOutOfParagraphs(tree: GenericParent) {
  * Update container children and add sub-figures
  *
  * - Valid container nodes are ensured to be first children.
- *   These include image/iframe/table/code/embed/block/container nodes.
+ *   These include image/iframe/table/code/embed/block/container/anywidget nodes.
  * - If multiple of these are present, they are nested as sub-figures.
  *   (This does not include placeholder images, which are left unchanged)
  * - A warning is raised if these node types are found in caption or legend
@@ -197,7 +198,7 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
         {
           node: container,
           ruleId: RuleId.containerChildrenValid,
-          note: 'Valid content types include image, referenced notebook cell, table, code, iframe, subfigure',
+          note: 'Valid content types include image, referenced notebook cell, table, code, iframe, subfigure, anywidget',
         },
       );
     }
