@@ -1,13 +1,5 @@
 # myst-parser
 
-## 1.7.2
-
-### Patch Changes
-
-- 09d1466: Exclude a few more TLDs from linkify
-  - myst-roles@1.7.2
-  - myst-directives@1.7.2
-
 ## 1.7.1
 
 ### Patch Changes

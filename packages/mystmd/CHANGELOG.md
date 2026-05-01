@@ -1,15 +1,5 @@
 # mystmd
 
-## 1.9.0
-
-### Minor Changes
-
-- 9ea79df: Redirect /foo/index.html to canonical URL (/foo/) to fix hydration.
-
-### Patch Changes
-
-- a819489: Don't check links with strict mode.
-
 ## 1.8.3
 
 ## 1.8.2
