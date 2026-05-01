@@ -125,7 +125,11 @@ project:
         - 'https://*.example.com/**'
 ```
 
-The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity listed will be adopted rather than the default log message severity. The default severity for rules included in the list is `ignore`, which means that simply listing the rule IDs as strings will ignore those rules. To discover the rule ID, run myst in debug mode (i.e. `myst --debug build`) to get the error (and optional key) printed to the console. For example, the above configuration updates will no longer warn on `math-eqnarray-replaced` and will also ignore the two explicit links and the two link patterns listed in the configuration when running `myst build --check-links --strict`.
+The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity listed will be adopted rather than the default log message severity. For example, the above configuration updates will no longer warn on `math-eqnarray-replaced` and will also ignore the two explicit links and the two link patterns listed in the configuration when running `myst build --check-links --strict`.
+
+**The default severity is `ignore`**. Simply listing the rule IDs as strings will ignore those rules.
+
+**To discover the rule ID**, run myst in debug mode (i.e. `myst --debug build`) to get the error (and optional key) printed to the console.
 
 Some error rules support a `key` field that identifies specific instances of the error. This allows you to target particular cases rather than all instances of a rule. For example, the `link-resolves` rule uses the URL as the key, allowing you to ignore specific broken links while still checking others. Similarly, the `doi-link-valid` rule uses the DOI value as the key, so you can ignore specific invalid DOIs while still validating others. When a rule supports keys, you can provide a list of keys (or key patterns) in the `keys` field to match multiple specific instances.
 
@@ -159,19 +163,39 @@ The following domains are automatically skipped by the link checker and do not n
 
 :::
 
-**Common use cases:**
+### Fail builds with broken links
 
-To fail CI when there are missing links, you can use `myst build --check-links --strict` with the following example `myst.yml` configuration.
+To fail CI when there are broken external links, combine `--check-links` with `--strict`:
+
+```shell
+$ myst build --check-links --strict
+```
+
+Both flags are needed:
+
+- `--check-links` checks every external link and reports broken ones in the build log, but on its own does not cause the build to fail.
+- `--strict` exits non-zero on any errors reported during the build.
+
+Together they will cause a build to fail if any links are broken.
+
+#### Ignore specific URLs
+
+To skip some URL patterns (e.g. if you know they are flaky), add those URLs as `keys` under the `link-resolves` rule in your `myst.yml` with `severity: ignore`.
 
 ```{code-block} yaml
 :filename: myst.yml
 project:
   error_rules:
-    # Match both HTTP and HTTPS for a domain
     - rule: link-resolves
+      severity: ignore
       keys:
         - '{http,https}://legacy-api.mysite.com/**'
         - '{http,https}://staging.mysite.com/**'
 ```
 
-This is particularly useful for ignoring groups of external links that may be blocked in CI environments or example URLs that don't need to be checked.
+The `keys` values support glob patterns - see [Pattern Matching in Keys](#pattern-matching-in-keys) above.
+
+:::{tip} Omitting `severity:` has the same effect as `severity: ignore`
+
+Entries listed under `error_rules` default to `severity: ignore` (see [the error rules section](#setting:error_rules)). Setting it explicitly makes the intent obvious at a glance.
+:::

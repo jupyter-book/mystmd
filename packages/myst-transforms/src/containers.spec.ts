@@ -12,6 +12,10 @@ function image(placeholder = false) {
   return u('image', { url: 'my-image.png', placeholder });
 }
 
+function anywidget() {
+  return u('anywidget', { esm: './widget.mjs', id: 'w1', model: {} });
+}
+
 function container(children: GenericNode[], kind = 'figure'): GenericParent {
   children.forEach((child) => {
     if (child.type === 'container') child.subcontainer = true;
@@ -33,6 +37,13 @@ describe('Test containerChildrenTransform', () => {
     const mdast = rootContainer([image(), caption()]);
     containerChildrenTransform(mdast, new VFile());
     expect(mdast).toEqual(rootContainer([image(), caption()]));
+  });
+  test('figure with anywidget and caption is unchanged', async () => {
+    const mdast = rootContainer([anywidget(), caption()]);
+    const file = new VFile();
+    containerChildrenTransform(mdast, file);
+    expect(mdast).toEqual(rootContainer([anywidget(), caption()]));
+    expect(file.messages.filter((m) => m.fatal)).toHaveLength(0);
   });
   test('figure with caption and one image is reordered', async () => {
     const mdast = rootContainer([caption(), image()]);

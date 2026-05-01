@@ -132,7 +132,7 @@ export type ServerInfo = {
   port?: number;
   process?: child_process.ChildProcess;
   contentServer: Awaited<ReturnType<typeof startContentServer>>;
-  stop: () => void;
+  stop: () => Promise<void>;
 };
 
 export async function startServer(
@@ -189,8 +189,10 @@ export async function startServer(
     );
     start().catch((e) => session.log.debug(e));
   });
-  appServer.stop = () => {
-    if (appServer.process) killProcessTree(appServer.process);
+  appServer.stop = async () => {
+    if (appServer.process) {
+      await killProcessTree(appServer.process);
+    }
     contentServer.stop();
   };
 

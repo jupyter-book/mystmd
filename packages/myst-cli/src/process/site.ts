@@ -545,7 +545,6 @@ export async function processProject(
     execute,
     maxSizeWebp,
     checkLinks,
-    strict,
   } = opts || {};
   if (!siteProject.path) {
     const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
@@ -604,7 +603,7 @@ export async function processProject(
     pagesToTransform.map((page) =>
       postProcessMdast(session, {
         file: page.file,
-        checkLinks: checkLinks || strict,
+        checkLinks,
         pageReferenceStates,
         extraLinkTransformers,
         site: true,
