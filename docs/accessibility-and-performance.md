@@ -1,67 +1,97 @@
 ---
 title: Accessibility and Performance
 short_title: Accessibility & Performance
-description: MyST sites are designed for mobile and desktop sites, accessibility and speedy page loads.
+description: MyST builds documents and websites that are accessible to everyone and quick to load on any device.
 ---
+
+## Accessibility
+
+Most of the user-facing interface lives in [`myst-theme`](https://github.com/jupyter-book/myst-theme).
+These default themes build on top of [Remix](https://remix.run/), which provides sensible accessibility defaults. This section describes the broader goals and considerations around accessibility for the MyST themes.[^scope]
+
+[^scope]: **This page is scoped to the default MyST themes**
+
+    This page describes the **default MyST website themes** (the Remix-based [`book` and `article` themes](https://github.com/jupyter-book/myst-theme) that ship with `mystmd`). Sites built with a custom theme or a different renderer may behave differently.
+
+    For more information about accessibility across all of Jupyter, see the [Jupyter Accessibility Working Group](https://jupyter-accessibility.readthedocs.io).
+
+:::{card} Open an a11y issue »
+:link: https://github.com/jupyter-book/myst-theme/issues/new?labels=a11y
+If you find a barrier on a MyST site, open an issue in `myst-theme`.
+A clear way to reproduce helps even if you can't propose a fix.
+:::
+
+### Our accessibility goals
+
+The [default MyST web themes](https://github.com/jupyter-book/myst-theme) aim to meet [WCAG 2.1 AA](https://www.w3.org/TR/WCAG21/), the level required of US public-sector and many private websites under [ADA Title II](https://www.ada.gov/resources/2024-03-08-web-rule/).
+
+Accessibility bugs there are treated like any other bug.
+See the [`a11y` issues label](https://github.com/jupyter-book/myst-theme/labels/a11y) for open accessibility issues.
+Accessibility contributions follow the [normal contribution process](./contributing.md).
+
+
+### How accessible is MyST today?
+
+The MyST themes ship with these accessibility behaviors:
+
+- Semantic HTML for articles, asides, figures, navigation, and captions.
+- A skip-to-content shortcut and full keyboard navigation for menus, search, and the table of contents.
+- Focusable, scrollable cell outputs so keyboard and screen-reader users can reach long stdout, stderr, and equation output.
+- Color-contrast-aware defaults in the book and article themes, including code cells and error states.
+- Pre-rendered math that ships as accessible HTML rather than images.
+- Alt-text for images sourced from figure captions when present.
+- `aria` labels and roles on interactive controls (theme toggle, document outline, search dialog, footnote return links).
+
+In April 2026 we completed a focused round of work to [align with WCAG 2.1 AA](https://github.com/jupyter-book/mystmd/issues/2802). We know there is always ongoing work to be done to improve accessibility and welcome both guidance and contributions, see [](#a11y:contribute).
+
+### Cell outputs are not under MyST's control
+
+Many libraries emit interactive JavaScript or images as part of executing code (e.g., Plotly, ipywidgets, etc).
+In these cases, MyST does not have control over the structure of what is created, and cannot guarantee their accessibility.
+If you find a cell output that is not accessible, please report it in the repository for the tool that produced it.
+The fix will most likely need to happen in that upstream tool rather than in the MyST theme.
+
+(a11y:contribute)=
+### Where can I follow along or contribute?
+
+Open accessibility work is tracked under the [`a11y` label in `myst-theme`](https://github.com/jupyter-book/myst-theme/labels/a11y).
+There's a thread for broader discussion and tracking in the [Accessibility Improvements tracking issue](https://github.com/jupyter-book/myst-theme/issues/238).
+
+### How can I check the accessibility of my own site?
+
+A few tools that others in the community have found useful:
+
+- The [Jupyter Accessibility Working Group](https://jupyter-accessibility.readthedocs.io) has a collection of accessibility resources for the broader Jupyter community.
+- [`berkeley-cdss/myst-a11y`](https://github.com/berkeley-cdss/myst-a11y) is a GitHub Action built for MyST sites. It runs [axe-core](https://github.com/dequelabs/axe-core) checks against WCAG 2.0 and 2.1 (A and AA) on every push and reports results as a tracking issue. See [data-8/textbook](https://github.com/data-8/textbook/blob/main/.github/workflows/a11y.yml) for a working example.
+- [Lighthouse](https://github.com/GoogleChrome/lighthouse) is built into Chrome DevTools and is useful for a quick audit of a single page.
+- [JupyCheck](https://jupycheck.vercel.app/) checks accessibility of source notebooks in Jupyter interfaces. This is useful if you also want readers to launch Jupyter sessions from your MyST site.
+
 
 ## Performance
 
-The MyST Site existing, modern web-frameworks including [Remix](https://remix.run/) and [React](https://reactjs.org/). These tools come out-of-the-box with prefetching for faster navigation, smaller network payloads through modern web-bundlers, image optimization, and partial-page refresh through single-page application. We follow the [PRPL Pattern](https://web.dev/apply-instant-loading-with-prpl/)[^prpl] where possible.
+The [default MyST themes](https://github.com/jupyter-book/myst-theme) are built on [Remix](https://remix.run/) and [React](https://reactjs.org/). These provide link prefetching, smaller download sizes through modern bundlers, image optimization, and faster page transitions that update only the part of the page that changed.
+We follow the [PRPL pattern](https://web.dev/apply-instant-loading-with-prpl/) where possible:
 
-[^prpl]: PRPL is a pattern designed to improve performance of webpages:
+- **P**reload the most important resources.
+- **R**ender the initial route as soon as possible.
+- **P**re-cache remaining assets.
+- **L**azy load other routes and non-critical assets.
 
-    - Preload the most important resources.
-    - Render the initial route as soon as possible.
-    - Pre-cache remaining assets.
-    - Lazy load other routes and non-critical assets.
+Hover over a link in the navigation with your browser's developer tools open: the next page is fetched as soon as you hover, before you click. Only that page's content and metadata are downloaded, not a full HTML document, and shared assets like fonts and styles are reused across pages. Pages you've already visited are served from your browser's cache.
 
-As an example, try hovering over the navigation on this page (potentially with your network development tools open!), the entire page will be fetched based on your intent (i.e. hovering over the link for a moment). This includes downloading any assets for additional styling on the upcoming page. Note that many assets are shared between pages, and only the actual content is fetched (i.e. the AST and page metadata), not the full HTML page, which again makes for smaller network payloads and speed for browsing! Content is also cached if you re-visit a page.
+Locally, MyST rebuilds and rerenders in under 150ms and restores your scroll position, so you can preview changes without losing your place.
 
-When working locally MyST is designed to rebuild and rerender the site in <150ms, and has scroll-restoration so you don't lose your place. This speed can dramatically improve the authoring experience as it allows you to preview changes rapidly.
+Performance of a deployed site depends on the infrastructure that serves it. See [deployment](./deployment.md) for options.
 
-The real-world deployment of your site will depend on the infrastructure that you use to serve it. See [deployment](./deployment.md) for more information on options for sharing your site.
+### Lighthouse
 
-## Lighthouse Score
-
-Lighthouse is a tool included in Chrome that measures accessibility, performance, and search engine performance (see [lighthouse on GitHub](https://github.com/GoogleChrome/lighthouse)). Although not perfect, the tool does do a good job at highlighting issues with performance, search engine crawling, and accessibility. These scores indicate the real-world performance of a site as well as can effect search engine rankings.
+[Lighthouse](https://github.com/GoogleChrome/lighthouse) is a Chrome tool that measures performance, accessibility, and search-engine readiness. It flags asset, image, and crawler issues that affect both real-world load times and search rankings.
 
 ```{figure} ./images/lighthouse-2022_09_15.png
 :label: lighthouse
-Lighthouse score run Sept 15, 2022 on deployed site using Curvenote's global CDN.
+A 2022 Lighthouse run on a deployed MyST site using Curvenote's global CDN.
 ```
-
-Some performance and accessibility considerations:
-
-- Semantic HTML used for articles, asides, figures, nav, and captions, including limited use of generic `div`s and `span`s where we can.
-- Anchor tags for all interactive content, that work when JavaScript is _not_ enabled
-- Prerendering math on the server, reducing page load size (for JavaScript) and improving render speed and cumulative layout shift.
-- Optimizing images to next-generation formats (e.g. `webp`), and providing fallbacks for older browsers (through image source sets)
-- Providing figure captions as alt-text for images
-- Lazy-fetching syntax highlighters
-- Lazy-fetching unused JavaScript
-- Bundling and eliminating code for the entire site
-- Ensuring appropriate contrast in text and background in the default themes
-
-````{seealso}
-:class: dropdown
-# Comparing to Jupyter Book V1 & Quarto
-
-As a comparison to Jupyter Book V1 or Quarto, which are both static site generators for scientific content, and assets built by Sphinx and Pandoc, respectively. There are improvements possible primarily in the bundling of JavaScript assets, which is very difficult to do in the Sphinx build process, for example.
-
-```{figure} ./images/lighthouse-jb-2022_09_15.png
-:label: lighthouse-jb
-Jupyter Book Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are around bundling assets, reducing javascript used, optimizing images, and speed to initial page load.
-```
-
-```{figure} ./images/lighthouse-quarto-2022_09_15.png
-:label: lighthouse-quarto
-Quarto Lighthouse score run Sept 15, 2022 on deployed site, the majority of issues are image sizing, main-thread work, and high network payloads.
-```
-````
 
 ```{warning}
-The performance metrics above are subject to changes over time, and may differ on your computer, network connection and page analyzed.
-We include these metrics on this page because (1) we have put a lot of work into performance and accessibility 🎉 and (2) to let you know that as MyST developers we care about performance, accessibility, and semantic HTML that can be read by both search engine crawlers and academic indexes.
-
-If you find a place where we can improve performance in your site, please [open an issue](https://github.com/jupyter-book/mystmd/issues).
+Lighthouse scores depend on your network, machine, and the specific page measured; the figure above is a 2022 snapshot. If you find a place where MyST performance can be improved, please [open an issue](https://github.com/jupyter-book/mystmd/issues).
 ```
