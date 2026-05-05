@@ -207,4 +207,33 @@ downloads:
 ---
 ```
 
+## Bundle static files with your site
+
+Use the `site.static_files` option to copy files or folders into your build output.
+This is useful when a file needs to keep a predictable name at a known location.
+
+To do so, add a list of paths under `site:` in your `myst.yml`:
+
+```{code-block} yaml
+:filename: myst.yml
+
+site:
+  static_files:
+    - path/to/CNAME # A file name, for example
+    - path/to/assets # A folder name, for example
+```
+
+Each entry is copied into the **root** of the build output (`_build/html/`).
+The behavior changes slightly based on whether you link to a file or a folder:
+
+- A **file** path (e.g. `path/to/CNAME`) is copied to the root using only its filename.
+  Parent directories are **not** preserved, so the file ends up at `_build/html/CNAME`.
+- A **folder** path (e.g. `path/to/assets`) is copied recursively using only the folder's name.
+  As with files, parent directories are **not** preserved, but sub-folder contents are preserved.
+  The folder and its contents end up at `_build/html/assets/...`.
+
+:::{note} Other ways to include static files
+If you want MyST to manage the link and hash the filename for cache busting, use the {myst:role}`download` role or [downloads configuration](#download-link) instead.
+:::
+
 [typst-gha]: https://github.com/marketplace/actions/setup-typst
