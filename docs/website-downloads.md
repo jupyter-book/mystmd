@@ -4,16 +4,14 @@ short_title: Downloads & Static Files
 description: Add download links to your website on each page or project
 ---
 
-You can bundle files with your MyST site for others to download and re-use.
-There are two ways to specify downloads with a MyST site.
+You can bundle files with your MyST site in two complementary ways, with different tradeoffs:
 
-:::{note} Download URLs will changed based on the file content
-MyST will generate a _hashed filename_ for any files bundled with your site.
-For example: `myfile.[HASH].png`.
-This means download URLs will not be persistent if the content changes.
-
-See this issue tracking how to make these URLs stable: https://github.com/jupyter-book/mystmd/issues/1196
-:::
+- **Static files** (the [`site.static_files` option](#downloads:static-files)).
+  MyST copies the file into the build output at its original name, without hashing and without rendering a link by default.
+  Use these for files that need a stable, predictable URL at a known location (a `CNAME` for a custom domain, an image or asset file you want to reference in a different site, etc.
+- **Downloads** (the {myst:role}`download` role and [`downloads:` frontmatter](#download-link)).
+  MyST attaches the file to a page or project, renders a download link, and content-hashes the filename (e.g. `myfile.[HASH].png`) so downstream caches invalidate when the file changes.
+  Use these for files that are logically attached to a document - supplementary PDFs, datasets, example code, etc.
 
 ## Include a single file in the AST with the `{download}` role
 
@@ -31,6 +29,7 @@ For example:
 {download}`references.bib`
 ::::
 
+(downloads:static-files)=
 ## Include static files with stable links
 
 Use the `site.static_files` option to copy files or folders into your build output.
@@ -56,8 +55,8 @@ The behavior changes slightly based on whether you link to a file or a folder:
   As with files, parent directories are **not** preserved, but sub-folder contents are preserved.
   The folder and its contents end up at `_build/html/assets/...`.
 
-:::{note} Other ways to include static files
-If you want MyST to manage the link and hash the filename for cache busting, use the {myst:role}`download` role or [downloads configuration](#download-link) instead.
+:::{note} Want cache busting or a rendered link?
+If you'd rather have MyST render the link and hash the filename for cache busting, use the {myst:role}`download` role or [downloads configuration](#download-link) instead.
 :::
 
 (download-link)=
