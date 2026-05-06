@@ -1,0 +1,50 @@
+name: Experience Report 📝
+description: Share your experience using MyST or Jupyter Book v2
+labels: ['experience-report']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for sharing your experience! Although we may not respond directly to every report, the team reads them all and they significantly inform the thinking and direction of the project.
+
+        We're especially interested in **"paper cuts"** — the small issues that, if fixed, would make using MyST or Jupyter Book v2 a lot nicer. Walk us through your journey: what you were trying to do, where you got stuck, what felt awkward, and what you wished worked differently.
+
+        You can either fill in this form directly, or take notes in another form (a blog post, a gist, a doc, [an example](https://gist.github.com/mfisher87/1b2dba831de573052332d963fff449a7)) and link them in. The more detail you can share, the more useful it is to us.
+  - type: textarea
+    attributes:
+      label: What were you trying to do?
+      description: Describe the project, task, or goal you were working on. What did you want to accomplish with MyST or Jupyter Book v2?
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Walk us through your experience
+      description: |
+        Tell the story of what happened. Where did things go smoothly? Where did you hit friction? What "paper cuts" did you encounter — small things that worked but felt awkward, surprising, or harder than they should be?
+
+        Please include as much detail as possible: specific steps, error messages, links to your project or notes, screenshots, examples of input/output, anything that helps us see what you saw.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: What would have made this nicer?
+      description: If you can, lay out a path — what specific small fixes or changes would have improved the experience? It's fine to list many small things rather than one big thing.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Background and context
+      description: |
+        Anything that helps us interpret your report — for example:
+        - Your background (researcher, educator, developer, student, etc.) and what you typically use for authoring
+        - The kind of content you're producing (paper, book, course, docs, blog, etc.)
+        - Tools you were comparing against or migrating from
+        - Versions of `mystmd` / `jupyter-book` you were using (`myst -v`)
+    validations:
+      required: false
+  - type: input
+    attributes:
+      label: Links
+      description: Link to your project, repo, notes, blog post, or anywhere else we can read more.
+    validations:
+      required: false
