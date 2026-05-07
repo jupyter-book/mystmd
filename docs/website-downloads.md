@@ -4,18 +4,16 @@ short_title: Downloads & Static Files
 description: Add download links to your website on each page or project
 ---
 
-You can bundle files with your MyST site for others to download and re-use.
-There are two ways to specify downloads with a MyST site.
+You can bundle files with your MyST site in two complementary ways, with different tradeoffs:
 
-:::{note} Download URLs will changed based on the file content
-MyST will generate a _hashed filename_ for any files bundled with your site.
-For example: `myfile.[HASH].png`.
-This means download URLs will not be persistent if the content changes.
+- **Static files** (the [`site.static_files` option](#downloads:static-files)).
+  MyST copies the file into the build output at its original name, without hashing and without rendering a link by default.
+  Use these for files that need a stable, predictable URL at a known location (a `CNAME` for a custom domain, an image or asset file you want to reference in a different site, etc.
+- **Downloads** (the {myst:role}`download` role and [`downloads:` frontmatter](#download-link)).
+  MyST attaches the file to a page or project, renders a download link, and content-hashes the filename (e.g. `myfile.[HASH].png`) so downstream caches invalidate when the file changes.
+  Use these for files that are logically attached to a document - supplementary PDFs, datasets, example code, etc.
 
-See this issue tracking how to make these URLs stable: https://github.com/jupyter-book/mystmd/issues/1196
-:::
-
-## Use the `{download}` role
+## Include a single file in the AST with the `{download}` role
 
 The {myst:role}`download` role takes a path to a file, and generates a download link from it.
 Such a role may be defined at the project or the page level.
@@ -31,8 +29,38 @@ For example:
 {download}`references.bib`
 ::::
 
+(downloads:static-files)=
+## Include static files with stable links
+
+Use the `site.static_files` option to copy files or folders into your build output.
+This is useful when a file needs to keep a predictable name at a known location.
+
+To do so, add a list of paths under `site:` in your `myst.yml`:
+
+```{code-block} yaml
+:filename: myst.yml
+
+site:
+  static_files:
+    - path/to/CNAME # A file name, for example
+    - path/to/assets # A folder name, for example
+```
+
+Each entry is copied into the **root** of the build output (`_build/html/`).
+The behavior changes slightly based on whether you link to a file or a folder:
+
+- A **file** path (e.g. `path/to/CNAME`) is copied to the root using only its filename.
+  Parent directories are **not** preserved, so the file ends up at `_build/html/CNAME`.
+- A **folder** path (e.g. `path/to/assets`) is copied recursively using only the folder's name.
+  As with files, parent directories are **not** preserved, but sub-folder contents are preserved.
+  The folder and its contents end up at `_build/html/assets/...`.
+
+:::{note} Want cache busting or a rendered link?
+If you'd rather have MyST render the link and hash the filename for cache busting, use the {myst:role}`download` role or [downloads configuration](#download-link) instead.
+:::
+
 (download-link)=
-## Use project or page configuration
+## Use project or page configuration to configure download links
 
 There are some special configuration fields to specify files that should be bundled for download with your site. These are:
 
@@ -74,6 +102,34 @@ project:
 ```
 
 :::
+
+
+(multiple-downloads)=
+### Example: Define multiple downloads at once
+
+The following example has several downloads: the source file, as above, an exported pdf, a remote file, and a link to another website.
+In addition, when you specify `downloads:`, it will over-ride the default download behavior (which is to link to the source file of the current page).
+This example manually includes a download to the source file to re-enable this.
+
+```{code-block} yaml
+:filename: index.md
+---
+exports:
+  - output: paper.pdf
+    template: lapreprint-typst
+    id: my-paper
+downloads:
+  - file: index.md
+    title: Source File
+  - id: my-paper
+    title: Publication
+  - url: https://example.com/files/script.py
+    filename: script.py
+    title: Sample Code
+  - url: https://example.com/more-info
+    title: More Info
+---
+```
 
 
 (include-exported-pdf)=
@@ -179,32 +235,5 @@ downloads:
     title: Source File
 ```
 
-(multiple-downloads)=
-
-## Include several downloads at once
-
-The following example has several downloads: the source file, as above, an exported pdf, a remote file, and a link to another website.
-In addition, when you specify `downloads:`, it will over-ride the default download behavior (which is to link to the source file of the current page).
-This example manually includes a download to the source file to re-enable this.
-
-```{code-block} yaml
-:filename: index.md
----
-exports:
-  - output: paper.pdf
-    template: lapreprint-typst
-    id: my-paper
-downloads:
-  - file: index.md
-    title: Source File
-  - id: my-paper
-    title: Publication
-  - url: https://example.com/files/script.py
-    filename: script.py
-    title: Sample Code
-  - url: https://example.com/more-info
-    title: More Info
----
-```
 
 [typst-gha]: https://github.com/marketplace/actions/setup-typst
