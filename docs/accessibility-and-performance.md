@@ -62,7 +62,7 @@ There's a thread for broader discussion and tracking in the [Accessibility Impro
 A few tools that others in the community have found useful:
 
 - The [Jupyter Accessibility Working Group](https://jupyter-accessibility.readthedocs.io) has a collection of accessibility resources for the broader Jupyter community.
-- [`berkeley-cdss/myst-a11y`](https://github.com/berkeley-cdss/myst-a11y) is a GitHub Action built for MyST sites. It runs [axe-core](https://github.com/dequelabs/axe-core) checks against WCAG 2.0 and 2.1 (A and AA) on every push and reports results as a tracking issue. See [data-8/textbook](https://github.com/data-8/textbook/blob/main/.github/workflows/a11y.yml) for a working example.
+- [berkeley-cdss/myst-a11y](https://github.com/berkeley-cdss/myst-a11y) is a GitHub Action built for MyST sites. It runs [axe-core](https://github.com/dequelabs/axe-core) checks against WCAG 2.0 and 2.1 (A and AA) on every push and reports results as a tracking issue. See [data-8/textbook](https://github.com/data-8/textbook/blob/main/.github/workflows/a11y.yml) for a working example.
 - [Lighthouse](https://github.com/GoogleChrome/lighthouse) is built into Chrome DevTools and is useful for a quick audit of a single page.
 - [JupyCheck](https://jupycheck.vercel.app/) checks accessibility of source notebooks in Jupyter interfaces. This is useful if you also want readers to launch Jupyter sessions from your MyST site.
 
