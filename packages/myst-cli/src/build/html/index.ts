@@ -72,10 +72,11 @@ export async function currentSiteRoutes(
 // This is defined in the remix `publicPath` and allows us to overwrite it here.
 const ASSETS_FOLDER = 'myst_assets_folder';
 
-// Script injected into every index.html to redirect "/foo/index.html" → "/foo/"
-// before Remix hydrates, preventing a URL mismatch that breaks client-side routing.
-// Remix renders the root index for URL "/" but static servers also serve the same
-// file at "/index.html", where the URL doesn't match any Remix route → runtime error.
+// Script injected at the end of <head> in every index.html to redirect
+// "/foo/index.html" → "/foo/" before Remix hydrates, preventing a URL
+// mismatch that breaks client-side routing. Remix renders the root index
+// for URL "/" but static servers also serve the same file at "/index.html",
+// where the URL doesn't match any Remix route → runtime error.
 const INDEX_REDIRECT_SCRIPT =
   `<script>(function(){` +
   `var p=window.location.pathname;` +
@@ -85,8 +86,9 @@ const INDEX_REDIRECT_SCRIPT =
 
 /**
  * Rewrite URLs in HTML/JS/JSON files pointing to the default assets folder in
- * terms of the provided base URL, and inject a URL-normalisation script into
- * every index.html so that direct access via /foo/index.html redirects to /foo/.
+ * terms of the provided base URL, and append a URL-normalisation script to
+ * the end of <head> in every index.html so that direct access via
+ * /foo/index.html redirects to /foo/.
  *
  * @param directory directory of files to recursively rewrite
  * @param baseurl base URL of the built site
@@ -106,7 +108,7 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
     let data = fs.readFileSync(file).toString();
     data = data.replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`);
     if (filename === 'index.html') {
-      data = data.replace('<head>', `<head>${INDEX_REDIRECT_SCRIPT}`);
+      data = data.replace('</head>', `${INDEX_REDIRECT_SCRIPT}</head>`);
     }
     fs.writeFileSync(file, data);
   });
