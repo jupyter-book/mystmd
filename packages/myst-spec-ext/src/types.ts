@@ -68,6 +68,11 @@ export type AlgorithmLine = Parent & {
   enumerator?: string;
 };
 
+export type Alternatives = Parent & {
+  type: 'alternatives';
+  class?: Image['class'];
+};
+
 export type InlineMath = SpecInlineMath &
   Target & {
     /** Typst-specific math content. If not provided, LaTeX content will be converted to Typst. */
