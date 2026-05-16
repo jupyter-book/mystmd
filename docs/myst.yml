@@ -83,6 +83,7 @@ project:
         - file: glossaries-and-terms.md
         - file: writing-in-latex.md
         - file: inline-options.md
+        - file: alternative-content.md
     - title: Executable Content
       children:
         - file: execute-notebooks.md

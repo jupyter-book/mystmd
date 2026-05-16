@@ -12,10 +12,19 @@ export const alternativesDirective: DirectiveSpec = {
     doc: 'The body of the alternative. If there is no title and the body starts with bold text or a heading, that content will be used as the alternative title.',
   },
   run(data: DirectiveData, vfile: VFile): GenericNode[] {
-    const rawChildren: GenericNode[] = (data.body as GenericNode[]) ?? [];
+    let rawChildren: GenericNode[] = (data.body as GenericNode[]) ?? [];
+
+    // Multiple images are presented as paragraph of images.
+    // We could also walk down the tree, but this is only temporary and a 
+    // reasonable assumption
+    if (rawChildren.length === 1 && rawChildren[0].type === 'paragraph') {
+      rawChildren = rawChildren[0].children as any[];
+    }
     const children = rawChildren.filter((n) => n.type === 'image' || n.type === 'anywidget');
 
     if (children.length !== rawChildren.length) {
+      console.dir(children);
+      console.dir(rawChildren);
       fileError(vfile, `alternatives can only contain images or anywidgets`);
     }
 
