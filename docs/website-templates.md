@@ -69,7 +69,10 @@ site:
   options:
     favicon: my-favicon.ico
     logo: my-site-logo.svg
+    logo_dark: my-site-logo-dark.svg
 ```
+
+Use `logo` to specify the site logo (appears in the header, next to the site title) and, optionally, `logo_dark` to be used in dark mode.
 
 Below is a table of options for each theme bundled with MyST.
 
