@@ -4,19 +4,22 @@ short_title: Downloads & Static Files
 description: Add download links to your website on each page or project
 ---
 
-You can bundle files with your MyST site in two complementary ways, with different tradeoffs:
+MyST provides three independent mechanisms for bundling files with your site:
 
-- **Static files** (the [`project.static_files` option](#downloads:static-files)).
-  MyST copies the file into the build output at its original name, without hashing and without rendering a link by default.
-  Use these for files that need a stable, predictable URL at a known location (a `CNAME` for a custom domain, an image or asset file you want to reference in a different site, etc.
-- **Downloads** (the {myst:role}`download` role and [`downloads:` frontmatter](#download-link)).
-  MyST attaches the file to a page or project, renders a download link, and content-hashes the filename (e.g. `myfile.[HASH].png`) so downstream caches invalidate when the file changes.
-  Use these for files that are logically attached to a document - supplementary PDFs, datasets, example code, etc.
+- **`{download}` role** — an inline role used directly in content to create a download link at the point of use.
+  MyST content-hashes the filename (e.g. `myfile.[HASH].png`) so downstream caches invalidate when the file changes.
+  See [the `{download}` role section](#download-role).
+- **`downloads:` frontmatter** — page or project configuration that populates the page's download panel in the site UI (not inline in content).
+  Can reference local files, export IDs, or remote URLs.
+  See [the `downloads:` frontmatter section](#download-link).
+- **`project.static_files`** — copies files or folders into the build output at a stable, predictable URL, without hashing and without rendering any link.
+  Use this for files that must live at a known location (e.g. a `CNAME` file for a custom domain).
+  See [the static files section](#downloads:static-files).
 
-## Include a single file in the AST with the `{download}` role
+(download-role)=
+## Inline download links with the `{download}` role
 
-The {myst:role}`download` role takes a path to a file, and generates a download link from it.
-Such a role may be defined at the project or the page level.
+The {myst:role}`download` role takes a path to a file and generates an inline download link at that point in the content.
 
 For example:
 
@@ -61,12 +64,16 @@ Markdown links such as `[text](path/to/CNAME)` will produce a "file not found" w
 To suppress the warning, use an explicit URL path in your link (e.g. `[text](/CNAME)`), or use the {myst:role}`download` role to attach the file as a download link instead.
 :::
 
-:::{note} Want cache busting or a rendered download link?
-If you'd rather have MyST render the link and hash the filename for cache busting, use the {myst:role}`download` role or [downloads configuration](#download-link) instead.
+:::{note} Want cache busting or a rendered inline link?
+If you'd rather have MyST render the link inline and hash the filename for cache busting, use the {myst:role}`download` role instead.
+If you want the file to appear in the page's download panel rather than inline in content, use the [`downloads:` frontmatter](#download-link) instead.
 :::
 
 (download-link)=
-## Use project or page configuration to configure download links
+## Download panel with `downloads:` frontmatter
+
+The `downloads:` key in page or project frontmatter populates the **download panel** shown in the site UI (typically in the page toolbar).
+It is unrelated to the `{download}` role: `downloads:` configures a UI element, not inline content links.
 
 There are some special configuration fields to specify files that should be bundled for download with your site. These are:
 
