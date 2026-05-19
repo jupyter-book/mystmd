@@ -1,5 +1,11 @@
 # myst-execute
 
+## 0.3.5
+
+### Patch Changes
+
+- 72172ff: Await connection end for jupyter kernel
+
 ## 0.3.4
 
 ### Patch Changes
