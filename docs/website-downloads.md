@@ -6,7 +6,7 @@ description: Add download links to your website on each page or project
 
 You can bundle files with your MyST site in two complementary ways, with different tradeoffs:
 
-- **Static files** (the [`site.static_files` option](#downloads:static-files)).
+- **Static files** (the [`project.static_files` option](#downloads:static-files)).
   MyST copies the file into the build output at its original name, without hashing and without rendering a link by default.
   Use these for files that need a stable, predictable URL at a known location (a `CNAME` for a custom domain, an image or asset file you want to reference in a different site, etc.
 - **Downloads** (the {myst:role}`download` role and [`downloads:` frontmatter](#download-link)).
@@ -32,15 +32,15 @@ For example:
 (downloads:static-files)=
 ## Include static files with stable links
 
-Use the `site.static_files` option to copy files or folders into your build output.
+Use the `project.static_files` option to copy files or folders into your build output.
 This is useful when a file needs to keep a predictable name at a known location.
 
-To do so, add a list of paths under `site:` in your `myst.yml`:
+To do so, add a list of paths under `project:` in your `myst.yml`:
 
 ```{code-block} yaml
 :filename: myst.yml
 
-site:
+project:
   static_files:
     - path/to/CNAME # A file name, for example
     - path/to/assets # A folder name, for example
@@ -55,7 +55,13 @@ The behavior changes slightly based on whether you link to a file or a folder:
   As with files, parent directories are **not** preserved, but sub-folder contents are preserved.
   The folder and its contents end up at `_build/html/assets/...`.
 
-:::{note} Want cache busting or a rendered link?
+:::{note} Linking to static files from Markdown
+Static files are accessible by URL in the final build (e.g. `/CNAME`, `/assets/...`), but MyST does not resolve them as content pages.
+Markdown links such as `[text](path/to/CNAME)` will produce a "file not found" warning during the build.
+To suppress the warning, use an explicit URL path in your link (e.g. `[text](/CNAME)`), or use the {myst:role}`download` role to attach the file as a download link instead.
+:::
+
+:::{note} Want cache busting or a rendered download link?
 If you'd rather have MyST render the link and hash the filename for cache busting, use the {myst:role}`download` role or [downloads configuration](#download-link) instead.
 :::
 

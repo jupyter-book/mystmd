@@ -30,7 +30,6 @@ export type SiteConfig = SiteFrontmatter & {
   actions?: SiteAction[];
   domains?: string[];
   template?: string;
-  static_files?: string[];
 };
 
 export type SiteExport = {
@@ -83,6 +82,5 @@ export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
   domains?: string[];
   favicon?: string;
   template?: string;
-  static_files?: string[];
   parts?: FrontmatterParts;
 };

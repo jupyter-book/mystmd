@@ -78,7 +78,6 @@ export type ProcessProjectOptions = ProcessFileOptions & {
   reloadProject?: boolean;
   checkLinks?: boolean;
   strict?: boolean;
-  staticFiles?: string[];
 };
 
 export type ProcessSiteOptions = ProcessProjectOptions & SiteManifestOptions;
@@ -630,7 +629,11 @@ export async function processProject(
       }),
     );
     // Write all static files
-    const staticFiles = opts?.staticFiles ?? [];
+    const projectConfig = selectors.selectLocalProjectConfig(
+      session.store.getState(),
+      siteProject.path,
+    );
+    const staticFiles = projectConfig?.static_files ?? [];
     await Promise.all(
       staticFiles.map(async (fn) => {
         fs.copySync(fn, join(session.publicPath(), basename(fn)));
@@ -678,7 +681,6 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
         ...opts,
         imageWriteFolder: session.publicPath(),
         imageAltOutputFolder: '/',
-        staticFiles: siteConfig.static_files,
       }),
     ),
   );
