@@ -1,6 +1,6 @@
 {
   "name": "myst-cli",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Command line tools for MyST",
   "author": "Franklin Koch <franklin@curvenote.com>",
   "license": "MIT",
@@ -72,7 +72,7 @@
     "myst-cli-utils": "^2.0.14",
     "myst-common": "^1.9.5",
     "myst-config": "^1.9.5",
-    "myst-migrate": "^1.9.0",
+    "myst-migrate": "^1.9.1",
     "myst-execute": "^0.3.5",
     "myst-ext-button": "^0.0.1",
     "myst-ext-card": "^1.0.9",
