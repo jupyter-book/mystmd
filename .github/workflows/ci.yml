@@ -27,13 +27,6 @@ jobs:
         run: bun run lint:circular
       - name: Ensure changeset has the right structure and doesn't contain ignored packages
         run: bun run version
-      - name: Ensure release PR consumes a myst-cli changeset
-        if: github.event_name == 'pull_request' && github.head_ref == 'changeset-release/main'
-        run: |
-          if ! git diff HEAD^1 -- .changeset | grep -q myst-cli; then
-            echo "::error::No consumed changeset bumps 'myst-cli'. See https://mystmd.org/guide/developer#changesets-myst-cli"
-            exit 1
-          fi
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest

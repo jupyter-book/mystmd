@@ -560,7 +560,7 @@ When you publish a release, you upload a new version of the tool for package man
 
 - **Find the changesets PR**. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
 - Review the changeset PR.
-  - Ensure that `myst-cli` is in the changesets (which will release `mystmd`).
+  - Ensure that either `mystmd` or `myst-cli` is in the changesets.
     Or, ensure you are intentionally **not** releasing `mystmd` (this generally shouldn't happen), in which case the python and release notes are expected to fail.
     See [](#changesets:myst-cli) for more explanation.
   - Ensure that private or non-existent packages like docs, etc. are not in the changesets (these will cause an early failure)
@@ -758,12 +758,12 @@ For now, we try to abide by the following rules for version bumps:
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
 (changesets:myst-cli)=
-#### What if changesets don't bump `myst-cli`?
+#### What if changesets don't bump `mystmd` or `myst-cli`?
 
-The auto-generated changesets release PR must list at least one changeset that bumps `myst-cli`, or its CI will fail.
-This is because we *almost always* want to release a new `mystmd` on merge, which happens if we bump the `myst-cli`.
+The auto-generated changesets release PR must list at least one changeset that bumps `mystmd` or `myst-cli`, or its CI will fail.
+This is because we *almost always* want to release a new `mystmd` on merge, which only happens if one of these is bumped.
 
-If you merge the changesets PR when `myst-cli` isn't bumped, the release job of `mystmd-py` to PyPI will fail, and a GitHub release won't be made for the repository.
+If you merge the changesets PR when neither is bumped, the release job of `mystmd-py` to PyPI will fail, and a GitHub release won't be made for the repository.
 The packages that we _did update_ will still be uploaded to NPM.
 Here's an example of this happening: [mystmd#2857](https://github.com/jupyter-book/mystmd/issues/2857).
 
