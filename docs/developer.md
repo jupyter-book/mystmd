@@ -758,7 +758,7 @@ For now, we try to abide by the following rules for version bumps:
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
 
 (changesets:myst-cli)=
-#### What if changesets don't bump `mystmd` or `myst-cli`?
+#### What if changesets doesn't bump `mystmd` or `myst-cli`?
 
 The auto-generated changesets release PR must list at least one changeset that bumps `mystmd` or `myst-cli`, or its CI will fail.
 This is because we *almost always* want to release a new `mystmd` on merge, which only happens if one of these is bumped.
