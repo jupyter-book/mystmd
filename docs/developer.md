@@ -560,8 +560,9 @@ When you publish a release, you upload a new version of the tool for package man
 
 - **Find the changesets PR**. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
 - Review the changeset PR.
-  - Ensure that `myst-cli` is in the changesets - this will bump `mystmd` (see [](#changesets:myst-cli)).
-    CI will error if `myst-cli` isn't present - but if you still want to make a release and know what you're doing, go for it.
+  - Ensure that `myst-cli` is in the changesets (which will release `mystmd`).
+    Or, ensure you are intentionally **not** releasing `mystmd` (this generally shouldn't happen), in which case the python and release notes are expected to fail.
+    See [](#changesets:myst-cli) for more explanation.
   - Ensure that private or non-existent packages like docs, etc. are not in the changesets (these will cause an early failure)
   - Ensure that there are no **new** myst packages that need to be published (see [](#release:new-package))
 - **Merge the changesets PR**. After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).

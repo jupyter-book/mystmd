@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.9.1
+
+### Patch Changes
+
+- 7820852: Updates to myst-execute to await closing connections for jupyter kernels
+
 ## 1.9.0
 
 ### Minor Changes
