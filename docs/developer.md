@@ -560,7 +560,8 @@ When you publish a release, you upload a new version of the tool for package man
 
 - **Find the changesets PR**. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
 - Review the changeset PR.
-  - Ensure that `mystmd` is in the changesets. Or you are intentially **not** releasing `mystmd` (this generally shouldn't happen), in which case the python and release notes are expected to fail.
+  - Ensure that `myst-cli` is in the changesets - this will bump `mystmd` (see [](#changesets:myst-cli)).
+    CI will error if `myst-cli` isn't present - but if you still want to make a release and know what you're doing, go for it.
   - Ensure that private or non-existent packages like docs, etc. are not in the changesets (these will cause an early failure)
   - Ensure that there are no **new** myst packages that need to be published (see [](#release:new-package))
 - **Merge the changesets PR**. After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
@@ -754,6 +755,20 @@ For now, we try to abide by the following rules for version bumps:
 - **major**: Backward incompatible change to the underlying supported MyST data. These would be cases where a non-developer MyST user's project or site built with major version _N_ would not work with major version _N+1_. Currently, we never intentionally make these changes.
 - **minor**: Backward incompatible change to the JavaScript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
+
+(changesets:myst-cli)=
+#### What if changesets don't bump `myst-cli`?
+
+The auto-generated changesets release PR must list at least one changeset that bumps `myst-cli`, or its CI will fail.
+This is because we *almost always* want to release a new `mystmd` on merge, which happens if we bump the `myst-cli`.
+
+If you merge the changesets PR when `myst-cli` isn't bumped, the release job of `mystmd-py` to PyPI will fail, and a GitHub release won't be made for the repository.
+The packages that we _did update_ will still be uploaded to NPM.
+Here's an example of this happening: [mystmd#2857](https://github.com/jupyter-book/mystmd/issues/2857).
+
+**You can still merge the Changesets PR if you want!**
+If you intentionally don't want a `mystmd` bump on this release, override the failing check and merge the release PR anyway.
+NPM still publishes everything else, and the PyPI and GitHub release jobs are an expected failure with nothing to fix afterwards.
 
 ## Packages in the mystmd repository
 
