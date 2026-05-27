@@ -99,7 +99,14 @@ See [](./creating-word-documents.md) to learn about exporting to `*.docx`, for e
 
 ## Export to PDF with Latex
 
-To export to PDF with $\LaTeX$, first ensure it is installed, see [](./creating-pdf-documents.md) for more information.
+Before building PDF exports locally, make sure your environment has the external tools that MyST calls
+during the export:
+
+- **$\LaTeX$**: install a full $\LaTeX$ distribution before using the default PDF renderer. See
+  [](#install-latex) for setup guidance.
+- **ImageMagick**: install [ImageMagick](https://imagemagick.org/) if your document includes images
+  that need conversion for PDF output, such as animated GIFs or rasterized fallbacks for unsupported
+  formats. See [](./figures.md) for more on image format handling.
 
 First, we need to decide which template to export to, for this, we will use the `myst templates` command, and for example list all the two-column, PDF templates available.
 
