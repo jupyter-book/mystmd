@@ -167,7 +167,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   } finally {
     // Ensure that we shut-down the kernel
     if (!sessionConnection.isDisposed) {
-      sessionConnection.shutdown();
+      await sessionConnection.shutdown();
     }
   }
 }
