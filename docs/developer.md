@@ -398,6 +398,8 @@ No content or theme server is required for a static site build. Steps are:
 
 We'll use the mystmd docs site as an example.
 
+Under the hood, `mystmd build --html` starts myst-theme as a local Remix server, fetches each route as HTML, writes the results to disk, and runs a small post-processing pass (see [`packages/myst-cli/src/build/html/index.ts`](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/html/index.ts)).
+
 #### Build theme
 
 To build a static site against a local theme, the theme must be built as it would be for production. For that we will use the "make" target

@@ -1,3 +1,13 @@
+// Static-build HTML pipeline for MyST sites.
+//
+// The myst-theme (a separate repo) is the React/Remix app that renders MyST documents.
+// For a static build we spin myst-theme up as a local Remix server, fetch every route as fully-rendered HTML, and write the results to disk.
+// This file does that in `buildHtml`, plus a small post-processing pass (`rewriteAssetsFolder`) that:
+// - rewrites asset URLs
+// - injects an `/foo/index.html` -> `/foo/` redirect script
+//
+// The JS and CSS are produced by myst-theme.
+
 import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
