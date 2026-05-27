@@ -103,7 +103,7 @@ Before building PDF exports locally, make sure your environment has the external
 during the export:
 
 - **$\LaTeX$**: install a full $\LaTeX$ distribution before using the default PDF renderer. See
-  [](./creating-pdf-documents.md#install-latex) for setup guidance.
+  [](#install-latex) for setup guidance.
 - **ImageMagick**: install [ImageMagick](https://imagemagick.org/) if your document includes images
   that need conversion for PDF output, such as animated GIFs or rasterized fallbacks for unsupported
   formats. See [](./figures.md) for more on image format handling.
