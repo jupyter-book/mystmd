@@ -1,6 +1,7 @@
 import type { ServerConnection } from '@jupyterlab/services';
 import which from 'which';
 import { spawn } from 'node:child_process';
+import { createServer } from 'node:net';
 import * as readline from 'node:readline';
 import type { ISession, Logger } from 'myst-cli-utils';
 import { killProcessTree } from 'myst-cli-utils';
@@ -66,6 +67,26 @@ export async function findExistingJupyterServer(
 }
 
 /**
+ * Ask the OS for an unused TCP port. Used so concurrent invocations of
+ * jupyter execution don't race on the same default port (8888). This function
+ * 1. Opens a server and requests an unused port.
+ * 2. Tracks the port number.
+ * 3. Closes the server (so that port is released)
+ * 4. Returns the port number so we know it's just been made available.
+ * 
+ * We use that port in the Jupyter Server launch, so we are confident it is open.
+ */
+function pickUnusedPort(): Promise<number> {
+  return new Promise((resolve) => {
+    // By listening to port 0 it'll assign an open port, which we use later
+    const srv = createServer().listen(0, () => {
+      const { port } = srv.address() as { port: number };
+      srv.close(() => resolve(port));
+    });
+  });
+}
+
+/**
  * Launch a new Jupyter Server whose root directory coincides with the content path
  *
  * @param contentPath path to server contents
@@ -77,7 +98,18 @@ export async function launchJupyterServer(
 ): Promise<JupyterServerSettings> {
   log.info(`🚀 ${chalk.yellowBright('Starting new Jupyter server')}`);
   const pythonPath = which.sync('python');
-  const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
+  const port = await pickUnusedPort();
+  const proc = spawn(pythonPath, [
+    '-m',
+    'jupyter_server',
+    '--ServerApp.root_dir',
+    contentPath,
+    `--ServerApp.port=${port}`,
+    // Without this, jupyter silently rebinds to a different port if ours is taken.
+    // We later parse the port from stderr but it returns the *first* instance,
+    // so if the port has changed after a retry, we'll miss it. So fail eagerly instead.
+    '--ServerApp.port_retries=0',
+  ]);
 
   const reader = proc.stderr;
 
