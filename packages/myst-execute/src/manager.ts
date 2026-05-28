@@ -73,7 +73,7 @@ export async function findExistingJupyterServer(
  * 2. Tracks the port number.
  * 3. Closes the server (so that port is released)
  * 4. Returns the port number so we know it's just been made available.
- * 
+ *
  * We use that port in the Jupyter Server launch, so we are confident it is open.
  */
 function pickUnusedPort(): Promise<number> {

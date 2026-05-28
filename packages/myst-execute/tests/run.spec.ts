@@ -37,7 +37,9 @@ if (pythonPath === null) {
   throw new Error('python not found in PATH; install it to run myst-execute tests');
 }
 if (spawnSync(pythonPath, ['-c', 'import jupyter_server']).status !== 0) {
-  throw new Error('jupyter_server not found; run `pip install jupyter-server` to run myst-execute tests');
+  throw new Error(
+    'jupyter_server not found; run `pip install jupyter-server` to run myst-execute tests',
+  );
 }
 
 const only = '';
