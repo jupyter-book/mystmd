@@ -25,6 +25,8 @@ site:
     style: ./my-style.css
 ```
 
+If using page frontmatter, omit the `options:` key, see [](#site-options-page).
+
 For example, the style-sheet could contain styling for `em` elements nested below a particular `text-gradient` class:
 
 :::{literalinclude} public/style.css

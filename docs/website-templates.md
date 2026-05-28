@@ -118,6 +118,8 @@ getting-started/
 If both `getting-started.md` and `getting-started/index.md` exist, the sibling file takes the slug `getting-started` first, and the folder's index file gets a deduplicated slug like `getting-started-1`.
 :::
 
+(site-options-page)=
+
 ### Page Options
 
 Any option from `site.options` can be overridden per-page in the frontmatter under the `site` key.

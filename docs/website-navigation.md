@@ -136,6 +136,8 @@ site:
     hide_toc: true
 ```
 
+If using page frontmatter, omit the `options:` key, see [](#site-options-page).
+
 ### Edit the primary sidebar footer
 
 The "Made with MyST" branding at the bottom of the primary sidebar can be customized by providing a markdown file, e.g. `primary-sidebar-footer.md`, and adding the path to the `site.parts.toc_footer` configuration to your `myst.yml`:
@@ -191,6 +193,8 @@ site:
   options:
     hide_outline: true
 ```
+
+If using page frontmatter, omit the `options:` key, see [](#site-options-page).
 
 ### Make content expand to the right margin
 
