@@ -66,11 +66,11 @@ const math: Handler = (node, state) => {
   const tex = node.typst
     ? mathValue
     : mathValue
-        .replace(/\\label\{([^}]+)\}/g, (_, l) => {
-          labelFromTex = l;
+        .replace(/\\label\{([^}]+)\}/g, (_: string, l: string) => {
+          if (!labelFromTex) labelFromTex = l;
           return '';
         })
-        .replace(/\\(left|right)\s*(?!\{)([^\s\\]|\\[a-zA-Z]+|\\.)/g, '\\$1{$2}');
+        .replace(/\\(left|right)\s*(\\\||\|)/g, '\\$1{$2}');
   const { value, macros } = node.typst
     ? { value: tex, macros: undefined } // No conversion needed for typst
     : texToTypst(tex); // Convert LaTeX to Typst
@@ -100,7 +100,7 @@ const inlineMath: Handler = (node, state) => {
     ? mathValue
     : mathValue
         .replace(/\\label\{([^}]+)\}/g, '')
-        .replace(/\\(left|right)\s*(?!\{)([^\s\\]|\\[a-zA-Z]+|\\.)/g, '\\$1{$2}');
+        .replace(/\\(left|right)\s*(\\\||\|)/g, '\\$1{$2}');
   const { value, macros } = node.typst
     ? { value: tex, macros: undefined } // No conversion needed for typst
     : texToTypst(tex); // Convert LaTeX to Typst

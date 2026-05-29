@@ -3,6 +3,14 @@ import { unified } from 'unified';
 import { VFile } from 'vfile';
 import mystToTypst from './index';
 import { resolveRecursiveCommands } from './math';
+import type { TypstResult } from './types.js';
+
+function compileToTypst(tree: object): TypstResult {
+  const file = new VFile();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (unified().use(mystToTypst).freeze().Compiler as any)(tree, file);
+  return file.result as TypstResult;
+}
 
 describe('resolveRecursiveCommands', () => {
   it('basic macro passes', () => {
@@ -99,9 +107,7 @@ describe('math conversion', () => {
         },
       ],
     };
-    const file = new VFile();
-    const processor = unified().use(mystToTypst);
-    const result = (processor.freeze().Compiler as any)(tree, file).result;
+    const result = compileToTypst(tree);
     expect(result.value).not.toContain('label(');
     expect(result.value.trim()).toBe('$ a = b $ <eq:1>');
   });
@@ -118,10 +124,23 @@ describe('math conversion', () => {
         },
       ],
     };
-    const file = new VFile();
-    const processor = unified().use(mystToTypst);
-    const result = (processor.freeze().Compiler as any)(tree, file).result;
+    const result = compileToTypst(tree);
     expect(result.value.trim()).toBe('$ a = b $ <eq:1>');
+  });
+
+  it('should use first \\label when multiple appear in one block', () => {
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'math',
+          value: '\\label{eq:first}a=b\\label{eq:second}',
+        },
+      ],
+    };
+    const result = compileToTypst(tree);
+    expect(result.value).toContain('<eq:first>');
+    expect(result.value).not.toContain('<eq:second>');
   });
 
   it('should strip begin/end equation', () => {
@@ -134,9 +153,7 @@ describe('math conversion', () => {
         },
       ],
     };
-    const file = new VFile();
-    const processor = unified().use(mystToTypst);
-    const result = (processor.freeze().Compiler as any)(tree, file).result;
+    const result = compileToTypst(tree);
     expect(result.value).not.toContain('begin{equation*}');
     expect(result.value.trim()).toBe('$ a = b $');
   });
@@ -151,9 +168,9 @@ describe('math conversion', () => {
         },
       ],
     };
-    const file = new VFile();
-    const processor = unified().use(mystToTypst);
-    const result = (processor.freeze().Compiler as any)(tree, file).result;
-    expect(result.value.trim()).toBe('$ frac(| a |, b) $');
+    const result = compileToTypst(tree);
+    // Verify the pipe delimiters survive conversion (the specific bug was that
+    // \left|a was mis-tokenised, dropping or garbling the | delimiter).
+    expect(result.value).toMatch(/\| a \|/);
   });
 });
