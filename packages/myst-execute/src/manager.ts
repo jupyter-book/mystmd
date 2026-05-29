@@ -79,7 +79,7 @@ export async function findExistingJupyterServer(
 function pickUnusedPort(): Promise<number> {
   return new Promise((resolve) => {
     // By listening to port 0 it'll assign an open port, which we use later
-    const srv = createServer().listen(0, () => {
+    const srv = createServer().listen(0, '127.0.0.1', () => {
       const { port } = srv.address() as { port: number };
       srv.close(() => resolve(port));
     });
