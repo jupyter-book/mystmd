@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { unified } from 'unified';
 import { VFile } from 'vfile';
+import type { Root } from 'myst-spec';
 import mystToTypst from './index';
 import { resolveRecursiveCommands } from './math';
 import type { TypstResult } from './types.js';
 
 function compileToTypst(tree: object): TypstResult {
   const file = new VFile();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (unified().use(mystToTypst).freeze().Compiler as any)(tree, file);
+  unified().use(mystToTypst).stringify(tree as Root, file);
   return file.result as TypstResult;
 }
 
