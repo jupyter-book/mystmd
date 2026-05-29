@@ -636,6 +636,12 @@ export async function processProject(
     const staticFiles = projectConfig?.static_files ?? [];
     await Promise.all(
       staticFiles.map(async (fn) => {
+        if (!fs.existsSync(fn)) {
+          log.warn(
+            `Static file not found: "${fn}" (paths are resolved relative to the project root: ${siteProject.path})`,
+          );
+          return;
+        }
         fs.copySync(fn, join(session.publicPath(), basename(fn)));
       }),
     );

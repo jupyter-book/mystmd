@@ -200,6 +200,12 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
     if (!proj.path) continue;
     const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), proj.path);
     for (const fn of projectConfig?.static_files ?? []) {
+      if (!fs.existsSync(fn)) {
+        session.log.warn(
+          `Static file not found: "${fn}" (paths are resolved relative to the project root: ${proj.path})`,
+        );
+        continue;
+      }
       fs.copySync(fn, path.join(htmlDir, path.basename(fn)));
     }
   }
