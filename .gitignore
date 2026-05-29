@@ -46,3 +46,6 @@ yalc.lock
 
 # vim swap files
 *.swp
+
+# git worktrees
+worktrees/
