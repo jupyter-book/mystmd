@@ -555,6 +555,18 @@ cases:
         content: outputs/site-index-content.json
       - path: site-index/_build/site/content/index-1.json
         content: outputs/site-index-content-1.json
+  - title: Static files - project-level file and folder copied to site build
+    cwd: static-files
+    command: myst build --site
+    outputs:
+      - path: static-files/_build/site/public/project-asset.txt
+      - path: static-files/_build/site/public/assets/nested.txt
+  - title: Static files - project-level file and folder copied to html build
+    cwd: static-files-html
+    command: myst build --html
+    outputs:
+      - path: static-files-html/_build/html/project-asset.txt
+      - path: static-files-html/_build/html/assets/nested.txt
   - title: Hidden pages exist in html build
     cwd: hidden-pages
     command: myst build --html
