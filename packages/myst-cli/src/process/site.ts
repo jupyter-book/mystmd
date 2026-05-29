@@ -98,7 +98,6 @@ export function changeFile(session: ISession, path: string, eventType: string) {
   delete cache.$citationRenderers[path];
 }
 
-
 export async function writeSiteManifest(session: ISession, opts?: SiteManifestOptions) {
   const configPath = join(session.sitePath(), 'config.json');
   session.log.debug('Writing site config.json');
