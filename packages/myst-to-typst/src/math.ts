@@ -62,14 +62,23 @@ export function resolveRecursiveCommands(plugins: MathPlugins): MathPlugins {
 const math: Handler = (node, state) => {
   // Use typst value if available, otherwise convert LaTeX
   const mathValue = node.typst || node.value;
+  let labelFromTex: string | undefined;
+  const tex = node.typst
+    ? mathValue
+    : mathValue
+        .replace(/\\label\{([^}]+)\}/g, (_, l) => {
+          labelFromTex = l;
+          return '';
+        })
+        .replace(/\\(left|right)\s*(?!\{)([^\s\\]|\\[a-zA-Z]+|\\.)/g, '\\$1{$2}');
   const { value, macros } = node.typst
-    ? { value: mathValue, macros: undefined } // No conversion needed for typst
-    : texToTypst(node.value); // Convert LaTeX to Typst
+    ? { value: tex, macros: undefined } // No conversion needed for typst
+    : texToTypst(tex); // Convert LaTeX to Typst
 
   macros?.forEach((macro) => {
     state.useMacro(macro);
   });
-  const { identifier: label } = normalizeLabel(node.label) ?? {};
+  const { identifier: label } = normalizeLabel(node.label || labelFromTex) ?? {};
   addMacrosToState(value, state);
   state.ensureNewLine();
   // This resets the typst counter to match MyST numbering.
@@ -87,9 +96,14 @@ const math: Handler = (node, state) => {
 const inlineMath: Handler = (node, state) => {
   // Use typst value if available, otherwise convert LaTeX
   const mathValue = node.typst || node.value;
+  const tex = node.typst
+    ? mathValue
+    : mathValue
+        .replace(/\\label\{([^}]+)\}/g, '')
+        .replace(/\\(left|right)\s*(?!\{)([^\s\\]|\\[a-zA-Z]+|\\.)/g, '\\$1{$2}');
   const { value, macros } = node.typst
-    ? { value: mathValue, macros: undefined } // No conversion needed for typst
-    : texToTypst(node.value); // Convert LaTeX to Typst
+    ? { value: tex, macros: undefined } // No conversion needed for typst
+    : texToTypst(tex); // Convert LaTeX to Typst
 
   macros?.forEach((macro) => {
     state.useMacro(macro);

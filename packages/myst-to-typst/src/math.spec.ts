@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { unified } from 'unified';
+import { VFile } from 'vfile';
+import mystToTypst from './index';
 import { resolveRecursiveCommands } from './math';
 
 describe('resolveRecursiveCommands', () => {
@@ -82,5 +85,75 @@ describe('resolveRecursiveCommands', () => {
       '\\a': { macro: '\\a5' },
       '\\b': { macro: '\\b5' },
     });
+  });
+});
+
+describe('math conversion', () => {
+  it('should not produce label(...) inside math', () => {
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'math',
+          value: '\\begin{equation}\n\\label{eq:1}\na=b\n\\end{equation}',
+        },
+      ],
+    };
+    const file = new VFile();
+    const processor = unified().use(mystToTypst);
+    const result = (processor.freeze().Compiler as any)(tree, file).result;
+    expect(result.value).not.toContain('label(');
+    expect(result.value.trim()).toBe('$ a = b $ <eq:1>');
+  });
+
+  it('should handle label correctly if provided in node', () => {
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'math',
+          value: 'a=b',
+          label: 'eq:1',
+          identifier: 'eq-1',
+        },
+      ],
+    };
+    const file = new VFile();
+    const processor = unified().use(mystToTypst);
+    const result = (processor.freeze().Compiler as any)(tree, file).result;
+    expect(result.value.trim()).toBe('$ a = b $ <eq:1>');
+  });
+
+  it('should strip begin/end equation', () => {
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'math',
+          value: '\\begin{equation*}\na=b\n\\end{equation*}',
+        },
+      ],
+    };
+    const file = new VFile();
+    const processor = unified().use(mystToTypst);
+    const result = (processor.freeze().Compiler as any)(tree, file).result;
+    expect(result.value).not.toContain('begin{equation*}');
+    expect(result.value.trim()).toBe('$ a = b $');
+  });
+
+  it('should fix issue #2876: \\left|a\\right|', () => {
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'math',
+          value: '\\dfrac{\\left|a\\right|}{b}',
+        },
+      ],
+    };
+    const file = new VFile();
+    const processor = unified().use(mystToTypst);
+    const result = (processor.freeze().Compiler as any)(tree, file).result;
+    expect(result.value.trim()).toBe('$ frac(| a |, b) $');
   });
 });
