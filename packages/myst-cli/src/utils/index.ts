@@ -1,4 +1,5 @@
 export * from './addWarningForFile.js';
+export * from './copyStaticFiles.js';
 export * from './check.js';
 export * from './createTempFolder.js';
 export * from './defined.js';

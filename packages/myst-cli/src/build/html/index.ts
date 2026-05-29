@@ -10,6 +10,7 @@ import { slugToUrl } from 'myst-common';
 import pLimit from 'p-limit';
 import { fetchWithRetry } from '../../utils/fetchWithRetry.js';
 import { selectors } from '../../store/index.js';
+import { copyStaticFiles } from '../../utils/copyStaticFiles.js';
 import type { LocalProjectPage } from '../../project/types.js';
 
 const limitConnections = pLimit(5);
@@ -199,15 +200,7 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   for (const proj of siteConfig?.projects ?? []) {
     if (!proj.path) continue;
     const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), proj.path);
-    for (const fn of projectConfig?.static_files ?? []) {
-      if (!fs.existsSync(fn)) {
-        session.log.warn(
-          `Static file not found: "${fn}" (paths are resolved relative to the project root: ${proj.path})`,
-        );
-        continue;
-      }
-      fs.copySync(fn, path.join(htmlDir, path.basename(fn)));
-    }
+    copyStaticFiles(session, projectConfig?.static_files ?? [], htmlDir, proj.path);
   }
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
   fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));

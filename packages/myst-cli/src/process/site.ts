@@ -39,6 +39,7 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
 import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
+import { copyStaticFiles } from '../utils/copyStaticFiles.js';
 import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
@@ -96,6 +97,7 @@ export function changeFile(session: ISession, path: string, eventType: string) {
   delete cache.$mdast[path];
   delete cache.$citationRenderers[path];
 }
+
 
 export async function writeSiteManifest(session: ISession, opts?: SiteManifestOptions) {
   const configPath = join(session.sitePath(), 'config.json');
@@ -634,17 +636,7 @@ export async function processProject(
       siteProject.path,
     );
     const staticFiles = projectConfig?.static_files ?? [];
-    await Promise.all(
-      staticFiles.map(async (fn) => {
-        if (!fs.existsSync(fn)) {
-          log.warn(
-            `Static file not found: "${fn}" (paths are resolved relative to the project root: ${siteProject.path})`,
-          );
-          return;
-        }
-        fs.copySync(fn, join(session.publicPath(), basename(fn)));
-      }),
-    );
+    copyStaticFiles(session, staticFiles, session.publicPath(), siteProject.path);
     await Promise.all(
       pages.map(async (page) => {
         return writeFile(session, {
