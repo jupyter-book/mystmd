@@ -6,15 +6,15 @@ description: Add download links to your website on each page or project
 
 MyST provides three independent mechanisms for bundling files with your site:
 
+- **`project.static_files`** — copies files or folders into the build output at a stable, predictable URL, without hashing and without rendering any link.
+  Use this for files that must live at a known location (e.g. a `CNAME` file for a custom domain).
+  See [the static files section](#downloads:static-files).
 - **`{download}` role** — an inline role used directly in content to create a download link at the point of use.
   MyST content-hashes the filename (e.g. `myfile.[HASH].png`) so downstream caches invalidate when the file changes.
   See [the `{download}` role section](#download-role).
 - **`downloads:` frontmatter** — page or project configuration that populates the page's download panel in the site UI (not inline in content).
   Can reference local files, export IDs, or remote URLs.
   See [the `downloads:` frontmatter section](#download-link).
-- **`project.static_files`** — copies files or folders into the build output at a stable, predictable URL, without hashing and without rendering any link.
-  Use this for files that must live at a known location (e.g. a `CNAME` file for a custom domain).
-  See [the static files section](#downloads:static-files).
 
 (download-role)=
 ## Inline download links with the `{download}` role
