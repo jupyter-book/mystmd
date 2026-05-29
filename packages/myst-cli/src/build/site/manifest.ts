@@ -149,7 +149,7 @@ export async function localToManifestProject(
   const parts = resolveFrontmatterParts(session, projFrontmatter);
   const banner = await transformBanner(
     session,
-    path.join(projectPath, 'myst.yml'),
+    projConfigFile ?? path.join(projectPath, 'myst.yml'),
     projFrontmatter,
     session.publicPath(),
     { altOutputFolder: '/', webp: true },
@@ -157,7 +157,7 @@ export async function localToManifestProject(
   const thumbnail = await transformThumbnail(
     session,
     null,
-    path.join(projectPath, 'myst.yml'),
+    projConfigFile ?? path.join(projectPath, 'myst.yml'),
     projFrontmatter,
     session.publicPath(),
     { altOutputFolder: '/', webp: true },
