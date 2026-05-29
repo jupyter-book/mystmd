@@ -218,7 +218,8 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   const hasThebe = siteUsesThebe(session);
   fs.copySync(templateBuildDir, htmlDir, {
     filter: (src) =>
-      hasThebe || !path.basename(src).match(/^(\d+\.)?(thebe-(core|lite)(\.min)?\.js|thebe-core.*\.css)$/),
+      hasThebe ||
+      !path.basename(src).match(/^(\d+\.)?(thebe-(core|lite)(\.min)?\.js|thebe-core.*\.css)$/),
   });
 
   // Copy all of the static assets
