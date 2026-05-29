@@ -97,11 +97,22 @@ mamba 1.5.8
 conda 24.7.1
 ```
 
-🛠 Install `texlive-core` and `latexmk` from `conda-forge`:
+🛠 Install `texlive-core`, `latexmk`, and `imagemagick` from `conda-forge`:
 
 ```shell
-$ mamba install -c conda-forge texlive-core latexmk
+$ mamba install -c conda-forge texlive-core latexmk imagemagick
 ```
+
+`imagemagick` is optional, but recommended if your documents include images that need conversion for PDF output.
 
 ::::
 :::::
+
+If you maintain a shared JupyterHub or other managed environment, install the PDF export tools into the user environment rather than expecting users to add them one-by-one. A minimal environment for MyST PDF exports should include:
+
+- `mystmd`
+- a working $\LaTeX$ distribution, such as `texlive-core` from `conda-forge`
+- `latexmk`
+- `imagemagick` for image conversion when documents include formats that need conversion for PDF output
+
+For Debian or Ubuntu based images, the equivalent system packages commonly include `texlive-xetex`, `texlive-fonts-recommended`, `texlive-plain-generic`, `latexmk`, and `imagemagick`.
