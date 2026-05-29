@@ -8,7 +8,9 @@ import type { TypstResult } from './types.js';
 
 function compileToTypst(tree: object): TypstResult {
   const file = new VFile();
-  unified().use(mystToTypst).stringify(tree as Root, file);
+  unified()
+    .use(mystToTypst)
+    .stringify(tree as Root, file);
   return file.result as TypstResult;
 }
 
