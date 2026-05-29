@@ -70,9 +70,10 @@ id (string, required)
 : The preferred form of IDs is `snake_case` identifiers.
 
 type:
-: One of `boolean`, `string`, `choice`, `frontmatter`
-: If the type is `frontmatter` then the ID must be included in\
-`title`, `description`, `authors`, `short_title`, or `keywords`
+: One of `boolean`, `string`, `number`, `choice`, or `file`.
+: Use `options` for values that are specific to your template. Use [`doc`](#template-doc)
+  for standard MyST frontmatter fields such as `title`, `description`, `authors`,
+  `short_title`, or `keywords`.
 
 title (string, optional)
 : The title of the property to show in user interfaces
@@ -98,7 +99,9 @@ default
 
 ## Template Document
 
-The template `doc` lists the [frontmatter](../../../docs/frontmatter.md) options that are required for or used by the template. These can have a `required` field (boolean) as well as an optional `description`.
+The template `doc` lists the [frontmatter](../../../docs/frontmatter.md) fields that are required for or used by the template. These can have a `required` field (boolean) as well as an optional `description`.
+
+Add fields to `doc` when the template needs normal document metadata. Those values come from the page or project frontmatter and are available in `template.tex` on the `doc` object. For example, a template that renders the article title and keywords can declare:
 
 ```yaml
 doc:
@@ -109,6 +112,20 @@ doc:
       Include from three to ten pertinent keywords specific to the article; yet
       reasonably common within the subject discipline.
 ```
+
+Then use the fields from `doc` in the template:
+
+```latex
+[# if doc.title #]
+\title{[- doc.title -]}
+[# endif #]
+
+[# if doc.keywords #]
+\keywords{[- doc.keywords | join(', ') -]}
+[# endif #]
+```
+
+Use `options` instead when you need a template-specific setting that is not part of MyST frontmatter, such as paper size, anonymous review mode, or a journal-specific formatting choice.
 
 (template-parts)=
 
