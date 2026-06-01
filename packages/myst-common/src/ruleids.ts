@@ -102,6 +102,7 @@ export enum RuleId {
   pluginLoads = 'plugin-loads',
   // Container rules
   containerChildrenValid = 'container-children-valid',
+  alternativesChildrenValid = 'alternatives-children-valid',
   // File rules
   mystJsonValid = 'myst-json-valid',
   // Execution
@@ -222,6 +223,7 @@ export const RULE_ID_DESCRIPTIONS: Record<RuleId, string> = {
   [RuleId.pluginLoads]: 'Plugin loads and executes without errors',
   // Container rules
   [RuleId.containerChildrenValid]: 'Container has valid child elements',
+  [RuleId.alternativesChildrenValid]: 'Container has valid child elements',
   // File rules
   [RuleId.mystJsonValid]: 'MyST JSON file is valid',
   [RuleId.codeCellExecutes]: 'Code cell executes without errors',

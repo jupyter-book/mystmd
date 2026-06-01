@@ -30,6 +30,7 @@ import {
   checkLinkTextTransform,
   indexIdentifierPlugin,
   buildTocTransform,
+  validateAlternativesPlugin,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -210,7 +211,8 @@ export async function transformMdast(
       firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
     })
     .use(inlineMathSimplificationPlugin, { replaceSymbol: false })
-    .use(mathPlugin, { macros: frontmatter.math });
+    .use(mathPlugin, { macros: frontmatter.math })
+    .use(validateAlternativesPlugin);
   // Load custom transform plugins
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
