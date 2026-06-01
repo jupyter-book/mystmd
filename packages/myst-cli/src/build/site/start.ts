@@ -202,7 +202,8 @@ async function tryStartAppServer(
         getProcess(proc) {
           appServer.process = proc;
           proc.on('exit', (code) => {
-            if (!started) reject(new Error(`App server exited (code ${code}) before becoming ready`));
+            if (!started)
+              reject(new Error(`App server exited (code ${code}) before becoming ready`));
           });
         },
       },
