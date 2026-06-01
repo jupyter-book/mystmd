@@ -25,6 +25,11 @@ export interface SiteAction {
 }
 
 export type SiteConfig = SiteFrontmatter & {
+  /**
+   * Multiple projects per site is deprecated; a site maps 1:1 to a project.
+   * See https://github.com/jupyter-book/mystmd/issues/1103
+   * TODO: Clean up the `projects` API to clarify that it's only one allowed.
+   */
   projects?: SiteProject[];
   nav?: SiteNavItem[];
   actions?: SiteAction[];
@@ -76,6 +81,11 @@ export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
   version: number;
   myst: string;
   id?: string;
+  /**
+   * Multiple projects per site is deprecated; a site maps 1:1 to a project.
+   * See https://github.com/jupyter-book/mystmd/issues/1103
+   * TODO: Clean up the `projects` API to clarify that it's only one allowed.
+   */
   projects?: ManifestProject[];
   nav?: SiteNavItem[];
   actions?: SiteAction[];
