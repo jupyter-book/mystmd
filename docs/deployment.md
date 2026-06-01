@@ -56,23 +56,11 @@ which will serve a static version of the site.
 :::{danger} Static sites should have an `index.html`
 :class: dropdown
 
-Your site should be configured with a single project at the root, this can be done by removing the `site.projects` list so that the site builds at the root url, rather than in a nested folder.
+A static site needs an `index.html` at its root.
+MyST generates one automatically when your site has a single project built at the root URL, which is the default.
 
-If your project is configured to be in a nested folder using a project `slug`, a site index will _not_ be created and your project will be instead accessible at a nested slug.
-
-To fix this, change your `site` configuration to use a flat rather than nested project:
-
-```yaml
-version: 1
-# Your project must be listed in the same myst.yml configuration
-project: ...
-site:
-  title: Site Title
-  # Delete the following `site.projects` configuration:
-  # projects:
-  #   - slug: nested-folder
-  #     path: .
-```
+If a root `index.html` is _not_ generated, your project is being built under a nested URL instead of at the root.
+You're probably using the [deprecated `projects:` configuration](#multiple-projects-deprecated), and should remove it.
 
 :::
 

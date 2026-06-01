@@ -154,6 +154,15 @@ The behavior of each frontmatter field is hard-coded within MyST. These are the 
 
 +++
 
+(multiple-projects-deprecated)=
+
+:::{warning} Combining multiple projects in one site is deprecated
+A MyST site maps one-to-one to a single project.
+
+Historically, the `site.projects` list could combine several projects under one site, each mounted at its own URL slug.
+This is deprecated.
+:::
+
 (composing-myst-yml)=
 
 ## Compose and extend configuration `.yml` files
