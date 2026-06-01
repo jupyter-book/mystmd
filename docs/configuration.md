@@ -154,6 +154,37 @@ The behavior of each frontmatter field is hard-coded within MyST. These are the 
 
 +++
 
+(site-multiple-projects)=
+
+## Sites with multiple projects
+
+A MyST site is built from a single `site:` configuration combined with one or more projects.
+By default your site has a single project at its root, so most sites never need to think about this.
+
+To combine several projects into one site, list them under `site.projects` in your top-level `myst.yml`.
+Each entry has a `slug`, which becomes that project's URL prefix, and a `path` to the folder that contains it:
+
+```{code-block} yaml
+:filename: myst.yml
+version: 1
+site:
+  title: My research group
+  projects:
+    - slug: lab-notes
+      path: lab-notes
+    - slug: 2024-paper
+      path: papers/2024
+```
+
+Each listed folder must contain its own `myst.yml` with a `project:` section.
+That is where the project's frontmatter lives, such as its `title` and `authors`.
+
+:::{important} Projects do not inherit from one another
+Frontmatter does not cascade between projects.
+A page inherits frontmatter only from its own project, never from the top-level `myst.yml` or from a sibling project.
+To share values across projects, use the [`extends:` key](#composing-myst-yml) to pull a common configuration file into each one.
+:::
+
 (composing-myst-yml)=
 
 ## Compose and extend configuration `.yml` files

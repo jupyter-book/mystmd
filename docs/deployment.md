@@ -57,6 +57,7 @@ which will serve a static version of the site.
 :class: dropdown
 
 Your site should be configured with a single project at the root, this can be done by removing the `site.projects` list so that the site builds at the root url, rather than in a nested folder.
+See [sites with multiple projects](#site-multiple-projects) for how that list works.
 
 If your project is configured to be in a nested folder using a project `slug`, a site index will _not_ be created and your project will be instead accessible at a nested slug.
 
