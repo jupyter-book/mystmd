@@ -325,6 +325,12 @@ cases:
         content: url-folders/outputs/myst.xref.json
       - path: url-folders/_build/site/content/my-proj/readme.json
         content: url-folders/outputs/readme.json
+  - title: Site with multiple projects builds each under its own slug
+    cwd: multiproject
+    command: myst build --site
+    outputs:
+      - path: multiproject/_build/site/content/proj-a/index.json
+      - path: multiproject/_build/site/content/proj-b/index.json
   - title: Multi page project with no numbering specified
     cwd: multi-page-typ-site
     command: myst build --all

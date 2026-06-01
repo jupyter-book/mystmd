@@ -1,0 +1,8 @@
+version: 1
+site:
+  template: ../templates/site/myst/book-theme
+  projects:
+    - slug: proj-a
+      path: proj-a
+    - slug: proj-b
+      path: proj-b
