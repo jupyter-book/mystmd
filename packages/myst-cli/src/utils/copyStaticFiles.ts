@@ -1,4 +1,4 @@
-import { basename, join } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import fs from 'fs-extra';
 import type { ISession } from '../session/types.js';
 
@@ -9,12 +9,13 @@ export function copyStaticFiles(
   projectPath: string,
 ) {
   for (const fn of staticFiles) {
-    if (!fs.existsSync(fn)) {
+    const resolvedFn = resolve(projectPath, fn);
+    if (!fs.existsSync(resolvedFn)) {
       session.log.warn(
         `Static file not found: "${fn}" (paths are resolved relative to the project root: ${projectPath})`,
       );
       continue;
     }
-    fs.copySync(fn, join(destDir, basename(fn)));
+    fs.copySync(resolvedFn, join(destDir, basename(resolvedFn)));
   }
 }
