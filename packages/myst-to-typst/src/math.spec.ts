@@ -99,21 +99,6 @@ describe('resolveRecursiveCommands', () => {
 });
 
 describe('math conversion', () => {
-  it('should not produce label(...) inside math', () => {
-    const tree = {
-      type: 'root',
-      children: [
-        {
-          type: 'math',
-          value: '\\begin{equation}\n\\label{eq:1}\na=b\n\\end{equation}',
-        },
-      ],
-    };
-    const result = compileToTypst(tree);
-    expect(result.value).not.toContain('label(');
-    expect(result.value.trim()).toBe('$ a = b $ <eq:1>');
-  });
-
   it('should handle label correctly if provided in node', () => {
     const tree = {
       type: 'root',
@@ -128,21 +113,6 @@ describe('math conversion', () => {
     };
     const result = compileToTypst(tree);
     expect(result.value.trim()).toBe('$ a = b $ <eq:1>');
-  });
-
-  it('should use first \\label when multiple appear in one block', () => {
-    const tree = {
-      type: 'root',
-      children: [
-        {
-          type: 'math',
-          value: '\\label{eq:first}a=b\\label{eq:second}',
-        },
-      ],
-    };
-    const result = compileToTypst(tree);
-    expect(result.value).toContain('<eq:first>');
-    expect(result.value).not.toContain('<eq:second>');
   });
 
   it('should strip begin/end equation', () => {
