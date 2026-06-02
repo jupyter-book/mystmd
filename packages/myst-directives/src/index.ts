@@ -10,6 +10,7 @@ import { includeDirective } from './include.js';
 import { indexDirective, genIndexDirective } from './indices.js';
 import { csvTableDirective, tableDirective, listTableDirective } from './table.js';
 import { asideDirective } from './aside.js';
+import { abbreviationsDirective } from './abbreviations.js';
 import { glossaryDirective } from './glossary.js';
 import { mathDirective } from './math.js';
 import { mdastDirective } from './mdast.js';
@@ -39,6 +40,7 @@ export const defaultDirectives = [
   tableDirective,
   listTableDirective,
   asideDirective,
+  abbreviationsDirective,
   glossaryDirective,
   mathDirective,
   mdastDirective,
@@ -65,6 +67,7 @@ export { includeDirective } from './include.js';
 export { indexDirective, genIndexDirective } from './indices.js';
 export { csvTableDirective, listTableDirective, tableDirective } from './table.js';
 export { asideDirective } from './aside.js';
+export { abbreviationsDirective } from './abbreviations.js';
 export { mathDirective } from './math.js';
 export { mdastDirective } from './mdast.js';
 export { mermaidDirective } from './mermaid.js';

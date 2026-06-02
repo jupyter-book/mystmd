@@ -1,0 +1,11 @@
+version: 1
+project:
+  title: Abbreviations Directive Sample
+  abbreviations:
+    API: Application Programming Interface
+    CLI: Command Line Interface
+    MyST: Markedly Structured Text
+    SHRILL: null
+  toc:
+    - file: index.md
+    - file: page.md
