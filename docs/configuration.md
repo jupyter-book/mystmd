@@ -156,11 +156,11 @@ The behavior of each frontmatter field is hard-coded within MyST. These are the 
 
 (multiple-projects-deprecated)=
 
-:::{warning} Combining multiple projects in one site is deprecated
+:::{warning} Multiple projects in one `myst.yml` site has been deprecated
 A MyST site maps one-to-one to a single project.
 
-Historically, the `site.projects` list could combine several projects under one site, each mounted at its own URL slug.
-This is deprecated.
+Historically, the `site.projects` list could combine several projects under one site, each mounted at its own URL slug. This is deprecated due to development complexity, and we encourage composing multiple MyST sites at a higher level (e.g. DNS, file system or through custom web-applications).
+You can combine multiple projects by deploying multiple myst sites next to each other, for example, using GitHub pages or web-based routing. A worked example, which is used in the Jupyter Book documentation deployment can be [found here](https://jupyterbook.org/blog/posts/2026/multi-repo).
 :::
 
 (composing-myst-yml)=
