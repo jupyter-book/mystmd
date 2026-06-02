@@ -99,7 +99,7 @@ default
 
 ## Template Document
 
-The template `doc` lists the [frontmatter](../../../docs/frontmatter.md) fields that are required for or used by the template. These can have a `required` field (boolean) as well as an optional `description`.
+The template `doc` lists the [frontmatter](https://mystmd.org/guide/frontmatter) fields that are required for or used by the template. These can have a `required` field (boolean) as well as an optional `description`.
 
 Add fields to `doc` when the template needs normal document metadata. Those values come from the page or project frontmatter and are available in `template.tex` on the `doc` object. For example, a template that renders the article title and keywords can declare:
 
