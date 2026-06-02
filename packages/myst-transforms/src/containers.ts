@@ -23,6 +23,7 @@ const SUBFIGURE_TYPES = [
   'table',
   'code',
   'output',
+  'card',
   'anywidget',
 ];
 
@@ -198,7 +199,7 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
         {
           node: container,
           ruleId: RuleId.containerChildrenValid,
-          note: 'Valid content types include image, referenced notebook cell, table, code, iframe, subfigure, anywidget',
+          note: 'Valid content types include image, referenced notebook cell, table, code, cards, iframe, subfigure, anywidget',
         },
       );
     }
