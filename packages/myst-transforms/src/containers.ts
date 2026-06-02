@@ -23,7 +23,7 @@ const SUBFIGURE_TYPES = [
   'table',
   'code',
   'output',
-  'card'
+  'card',
   'anywidget',
 ];
 
