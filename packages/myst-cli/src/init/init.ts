@@ -205,5 +205,5 @@ export async function init(session: ISession, opts: InitOptions) {
     );
     process.exit(0);
   }
-  await startServer(session, {});
+  return await startServer(session, {});
 }

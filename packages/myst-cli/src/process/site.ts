@@ -46,6 +46,7 @@ import type { TransformFn } from './mdast.js';
 import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
 import { SPEC_VERSION } from '../spec-version.js';
+import { cpus } from 'node:os';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -544,7 +545,6 @@ export async function processProject(
     execute,
     maxSizeWebp,
     checkLinks,
-    strict,
   } = opts || {};
   if (!siteProject.path) {
     const slugSuffix = siteProject.slug ? `: ${siteProject.slug}` : '';
@@ -596,13 +596,14 @@ export async function processProject(
       }),
     ),
   );
+
   const pageReferenceStates = selectPageReferenceStates(session, pagesToTransform);
   // Handle all cross references
   await Promise.all(
     pagesToTransform.map((page) =>
       postProcessMdast(session, {
         file: page.file,
-        checkLinks: checkLinks || strict,
+        checkLinks,
         pageReferenceStates,
         extraLinkTransformers,
         site: true,
@@ -680,7 +681,12 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
             const buildWarnings = selectors.selectFileWarnings(session.store.getState(), page.file);
             if (!buildWarnings || buildWarnings.length === 0) return [0, 0];
             const resp = buildWarnings
-              .map(({ message, kind }) => chalk[kind === 'error' ? 'red' : 'yellow'](message))
+              .map(({ message, kind }) => {
+                const isError = kind === 'error';
+                const color = isError ? 'red' : 'yellow';
+                const icon = isError ? '⛔' : '⚠️ ';
+                return chalk[color](`${icon} ${message}`);
+              })
               .join('\n  - ');
             session.log.info(`\n${page.file}\n  - ${resp}\n`);
             return [

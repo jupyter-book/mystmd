@@ -1,5 +1,35 @@
 # myst-directives
 
+## 1.7.2
+
+## 1.7.1
+
+### Patch Changes
+
+- a5b550d: Allow code-cell directive to use code options
+
+## 1.7.0
+
+### Minor Changes
+
+- 7b989d4: Adding the MyST widget directive (AnyWidget compatible)
+
+### Patch Changes
+
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+
+## 1.6.5
+
+## 1.6.4
+
+### Patch Changes
+
+- myst-common@1.9.4
+- myst-spec-ext@1.9.4
+
 ## 1.6.3
 
 ### Patch Changes
@@ -336,7 +366,6 @@
   This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
 
   Addresses:
-
   - https://github.com/jupyter-book/mystmd/pull/748
   - https://github.com/jupyter-book/mystmd/issues/816
 

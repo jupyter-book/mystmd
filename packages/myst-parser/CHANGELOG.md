@@ -1,5 +1,52 @@
 # myst-parser
 
+## 1.7.2
+
+### Patch Changes
+
+- e8803fc: Exclude a few more TLDs from linkify
+  - myst-roles@1.7.2
+  - myst-directives@1.7.2
+
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [a5b550d]
+  - myst-directives@1.7.1
+  - myst-roles@1.7.1
+
+## 1.7.0
+
+### Patch Changes
+
+- Updated dependencies [9355519]
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+- Updated dependencies [e78417e]
+  - markdown-it-myst@1.0.16
+  - myst-directives@1.7.0
+  - myst-common@1.9.5
+  - myst-roles@1.7.0
+
+## 1.6.5
+
+### Patch Changes
+
+- Updated dependencies [bc240a8]
+  - markdown-it-myst@1.0.15
+  - myst-roles@1.6.5
+  - myst-directives@1.6.5
+
+## 1.6.4
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - myst-roles@1.6.4
+  - myst-common@1.9.4
+  - myst-directives@1.6.4
+
 ## 1.6.3
 
 ### Patch Changes

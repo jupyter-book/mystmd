@@ -26,6 +26,7 @@ Other themes may have slightly different structure.
 - **[Primary sidebar](#navigation:sidebar-primary)**: Cross-page navigation defined in the [Table of Contents](./table-of-contents.md).
 - **[Content window](#navigation:content-window)**: Contains content and metadata for the current page.
 - **[Secondary sidebar](#navigation:sidebar-secondary)**: Contains in-page navigation and links.
+- **[Banner](#navigation:banner)** Adds a bar above the header.
 - **[Footer](#navigation:footer)**: (work in progress) Contains more in-depth site navigation.
 
 (navigation:header)=
@@ -161,9 +162,18 @@ See [](./frontmatter.md) for many kinds of metadata that configure this section.
 
 If you've added [`github` MyST frontmatter](#table-frontmatter), the MyST themes will display an "Edit this page" link for your page. This link will take the user directly to GitHub's editing interface for the given page.
 
-To override this behavior and set a manual edit URL, use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
+**Manually set the edit URL**: use the `edit_url` field in [MyST frontmatter](#table-frontmatter).
 
-To disable the `Edit this page` button, set the value of `edit_url` to `null`.
+**Disable the `Edit this page` button**: set the value of `edit_url` to `null`.
+
+
+**MyST will attempt to automatically detect the base branch to use** (e.g., `main`). Our goal is to detect the default branch that a pull request, CI/CD build, etc likely came from. Here's the rough logic we follow when doing so:
+
+1. **`GITHUB_BASE_REF`** environment variable (set automatically by GitHub Actions in pull request builds)
+2. **`origin/HEAD`** via git (points to the remote's default branch)
+3. **Fallback to `main`** if detection fails (e.g., in shallow clones)
+
+If you need to override the branch, set `edit_url` explicitly in the frontmatter for each page.
 
 (navigation:sidebar-secondary)=
 
@@ -202,11 +212,39 @@ Yes it will!
 
 You could also attach the CSS class to a [content block](./blocks.md).
 
+(navigation:banner)=
+
+## Banner
+
+Add a site wide banner at the top of each page by using [site "parts"](#parts:site).
+Add a banner to your `myst.yml` like so:
+
+```{code} yaml
+:filename: myst.yml
+site:
+  parts:
+    banner: banner.md
+```
+
+or use text directly.
+
+```{code} yaml
+:filename: myst.yml
+site:
+  parts:
+    banner: Updates will be released soon!
+```
+
+The contents of `banner.md` will be rendered at the very top of each page, users can dismiss it by clicking the X button. The banner will only appear again when the cache is cleared.
+
+
+
+
 (navigation:footer)=
 
 ## Footer
 
-Add a site-wide footer by using [site "parts"](#parts:site). 
+Add a site-wide footer by using [site "parts"](#parts:site).
 Add a footer part to your `myst.yml` like so:
 
 ```{code} yaml
@@ -217,6 +255,17 @@ site:
 ```
 
 The contents of `footer.md` will be rendered at the bottom of each page.
+
+You can also specify a URL to a remote markdown file:
+
+```{code} yaml
+:filename: myst.yml
+site:
+  parts:
+    footer: https://example.com/shared-footer.md
+```
+
+This is useful for sharing footer content across multiple MyST sites.
 
 :::{seealso} More ways to configure footer content
 See [site "parts" configuration](#parts:site) for more ways you can configure site parts to add a footer.

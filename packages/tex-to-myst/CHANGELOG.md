@@ -1,5 +1,21 @@
 # tex-to-myst
 
+## 1.0.46
+
+### Patch Changes
+
+- 2b2177f: Fix \string macro leaking its name into image filenames in tex-to-myst.
+  Remove quotes when reading filenames from includegraphics.
+
+## 1.0.45
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+  - myst-spec-ext@1.9.4
+
 ## 1.0.44
 
 ### Patch Changes
@@ -352,7 +368,6 @@
 - fb4cb203: Ensure spaces are picked up after macros
 - 3980b6ff: Ensure there is no space before ~
 - 417efdc9: Add `algorithm` and `algorithmic` handlers for latex parsing
-
   - Figures: Environment centering
   - newtheorem in frontmatter is parsed
   - safely ignore `itemsep`, `setcounter`, `cmidrule` for now

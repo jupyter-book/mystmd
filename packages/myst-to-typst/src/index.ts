@@ -134,6 +134,9 @@ const handlers: Record<string, Handler> = {
     if (metadataTags.includes('page-break') || metadataTags.includes('new-page')) {
       state.write('#pagebreak(weak: true)\n');
     }
+    if (node.data?.part === 'index') {
+      state.data.isInIndex = true;
+    }
     state.renderChildren(node, 2);
   },
   blockquote(node, state) {
@@ -418,6 +421,9 @@ const handlers: Record<string, Handler> = {
   },
   span(node, state) {
     state.renderChildren(node, 0, { trimEnd: false });
+    if (node.identifier && !state.data.isInIndex) {
+      state.write(` #label("${node.identifier}")`);
+    }
   },
   raw(node, state) {
     if (node.typst) {

@@ -231,6 +231,7 @@ export const codeCellDirective: DirectiveSpec = {
   },
   options: {
     ...commonDirectiveOptions('code-cell'),
+    ...CODE_DIRECTIVE_OPTIONS,
     caption: {
       type: 'myst',
       doc: 'A parsed caption for the code output.',
@@ -251,6 +252,7 @@ export const codeCellDirective: DirectiveSpec = {
       lang: data.arg as string,
       executable: true,
       value: (data.body ?? '') as string,
+      ...getCodeBlockOptions(data, vfile),
     };
     const outputs = {
       type: 'outputs',

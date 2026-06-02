@@ -91,7 +91,13 @@ export function resolveExtension(
       }
     });
     if (normalizedMatches.length === 0 && path.extname(file)) {
-      warnFn(`Table of contents entry does not exist: ${file}`, 'error');
+      warnFn(
+        `Table of contents entry does not exist: ${file}`,
+        'error',
+        file.includes('\\')
+          ? 'Always use UNIX-style path separators (forward slashes) in the table of contents.'
+          : undefined,
+      );
     } else if (normalizedMatches.length === 0) {
       // Need a different warning if this is a folder
       warnFn(

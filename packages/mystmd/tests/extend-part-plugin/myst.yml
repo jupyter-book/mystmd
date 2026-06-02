@@ -1,0 +1,9 @@
+version: 1
+project:
+  plugins:
+    - ./abc.mjs
+  title: 'Alphabet (abc) by MyST'
+site:
+  template: ../templates/site/myst/book-theme
+extends:
+  - part.yml

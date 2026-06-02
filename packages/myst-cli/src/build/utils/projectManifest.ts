@@ -13,12 +13,15 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
   if (!proj) return [];
   const cache = castSession(session);
   const pages = await Promise.all(
-    proj.pages.map(async (page) => {
-      if ('hidden' in page && page.hidden) return null; // skip hidden pages
-      if ('file' in page) {
-        const fileInfo = selectors.selectFileInfo(state, page.file);
-        const title = fileInfo.title || fileTitle(page.file);
-        const short_title = fileInfo.short_title ?? undefined;
+    proj.pages.map(async (tocEntry) => {
+      if ('hidden' in tocEntry && tocEntry.hidden) return null; // skip hidden pages
+      if ('file' in tocEntry) {
+        // fileInfo has metadata about the file taken from the toc and file frontmatter
+        const fileInfo = selectors.selectFileInfo(state, tocEntry.file);
+        // Choose title and short_title based on hierarchy of metadata
+        const title = fileInfo.title ?? fileTitle(tocEntry.file);
+        const short_title = tocEntry.title ?? fileInfo.short_title ?? undefined;
+        // Everything else we pull from fileInfo
         const description = fileInfo.description ?? '';
         const thumbnail = fileInfo.thumbnail ?? '';
         const thumbnailOptimized = fileInfo.thumbnailOptimized ?? '';
@@ -26,7 +29,7 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
         const bannerOptimized = fileInfo.bannerOptimized ?? '';
         const date = fileInfo.date ?? '';
         const tags = fileInfo.tags ?? [];
-        const { slug, level, file } = page;
+        const { slug, level, file } = tocEntry;
         const { frontmatter } = cache.$getMdast(file)?.post ?? {};
         const projectPage: ManifestProject['pages'][0] = {
           slug,
@@ -44,8 +47,8 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
         };
         return projectPage;
       }
-      if ('url' in page) {
-        const { title, url, open_in_same_tab, level } = page;
+      if ('url' in tocEntry) {
+        const { title, url, open_in_same_tab, level } = tocEntry;
         const externalURL: ManifestProject['pages'][0] = {
           title,
           url,
@@ -55,7 +58,7 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
         return externalURL;
       }
       // Not a file or URL, probably a sub-entry; try and bubble down
-      return { ...page };
+      return { ...tocEntry };
     }),
   );
   return pages?.filter((p) => p !== null);

@@ -1,5 +1,13 @@
 # myst-spec-ext
 
+## 1.9.5
+
+### Patch Changes
+
+- 7b989d4: Cheanges to suport first version of anywidget
+
+## 1.9.4
+
 ## 1.9.3
 
 ## 1.9.2

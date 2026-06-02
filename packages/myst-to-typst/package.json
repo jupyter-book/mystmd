@@ -1,6 +1,6 @@
 {
   "name": "myst-to-typst",
-  "version": "0.0.35",
+  "version": "0.0.37",
   "description": "Export from MyST mdast to Typst",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-tex",
@@ -28,8 +28,8 @@
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -37,10 +37,10 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.8.3",
-    "myst-frontmatter": "^1.8.3",
-    "myst-spec-ext": "^1.8.3",
-    "tex-to-typst": "^0.0.18",
+    "myst-common": "^1.9.4",
+    "myst-frontmatter": "^1.9.4",
+    "myst-spec-ext": "^1.9.4",
+    "tex-to-typst": "^0.0.20",
     "unist-util-select": "^4.0.3",
     "vfile-reporter": "^7.0.4"
   }

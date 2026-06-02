@@ -1,3 +1,13 @@
+// Static-build HTML pipeline for MyST sites.
+//
+// The myst-theme (a separate repo) is the React/Remix app that renders MyST documents.
+// For a static build we spin myst-theme up as a local Remix server, fetch every route as fully-rendered HTML, and write the results to disk.
+// This file does that in `buildHtml`, plus a small post-processing pass (`rewriteAssetsFolder`) that:
+// - rewrites asset URLs
+// - injects an `/foo/index.html` -> `/foo/` redirect script
+//
+// The JS and CSS are produced by myst-theme.
+
 import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
@@ -13,6 +23,18 @@ import { selectors } from '../../store/index.js';
 import type { LocalProjectPage } from '../../project/types.js';
 
 const limitConnections = pLimit(5);
+
+/**
+ * Return true if any project in the current site has thebe configured.
+ * `project: jupyter: ...` aliases to `project: thebe`.
+ */
+function siteUsesThebe(session: ISession): boolean {
+  const state = session.store.getState();
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
+  return (siteConfig?.projects ?? []).some(
+    (proj) => !!proj.path && !!selectors.selectLocalProjectConfig(state, proj.path)?.thebe,
+  );
+}
 
 export async function currentSiteRoutes(
   session: ISession,
@@ -72,9 +94,23 @@ export async function currentSiteRoutes(
 // This is defined in the remix `publicPath` and allows us to overwrite it here.
 const ASSETS_FOLDER = 'myst_assets_folder';
 
+// Script injected at the end of <head> in every index.html to redirect
+// "/foo/index.html" → "/foo/" before Remix hydrates, preventing a URL
+// mismatch that breaks client-side routing. Remix renders the root index
+// for URL "/" but static servers also serve the same file at "/index.html",
+// where the URL doesn't match any Remix route → runtime error.
+const INDEX_REDIRECT_SCRIPT =
+  `<script>(function(){` +
+  `var p=window.location.pathname;` +
+  `if(p.endsWith('/index.html'))` +
+  `window.location.replace((p.slice(0,-10)||'/')+window.location.search+window.location.hash);` +
+  `})();</script>`;
+
 /**
  * Rewrite URLs in HTML/JS/JSON files pointing to the default assets folder in
- * terms of the provided base URL
+ * terms of the provided base URL, and append a URL-normalisation script to
+ * the end of <head> in every index.html so that direct access via
+ * /foo/index.html redirects to /foo/.
  *
  * @param directory directory of files to recursively rewrite
  * @param baseurl base URL of the built site
@@ -91,12 +127,12 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
       return;
     }
     if (!['.html', '.js', '.json'].includes(path.extname(file))) return;
-    const data = fs.readFileSync(file).toString();
-    const modified = data.replace(
-      new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'),
-      `${baseurl || ''}/build/`,
-    );
-    fs.writeFileSync(file, modified);
+    let data = fs.readFileSync(file).toString();
+    data = data.replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`);
+    if (filename === 'index.html') {
+      data = data.replace('</head>', `${INDEX_REDIRECT_SCRIPT}</head>`);
+    }
+    fs.writeFileSync(file, data);
   });
 }
 
@@ -105,7 +141,7 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
  *
  * @param session session with logging
  */
-function get_baseurl(session: ISession): string | undefined {
+function getBaseUrl(session: ISession): string | undefined {
   let baseurl;
   // BASE_URL always takes precedence. If it's not defined, check common deployment environments.
   if ((baseurl = process.env.BASE_URL)) {
@@ -138,7 +174,7 @@ function get_baseurl(session: ISession): string | undefined {
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
-  const baseurl = get_baseurl(session);
+  const baseurl = getBaseUrl(session);
   // Note, this process is really only for Remix templates
   // We could add a flag in the future for other templates
   const htmlDir = path.join(session.buildPath(), 'html');
@@ -173,11 +209,18 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
       }),
     ),
   );
-  appServer.stop();
+  await appServer.stop();
 
-  // Copy the files for the template used
+  // Copy files for the template used.
+
+  // Skip thebe JS chunks unless they are required.
   const templateBuildDir = path.join(template.templatePath, 'public');
-  fs.copySync(templateBuildDir, htmlDir);
+  const hasThebe = siteUsesThebe(session);
+  fs.copySync(templateBuildDir, htmlDir, {
+    filter: (src) =>
+      hasThebe ||
+      !path.basename(src).match(/^(\d+\.)?(thebe-(core|lite)(\.min)?\.js|thebe-core.*\.css)$/),
+  });
 
   // Copy all of the static assets
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));

@@ -188,6 +188,35 @@ For more about how to specify directive options, see [](./syntax-overview.md).
 See [](#notebooks:cell-visibility) for more information.
 :::
 
+(code-cell:linenos)=
+### Add line numbers and highlighting to {myst:directive}`code-cell` directives
+
+You can add line numbers and emphasize specific lines in code cells, just like in [code blocks](./code.md#numbering-and-highlighting).
+
+````
+```{code-cell} python
+:linenos:
+:emphasize-lines: 2,3
+
+hello = "hello"
+there = "there"
+phrase = f"{hello}, {there}!"
+print(phrase)
+```
+````
+
+```{code-cell} python
+:linenos:
+:emphasize-lines: 2,3
+
+hello = "hello"
+there = "there"
+phrase = f"{hello}, {there}!"
+print(phrase)
+```
+
+You can also use {myst:directive}`code.lineno-start` to start numbering from a specific line, and {myst:directive}`code.filename` to display a filename.
+
 (myst:inline-expressions)=
 
 ## Inline expressions with the {myst:role}`eval` role

@@ -72,6 +72,7 @@ ${data.body}
   },
 };
 ```
+
 :::
 
 ### With automatic parsing
@@ -82,7 +83,7 @@ In this case, `data.body` will be a list of AST nodes instead of text:
 ```{code} javascript
 :filename: myplugin.mjs
 :linenos:
-:empasize-lines: 5
+:emphasize-lines: 5
 const myDirective = {
   name: "mydirective",
   doc: "My new directive!",
@@ -153,4 +154,5 @@ The output of the sandbox AST generator can be seen in @code:ast. The highlighte
   ]
 }
 ```
+
 :::

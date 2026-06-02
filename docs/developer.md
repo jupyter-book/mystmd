@@ -47,7 +47,7 @@ flowchart TB
     ast --> content_server[serve AST on http://localhost:3100]
     end
   end
-  subgraph "npm run theme:book"
+  subgraph "bun run theme:book"
     subgraph "<b>Theme server</b>"
     direction LR
     theme_server[render themed content at http://localhost:3000] --> content_server
@@ -81,7 +81,7 @@ In the diagram above, we saw that `mystmd` produces websites by:
 
 This section describes a bit more how **Rendering** and **Exporting** work using **Themes** and **Templates**.
 
-For an introduction to themes and templates, see [](#overview-themes). In addition, below we'll define what a **Renderer** is:
+For an introduction to themes and templates, see [](#overview-themes). For a hands-on guide to building a web theme, read [](./theme-developer.md). In addition, below we'll define what a **Renderer** is:
 
 ```{glossary}
 Renderer
@@ -101,7 +101,7 @@ MyST has multiple renderers, themes, and templates that allow it to transform My
   - The [MyST React Renderer](https://github.com/jupyter-book/myst-theme/tree/main/packages/myst-to-react) generates React components out of MyST AST for use by the default MyST Themes. It provides a `<MyST />` component which can render MyST AST into a React tree.
   - The source code of the [default MyST Themes](https://github.com/jupyter-book/myst-theme/tree/main/themes), each of which use the React renderer. These themes are built and then published at the [`myst-templates` GitHub organization](https://github.com/myst-templates/book-theme) for consumption by users.
   - A React [context](https://react.dev/reference/react/useContext), named `ThemeContext` (defined [here in the `myst-theme` repository](https://github.com/jupyter-book/myst-theme/blob/main/packages/providers/src/theme.tsx)), is used to push state deeply into the tree, without having to pass it via props.
-- [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to product static outputs.
+- [`myst-templates`](https://github.com/myst-templates): An index of templates that convert rendered components into final outputs. These are similar to _MyST Themes_, but follow a more standard "template" structure to produce static outputs.
 
 :::{error} to do — explain rendering
 
@@ -249,18 +249,24 @@ During the **Transformations** phase, a number of [enumeration transforms](https
       html_id: label
 ```
 
+### Concepts: Frontmatter inheritance
+
+Some frontmatter fields inherit from project-level config to individual pages.
+This is controlled by the [`USE_PROJECT_FALLBACK` list](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-frontmatter/src/page/validators.ts).
+To make a new field inherit from project to page, add its key to this list.
+
 ## Tools used in development
 
 `mystmd` is built and developed using:
 
-- [NodeJS and npm](https://nodejs.org), which provides a JavaScript runtime and package management;
+- [Bun](https://bun.sh), which provides a JavaScript runtime and package management;
 - [TypeScript](https://www.typescriptlang.org/) for static type checking;
 - [ESLint](https://eslint.org/) for code linting;
 - [Prettier](https://prettier.io) for code formatting; and
 - [Changesets](https://github.com/changesets/changesets) for versioning and changelogs.
 
 ```{note}
-Below you will see several `npm run x` commands.
+Below you will see several `bun run x` commands.
 These are simply aliases for other commands, defined in the [`package.json` file](https://github.com/jupyter-book/mystmd/blob/main/package.json) under "scripts".
 ```
 
@@ -268,7 +274,7 @@ These are simply aliases for other commands, defined in the [`package.json` file
 
 ## Local development: `mystmd`
 
-The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [NodeJS and npm](https://nodejs.org) for local development.
+The `mystmd` libraries and command line tools are written in [TypeScript](https://www.typescriptlang.org/), and require [Bun](https://bun.sh) for local development.
 
 :::{warning} Don't use `mystmd-py` and the NPM installation at the same time
 :class: dropdown
@@ -283,30 +289,30 @@ git clone git@github.com:jupyter-book/mystmd.git
 cd mystmd
 ```
 
-Then, install dependencies via npm.
+Then, install dependencies via bun.
 You need to do this each time you pull from upstream, since dependency versions may change:
 
 ```shell
-npm install
+bun install
 ```
 
 Now, build `mystmd`:
 
 ```shell
-npm run build
+bun run build
 ```
 
 Optionally, you can link the built executable as your globally installed `mystmd`:
 
 ```shell
-npm run link
+bun run link
 ```
 
-These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `npm run build` (executed in the top-level source directory).
+These commands allow you to use the `myst` CLI from any directory; source code changes are picked up after each `bun run build` (executed in the top-level source directory).
 
 ```{warning} Windows users should use unix-like shells
 The build process uses unix commands that might not work properly on Windows.
-When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2), and make sure that npm is set to use these by default (`npm config set script-shell path/to/shell.exe`).
+When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2).
 ```
 
 ### Local docs workflows (preview/build)
@@ -314,7 +320,7 @@ When building on Windows, use either WSL or a unix-like shell (such as Git Bash 
 To run a MyST server with your local changes and a preview of the documentation, run:
 
 ```shell
-$ npm run docs
+$ bun run docs
 ```
 
 ## Local development: myst-theme
@@ -355,32 +361,32 @@ First, clone [the `myst-theme` repository](https://github.com/jupyter-book/myst-
 ```shell
 git clone https://github.com/jupyter-book/myst-theme/
 cd myst-theme
-npm install
+bun install
 ```
 
 Then, see if you can build the package:
 
 ```shell
-npm run build
+bun run build
 ```
 
 After the build succeeds, launch the theme server:
 
 ```shell
-npm run theme:book
+bun run theme:book
 ```
 
 After a while, it should tell you that the server has been started at http://localhost:3000. Browse there, and confirm that you can see the landing-page content.
 
-Each time you change the myst-theme source, you must recompile by re-running `npm run build`. This allows you to preview the changes locally.
+Each time you change the myst-theme source, you must recompile by re-running `bun run build`. This allows you to preview the changes locally.
 
 To automatically watch for changes and reload, use the following command:
 
 ```shell
-npm run dev
+bun run dev
 ```
 
-Note that you can run `npm run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
+Note that you can run `bun run dev` from within any folder if you'd like to watch individual packages instead of the entire directory structure.
 
 ### Approach 2: Static build
 
@@ -392,10 +398,12 @@ No content or theme server is required for a static site build. Steps are:
 
 We'll use the mystmd docs site as an example.
 
+Under the hood, `mystmd build --html` starts myst-theme as a local Remix server, fetches each route as HTML, writes the results to disk, and runs a small post-processing pass (see [`packages/myst-cli/src/build/html/index.ts`](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/build/html/index.ts)).
+
 #### Build theme
 
 To build a static site against a local theme, the theme must be built as it would be for production. For that we will use the "make" target
-instead of `npm run`:
+instead of `bun run`:
 
 ```{code} bash
 cd myst-theme
@@ -466,17 +474,17 @@ That opens a debugger control panel in the browser which should list your awaiti
 (NOTE: other browsers and IDEs can also connect as debug inspectors - see Inspector Clients reference below)
 
 In most cases we don't call `node` directly, so there is no easy way to add those options to a shell invocation.
-Instead, an `npm` script can be defined with environment variable `NODE_OPTIONS=--inspect` (or "--inspect-brk") set in an appropriate spot (example follows).
+Instead, a script can be defined with environment variable `NODE_OPTIONS=--inspect` (or "--inspect-brk") set in an appropriate spot (example follows).
 
 ### Debug myst-theme service
 
-For example, to debug myst-theme's book theme running as a dynamic application server, alter the npm scripts like so:
+For example, to debug myst-theme's book theme running as a dynamic application server, alter the scripts like so:
 
 ```{code} json
 :filename:  myst-theme/themes/book/package.json
 // add NODE_OPTIONS
 //                                                                                    v
-"dev": "npm run dev:copy && npm run build:thebe && concurrently \"npm run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
+"dev": "bun run dev:copy && bun run build:thebe && concurrently \"bun run dev:css\" \"NODE_OPTIONS=--inspect-brk remix dev\"",
 ```
 
 Now remove the turbo "--parallel" option, because when turbo runs the theme server in "parallel" (ie multiprocess) mode, each process will attempt to open its own debug socket on the same port, with all but the first failing.
@@ -527,15 +535,14 @@ https://api.mystmd.org/templates/typst
 (howto:release)=
 ## How to make a release
 
-This process follows the general steps of making a release in the Jupyter Book community. Here are the basic steps to follow for any project:
+Here are the basic steps to follow for any project:
 
-1. [Tell others about the upcoming release](#release:coordination).
+1. [Coordinate the release with the team](#release:coordination).
 2. Publish the release in the package repository for the tool. For example:
    - [How to publish a release of `mystmd`](#release:mystmd).
    - [How to publish a release of `myst-theme`](#release:myst-theme).
-3. [Make a release on GitHub](#release:github).
-4. [Update the documentation](release:docs).
-5. (optionally) [Create and share a blog post](#release:share).
+3. [Confirm that GitHub made a release](#release:github).
+4. (optionally) [Create and share a blog post](#release:share).
 
 (release:coordination)=
 ### Coordinating the release with the team
@@ -549,32 +556,73 @@ It also gives others a heads-up that some new functionality is about to go live.
 When you publish a release, you upload a new version of the tool for package managers to use. The specifics depend on the toolchain for your package (in particular, it is different for Python vs. JavaScript tools). Here are a few specifics for the `mystmd` repository.
 
 (release:mystmd)=
-#### Publish a `mystmd` release to NPM
+#### Publish a `mystmd` release to NPM, PyPI and Conda
 
 `mystmd` is published to NPM via a GitHub Action. Here's how to publish a release.
 
-- Find the **changesets** PR. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
-- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged. Bias towards action, but use your best judgment on whether to move forward.
-- After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
-  - It calls `npm run version` to generate the changelog (to review the changelog, you can run that command locally too).
-  - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `npm run publish:ci`, which calls `changeset publish`).
-  - It creates a git version tag (which you'll use in making the GitHub release).
+- **Find the changesets PR**. This contains a list of the version updates that will be included with this release. [Here's an example of a release PR](https://github.com/jupyter-book/mystmd/pull/1896).
+- Review the changeset PR.
+  - Ensure that either `mystmd` or `myst-cli` is in the changesets.
+    Or, ensure you are intentionally **not** releasing `mystmd` (this generally shouldn't happen), in which case the python and release notes are expected to fail.
+    See [](#changesets:myst-cli) for more explanation.
+  - Ensure that private or non-existent packages like docs, etc. are not in the changesets (these will cause an early failure)
+  - Ensure that there are no **new** myst packages that need to be published (see [](#release:new-package))
+- **Merge the changesets PR**. After merging that PR, [this GitHub action will make a release](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/release.yml).
+  - It calls `bun run version` to generate the changelog (to review the changelog, you can run that command locally too).
+  - It then publishes the updated packages to the [`mystmd` npm registry](https://www.npmjs.com/package/mystmd) (it calls `bun run publish:ci`, which calls `changeset publish`).
+  - It creates multiple git version tags (which you'll use in making the GitHub release).
+  - It releases to PyPI
+  - The release notes are created automatically based on the `mystmd@v...` tag
+- Confirm that NPM, PyPI versions are released and a GitHub release has been made. Once this happens and there are no errors, you're done!
+- A short time later, a Conda PR is opened automatically and needs to be merged.
 
-You're done!
+#### Fixing errors during a release
+
+Ask for help in the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141). The exact fix will depend where in the automated release things broke. Some tips:
+
+- In general, do not revert a release PR, instead fix the errors (permissions, etc. with NPM/tokens) and merge any necessary fixes to `main`.
+- A `mystmd` tag at the right version is necessary for the release notes to run
+- A PyPI release is only triggered if there is a release triggered by NPM
+- Partial NPM releases (e.g. due to permission failures or token access) can be rerun **without** a new changeset. In this case you can:
+  - update the token/connection and rerun the action
+  - fix a `package.json` (e.g. add a git trusted publisher), merge to main, and add a tag for `mystmd` (`git tag mystmd@M.m.p`, for the release notes) if that package isn't being re-released
+- A new NPM package has been created but not created or linked:
+  - Create the package, add `ebp-bot` to it, setup trusted publishing in NPM.
+
+(release:new-package)=
+#### Publishing a new NPM package for the first time
+
+If a PR introduces a new package, you must publish it to NPM manually before merging the changesets PR.
+For example, [PR #2602](https://github.com/jupyter-book/mystmd/pull/2602) and its [myst-theme counterpart](https://github.com/jupyter-book/myst-theme/pull/795) added the new `anywidget` package.
+
+Before proceeding, ask about this in [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141) and ensure that we are (a) about to make a release; and (b) there are no last-minute changes to the package name. Creating a new NPM package cannot be undone and packages cannot be renamed.
+
+Steps to publish a new package:
+
+1. **Build and test the package** to confirm it works as expected.
+2. **Set the version to `0.0.0`** in the package's `package.json`. Changesets will overwrite this on the first automated release.
+3. **Publish the package** manually with public access:
+   ```shell
+   npm publish --access=public
+   ```
+4. **Set up [trusted publishing](https://docs.npmjs.com/trusted-publishers)** in the NPM admin so that GitHub Actions can publish future releases automatically.
+5. **Add `ebp-bot` as a maintainer** on the NPM package page. This is not needed if the package belongs to a team (e.g., `@myst-theme`).
+6. **Announce the new package** in the [`#release_coordination` Discord channel](https://discord.com/channels/1083088970059096114/1384242935645737141) so the team is aware and comment on the relevant GitHub Release PR that this package has been created.
 
 (release:myst-theme)=
 #### Publish a release of `myst-theme`
 
 The process for releasing `myst-theme` infrastructure is similar to the release process for `mystmd`. Here's a brief overview:
 
-- Find the changesets PR in `myst-theme` and merge it, similar to [the `mystmd` release process](#release:mystmd).
+- **Find the changesets PR** in `myst-theme`, similar to [the `mystmd` release process](#release:mystmd).
   [Here's an example PR in `myst-theme`](https://github.com/jupyter-book/myst-theme/pull/574).
-- Double-check the changes that have been merged to `main` and make sure nothing particularly complex or breaking has been merged.
-  Bias towards action, but use your best judgment on whether to move forward.
-- Merge that PR. This will trigger the release process by running our release action. [Here's an example run of that action](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
-  - The action will build the latest version of the theme infrastructure, and update the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates). [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
-
-You're done!
+- **Merge the changesets PR**. This will trigger the release process by running our release action.
+- **Check the GitHub Workflow to see if it completes**. Go to the [`myst-theme` workflows page](https://github.com/jupyter-book/myst-theme/actions) to track its progress.
+  - The action will build the latest version of the theme infrastructure.
+  - It updates the template files in the [`myst-templates` GitHub organization](https://github.com/myst-templates).
+  - [Here are the lines that update this template](https://github.com/jupyter-book/myst-theme/blob/8283e4505fdb418355ca25ae114ba7bea3cec956/.github/workflows/release.yml#L39-L50).
+  - [Here's an example run of this workflow](https://github.com/jupyter-book/myst-theme/actions/runs/15005221275).
+- Confirm that a GitHub release has been made. Once this happens and there are no errors, you're done!
 
 (release:github)=
 ### Automated releases on GitHub
@@ -590,9 +638,7 @@ You can find the latest releases at: https://github.com/jupyter-book/mystmd/rele
 (release:docs)=
 ### Update documentation
 
-When we make a release we should ensure that the documentation is up-to-date with the latest version. This will depend on the tool that you're using.
-
-**For tools hosted at mystmd.org**, follow these [instructions to update the content at mystmd.org](#docs:update-mystmd.org).
+**For tools hosted at mystmd.org**: when we make a release of `mystmd`, the MyST documentation is automatically updated via [this GitHub Workflow](https://github.com/jupyter-book/mystmd/blob/main/.github/workflows/docs.yml). You can also trigger a manual release by following [](#docs:update-mystmd.org).
 
 **For most other tools**, the documentation should auto-update with new releases (e.g., via a GitHub action).
 
@@ -645,20 +691,20 @@ First [install `mystmd` locally](#developer:mystmd).
 Then, run the test suite using:
 
 ```shell
-npm run test
+bun run test
 ```
 
 If you are working in a particular package, change your working directory to that specific package, and run the tests there.
 
 ```shell
 cd packages/myst-cli
-npm run test
+bun run test
 ```
 
 To run in "watch mode" (runs each time a change is saved), use:
 
 ```shell
-npm run test:watch
+bun run test:watch
 ```
 
 To run a single test by matching its title, first change the working directory to the package where the test exists. For example:
@@ -667,10 +713,10 @@ To run a single test by matching its title, first change the working directory t
 cd packages/mystmd
 ```
 
-Then run the `npm test` command like so:
+Then run the test command like so:
 
 ```shell
-npm run test -- -t "Basic tex build"
+bun run test -- -t "Basic tex build"
 ```
 
 For integration test titles, see `packages/mystmd/tests/exports.yml`.
@@ -689,12 +735,12 @@ There are two types of tests in the `mystmd` repository:
 ### Linting
 
 When contributing code, continuous integration will run linting and formatting on your pull request.
-You can also run `npm run lint` and `npm run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `npm run install-pre-commit`.[^uninstall-pre-commit]
+You can also run `bun run lint` and `bun run lint:format` locally to catch errors early. To automate that process for each commit, install the git pre-commit hook: `bun run install-pre-commit`.[^uninstall-pre-commit]
 If you are using the VSCode editor, it can be setup to show changes in real time and fix formatting issues on save (extensions: [eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)).
 
 [^uninstall-pre-commit]: Uninstall the pre-commit hook with `git config --unset core.hooksPath`.
 
-Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `npm run build`; this can be run using `npm run dev`. If your changes aren't showing up, use `npm run build` as normal.
+Running in live-changes mode: depending on the package you are working in we have also setup live changes which can be faster than the `bun run build`; this can be run using `bun run dev`. If your changes aren't showing up, use `bun run build` as normal.
 
 ### Versioning and changesets
 
@@ -702,9 +748,9 @@ We use [changesets](https://github.com/changesets/changesets) for tracking chang
 To learn about changesets, see [this introductory guide to changesets](https://github.com/changesets/changesets/blob/main/docs/intro-to-using-changesets.md).
 We use this [`changesets` GitHub Action](https://github.com/changesets/action) when we publish a release.
 
-Before submitting your Pull Request, please add a changeset using `npm run changeset`, which will ask you questions about the package and ask for a brief description of the change.
+Before submitting your Pull Request, please add a changeset using `bun run changeset`, which will ask you questions about the package and ask for a brief description of the change.
 Commit the changeset file to the repository as a part of your pull request.
-You can use `npm run version` to preview the generated changelog.
+You can use `bun run version` to preview the generated changelog.
 
 Our current versioning procedure is a little loose compared to strict semantic versioning; as `mystmd` continues to mature, this policy may need to be updated.
 For now, we try to abide by the following rules for version bumps:
@@ -712,6 +758,20 @@ For now, we try to abide by the following rules for version bumps:
 - **major**: Backward incompatible change to the underlying supported MyST data. These would be cases where a non-developer MyST user's project or site built with major version _N_ would not work with major version _N+1_. Currently, we never intentionally make these changes.
 - **minor**: Backward incompatible change to the JavaScript API, for example, changing the call signature or deleting an exported function. These can be a headache for developers consuming MyST libraries, but they do not break MyST content.
 - **patch**: For now, everything else is a patch: bug fixes, new features, refactors. This means some patch releases have a huge, positive impact on users and other patch releases are basically invisible.
+
+(changesets:myst-cli)=
+#### What if changesets doesn't bump `mystmd` or `myst-cli`?
+
+The auto-generated changesets release PR must list at least one changeset that bumps `mystmd` or `myst-cli`, or its CI will fail.
+This is because we *almost always* want to release a new `mystmd` on merge, which only happens if one of these is bumped.
+
+If you merge the changesets PR when neither is bumped, the release job of `mystmd-py` to PyPI will fail, and a GitHub release won't be made for the repository.
+The packages that we _did update_ will still be uploaded to NPM.
+Here's an example of this happening: [mystmd#2857](https://github.com/jupyter-book/mystmd/issues/2857).
+
+**You can still merge the Changesets PR if you want!**
+If you intentionally don't want a `mystmd` bump on this release, override the failing check and merge the release PR anyway.
+NPM still publishes everything else, and the PyPI and GitHub release jobs are an expected failure with nothing to fix afterwards.
 
 ## Packages in the mystmd repository
 
@@ -734,16 +794,20 @@ These packages are [ESM modules](https://gist.github.com/sindresorhus/a39789f988
 
 - `myst-cli`: provides CLI functionality for `mystmd`. It does not export the CLI directly.
 - `jtex`: a templating library ([see docs](https://mystmd.org/jtex)).
-- `myst-frontmater`: definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter)).
+- `myst-frontmatter`: definitions and validation for scientific authorship/affiliation frontmatter ([see docs](https://mystmd.org/guide/frontmatter)).
 - `myst-config`: validation and reading of configuration files.
 - `myst-templates`: types and validation for templates (LaTeX, web, and word).
 
 **Markdown Parsing**
 
+MyST parsing builds on the [markdown-it](https://github.com/markdown-it/markdown-it) parser.
+`markdown-it` handles "standard" syntax (paragraphs, bold, links, etc), and `markdown-it-myst` adds rules for MyST-specific syntax (e.g., roles and directives).
+The MyST engine first uses `markdown-it` to parse raw text into tokens, and then `myst-parser` converts them into the MyST AST (using [mdast](https://github.com/syntax-tree/mdast)).
+
 - `markdown-it-myst`: markdown-it plugin to handle tokenizing roles and directives.
 - `myst-directives`: core directives for MyST.
 - `myst-roles`: core roles for MyST.
-- `myst-parser`: converts a [markdown-it](https://github.com/markdown-it/markdown-it) token stream to Markdown AST ([mdast](https://github.com/syntax-tree/mdast)).
+- `myst-parser`: converts the markdown-it token stream to MyST AST.
 
 **Readers**
 

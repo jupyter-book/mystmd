@@ -30,11 +30,11 @@ try {
   // 1) Everything inside { }, e.g. `something .class #id attr="value"`
   // 2) The sequence of backticks
   // 3) The actual content between those backticks
-  _x = new RegExp('^\\{\\s*([^}]+?)\\s*\\}(`+)(?!`)(.+?)(?<!`)\\2(?!`)');
+  _x = new RegExp('^\\{\\s*([^}]+?)\\s*\\}(`+)(?!`)(.+?)(?<!`)\\2(?!`)', 's');
 } catch (err) {
   // Safari does not support negative look-behinds
   // This is a slightly down-graded variant, as it does not require a space.
-  _x = /^\{\s*([^}]+?)\s*\}(`+)(?!`)(.+?)\2(?!`)/;
+  _x = /^\{\s*([^}]+?)\s*\}(`+)(?!`)(.+?)\2(?!`)/s;
 }
 
 const ROLE_PATTERN = _x;

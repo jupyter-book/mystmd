@@ -1,5 +1,11 @@
 # citation-js-utils
 
+## 1.2.8
+
+### Patch Changes
+
+- ef5a928: Update node version
+
 ## 1.2.7
 
 ### Patch Changes

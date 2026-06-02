@@ -102,11 +102,29 @@ A button is an element with text content that triggers an action to navigate to 
 
 Grids allow you to structure arbitrary chunks of content in a grid-like system.
 
-To generate a grid, use the ` ```{grid} ` wrapper directive along with ` ```{card} ` directives inside.
+To generate a grid, use the `:::{grid} ...` wrapper directive along with `:::{grid-item}` or `:::{card}` directives inside.
 
 The numbers supplied in the argument are column counts to be used on different screen sizes e.g. `1 1 2 3` corresponding to smallest (<768px), medium (768px – 1024px), large (1024px – 1280px), and extra-large screens (>1280px). These pixel widths are determined by the theme (e.g. the book theme), which uses the default Tailwind CSS breakpoints.
 
-For example:
+Example with grid-items:
+
+```{myst}
+::::{grid} 1 1 12 12
+
+:::{grid-item}
+:columns: 3
+This is one sentence. It occupies the narrower column.
+:::
+
+:::{grid-item}
+:columns: 9
+This is another longer sentence which requires more space. It occupies the wider column.
+:::
+
+::::
+```
+
+Example with cards:
 
 ```{myst}
 ::::{grid} 1 1 2 3

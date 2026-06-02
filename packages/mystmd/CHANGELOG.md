@@ -1,5 +1,38 @@
 # mystmd
 
+## 1.9.1
+
+### Patch Changes
+
+- 7820852: Updates to myst-execute to await closing connections for jupyter kernels
+
+## 1.9.0
+
+### Minor Changes
+
+- e8803fc: Redirect /foo/index.html to canonical URL (/foo/) to fix hydration.
+
+### Patch Changes
+
+- e8803fc: Don't check links with strict mode.
+
+## 1.8.3
+
+## 1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- 4617460: Add support for remote parts
+- 0e81477: Fix extends configuration with parts
+
+## 1.8.0
+
+### Minor Changes
+
+- 045953f: Add support for `--readthedocs` flag on `myst init` to generate ReadTheDocs configuration files
+
 ## 1.7.1
 
 ## 1.7.0

@@ -1,5 +1,23 @@
 # myst-config
 
+## 1.9.5
+
+### Patch Changes
+
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-common@1.9.5
+
+## 1.9.4
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - simple-validators@1.2.0
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+
 ## 1.9.3
 
 ### Patch Changes

@@ -67,6 +67,7 @@ import {
   transformFilterOutputStreams,
   transformLiftCodeBlocksInJupytext,
   transformMystXRefs,
+  transformWidgetStaticAssetsToDisk,
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -184,14 +185,20 @@ export async function transformMdast(
 
   if (execute && !frontmatter.execute?.skip) {
     const cachePath = path.join(session.buildPath(), 'execute');
-    await kernelExecutionTransform(mdast, vfile, {
-      basePath: session.sourcePath(),
-      cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
-      sessionFactory: () => session.jupyterSessionManager(),
-      frontmatter: frontmatter,
-      ignoreCache: false,
-      errorIsFatal: false,
-      log: session.log,
+    const fileName = path.basename(file);
+    session.log.debug(`⏳ Waiting for execution slot: ${fileName}`);
+    await session.executionSemaphore.runExclusive(async () => {
+      session.log.debug(`▶️  Executing: ${fileName}`);
+      await kernelExecutionTransform(mdast, vfile, {
+        basePath: session.sourcePath(),
+        cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+        sessionFactory: () => session.jupyterSessionManager(),
+        frontmatter: frontmatter,
+        ignoreCache: false,
+        errorIsFatal: false,
+        log: session.log,
+      });
+      session.log.debug(`✅ Completed execution: ${fileName}`);
     });
   }
 
@@ -335,6 +342,7 @@ export async function postProcessMdast(
           ]
         : undefined,
       projectSlug,
+      mdastPost.slug,
     );
   }
   // NOTE: This is doing things in place, we should potentially make this a different state?
@@ -411,6 +419,13 @@ export async function finalizeMdast(
     vfile,
   });
   if (!useExistingImages) {
+    await transformWidgetStaticAssetsToDisk(
+      session,
+      mdast,
+      file,
+      imageWriteFolder,
+      simplifyFigures ? imageWriteFolder : (imageAltOutputFolder ?? imageWriteFolder),
+    );
     await transformImagesToDisk(session, mdast, file, imageWriteFolder, {
       altOutputFolder: imageAltOutputFolder,
       imageExtensions,

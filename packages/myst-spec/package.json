@@ -24,8 +24,8 @@
   },
   "scripts": {
     "clean": "rimraf index.js dist",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "build": "npm run clean && tsc index.ts && node index.js"
   },
   "bugs": {

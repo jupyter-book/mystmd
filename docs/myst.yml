@@ -16,7 +16,7 @@ project:
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
     biapol: https://biapol.github.io/blog/
- 
+
   plugins:
     - directives.mjs
     - picsum.mjs
@@ -42,7 +42,7 @@ project:
         - /jtex/create-a-latex-template
         - /jtex/create-a-beamer-template
         - /jtex/contribute-a-template
-        
+
   toc:
     - file: index.md
     - file: installing.md
@@ -108,6 +108,7 @@ project:
         - file: deployment.md
           children:
             - file: deployment-github-pages.md
+            - file: deployment-gitlab.md
             - file: deployment-curvenote.md
             - file: deployment-netlify.md
             - file: deployment-readthedocs.md
@@ -127,6 +128,7 @@ project:
         - file: javascript-plugins.md
         - file: plugins-distribute.md
         - file: executable-plugins.md
+        - file: widgets.md
         - file: plugins-debug.md
         - title: Use cases
           children:
@@ -151,6 +153,7 @@ project:
       children:
         - file: contributing.md
         - file: developer.md
+        - file: theme-developer.md
         - file: contribute-templates.md
         - file: contribute-docs.md
         - file: contribute-build-locally.md
@@ -167,3 +170,7 @@ site:
     - mystmd-guide.curve.space
   options:
     style: public/style.css
+  parts:
+    # This just tests this locally, it shouldn't be in the mystmd.org/guide site
+    # Note the CSS won't work because we aren't pulling it in
+    footer: https://github.com/jupyter-book/jupyterbook.org/raw/refs/heads/main/docs/_site/footer.md

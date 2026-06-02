@@ -225,3 +225,17 @@ cases:
                           value: link to notebook
                     - type: text
                       value: '.'
+  - title: includegraphics with \string escape in filename
+    tex: \includegraphics{Digital Divider\string~.pdf}
+    tree:
+      type: root
+      children:
+        - type: image
+          url: Digital Divider~.pdf
+  - title: includegraphics with double-quoted filename (spaces/commas)
+    tex: \includegraphics{"Book_Grafix/Gated spectra 10,40,100".png}
+    tree:
+      type: root
+      children:
+        - type: image
+          url: Book_Grafix/Gated spectra 10,40,100.png

@@ -136,6 +136,20 @@ To trigger that action, you can either:
 1. **Trigger a workflow dispatch**. Go to [the Vercel action page](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml). Click on _Run Workflow_ and it will run.
 2. **Push a commit to `main`** (of [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org)). Any new commit to the `main` branch will trigger this action.
 
+(mystmd-org-update-packages)=
+
+### How do I update the myst package versions used by the mystmd.org theme?
+
+The `mystmd.org` theme explicitly imports myst packages and pins their versions in [`theme/package.json`](https://github.com/jupyter-book/mystmd.org/blob/main/theme/package.json). When we release new versions of these packages, the theme must be updated manually to pull them in.
+
+To update the package versions:
+
+1. Clone [jupyter-book/mystmd.org](https://github.com/jupyter-book/mystmd.org) locally.
+2. Update the myst package versions in `theme/package.json`. Use the [VSCode Version Lens extension](https://marketplace.visualstudio.com/items?itemName=pflannery.vscode-versionlens) to show the latest available version inline for each dependency.
+3. Run `npm install` to install the updated packages.
+4. Run `npm run dev` to verify the site works with the new versions.
+5. Commit and push to `main`. This triggers [the Vercel deploy action](https://github.com/jupyter-book/mystmd.org/actions/workflows/deploy.yml) automatically.
+
 (team-vercel-deployment)=
 
 ### Where is the Vercel deployment that serves the mystmd.org theme?

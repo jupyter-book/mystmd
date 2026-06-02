@@ -26,7 +26,9 @@ export function makeInitCLI(program: Command) {
 // The default command runs `myst init` with no arguments
 export function addDefaultCommand(program: Command) {
   program.action(async (...args: any[]) => {
-    if (program.args.length === 0) return clirun(Session, init, program, { keepAlive: true })(args);
+    if (program.args.length === 0) {
+      return clirun(Session, init, program, { keepAlive: true }).call(program, ...args);
+    }
     console.error(
       `${chalk.red(`Invalid command: `)}${chalk.bold(program.args.join(' '))}\n\n${chalk.dim(
         'See --help for a list of available commands.\n',

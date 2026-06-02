@@ -150,24 +150,10 @@ This can be a useful way to ensure the `BASE_URL` is set before your site is dep
 
 The contents of the `_build/html` can be served from any static web server. The following articles outline the process of deploying your static site to well-known website providers:
 
-:::{card} GitHub Pages
-:link: ./deployment-github-pages.md
-Deploy as a static site to GitHub pages using an action.
-:::
+(static-web-services-dropdown)=
 
-:::{card} Netlify
-:link: ./deployment-netlify.md
-Deploy to Netlify as static HTML, and pull-request previews.
-:::
-
-:::{card} Web server
-:link: ./deployment-webserver.md
-Deploy on a web server, for example [Apache httpd](https://httpd.apache.org).
-:::
-
-:::{card} Read the Docs
-:link: ./deployment-readthedocs.md
-Deploy to Read the Docs.
+:::{toc}
+:context: children
 :::
 
 ## Application Websites

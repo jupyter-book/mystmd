@@ -7,29 +7,40 @@ thumbnail: ./thumbnails/citations.png
 
 Citations automatically show up in your site, including a references section at the bottom of the page.
 These citations are able to be clicked on to see more information, like the abstract.
-There are two different ways to add citations to your documents: 
-1. Add a Markdown link to a [DOI](wiki:Digital_object_identifier); and 
+There are two different ways to add citations to your documents:
+
+1. Add a Markdown link to a [DOI](wiki:Digital_object_identifier); and
 2. Add a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 (doi-links)=
+
 ## Simple Referencing with a DOI Link
 
 Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI.
-Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below 👇).
+This will be transformed to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be added to the reference section at the bottom of the page. Here's some example syntax:
 
 ```md
 This is a link in Markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
 ```
 
-It is also possible to drop the link text, that is:\
-`<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
-which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.).
-If the DOI is present on a citation from a BibTeX file in your project, that citation will be used.
-Otherwise, the citation data for these DOIs will be downloaded from `https://doi.org` once and cached to a local file in the `_build` directory.
-This cache may be cleared with `myst clean --cache`.
+To automatically insert the citation text, provide a standalone DOI link without link text:
 
-Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link.
-If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
+- `[](doi:10.5281/zenodo.6476040)`
+- `<doi:10.5281/zenodo.6476040>`
+
+For example: <https://doi.org/10.5281/zenodo.6476040>.
+
+If the BibTeX file in your project has this DOI, that citation will be used.
+
+If the BibTex file does not have this DOI, the citation data will be downloaded from `https://doi.org` (and cached to a local file in the `_build` directory).
+
+**Clear the DOI cache** with : `myst clean --cache`.
+
+**To modify the style of the inserted citation text**: Use the styles in {ref}`table-pandoc-citations` (this works with or without a BibTeX file)
+
+:::{warning} Many citations will slow down your build
+If you have many citations that aren't present in a local BibTeX file, it may slow down the build process as the citation information is fetched dynamically.
+:::
 
 :::{note} Dealing with complex DOIs
 :class: dropdown
@@ -121,6 +132,17 @@ As with a link to a DOI, you can also use the DOI directly instead of the BibTeX
   - @10.1093/nar/22.22.4673
   - Citation using a DOI directly
 ```
+
+Citations that are embedded in links will _not_ be parsed as citations.
+For example: [@jupyter-book](https://github.com/jupyter-book) or https://hackmd.io/@turingway/B1OnVLe-3.
+
+:::{note} Mixing URLs and `@citations`
+If you have a citation directly after a URL without whitespace, it may be treated as part of the URL rather than as a citation.
+
+For example, `https://mystmd.org,@scipy2025` will treat `@scipy2025` as part of the URL. To cite after a URL, add a space (`See https://mystmd.org, @scipy2025`) or use angle brackets (`See <https://mystmd.org>,@scipy2025`).
+
+**Avoid URLs with @ in square brackets**. A URL with `@` inside square brackets like `[https://hackmd.io/@user]` will be parsed as a citation, to avoid this you can escape the first bracket with a backslash `\[`.
+:::
 
 ## Citation Roles
 

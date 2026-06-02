@@ -1,5 +1,118 @@
 # myst-cli
 
+## 1.9.1
+
+### Patch Changes
+
+- 7820852: Updates to myst-execute to await closing connections for jupyter kernels
+  - myst-migrate@1.9.1
+
+## 1.9.0
+
+### Minor Changes
+
+- e8803fc: Redirect /foo/index.html to canonical URL (/foo/) to fix hydration.
+
+### Patch Changes
+
+- e8803fc: Don't check links with strict mode.
+- e8803fc: Await signals to terminate processes
+- 85ea2a0: Expose content server, websocket and sendJson helper
+- daa7c4e: Fix type of stop function
+- Updated dependencies [e8803fc]
+- Updated dependencies [e8803fc]
+- Updated dependencies [e8803fc]
+  - myst-transforms@1.3.49
+  - myst-cli-utils@2.0.14
+  - myst-parser@1.7.2
+  - myst-migrate@1.9.0
+
+## 1.8.3
+
+### Patch Changes
+
+- 1c44f36: Defer config-level part resolution until plugins are all loaded
+- 33aa6ea: Upgrade windows should have the correct path
+- b7d8eef: Add emojis to strict-mode error report at end of build. Distinguishes between errors and
+  warnings for views without support for color.
+- Updated dependencies [2b2177f]
+- Updated dependencies [6cc5e3e]
+- Updated dependencies [0b6ea12]
+- Updated dependencies [0ddb337]
+  - tex-to-myst@1.0.46
+  - myst-ext-grid@1.1.0
+  - myst-to-typst@0.0.37
+  - myst-execute@0.3.4
+  - myst-to-tex@1.0.46
+  - myst-parser@1.7.1
+  - myst-migrate@1.8.3
+  - myst-transforms@1.3.48
+
+## 1.8.2
+
+### Patch Changes
+
+- 8dd363d: Fix references in DOCX export
+- 89dd74a: Use V2 ROR API
+- f7ff135: Change internal `get_baseurl` function to match naming conventions
+- ef5a928: Update node version
+- 7b989d4: Cheanges to suport first version of anywidget
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+- Updated dependencies [ef5a928]
+- Updated dependencies [7b989d4]
+- Updated dependencies [e78417e]
+  - myst-frontmatter@1.9.5
+  - citation-js-utils@1.2.8
+  - jtex@1.0.21
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+  - myst-transforms@1.3.47
+  - myst-parser@1.7.0
+  - myst-config@1.9.5
+  - myst-migrate@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- 4617460: Add support for remote parts
+- 0e81477: Fix extends configuration with parts
+- Updated dependencies [72505e1]
+  - myst-transforms@1.3.46
+  - myst-parser@1.6.5
+  - myst-migrate@1.8.1
+
+## 1.8.0
+
+### Minor Changes
+
+- 045953f: Inherit edit_url from project config
+- 045953f: Add support for `--readthedocs` flag on `myst init` to generate ReadTheDocs configuration files
+
+### Patch Changes
+
+- 045953f: Enhancement: Making it possible to configure the maximum number of simultaneous executions
+- 045953f: Add support for pluggable API URL
+- 045953f: Improve edit URL branch logic to fix broken URLs
+- 045953f: 🔐 Use `npm ci` instead of `npm install` for theme dependencies
+- Updated dependencies [045953f]
+- Updated dependencies [045953f]
+- Updated dependencies [045953f]
+- Updated dependencies [045953f]
+  - simple-validators@1.2.0
+  - myst-frontmatter@1.9.4
+  - myst-templates@1.0.27
+  - myst-to-tex@1.0.45
+  - myst-to-typst@0.0.36
+  - myst-common@1.9.4
+  - myst-config@1.9.4
+  - myst-spec-ext@1.9.4
+  - tex-to-myst@1.0.45
+  - myst-parser@1.6.4
+  - myst-migrate@1.8.0
+  - myst-transforms@1.3.45
+
 ## 1.7.1
 
 ### Patch Changes
@@ -1525,7 +1638,6 @@
   This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
 
   Addresses:
-
   - https://github.com/jupyter-book/mystmd/pull/748
   - https://github.com/jupyter-book/mystmd/issues/816
 

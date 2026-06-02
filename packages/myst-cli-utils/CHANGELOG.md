@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.14
+
+### Patch Changes
+
+- e8803fc: Await signals to terminate processes
+
 ## 2.0.13
 
 ### Patch Changes

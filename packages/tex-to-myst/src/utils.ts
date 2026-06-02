@@ -87,6 +87,7 @@ export const LatexSpecialSymbols = {
   textvisiblespace: ' ', // Not sure this will work, but close enough
   ' ': ' ', // this is a single backslash followed by a space
   ',': THIN_SPACE, // this is a thin space (https://en.wikipedia.org/wiki/Thin_space) `\,` in latex
+  string: '', // \string is a TeX primitive that produces the literal character of the next token (e.g. \string~ → ~). The next token remains a separate node, so \string itself renders as nothing.
 };
 
 export const phrasingTypes = new Set([

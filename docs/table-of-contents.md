@@ -169,9 +169,13 @@ The title of the document in the table of contents is drawn from the
 [`title` field](frontmatter#titles) in the
 [document frontmatter](frontmatter#in-a-myst-markdown-file) or the first heading
 in the document if `title` isn't specified.
-The [`short_title`](frontmatter#all-available-frontmatter-fields) field can be used
-to specify a shorter title for navigation elements of the rendered site.
-For example:
+
+**To override the page title in navigation menus** without changing the page's primary title, you have two options:
+
+- The [`short_title`](frontmatter#all-available-frontmatter-fields) field in page frontmatter.
+- The `title` field in a Table of Contents entry (this will override `short_title` above if both are set).
+
+For example via page frontmatter:
 
 ```yaml
 ---
@@ -179,6 +183,17 @@ title: On the airspeed velocity of an unladen African swallow
 short_title: Airspeed Velocity
 ---
 ```
+
+Or via `myst.yml`:
+
+```yaml
+project:
+  toc:
+  - file: mypage.md
+    title: Acts as short-title
+```
+
+These will not change the title in the page itself, or in the document AST, they will only be used in navigation entries and such.
 
 (hidden-in-toc)=
 
@@ -197,6 +212,95 @@ project:
 ```
 
 In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
+
+## In-page table of contents
+
+The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page. This can be done at the `project`, `page`, or `section`, level.
+
+There are a few specific examples below and see the {myst:directive}`toc` docs for more information.
+
+### Display headings in a section
+
+Set `:context: section` to list the remaining **Headings** in the current section.
+It will detect the parent header where the directive is placed, and list all _child_ headings that come _after_ the location of the directive. For example, note how *this section* header is omitted.
+
+```md
+:::{toc}
+:context: section
+:::
+```
+
+
+:::{toc}
+:context: section
+:depth: 2
+:::
+
+### Display all headings on the page
+
+Set `:context: page` to list the **Headings** on the current page.
+It will display all headings on the page regardless of where you call `{toc}`.
+
+```md
+:::{toc}
+:context: page
+:::
+```
+
+:::{toc}
+:context: page
+:::
+
+
+### Display child pages of a page
+
+Set `:context: children` to list the **child pages** of the current page.
+This is useful for landing pages that want to show their sub-pages without listing the entire project TOC.
+
+```md
+:::{toc}
+:context: children
+:::
+```
+
+See [](#static-web-services-dropdown) for an example of this in action.
+
+
+### Display all pages in the project
+
+Set `:context: project` to list the Table of Contents for the entire project.
+It will essentially mirror the structure of `project.toc` and display the page titles across the project. It will not display the headers within each page.
+
+```md
+:::{toc}
+:context: project
+:::
+```
+
+::::{dropdown} Click here to see full project TOC
+:::{toc}
+:context: project
+:::
+::::
+
+### Control the depth of toc entries
+
+The `:depth:` option will display headers that are nested underneath sections.
+For example, to display only the first two layers of headers across the entire project:
+
+```md
+:::{toc}
+:context: project
+:depth: 2
+:::
+```
+
+::::{dropdown} Click here to see full project toc
+:::{toc}
+:context: project
+:depth: 2
+:::
+::::
 
 ## URL slugs and folder structure
 
@@ -222,76 +326,8 @@ If there are duplicates, these will be enumerated with a trailing number (e.g. `
 
 ### Preserve folders in URLs
 
-By default, MyST will _remove folder information_ when creating URLs, as illustrated in the example above.
-
-To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), set `site.options.folders` to `true` in `myst.yml`. For example:
-
-```{code} yml
-:filename: myst.yml
-:caption: Example of setting folders to true to show nested file structure in the URL
-:linenos:
-:lineno-start: 78
-:emphasize-lines: 82
-...
-site:
-  template: book-theme
-  options:
-    folders: true
-...
-```
-
-### Slug examples
-
-The following examples show how filenames are converted to slugs:
-
-:::{list-table}
-:header-rows: 1
-:align: center
-:label: toc-slugs
-
-* - file path
-  - slug
-* - `simple-page.md`
-  - `simple-page`
-* - `multiple---dashes.md`
-  - `multiple-dashes`
-* - `12-01-remove_digits.md`
-  - `remove-digits`
-* - `approx-π-suite.md`
-  - `approx-suite`
-* - `notes-élémentaires.md`
-  - `notes-l-mentaires`
-* - `2025_12_01-dates.md`
-  - `2025-12-01-dates`
-* - `2025_12_01.md`
-  - `2025-12-01`
-* - `2025_12.md`
-  - `2025-12-1`
-* - `2025-12-01-minutes.md`
-  - `2025-12-01-minutes`
-* - `2025.md`
-  - `2025`
-* - `01.md`
-  - `01`
-:::
-
-Here is the effect of setting `site.options.folders` to `true` or `false`:
-
-:::{list-table}
-:header-rows: 1
-:align: center
-:label: toc-folders
-
-* - file path
-  - default
-  - folders=true
-* - `simple-page.md`
-  - `simple-page`
-  - `simple-page`
-* - `f1/f2/nested-file.md`
-  - `nested-file`
-  - `f1/f2/nested-file`
-:::
+By default, MyST will _remove folder information_ when creating URLs.
+To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), see [](#site-url-folders).
 
 (implicit-toc)=
 
@@ -352,7 +388,7 @@ New users should use `myst.yml` instead.
 :::
 
 Jupyter Book v2 uses the MyST engine, but Jupyter Book v1 uses a different configuration structure that is designed for Sphinx. However, you can currently use a Jupyter Book v1 Table of Contents file (`_toc.yml`) with MyST.The documentation for this format is fully described in [Jupyter Book](https://jupyterbook.org/en/stable/structure/toc.html).
-::::
+
 
 ## Configure your Table of Contents in a separate file using `extend:`
 

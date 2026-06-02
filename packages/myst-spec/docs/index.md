@@ -12,7 +12,7 @@ There are three components that this documentation and repository aims to formal
 
 ## MyST Markup Language
 
-MyST is a superset of [CommonMark](https://commonmark.org/) (a standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. These extensions points are influenced by [ReStructured Text (RST)](https://en.wikipedia.org/wiki/ReStructuredText) and [Sphinx](https://www.sphinx-doc.org/) -- pulling on the nomenclature and introducing additional standards where appropriate. `directives` are block-level extension points, like callout panels, tabs, figures or embedded charts; and `roles` are inline extension points, for components like references, citations, or inline math.
+MyST is a superset of [CommonMark](https://commonmark.org/) (a standard form of Markdown) and allows you to directly create “directives” and “roles” as extension points in the language. These extension points are influenced by [ReStructured Text (RST)](https://en.wikipedia.org/wiki/ReStructuredText) and [Sphinx](https://www.sphinx-doc.org/) -- pulling on the nomenclature and introducing additional standards where appropriate. `directives` are block-level extension points, like callout panels, tabs, figures or embedded charts; and `roles` are inline extension points, for components like references, citations, or inline math.
 
 ## MyST Abstract Syntax Tree
 
@@ -22,7 +22,7 @@ The MyST AST introduces nodes for directives and roles, as well as numerous new 
 
 ## MyST Test Cases
 
-To validate implementations of MyST spec, a suite of test cases is provided [here in `myst.tests.json`](https://unpkg.com/browse/myst-spec/dist/). This file is a JSON list of test cases with MyST markup, MyST AST, and some example HTML (optional). The cases are similar to [CommonMark test cases](https://spec.commonmark.org/) with the addition of the AST representation. The MyST test cases include all the CommonMark examples as well as many MyST specific examples.
+To validate implementations of the MyST spec, a suite of test cases is provided [here in `myst.tests.json`](https://unpkg.com/browse/myst-spec/dist/). This file is a JSON list of test cases with MyST markup, MyST AST, and example HTML in some cases. The cases are similar to [CommonMark test cases](https://spec.commonmark.org/) with the addition of the AST representation. The MyST test cases include all the CommonMark examples as well as many MyST specific examples.
 
 ```{note}
 These test cases are still being expanded as the spec is developed.  They do not yet include all edge cases and are also subject to change as the spec is developed.

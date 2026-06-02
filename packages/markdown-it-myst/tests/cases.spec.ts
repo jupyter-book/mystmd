@@ -50,7 +50,7 @@ casesList.forEach(({ title, cases, plugins }) => {
           mdit.use(PLUGINS[p]);
         });
         const parsed = mdit.parse(md, {});
-        expect(parsed).containSubset(tokens);
+        expect(parsed).toMatchObject(tokens);
       },
     );
   });

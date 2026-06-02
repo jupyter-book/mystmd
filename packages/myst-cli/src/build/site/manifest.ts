@@ -13,7 +13,7 @@ import {
 } from 'myst-frontmatter';
 import type MystTemplate from 'myst-templates';
 import { filterKeys } from 'simple-validators';
-import { resolveToAbsolute } from '../../config.js';
+import { resolveToAbsolute } from '../../utils/resolveToAbsolute.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
@@ -149,7 +149,7 @@ export async function localToManifestProject(
   const parts = resolveFrontmatterParts(session, projFrontmatter);
   const banner = await transformBanner(
     session,
-    path.join(projectPath, 'myst.yml'),
+    projConfigFile ?? path.join(projectPath, 'myst.yml'),
     projFrontmatter,
     session.publicPath(),
     { altOutputFolder: '/', webp: true },
@@ -157,7 +157,7 @@ export async function localToManifestProject(
   const thumbnail = await transformThumbnail(
     session,
     null,
-    path.join(projectPath, 'myst.yml'),
+    projConfigFile ?? path.join(projectPath, 'myst.yml'),
     projFrontmatter,
     session.publicPath(),
     { altOutputFolder: '/', webp: true },

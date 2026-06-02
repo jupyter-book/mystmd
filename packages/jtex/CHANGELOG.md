@@ -1,5 +1,15 @@
 # jtex
 
+## 1.0.21
+
+### Patch Changes
+
+- ef5a928: Update node version
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-common@1.9.5
+
 ## 1.0.20
 
 ### Patch Changes

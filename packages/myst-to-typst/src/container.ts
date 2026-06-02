@@ -118,7 +118,7 @@ export const containerHandler: Handler = (node, state) => {
     const allSubFigs =
       nonCaptions.filter((item: GenericNode) => item.type === 'container').length ===
       nonCaptions.length;
-    state.useMacro('#import "@preview/subpar:0.1.1"');
+    state.useMacro('#import "@preview/subpar:0.2.2"');
     state.useMacro('#let breakableDefault = true');
     state.write(
       `#show figure: set block(breakable: ${allSubFigs ? 'false' : 'breakableDefault'})\n`,

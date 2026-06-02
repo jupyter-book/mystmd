@@ -183,7 +183,7 @@ For animated images, `.gif`, the first frame is extracted for static exports.
 :class: dropdown
 The image transforms and optimizations requires you to have the following packages installed:
 
-- [imagemagik](https://imagemagick.org/) for conversion between raster formats
+- [ImageMagick](https://imagemagick.org/) for conversion between raster formats
 - [inkscape](https://inkscape.org/) for conversion between some vector formats
 - [webp](https://developers.google.com/speed/webp) for image optimizations
 

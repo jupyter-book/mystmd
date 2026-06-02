@@ -1,5 +1,48 @@
 # myst-transforms
 
+## 1.3.49
+
+### Patch Changes
+
+- e8803fc: Recognize `anywidget` as valid figure container content so figures wrapping the `{anywidget}` directive no longer error during transforms and exports such as MECA. Fixes #2809
+  .
+  - myst-to-html@1.7.2
+
+## 1.3.48
+
+### Patch Changes
+
+- myst-to-html@1.7.1
+
+## 1.3.47
+
+### Patch Changes
+
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+  - myst-to-html@1.7.0
+
+## 1.3.46
+
+### Patch Changes
+
+- 72505e1: Fix URL generation bug in toc directive
+  - myst-to-html@1.6.5
+
+## 1.3.45
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+  - myst-spec-ext@1.9.4
+  - myst-to-html@1.6.4
+
 ## 1.3.44
 
 ### Patch Changes
@@ -617,7 +660,6 @@
   This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
 
   Addresses:
-
   - https://github.com/jupyter-book/mystmd/pull/748
   - https://github.com/jupyter-book/mystmd/issues/816
   - myst-common@1.1.21

@@ -20,6 +20,8 @@ export type LocalProjectPage = {
   file: string;
   slug: string;
   level: PageLevels;
+  /** Optional short_title override from the TOC entry */
+  title?: string;
   /** Flag to mark if the page is implied from a TOC pattern or folder structure */
   implicit?: boolean;
 };

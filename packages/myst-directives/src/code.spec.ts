@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { getCodeBlockOptions, parseTags } from './code.js';
+import { codeCellDirective, getCodeBlockOptions, parseTags } from './code.js';
 import { VFile } from 'vfile';
 import type { DirectiveData, GenericNode } from 'myst-common';
 
@@ -112,5 +112,23 @@ describe('Code block options', () => {
     const tags = parseTags(input, vfile, {} as GenericNode);
     expect(tags).toEqual(output);
     expect(vfile.messages.length).toBe(numErrors);
+  });
+});
+
+describe('code-cell directive', () => {
+  test('linenos and emphasize-lines are passed to code node', () => {
+    const vfile = new VFile();
+    const data: DirectiveData = {
+      name: 'code-cell',
+      node: {} as any,
+      arg: 'python',
+      body: 'print("hello")',
+      options: { linenos: true, 'emphasize-lines': '2,3' },
+    };
+    const result = codeCellDirective.run!(data, vfile, { parseMyst: () => [] } as any);
+    const block = result[0];
+    const code = block.children![0];
+    expect(code.showLineNumbers).toBe(true);
+    expect(code.emphasizeLines).toEqual([2, 3]);
   });
 });

@@ -1,0 +1,11 @@
+version: 1
+project:
+  authors:
+    - name: Franklin Koch
+  abstract: |
+    # Hello
+
+    But does abc work here...?
+
+    ```{abc}
+    ```

@@ -179,6 +179,15 @@ cases:
         content: dois/outputs/dois.tex
       - path: dois/_build/main.bib
         content: dois/outputs/dois.bib
+  - title: Strict build does not check external links
+    cwd: strict-no-check-links
+    command: myst build --site --strict
+    outputs: []
+  - title: Check-links with strict fails on broken links
+    cwd: strict-no-check-links
+    command: myst build --site --check-links --strict
+    expectFailure: true
+    outputs: []
   - title: Basic site build
     cwd: basic-site
     command: myst build
@@ -553,3 +562,32 @@ cases:
       - path: hidden-pages/_build/html/index.html
       - path: hidden-pages/_build/html/hidden/index.html
       - path: hidden-pages/_build/html/not-hidden/index.html
+  - title: Serial execution
+    cwd: serial-execution
+    command: myst build --site --execute --execute-parallel 1
+    env:
+      MYST_TEST_SLEEP_MS: 4000
+      MYST_TEST_DELAY_MS: 2000
+    # Used to be 15000, increased due to CI slowness
+    # NOTE that the full test suite has a timeout here too: 
+    # mystmd/packages/mystmd/tests/endToEnd.spec.ts
+    timeout: 30000
+    outputs:
+      - path: serial-execution/stop-first
+      - path: serial-execution/stop-second
+  - title: Concurrent execution
+    cwd: concurrent-execution
+    command: myst build --site --execute --execute-parallel 2
+    # Used to be 5000, increased due to CI slowness
+    timeout: 15000
+    outputs:
+      - path: concurrent-execution/output-first.txt
+      - path: concurrent-execution/output-second.txt
+  - title: Plugins load before parts in extend yml files
+    cwd: extend-part-plugin
+    command: myst build
+    outputs:
+      - path: extend-part-plugin/_build/site/content/index.json
+        content: extend-part-plugin/outputs/index.json
+      - path: extend-part-plugin/_build/site/config.json
+        content: extend-part-plugin/outputs/config.json
