@@ -97,11 +97,15 @@ mamba 1.5.8
 conda 24.7.1
 ```
 
-🛠 Install `texlive-core` and `latexmk` from `conda-forge`:
+🛠 Install `texlive-core`, `latexmk`, and `imagemagick` from `conda-forge`:
 
 ```shell
-$ mamba install -c conda-forge texlive-core latexmk
+$ mamba install -c conda-forge texlive-core latexmk imagemagick
 ```
+
+`imagemagick` is optional, but recommended if your documents include images that need conversion for PDF output.
+
+For Debian or Ubuntu based systems, the equivalent packages commonly include `texlive-xetex`, `texlive-fonts-recommended`, `texlive-plain-generic`, `latexmk`, and `imagemagick`.
 
 ::::
 :::::
