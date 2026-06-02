@@ -45,7 +45,7 @@ casesList.forEach(({ title, cases, plugins }) => {
     test.each(casesToUse.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
       (_, { md, tokens }) => {
-        const mdit = MarkdownIt();
+        const mdit = MarkdownIt({ html: true });
         plugins.forEach((p) => {
           mdit.use(PLUGINS[p]);
         });

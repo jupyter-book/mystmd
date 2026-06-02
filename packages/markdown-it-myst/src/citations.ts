@@ -31,9 +31,9 @@ type InlineState = {
 
 export const citationsPlugin: PluginWithOptions = (md) => {
   const regexes = {
-    citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?<>~/]*)(.+)?$/,
+    citation: /^([^^-]|[^^].+?)?(-)?@([\w][\w:.#$%&\-+?>~/]*)(.+)?$/,
     // Only allow a short [suffix] for in text citations (e.g. 50 characters)
-    inText: /^@((?:[\w|{][\w:.#$%&\-+?<>~/]*[\w|}])|\w)(\s*)(\[([^\]]{1,50})\])?/,
+    inText: /^@((?:[\w|{][\w:.#$%&\-+?>~/]*[\w|}])|\w)(\s*)(\[([^\]]{1,50})\])?/,
     allowedBefore: /^[^a-zA-Z0-9]$/,
   };
 
