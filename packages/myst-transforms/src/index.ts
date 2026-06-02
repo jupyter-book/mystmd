@@ -58,7 +58,11 @@ export {
 } from './targets.js';
 export { joinGatesPlugin, joinGatesTransform } from './joinGates.js';
 export { glossaryPlugin, glossaryTransform } from './glossary.js';
-export { abbreviationPlugin, abbreviationTransform } from './abbreviations.js';
+export {
+  abbreviationPlugin,
+  abbreviationTransform,
+  abbreviationsListTransform,
+} from './abbreviations.js';
 export { includeDirectivePlugin, includeDirectiveTransform } from './include.js';
 export { containerChildrenPlugin, containerChildrenTransform } from './containers.js';
 export { headingDepthPlugin, headingDepthTransform } from './headings.js';

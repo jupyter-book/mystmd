@@ -19,28 +19,36 @@ Expected eventual behavior:
 Before 1098 is implemented, this sample is expected to expose missing directive support.
 
 
-### Local testing
-Building the changes requires:
+## Local Testing
 
-1. Build the changes
-```
-  cd mystmd
-  bun run build
-```
-2. Then run the local built CLI against the sample fixture:
-```
-  cd packages/mystmd/tests/abbreviations-directive
-  bun ../../dist/myst.cjs build --html --ci
-```
-  The expected result is limited: MyST should recognize {abbreviations} as a known directive
-  and parse it into a placeholder. You should not expect a rendered abbreviation list yet; that comes later.
+Build the changes:
 
-3. Run the focused tests:
+```sh
+cd mystmd
+bun run build
 ```
-  cd mystmd
-  bun test packages/myst-directives/src/abbreviations.spec.ts
+
+Run the local built CLI against the sample fixture:
+
+```sh
+cd packages/mystmd/tests/abbreviations-directive
+bun ../../dist/myst.cjs build --html --ci
 ```
-  And the directive package regression:
+
+At the parser stage, the expected result is limited: MyST should recognize `{abbreviations}` as a known directive and parse it into a placeholder. You should not expect a rendered abbreviation list yet.
+
+Validate the placeholder-to-definition-list transform directly:
+
+```sh
+cd mystmd/packages/myst-transforms
+bun test tests/abbreviations-list.spec.ts
 ```
-  bun test packages/myst-directives/src
+
+Run the existing inline abbreviation regression:
+
+```sh
+cd mystmd/packages/myst-transforms
+bun test tests/abbreviations.spec.ts
 ```
+
+The local transform test does not wire the transform into the CLI/site build. Rendered sample pages should not show the generated abbreviation list until project/site wiring is implemented.

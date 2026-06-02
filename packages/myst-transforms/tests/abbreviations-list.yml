@@ -1,0 +1,158 @@
+cases:
+  - title: simple generated list
+    opts:
+      abbreviations:
+        MyST: Markedly Structured Text
+        API: Application Programming Interface
+    before:
+      type: root
+      children:
+        - type: abbreviations
+          children: []
+    after:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: definitionList
+              children:
+                - type: definitionTerm
+                  children:
+                    - type: text
+                      value: API
+                - type: definitionDescription
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Application Programming Interface
+                - type: definitionTerm
+                  children:
+                    - type: text
+                      value: MyST
+                - type: definitionDescription
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Markedly Structured Text
+          data:
+            part: abbreviations
+  - title: null abbreviations omitted
+    opts:
+      abbreviations:
+        HR: Heart Rate
+        SHRILL: null
+    before:
+      type: root
+      children:
+        - type: abbreviations
+          children: []
+    after:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: definitionList
+              children:
+                - type: definitionTerm
+                  children:
+                    - type: text
+                      value: HR
+                - type: definitionDescription
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Heart Rate
+          data:
+            part: abbreviations
+  - title: heading preserved
+    opts:
+      abbreviations:
+        API: Application Programming Interface
+    before:
+      type: root
+      children:
+        - type: abbreviations
+          children:
+            - type: heading
+              depth: 2
+              enumerated: false
+              children:
+                - type: text
+                  value: Abbreviations
+    after:
+      type: root
+      children:
+        - type: block
+          children:
+            - type: heading
+              depth: 2
+              enumerated: false
+              children:
+                - type: text
+                  value: Abbreviations
+            - type: definitionList
+              children:
+                - type: definitionTerm
+                  children:
+                    - type: text
+                      value: API
+                - type: definitionDescription
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Application Programming Interface
+          data:
+            part: abbreviations
+  - title: no abbreviations
+    opts:
+      abbreviations: {}
+    before:
+      type: root
+      children:
+        - type: abbreviations
+          children: []
+    after:
+      type: root
+      children:
+        - type: block
+          children: []
+          data:
+            part: abbreviations
+  - title: common options stay on wrapper
+    opts:
+      abbreviations:
+        API: Application Programming Interface
+    before:
+      type: root
+      children:
+        - type: abbreviations
+          label: abbreviations-list
+          identifier: abbreviations-list
+          class: compact
+          children: []
+    after:
+      type: root
+      children:
+        - type: block
+          label: abbreviations-list
+          identifier: abbreviations-list
+          class: compact
+          children:
+            - type: definitionList
+              children:
+                - type: definitionTerm
+                  children:
+                    - type: text
+                      value: API
+                - type: definitionDescription
+                  children:
+                    - type: paragraph
+                      children:
+                        - type: text
+                          value: Application Programming Interface
+          data:
+            part: abbreviations

@@ -1,5 +1,5 @@
 import type { Plugin } from 'unified';
-import type { GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { Abbreviation, Text } from 'myst-spec';
@@ -80,3 +80,43 @@ export const abbreviationPlugin: Plugin<[Options], GenericParent, GenericParent>
   (opts) => (tree) => {
     abbreviationTransform(tree, opts);
   };
+
+export function abbreviationListChildren(abbreviations?: Record<string, string | null>) {
+  const entries = Object.entries(abbreviations ?? {})
+    .filter((entry): entry is [string, string] => !!entry[1])
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  if (!entries.length) return [];
+
+  return [
+    {
+      type: 'definitionList',
+      children: entries
+        .map(([abbr, title]) => [
+          {
+            type: 'definitionTerm',
+            children: [{ type: 'text', value: abbr }],
+          },
+          {
+            type: 'definitionDescription',
+            children: [
+              {
+                type: 'paragraph',
+                children: [{ type: 'text', value: title }],
+              },
+            ],
+          },
+        ])
+        .flat(),
+    },
+  ];
+}
+
+export function abbreviationsListTransform(mdast: GenericParent, opts?: Options) {
+  const nodes = selectAll('abbreviations', mdast) as GenericNode[];
+  nodes.forEach((node) => {
+    node.type = 'block';
+    node.data = { ...(node.data ?? {}), part: 'abbreviations' };
+    node.children = [...(node.children ?? []), ...abbreviationListChildren(opts?.abbreviations)];
+  });
+}
