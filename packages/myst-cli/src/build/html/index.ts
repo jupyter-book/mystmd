@@ -24,6 +24,18 @@ import type { LocalProjectPage } from '../../project/types.js';
 
 const limitConnections = pLimit(5);
 
+/**
+ * Return true if any project in the current site has thebe configured.
+ * `project: jupyter: ...` aliases to `project: thebe`.
+ */
+function siteUsesThebe(session: ISession): boolean {
+  const state = session.store.getState();
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
+  return (siteConfig?.projects ?? []).some(
+    (proj) => !!proj.path && !!selectors.selectLocalProjectConfig(state, proj.path)?.thebe,
+  );
+}
+
 export async function currentSiteRoutes(
   session: ISession,
   host: string,
@@ -199,9 +211,16 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   );
   await appServer.stop();
 
-  // Copy the files for the template used
+  // Copy files for the template used.
+
+  // Skip thebe JS chunks unless they are required.
   const templateBuildDir = path.join(template.templatePath, 'public');
-  fs.copySync(templateBuildDir, htmlDir);
+  const hasThebe = siteUsesThebe(session);
+  fs.copySync(templateBuildDir, htmlDir, {
+    filter: (src) =>
+      hasThebe ||
+      !path.basename(src).match(/^(\d+\.)?(thebe-(core|lite)(\.min)?\.js|thebe-core.*\.css)$/),
+  });
 
   // Copy all of the static assets
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
