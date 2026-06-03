@@ -4,21 +4,22 @@ short_title: Downloads & Static Files
 description: Add download links to your website on each page or project
 ---
 
-You can bundle files with your MyST site for others to download and re-use.
-There are two ways to specify downloads with a MyST site.
+MyST provides three independent mechanisms for bundling files with your site:
 
-:::{note} Download URLs will changed based on the file content
-MyST will generate a _hashed filename_ for any files bundled with your site.
-For example: `myfile.[HASH].png`.
-This means download URLs will not be persistent if the content changes.
+- **`project.static_files`** — copies files or folders into the build output at a stable, predictable URL, without hashing and without rendering any link.
+  Use this for files that must live at a known location (e.g. a `CNAME` file for a custom domain).
+  See [the static files section](#downloads:static-files).
+- **`{download}` role** — an inline role used directly in content to create a download link at the point of use.
+  MyST content-hashes the filename (e.g. `myfile.[HASH].png`) so downstream caches invalidate when the file changes.
+  See [the `{download}` role section](#download-role).
+- **`downloads:` frontmatter** — page or project configuration that populates the page's download panel in the site UI (not inline in content).
+  Can reference local files, export IDs, or remote URLs.
+  See [the `downloads:` frontmatter section](#download-link).
 
-See this issue tracking how to make these URLs stable: https://github.com/jupyter-book/mystmd/issues/1196
-:::
+(download-role)=
+## Inline download links with the `{download}` role
 
-## Use the `{download}` role
-
-The {myst:role}`download` role takes a path to a file, and generates a download link from it.
-Such a role may be defined at the project or the page level.
+The {myst:role}`download` role takes a path to a file and generates an inline download link at that point in the content.
 
 For example:
 
@@ -31,8 +32,48 @@ For example:
 {download}`references.bib`
 ::::
 
+(downloads:static-files)=
+## Include static files with stable links
+
+Use the `project.static_files` option to copy files or folders into your build output.
+This is useful when a file needs to keep a predictable name at a known location.
+
+To do so, add a list of paths under `project:` in your `myst.yml`:
+
+```{code-block} yaml
+:filename: myst.yml
+
+project:
+  static_files:
+    - path/to/CNAME # A file name, for example
+    - path/to/assets # A folder name, for example
+```
+
+Each entry is copied into the **root** of the build output (`_build/html/`).
+The behavior changes slightly based on whether you link to a file or a folder:
+
+- A **file** path (e.g. `path/to/CNAME`) is copied to the root using only its filename.
+  Parent directories are **not** preserved, so the file ends up at `_build/html/CNAME`.
+- A **folder** path (e.g. `path/to/assets`) is copied recursively using only the folder's name.
+  As with files, parent directories are **not** preserved, but sub-folder contents are preserved.
+  The folder and its contents end up at `_build/html/assets/...`.
+
+:::{note} Linking to static files from Markdown
+Static files are accessible by URL in the final build (e.g. `/CNAME`, `/assets/...`), but MyST does not resolve them as content pages.
+Markdown links such as `[text](path/to/CNAME)` will produce a "file not found" warning during the build.
+To suppress the warning, use an explicit URL path in your link (e.g. `[text](/CNAME)`), or use the {myst:role}`download` role to attach the file as a download link instead.
+:::
+
+:::{note} Want cache busting or a rendered inline link?
+If you'd rather have MyST render the link inline and hash the filename for cache busting, use the {myst:role}`download` role instead.
+If you want the file to appear in the page's download panel rather than inline in content, use the [`downloads:` frontmatter](#download-link) instead.
+:::
+
 (download-link)=
-## Use project or page configuration
+## Download panel with `downloads:` frontmatter
+
+The `downloads:` key in page or project frontmatter populates the **download panel** shown in the site UI (typically in the page toolbar).
+It is unrelated to the `{download}` role: `downloads:` configures a UI element, not inline content links.
 
 There are some special configuration fields to specify files that should be bundled for download with your site. These are:
 
@@ -74,6 +115,34 @@ project:
 ```
 
 :::
+
+
+(multiple-downloads)=
+### Example: Define multiple downloads at once
+
+The following example has several downloads: the source file, as above, an exported pdf, a remote file, and a link to another website.
+In addition, when you specify `downloads:`, it will over-ride the default download behavior (which is to link to the source file of the current page).
+This example manually includes a download to the source file to re-enable this.
+
+```{code-block} yaml
+:filename: index.md
+---
+exports:
+  - output: paper.pdf
+    template: lapreprint-typst
+    id: my-paper
+downloads:
+  - file: index.md
+    title: Source File
+  - id: my-paper
+    title: Publication
+  - url: https://example.com/files/script.py
+    filename: script.py
+    title: Sample Code
+  - url: https://example.com/more-info
+    title: More Info
+---
+```
 
 
 (include-exported-pdf)=
@@ -179,32 +248,5 @@ downloads:
     title: Source File
 ```
 
-(multiple-downloads)=
-
-## Include several downloads at once
-
-The following example has several downloads: the source file, as above, an exported pdf, a remote file, and a link to another website.
-In addition, when you specify `downloads:`, it will over-ride the default download behavior (which is to link to the source file of the current page).
-This example manually includes a download to the source file to re-enable this.
-
-```{code-block} yaml
-:filename: index.md
----
-exports:
-  - output: paper.pdf
-    template: lapreprint-typst
-    id: my-paper
-downloads:
-  - file: index.md
-    title: Source File
-  - id: my-paper
-    title: Publication
-  - url: https://example.com/files/script.py
-    filename: script.py
-    title: Sample Code
-  - url: https://example.com/more-info
-    title: More Info
----
-```
 
 [typst-gha]: https://github.com/marketplace/actions/setup-typst

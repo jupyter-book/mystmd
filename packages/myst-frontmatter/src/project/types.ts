@@ -48,6 +48,7 @@ export const PROJECT_FRONTMATTER_KEYS = [
   'references',
   'requirements',
   'resources',
+  'static_files',
   'thebe',
   'toc',
 ];
@@ -87,6 +88,7 @@ export type ProjectFrontmatter = ProjectAndPageFrontmatter & {
   references?: ExternalReferences;
   requirements?: string[];
   resources?: string[];
+  static_files?: string[];
   social?: SocialLinks;
   thebe?: ExpandedThebeFrontmatter;
   toc?: any[];

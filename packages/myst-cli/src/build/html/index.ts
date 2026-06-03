@@ -20,6 +20,7 @@ import { slugToUrl } from 'myst-common';
 import pLimit from 'p-limit';
 import { fetchWithRetry } from '../../utils/fetchWithRetry.js';
 import { selectors } from '../../store/index.js';
+import { copyStaticFiles } from '../../utils/copyStaticFiles.js';
 import type { LocalProjectPage } from '../../project/types.js';
 
 const limitConnections = pLimit(5);
@@ -224,6 +225,14 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
 
   // Copy all of the static assets
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
+
+  // Copy user static files to html build root
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  for (const proj of siteConfig?.projects ?? []) {
+    if (!proj.path) continue;
+    const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), proj.path);
+    copyStaticFiles(session, projectConfig?.static_files ?? [], htmlDir, proj.path);
+  }
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
   fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
 

@@ -1,10 +1,12 @@
 import chalk from 'chalk';
 import cors from 'cors';
 import express from 'express';
+import type { Application } from 'express';
 import getPort, { portNumbers } from 'get-port';
 import { makeExecutable, killProcessTree } from 'myst-cli-utils';
 import type child_process from 'child_process';
 import { nanoid } from 'nanoid';
+import type { Server } from 'node:http';
 import { join } from 'node:path';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
@@ -15,6 +17,34 @@ import { createServerLogger } from './logger.js';
 import { buildSite } from './prepare.js';
 import { installSiteTemplate, getSiteTemplate } from './template.js';
 import { watchContent } from './watch.js';
+
+/*
+Find a free port close to the preferred port and bind to it.
+If that port was taken by the time we tried to bind, probe again and retry.
+ */
+async function listenOnPreferredPort(
+  app: Application,
+  host: string,
+  preferredPort?: number,
+): Promise<{ server: Server; port: number }> {
+  const tryListen = (port: number) =>
+    new Promise<Server>((resolve, reject) => {
+      const s = app.listen(port, host, () => resolve(s));
+      s.once('error', (err) => {
+        s.close();
+        reject(err);
+      });
+    });
+
+  const first = preferredPort ?? (await getPort({ port: portNumbers(3100, 3200) }));
+  try {
+    return { server: await tryListen(first), port: first };
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== 'EADDRINUSE') throw err;
+    const second = await getPort({ port: portNumbers(3100, 3200) });
+    return { server: await tryListen(second), port: second };
+  }
+}
 
 const DEFAULT_HOST = 'localhost';
 const DEFAULT_START_COMMAND = 'npm run start';
@@ -39,7 +69,7 @@ export type StartOptions = ProcessSiteOptions &
  */
 export async function startContentServer(session: ISession, opts?: ServerOptions) {
   const host = opts?.serverHost || DEFAULT_HOST;
-  const port = opts?.serverPort ?? (await getPort({ port: portNumbers(3100, 3200) }));
+  let port = 0;
   const app = express();
   app.use(cors());
   app.get('/', (req, res) => {
@@ -56,9 +86,9 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
   app.use('/objects.inv', express.static(join(session.sitePath(), 'objects.inv')));
   app.use('/myst.xref.json', express.static(join(session.sitePath(), 'myst.xref.json')));
   app.use('/myst.search.json', express.static(join(session.sitePath(), 'myst.search.json')));
-  const server = app.listen(port, host, () => {
-    session.log.debug(`Content server listening on port ${port}`);
-  });
+  const { server, port: boundPort } = await listenOnPreferredPort(app, host, opts?.serverPort);
+  port = boundPort;
+  session.log.debug(`Content server listening on port ${port}`);
   const wss = new WebSocketServer({
     noServer: true,
     path: '/socket',
@@ -135,6 +165,60 @@ export type ServerInfo = {
   stop: () => Promise<void>;
 };
 
+/*
+Start the app server (npm start) on the given port.
+Rejects if the process exits before emitting the ready signal.
+*/
+async function tryStartAppServer(
+  mystTemplate: Awaited<ReturnType<typeof getSiteTemplate>>,
+  session: ISession,
+  host: string,
+  contentServer: Awaited<ReturnType<typeof startContentServer>>,
+  opts: StartOptions,
+  port: number,
+): Promise<ServerInfo> {
+  const appServer = { port, contentServer } as ServerInfo;
+  let started = false;
+  await new Promise<void>((resolve, reject) => {
+    const start = makeExecutable(
+      mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
+      createServerLogger(session, {
+        host,
+        ready: () => {
+          started = true;
+          resolve();
+        },
+      }),
+      {
+        cwd: mystTemplate.templatePath,
+        env: {
+          ...process.env,
+          HOST: host,
+          CONTENT_CDN_PORT: String(contentServer.port),
+          PORT: String(port),
+          MODE: opts.buildStatic ? 'static' : 'app',
+          BASE_URL: opts.baseurl || undefined,
+        },
+        getProcess(proc) {
+          appServer.process = proc;
+          proc.on('exit', (code) => {
+            if (!started)
+              reject(new Error(`App server exited (code ${code}) before becoming ready`));
+          });
+        },
+      },
+    );
+    start().catch((e) => {
+      if (!started) reject(e);
+    });
+  });
+  appServer.stop = async () => {
+    if (appServer.process) await killProcessTree(appServer.process);
+    contentServer.stop();
+  };
+  return appServer satisfies ServerInfo;
+}
+
 export async function startServer(
   session: ISession,
   opts: StartOptions,
@@ -166,35 +250,11 @@ export async function startServer(
   session.log.info(
     `\n\n\t✨✨✨  Starting ${mystTemplate.getValidatedTemplateYml().title}  ✨✨✨\n\n`,
   );
-  const port = opts?.port ?? (await getPort({ port: portNumbers(3000, 3100) }));
-  const appServer = { port, contentServer } as ServerInfo;
-  await new Promise<void>((resolve) => {
-    const start = makeExecutable(
-      mystTemplate.getValidatedTemplateYml().build?.start ?? DEFAULT_START_COMMAND,
-      createServerLogger(session, { host, ready: resolve }),
-      {
-        cwd: mystTemplate.templatePath,
-        env: {
-          ...process.env,
-          HOST: host,
-          CONTENT_CDN_PORT: String(contentServer.port),
-          PORT: String(port),
-          MODE: opts.buildStatic ? 'static' : 'app',
-          BASE_URL: opts.baseurl || undefined,
-        },
-        getProcess(process) {
-          appServer.process = process;
-        },
-      },
-    );
-    start().catch((e) => session.log.debug(e));
-  });
-  appServer.stop = async () => {
-    if (appServer.process) {
-      await killProcessTree(appServer.process);
-    }
-    contentServer.stop();
-  };
-
-  return appServer satisfies ServerInfo;
+  const first = opts?.port ?? (await getPort({ port: portNumbers(3000, 3100) }));
+  try {
+    return await tryStartAppServer(mystTemplate, session, host, contentServer, opts, first);
+  } catch {
+    const second = await getPort({ port: portNumbers(3000, 3100) });
+    return await tryStartAppServer(mystTemplate, session, host, contentServer, opts, second);
+  }
 }
