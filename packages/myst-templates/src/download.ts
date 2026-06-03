@@ -69,7 +69,7 @@ function defaultUrl(session: ISession, template: string) {
 const SITE_TEMPLATE_DEFAULT_ORG = 'jupyter-book';
 const SITE_TEMPLATE_REPO = 'myst-theme';
 // not quite sure which name the release name has this prefix or not
-const SITE_TEMPLATE_TAG_PREFIX = 'myst-react@';
+const SITE_TEMPLATE_TAG_PREFIX = 'myst-to-react@';
 const DEFAULT_SITE_TEMPLATE = 'book-theme';
 
 // Matches `[org/]name[@version]`
