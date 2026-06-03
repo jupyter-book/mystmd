@@ -144,6 +144,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
     opts.basePath,
     kernelspec,
     vfile,
+    log,
   );
   if (sessionConnection === undefined) {
     log.error(`Unable to create a new kernel ${kernelspec.name}`);

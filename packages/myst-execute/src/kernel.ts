@@ -2,20 +2,30 @@ import type { KernelSpec } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { IExpressionResult } from 'myst-common';
+import type { Logger } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import path from 'node:path';
 import assert from 'node:assert';
+import { setTimeout as delay } from 'node:timers/promises';
 
 type ISessionConnection = Awaited<ReturnType<SessionManager['startNew']>>;
 type ISessionConnectionWithKernel = ISessionConnection & {
   kernel: NonNullable<ISessionConnection['kernel']>;
 };
 
+// A kernel can start but never finish connecting, which would hang the build
+// forever. Wait for it to be ready, and restart it a few times if it isn't.
+// Healthy kernels connect in about a second, so this timeout is intentionally
+// short to recover quickly.
+const KERNEL_READY_TIMEOUT_MS = 10_000;
+const KERNEL_READY_ATTEMPTS = 3;
+
 export async function createKernelConnection(
   sessionManager: SessionManager,
   basePath: string,
   kernelspec: KernelSpec,
   vfile: VFile,
+  log?: Logger,
 ): Promise<ISessionConnectionWithKernel | undefined> {
   const sessionOpts = {
     type: 'notebook',
@@ -25,11 +35,25 @@ export async function createKernelConnection(
       name: kernelspec.name,
     },
   };
-  const connection = await sessionManager.startNew(sessionOpts);
-  if (connection.kernel === null) {
-    return undefined;
+  for (let attempt = 1; attempt <= KERNEL_READY_ATTEMPTS; attempt += 1) {
+    const connection = await sessionManager.startNew(sessionOpts);
+    if (connection.kernel === null) {
+      return undefined;
+    }
+    const ready = await Promise.race([
+      connection.kernel.info.then(() => true),
+      // ref: false makes sure the timer doesn't keep the process alive if kernel starts
+      delay(KERNEL_READY_TIMEOUT_MS, false, { ref: false }),
+    ]);
+    if (ready) {
+      return connection as any;
+    }
+    log?.warn(
+      `Kernel "${kernelspec.name}" did not become ready (attempt ${attempt}/${KERNEL_READY_ATTEMPTS}); restarting it`,
+    );
+    await connection.shutdown().catch(() => undefined);
   }
-  return connection as any;
+  return undefined;
 }
 
 /**

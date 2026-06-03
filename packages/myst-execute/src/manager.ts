@@ -1,5 +1,6 @@
 import type { ServerConnection } from '@jupyterlab/services';
 import which from 'which';
+import getPort from 'get-port';
 import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
 import type { ISession, Logger } from 'myst-cli-utils';
@@ -77,7 +78,19 @@ export async function launchJupyterServer(
 ): Promise<JupyterServerSettings> {
   log.info(`🚀 ${chalk.yellowBright('Starting new Jupyter server')}`);
   const pythonPath = which.sync('python');
-  const proc = spawn(pythonPath, ['-m', 'jupyter_server', '--ServerApp.root_dir', contentPath]);
+  // Pick an unused port so parallel execution requests don't race on the default port.
+  const port = await getPort();
+  const proc = spawn(pythonPath, [
+    '-m',
+    'jupyter_server',
+    '--ServerApp.root_dir',
+    contentPath,
+    `--ServerApp.port=${port}`,
+    // Without this, jupyter silently rebinds to a different port if ours is taken.
+    // We later parse the port from stderr but it returns the *first* instance,
+    // so if the port has changed after a retry, we'll miss it. So fail eagerly instead.
+    '--ServerApp.port_retries=0',
+  ]);
 
   const reader = proc.stderr;
 

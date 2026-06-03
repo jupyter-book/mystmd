@@ -35,6 +35,7 @@
     "@jupyterlab/services": "^7.3.0",
     "@jupyterlab/nbformat": "^3.5.2",
     "chalk": "^5.2.0",
+    "get-port": "^6.1.2",
     "myst-cli-utils": "^2.0.13",
     "myst-common": "^1.9.3",
     "node-fetch": "^3.3.0",
