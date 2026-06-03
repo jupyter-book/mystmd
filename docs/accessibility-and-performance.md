@@ -50,9 +50,10 @@ In April 2026 we completed a focused round of work to [align with WCAG 2.1 AA](h
 On every push to `main`, `myst-theme` runs an automated accessibility audit in CI.
 It builds the current themes and runs [`berkeley-cdss/myst-a11y`](https://github.com/berkeley-cdss/myst-a11y) (which wraps [axe-core](https://github.com/dequelabs/axe-core)) against the [reference pages](https://myst-theme.netlify.app), checking WCAG 2.0 and 2.1 (A & AA).
 
-Results are surfaced in a single live tracking issue labeled [`a11y-audit`](https://github.com/jupyter-book/myst-theme/labels/a11y-audit).
+Results are surfaced in a tracking issue with the [`a11y-audit` label](https://github.com/jupyter-book/myst-theme/labels/a11y-audit).
 It summarizes the current issue counts broken down by rule (such as color-contrast, label, and image-alt) and by page.
-The workflow updates this issue in place on each run and closes it automatically when the count reaches zero, so the open issue always reflects the latest state rather than a growing backlog.
+If an issue with that label is already open, it will be updated on each new workflow run.
+If there is no open issue, then a new one is created.
 
 ### Cell outputs are not under MyST's control
 
