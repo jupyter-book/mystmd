@@ -68,7 +68,7 @@ function defaultUrl(session: ISession, template: string) {
  */
 const SITE_TEMPLATE_DEFAULT_ORG = 'jupyter-book';
 const SITE_TEMPLATE_REPO = 'myst-theme';
-// not quite sure which name the release name has this prefix or not
+// official releases have this prefix in their name
 const SITE_TEMPLATE_TAG_PREFIX = 'myst-to-react@';
 const DEFAULT_SITE_TEMPLATE = 'book-theme';
 
@@ -101,7 +101,7 @@ export function resolveSiteTemplateUrl(template?: string): string {
   let release = match[3] ? match[3].slice(1) : DEFAULT_SITE_TEMPLATE_VERSION;
   // the official mystmd releases may carry a "myst-react@" prefix
   if (org === SITE_TEMPLATE_DEFAULT_ORG) {
-    release = `${SITE_TEMPLATE_TAG_PREFIX}${release}`
+    release = `${SITE_TEMPLATE_TAG_PREFIX}${release}`;
   }
   return `https://github.com/${org}/${SITE_TEMPLATE_REPO}/releases/download/${release}/${name}.zip`;
 }
