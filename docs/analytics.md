@@ -12,6 +12,7 @@ However, we offer support for two analytics tracking systems:
 2. [Plausible](https://plausible.io/), which is privacy-friendly alternative to Google.
 
 These are set using template specific options in your site configuration using either an `analytics_google` or an `analytics_plausible` key.
+See [](#site-options) for more on site options and how to set them.
 
 ## Google Analytics
 
@@ -23,6 +24,8 @@ site:
   options:
     analytics_google: UA-XXXXX # Measurement ID or Tracking ID
 ```
+
+![](#page-site-options-note)
 
 See [Google Analytics docs](https://developers.google.com/analytics/devguides/collection/gtagjs) for more information on how to find this Measurement ID.
 
@@ -36,6 +39,8 @@ site:
   options:
     analytics_plausible: mystmd.org # Domain(s) to track
 ```
+
+![](#page-site-options-note)
 
 See [Plausible docs](https://plausible.io/docs/plausible-script) for more information on how to find the domain. Note, you only copy in the contents of: `data-domain="COPY_THIS"`, which can be a comma-separated list for multiple domains.
 

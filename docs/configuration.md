@@ -20,6 +20,8 @@ See [](#field-behavior) below about how these two sources of settings interact.
 
 See also [](frontmatter.md) for a list of supported frontmatter settings.
 
+See [](#site-options) for theme settings like analytics, logos, and navigation toggles, which are set under `site.options` in your `myst.yml`.
+
 ## Page-level frontmatter
 
 ### In a MyST markdown file

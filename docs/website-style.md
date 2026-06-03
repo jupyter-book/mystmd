@@ -25,6 +25,8 @@ site:
     style: ./my-style.css
 ```
 
+![](#page-site-options-note)
+
 For example, the style-sheet could contain styling for `em` elements nested below a particular `text-gradient` class:
 
 :::{literalinclude} public/style.css
