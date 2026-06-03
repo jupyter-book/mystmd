@@ -25,7 +25,7 @@ site:
     analytics_google: UA-XXXXX # Measurement ID or Tracking ID
 ```
 
-If using page frontmatter, omit the `options:` key, see [](#site-options-page).
+![](#page-site-options-note)
 
 See [Google Analytics docs](https://developers.google.com/analytics/devguides/collection/gtagjs) for more information on how to find this Measurement ID.
 
@@ -40,7 +40,7 @@ site:
     analytics_plausible: mystmd.org # Domain(s) to track
 ```
 
-If using page frontmatter, omit the `options:` key, see [](#site-options-page).
+![](#page-site-options-note)
 
 See [Plausible docs](https://plausible.io/docs/plausible-script) for more information on how to find the domain. Note, you only copy in the contents of: `data-domain="COPY_THIS"`, which can be a comma-separated list for multiple domains.
 

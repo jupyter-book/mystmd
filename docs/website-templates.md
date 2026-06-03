@@ -123,7 +123,9 @@ If both `getting-started.md` and `getting-started/index.md` exist, the sibling f
 ### Page Options
 
 Any option from `site.options` can be overridden per-page in the frontmatter under the `site` key.
-Note that the nesting is different: options are placed directly under `site:` in page frontmatter, not under `site.options:`.
+
+(page-site-options-note)=
+When setting an option from a page, omit the `options:` key - put it directly under `site:`, not `site.options:`. See [](#site-options-page).
 
 ```{code-block} yaml
 :filename: my-page.md

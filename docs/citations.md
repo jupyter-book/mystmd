@@ -69,7 +69,7 @@ site:
     numbered_references: true
 ```
 
-If using page frontmatter, omit the `options:` key, see [](#site-options-page).
+![](#page-site-options-note)
 
 ### Writing DOIs to BibTeX
 

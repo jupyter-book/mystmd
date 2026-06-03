@@ -136,7 +136,7 @@ site:
     hide_toc: true
 ```
 
-If using page frontmatter, omit the `options:` key, see [](#site-options-page).
+![](#page-site-options-note)
 
 ### Edit the primary sidebar footer
 
@@ -194,7 +194,7 @@ site:
     hide_outline: true
 ```
 
-If using page frontmatter, omit the `options:` key, see [](#site-options-page).
+![](#page-site-options-note)
 
 ### Make content expand to the right margin
 
