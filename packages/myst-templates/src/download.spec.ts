@@ -66,7 +66,7 @@ describe('resolveInputs', () => {
       kind: TemplateKind.site,
     });
     expect(templateUrl).toEqual(
-      `${RELEASES}/myst-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
     );
     expect(templatePath).toMatch(/^templates\/site\/[a-f0-9]{64}$/);
   });
@@ -74,24 +74,24 @@ describe('resolveInputs', () => {
     expect(
       resolveInputs(new Session(), { kind: TemplateKind.site, template: 'book-theme@9.9.9' })
         .templateUrl,
-    ).toEqual(`${RELEASES}/myst-react@9.9.9/book-theme.zip`);
+    ).toEqual(`${RELEASES}/myst-to-react@9.9.9/book-theme.zip`);
   });
 });
 
 describe('resolveSiteTemplateUrl', () => {
   it('bare name uses the default org and baked version', () => {
     expect(resolveSiteTemplateUrl('book-theme')).toEqual(
-      `${RELEASES}/myst-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
     );
   });
   it('undefined falls back to the default book-theme', () => {
     expect(resolveSiteTemplateUrl()).toEqual(
-      `${RELEASES}/myst-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
     );
   });
   it('name@version pins the version', () => {
     expect(resolveSiteTemplateUrl('article-theme@1.3.1')).toEqual(
-      `${RELEASES}/myst-react@1.3.1/article-theme.zip`,
+      `${RELEASES}/myst-to-react@1.3.1/article-theme.zip`,
     );
   });
   it('org/name@version overrides the org', () => {
@@ -101,7 +101,7 @@ describe('resolveSiteTemplateUrl', () => {
   });
   it('legacy site/myst/ namespace maps to the default org', () => {
     expect(resolveSiteTemplateUrl('site/myst/book-theme')).toEqual(
-      `${RELEASES}/myst-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
     );
   });
   it('invalid name throws', () => {
