@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
-import { resolveInputs, resolveSiteTemplateUrl } from './download';
-import { DEFAULT_SITE_TEMPLATE_VERSION } from './defaultTemplates';
+import { resolveInputs, resolveSiteTemplateUrl } from './download.js';
+import { DEFAULT_SITE_TEMPLATE_VERSION } from './defaultTemplates.js';
 import { Session } from './session';
 import { TemplateKind } from 'myst-common';
 
