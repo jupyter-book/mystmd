@@ -147,6 +147,12 @@ cases:
     outputs:
       - path: notebook-with-fm/_build/out.tex
         content: outputs/notebook.tex
+  - title: Notebook exports to tex; Markdown in cell output is included in export
+    cwd: notebook-markdown-cell-output
+    command: myst build --tex --ci
+    outputs:
+      - path: notebook-markdown-cell-output/_build/out.tex
+        content: outputs/notebook-markdown-cell-output.tex
   - title: Templated tex with glossary
     cwd: glossary
     command: myst build --tex --ci
