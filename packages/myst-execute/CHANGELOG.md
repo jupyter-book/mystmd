@@ -1,5 +1,17 @@
 # myst-execute
 
+## 0.4.0
+
+### Minor Changes
+
+- c738873: Add static_files option to project frontmatter for copying files into build output with stable URLs
+
+### Patch Changes
+
+- fa23fa7: Only copy thebe JS when necessary
+- 5fcb458: Choose a random port on execution
+  - myst-common@1.10.0
+
 ## 0.3.5
 
 ### Patch Changes

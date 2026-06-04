@@ -1,5 +1,12 @@
 # myst-directives
 
+## 1.7.3
+
+### Patch Changes
+
+- myst-common@1.10.0
+- myst-spec-ext@1.10.0
+
 ## 1.7.2
 
 ## 1.7.1
