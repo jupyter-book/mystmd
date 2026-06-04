@@ -27,7 +27,7 @@ If you're writing a parser, stick to the spec. mystmd's conventions (like specif
 Every node in the AST is a JSON object with a `type` field that names what kind of node it is.
 Beyond `type`, a node has either a `value` or `children`:
 
-- **Leaf nodes** have a `value` (typically a string).
+- **Leaf nodes** typically have a `value` (typically a string).
 - **Parent nodes** have a `children` array (more nodes).
 
 Nodes may also carry additional properties - `url` on a link, `depth` on a heading, `identifier` on a cross-reference, etc.
@@ -56,8 +56,8 @@ The markup characters (`**`, `*`) are gone from the source text. They've been tu
 (pre-and-post)=
 ## Two stages: PRE and POST
 
-In the `myst-cli`, a MyST document is processed in two phases, and the AST has a different shape after each one.
-The short-hand for this is `PRE`- and `POST`-transforms.
+In the `myst-cli`, a MyST document is processed through a series of transformations, and the AST has a different shape after each one.
+The short-hand for this in the online demo is `PRE`- and `POST`-transforms. You can get very granular by applying various [`myst-transforms`](https://npmjs.com/package/myst-transforms) in your own libraries or packages.
 
 1. **PRE**: the output of *parsing*. The parser walks the source and expands directives and roles by calling their `run` functions. Cross-references still look like ordinary `link` nodes (e.g. `url: "#some-label"`). Directives appear as `mystDirective` wrapper nodes containing their expanded children. Numbering has not yet been applied.
 2. **POST**: the output after [transforms](xref:guide#develop:transforms) run over the PRE tree. Link nodes pointing at labels become `crossReference` nodes with resolved targets. Most directive wrappers are unwrapped, leaving only their semantic children. Numbering and enumeration are applied. This is the form most renderers consume.
@@ -83,7 +83,7 @@ In short:
 
 - A parser produces PRE. Match the test cases.
 - A renderer receives POST. It's what `myst build` emits.
-- A transform takes PRE-like input and produces POST-like output.
+- A transform pipeline applies a series of transformations that change the tree from `PRE` to `POST`
 
 ## Directives in PRE vs. POST
 
@@ -95,7 +95,7 @@ Heads up!
 :::
 ```
 
-In **PRE**, you'll see a `mystDirective` wrapper (name: `note`) containing an `admonition` child. The wrapper records the directive that produced it. The child is what its `run` function returned.
+In **PRE**, you'll see a `mystDirective` wrapper (name: `note`) containing an `admonition` child. The wrapper records the directive that produced it. The child is what its `run` function returned from a `mystmd` plugin.
 
 In **POST**, the `mystDirective` wrapper is typically stripped, and transforms may add extra structure. For example, [`admonitionHeadersTransform`](https://github.com/jupyter-book/mystmd/blob/0d626b198093fa740125d02267a111d84547fd36/packages/myst-transforms/src/admonitions.ts#L36) inserts an `admonitionTitle` child.
 
