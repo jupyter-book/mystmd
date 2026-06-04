@@ -149,7 +149,7 @@ cases:
         content: outputs/notebook.tex
   - title: Notebook exports to tex; Markdown in cell output is included in export
     cwd: notebook-markdown-cell-output
-    command: myst build --tex --ci
+    command: myst build --tex --ci --execute
     outputs:
       - path: notebook-markdown-cell-output/_build/out.tex
         content: outputs/notebook-markdown-cell-output.tex
@@ -587,7 +587,7 @@ cases:
       MYST_TEST_SLEEP_MS: 4000
       MYST_TEST_DELAY_MS: 2000
     # Used to be 15000, increased due to CI slowness
-    # NOTE that the full test suite has a timeout here too: 
+    # NOTE that the full test suite has a timeout here too:
     # mystmd/packages/mystmd/tests/endToEnd.spec.ts
     timeout: 30000
     outputs:

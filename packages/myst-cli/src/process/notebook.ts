@@ -29,6 +29,13 @@ import {
 } from 'myst-frontmatter';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
+function cellHasMarkdownOutput(outputs?: IOutput[]): boolean {
+  return (outputs ?? []).some((output) => {
+    if (!('data' in output) || !output.data) return false;
+    return Object.prototype.hasOwnProperty.call(output.data, 'text/markdown');
+  });
+}
+
 function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
   return { type: 'block', kind, data: JSON.parse(JSON.stringify(cell.metadata)), children };
@@ -162,13 +169,6 @@ export async function processNotebookFull(
         return acc.concat(blockParent(cell, [raw]));
       }
       if (cell.cell_type === CELL_TYPES.code) {
-        const code: Code = {
-          type: 'code',
-          lang: language as string | undefined,
-          executable: true,
-          value: ensureString(cell.source),
-        };
-
         const outputs = {
           type: 'outputs',
           id: nanoid(),
@@ -178,7 +178,17 @@ export async function processNotebookFull(
             children: [],
           })),
         };
-        return acc.concat(blockParent(cell, [code, outputs]));
+
+        const children: GenericNode[] = [outputs];
+        if (!cellHasMarkdownOutput(cell.outputs as IOutput[])) {
+          children.unshift({
+            type: 'code',
+            lang: language as string | undefined,
+            executable: true,
+            value: ensureString(cell.source),
+          } as Code);
+        }
+        return acc.concat(blockParent(cell, children));
       }
       return acc;
     },
