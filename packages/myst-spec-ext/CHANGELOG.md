@@ -1,5 +1,7 @@
 # myst-spec-ext
 
+## 1.10.0
+
 ## 1.9.5
 
 ### Patch Changes
