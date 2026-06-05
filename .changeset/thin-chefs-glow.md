@@ -2,4 +2,4 @@
 "myst-cli": patch
 ---
 
-Revert thebe
+Revert stopping of thebe-copy for static build assets
