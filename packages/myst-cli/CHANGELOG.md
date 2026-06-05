@@ -1,5 +1,12 @@
 # myst-cli
 
+## 1.10.1
+
+### Patch Changes
+
+- a64fee1: Revert stopping of thebe-copy for static build assets
+  - myst-migrate@1.10.1
+
 ## 1.10.0
 
 ### Minor Changes
