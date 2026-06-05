@@ -1,5 +1,16 @@
 # myst-to-typst
 
+## 0.0.38
+
+### Patch Changes
+
+- 53efcc7: Fix \left| and \right| delimeters (rely on upstream fix in tex-to-typst)
+- c4b53c3: Add passthrough `card` wrapping the card content such that custom styling can be applied by the `typst` template
+- Updated dependencies [c738873]
+  - myst-frontmatter@1.10.0
+  - myst-common@1.10.0
+  - myst-spec-ext@1.10.0
+
 ## 0.0.37
 
 ### Patch Changes

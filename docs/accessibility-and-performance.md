@@ -44,6 +44,17 @@ The MyST themes ship with these accessibility behaviors:
 
 In April 2026 we completed a focused round of work to [align with WCAG 2.1 AA](https://github.com/jupyter-book/mystmd/issues/2802). We know there is always ongoing work to be done to improve accessibility and welcome both guidance and contributions, see [](#a11y:contribute).
 
+(a11y:monitor)=
+### How we monitor accessibility
+
+On every push to `main`, `myst-theme` runs an automated accessibility audit in CI.
+It builds the current themes and runs [`berkeley-cdss/myst-a11y`](https://github.com/berkeley-cdss/myst-a11y) (which wraps [axe-core](https://github.com/dequelabs/axe-core)) against the [reference pages](https://myst-theme.netlify.app), checking WCAG 2.0 and 2.1 (A & AA).
+
+Results are surfaced in a tracking issue with the [`a11y-audit` label](https://github.com/jupyter-book/myst-theme/labels/a11y-audit).
+It summarizes the current issue counts broken down by rule (such as color-contrast, label, and image-alt) and by page.
+If an issue with that label is already open, it will be updated on each new workflow run.
+If there is no open issue, then a new one is created.
+
 ### Cell outputs are not under MyST's control
 
 Many libraries emit interactive JavaScript or images as part of executing code (e.g., Plotly, ipywidgets, etc).
@@ -57,12 +68,13 @@ The fix will most likely need to happen in that upstream tool rather than in the
 Open accessibility work is tracked under the [`a11y` label in `myst-theme`](https://github.com/jupyter-book/myst-theme/labels/a11y).
 There's a thread for broader discussion and tracking in the [Accessibility Improvements tracking issue](https://github.com/jupyter-book/myst-theme/issues/238).
 
+(a11y:check-your-site)=
 ### How can I check the accessibility of my own site?
 
 A few tools that others in the community have found useful:
 
 - The [Jupyter Accessibility Working Group](https://jupyter-accessibility.readthedocs.io) has a collection of accessibility resources for the broader Jupyter community.
-- [berkeley-cdss/myst-a11y](https://github.com/berkeley-cdss/myst-a11y) is a GitHub Action built for MyST sites. It runs [axe-core](https://github.com/dequelabs/axe-core) checks against WCAG 2.0 and 2.1 (A and AA) on every push and reports results as a tracking issue. See [data-8/textbook](https://github.com/data-8/textbook/blob/main/.github/workflows/a11y.yml) for a working example.
+- [berkeley-cdss/myst-a11y](https://github.com/berkeley-cdss/myst-a11y) is a GitHub Action built for MyST sites. It runs [axe-core](https://github.com/dequelabs/axe-core) checks against WCAG 2.0 and 2.1 (A and AA) on every push and reports results as a tracking issue. This is the same action MyST runs on its own themes, see [](#a11y:monitor). For a working example, see [data-8/textbook](https://github.com/data-8/textbook/blob/main/.github/workflows/a11y.yml).
 - [Lighthouse](https://github.com/GoogleChrome/lighthouse) is built into Chrome DevTools and is useful for a quick audit of a single page.
 - [JupyCheck](https://jupycheck.vercel.app/) checks accessibility of source notebooks in Jupyter interfaces. This is useful if you also want readers to launch Jupyter sessions from your MyST site.
 

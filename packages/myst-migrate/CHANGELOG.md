@@ -1,5 +1,11 @@
 # myst-migrate
 
+## 1.10.0
+
+### Patch Changes
+
+- 901c83b: Allow for myst.yaml as well as myst.yml.
+
 ## 1.9.1
 
 ## 1.9.0

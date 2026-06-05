@@ -1,5 +1,17 @@
 # myst-config
 
+## 1.10.0
+
+### Minor Changes
+
+- c738873: Add static_files option to project frontmatter for copying files into build output with stable URLs
+
+### Patch Changes
+
+- Updated dependencies [c738873]
+  - myst-frontmatter@1.10.0
+  - myst-common@1.10.0
+
 ## 1.9.5
 
 ### Patch Changes
