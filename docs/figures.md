@@ -112,6 +112,24 @@ can be used to create a two-column grid of images with aligned bottoms and a gap
 Some lovely pictures
 ::::
 
+### Control sub-figure layout with a grid
+
+To control the layout of sub-figures (e.g., 2x2 matrix on wide screens), use a `{grid}` directive to wrap the images inside.
+For example, the following should show side-by-side on wide screens, but stack vertically on narrow screens:
+
+```{myst}
+::::{figure}
+:label: fig-grid
+
+:::{grid} 1 1 2 2
+![Banff, Canada](https://github.com/rowanc1/pics/blob/main/banff-wide.png)
+
+![Golden Gate Bridge, San Francisco](https://github.com/rowanc1/pics/blob/main/sfo-wide.png)
+:::
+
+One column on small screens, two columns on larger ones.
+::::
+```
 
 
 ## Supported Image Formats
