@@ -2,14 +2,7 @@ import { NotebookCell, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
-import type {
-  IAttachments,
-  ICell,
-  IMimeBundle,
-  INotebookContent,
-  IOutput,
-  MultilineString,
-} from '@jupyterlab/nbformat';
+import type { IAttachments, ICell, IMimeBundle, INotebookContent, IOutput, MultilineString } from '@jupyterlab/nbformat';
 import { CELL_TYPES, ensureString } from 'nbtx';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -28,13 +21,6 @@ import {
   FRONTMATTER_ALIASES,
 } from 'myst-frontmatter';
 import type { PageFrontmatter } from 'myst-frontmatter';
-
-function cellHasMarkdownOutput(outputs?: IOutput[]): boolean {
-  return (outputs ?? []).some((output) => {
-    if (!('data' in output) || !output.data) return false;
-    return Object.prototype.hasOwnProperty.call(output.data, 'text/markdown');
-  });
-}
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
@@ -179,15 +165,15 @@ export async function processNotebookFull(
           })),
         };
 
-        const children: GenericNode[] = [outputs];
-        if (!cellHasMarkdownOutput(cell.outputs as IOutput[])) {
-          children.unshift({
+        const children: GenericNode[] = [
+          {
             type: 'code',
             lang: language as string | undefined,
             executable: true,
             value: ensureString(cell.source),
-          } as Code);
-        }
+          } as Code,
+          outputs,
+        ];
         return acc.concat(blockParent(cell, children));
       }
       return acc;

@@ -304,7 +304,6 @@ export function reduceOutputs(
     }
 
     const outputs = outputsNode.children as GenericNode[];
-    let hasMarkdownOutput = false;
     outputs.forEach((outputNode) => {
       if (outputNode.type !== 'output') {
         return;
@@ -326,7 +325,6 @@ export function reduceOutputs(
         let selectedOutput: { content_type: string; hash: string } | undefined;
         walkOutputs([output], (obj: any) => {
           const { output_type, content_type, hash } = obj;
-          if (content_type === 'text/markdown') hasMarkdownOutput = true;
           if (!hash) return undefined;
           if (!selectedOutput || isPreferredOutputType(content_type, selectedOutput.content_type)) {
             if (['error', 'stream'].includes(output_type)) {
@@ -395,11 +393,6 @@ export function reduceOutputs(
         .filter((output): output is Image | GenericNode => !!output);
       outputNode.children = children;
     });
-
-    if (hasMarkdownOutput) {
-      const codeNode = select('code[executable=true]', block) as GenericNode | null;
-      if (codeNode) codeNode.type = '__delete__';
-    }
 
     // Lift the `outputs` node
     outputsNode.type = '__lift__';
