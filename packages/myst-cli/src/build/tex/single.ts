@@ -326,6 +326,7 @@ export async function localArticleToTexTemplated(
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   const { preamble, suffix } = generatePreamble(preambleData);
   renderTemplate(mystTemplate, {
+    // Avoid trailing blank lines introduced by template suffix assembly.
     contentOrPath: `${texContent}${suffix}`.trimEnd(),
     outputPath: output,
     frontmatter,

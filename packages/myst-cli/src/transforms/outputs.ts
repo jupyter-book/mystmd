@@ -37,6 +37,7 @@ function markdownOutputToNodes(session: ISession, content: string, file: string)
       },
     ];
   }
+  // Parse general markdown outputs into normal MyST nodes.
   return parseMyst(session, content, file, { ignoreFrontmatter: true }).children as GenericNode[];
 }
 
@@ -48,6 +49,7 @@ function latexOutputToNodes(content: string): GenericNode[] {
   if (displayMath?.[1]) {
     return [
       {
+        // Normalize inline/display latex payloads into a TeX equation block.
         type: 'raw',
         tex: `\\begin{equation}\n${displayMath[1].replace(/^\\displaystyle\s*/, '').trim()}\n\\end{equation}`,
       },
@@ -271,6 +273,7 @@ function isPreferredOutputType(newType: string, existingType: string) {
   if (newType.startsWith('image')) return true;
   if (existingType === 'text/html') return false;
   if (newType === 'text/html') return true;
+  // Prefer rich text output over plain text fallback when available.
   if (existingType === 'text/latex') return false;
   if (newType === 'text/latex') return true;
   if (existingType === 'text/markdown') return false;
@@ -291,6 +294,7 @@ export function reduceOutputs(
   writeFolder: string,
   opts?: { altOutputFolder?: string; vfile?: VFile },
 ) {
+  // Traverse by notebook block so output selection stays scoped to each cell.
   const blocks = selectAll('block', mdast) as GenericNode[];
   const cache = castSession(session);
   blocks.forEach((block) => {
@@ -365,6 +369,7 @@ export function reduceOutputs(
             return markdownOutputToNodes(session, content, file);
           } else if (content_type === 'text/latex') {
             const [content] = cache.$outputs[hash];
+            // Render latex MIME directly instead of emitting plain-object repr text.
             return latexOutputToNodes(content);
           } else if (content_type.startsWith('image/')) {
             const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {

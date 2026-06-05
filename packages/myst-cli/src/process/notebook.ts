@@ -165,6 +165,7 @@ export async function processNotebookFull(
           })),
         };
 
+        // Keep executable source and outputs together for deterministic static exports.
         const children: GenericNode[] = [
           {
             type: 'code',

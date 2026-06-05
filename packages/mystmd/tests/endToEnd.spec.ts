@@ -36,6 +36,7 @@ function cleanHashes(text: string) {
     .replace(/-[a-f0-9]{32}\./g, '.')
     .replace(/"key":\s*"[a-zA-Z0-9]{10}"/g, '"key": "keyABC0123"')
     .replace(/"myst":\s*"[0-9]+\.[0-9]+\.[0-9]+"/g, '"myst": "0.0.0"')
+    // Normalize extra trailing blank lines before TeX document end markers.
     .replace(/\n{3,}(?=\\end\{document\})/g, '\n\n');
 }
 
