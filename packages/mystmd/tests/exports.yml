@@ -153,6 +153,12 @@ cases:
     outputs:
       - path: notebook-markdown-cell-output/_build/out.tex
         content: outputs/notebook-markdown-cell-output.tex
+  - title: Notebook exports to tex; Math in cell output is included in export
+    cwd: notebook-math-cell-output
+    command: myst build --tex --ci --execute
+    outputs:
+      - path: notebook-math-cell-output/_build/out.tex
+        content: outputs/notebook-math-cell-output.tex
   - title: Templated tex with glossary
     cwd: glossary
     command: myst build --tex --ci

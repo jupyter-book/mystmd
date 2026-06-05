@@ -40,6 +40,27 @@ function markdownOutputToNodes(session: ISession, content: string, file: string)
   return parseMyst(session, content, file, { ignoreFrontmatter: true }).children as GenericNode[];
 }
 
+function latexOutputToNodes(content: string): GenericNode[] {
+  const trimmed = content.trim();
+  const displayMath =
+    trimmed.match(/^\$\$\s*([\s\S]*?)\s*\$\$$/) ??
+    trimmed.match(/^\$\s*([\s\S]*?)\s*\$$/);
+  if (displayMath?.[1]) {
+    return [
+      {
+        type: 'raw',
+        tex: `\\begin{equation}\n${displayMath[1].replace(/^\\displaystyle\s*/, '').trim()}\n\\end{equation}`,
+      },
+    ];
+  }
+  return [
+    {
+      type: 'raw',
+      tex: trimmed,
+    },
+  ];
+}
+
 /**
  * Traverse all output nodes, minify their content, and cache on the session
  */
@@ -250,6 +271,8 @@ function isPreferredOutputType(newType: string, existingType: string) {
   if (newType.startsWith('image')) return true;
   if (existingType === 'text/html') return false;
   if (newType === 'text/html') return true;
+  if (existingType === 'text/latex') return false;
+  if (newType === 'text/latex') return true;
   if (existingType === 'text/markdown') return false;
   if (newType === 'text/markdown') return true;
   return false;
@@ -311,6 +334,7 @@ export function reduceOutputs(
             } else if (typeof content_type === 'string') {
               if (
                 content_type.startsWith('image/') ||
+                content_type === 'text/latex' ||
                 content_type === 'text/markdown' ||
                 content_type === 'text/plain' ||
                 content_type === 'text/html'
@@ -341,6 +365,9 @@ export function reduceOutputs(
           } else if (content_type === 'text/markdown') {
             const [content] = cache.$outputs[hash];
             return markdownOutputToNodes(session, content, file);
+          } else if (content_type === 'text/latex') {
+            const [content] = cache.$outputs[hash];
+            return latexOutputToNodes(content);
           } else if (content_type.startsWith('image/')) {
             const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
               ...opts,

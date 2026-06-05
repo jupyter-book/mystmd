@@ -1,0 +1,12 @@
+version: 1
+project:
+  id: notebook-math-cell-output
+  export:
+    format: tex
+    template: ../templates/tex
+    output: _build/out.tex
+    article: input.ipynb
+    # Define the article's required export frontmatter here:
+    title: "Cell output with Math"
+    authors:
+      - name: "Author Name"
