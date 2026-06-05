@@ -122,9 +122,9 @@ For example, the following should show side-by-side on wide screens, but stack v
 :label: fig-grid
 
 :::{grid} 1 1 2 2
-![Banff, Canada](https://github.com/rowanc1/pics/blob/main/banff-wide.png)
+![Here is some fruit 🍏](https://github.com/rowanc1/pics/blob/main/apples-wide.png?raw=true)
 
-![Golden Gate Bridge, San Francisco](https://github.com/rowanc1/pics/blob/main/sfo-wide.png)
+![My vacation pics! 🏝](https://github.com/rowanc1/pics/blob/main/ocean-wide.png?raw=true)
 :::
 
 One column on small screens, two columns on larger ones.
