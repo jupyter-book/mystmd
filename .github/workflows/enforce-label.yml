@@ -11,7 +11,7 @@ jobs:
     steps:
       # As this is a pull_request_target, we'll get `main` here
       - name: Checkout contents
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Add labels
         uses: actions/labeler@v6
 

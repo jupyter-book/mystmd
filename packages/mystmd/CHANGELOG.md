@@ -1,5 +1,15 @@
 # mystmd
 
+## 1.10.1
+
+## 1.10.0
+
+### Patch Changes
+
+- 53efcc7: Fix \left| and \right| delimeters (rely on upstream fix in tex-to-typst)
+- bb1dc1d: Append the index-redirect script to the end of `<head>` instead of the beginning, so other site `<head>` content (e.g. preloads, meta tags) is not affected by the script's placement.
+- 901c83b: Allow for myst.yaml as well as myst.yml.
+
 ## 1.9.1
 
 ### Patch Changes

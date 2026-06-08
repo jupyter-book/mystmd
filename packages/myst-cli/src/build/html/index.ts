@@ -25,18 +25,6 @@ import type { LocalProjectPage } from '../../project/types.js';
 
 const limitConnections = pLimit(5);
 
-/**
- * Return true if any project in the current site has thebe configured.
- * `project: jupyter: ...` aliases to `project: thebe`.
- */
-function siteUsesThebe(session: ISession): boolean {
-  const state = session.store.getState();
-  const siteConfig = selectors.selectCurrentSiteConfig(state);
-  return (siteConfig?.projects ?? []).some(
-    (proj) => !!proj.path && !!selectors.selectLocalProjectConfig(state, proj.path)?.thebe,
-  );
-}
-
 export async function currentSiteRoutes(
   session: ISession,
   host: string,
@@ -212,16 +200,13 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   );
   await appServer.stop();
 
-  // Copy files for the template used.
-
-  // Skip thebe JS chunks unless they are required.
+  // Copy the files for the template used.
+  //
+  // This always includes the thebe JS chunks, even when no project enables
+  // `thebe`/`jupyter`. The myst-theme uses thebe-core to render Jupyter cell
+  // outputs, so these chunks are required for outputs to render at all.
   const templateBuildDir = path.join(template.templatePath, 'public');
-  const hasThebe = siteUsesThebe(session);
-  fs.copySync(templateBuildDir, htmlDir, {
-    filter: (src) =>
-      hasThebe ||
-      !path.basename(src).match(/^(\d+\.)?(thebe-(core|lite)(\.min)?\.js|thebe-core.*\.css)$/),
-  });
+  fs.copySync(templateBuildDir, htmlDir);
 
   // Copy all of the static assets
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));

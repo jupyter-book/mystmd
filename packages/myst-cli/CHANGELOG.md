@@ -1,5 +1,40 @@
 # myst-cli
 
+## 1.10.1
+
+### Patch Changes
+
+- a64fee1: Revert stopping of thebe-copy for static build assets
+  - myst-migrate@1.10.1
+
+## 1.10.0
+
+### Minor Changes
+
+- c738873: Add static_files option to project frontmatter for copying files into build output with stable URLs
+
+### Patch Changes
+
+- 53efcc7: Fix \left| and \right| delimeters (rely on upstream fix in tex-to-typst)
+- fa23fa7: Only copy thebe JS when necessary
+- bb1dc1d: Append the index-redirect script to the end of `<head>` instead of the beginning, so other site `<head>` content (e.g. preloads, meta tags) is not affected by the script's placement.
+- 901c83b: Allow for myst.yaml as well as myst.yml.
+- Updated dependencies [53efcc7]
+- Updated dependencies [fa23fa7]
+- Updated dependencies [c4b53c3]
+- Updated dependencies [c738873]
+- Updated dependencies [901c83b]
+- Updated dependencies [5fcb458]
+  - myst-to-typst@0.0.38
+  - myst-execute@0.4.0
+  - myst-frontmatter@1.10.0
+  - myst-config@1.10.0
+  - myst-migrate@1.10.0
+  - myst-parser@1.7.3
+  - myst-common@1.10.0
+  - myst-spec-ext@1.10.0
+  - myst-transforms@1.3.50
+
 ## 1.9.1
 
 ### Patch Changes
