@@ -16,6 +16,17 @@ function anywidget() {
   return u('anywidget', { esm: './widget.mjs', id: 'w1', model: {} });
 }
 
+function gridItem(children: GenericNode[] = [u('paragraph', [u('text', 'item')])]) {
+  return u('grid-item', children);
+}
+
+function grid() {
+  return u('grid', {
+    columns: [1, 2, 2, 2],
+    children: [gridItem(), gridItem(), gridItem()],
+  });
+}
+
 function container(children: GenericNode[], kind = 'figure'): GenericParent {
   children.forEach((child) => {
     if (child.type === 'container') child.subcontainer = true;
@@ -43,6 +54,13 @@ describe('Test containerChildrenTransform', () => {
     const file = new VFile();
     containerChildrenTransform(mdast, file);
     expect(mdast).toEqual(rootContainer([anywidget(), caption()]));
+    expect(file.messages.filter((m) => m.fatal)).toHaveLength(0);
+  });
+  test('figure with grid and caption is unchanged', async () => {
+    const mdast = rootContainer([grid(), caption()]);
+    const file = new VFile();
+    containerChildrenTransform(mdast, file);
+    expect(mdast).toEqual(rootContainer([grid(), caption()]));
     expect(file.messages.filter((m) => m.fatal)).toHaveLength(0);
   });
   test('figure with caption and one image is reordered', async () => {

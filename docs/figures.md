@@ -33,6 +33,10 @@ For example, {myst:directive}`image.width`, {myst:directive}`alignment <image.al
 
 ## Image directive
 
+The `{image}` directive lets you include a simple image on your page.
+You can control the alt-text, style, etc.
+Here's an example:
+
 ````{myst}
 ```{image} https://github.com/rowanc1/pics/blob/main/grapes-wide.png?raw=true
 :alt: Grapes on a vineyard
@@ -44,6 +48,9 @@ For example, {myst:directive}`image.width`, {myst:directive}`alignment <image.al
 (figure-directive)=
 
 ## Figure directive
+
+Figures can wrap one-or-more images.
+They'll be _numbered_, so referencing them creates links like `Figure 1`. 
 
 ````{myst}
 ```{figure} https://github.com/rowanc1/pics/blob/main/sunset.png?raw=true
@@ -61,7 +68,7 @@ You may also embed [notebook cell outputs as images or figures](#targeting-cells
 
 ## Subfigures
 
-Subfigures can be created by omitting the directive argument to figure, and having the body contain one or more images or figures.
+Subfigures are created by putting one or more images in the **directive body** instead of as an argument.
 These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 
 :::{figure}
@@ -74,9 +81,11 @@ These will be numbered as `Figure 1a` and `Figure 1b`, etc. For example:
 We saw some great things on our trips this year to Banff, Canada 🇨🇦 and San Francisco, USA 🌉.
 :::
 
-You can also cross-reference either the whole figure [@subFigure], or an individual subfigure [@subFigure-a] or [@subFigure-b].
-Each subfigure is given an implicit reference that matches the figure label with a suffix of their letter, for example, a figure with label `my-figure` the two subfigures can be referred to as `my-figure-a` and `my-figure-b`, respectively.
-If you provide a [specific label for a subfigure](#label-anything), that label will be used instead of the implicit label.
+You can cross-reference either the whole figure [@subFigure], or an individual subfigure [@subFigure-a] or [@subFigure-b].
+Each subfigure is given an implicit reference that matches the figure label with a suffix of their letter. For example, let's say you have a parent figure and give it a label `my-figure`, and it has two sub-figures. Each subfigure can be referred to as `#my-figure-a` and `#my-figure-b`, respectively.
+
+If you provide a [label for a specific subfigure](#label-anything), that label will be used instead of the implicit label.
+
 
 ```{myst}
 :::{figure}
@@ -112,7 +121,25 @@ can be used to create a two-column grid of images with aligned bottoms and a gap
 Some lovely pictures
 ::::
 
+### Control sub-figure layout with a grid
 
+For responsive layouts, wrap the content in a `{grid}` directive.
+In this case, the figure has a _single entry_, representing the grid of images that you provide.
+It will not create implicit references for sub-figures as desecribed above.
+The example below uses one column on narrow screens and two on wide ones (`1 1 2 2`).
+
+::::{figure}
+:label: fig-grid
+
+:::{grid} 1 1 2 2
+
+![Here is some fruit 🍏](https://github.com/rowanc1/pics/blob/main/apples-wide.png?raw=true)
+
+![My vacation pics! 🏝](https://github.com/rowanc1/pics/blob/main/ocean-wide.png?raw=true)
+:::
+
+Pictures of fruit and the ocean.
+::::
 
 ## Supported Image Formats
 
