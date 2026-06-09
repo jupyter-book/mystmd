@@ -200,12 +200,7 @@ describe('validateTemplateOption', () => {
   });
   it('multiple option accepts an empty list', async () => {
     expect(
-      validateTemplateOption(
-        session,
-        [],
-        { id: '', type: 'string', multiple: true } as any,
-        opts,
-      ),
+      validateTemplateOption(session, [], { id: '', type: 'string', multiple: true } as any, opts),
     ).toEqual([]);
     expect(opts.messages.errors?.length ?? 0).toEqual(0);
   });
