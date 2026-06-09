@@ -116,7 +116,7 @@ export function validateTemplateOption(
   }
   // `coerce` lets a bare scalar (`style: a.css`) keep validating as a single-element
   // list, alongside the new list form (`style: [a.css, b.css]`).
-  return validateList(input, { coerce: true, ...opts }, (item, index) =>
+  return validateList(input, { ...opts, coerce: true }, (item, index) =>
     validateTemplateOptionValue(
       session,
       item,
