@@ -81,7 +81,7 @@ export type TemplateOptionDefinition = TemplateDocDefinition & {
   max?: number;
   integer?: boolean;
   /**
-   * set to true to allow multiple values
+   * Set to true to allow multiple values
    * (in that case a bare scalar is allowed and coerced to a single-element list)
    * For example, a `file` option `style` can take
    * - one stylesheet (`style: theme.css`)
