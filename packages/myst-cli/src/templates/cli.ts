@@ -49,7 +49,7 @@ function getKind(session: ISession, kinds?: TemplateKinds): TemplateKind[] | und
 export async function startTemplateCLI(
   session: ISession,
   template: string,
-  opts?: { force?: true; cdn: string; port: number },
+  opts?: { force?: true; cdn: string; port?: number },
 ) {
   if (!opts) return;
   const mystTemplate = new MystTemplate(session, {
@@ -70,7 +70,8 @@ export async function startTemplateCLI(
 
   await startSiteTemplate(session, mystTemplate, {
     host: 'localhost',
-    port: opts.port,
+    // For now, default to 3000
+    port: opts.port ?? 3000,
     cdnPort: parseInt(cdnPortRaw),
   });
 }
