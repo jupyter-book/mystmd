@@ -189,7 +189,10 @@ export async function localToManifestProject(
   };
 }
 
-// knows how to handle a 'file' option that has a 'multiple' flag, resolving each entry in the list
+/**
+ * Knows how to handle a 'file' option that has a 'multiple' flag,
+ * resolving each entry in the list
+ */
 async function resolveTemplateFileOptions(
   session: ISession,
   mystTemplate: MystTemplate,
