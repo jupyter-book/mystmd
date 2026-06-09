@@ -12,7 +12,7 @@ import MystTemplate, {
   TEMPLATE_YML,
 } from 'myst-templates';
 import type { ISession } from '../session/types.js';
-import { installSiteTemplate, startSiteTemplate, ensureSiteTemplateExistsOnPath } from './site.js';
+import { startSiteTemplate, ensureSiteTemplateExistsOnPath } from './site.js';
 
 import { TemplateKind } from 'myst-common';
 
@@ -49,7 +49,7 @@ function getKind(session: ISession, kinds?: TemplateKinds): TemplateKind[] | und
 export async function startTemplateCLI(
   session: ISession,
   template: string,
-  opts?: { force?: true; cdn: string },
+  opts?: { force?: true; cdn: string; port: number },
 ) {
   if (!opts) return;
   const mystTemplate = new MystTemplate(session, {
@@ -60,7 +60,19 @@ export async function startTemplateCLI(
   });
 
   await ensureSiteTemplateExistsOnPath(session, mystTemplate, opts.force);
-  await startSiteTemplate(session, mystTemplate, { cdn: opts.cdn });
+
+  // FIXME: accept any CDN
+  const match = opts.cdn.match(/(?:http:\/\/)?localhost:(\d+)\/?/);
+  if (match === null) {
+    throw new Error('Only localhost is supported for CDNs (this will be relaxed in future)');
+  }
+  const [_, cdnPortRaw] = match;
+
+  await startSiteTemplate(session, mystTemplate, {
+    host: 'localhost',
+    port: opts.port,
+    cdnPort: parseInt(cdnPortRaw),
+  });
 }
 
 export async function downloadTemplateCLI(
