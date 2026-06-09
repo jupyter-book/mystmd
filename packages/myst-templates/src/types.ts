@@ -80,6 +80,14 @@ export type TemplateOptionDefinition = TemplateDocDefinition & {
   min?: number;
   max?: number;
   integer?: boolean;
+  /**
+   * set to true to allow multiple values
+   * (in that case a bare scalar is allowed and coerced to a single-element list)
+   * For example, a `file` option `style` can take
+   * - one stylesheet (`style: theme.css`)
+   * or several (`style: [theme.css, overrides.css]`)
+   */
+  multiple?: boolean;
 };
 
 export type TemplateStyles = {

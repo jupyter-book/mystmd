@@ -82,7 +82,7 @@ function validateFile(session: ISession, input: any, opts: FileValidationOptions
   return resolvedFile;
 }
 
-export function validateTemplateOption(
+function validateTemplateOptionValue(
   session: ISession,
   input: any,
   optionDefinition: TemplateOptionDefinition,
@@ -103,6 +103,27 @@ export function validateTemplateOption(
     default:
       return validationError(`unknown type on option definition: "${type}"`, opts);
   }
+}
+
+export function validateTemplateOption(
+  session: ISession,
+  input: any,
+  optionDefinition: TemplateOptionDefinition,
+  opts: FileValidationOptions,
+) {
+  if (!optionDefinition.multiple) {
+    return validateTemplateOptionValue(session, input, optionDefinition, opts);
+  }
+  // `coerce` lets a bare scalar (`style: a.css`) keep validating as a single-element
+  // list, alongside the new list form (`style: [a.css, b.css]`).
+  return validateList(input, { coerce: true, ...opts }, (item, index) =>
+    validateTemplateOptionValue(
+      session,
+      item,
+      optionDefinition,
+      incrementOptions(`${index}`, opts),
+    ),
+  );
 }
 
 const isRequired = (def: { required?: boolean; default?: any }) => {
@@ -283,6 +304,7 @@ export function validateTemplateOptionDefinition(
         'max',
         'integer',
         'max_chars',
+        'multiple',
         'condition',
       ],
       required: ['id', 'type'],
@@ -380,6 +402,10 @@ export function validateTemplateOptionDefinition(
   if (defined(value.condition)) {
     output.condition = validateCondition(value.condition, incrementOptions('condition', opts));
   }
+  if (defined(value.multiple)) {
+    output.multiple = validateBoolean(value.multiple, incrementOptions('multiple', opts));
+  }
+  // Validated after `multiple` so a list-valued default is checked element-wise.
   if (defined(value.default)) {
     output.default = validateTemplateOption(
       session,
