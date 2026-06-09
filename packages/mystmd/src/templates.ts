@@ -4,6 +4,7 @@ import {
   downloadTemplateCLI,
   startTemplateCLI,
   listTemplatesCLI,
+  makePortOption,
   makeDocxOption,
   makeForceOption,
   makePdfOption,
@@ -19,6 +20,7 @@ function makeStartCLI(program: Command) {
     .description('Start a public site template')
     .argument('<template>', 'The template URL or name')
     .addOption(makeCDNOption('Use specific content server'))
+    .addOption(makePortOption())
     .addOption(makeForceOption('Overwrite existing downloaded templates'))
     .action(clirun(Session, startTemplateCLI, program, { keepAlive: true }));
   return command;
