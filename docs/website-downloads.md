@@ -45,23 +45,32 @@ To do so, add a list of paths under `project:` in your `myst.yml`:
 
 project:
   static_files:
-    - path/to/CNAME # A file name, for example
+    - path/to/CNAME  # A file name, for example
     - path/to/assets # A folder name, for example
 ```
 
-Each entry is copied into the **root** of the build output (`_build/html/`).
-The behavior changes slightly based on whether you link to a file or a folder:
+To refer to these files in your content:
+
+- if you have declared a **specific file** in `static_files`, refer to is as e.g.  
+  ➡️ `[text](/CNAME)`
+- if the file is **inside a folder** declared in `static_files`, refer to it as e.g.  
+  ➡️ `[text](/assets/image.png)`
+
+:::{note} Always use an absolute path 
+Static files are only accessible by URL from **the root** of the site (e.g. `/CNAME`, `/assets/...`)
+
+URLs **without an initial slash** - such as `[text](path/to/CNAME)` -
+would **produce a "file not found" warning** during the build.
+:::
+
+:::{admonition} How static files are copied in the build
+:class: dropdown tip
 
 - A **file** path (e.g. `path/to/CNAME`) is copied to the root using only its filename.
   Parent directories are **not** preserved, so the file ends up at `_build/html/CNAME`.
 - A **folder** path (e.g. `path/to/assets`) is copied recursively using only the folder's name.
   As with files, parent directories are **not** preserved, but sub-folder contents are preserved.
-  The folder and its contents end up at `_build/html/assets/...`.
-
-:::{note} Linking to static files from Markdown
-Static files are accessible by URL in the final build (e.g. `/CNAME`, `/assets/...`), but MyST does not resolve them as content pages.
-Markdown links such as `[text](path/to/CNAME)` will produce a "file not found" warning during the build.
-To suppress the warning, use an explicit URL path in your link (e.g. `[text](/CNAME)`), or use the {myst:role}`download` role to attach the file as a download link instead.
+  The folder and its contents end up at `_build/html/assets/...`.  
 :::
 
 :::{note} Want cache busting or a rendered inline link?
