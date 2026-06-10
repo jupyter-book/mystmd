@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import type { TransformSpec } from 'myst-common';
 import { plural } from 'myst-common';
 import { tic } from 'myst-cli-utils';
 import type { LinkTransformer } from 'myst-transforms';
@@ -19,6 +20,7 @@ export async function getFileContent(
     projectPath,
     imageExtensions,
     extraLinkTransformers,
+    transforms,
     extraTransforms,
     titleDepths,
     preFrontmatters,
@@ -27,6 +29,8 @@ export async function getFileContent(
     projectPath?: string;
     imageExtensions: ImageExtensions[];
     extraLinkTransformers?: LinkTransformer[];
+    transforms?: TransformSpec[];
+    /** @deprecated use transforms instead */
     extraTransforms?: TransformFn[];
     titleDepths?: number | (number | undefined)[];
     preFrontmatters?: Record<string, any> | (Record<string, any> | undefined)[];
@@ -72,6 +76,7 @@ export async function getFileContent(
         minifyMaxCharacters: 0,
         index: project.index,
         titleDepth,
+        transforms,
         extraTransforms,
         execute,
       });
