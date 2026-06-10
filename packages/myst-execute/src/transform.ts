@@ -97,10 +97,11 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
 
   // Requre kernelspec otherwise Jupyter doesn't know what kernel to use
   if (kernelspec === undefined) {
-    return fileError(
+    fileError(
       vfile,
       `Notebook does not declare the necessary 'kernelspec' frontmatter key required for execution`,
     );
+    return;
   }
 
   // See if we already cached this execution
