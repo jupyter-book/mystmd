@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use the exports from `myst-spec`
+ */
 export type {
   Admonition,
   AlgorithmLine,
