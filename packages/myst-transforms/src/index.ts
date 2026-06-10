@@ -1,3 +1,4 @@
+export { validateAlternativesPlugin, validateAlternativesTransform } from './alternatives.js';
 export {
   admonitionHeadersPlugin,
   admonitionHeadersTransform,

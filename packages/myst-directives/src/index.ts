@@ -1,3 +1,4 @@
+import { alternativesDirective } from './alternatives.js';
 import { admonitionDirective } from './admonition.js';
 import { bibliographyDirective } from './bibliography.js';
 import { codeDirective, codeCellDirective } from './code.js';
@@ -22,6 +23,7 @@ import { tocDirective } from './toc.js';
 import { widgetDirective } from './anywidget.js';
 
 export const defaultDirectives = [
+  alternativesDirective,
   admonitionDirective,
   bibliographyDirective,
   csvTableDirective,

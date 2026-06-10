@@ -169,20 +169,40 @@ export function transformImagesWithoutExt(
     const wildcardRegex = /\.\*$/;
     const imagePath = path.join(path.dirname(file), image.url).replace(wildcardRegex, '');
     if (!fs.existsSync(imagePath)) {
-      const sortedExtensions = [
+      const sortedExtensions = new Set([
         // Valid extensions
         ...(opts?.imageExtensions ?? []),
         // Convertible extensions
         ...Object.keys(conversionFnLookup),
         // All known extensions
         ...KNOWN_IMAGE_EXTENSIONS,
-      ];
-      const extension = sortedExtensions.find((ext) => fs.existsSync(imagePath + ext));
-      if (extension) {
-        const replacement = image.url.replace(wildcardRegex, '') + extension;
-        session.log.debug(`Resolving ${image.url} to ${replacement}`);
-        image.url = replacement;
-        image.urlSource = image.url;
+      ]);
+      const extensions = Array.from(sortedExtensions.values()).filter((ext) =>
+        fs.existsSync(imagePath + ext),
+      );
+      if (extensions.length) {
+        const resolvedUrls = [];
+        for (const ext of extensions) {
+          const resolved = image.url.replace(wildcardRegex, '') + ext;
+          resolvedUrls.push(resolved);
+          session.log.debug(`Resolving ${image.url} to ${resolved}`);
+        }
+
+        const alternatives = {
+          type: 'alternatives',
+          children: resolvedUrls.map((url) => ({
+            type: 'image',
+            urlSource: url,
+            url,
+          })),
+        };
+
+        // Clear the current object
+        Object.keys(image).forEach((k) => {
+          delete image[k];
+        });
+        // Replace with the import
+        Object.assign(image, alternatives);
       }
     }
   });
