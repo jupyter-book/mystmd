@@ -1,0 +1,22 @@
+cases:
+  - title: CommonMark blockquote
+    id: blockquote
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: To be or not to be
+    myst: |-
+      > To be or not to be
+    html: |-
+      <blockquote>
+        <p>To be or not to be</p>
+      </blockquote>
+    latex: |-
+      \begin{quote}
+        To be or not to be
+      \end{quote}

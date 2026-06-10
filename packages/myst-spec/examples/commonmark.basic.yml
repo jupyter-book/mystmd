@@ -1,0 +1,434 @@
+cases:
+  - title: root node - empty
+    mdast:
+      type: root
+      children: []
+    myst: ''
+    html: ''
+  - title: root node - invalid type
+    invalid: true
+    mdast:
+      type: paragraph
+      children: []
+  - title: text node
+    mdast:
+      type: root
+      children:
+        - type: text
+          value: Hello world!
+  - title: paragraph node
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Hello world!
+  - title: paragraph node - invalid nesting
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: paragraph
+              children: []
+  - title: heading node
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: Hello world!
+  - title: heading node - invalid depth
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 7
+          children:
+            - type: text
+              value: Hello world!
+  - title: heading node - invalid children
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 7
+          children:
+            - type: paragraph
+              children: []
+  - title: thematic break node
+    mdast:
+      type: root
+      children:
+        - type: thematicBreak
+  - title: blockquote node
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Hello world!
+  - title: blockquote node - invalid children
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: text
+              value: Hello world!
+  - title: list node - empty
+    mdast:
+      type: root
+      children:
+        - type: list
+          children: []
+  - title: list node
+    mdast:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: listItem
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Hello world!
+  - title: list node - with properties
+    mdast:
+      type: root
+      children:
+        - type: list
+          ordered: true
+          start: 3
+          spread: true
+          children:
+            - type: listItem
+              spread: true
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Hello world!
+  - title: list node - invalid children
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: list
+              children: []
+  - title: listitem node
+    mdast:
+      type: root
+      children:
+        - type: listItem
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Hello world!
+  - title: listitem node - invalid with other node types
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: listItem
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Hello world!
+        - type: paragraph
+          children: []
+  - title: html node
+    mdast:
+      type: root
+      children:
+        - type: html
+          value: <div>
+  - title: code node
+    mdast:
+      type: root
+      children:
+        - type: code
+          value: print('Hello world!')
+  - title: code node - with lang
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          value: print('Hello world!')
+  - title: code node - with lang and meta
+    mdast:
+      type: root
+      children:
+        - type: code
+          lang: python
+          meta: highlight-line=1
+          value: print('Hello world!')
+  - title: code node - invalid with only meta
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: code
+          meta: highlight-line=1
+          value: print('Hello world!')
+  - title: definition node
+    mdast:
+      type: root
+      children:
+        - type: definition
+          identifier: alpha
+          url: https://example.com
+  - title: definition node - with optional properties
+    mdast:
+      type: root
+      children:
+        - type: definition
+          identifier: alpha
+          label: '  Alpha  '
+          url: https://example.com
+          title: Hello world!
+  - title: strong node
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: Hello world!
+  - title: strong node - invalid children
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: strong
+              children:
+                - type: paragraph
+                  children: []
+  - title: inline code node
+    mdast:
+      type: root
+      children:
+        - type: inlineCode
+          value: foo()
+  - title: break node
+    mdast:
+      type: root
+      children:
+        - type: break
+  - title: link node
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          children:
+            - type: text
+              value: alpha
+  - title: link node - with optional properties
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          title: Alpha
+          children:
+            - type: text
+              value: alpha
+  - title: emaphasis node - with link child
+    mdast:
+      type: root
+      children:
+        - type: emphasis
+          children:
+            - type: link
+              url: https://example.com
+              children:
+                - type: text
+                  value: alpha
+  - title: link node - with emphasis child
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          children:
+            - type: emphasis
+              children:
+                - type: text
+                  value: alpha
+  - title: link node - with invalid link child
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          children:
+            - type: emphasis
+              children:
+                - type: link
+                  url: https://example.com
+                  children:
+                    - type: text
+                      value: alpha
+  - title: emaphasis node - with link child
+    mdast:
+      type: root
+      children:
+        - type: strong
+          children:
+            - type: link
+              url: https://example.com
+              children:
+                - type: text
+                  value: alpha
+  - title: link node - with strong child
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: alpha
+  - title: link node - with invalid link child
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: link
+          url: https://example.com
+          children:
+            - type: strong
+              children:
+                - type: link
+                  url: https://example.com
+                  children:
+                    - type: text
+                      value: alpha
+  - title: image node
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: https://example.com
+  - title: image node - with optional properties
+    mdast:
+      type: root
+      children:
+        - type: image
+          url: https://example.com
+          alt: alpha
+          title: bravo
+  - title: link reference node
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: bravo
+          referenceType: shortcut
+          children: []
+  - title: link reference node - with optional properties
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: bravo
+          label: Bravo
+          referenceType: full
+          children:
+            - type: strong
+              children:
+                - type: text
+                  value: alpha
+  - title: link reference node - invalid referenceType
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: bravo
+          referenceType: something
+          children: []
+  - title: link reference node - no referenceType
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: bravo
+          children: []
+  - title: link reference node - invalid link child
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: bravo
+          label: Bravo
+          referenceType: full
+          children:
+            - type: strong
+              children:
+                - type: link
+                  url: https://example.com
+                  children:
+                    - type: text
+                      value: alpha
+  - title: link reference node - invalid link reference child
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: linkReference
+          identifier: bravo
+          referenceType: collapsed
+          children:
+            - type: linkReference
+              identifier: delta
+              referenceType: collapsed
+  - title: image reference node
+    mdast:
+      type: root
+      children:
+        - type: imageReference
+          identifier: alpha
+          referenceType: collapsed
+  - title: image reference node - with optional properties
+    mdast:
+      type: root
+      children:
+        - type: imageReference
+          identifier: alpha
+          label: Alpha
+          alt: bravo
+          referenceType: collapsed
+  - title: image reference node - invalid missing properties
+    invalid: true
+    mdast:
+      type: root
+      children:
+        - type: imageReference
+          referenceType: full

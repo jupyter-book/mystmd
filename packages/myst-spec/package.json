@@ -24,9 +24,12 @@
   },
   "scripts": {
     "clean": "rimraf index.js dist",
-    "build": "npm run clean && tsc"
+    "build": "npm run clean && tsc && copyfiles \"examples/*\" dist"
   },
   "bugs": {
     "url": "https://github.com/jupyter-book/myst-spec/issues"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1"
   }
 }
