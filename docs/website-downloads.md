@@ -38,6 +38,8 @@ For example:
 Use the `project.static_files` option to copy files or folders into your build output.
 This is useful when a file needs to keep a predictable name at a known location.
 
+### Declare static files in `myst.yml`
+
 To do so, add a list of paths under `project:` in your `myst.yml`:
 
 ```{code-block} yaml
@@ -49,14 +51,18 @@ project:
     - path/to/assets # A folder name, for example
 ```
 
+### Use static files in your content
+
 To refer to these files in your content:
 
-- if you have declared a **specific file** in `static_files`, refer to is as e.g.  
+- if you have declared a **specific file** in `static_files`, refer to it as e.g.
+
   ➡️ `[text](/CNAME)`
-- if the file is **inside a folder** declared in `static_files`, refer to it as e.g.  
+- if the file is **inside a folder** declared in `static_files`, refer to it as e.g.
+
   ➡️ `[text](/assets/image.png)`
 
-:::{note} Always use an absolute path 
+:::{warning} Always use an absolute path
 Static files are only accessible by URL from **the root** of the site (e.g. `/CNAME`, `/assets/...`)
 
 URLs **without an initial slash** - such as `[text](path/to/CNAME)` -
