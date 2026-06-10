@@ -1,1 +1,59 @@
-export * from './types.js';
+export type {
+  Admonition,
+  AlgorithmLine,
+  AnyWidget,
+  Aside,
+  Block,
+  CaptionNumber,
+  Cite,
+  CiteGroup,
+  CiteKind,
+  Code,
+  Container,
+  ContentRecord,
+  CrossReference,
+  DefinitionDescription,
+  DefinitionList,
+  DefinitionTerm,
+  Delete,
+  Dependency,
+  DocumentHierarchy,
+  Embed,
+  FootnoteDefinition,
+  FootnoteReference,
+  Heading,
+  HeadingRecord,
+  Iframe,
+  Image,
+  Include,
+  IndexEntry,
+  InlineExpression,
+  InlineMath,
+  Link,
+  ListItem,
+  Math,
+  MathGroup,
+  MystSearchIndex,
+  Output,
+  Outputs,
+  Raw,
+  SearchRecord,
+  SearchRecordBase,
+  SiUnit,
+  Smallcaps,
+  TabItem,
+  TableCell,
+  TabSet,
+  Underline,
+} from 'myst-spec';
+
+/**
+ * @deprecated Use the export from `myst-spec`
+ *
+ * This is a duplicate declaration, due to esbuild/bun problems
+ */
+export enum SourceFileKind {
+  Article = 'Article',
+  Notebook = 'Notebook',
+  Part = 'Part',
+}
