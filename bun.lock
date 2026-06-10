@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "mystmd",
@@ -86,6 +85,7 @@
       "dependencies": {
         "js-yaml": "^4.1.0",
         "vfile": "^5.3.7",
+        "vfile-message": "^3.0.0",
       },
       "devDependencies": {
         "markdown-it-footnote": "^4.0.0",
@@ -97,7 +97,7 @@
     },
     "packages/myst-cli": {
       "name": "myst-cli",
-      "version": "1.10.0",
+      "version": "1.10.1",
       "dependencies": {
         "@jupyterlab/services": "^7.3.0",
         "@reduxjs/toolkit": "^2.1.0",
@@ -371,7 +371,7 @@
     },
     "packages/myst-migrate": {
       "name": "myst-migrate",
-      "version": "1.10.0",
+      "version": "1.10.1",
       "dependencies": {
         "unist-util-select": "^4.0.3",
         "unist-util-visit": "^4.1.2",
@@ -624,7 +624,7 @@
     },
     "packages/mystmd": {
       "name": "mystmd",
-      "version": "1.10.0",
+      "version": "1.10.1",
       "bin": {
         "myst": "./dist/myst.cjs",
       },
