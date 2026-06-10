@@ -24,7 +24,7 @@
   },
   "scripts": {
     "clean": "rimraf index.js dist",
-    "build": "npm run clean && tsc && copyfiles \"examples/*\" dist"
+    "build": "npm run clean && tsc && copyfiles --up 1 \"docs/examples/*.yml\" dist"
   },
   "bugs": {
     "url": "https://github.com/jupyter-book/myst-spec/issues"
