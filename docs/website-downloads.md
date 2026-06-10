@@ -38,7 +38,7 @@ For example:
 Use the `project.static_files` option to copy files or folders into your build output.
 This is useful when a file needs to keep a predictable name at a known location.
 
-### Declare static files in `myst.yml`
+### Declare static files in project configuration (`myst.yml`)
 
 To do so, add a list of paths under `project:` in your `myst.yml`:
 
