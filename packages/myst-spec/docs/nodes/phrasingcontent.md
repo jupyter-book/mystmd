@@ -1,0 +1,1 @@
+Any of {ref}`staticphrasingcontent` | {ref}`emphasis` | {ref}`strong` | {ref}`link` | {ref}`linkreference` | {ref}`subscript` | {ref}`superscript` | {ref}`underline` | {ref}`abbreviation` | {ref}`crossreference` | {ref}`footnotereference`
