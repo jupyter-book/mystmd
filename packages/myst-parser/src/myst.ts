@@ -11,9 +11,10 @@ import {
   convertFrontMatter,
   frontMatterPlugin,
   colonFencePlugin,
-  mystBlockPlugin,
+  blockPlugin,
   footnotePlugin,
-  mystPlugin,
+  rolePlugin,
+  directivePlugin,
   deflistPlugin,
   tasklistPlugin,
   citationsPlugin,
@@ -81,10 +82,10 @@ export function createTokenizer(opts?: Options) {
   if (extensions.tables) tokenizer.enable('table');
   if (extensions.colonFences) tokenizer.use(colonFencePlugin);
   if (extensions.frontmatter) tokenizer.use(frontMatterPlugin, () => ({})).use(convertFrontMatter);
-  if (extensions.blocks) tokenizer.use(mystBlockPlugin);
+  if (extensions.blocks) tokenizer.use(blockPlugin);
   if (extensions.footnotes) tokenizer.use(footnotePlugin).disable('footnote_inline'); // not yet implemented in myst-parser
   if (extensions.citations) tokenizer.use(citationsPlugin);
-  tokenizer.use(mystPlugin);
+  tokenizer.use(rolePlugin).use(directivePlugin);
   if (extensions.math) tokenizer.use(mathPlugin, extensions.math);
   if (extensions.deflist) tokenizer.use(deflistPlugin);
   if (extensions.tasklist) tokenizer.use(tasklistPlugin);

@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import MarkdownIt from 'markdown-it';
-import plugin from '../src';
+import { rolePlugin, directivePlugin } from '../src';
+
+const plugin = (md: MarkdownIt) => {
+  md.use(rolePlugin).use(directivePlugin);
+};
 
 describe('parses roles', () => {
   it('basic role parses', () => {

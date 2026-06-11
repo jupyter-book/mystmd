@@ -43,10 +43,8 @@ The `myst-parser` package provides a Javascript implementation of the [MyST](htt
 
 The `myst-parser` package currently uses `markdown-it` for parsing markdown. This includes packages that are elsewhere in the executablebooks community including:
 
-- [markdown-it-docutils](https://github.com/executablebooks/markdown-it-docutils) - directives and roles
 - [markdown-it-dollarmath](https://github.com/executablebooks/markdown-it-dollarmath) - Math extensions to support inline $\LaTeX$ math surrounded by `$`
 - [markdown-it-amsmath](https://github.com/executablebooks/markdown-it-amsmath) - Support math that starts with `\begin{equation}`, etc. directly in the content
-- [markdown-it-myst-extras](https://github.com/executablebooks/markdown-it-myst-extras) - block breaks, comments, and other utilities for creating the MyST spec.
 
 The package also includes community supported markdown-it plugins (e.g. `markdown-it-footnote`, and others as necessary).
 
