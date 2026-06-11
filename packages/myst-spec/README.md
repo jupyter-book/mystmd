@@ -51,37 +51,3 @@ Markdown AST, or `mdast`, is an intermediate format that builds upon the existin
 
 Beyond CommonMark and GitHub Flavoured Markdown, MyST introduces new directives and roles (like admonitions, citations, equations) following existing standards where they are defined. `mdast` is serializable to JSON or YAML, and can be effectively shared between projects, languages and implementations. The output of this repository is a versioned JSON file that can be used in implementations of MyST.
 
-### Structure of the Repository
-
-```
-schema/
-|- myst.schema.json          // root schema definition
-|- myst.md                   // docs
-|- schema.spec.ts            // test for validating all examples against the schema
-|- unist/
-|  |- unist.schema.json      // unist base types
-|  |- unist.md               // docs
-|  |- unist.yml              // example mdast structures
-|- commonmark/
-|  |- commonmark.schema.json // commonmark mdast types
-|  |- commonmark.md          // docs
-|  |- commonmark.yml         // simple commonmark examples
-|  |- cmark_spec_0.30.yml    // commonmark spec examples
-...
-|- roles/                    // future myst features
-|  |- roles.schema.json
-|  ...
-|- directives/
-|  |- directives.schema.json
-|  ...
-```
-
-## Relation to other markup languages, frameworks
-
-[TODO]
-
-- CommonMark
-- GitHub Flavored Markdown
-- Pandoc
-- Unified
-- Markdown-It
