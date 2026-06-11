@@ -1,6 +1,7 @@
 title: Footnotes
 plugins:
-  - myst
+  - role
+  - directive
   - footnote
 cases:
   - title: 'footnote reference with sub role'
