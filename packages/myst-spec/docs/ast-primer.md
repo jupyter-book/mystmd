@@ -54,10 +54,10 @@ In the AST tab, the paragraph's `children` is a flat sequence of `text`, `strong
 The markup characters (`**`, `*`) are gone from the source text. They've been turned into nested nodes (e.g. `*word*` becomes a `type: emphasis` node wrapping a `text` node).
 
 (pre-and-post)=
-## Two stages: PRE and POST
+## Two processing stages: PRE and POST transforms
 
 In the `myst-cli`, a MyST document is processed through a series of transformations, and the AST has a different shape after each one.
-The short-hand for this in the online demo is `PRE`- and `POST`-transforms. You can get very granular by applying various [`myst-transforms`](https://npmjs.com/package/myst-transforms) in your own libraries or packages.
+The short-hand for this in MyST documentation is `PRE`- and `POST`-transforms. You can get very granular by applying various [`myst-transforms`](https://npmjs.com/package/myst-transforms) in your own libraries or packages.
 
 1. **PRE**: the output of *parsing*. The parser walks the source and expands directives and roles by calling their `run` functions. Cross-references still look like ordinary `link` nodes (e.g. `url: "#some-label"`). Directives appear as `mystDirective` wrapper nodes containing their expanded children. Numbering has not yet been applied.
 2. **POST**: the output after [transforms](xref:guide#develop:transforms) run over the PRE tree. Link nodes pointing at labels become `crossReference` nodes with resolved targets. Most directive wrappers are unwrapped, leaving only their semantic children. Numbering and enumeration are applied. This is the form most renderers consume.
@@ -107,9 +107,10 @@ When directive parsing fails, the POST AST signals it in one of two ways:
 ## Plugins often emit a custom node that is transformed
 
 A common plugin pattern uses a directive (or role) to emit a *placeholder* node, then a separate transform to expand that placeholder into real content.
-This is useful for anything you can't do inside `run()`: async work, anything that needs the whole document for context, or anything that depends on cross-references being resolved first.
 
 For a working in-repo example of this pattern, see [`docs/templates.mjs`](https://github.com/jupyter-book/mystmd/blob/main/docs/templates.mjs) (the `myst:template` directive emits a `myst-template-ref` placeholder, then `mystTemplateTransform` fetches template metadata and expands them).
+
+This split is useful for anything you can't do inside a directive's [`run()` function](xref:guide#defining-a-new-directive): async work, anything that needs the whole document for context, or anything that depends on cross-references being resolved first.
 
 ## Frontmatter and document structure
 
@@ -146,70 +147,13 @@ A second chunk.
 
 In the AST (POST), each chunk ends up inside a `block` node. Recognized keys (`kind`, `class`, `label`, `identifier`) are moved onto the `block` node, anything else is put under `block.data`. See [](./features/blocks.md) for the formal block specification.
 
-## "Parts": named regions of a page
+## "Parts": named regions of a page or project
 
 Plugins and themes often need to pull out a specific region of a page (the abstract, the acknowledgments, etc.). MyST has "parts" for this.
+Parts aren't part of the `myst-specification`, they are a concept used by the [MyST Document Engine](xref:guide) to structure pages and projects.
+See [](xref:guide#parts-ast) for details.
 
-:::{important} Parts are a `mystmd` / `myst-cli` convention
-The `block` node itself is in the spec, but the part-naming convention below lives in mystmd (see [`myst-frontmatter`](https://github.com/jupyter-book/mystmd/blob/0d626b198093fa740125d02267a111d84547fd36/packages/myst-frontmatter/src/site/types.ts#L6-L14)). A different implementation could treat parts differently.
-:::
-
-There are three ways to mark a region as a named part, and each one ends up in a different place in the served JSON. To retrieve a named part regardless of which mechanism produced it, use mystmd's [`extractPart()`](https://github.com/jupyter-book/mystmd/blob/0d626b198093fa740125d02267a111d84547fd36/packages/myst-common/src/extractParts.ts) helper.
-
-1. **Frontmatter `parts:` field**: e.g.
-
-   ```markdown
-   ---
-   parts:
-    acknowledgments: "..."
-    abstract: "My abstract"
-   ---
-   My content...
-   ```
-   
-   In the JSON AST: under `frontmatterParts.<name>.mdast`.
-2. **Block metadata** within the content of a page: e.g.
-
-   ```markdown
-   +++ {"part": "abstract"}
-
-   My abstract content.
-
-   +++
-
-   My content
-
-   +++ {"part": "acknowledgements"}
-   Thanks to ...
-   ```
-
-   In the JSON AST: becomes a `block` node inside `mdast` with `data.part` set.
-3. **Heading match** (heading text equals a known part name): e.g.
-
-   ```markdown
-   ## Abstract
-
-   My abstract ...
-
-   ## Header one
-
-   A normal (non-part) header
-
-   ## Acknowledgments
-
-   Thanks to ...
-   ```
-
-   In the JSON AST: remains a regular `heading` + paragraphs sequence.
-   Only becomes a part block when `extractPart()` is called.
-
-`extractPart()` itself is invoked by exporters like [`myst-to-jats`](https://github.com/jupyter-book/mystmd/blob/0d626b198093fa740125d02267a111d84547fd36/packages/myst-to-jats/src/index.ts#L720-L729).
-
-Site-level `parts:` (under `site:` in `myst.yml`) is a different `mystmd`-specific system for content shared across pages (like a footer or header).
-These are project-level and not part of any page's AST.
-The [theme developer guide](xref:guide/theme-developer) covers the rest of what mystmd serves alongside per-page JSON.
-
-## The upstream foundation of the MyST AST
+## How the MyST AST and its upstream foundation (`mdast`) relate
 
 The MyST AST extends [`mdast`](https://github.com/syntax-tree/mdast), the Markdown AST used widely in the JavaScript [unified](https://unifiedjs.com/) ecosystem, which in turn builds on [`unist`](https://github.com/syntax-tree/unist) (Universal Syntax Tree).
 If you've used `remark` or `rehype`, the shape will feel familiar.
