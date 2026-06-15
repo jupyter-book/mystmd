@@ -300,6 +300,15 @@ export function validateProjectFrontmatterKeys(
       },
     );
   }
+  if (defined(value.static_files)) {
+    output.static_files = validateList(
+      value.static_files,
+      incrementOptions('static_files', opts),
+      (file, index) => {
+        return validateString(file, incrementOptions(`static_files.${index}`, opts));
+      },
+    );
+  }
   return output;
 }
 

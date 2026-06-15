@@ -25,7 +25,7 @@ jobs:
       published: ${{ steps.changesets.outputs.published }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
           submodules: recursive
@@ -52,12 +52,12 @@ jobs:
           python -m build
         working-directory: packages/mystmd-py
       - name: Store the Python packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: python-package-distributions
           path: packages/mystmd-py/dist/
       - name: Store the JS packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: js-package-distributions
           path: packages/mystmd/dist/
@@ -75,7 +75,7 @@ jobs:
       id-token: write
     steps:
       - name: Download all the dists
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: python-package-distributions
           path: dist/
@@ -89,7 +89,7 @@ jobs:
       tag_name: ${{ steps.get_tag.outputs.tag_name }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Get tag name from package.json
         id: get_tag
         run: |

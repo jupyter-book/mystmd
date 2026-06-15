@@ -69,6 +69,8 @@ site:
     numbered_references: true
 ```
 
+![](#page-site-options-note)
+
 ### Writing DOIs to BibTeX
 
 If you encounter problems fetching DOIs from `https://doi.org`, for example the downloaded citation does not include all the data you expect or requests to `https://doi.org` are failing on an automated continuous integration platform, you may write your DOI citations to file using the MyST command:

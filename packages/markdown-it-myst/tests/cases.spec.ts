@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import type Token from 'markdown-it/lib/token';
-import { default as mystPlugin, citationsPlugin } from '../src';
+import { rolePlugin, directivePlugin, citationsPlugin } from '../src';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { default as footnotePlugin } from 'markdown-it-footnote';
 import fs from 'node:fs';
@@ -33,7 +33,8 @@ const casesList = files
   });
 
 const PLUGINS = {
-  myst: mystPlugin,
+  role: rolePlugin,
+  directive: directivePlugin,
   citations: citationsPlugin,
   footnote: footnotePlugin,
 };
@@ -45,7 +46,7 @@ casesList.forEach(({ title, cases, plugins }) => {
     test.each(casesToUse.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
       (_, { md, tokens }) => {
-        const mdit = MarkdownIt();
+        const mdit = MarkdownIt({ html: true });
         plugins.forEach((p) => {
           mdit.use(PLUGINS[p]);
         });

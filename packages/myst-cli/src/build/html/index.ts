@@ -1,3 +1,13 @@
+// Static-build HTML pipeline for MyST sites.
+//
+// The myst-theme (a separate repo) is the React/Remix app that renders MyST documents.
+// For a static build we spin myst-theme up as a local Remix server, fetch every route as fully-rendered HTML, and write the results to disk.
+// This file does that in `buildHtml`, plus a small post-processing pass (`rewriteAssetsFolder`) that:
+// - rewrites asset URLs
+// - injects an `/foo/index.html` -> `/foo/` redirect script
+//
+// The JS and CSS are produced by myst-theme.
+
 import fs from 'fs-extra';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
@@ -10,6 +20,7 @@ import { slugToUrl } from 'myst-common';
 import pLimit from 'p-limit';
 import { fetchWithRetry } from '../../utils/fetchWithRetry.js';
 import { selectors } from '../../store/index.js';
+import { copyStaticFiles } from '../../utils/copyStaticFiles.js';
 import type { LocalProjectPage } from '../../project/types.js';
 
 const limitConnections = pLimit(5);
@@ -72,10 +83,11 @@ export async function currentSiteRoutes(
 // This is defined in the remix `publicPath` and allows us to overwrite it here.
 const ASSETS_FOLDER = 'myst_assets_folder';
 
-// Script injected into every index.html to redirect "/foo/index.html" → "/foo/"
-// before Remix hydrates, preventing a URL mismatch that breaks client-side routing.
-// Remix renders the root index for URL "/" but static servers also serve the same
-// file at "/index.html", where the URL doesn't match any Remix route → runtime error.
+// Script injected at the end of <head> in every index.html to redirect
+// "/foo/index.html" → "/foo/" before Remix hydrates, preventing a URL
+// mismatch that breaks client-side routing. Remix renders the root index
+// for URL "/" but static servers also serve the same file at "/index.html",
+// where the URL doesn't match any Remix route → runtime error.
 const INDEX_REDIRECT_SCRIPT =
   `<script>(function(){` +
   `var p=window.location.pathname;` +
@@ -85,8 +97,9 @@ const INDEX_REDIRECT_SCRIPT =
 
 /**
  * Rewrite URLs in HTML/JS/JSON files pointing to the default assets folder in
- * terms of the provided base URL, and inject a URL-normalisation script into
- * every index.html so that direct access via /foo/index.html redirects to /foo/.
+ * terms of the provided base URL, and append a URL-normalisation script to
+ * the end of <head> in every index.html so that direct access via
+ * /foo/index.html redirects to /foo/.
  *
  * @param directory directory of files to recursively rewrite
  * @param baseurl base URL of the built site
@@ -106,7 +119,7 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
     let data = fs.readFileSync(file).toString();
     data = data.replace(new RegExp(`\\/${ASSETS_FOLDER}\\/`, 'g'), `${baseurl || ''}/build/`);
     if (filename === 'index.html') {
-      data = data.replace('<head>', `<head>${INDEX_REDIRECT_SCRIPT}`);
+      data = data.replace('</head>', `${INDEX_REDIRECT_SCRIPT}</head>`);
     }
     fs.writeFileSync(file, data);
   });
@@ -187,12 +200,24 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   );
   await appServer.stop();
 
-  // Copy the files for the template used
+  // Copy the files for the template used.
+  //
+  // This always includes the thebe JS chunks, even when no project enables
+  // `thebe`/`jupyter`. The myst-theme uses thebe-core to render Jupyter cell
+  // outputs, so these chunks are required for outputs to render at all.
   const templateBuildDir = path.join(template.templatePath, 'public');
   fs.copySync(templateBuildDir, htmlDir);
 
   // Copy all of the static assets
   fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
+
+  // Copy user static files to html build root
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  for (const proj of siteConfig?.projects ?? []) {
+    if (!proj.path) continue;
+    const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), proj.path);
+    copyStaticFiles(session, projectConfig?.static_files ?? [], htmlDir, proj.path);
+  }
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
   fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
 

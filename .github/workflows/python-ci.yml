@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
           submodules: recursive
@@ -31,7 +31,7 @@ jobs:
       - name: Build Python package
         run: pipx run hatch -- build
         working-directory: packages/mystmd-py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: package
           path: packages/mystmd-py/dist/mystmd*.whl
@@ -43,11 +43,11 @@ jobs:
     needs: [build-package]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
           submodules: recursive
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: package
       - name: Install myst from package
@@ -63,11 +63,11 @@ jobs:
     needs: [build-package]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
           submodules: recursive
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: package
       - name: Run myst and expect failure
@@ -82,11 +82,11 @@ jobs:
     needs: [build-package]
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
           submodules: recursive
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: package
       - name: Run myst with nodeenv and expect success

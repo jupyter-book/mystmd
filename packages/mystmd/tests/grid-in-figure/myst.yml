@@ -1,0 +1,7 @@
+version: 1
+project:
+  title: Grid in figure test
+  toc:
+    - file: index.md
+site:
+  template: ../templates/site/myst/book-theme

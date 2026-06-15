@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.17
+
+### Patch Changes
+
+- 70b417c: Stop citation label parsing at `<` so following HTML and autolinks are preserved
+
 ## 1.0.16
 
 ### Patch Changes

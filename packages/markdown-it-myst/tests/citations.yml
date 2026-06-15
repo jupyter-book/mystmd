@@ -291,6 +291,58 @@ cases:
           - type: text
             content: 'letters@nospace'
       - type: paragraph_close
+  # Citation label stops at `<` so an autolink can follow immediately.
+  - title: Citation followed by autolink stops at `<`
+    md: '@scipy2025<https://mystmd.org>'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: cite
+            content: '@scipy2025'
+            col: [0, 10]
+            meta:
+              label: scipy2025
+              kind: narrative
+          - type: link_open
+          - type: text
+            content: 'https://mystmd.org'
+          - type: link_close
+      - type: paragraph_close
+  # Citation inside HTML span is parsed, but HTML tags are preserved as html_inline nodes.
+  - title: Citation inside HTML span does not eat HTML
+    md: '<b>before</b> <span class="mention">@asdf</span> <i>after</i>'
+    tokens:
+      - type: paragraph_open
+      - type: inline
+        children:
+          - type: html_inline
+            content: '<b>'
+          - type: text
+            content: 'before'
+          - type: html_inline
+            content: '</b>'
+          - type: text
+            content: ' '
+          - type: html_inline
+            content: '<span class="mention">'
+          - type: cite
+            content: '@asdf'
+            col: [36, 41]
+            meta:
+              label: asdf
+              kind: narrative
+          - type: html_inline
+            content: '</span>'
+          - type: text
+            content: ' '
+          - type: html_inline
+            content: '<i>'
+          - type: text
+            content: 'after'
+          - type: html_inline
+            content: '</i>'
+      - type: paragraph_close
   - title: Nested labels
     md: 'These include experimentally produced alkaline magmas from @iacovino2016 [`alkaline.xlsx`], basaltic melt inclusions from Kilauea [@tucker2019] and Gakkel Ridge [@bennett2019 `basalts.xlsx`].'
     tokens:

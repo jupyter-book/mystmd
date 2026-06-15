@@ -1,6 +1,6 @@
 {
   "name": "markdown-it-myst",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "sideEffects": false,
   "license": "MIT",
   "description": "markdown-it tokenizer for MyST roles and directives",
@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "vfile": "^5.3.7"
+    "vfile": "^5.3.7",
+    "vfile-message": "^3.0.0"
   },
   "devDependencies": {
     "markdown-it-footnote": "^4.0.0"

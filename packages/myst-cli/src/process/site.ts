@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
 import { basename, extname, join } from 'node:path';
+import fs from 'fs-extra';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
 import { writeFileToFolder, tic, hashAndCopyStaticFile } from 'myst-cli-utils';
@@ -38,6 +39,7 @@ import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
 import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
+import { copyStaticFiles } from '../utils/copyStaticFiles.js';
 import version from '../version.js';
 import { combineProjectCitationRenderers } from './citations.js';
 import { loadFile, selectFile } from './file.js';
@@ -627,6 +629,13 @@ export async function processProject(
         }
       }),
     );
+    // Write all static files
+    const projectConfig = selectors.selectLocalProjectConfig(
+      session.store.getState(),
+      siteProject.path,
+    );
+    const staticFiles = projectConfig?.static_files ?? [];
+    copyStaticFiles(session, staticFiles, session.publicPath(), siteProject.path);
     await Promise.all(
       pages.map(async (page) => {
         return writeFile(session, {

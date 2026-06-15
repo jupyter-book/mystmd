@@ -99,6 +99,76 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 (rendering-pdfs-with-typst)=
 
+### LaTeX export gotchas
+
+By default, MyST-rendered PDFs will use the `\section` command as the top-level heading in LaTeX. This is standard for scientific papers and short reports. However, if you are writing a book or long document (e.g. with Jupyter Book), this may cause errors as LaTeX expects the `\chapter` or `\part` command to be top-level. MyST can accomodate for this difference by manually setting the `level` key to each file you wish to export, as per the table below:
+
+| Level | Corresponding LaTeX command |
+| ----- | --------------------------- |
+| -1    | `\part`                     |
+| 0     | `\chapter`                  |
+| 1     | `\section`                  |
+| 2     | `\subsection`               |
+| 3     | `\subsubsection`            |
+
+For instance, assuming you had the following directory structure:
+
+```
+.
+├── chapter-one
+│  ├── index.md
+│  ├── section-one.md
+│  └── section-two.md
+├── chapter-two
+│  ├── index.md
+│  ├── section-one.md
+│  └── section-two.md
+├── index.md
+└── myst.yml
+```
+
+And the following table of contents in your `myst.yml`:
+
+```yml
+toc:
+  - file: index.md
+  - file: chapter-one/index.md
+    children:
+      - file: chapter-one/section-one.md
+      - file: chapter-one/section-two.md
+  - file: chapter-two/index.md
+    children:
+      - file: chapter-two/section-one.md
+      - file: chapter-two/section-two.md
+# ... rest of your config
+```
+
+By default, MyST will assign `chapter-one/index.md` with the `\section` command in LaTeX, instead of the `\chapter` command. To be able to change this behavior, you will need to set the `level` key for every page, as follows:
+
+```yml
+exports:
+  - format: pdf
+    template: plain_latex_book
+    output: my_book.pdf
+    articles:
+      - file: index.md
+        level: 0
+      - file: chapter-one/index.md
+        level: 0
+      - file: chapter-one/section-one.md
+        level: 1
+      - file: chapter-one/section-two.md
+        level: 1
+      - file: chapter-two/index.md
+        level: 0
+      - file: chapter-two/section-one.md
+        level: 1
+      - file: chapter-two/section-two.md
+        level: 1
+```
+
+This will render the chapters using the `\chapter` command, ensuring it is consistent with LaTeX's book rendering.
+
 ## Rendering PDFs with Typst
 
 [Typst](https://typst.app) is a markup-based typesetting language. It is **significantly faster and simpler than using $\LaTeX$** with results of equal or better quality.

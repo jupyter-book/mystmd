@@ -1,0 +1,26 @@
+name: Check Release PR
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-mystmd-bump:
+    name: Ensure release PR bumps mystmd
+    if: github.head_ref == 'changeset-release/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      # If `mystmd`'s version didn't change, no new `mystmd` will be released.
+      # So this checks that the .json has been updated, and if not raises an error to
+      # make sure the merger does this intentionally!
+      - name: Compare mystmd version on main vs this PR
+        run: |
+          old=$(git show HEAD^1:packages/mystmd/package.json | jq -r .version)
+          new=$(jq -r .version packages/mystmd/package.json)
+          if [ "$old" = "$new" ]; then
+            echo "::error::No changeset bumps 'mystmd' or 'myst-cli' (mystmd still $old). See https://mystmd.org/guide/developer#changesets-myst-cli"
+            exit 1
+          fi

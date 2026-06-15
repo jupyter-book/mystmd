@@ -40,7 +40,7 @@ if (!globalThis.fetch) {
   globalThis.Response = Response as any;
 }
 
-const CONFIG_FILES = ['myst.yml'];
+const CONFIG_FILES = ['myst.yml', 'myst.yaml'];
 const DEFAULT_API_URL = 'https://api.mystmd.org';
 const NPM_COMMAND = 'npm i -g mystmd@latest';
 const PIP_COMMAND = 'pip install -U mystmd';
