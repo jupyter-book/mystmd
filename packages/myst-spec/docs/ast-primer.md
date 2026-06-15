@@ -13,12 +13,16 @@ If you just want to author MyST documents, you probably don't need this page - h
 If you want to build a renderer, write a parser, or generate AST from a plugin, read on.
 :::
 
+:::{seealso} The MyST Sandbox is a great place to play around with AST
+The [MyST Sandbox](https://mystmd.org/sandbox) is an interactive place to write your own MyST and see what AST happens as a result.
+:::
+
 ## The spec and mystmd
 
 This primer covers both **the MyST Specification** (this site) and **mystmd** (the official reference implementation):
 
 - The **spec** defines what a conforming MyST parser must produce - node types, their properties, and how they correspond to source. It evolves through the [MyST Enhancement Proposal process](https://mep.mystmd.org).
-- **mystmd** implements the spec, then goes further: it runs transforms that resolve cross-references and apply numbering, emits additional node types that aren't yet in the spec, and applies its own conventions (like named parts of a document).
+- **mystmd** is a command-line application that bundles several modular packages that make use of MyST. `myst-parser` is a parser for this spec, `myst-transforms` have a collection of useful transforms to modify a MyST AST (e.g., resolving cross-references and appling numbering numbering). `mystmd` may emits additional node types that aren't yet in the spec as part of its build pipeline (like [named parts](xref:guide#parts-ast)).
 
 If you're writing a parser, stick to the spec. mystmd's conventions (like specific named parts) aren't part of the spec, but they're still useful to know, since most MyST content today comes from mystmd. This page flags which is which as we go.
 
@@ -33,7 +37,7 @@ Beyond `type`, a node has either a `value` or `children`:
 Nodes may also carry additional properties - `url` on a link, `depth` on a heading, `identifier` on a cross-reference, etc.
 These properties are specific to each node type and are documented in the [node reference](./myst.schema.md).
 
-Here is the smallest meaningful AST: a single line of text.
+The **interactive demo** below lets you explore the AST for simple MyST text: a single line of text. Change the text to see the results, and click each box to see a different representation of the data, and stage in the processing pipeline (`PRE` or `POST` transforms).
 
 ```{myst}
 Hello, world!
