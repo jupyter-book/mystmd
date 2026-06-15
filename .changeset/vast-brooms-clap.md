@@ -2,4 +2,4 @@
 'mystmd': patch
 ---
 
-Fix parallelism count
+Use NodeJS parallelism parallelism feature
