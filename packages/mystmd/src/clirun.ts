@@ -3,7 +3,7 @@ import type { ISession, Session } from 'myst-cli';
 import { checkNodeVersion, getNodeVersion, logVersions } from 'myst-cli';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
 import { Semaphore } from 'async-mutex';
-import { cpus } from 'node:os';
+import { availableParallelism } from 'node:os';
 
 type SessionOpts = {
   debug?: boolean;
@@ -35,7 +35,7 @@ export function clirun(
     const logger = chalkLogger(opts?.debug ? LogLevel.debug : LogLevel.info, process.cwd());
     // Override default myst.yml if --config option is given.
     const configFiles = opts?.config ? [opts.config] : undefined;
-    const parallelCount = opts?.executeParallel ?? Math.max(1, cpus().length - 1);
+    const parallelCount = opts?.executeParallel ?? availableParallelism();
     const executionSemaphore = new Semaphore(parallelCount);
     const session = new sessionClass({ logger, configFiles, executionSemaphore });
     await session.reload();
