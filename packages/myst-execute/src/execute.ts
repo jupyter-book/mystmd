@@ -2,7 +2,7 @@ import { select, selectAll } from 'unist-util-select';
 import type { Kernel } from '@jupyterlab/services';
 import type { Code, InlineExpression, Outputs } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { GenericParent, IExpressionError } from 'myst-common';
+import type { GenericParent, GenericNode, IExpressionError } from 'myst-common';
 import { NotebookCell, fileError, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import assert from 'node:assert';
@@ -122,7 +122,7 @@ export function applyComputedOutputsToNodes(
   }
 }
 
-export function getExecutableNodes(tree: GenericParent) {
+export function getExecutableNodes(tree: GenericParent): ExecutableNode[] {
   // Pull out code-like nodes
   return (
     (
