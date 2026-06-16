@@ -85,6 +85,13 @@ dollarmath
 
     When disabled, dollar signs (`$`) will be treated as regular text characters and not parsed as math delimiters. This can be useful if you have frequent uses of dollar signs, such as currency, in your content that are not meant to be math.
 
+(setting:infer_dois_from_urls)=
+infer_dois_from_urls
+: Infer DOIs from non-doi.org link URLs (for example, publisher article pages, biorxiv, or zenodo).
+
+    - `false` (default): Only `doi.org` links, raw DOI strings, and `doi:` links are recognized
+    - `true`: infer DOIs from all links that end in a valid DOI (legacy behavior)
+
 ## LaTeX Rendering Settings
 
 Adding an object of `myst_to_tex` to the settings will allow you to control various default parts of how the LaTeX renderer behaves.

@@ -234,6 +234,7 @@ export async function transformMdast(
     mdast,
     cache.$doiRenderers,
     file,
+    { inferDoisFromUrls: frontmatter.settings?.infer_dois_from_urls },
   );
   const rendererFiles = [file];
   if (projectPath) {
@@ -352,7 +353,7 @@ export async function postProcessMdast(
     new GithubTransformer(),
     new RRIDTransformer(),
     new RORTransformer(),
-    new DOITransformer(), // This also is picked up in the next transform
+    new DOITransformer({ inferDoisFromUrls: frontmatter.settings?.infer_dois_from_urls }), // This also is picked up in the next transform
     new MystTransformer(externalReferences),
     new SphinxTransformer(externalReferences),
     new StaticFileTransformer(session, file), // Links static files and internally linked files

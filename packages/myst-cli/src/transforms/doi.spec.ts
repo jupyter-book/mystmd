@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { VFile } from 'vfile';
 import { Session } from '../session';
-import { resolveDOIAsBibTeX, resolveDOIAsCSLJSON } from './dois';
+import { resolveDOIAsBibTeX, resolveDOIAsCSLJSON, transformLinkedDOIs } from './dois';
 
 const PRIESTLEY_1972_CSL_JSON = [
   {
@@ -88,5 +89,27 @@ describe.each([
       dateParts.pop();
     }
     expect(data).toMatchObject(BARTELS_1997_CSL_JSON);
+  });
+});
+
+describe('transformLinkedDOIs', () => {
+  it('does not treat publisher URLs with embedded DOIs as DOI links', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'link',
+              url: 'https://www.nature.com/articles/10.1038/s41586-020-2649-2',
+              children: [{ type: 'text', value: 'article' }],
+            },
+          ],
+        },
+      ],
+    };
+    await transformLinkedDOIs(new Session(), new VFile(), mdast, {}, 'test.md');
+    expect(mdast.children[0].children[0].type).toBe('link');
   });
 });

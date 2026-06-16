@@ -7,16 +7,44 @@ import { updateLinkTextIfEmpty } from './utils.js';
 
 const TRANSFORM_SOURCE = 'LinkTransform:DOITransformer';
 
+/** Matches doi.org, dx.doi.org, and www.doi.org — same hosts as doi-utils doiOrg resolver. */
+const DOI_ORG_HOSTNAME = /(?:dx\.)?(?:www\.)?doi\.org/i;
+
+export type DoiOptions = {
+  /** When true, infer DOIs from non-doi.org URLs (publisher pages, biorxiv, zenodo, etc.). */
+  inferDoisFromUrls?: boolean;
+};
+
+/**
+ * Decide whether a string should be treated as a DOI link or citation label.
+ *
+ * Unless `inferDoisFromUrls` is enabled, URLs with a non-doi.org hostname are rejected.
+ * Otherwise, delegates to doi-utils validation.
+ */
+export function isRecognizedDoi(uri?: string, opts?: DoiOptions): boolean {
+  if (!uri) return false;
+  if (!opts?.inferDoisFromUrls) {
+    try {
+      const url = new URL(uri);
+      if (url.hostname && !DOI_ORG_HOSTNAME.test(url.hostname)) return false;
+    } catch {
+      // Not a URL — fall through to doi-utils validation.
+    }
+  }
+  return doi.validate(uri);
+}
+
 export class DOITransformer implements LinkTransformer {
   protocol = 'doi';
 
+  constructor(private doiOpts?: DoiOptions) {}
+
   test(uri?: string): boolean {
     if (uri?.startsWith('doi:')) {
-      // This may not be valid but flag it for the transform
+      // May not be valid, but flag for transform to report errors.
       return true;
     }
-    if (uri && doi.validate(uri)) return true;
-    return false;
+    return isRecognizedDoi(uri, this.doiOpts);
   }
 
   transform(link: Link, file: VFile): boolean {
