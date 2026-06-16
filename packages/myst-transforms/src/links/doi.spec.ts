@@ -38,6 +38,28 @@ describe('isRecognizedDoi', () => {
       }),
     ).toBe(true);
   });
+
+  describe.each([
+    {
+      name: 'mybinder zenodo dataverse link',
+      url: 'https://mybinder.org/v2/zenodo/10.7910/DVN/EOYZKH/',
+    },
+    {
+      name: 'iopscience article link',
+      url: 'https://iopscience.iop.org/article/10.3847/1538-3881/ace32f#ajace32ff10',
+    },
+    {
+      name: 'frontiers article link',
+      url: 'https://www.frontiersin.org/articles/10.3389/fonc.2018.00134/full#supplementary-material',
+    },
+  ])('$name', ({ url }) => {
+    test('is not recognized by default', () => {
+      expect(isRecognizedDoi(url)).toBe(false);
+    });
+    test('is recognized when inferDoisFromUrls is enabled', () => {
+      expect(isRecognizedDoi(url, { inferDoisFromUrls: true })).toBe(true);
+    });
+  });
 });
 
 describe('DOITransformer', () => {
