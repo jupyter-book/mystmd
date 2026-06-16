@@ -9,7 +9,9 @@ This page has important information for how to do so.
 
 ## Instructions
 
-To get setup with GitLab Pages, ensure that your repository is hosted in GitLab and you are in the root of the Git repository.
+To get setup with GitLab Pages, ensure that your repository is hosted in GitLab and you are in the root of the Git repository. Also, make sure that you have [pixi](https://pixi.prefix.dev/latest/) or [poetry](https://python-poetry.org/) installed. 
+If you use pixi, make sure that the pixi project is initialized in the same root directory as your project (`pixi init`).
+
 Create a file called `.gitlab-ci.yml` with the following content:
 
 
@@ -125,19 +127,19 @@ pages:
 ```
 ````
 `````
+*Note*: When using pixi, if you are not in the main branch, substitute `main` (last line) with your branch name. 
 
+<!-- Also, remember to set the `HOST` (this is a fix for a [known issue](https://github.com/jupyter-book/mystmd/issues/2471)) - it's already set in the example above. -->
 
-You must set the `HOST` - this is a fix for a [known issue](https://github.com/jupyter-book/mystmd/issues/2471).
-
-Note that a [pixi.toml](https://pixi.prefix.dev/latest/python/pyproject_toml/) and pixi.lock file should be included!
-
-A minimal version is shown below.
+<!-- Note that a [pixi.toml](https://pixi.prefix.dev/latest/python/pyproject_toml/) and pixi.lock file should be included! -->
+If you use pixi, when you initialize the project (`pixi init`), you automatically create the file [`pixi.toml`](https://pixi.prefix.dev/latest/python/pyproject_toml/). 
+You will need to modify the `pixi.toml` file with the following content:
 
 ```{code-block} toml
 :filename: pixi.toml
 
 [workspace]
-authors = [{name = "Me", email = "me@me.com"}]
+authors = ["Me <me@me.com>"]
 channels = ["conda-forge"]
 name = "jbtest"
 platforms = ["win-64", "linux-64"]
@@ -149,6 +151,13 @@ version = "0.1.0"
 python = ">=3.14.3,<3.15"
 jupyter-book = ">=2.1.2,<3"
 ```
+*Note*: In `authors = ["Me <me@me.com>"]`, update `Me` with your name and `<me@me.com>` with your email.
+
+If you use pixi, create a third file `pixi.lock` using the command `pixi lock`.  
+
+At the end, push `.gitlab-ci.yml`, `pixi.toml` and `pixi lock` to your GitLab repo. Your site will be built using GitLab CI/CD.
+
+
 
 
 
