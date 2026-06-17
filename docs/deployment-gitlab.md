@@ -11,6 +11,73 @@ This page has important information for how to do so.
 
 To get setup with GitLab Pages, ensure that your repository is hosted in GitLab and you are in the root of the Git repository.
 
+### Deployment
+The simplest way to deploy your myst book to GitLab pages is to create in the
+root of your project `.gitlab-ci.yml` file with the content provided below:
+
+Then commit this file and push to the remote repository:
+```shell
+git add .gitlab-ci.yml
+git commit -m "added .gitlab-ci.yml for GitLab Pages deployment"
+git push
+```
+
+```{code} yaml
+:filename: .gitlab-ci.yml
+:linenos:
+:emphasize-lines: 47
+
+image: ghcr.io/astral-sh/uv:debian-slim
+
+stages:
+  - build
+  - deploy
+
+variables:
+  HOST: "127.0.0.1"
+
+cache:
+  paths:
+    - .venv
+
+before_script:
+  - uv --version
+
+build:
+  stage: build
+  script:
+    # initialize uv project and install jupyter-book
+    - uv init
+    - uv add "jupyter-book>=2.1.2,<3"
+
+    # install node
+    - apt-get update
+    - apt-get install -y curl
+    - apt-get install -y procps
+    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    - apt-get install -y nodejs
+
+    # run jupyter-book via uv
+    - uv run jupyter-book clean --all
+    - export BASE_URL=""
+    - uv run jupyter-book build --html
+  artifacts:
+    paths:
+      - _build/html
+
+pages:
+  stage: deploy
+  script:
+    - mv _build/html/ public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main # replace it with YOUR branch name
+```
+
+> If your Git branch is different from `main`, you should replace main in the `.gitlab-ci.yml` file on the highlighted line with your branch name.
+
 ### Deployment with poetry
 Create a file called `.gitlab-ci.yml` with the following content:
 
