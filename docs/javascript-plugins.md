@@ -85,6 +85,12 @@ I am **special bold text**, whilst I am **normal bold text**
 
 I am **special bold text**, whilst I am **normal bold text**
 
+(plugins:multi-page)=
+:::{seealso} Aggregate information across multiple pages
+A transform runs on one page at a time, but a plugin can still collect information from every page in a project and render it in one place - for example, for a site-wide glossary or a list of figures.
+See the [multi-page plugin demo](https://github.com/myst-contrib/plugin-multi-page-demo) for a working example and a walk-through of the pattern.
+:::
+
 ## Examples of plugins
 
 The documentation you're reading now defines several of its own plugins to extend MyST functionality.
