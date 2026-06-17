@@ -10,57 +10,11 @@ This page has important information for how to do so.
 ## Instructions
 
 To get setup with GitLab Pages, ensure that your repository is hosted in GitLab and you are in the root of the Git repository.
+
+### Deployment with poetry
 Create a file called `.gitlab-ci.yml` with the following content:
 
 
-`````{tab-set}
-````{tab-item} Pixi based
-```{code} yaml
-:filename: .gitlab-ci.yml
-
-
-image: ghcr.io/prefix-dev/pixi:latest
-
-stages:
-  - build
-  - deploy
-
-variables:
-  PIXI_CACHE_DIR: "$CI_PROJECT_DIR/.pixi"
-  HOST: "127.0.0.1"
-
-cache:
-  paths:
-    - .pixi
-
-before_script:
-  - pixi --version
-
-build:
-  stage: build
-  script:
-    # install environment from pixi.toml + pixi.lock
-    - pixi install --locked
-
-    # run jupyter-book via pixi environment
-    - pixi run jupyter-book build --html
-  artifacts:
-    paths:
-      - _build/html
-
-pages:
-  stage: deploy
-  script:
-    - mkdir public
-    - cp -r _build/html/* public/
-  artifacts:
-    paths:
-      - public
-  only:
-    - main
-```
-```` 
-````{tab-item} Poetry based
 ```{code} yaml
 :filename: .gitlab-ci.yml
 variables:
@@ -123,21 +77,72 @@ pages:
   tags:
     - ubuntu
 ```
-````
-`````
 
+### Deployment with pixi
+*Note*: You may not use pixi in your project but you may use it for GitLab deployment.
 
-You must set the `HOST` - this is a fix for a [known issue](https://github.com/jupyter-book/mystmd/issues/2471).
+1. Make sure that you have [`pixi`](https://pixi.prefix.dev/latest/#installation) installed on your machine.
 
-Note that a [pixi.toml](https://pixi.prefix.dev/latest/python/pyproject_toml/) and pixi.lock file should be included!
+2. Create a file called `.gitlab-ci.yml` with the following content:
 
-A minimal version is shown below.
+```{code} yaml
+:filename: .gitlab-ci.yml
+:linenos:
+:emphasize-lines: 39 
+
+image: ghcr.io/prefix-dev/pixi:latest
+
+stages:
+  - build
+  - deploy
+
+variables:
+  PIXI_CACHE_DIR: "$CI_PROJECT_DIR/.pixi"
+  HOST: "127.0.0.1"
+
+cache:
+  paths:
+    - .pixi
+
+before_script:
+  - pixi --version
+
+build:
+  stage: build
+  script:
+    # install environment from pixi.toml + pixi.lock
+    - pixi install --locked
+
+    # run jupyter-book via pixi environment
+    - pixi run jupyter-book build --html
+  artifacts:
+    paths:
+      - _build/html
+
+pages:
+  stage: deploy
+  script:
+    - mkdir public
+    - cp -r _build/html/* public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main # replace it with your branch name!
+```
+
+> If your Git branch is different from `main`, you should replace main in the `.gitlab-ci.yml` file on the highlighted line with your branch name.
+
+3. Make sure your pixi project is initialized (you may use `pixi init` CLI command to do so)
+
+4. Make sure that your `pixi.toml` file contains `linux-64` as a platform and `python` with `jupyter-book` as dependencies.
+    A minimal version of the `pixi.toml` file is shown below.
 
 ```{code-block} toml
 :filename: pixi.toml
 
 [workspace]
-authors = [{name = "Me", email = "me@me.com"}]
+authors = ["Me <me@me.com>"]
 channels = ["conda-forge"]
 name = "jbtest"
 platforms = ["win-64", "linux-64"]
@@ -149,6 +154,14 @@ version = "0.1.0"
 python = ">=3.14.3,<3.15"
 jupyter-book = ">=2.1.2,<3"
 ```
+
+5. Synchronize `pixi.lock` file using `pixi lock` CLI command.
+
+> Note that a [pixi.toml](https://pixi.prefix.dev/latest/python/pyproject_toml/) and pixi.lock file should be tracked by Git and pushed to the repository with other files.
+
+6. Add your project files to git using `git add ` (e.g `git add myst.yml main.md pixi.toml pixi.lock`)
+7. Commit the changes
+8. Push your branch to GitLab (e.g `git push -u origin main`)
 
 
 
