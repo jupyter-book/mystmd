@@ -191,7 +191,7 @@ export async function transformMdast(
       session.log.debug(`▶️  Executing: ${fileName}`);
       await kernelExecutionTransform(mdast, vfile, {
         basePath: session.sourcePath(),
-        cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+        cache: new LocalDiskCache(cachePath, '.json'),
         sessionFactory: () => session.jupyterSessionManager(),
         frontmatter: frontmatter,
         ignoreCache: false,

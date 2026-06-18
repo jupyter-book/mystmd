@@ -13,8 +13,9 @@ export interface ICache<T> {
  * An implementation of a basic cache
  */
 export class LocalDiskCache<T> implements ICache<T> {
-  constructor(cachePath: string) {
+  constructor(cachePath: string, extension: string) {
     this._cachePath = cachePath;
+    this._extension = extension;
 
     if (!existsSync(cachePath)) {
       mkdirSync(cachePath, { recursive: true });
@@ -22,9 +23,10 @@ export class LocalDiskCache<T> implements ICache<T> {
   }
 
   private readonly _cachePath: string;
+  private readonly _extension: string;
 
   private _makeKeyPath(key: string): string {
-    return path.join(this._cachePath, `${key}.json`);
+    return path.join(this._cachePath, `${key}${this._extension}`);
   }
 
   test(key: string): boolean {
