@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
+import type { GenericParent, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -74,7 +74,7 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { parseMyst } from './myst.js';
-import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
+import { kernelExecutionTransform, LocalDiskCache, NotebookExecutionCache } from 'myst-execute';
 import type { IOutput } from '@jupyterlab/nbformat';
 import { rawDirectiveTransform } from '../transforms/raw.js';
 import { addEditUrl } from '../utils/addEditUrl.js';

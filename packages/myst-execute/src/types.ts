@@ -1,28 +1,39 @@
-import type { Block, Code, Output, InlineExpression } from 'myst-spec-ext';
+import type { InlineExpression, CodeBlock, IExpressionResult } from 'myst-spec';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { IExpressionResult } from 'myst-common';
-/**
- * Type narrowing Output to contain IOutput data
- *
- * TODO: lift this to the myst-spec definition
- */
-export type CodeBlockOutput = Output & {
-  data: IOutput[];
-};
 
 /**
- * Type narrowing Block to contain code-cells and code-cell outputs
- *
- * TODO: lift this to the myst-spec definition
+ * Kinds of nodes that we can "execute"
  */
-
-export type CodeBlock = Block & {
-  kind: 'code';
-  data?: {
-    tags?: string[];
-  };
-  children: (Code | CodeBlockOutput)[];
-};
-
 export type ExecutableNode = CodeBlock | InlineExpression;
-export type ExecutionResult = IOutput[] | IExpressionResult;
+
+/**
+ * Interface types for serialising execution results
+ */
+export type CodeResult = {
+  type: 'code';
+  responses: IOutput[];
+};
+
+export type ExpressionResult = {
+  type: 'inlineExpression';
+  response: IExpressionResult;
+};
+
+export type ExecutionResult = CodeResult | ExpressionResult;
+
+export function isCodeResult(result: ExecutionResult): result is CodeResult {
+  return result.type === 'code';
+}
+export function isExpressionResult(result: ExecutionResult): result is ExpressionResult {
+  return result.type === 'inlineExpression';
+}
+
+/**
+ * Result of document execution
+ */
+export type DocumentExecutionResult = {
+  // Additional execution metadata
+  context: Record<string, any>;
+  // Array of results, one for each "executable" AST node
+  results: ExecutionResult[];
+};

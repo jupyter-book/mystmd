@@ -46,6 +46,7 @@
     "mdast-util-find-and-replace": "^2.1.0",
     "mdast-util-to-hast": "^12.3.0",
     "myst-common": "^1.10.0",
+    "myst-spec": "^0.0.5",
     "rehype-format": "^4.0.1",
     "rehype-parse": "^8.0.4",
     "rehype-remark": "^9.1.2",

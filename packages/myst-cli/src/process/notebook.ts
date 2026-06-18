@@ -16,8 +16,8 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-import type { Code, InlineExpression } from 'myst-spec-ext';
-import type { IUserExpressionMetadata } from '../transforms/inlineExpressions.js';
+import type { Code, InlineExpression } from 'myst-spec';
+import type { IUserExpressionMetadata } from 'myst-execute';
 import { findExpression, metadataSection } from '../transforms/inlineExpressions.js';
 import { frontmatterValidationOpts } from '../frontmatter.js';
 
@@ -92,9 +92,7 @@ function embedInlineExpressions(
 ) {
   const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
   inlineNodes.forEach((inlineExpression) => {
-    const data = findExpression(userExpressions, inlineExpression.value);
-    if (!data) return;
-    inlineExpression.result = data.result as unknown as Record<string, unknown>;
+    inlineExpression.result = findExpression(userExpressions, inlineExpression.value)?.result;
   });
 }
 
