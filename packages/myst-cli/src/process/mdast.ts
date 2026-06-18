@@ -74,8 +74,12 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { parseMyst } from './myst.js';
-import { kernelExecutionTransform, LocalDiskCache, NotebookExecutionCache } from 'myst-execute';
-import type { IOutput } from '@jupyterlab/nbformat';
+import {
+  kernelExecutionTransform,
+  LocalDiskCache,
+  NotebookExecutionCache,
+  TieredExecutionCache,
+} from 'myst-execute';
 import { rawDirectiveTransform } from '../transforms/raw.js';
 import { addEditUrl } from '../utils/addEditUrl.js';
 import {
@@ -191,7 +195,10 @@ export async function transformMdast(
       session.log.debug(`▶️  Executing: ${fileName}`);
       await kernelExecutionTransform(mdast, vfile, {
         basePath: session.sourcePath(),
-        cache: new LocalDiskCache(cachePath, '.json'),
+        cache: new TieredExecutionCache(
+          new NotebookExecutionCache(new LocalDiskCache(cachePath, '.ipynb')),
+          new LocalDiskCache(cachePath, '.json'),
+        ),
         sessionFactory: () => session.jupyterSessionManager(),
         frontmatter: frontmatter,
         ignoreCache: false,

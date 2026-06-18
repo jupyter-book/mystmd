@@ -171,3 +171,25 @@ export class NotebookExecutionCache implements IDocumentExecutionCache {
     this.baseCache.set(key, notebook);
   }
 }
+
+export class TieredExecutionCache implements IDocumentExecutionCache {
+  private primary: IDocumentExecutionCache;
+  private secondary: IDocumentExecutionCache;
+
+  constructor(primary: IDocumentExecutionCache, secondary: IDocumentExecutionCache) {
+    this.primary = primary;
+    this.secondary = secondary;
+  }
+
+  test(key: string): boolean {
+    return this.primary.test(key) || this.secondary.test(key);
+  }
+
+  get(key: string): DocumentExecutionResult | undefined {
+    return this.primary.get(key) || this.secondary.get(key);
+  }
+
+  set(key: string, document: DocumentExecutionResult) {
+    return this.primary.set(key, document);
+  }
+}
