@@ -25,7 +25,7 @@ import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
 import { isWhiteLabelled } from '../utils/whiteLabelling.js';
-import { SessionManager } from '@jupyterlab/services';
+import type { SessionManager } from '@jupyterlab/services';
 import { createJupyterSessionManager } from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
@@ -100,7 +100,11 @@ export class Session implements ISession {
     return this.$logger;
   }
 
-  private readonly registry: PluginRegistry<ISession>;
+  private readonly $registry: PluginRegistry<Session>;
+
+  get registry(): PluginRegistry<Session> {
+    return this.$registry;
+  }
 
   constructor(
     opts: {
@@ -129,8 +133,8 @@ export class Session implements ISession {
         this._latestVersion = latest;
       })
       .catch(() => null);
-    this.registry = new PluginRegistry();
-    this.registry.application = this;
+    this.$registry = new PluginRegistry();
+    this.$registry.application = this;
   }
 
   showUpgradeNotice() {
