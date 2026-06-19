@@ -77,6 +77,7 @@ import { parseMyst } from './myst.js';
 import {
   kernelExecutionTransform,
   LocalDiskCache,
+  LegacyExecutionCache,
   NotebookExecutionCache,
   TieredExecutionCache,
 } from 'myst-execute';
@@ -197,7 +198,7 @@ export async function transformMdast(
         basePath: session.sourcePath(),
         cache: new TieredExecutionCache(
           new NotebookExecutionCache(new LocalDiskCache(cachePath, '.ipynb')),
-          new LocalDiskCache(cachePath, '.json'),
+          new LegacyExecutionCache(cachePath),
         ),
         sessionFactory: () => session.jupyterSessionManager(),
         frontmatter: frontmatter,

@@ -1,10 +1,15 @@
-import type { DocumentExecutionResult, ExecutionResult, CodeResult } from './types.js';
+import type {
+  DocumentExecutionResult,
+  ExecutionResult,
+  LegacyExecutionResult,
+  CodeResult,
+} from './types.js';
 import { isCodeResult } from './types.js';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import type { INotebookContent } from '@jupyterlab/nbformat';
-import { isCode, isError, isDisplayData } from '@jupyterlab/nbformat';
-import type { IExpressionError, IExpressionDisplay } from 'myst-spec';
+import { isCode, isError, isDisplayData, IOutput } from '@jupyterlab/nbformat';
+import type { IExpressionError, IExpressionDisplay, IExpressionResult } from 'myst-spec';
 
 export interface ICache<T> {
   test(key: string): boolean;
@@ -54,12 +59,72 @@ export class LocalDiskCache<T> implements ICache<T> {
   }
 }
 
+/**
+ * Type guard for legacy IOutput[] arrays
+ *
+ * @param result legacy cache result
+ */
+function isLegacyOutputArray(result: LegacyExecutionResult): result is IOutput[] {
+  return Array.isArray(result);
+}
+
+/**
+ * Implement IDocumentExecutionCache for legacy caches
+ */
+export class LegacyExecutionCache implements IDocumentExecutionCache {
+  private readonly cache: LocalDiskCache<LegacyExecutionResult[]>;
+  constructor(cachePath: string) {
+    this.cache = new LocalDiskCache(cachePath, '.json');
+  }
+
+  test(key: string): boolean {
+    return this.cache.test(key);
+  }
+
+  get(key: string): DocumentExecutionResult | undefined {
+    const legacyHit = this.cache.get(key);
+    if (legacyHit === undefined) {
+      return undefined;
+    }
+    return {
+      context: {},
+      results: legacyHit.map((item) => {
+        if (isLegacyOutputArray(item)) {
+          return {
+            type: 'code',
+            responses: item,
+          };
+        } else {
+          return {
+            type: 'inlineExpression',
+            response: item,
+          };
+        }
+      }),
+    };
+  }
+
+  set(key: string, document: DocumentExecutionResult) {
+    const legacyDocument = document.results.map((result) => {
+      if (result.type === 'code') {
+        return result.responses;
+      } else {
+        return result.response;
+      }
+    });
+    this.cache.set(key, legacyDocument);
+  }
+}
+
 export type LocalExecutionCache = LocalDiskCache<DocumentExecutionResult>;
 
 type NotebookResultMetadata = {
   mystResultType: ExecutionResult['type'];
 };
 
+/**
+ * IDocumentExecutionCache that stores outputs and expression results in ipynb files
+ */
 export class NotebookExecutionCache implements IDocumentExecutionCache {
   private baseCache: ICache<INotebookContent>;
 
@@ -172,6 +237,10 @@ export class NotebookExecutionCache implements IDocumentExecutionCache {
   }
 }
 
+/**
+ * IDocumentExecutionCache that reads and writes to a primary cache,
+ * but falls back upon a secondary for reading
+ */
 export class TieredExecutionCache implements IDocumentExecutionCache {
   private primary: IDocumentExecutionCache;
   private secondary: IDocumentExecutionCache;

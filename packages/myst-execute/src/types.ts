@@ -20,6 +20,7 @@ export type ExpressionResult = {
 };
 
 export type ExecutionResult = CodeResult | ExpressionResult;
+export type LegacyExecutionResult = IOutput[] | IExpressionResult;
 
 export function isCodeResult(result: ExecutionResult): result is CodeResult {
   return result.type === 'code';
