@@ -17,8 +17,8 @@ import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
 import type { Code, InlineExpression } from 'myst-spec';
-import type { IUserExpressionMetadata } from 'myst-execute';
 import { findExpression, metadataSection } from '../transforms/inlineExpressions.js';
+import type { IUserExpressionMetadata } from '../transforms/inlineExpressions.js';
 import { frontmatterValidationOpts } from '../frontmatter.js';
 
 import { filterKeys } from 'simple-validators';
