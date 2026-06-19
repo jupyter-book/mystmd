@@ -25,12 +25,17 @@ import { rootReducer } from '../store/reducers.js';
 import version from '../version.js';
 import type { ISession } from './types.js';
 import { isWhiteLabelled } from '../utils/whiteLabelling.js';
-import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
-import type { JupyterServerSettings } from 'myst-execute';
-import { launchJupyterServer } from 'myst-execute';
+import type { SessionManager } from '@jupyterlab/services';
+import {
+  ISessionManagerFactory,
+  newSessionManagerFactoryPlugin,
+  existingSessionManagerFactoryPlugin,
+} from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 import type { PluginInfo } from 'myst-config';
+import { PluginRegistry } from '@lumino/coreutils';
+import type { IPlugin } from '@lumino/coreutils';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -100,6 +105,14 @@ export class Session implements ISession {
     return this.$logger;
   }
 
+  private readonly $registry: PluginRegistry<ISession>;
+
+  get registry(): PluginRegistry<ISession> {
+    return this.$registry;
+  }
+
+  private sessionManagerFactory: ISessionManagerFactory | undefined;
+
   constructor(
     opts: {
       logger?: Logger;
@@ -127,6 +140,32 @@ export class Session implements ISession {
         this._latestVersion = latest;
       })
       .catch(() => null);
+    this.$registry = new PluginRegistry();
+    this.$registry.application = this;
+    // Add session manager factory
+    if (process.env.JUPYTER_BASE_URL !== undefined) {
+      this.$registry.registerPlugin(existingSessionManagerFactoryPlugin);
+    } else {
+      this.$registry.registerPlugin(newSessionManagerFactoryPlugin);
+    }
+    // Now register another plugin to ask for this implementation
+    this.$registry.registerPlugin({
+      id: 'myst-cli:consume-session-manager-factory',
+      autoStart: true,
+      requires: [ISessionManagerFactory],
+      activate: (app: ISession, factory: ISessionManagerFactory): void => {
+        (app as any).setSessionManagerFactory(factory);
+      },
+    } satisfies IPlugin<ISession, void>);
+    // Activate plugins (race condition)
+    this.$registry.activatePlugins('startUp');
+  }
+
+  /**
+   * Callback to receive the session manager from the registry
+   */
+  setSessionManagerFactory(factory: ISessionManagerFactory) {
+    this.sessionManagerFactory = factory;
   }
 
   showUpgradeNotice() {
@@ -238,42 +277,7 @@ export class Session implements ISession {
   }
 
   jupyterSessionManager(): Promise<SessionManager | undefined> {
-    if (this._jupyterSessionManagerPromise === undefined) {
-      this._jupyterSessionManagerPromise = this.createJupyterSessionManager();
-    }
-    return this._jupyterSessionManagerPromise;
-  }
-
-  private async createJupyterSessionManager(): Promise<SessionManager | undefined> {
-    try {
-      let partialServerSettings: JupyterServerSettings | undefined;
-      // Load from environment
-      if (process.env.JUPYTER_BASE_URL !== undefined) {
-        partialServerSettings = {
-          baseUrl: process.env.JUPYTER_BASE_URL,
-          token: process.env.JUPYTER_TOKEN,
-        };
-      } else {
-        // Note: To use an existing Jupyter server use `findExistingJupyterServer`, see #1716
-        this.log.debug(`Launching jupyter server on ${this.sourcePath()}`);
-        // Create and load new server
-        partialServerSettings = await launchJupyterServer(this.sourcePath(), this.log);
-      }
-
-      const serverSettings = ServerConnection.makeSettings(partialServerSettings);
-      const kernelManager = new KernelManager({ serverSettings });
-      const manager = new SessionManager({ kernelManager, serverSettings });
-
-      // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
-      manager.disposed.connect(() => {
-        kernelManager.dispose();
-        partialServerSettings?.dispose?.();
-      });
-      return manager;
-    } catch (err) {
-      this.log.error('Unable to instantiate connection to Jupyter Server', err);
-      return undefined;
-    }
+    return this.sessionManagerFactory!.getSessionManager();
   }
 
   dispose() {

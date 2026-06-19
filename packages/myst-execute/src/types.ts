@@ -1,6 +1,25 @@
 import type { Block, Code, Output, InlineExpression } from 'myst-spec-ext';
 import type { IOutput } from '@jupyterlab/nbformat';
 import type { IExpressionResult } from 'myst-common';
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+import { Token } from '@lumino/coreutils';
+import type { SessionManager } from '@jupyterlab/services';
+
+/**
+ * Interface that providers and consumers of this token agree on
+ */
+export interface ISessionManagerFactory {
+  getSessionManager(): Promise<SessionManager | undefined>;
+}
+
+/**
+ * Token object for requesting / providing an implementation
+ */
+export const ISessionManagerFactory = new Token<ISessionManagerFactory>(
+  'myst-execute:ISessionManagerFactory',
+);
+
 /**
  * Type narrowing Output to contain IOutput data
  *
