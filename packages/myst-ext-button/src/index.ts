@@ -1,5 +1,5 @@
-import type { RoleSpec, GenericNode } from 'myst-common';
-import type { Link } from 'myst-spec';
+import type { RoleSpec, RoleData, GenericNode } from 'myst-common';
+import type { Link } from 'myst-spec-ext';
 import { fileWarn, RuleId } from 'myst-common';
 
 // Matches "text<link>" capturing body text (group 1) and an optional "<link>" suffix (group 2).
