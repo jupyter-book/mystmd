@@ -1,12 +1,22 @@
 import type { GenericParent } from 'myst-common';
 import { fileWarn, RuleId } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import type { StaticPhrasingContent, InlineExpression, IExpressionResult } from 'myst-spec';
+import type { InlineExpression } from 'myst-spec-ext';
+import type { StaticPhrasingContent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { BASE64_HEADER_SPLIT } from './images.js';
-import type { IUserExpressionMetadata } from 'myst-execute';
+
 export const metadataSection = 'user_expressions';
+
+export interface IUserExpressionMetadata {
+  expression: string;
+  result: IExpressionResult;
+}
+
+export interface IUserExpressionsMetadata {
+  [metadataSection]: IUserExpressionMetadata[];
+}
 
 export function findExpression(
   expressions: IUserExpressionMetadata[] | undefined,
