@@ -3,9 +3,12 @@ import which from 'which';
 import getPort from 'get-port';
 import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
-import type { ISession, Logger } from 'myst-cli-utils';
+import type { Logger } from 'myst-cli-utils';
+import type { ISession } from 'myst-cli';
 import { killProcessTree } from 'myst-cli-utils';
 import chalk from 'chalk';
+import type { IPlugin } from '@lumino/coreutils';
+import { ISessionManagerFactory } from './types.js';
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
@@ -145,37 +148,104 @@ export async function launchJupyterServer(
   // Register settings destructor (to kill server)
   return { ...settings, dispose: () => killProcessTree(proc) };
 }
+export class BaseSessionManagerFactory implements ISessionManagerFactory {
+  protected readonly session: ISession;
+  protected promise: Promise<SessionManager | undefined> | undefined;
 
-export async function createJupyterSessionManager(
-  session: ISession & { sourcePath: () => string },
-): Promise<SessionManager | undefined> {
-  try {
-    let partialServerSettings: JupyterServerSettings | undefined;
-    // Load from environment
-    if (process.env.JUPYTER_BASE_URL !== undefined) {
-      partialServerSettings = {
+  constructor(session: ISession) {
+    this.session = session;
+  }
+
+  getSessionManager(): Promise<SessionManager | undefined> {
+    if (this.promise === undefined) {
+      this.promise = this.createOneSessionManager();
+    }
+    return this.promise;
+  }
+
+  protected async createOneSessionManager(): Promise<SessionManager | undefined> {
+    return Promise.resolve(undefined);
+  }
+}
+
+/**
+ * Factory implementation for SessionManager that connects to an existing Jupyter Server
+ */
+export class ExistingSessionManagerFactory extends BaseSessionManagerFactory {
+  protected async createOneSessionManager(): Promise<SessionManager | undefined> {
+    try {
+      const partialServerSettings = {
         baseUrl: process.env.JUPYTER_BASE_URL,
         token: process.env.JUPYTER_TOKEN,
       };
-    } else {
-      // Note: To use an existing Jupyter server use `findExistingJupyterServer`, see #1716
-      session.log.debug(`Launching jupyter server on ${session.sourcePath()}`);
-      // Create and load new server
-      partialServerSettings = await launchJupyterServer(session.sourcePath(), session.log);
+      const serverSettings = ServerConnection.makeSettings(partialServerSettings);
+      const kernelManager = new KernelManager({ serverSettings });
+      const manager = new SessionManager({ kernelManager, serverSettings });
+
+      // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
+      manager.disposed.connect(() => {
+        kernelManager.dispose();
+      });
+      return manager;
+    } catch (err) {
+      this.session.log.error('Unable to instantiate connection to Jupyter Server', err);
+      return undefined;
     }
-
-    const serverSettings = ServerConnection.makeSettings(partialServerSettings);
-    const kernelManager = new KernelManager({ serverSettings });
-    const manager = new SessionManager({ kernelManager, serverSettings });
-
-    // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
-    manager.disposed.connect(() => {
-      kernelManager.dispose();
-      partialServerSettings?.dispose?.();
-    });
-    return manager;
-  } catch (err) {
-    session.log.error('Unable to instantiate connection to Jupyter Server', err);
-    return undefined;
   }
 }
+
+/**
+ * Factory implementation for SessionManager that creates a new Jupyter Server
+ */
+export class NewSessionManagerFactory extends BaseSessionManagerFactory {
+  protected async createOneSessionManager(): Promise<SessionManager | undefined> {
+    try {
+      // Note: To use an existing Jupyter server use `findExistingJupyterServer`, see #1716
+      this.session.log.debug(`Launching jupyter server on ${this.session.sourcePath()}`);
+      // Create and load new server
+      const partialServerSettings = await launchJupyterServer(
+        this.session.sourcePath(),
+        this.session.log,
+      );
+
+      const serverSettings = ServerConnection.makeSettings(partialServerSettings);
+      const kernelManager = new KernelManager({ serverSettings });
+      const manager = new SessionManager({ kernelManager, serverSettings });
+
+      // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
+      manager.disposed.connect(() => {
+        kernelManager.dispose();
+        partialServerSettings?.dispose?.();
+      });
+      return manager;
+    } catch (err) {
+      this.session.log.error('Unable to instantiate connection to Jupyter Server', err);
+      return undefined;
+    }
+  }
+}
+
+/**
+ * A plugin that provides the existing session manager factory.
+ */
+export const existingSessionManagerFactoryPlugin: IPlugin<ISession, ISessionManagerFactory> = {
+  id: 'myst-execute:existing-session-manager-factory',
+  autoStart: true,
+  provides: ISessionManagerFactory,
+  activate: (session: ISession): ExistingSessionManagerFactory => {
+    console.log('Activated existing session manager provider');
+    return new ExistingSessionManagerFactory(session);
+  },
+};
+/**
+ * A plugin that provides the new session manager factory.
+ */
+export const newSessionManagerFactoryPlugin: IPlugin<ISession, ISessionManagerFactory> = {
+  id: 'myst-execute:new-session-manager-factory',
+  autoStart: true,
+  provides: ISessionManagerFactory,
+  activate: (session: ISession): NewSessionManagerFactory => {
+    console.log('Activated new session manager provider');
+    return new NewSessionManagerFactory(session);
+  },
+};

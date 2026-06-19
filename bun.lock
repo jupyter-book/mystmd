@@ -256,6 +256,7 @@
       "dependencies": {
         "@jupyterlab/nbformat": "^3.5.2",
         "@jupyterlab/services": "^7.3.0",
+        "@lumino/coreutils": "^2.0.0",
         "chalk": "^5.2.0",
         "get-port": "^6.1.2",
         "myst-cli-utils": "^2.0.13",

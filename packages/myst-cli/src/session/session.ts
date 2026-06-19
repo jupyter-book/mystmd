@@ -26,11 +26,16 @@ import version from '../version.js';
 import type { ISession } from './types.js';
 import { isWhiteLabelled } from '../utils/whiteLabelling.js';
 import type { SessionManager } from '@jupyterlab/services';
-import { createJupyterSessionManager } from 'myst-execute';
+import {
+  ISessionManagerFactory,
+  newSessionManagerFactoryPlugin,
+  existingSessionManagerFactoryPlugin,
+} from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 import type { PluginInfo } from 'myst-config';
 import { PluginRegistry } from '@lumino/coreutils';
+import type { IPlugin } from '@lumino/coreutils';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -100,11 +105,13 @@ export class Session implements ISession {
     return this.$logger;
   }
 
-  private readonly $registry: PluginRegistry<Session>;
+  private readonly $registry: PluginRegistry<ISession>;
 
-  get registry(): PluginRegistry<Session> {
+  get registry(): PluginRegistry<ISession> {
     return this.$registry;
   }
+
+  private sessionManagerFactory: ISessionManagerFactory | undefined;
 
   constructor(
     opts: {
@@ -135,6 +142,30 @@ export class Session implements ISession {
       .catch(() => null);
     this.$registry = new PluginRegistry();
     this.$registry.application = this;
+    // Add session manager factory
+    if (process.env.JUPYTER_BASE_URL !== undefined) {
+      this.$registry.registerPlugin(existingSessionManagerFactoryPlugin);
+    } else {
+      this.$registry.registerPlugin(newSessionManagerFactoryPlugin);
+    }
+    // Now register another plugin to ask for this implementation
+    this.$registry.registerPlugin({
+      id: 'myst-cli:consume-session-manager-factory',
+      autoStart: true,
+      requires: [ISessionManagerFactory],
+      activate: (app: ISession, factory: ISessionManagerFactory): void => {
+        (app as any).setSessionManagerFactory(factory);
+      },
+    } satisfies IPlugin<ISession, void>);
+    // Activate plugins (race condition)
+    this.$registry.activatePlugins('startUp');
+  }
+
+  /**
+   * Callback to receive the session manager from the registry
+   */
+  setSessionManagerFactory(factory: ISessionManagerFactory) {
+    this.sessionManagerFactory = factory;
   }
 
   showUpgradeNotice() {
@@ -246,10 +277,7 @@ export class Session implements ISession {
   }
 
   jupyterSessionManager(): Promise<SessionManager | undefined> {
-    if (this._jupyterSessionManagerPromise === undefined) {
-      this._jupyterSessionManagerPromise = createJupyterSessionManager(this);
-    }
-    return this._jupyterSessionManagerPromise;
+    return this.sessionManagerFactory!.getSessionManager();
   }
 
   dispose() {
