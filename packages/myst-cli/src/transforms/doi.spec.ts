@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { VFile } from 'vfile';
 import { Session } from '../session';
-import { resolveDOIAsBibTeX, resolveDOIAsCSLJSON } from './dois';
+import { resolveDOIAsBibTeX, resolveDOIAsCSLJSON, transformLinkedDOIs } from './dois';
 
 const PRIESTLEY_1972_CSL_JSON = [
   {
@@ -88,5 +89,42 @@ describe.each([
       dateParts.pop();
     }
     expect(data).toMatchObject(BARTELS_1997_CSL_JSON);
+  });
+});
+
+describe('transformLinkedDOIs', () => {
+  describe.each([
+    {
+      name: 'mybinder zenodo dataverse link',
+      url: 'https://mybinder.org/v2/zenodo/10.7910/DVN/EOYZKH/',
+    },
+    {
+      name: 'iopscience article link',
+      url: 'https://iopscience.iop.org/article/10.3847/1538-3881/ace32f#ajace32ff10',
+    },
+    {
+      name: 'frontiers article link',
+      url: 'https://www.frontiersin.org/articles/10.3389/fonc.2018.00134/full#supplementary-material',
+    },
+  ])('$name', ({ url }) => {
+    it('does not auto-cite by default', async () => {
+      const mdast = {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              {
+                type: 'link',
+                url,
+                children: [{ type: 'text', value: 'article' }],
+              },
+            ],
+          },
+        ],
+      };
+      await transformLinkedDOIs(new Session(), new VFile(), mdast, {}, 'test.md');
+      expect(mdast.children[0].children[0].type).toBe('link');
+    });
   });
 });

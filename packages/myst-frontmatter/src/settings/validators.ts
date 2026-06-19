@@ -1,5 +1,11 @@
 import type { ValidationOptions } from 'simple-validators';
-import { defined, incrementOptions, validateChoice, validateObjectKeys } from 'simple-validators';
+import {
+  defined,
+  incrementOptions,
+  validateBoolean,
+  validateChoice,
+  validateObjectKeys,
+} from 'simple-validators';
 import type { ProjectSettings } from './types.js';
 import { validateMystToTexSettings } from './validatorsMystToTex.js';
 import { validateParserSettings } from './validatorsParser.js';
@@ -18,12 +24,14 @@ export const PROJECT_SETTINGS = [
   'output_matplotlib_strings',
   'myst_to_tex',
   'parser',
+  'infer_dois_from_urls',
 ];
 export const PROJECT_SETTINGS_ALIAS = {
   stderr_output: 'output_stderr',
   stdout_output: 'output_stdout',
   mystToTex: 'myst_to_tex',
   tex: 'myst_to_tex', // The default is the renderer, not the parser
+  inferDoisFromUrls: 'infer_dois_from_urls',
 };
 
 export function validateProjectAndPageSettings(
@@ -68,6 +76,13 @@ export function validateProjectAndPageSettings(
   if (defined(settings.parser)) {
     const parser = validateParserSettings(settings.parser, incrementOptions('parser', opts));
     if (parser) output.parser = parser;
+  }
+  if (defined(settings.infer_dois_from_urls)) {
+    const infer_dois_from_urls = validateBoolean(
+      settings.infer_dois_from_urls,
+      incrementOptions('infer_dois_from_urls', opts),
+    );
+    if (infer_dois_from_urls != null) output.infer_dois_from_urls = infer_dois_from_urls;
   }
   if (Object.keys(output).length === 0) return undefined;
   return output;

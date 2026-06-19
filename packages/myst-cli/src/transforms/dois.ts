@@ -1,6 +1,7 @@
 import type { CitationRenderer, CSL } from 'citation-js-utils';
 import { getCitationRenderers, parseBibTeX, parseCSLJSON } from 'citation-js-utils';
 import { doi } from 'doi-utils';
+import { isRecognizedDoi, type DoiOptions } from 'myst-transforms';
 import type { Link } from 'myst-spec';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { toText, RuleId, plural, fileError } from 'myst-common';
@@ -229,6 +230,7 @@ export async function transformLinkedDOIs(
   mdast: GenericParent,
   doiRenderer: Record<string, SingleCitationRenderer>,
   path: string,
+  doiOpts?: DoiOptions,
 ): Promise<CitationRenderer> {
   const toc = tic();
   const renderer: CitationRenderer = {};
@@ -236,12 +238,12 @@ export async function transformLinkedDOIs(
   const citeDois: Cite[] = [];
   selectAll('link', mdast).forEach((node: GenericNode) => {
     const { url } = node as Link;
-    if (!doi.validate(url)) return;
+    if (!isRecognizedDoi(url, doiOpts)) return;
     linkedDois.push(node as Link);
   });
   selectAll('cite', mdast).forEach((node: GenericNode) => {
     const { label } = node as Cite;
-    if (!doi.validate(label)) return;
+    if (!isRecognizedDoi(label, doiOpts)) return;
     citeDois.push(node as Cite);
   });
   if (linkedDois.length === 0 && citeDois.length === 0) return renderer;
@@ -278,7 +280,7 @@ export async function transformLinkedDOIs(
         citeNode.kind = 'narrative';
         citeNode.label = label;
         citeNode.identifier = node.url;
-        if (doi.validate(toText(citeNode.children))) {
+        if (isRecognizedDoi(toText(citeNode.children), doiOpts)) {
           // If the link text is the DOI, update with a citation in a following pass
           citeNode.children = [];
         }

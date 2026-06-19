@@ -15,4 +15,5 @@ export type ProjectSettings = {
   output_matplotlib_strings?: OutputRemovalOptions;
   myst_to_tex?: MystToTexSettings;
   parser?: ParserSettings;
+  infer_dois_from_urls?: boolean;
 };
