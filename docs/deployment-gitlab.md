@@ -9,18 +9,14 @@ This page has important information for how to do so.
 
 ## Instructions
 
+:::{warning}
+If you are new to GitLab or you are not familiar with `git`, please proceed to [](#instructions-for-beginners)
+:::
+
 To get setup with GitLab Pages, ensure that your repository is hosted in GitLab and you are in the root of the Git repository.
 
 ### Deployment
-The simplest way to deploy your myst book to GitLab pages is to create in the
-root of your project `.gitlab-ci.yml` file with the content provided below:
-
-Then commit this file and push to the remote repository:
-```shell
-git add .gitlab-ci.yml
-git commit -m "added .gitlab-ci.yml for GitLab Pages deployment"
-git push
-```
+Create `.gitlab-ci.yml` file in the root of your project with the content provided below:
 
 ```{code} yaml
 :filename: .gitlab-ci.yml
@@ -75,6 +71,8 @@ pages:
   only:
     - main # replace it with YOUR branch name
 ```
+
+then push this file to your GitLab repo.
 
 > If your Git branch is different from `main`, you should replace main in the `.gitlab-ci.yml` file on the highlighted line with your branch name.
 
@@ -282,3 +280,94 @@ deploy:
 ```
 
 Note that this way of deploying requires a gitlab runner.
+
+## Instructions for beginners
+If this is your first time using GitLab, complete these one-time setup steps:
+1. [Install Git](https://docs.gitlab.com/topics/git/how_to_install_git/) 
+2. Configure your git by using the following commands in the terminal
+    ```shell
+    git config --global user.name "Your Name"
+    git config --global user.email "your-mail@your-domain.com"
+    ```
+3. Create a GitLab account [on official
+   GitLab](https://gitlab.com/users/sign_in/) or on the GitLab of your
+   institution.
+4. [Set up SSH authentication](https://docs.gitlab.com/user/ssh/)  
+
+Once set up, you have two options to connect your project to GitLab:
+1. *Start from GitLab*: [Create a repository on GitLab, clone it to your computer, add your files, and push them](https://docs.gitlab.com/tutorials/make_first_git_commit/#steps)
+2. *Start from your computer*: Initialize your local folder as a Git repository and push it to GitLab using the following commands:
+    ```bash
+    cd your-project-folder   # go to your local folder with your myst project
+    git init                 # initialize git
+    git add .                # stage all files
+    git commit -m "first commit"
+    git remote add origin git@gitlab.com:username/project.git # you may change this link with the link of your repository
+    git push -u origin main
+    ```
+
+Once your git project is initialized, create `.gitlab-ci.yml` file in the root
+of your myst project and paste the next contents to this file:
+```{code} yaml
+:filename: .gitlab-ci.yml
+:linenos:
+:emphasize-lines: 47
+
+image: ghcr.io/astral-sh/uv:debian-slim
+
+stages:
+  - build
+  - deploy
+
+variables:
+  HOST: "127.0.0.1"
+
+cache:
+  paths:
+    - .venv
+
+before_script:
+  - uv --version
+
+build:
+  stage: build
+  script:
+    # initialize uv project and install jupyter-book
+    - uv init
+    - uv add "jupyter-book>=2.1.2,<3"
+
+    # install node
+    - apt-get update
+    - apt-get install -y curl
+    - apt-get install -y procps
+    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+    - apt-get install -y nodejs
+
+    # run jupyter-book via uv
+    - uv run jupyter-book clean --all
+    - export BASE_URL=""
+    - uv run jupyter-book build --html
+  artifacts:
+    paths:
+      - _build/html
+
+pages:
+  stage: deploy
+  script:
+    - mv _build/html/ public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main # replace it with YOUR branch name
+```
+
+Once you saved the file with provided contents, execute the next commands:
+```shell
+git add .gitlab-ci.yml
+git commit -m "added .gitlab-ci.yml to set up GitLab Pages"
+git push
+```
+
+You are all done. You may proceed to the page of your GitLab repository and
+open GitLab Pages.
