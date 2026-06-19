@@ -7,9 +7,9 @@ import type {
 import { isCodeResult } from './types.js';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import type { INotebookContent } from '@jupyterlab/nbformat';
-import { isCode, isError, isDisplayData, IOutput } from '@jupyterlab/nbformat';
-import type { IExpressionError, IExpressionDisplay, IExpressionResult } from 'myst-spec';
+import type { INotebookContent, IOutput } from '@jupyterlab/nbformat';
+import { isCode, isError, isDisplayData } from '@jupyterlab/nbformat';
+import type { IExpressionError, IExpressionDisplay } from 'myst-spec';
 
 export interface ICache<T> {
   test(key: string): boolean;
