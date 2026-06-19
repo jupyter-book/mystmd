@@ -157,11 +157,15 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
   const { kernel } = sessionConnection;
   log.debug(`Connected to kernel ${kernel.name}`);
+
+  // Execution count
+  const startTimeNS = process.hrtime.bigint();
   try {
     // Execute notebook
     const { results, errorOccurred } = await computeExecutableNodes(kernel, executableNodes, {
       vfile,
     });
+    const stopTimeNS = process.hrtime.bigint();
     // Populate cache if things were successful
     if (!errorOccurred) {
       opts.cache.set(cacheKey, {
@@ -169,6 +173,7 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
           kernelspec,
           path: path.basename(opts.basePath, vfile.path),
           timestamp: new Date().toISOString(),
+          duration_ms: Number((stopTimeNS - startTimeNS) / 1_000_000n),
         },
         results,
       });
