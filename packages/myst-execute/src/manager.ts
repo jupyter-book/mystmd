@@ -1,4 +1,4 @@
-import type { ServerConnection } from '@jupyterlab/services';
+import { KernelManager, ServerConnection, SessionManager } from '@jupyterlab/services';
 import which from 'which';
 import getPort from 'get-port';
 import { spawn } from 'node:child_process';
@@ -144,4 +144,38 @@ export async function launchJupyterServer(
 
   // Register settings destructor (to kill server)
   return { ...settings, dispose: () => killProcessTree(proc) };
+}
+
+export async function createJupyterSessionManager(
+  session: ISession & { sourcePath: () => string },
+): Promise<SessionManager | undefined> {
+  try {
+    let partialServerSettings: JupyterServerSettings | undefined;
+    // Load from environment
+    if (process.env.JUPYTER_BASE_URL !== undefined) {
+      partialServerSettings = {
+        baseUrl: process.env.JUPYTER_BASE_URL,
+        token: process.env.JUPYTER_TOKEN,
+      };
+    } else {
+      // Note: To use an existing Jupyter server use `findExistingJupyterServer`, see #1716
+      session.log.debug(`Launching jupyter server on ${session.sourcePath()}`);
+      // Create and load new server
+      partialServerSettings = await launchJupyterServer(session.sourcePath(), session.log);
+    }
+
+    const serverSettings = ServerConnection.makeSettings(partialServerSettings);
+    const kernelManager = new KernelManager({ serverSettings });
+    const manager = new SessionManager({ kernelManager, serverSettings });
+
+    // Tie the lifetime of the kernelManager and (potential) spawned server to the manager
+    manager.disposed.connect(() => {
+      kernelManager.dispose();
+      partialServerSettings?.dispose?.();
+    });
+    return manager;
+  } catch (err) {
+    session.log.error('Unable to instantiate connection to Jupyter Server', err);
+    return undefined;
+  }
 }
