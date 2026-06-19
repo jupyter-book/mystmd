@@ -345,7 +345,7 @@ export type AnyWidget = {
  */
 
 export type CodeBlock = Block & {
-  kind: 'code';
+  kind: 'notebook-code';
   data?: {
     tags?: string[];
   };
