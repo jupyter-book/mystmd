@@ -3,12 +3,15 @@ import which from 'which';
 import getPort from 'get-port';
 import { spawn } from 'node:child_process';
 import * as readline from 'node:readline';
-import type { Logger } from 'myst-cli-utils';
-import type { ISession } from 'myst-cli';
+import type { ISession as ICLISession, Logger } from 'myst-cli-utils';
 import { killProcessTree } from 'myst-cli-utils';
 import chalk from 'chalk';
 import type { IPlugin } from '@lumino/coreutils';
 import { ISessionManagerFactory } from './types.js';
+
+interface ISession extends ICLISession {
+  sourcePath: () => string;
+}
 
 export type JupyterServerSettings = Partial<ServerConnection.ISettings> & {
   dispose?: () => void;
