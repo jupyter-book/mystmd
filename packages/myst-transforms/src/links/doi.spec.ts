@@ -4,8 +4,14 @@ import type { Link } from 'myst-spec-ext';
 import { DOITransformer, isRecognizedDoi } from './doi';
 
 describe('isRecognizedDoi', () => {
-  test('doi.org URL', () => {
-    expect(isRecognizedDoi('https://doi.org/10.1016/j.ultramic.2018.06.001')).toBe(true);
+  test('dx.doi.org URL', () => {
+    expect(isRecognizedDoi('https://dx.doi.org/10.1016/j.ultramic.2018.06.001')).toBe(true);
+  });
+  test('www.doi.org URL', () => {
+    expect(isRecognizedDoi('https://www.doi.org/10.1016/j.ultramic.2018.06.001')).toBe(true);
+  });
+  test('hostname ending in doi.org is not treated as doi.org', () => {
+    expect(isRecognizedDoi('https://notadoi.org/10.1038/s41586-020-2649-2')).toBe(false);
   });
   test('short doi.org URL', () => {
     expect(isRecognizedDoi('https://doi.org/cr3qwn')).toBe(true);

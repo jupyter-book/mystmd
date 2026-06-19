@@ -7,8 +7,12 @@ import { updateLinkTextIfEmpty } from './utils.js';
 
 const TRANSFORM_SOURCE = 'LinkTransform:DOITransformer';
 
-/** Matches doi.org, dx.doi.org, and www.doi.org — same hosts as doi-utils doiOrg resolver. */
-const DOI_ORG_HOSTNAME = /(?:dx\.)?(?:www\.)?doi\.org/i;
+/** Canonical doi.org resolver hosts (exact hostname match). */
+const DOI_ORG_HOSTNAMES = new Set(['doi.org', 'www.doi.org', 'dx.doi.org']);
+
+function isDoiOrgHostname(hostname: string): boolean {
+  return DOI_ORG_HOSTNAMES.has(hostname.toLowerCase());
+}
 
 export type DoiOptions = {
   /** When true, infer DOIs from non-doi.org URLs (publisher pages, biorxiv, zenodo, etc.). */
@@ -26,7 +30,7 @@ export function isRecognizedDoi(uri?: string, opts?: DoiOptions): boolean {
   if (!opts?.inferDoisFromUrls) {
     try {
       const url = new URL(uri);
-      if (url.hostname && !DOI_ORG_HOSTNAME.test(url.hostname)) return false;
+      if (url.hostname && !isDoiOrgHostname(url.hostname)) return false;
     } catch {
       // Not a URL — fall through to doi-utils validation.
     }
