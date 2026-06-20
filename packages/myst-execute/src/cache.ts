@@ -1,20 +1,33 @@
+import type {
+  DocumentExecutionResult,
+  ExecutionResult,
+  LegacyExecutionResult,
+  CodeResult,
+} from './types.js';
+import { isCodeResult } from './types.js';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import type { INotebookContent, IOutput } from '@jupyterlab/nbformat';
+import { isCode, isError, isDisplayData } from '@jupyterlab/nbformat';
+import type { IExpressionError, IExpressionDisplay } from 'myst-spec';
 
 export interface ICache<T> {
   test(key: string): boolean;
 
   get(key: string): T | undefined;
 
-  set(key: string, value: T): void;
+  set(key: string, result: T): void;
 }
+
+export type IDocumentExecutionCache = ICache<DocumentExecutionResult>;
 
 /**
  * An implementation of a basic cache
  */
 export class LocalDiskCache<T> implements ICache<T> {
-  constructor(cachePath: string) {
+  constructor(cachePath: string, extension: string) {
     this._cachePath = cachePath;
+    this._extension = extension;
 
     if (!existsSync(cachePath)) {
       mkdirSync(cachePath, { recursive: true });
@@ -22,9 +35,10 @@ export class LocalDiskCache<T> implements ICache<T> {
   }
 
   private readonly _cachePath: string;
+  private readonly _extension: string;
 
   private _makeKeyPath(key: string): string {
-    return path.join(this._cachePath, `${key}.json`);
+    return path.join(this._cachePath, `${key}${this._extension}`);
   }
 
   test(key: string): boolean {
@@ -39,8 +53,212 @@ export class LocalDiskCache<T> implements ICache<T> {
     return JSON.parse(readFileSync(keyPath, { encoding: 'utf8' }));
   }
 
-  set(key: string, item: T) {
+  set(key: string, document: T) {
     const keyPath = this._makeKeyPath(key);
-    return writeFileSync(keyPath, JSON.stringify(item), { encoding: 'utf8' });
+    return writeFileSync(keyPath, JSON.stringify(document), { encoding: 'utf8' });
+  }
+}
+
+/**
+ * Type guard for legacy IOutput[] arrays
+ *
+ * @param result legacy cache result
+ */
+function isLegacyOutputArray(result: LegacyExecutionResult): result is IOutput[] {
+  return Array.isArray(result);
+}
+
+/**
+ * Implement IDocumentExecutionCache for legacy caches
+ */
+export class LegacyExecutionCache implements IDocumentExecutionCache {
+  private readonly cache: LocalDiskCache<LegacyExecutionResult[]>;
+  constructor(cachePath: string) {
+    this.cache = new LocalDiskCache(cachePath, '.json');
+  }
+
+  test(key: string): boolean {
+    return this.cache.test(key);
+  }
+
+  get(key: string): DocumentExecutionResult | undefined {
+    const legacyHit = this.cache.get(key);
+    if (legacyHit === undefined) {
+      return undefined;
+    }
+    return {
+      context: {},
+      results: legacyHit.map((item) => {
+        if (isLegacyOutputArray(item)) {
+          return {
+            type: 'code',
+            responses: item,
+          };
+        } else {
+          return {
+            type: 'inlineExpression',
+            response: item,
+          };
+        }
+      }),
+    };
+  }
+
+  set(key: string, document: DocumentExecutionResult) {
+    const legacyDocument = document.results.map((result) => {
+      if (result.type === 'code') {
+        return result.responses;
+      } else {
+        return result.response;
+      }
+    });
+    this.cache.set(key, legacyDocument);
+  }
+}
+
+export type LocalExecutionCache = LocalDiskCache<DocumentExecutionResult>;
+
+type NotebookResultMetadata = {
+  mystResultType: ExecutionResult['type'];
+};
+
+/**
+ * IDocumentExecutionCache that stores outputs and expression results in ipynb files
+ */
+export class NotebookExecutionCache implements IDocumentExecutionCache {
+  private baseCache: ICache<INotebookContent>;
+
+  constructor(baseCache: ICache<INotebookContent>) {
+    this.baseCache = baseCache;
+  }
+
+  test(key: string): boolean {
+    return this.baseCache.test(key);
+  }
+  get(key: string): DocumentExecutionResult | undefined {
+    const notebook = this.baseCache.get(key);
+    if (notebook === undefined) {
+      return undefined;
+    }
+    return {
+      context: (notebook.metadata?.mystContext ?? {}) as Record<string, any>,
+      results: notebook.cells.map((cell) => {
+        if (!isCode(cell)) {
+          throw new Error('Invalid cell in cache');
+        } else {
+          const resultType = (cell.metadata as NotebookResultMetadata).mystResultType;
+          if (resultType === 'code') {
+            return {
+              type: 'code',
+              responses: cell.outputs,
+            } satisfies CodeResult;
+          } else {
+            return {
+              type: 'inlineExpression',
+              response: cell.outputs
+                .map((output) => {
+                  if (isError(output)) {
+                    return {
+                      status: 'error',
+                      ename: output.ename,
+                      evalue: output.evalue,
+                      traceback: output.traceback,
+                    } satisfies IExpressionError;
+                  } else if (isDisplayData(output)) {
+                    return {
+                      status: 'ok',
+                      data: output.data,
+                      metadata: output.metadata,
+                    } satisfies IExpressionDisplay;
+                  } else {
+                    throw new Error('Invalid cell for inlineExpression result');
+                  }
+                })
+                .shift()!,
+            };
+          }
+        }
+      }),
+    } satisfies DocumentExecutionResult;
+  }
+  set(key: string, document: DocumentExecutionResult) {
+    const notebook: INotebookContent = {
+      nbformat: 4,
+      nbformat_minor: 5,
+      metadata: {
+        mystContext: document.context,
+      },
+      cells: document.results.map((result, index) => {
+        if (isCodeResult(result)) {
+          return {
+            cell_type: 'code',
+            source: [],
+            metadata: {
+              mystResultType: result.type,
+            } satisfies NotebookResultMetadata,
+            outputs: result.responses,
+            execution_count: index,
+          };
+        } else {
+          return {
+            cell_type: 'code',
+            source: [],
+            metadata: {
+              mystResultType: result.type,
+            } satisfies NotebookResultMetadata,
+            outputs: [result.response].map((response) => {
+              switch (response.status) {
+                case 'ok': {
+                  return {
+                    output_type: 'display_data',
+                    data: response.data,
+                    metadata: response.metadata,
+                  };
+                }
+                case 'error': {
+                  return {
+                    output_type: 'error',
+                    ename: response.ename,
+                    evalue: response.evalue,
+                    traceback: response.traceback,
+                  };
+                }
+                default: {
+                  throw new Error('This cannot happen');
+                }
+              }
+            }),
+            execution_count: index,
+          };
+        }
+      }),
+    };
+    this.baseCache.set(key, notebook);
+  }
+}
+
+/**
+ * IDocumentExecutionCache that reads and writes to a primary cache,
+ * but falls back upon a secondary for reading
+ */
+export class TieredExecutionCache implements IDocumentExecutionCache {
+  private primary: IDocumentExecutionCache;
+  private secondary: IDocumentExecutionCache;
+
+  constructor(primary: IDocumentExecutionCache, secondary: IDocumentExecutionCache) {
+    this.primary = primary;
+    this.secondary = secondary;
+  }
+
+  test(key: string): boolean {
+    return this.primary.test(key) || this.secondary.test(key);
+  }
+
+  get(key: string): DocumentExecutionResult | undefined {
+    return this.primary.get(key) || this.secondary.get(key);
+  }
+
+  set(key: string, document: DocumentExecutionResult) {
+    return this.primary.set(key, document);
   }
 }

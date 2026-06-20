@@ -2,22 +2,24 @@ import { select } from 'unist-util-select';
 import type { Logger } from 'myst-cli-utils';
 import type { PageFrontmatter, KernelSpec } from 'myst-frontmatter';
 import type { SessionManager } from '@jupyterlab/services';
-import type { Code } from 'myst-spec-ext';
+import type { Code } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
 import { fileError } from 'myst-common';
 import type { VFile } from 'vfile';
 import assert from 'node:assert';
+import path from 'node:path';
 import type { Plugin } from 'unified';
 import { createHash } from 'node:crypto';
-import type { ICache } from './cache.js';
+import type { IDocumentExecutionCache } from './cache.js';
 import { createKernelConnection } from './kernel.js';
 import { isCodeBlock, isInlineExpression, codeBlockRaisesException } from './utils.js';
-import type { ExecutableNode, ExecutionResult } from './types.js';
+import type { ExecutableNode } from './types.js';
 import {
   getExecutableNodes,
   computeExecutableNodes,
   applyComputedOutputsToNodes,
 } from './execute.js';
+
 /**
  * Build a cache key from an array of executable nodes
  *
@@ -65,7 +67,7 @@ function buildCacheKey(
 
 export type Options = {
   basePath: string;
-  cache: ICache<ExecutionResult[]>;
+  cache: IDocumentExecutionCache;
   sessionFactory: () => Promise<SessionManager | undefined>;
   frontmatter: PageFrontmatter;
   ignoreCache?: boolean;
@@ -107,7 +109,9 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   // See if we already cached this execution
   const cacheEnv = getCacheEnvironment(executeConfig?.depends_on_env ?? []);
   const cacheKey = buildCacheKey(kernelspec, executableNodes, cacheEnv);
-  let cachedResults = opts.cache.get(cacheKey);
+
+  const cacheHit = opts.cache.get(cacheKey);
+  let cachedResults = cacheHit?.results;
 
   const ignoreCachedDocument =
     // If we don't globally ignore caching'
@@ -153,14 +157,26 @@ export async function kernelExecutionTransform(tree: GenericParent, vfile: VFile
   }
   const { kernel } = sessionConnection;
   log.debug(`Connected to kernel ${kernel.name}`);
+
+  // Execution count
+  const startTimeNS = process.hrtime.bigint();
   try {
     // Execute notebook
     const { results, errorOccurred } = await computeExecutableNodes(kernel, executableNodes, {
       vfile,
     });
+    const stopTimeNS = process.hrtime.bigint();
     // Populate cache if things were successful
     if (!errorOccurred) {
-      opts.cache.set(cacheKey, results);
+      opts.cache.set(cacheKey, {
+        context: {
+          kernelspec,
+          path: path.basename(opts.basePath, vfile.path),
+          timestamp: new Date().toISOString(),
+          duration_ms: Number((stopTimeNS - startTimeNS) / 1_000_000n),
+        },
+        results,
+      });
     }
     // Refer to these computed results
     cachedResults = results;

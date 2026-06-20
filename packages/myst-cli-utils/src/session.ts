@@ -7,6 +7,7 @@ export class Session implements ISession {
   constructor(opts?: { logger?: Logger }) {
     this.log = opts?.logger ?? chalkLogger(LogLevel.debug, process.cwd());
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fetch(url: URL | RequestInfo, init?: RequestInit | undefined): Promise<Response> {
     throw new Error('fetch not implemented on session');
   }

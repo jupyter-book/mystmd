@@ -20,6 +20,7 @@ import type {
   CrossReference as SpecCrossReference,
   Link as SpecLink,
 } from './schema.d.ts';
+import type { IOutput, IMimeBundle } from '@jupyterlab/nbformat';
 
 type Visibility = 'show' | 'hide' | 'remove';
 
@@ -179,6 +180,30 @@ export type SiUnit = {
   value: string;
 };
 
+export interface IExpressionDisplay {
+  status: 'ok';
+  data: IMimeBundle;
+  metadata: Record<string, any>;
+}
+
+export interface IExpressionError {
+  status: 'error';
+  /**
+   * Exception name
+   */
+  ename: string;
+  /**
+   * Exception value
+   */
+  evalue: string;
+  /**
+   * Traceback
+   */
+  traceback: string[];
+}
+
+export type IExpressionResult = IExpressionError | IExpressionDisplay;
+
 export type InlineExpression = {
   type: 'inlineExpression';
   value: string;
@@ -313,4 +338,16 @@ export type AnyWidget = {
   css?: string;
   /** Tailwind classes to apply to the container element */
   class?: string;
+};
+
+/**
+ * Type narrowed Block to contain code-cells
+ */
+
+export type CodeBlock = Block & {
+  kind: 'notebook-code';
+  data?: {
+    tags?: string[];
+  };
+  children: Code[];
 };

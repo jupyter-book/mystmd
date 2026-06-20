@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, IExpressionResult, PluginUtils, References } from 'myst-common';
+import type { GenericParent, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -74,8 +74,13 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import { combineCitationRenderers } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { parseMyst } from './myst.js';
-import { kernelExecutionTransform, LocalDiskCache } from 'myst-execute';
-import type { IOutput } from '@jupyterlab/nbformat';
+import {
+  kernelExecutionTransform,
+  LocalDiskCache,
+  LegacyExecutionCache,
+  NotebookExecutionCache,
+  TieredExecutionCache,
+} from 'myst-execute';
 import { rawDirectiveTransform } from '../transforms/raw.js';
 import { addEditUrl } from '../utils/addEditUrl.js';
 import {
@@ -191,7 +196,10 @@ export async function transformMdast(
       session.log.debug(`▶️  Executing: ${fileName}`);
       await kernelExecutionTransform(mdast, vfile, {
         basePath: session.sourcePath(),
-        cache: new LocalDiskCache<(IExpressionResult | IOutput[])[]>(cachePath),
+        cache: new TieredExecutionCache(
+          new NotebookExecutionCache(new LocalDiskCache(cachePath, '.ipynb')),
+          new LegacyExecutionCache(cachePath),
+        ),
         sessionFactory: () => session.jupyterSessionManager(),
         frontmatter: frontmatter,
         ignoreCache: false,
