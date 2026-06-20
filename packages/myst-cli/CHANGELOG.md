@@ -1,5 +1,36 @@
 # myst-cli
 
+## 1.11.0
+
+### Minor Changes
+
+- 7fda16f: Switch to ipynb build cache
+
+### Patch Changes
+
+- aba633a: Relax overaggressive DOI coercion
+- Updated dependencies [71aec67]
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [3252535]
+- Updated dependencies [12f4721]
+  - myst-execute@0.5.0
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+  - myst-frontmatter@1.10.1
+  - myst-transforms@1.3.51
+  - myst-ext-proof@1.0.13
+  - myst-parser@1.7.4
+  - myst-spec-ext@1.10.1
+  - myst-to-docx@1.0.17
+  - myst-to-jats@1.0.36
+  - tex-to-myst@1.0.47
+  - myst-config@1.10.1
+  - myst-to-tex@1.0.47
+  - myst-migrate@1.11.0
+
 ## 1.10.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # myst-spec-ext
 
+## 1.10.1
+
+### Patch Changes
+
+- Updated dependencies [7fda16f]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+  - myst-spec@0.0.6
+
 ## 1.10.0
 
 ## 1.9.5
