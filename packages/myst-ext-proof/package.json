@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-proof",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for proofs",
@@ -32,10 +32,10 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-spec": "^0.0.5",
-    "myst-common": "^1.7.2"
+    "myst-spec": "^0.0.6",
+    "myst-common": "^1.10.1"
   },
   "devDependencies": {
-    "myst-parser": "^1.5.9"
+    "myst-parser": "^1.7.4"
   }
 }
