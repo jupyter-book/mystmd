@@ -226,11 +226,21 @@ describe('validateGitHub', () => {
     expect(result).toBe('https://github.com/orgs/org');
   });
 
+  it('should validate a valid GitHub Enterprise org URL', ({ opts }) => {
+    const result = validateGitHub('https://github.enterprise.com/orgs/myorg', opts);
+    expect(result).toBe('https://github.enterprise.com/orgs/myorg');
+  });
+
+  it('should validate a GitHub Enterprise URL with trailing slash', ({ opts }) => {
+    const result = validateGitHub('https://gh.enterprise.com/team/project/', opts);
+    expect(result).toBe('https://gh.enterprise.com/team/project/');
+  });
+
   it('should return an error for an invalid GitHub username', ({ opts }) => {
     const result = validateGitHub('@asdfg#', opts);
     expect(result).toBeUndefined();
     expect(opts.messages.errors?.at(0)?.message).toContain(
-      `GitHub social identity must be a valid username, org/repo, or org URL`,
+      `GitHub social identity must be a valid username, org/repo, GitHub URL, or GitHub Enterprise URL`,
     );
   });
 
@@ -238,7 +248,7 @@ describe('validateGitHub', () => {
     const result = validateGitHub('https://github.com/user', opts);
     expect(result).toBeUndefined();
     expect(opts.messages.errors?.at(0)?.message).toContain(
-      `GitHub social identity must be a valid username, org/repo, or org URL`,
+      `GitHub social identity must be a valid username, org/repo, GitHub URL, or GitHub Enterprise URL`,
     );
   });
 
@@ -246,7 +256,7 @@ describe('validateGitHub', () => {
     const result = validateGitHub('https:/example.com', opts);
     expect(result).toBeUndefined();
     expect(opts.messages.errors?.at(0)?.message).toContain(
-      `GitHub social identity must be a valid username, org/repo, or org URL`,
+      `GitHub social identity must be a valid username, org/repo, GitHub URL, or GitHub Enterprise URL`,
     );
   });
 });
