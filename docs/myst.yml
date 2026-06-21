@@ -158,6 +158,7 @@ project:
         - file: contribute-docs.md
         - file: contribute-build-locally.md
         - file: contribute-add-feature.md
+        - file: developer-api.md
     - file: cite.md
 
 extends:
