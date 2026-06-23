@@ -33,9 +33,7 @@ function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
   const data = JSON.parse(JSON.stringify(cell.metadata));
   // Stash the nbformat cell `id` so it can be promoted to a durable anchor
-  // downstream (see blockMetadataTransform). This is read verbatim from the
-  // .ipynb JSON, so its presence signals a trusted, file-persisted id: markdown
-  // notebooks never reach this reader, and ids mystmd fabricates live elsewhere.
+  // downstream
   const cellId = (cell as { id?: unknown }).id;
   if (typeof cellId === 'string' && cellId.length > 0) {
     data._jupyterCellId = cellId;
