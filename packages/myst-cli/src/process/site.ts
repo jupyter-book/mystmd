@@ -164,6 +164,8 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
 
 export async function writeMystSearchJson(session: ISession, pages: LocalProjectPage[]) {
   const records = [...pages]
+    // hidden pages are built but excluded from search
+    .filter((page) => page.hidden !== true)
     // Ensure deterministic ordering
     .sort((left, right) => {
       if (left.file < right.file) {
