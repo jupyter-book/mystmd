@@ -167,7 +167,7 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
  *
  * Precedence: an explicit per-page `searchable` flag wins; otherwise hidden
  * pages fall back to the site-wide `hidden_files_searchable` default (itself
- * defaulting to false), and non-hidden pages are always searchable.
+ * defaulting to false), and non-hidden pages default to searchable.
  */
 function pageIsSearchable(page: LocalProjectPage, hiddenFilesSearchable: boolean): boolean {
   // hidden or not, setting searchable explicitly wins
@@ -765,7 +765,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
     // Search does not include parts
     // Hidden pages are excluded from search unless this is explicitly enabled
     const hiddenFilesSearchable =
-      (siteConfig as any)?.options?.hidden_files_searchable ?? false;
+      (siteConfig as any)?.options?.hidden_files_searchable === true;
     await writeMystSearchJson(session, allPages, { hiddenFilesSearchable });
   }
   return true;
