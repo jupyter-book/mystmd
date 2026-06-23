@@ -31,7 +31,16 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
-  return { type: 'block', kind, data: JSON.parse(JSON.stringify(cell.metadata)), children };
+  const data = JSON.parse(JSON.stringify(cell.metadata));
+  // Stash the nbformat cell `id` so it can be promoted to a durable anchor
+  // downstream (see blockMetadataTransform). This is read verbatim from the
+  // .ipynb JSON, so its presence signals a trusted, file-persisted id: markdown
+  // notebooks never reach this reader, and ids mystmd fabricates live elsewhere.
+  const cellId = (cell as { id?: unknown }).id;
+  if (typeof cellId === 'string' && cellId.length > 0) {
+    data._jupyterCellId = cellId;
+  }
+  return { type: 'block', kind, data, children };
 }
 
 /**
