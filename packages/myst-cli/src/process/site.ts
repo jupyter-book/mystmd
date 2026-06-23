@@ -162,10 +162,31 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
   writeFileToFolder(filename, JSON.stringify(mystXRefs));
 }
 
-export async function writeMystSearchJson(session: ISession, pages: LocalProjectPage[]) {
+/**
+ * Resolve whether a page's content should be included in the search index.
+ *
+ * Precedence: an explicit per-page `searchable` flag wins; otherwise hidden
+ * pages fall back to the site-wide `hidden_files_searchable` default (itself
+ * defaulting to false), and non-hidden pages are always searchable.
+ */
+function pageIsSearchable(page: LocalProjectPage, hiddenFilesSearchable: boolean): boolean {
+  // hidden or not, setting searchable explicitly wins
+  if (page.searchable !== undefined) return page.searchable;
+  // hidden pages fall back to the site-wide default
+  if (page.hidden) return hiddenFilesSearchable;
+  // general case: non-hidden pages are searchable
+  return true;
+}
+
+export async function writeMystSearchJson(
+  session: ISession,
+  pages: LocalProjectPage[],
+  opts?: { hiddenFilesSearchable?: boolean },
+) {
+  const hiddenFilesSearchable = opts?.hiddenFilesSearchable ?? false;
   const records = [...pages]
-    // hidden pages are built but excluded from search
-    .filter((page) => page.hidden !== true)
+    // Drop pages that are not meant to be searchable (see pageIsSearchable)
+    .filter((page) => pageIsSearchable(page, hiddenFilesSearchable))
     // Ensure deterministic ordering
     .sort((left, right) => {
       if (left.file < right.file) {
@@ -742,7 +763,10 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
     await writeObjectsInv(session, states, siteConfig);
     await writeMystXRefJson(session, states);
     // Search does not include parts
-    await writeMystSearchJson(session, allPages);
+    // Hidden pages are excluded from search unless this is explicitly enabled
+    const hiddenFilesSearchable =
+      (siteConfig as any)?.options?.hidden_files_searchable ?? false;
+    await writeMystSearchJson(session, allPages, { hiddenFilesSearchable });
   }
   return true;
 }

@@ -23,7 +23,7 @@ import {
   validateChoice,
 } from 'simple-validators';
 
-const COMMON_ENTRY_KEYS = ['title', 'hidden'];
+const COMMON_ENTRY_KEYS = ['title', 'hidden', 'searchable'];
 // const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'class'];
 
 function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): CommonEntry {
@@ -34,6 +34,10 @@ function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions
 
   if (defined(entry.hidden)) {
     output.hidden = validateBoolean(entry.hidden, incrementOptions('hidden', opts));
+  }
+
+  if (defined(entry.searchable)) {
+    output.searchable = validateBoolean(entry.searchable, incrementOptions('searchable', opts));
   }
 
   // if (defined(entry.numbering)) {
