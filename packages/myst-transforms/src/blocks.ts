@@ -65,12 +65,19 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
       delete block.data.class;
     }
 
+    // Pull out the stashed nbformat cell id (set by the notebook reader) before
+    // the empty-data cleanup so it never leaks into the output AST.
+    const jupyterCellId =
+      typeof block.data?._jupyterCellId === 'string' ? block.data._jupyterCellId : undefined;
+    if (block.data && '_jupyterCellId' in block.data) delete block.data._jupyterCellId;
+
     // Minor cleanup
     if (block.data && Object.keys(block.data).length === 0) delete block.data;
 
-    const label = block.data?.label ?? block.data?.id;
-    if (typeof label === 'string') {
-      const normalized = normalizeLabel(label);
+    const explicitLabel = block.data?.label ?? block.data?.id;
+    const hasExplicitLabel = typeof explicitLabel === 'string';
+    if (typeof explicitLabel === 'string') {
+      const normalized = normalizeLabel(explicitLabel);
       if (normalized) {
         // TODO: raise error if the node is already labelled
         block.identifier = normalized.identifier;
@@ -78,8 +85,21 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         block.html_id = normalized.html_id;
         delete block.data.label;
       }
+    } else if (jupyterCellId && !block.identifier) {
+      // Provenance-gated fallback: promote a real .ipynb cell id to a durable
+      // anchor. An author-supplied label always wins (handled above). The
+      // html_id is kept verbatim so a copied deep link equals the nbformat cell
+      // id; the identifier is normalized so `[](#<id>)` resolves like a label.
+      const normalized = normalizeLabel(jupyterCellId);
+      if (normalized) {
+        block.identifier = normalized.identifier;
+        block.html_id = jupyterCellId;
+      }
     }
-    if (block.identifier) {
+    // Only labelled cells propagate identifiers to their input/outputs. Auto cell
+    // ids anchor the cell (block) only: the cell container encloses the input, and
+    // we never fabricate per-output ids under the cell id.
+    if (block.identifier && hasExplicitLabel) {
       const codeNode = select('code', block) as any as Code | null;
       if (codeNode !== null && !codeNode.identifier) {
         codeNode.identifier = `${block.identifier}-code`;
