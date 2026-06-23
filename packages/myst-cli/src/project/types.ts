@@ -24,6 +24,7 @@ export type LocalProjectPage = {
   title?: string;
   /** Flag to mark if the page is implied from a TOC pattern or folder structure */
   implicit?: boolean;
+  hidden?: boolean;
 };
 
 export type ExternalURL = {
