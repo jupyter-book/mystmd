@@ -213,6 +213,43 @@ project:
 
 In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
 
+(searchable-in-toc)=
+
+### Making pages searchable in the Table of Contents
+
+By default:
+- **non-hidden** pages are **searchable** (their content is indexed and can be found via the search bar)
+- **hidden** pages are **not searchable**
+
+There are two levels of settings that let you better control this default behavior:
+- any input in the `toc` section can have a `searchable: true/false` attribute,
+  which will override the default behavior for that specific page or pattern;
+- when a `searchable` attribute is not present, the default behavior is to:
+  - treat a non-hidden page as searchable
+  - and for hidden pages, the value of the global `hidden_files_searchable` - in
+    the project's `site` settings - will determine whether they are searchable
+    or not, default is `false`
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    # in the toc and searchable
+    - file: plain-page.md 
+    # not in the toc and not searchable
+    - file: hidden-page.md
+      hidden: true
+    # not in the toc but searchable
+    - file: hidden-but-searchable.md
+      hidden: true
+      searchable: true
+site:
+  # this is the defaut, you can set it to true 
+  # if that's the defaut you want
+  hidden_files_searchable: false
+```
+
 ## In-page table of contents
 
 The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page. This can be done at the `project`, `page`, or `section`, level.
