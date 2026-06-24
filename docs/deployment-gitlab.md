@@ -76,6 +76,11 @@ then push this file to your GitLab repo.
 
 > If your Git branch is different from `main`, you should replace main in the `.gitlab-ci.yml` file on the highlighted line with your branch name.
 
+Once everything done, you should see `GitLab Pages` link in the right menu as shown below:
+```{figure}  ./images/gitlab-pages.png
+:height:300px
+```
+
 ### Deployment with poetry
 Create a file called `.gitlab-ci.yml` with the following content:
 
