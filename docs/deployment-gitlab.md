@@ -10,12 +10,14 @@ This page has important information for how to do so.
 ## Instructions
 
 :::{warning}
+Because of your institution’s GitLab configuration, the descriptions below may differ from the actual deployment on GitLab Pages.
+
 If you are new to GitLab or you are not familiar with `git`, please proceed to [](#instructions-for-beginners)
 :::
 
 To get setup with GitLab Pages, ensure that your repository is hosted in GitLab and you are in the root of the Git repository.
 
-### Deployment
+### Deployment with uv
 Create `.gitlab-ci.yml` file in the root of your project with the content provided below:
 
 ```{code} yaml
@@ -54,7 +56,7 @@ build:
     - apt-get install -y nodejs
 
     # run jupyter-book via uv
-    - uv run jupyter-book clean --all
+    - uv run jupyter-book clean --all -y
     - export BASE_URL=""
     - uv run jupyter-book build --html
   artifacts:
@@ -257,7 +259,7 @@ variables:
   
 before_script:
   - apt-get update
-  - apt-get install -y --no-install-recommends curl rsync openssh-client git
+  - apt-get install -y --no-install-recommends curl rsync openssh-client git procps
 
   # Node.js 
   - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
@@ -312,60 +314,8 @@ Once set up, you have two options to connect your project to GitLab:
     ```
 
 Once your git project is initialized, create `.gitlab-ci.yml` file in the root
-of your myst project and paste the next contents to this file:
-```{code} yaml
-:filename: .gitlab-ci.yml
-:linenos:
-:emphasize-lines: 47
+of your myst project and paste the contents described in [](#deployment-with-uv) to the file.
 
-image: ghcr.io/astral-sh/uv:debian-slim
-
-stages:
-  - build
-  - deploy
-
-variables:
-  HOST: "127.0.0.1"
-
-cache:
-  paths:
-    - .venv
-
-before_script:
-  - uv --version
-
-build:
-  stage: build
-  script:
-    # initialize uv project and install jupyter-book
-    - uv init
-    - uv add "jupyter-book>=2.1.2,<3"
-
-    # install node
-    - apt-get update
-    - apt-get install -y curl
-    - apt-get install -y procps
-    - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-    - apt-get install -y nodejs
-
-    # run jupyter-book via uv
-    - uv run jupyter-book clean --all
-    - export BASE_URL=""
-    - uv run jupyter-book build --html
-  artifacts:
-    paths:
-      - _build/html
-
-pages:
-  stage: deploy
-  script:
-    - mv _build/html/ public
-  artifacts:
-    paths:
-      - public
-  only:
-    - main # replace it with YOUR branch name
-```
 
 Once you saved the file with provided contents, execute the next commands:
 ```shell
