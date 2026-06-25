@@ -120,7 +120,8 @@ export function patternsToFileEntries(
         const { pattern, sort, ...leftover } = entry as PatternEntry;
         // Glob matches, relative to `path`, ordered naturally
         let matches = globSync(pattern, { cwd: path, nodir: true, ...opts })
-          .filter((item) => !ignore || !ignore.includes(item))
+          // ignore contains resolved entries, so we need to search for item resolved
+          .filter((item) => !ignore || !ignore.includes(resolve(path, item)))
           .sort(comparePaths);
         // Reverse order if descending sort is requested
         if (sort === 'descending') {
