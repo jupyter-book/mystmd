@@ -1,4 +1,5 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { resolve } from 'node:path';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { listExplicitFiles, patternsToFileEntries } from './fromTOC';
@@ -140,6 +141,21 @@ describe('patternsToFileEntries', () => {
       { file: 'meetings/2026-02-01.md', implicit: true },
       { file: 'meetings/2026-01-01.md', implicit: true },
     ]);
+  });
+  it('explicitly listed files are excluded from subsequent glob patterns', () => {
+    memfs.vol.fromJSON({
+      'index.md': '',
+      'test1.md': '',
+      'test2.md': '',
+    });
+    // Simulate ignore list built from explicit file entries (absolute paths, as listExplicitFiles returns)
+    const cwd = '.';
+    const ignore = [resolve(cwd, 'index.md'), resolve(cwd, 'test1.md')];
+    expect(
+      patternsToFileEntries(session, [{ pattern: '*.md' }], cwd, ignore, '/tmp/warn.txt', {
+        fs: memfs,
+      }),
+    ).toEqual([{ file: 'test2.md', implicit: true }]);
   });
 });
 
