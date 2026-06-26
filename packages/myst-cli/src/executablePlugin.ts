@@ -4,6 +4,7 @@ import {
   type DirectiveSpec,
   type RoleSpec,
   type TransformSpec,
+  type RendererSpec,
   type GenericNode,
 } from 'myst-common';
 import { spawn, spawnSync } from 'node:child_process';
@@ -11,10 +12,11 @@ import { spawn, spawnSync } from 'node:child_process';
 type DirectiveJSONSpec = Omit<DirectiveSpec, 'run' | 'validate'>;
 type RoleJSONSpec = Omit<RoleSpec, 'run' | 'validate'>;
 type TransformJSONSpec = Omit<TransformSpec, 'plugin'>;
-type ExecutableSpec = Omit<MystPlugin, 'directives' | 'roles' | 'transforms'> & {
+type ExecutableSpec = Omit<MystPlugin, 'directives' | 'roles' | 'transforms' | 'renderers'> & {
   directives?: DirectiveJSONSpec[];
   roles?: RoleJSONSpec[];
   transforms?: TransformJSONSpec[];
+  renderers?: RendererSpec[];
 };
 
 function executeSyncParser(

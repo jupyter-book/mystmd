@@ -1,0 +1,10 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: Front-end Renderers Plugin Example
+  plugins:
+    - plugin.mjs
+  toc:
+    - file: index.md
+site:
+  template: book-theme

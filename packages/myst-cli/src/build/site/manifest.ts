@@ -3,7 +3,7 @@ import path from 'node:path';
 import { SPEC_VERSION } from '../../spec-version.js';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
+import type { SiteAction, SiteExport, SiteManifest, SiteRenderer } from 'myst-config';
 import type { Download } from 'myst-frontmatter';
 import {
   EXT_TO_FORMAT,
@@ -17,7 +17,7 @@ import { resolveToAbsolute } from '../../utils/resolveToAbsolute.js';
 import type { ISession } from '../../session/types.js';
 import type { RootState } from '../../store/index.js';
 import { selectors } from '../../store/index.js';
-import { transformBanner, transformThumbnail } from '../../transforms/images.js';
+import { resolveOutputPath, transformBanner, transformThumbnail } from '../../transforms/images.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
 import version from '../../version.js';
@@ -345,6 +345,41 @@ export type SiteManifestOptions = {
 };
 
 /**
+ * Copy front-end renderers contributed by plugins into the site public folder.
+ *
+ * Each renderer's `source` (resolved to an absolute path when the plugin was
+ * loaded) is hashed and copied into `publicPath`, then exposed in the site
+ * manifest with a public `url` so the theme can load it on the front-end.
+ */
+export function resolveSiteRenderers(session: ISession): SiteRenderer[] {
+  const renderers = session.plugins?.renderers ?? [];
+  const writeFolder = session.publicPath();
+  return renderers
+    .map((renderer): SiteRenderer | undefined => {
+      if (!fs.existsSync(renderer.source)) {
+        addWarningForFile(
+          session,
+          renderer.source,
+          `Cannot find source for renderer "${renderer.name}": ${renderer.source}`,
+          'error',
+          { ruleId: RuleId.pluginLoads },
+        );
+        return undefined;
+      }
+      const fileName = hashAndCopyStaticFile(session, renderer.source, writeFolder, (m: string) => {
+        addWarningForFile(session, renderer.source, m, 'error', { ruleId: RuleId.pluginLoads });
+      });
+      if (!fileName) return undefined;
+      return {
+        name: renderer.name,
+        element: renderer.element,
+        url: resolveOutputPath(fileName, writeFolder, '/'),
+      };
+    })
+    .filter((renderer): renderer is SiteRenderer => !!renderer);
+}
+
+/**
  * Build site manifest from local redux state
  *
  * Site manifest acts as the configuration to build the website.
@@ -383,6 +418,7 @@ export async function getSiteManifest(
   const resolvedOptions = await resolveTemplateFileOptions(session, mystTemplate, validatedOptions);
   validatedFrontmatter.options = resolvedOptions;
   const parts = resolveFrontmatterParts(session, validatedFrontmatter);
+  const renderers = resolveSiteRenderers(session);
   const manifest: SiteManifest = {
     version: SPEC_VERSION,
     myst: version,
@@ -391,6 +427,7 @@ export async function getSiteManifest(
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,
+    renderers,
   };
   return manifest;
 }

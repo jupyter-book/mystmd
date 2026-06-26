@@ -1,7 +1,14 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { ISession } from './session/types.js';
-import { RuleId, plural, type MystPlugin, type ValidatedMystPlugin } from 'myst-common';
+import {
+  RuleId,
+  plural,
+  type MystPlugin,
+  type RendererSpec,
+  type ValidatedMystPlugin,
+} from 'myst-common';
 import type { PluginInfo } from 'myst-config';
 import { addWarningForFile } from './utils/addWarningForFile.js';
 import { loadExecutablePlugin } from './executablePlugin.js';
@@ -19,6 +26,7 @@ export async function loadPlugins(
     directives: [],
     roles: [],
     transforms: [],
+    renderers: [],
     paths: [],
   };
 
@@ -111,11 +119,15 @@ export async function loadPlugins(
     const directives = plugin.directives || pluginLoader.module.directives;
     const roles = plugin.roles || pluginLoader.module.roles;
     const transforms = plugin.transforms || pluginLoader.module.transforms;
+    const renderers = plugin.renderers || pluginLoader.module.renderers;
     session.log.info(
       `🔌 ${plugin?.name ?? 'Unnamed Plugin'} (${pluginLoader.path}) loaded: ${plural(
         '%s directive(s)',
         directives,
-      )}, ${plural('%s role(s)', roles)}, ${plural('%s transform(s)', transforms)}`,
+      )}, ${plural('%s role(s)', roles)}, ${plural('%s transform(s)', transforms)}, ${plural(
+        '%s renderer(s)',
+        renderers,
+      )}`,
     );
     if (directives) {
       // TODO: validate each directive
@@ -128,6 +140,17 @@ export async function loadPlugins(
     if (transforms) {
       // TODO: validate each transform
       loadedPlugins.transforms.push(...transforms);
+    }
+    if (renderers) {
+      // Resolve each renderer's source relative to the plugin file so it can
+      // later be copied into the site's public folder.
+      const pluginDir = path.dirname(pluginLoader.path);
+      const resolvedRenderers: RendererSpec[] = (renderers as RendererSpec[]).map((renderer) => ({
+        ...renderer,
+        source: path.resolve(pluginDir, renderer.source),
+      }));
+      // TODO: validate each renderer
+      loadedPlugins.renderers.push(...resolvedRenderers);
     }
     loadedPlugins.paths.push(pluginLoader.path);
   });

@@ -43,6 +43,19 @@ export type SiteExport = {
   format?: ExportFormats;
 };
 
+/**
+ * A front-end renderer made available to the site.
+ *
+ * Renderers are contributed by plugins. The `source` ESM module is copied into
+ * the site's public folder and `url` points to that public asset, following
+ * the anywidget convention of a module that renders a given `element`.
+ */
+export type SiteRenderer = {
+  name: string;
+  element: string;
+  url: string;
+};
+
 type ManifestProjectItem = {
   title: string;
   short_title?: string;
@@ -93,4 +106,5 @@ export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
   favicon?: string;
   template?: string;
   parts?: FrontmatterParts;
+  renderers?: SiteRenderer[];
 };

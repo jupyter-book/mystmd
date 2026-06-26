@@ -131,6 +131,29 @@ export type TransformSpec = {
 };
 
 /**
+ * A front-end renderer plugin.
+ *
+ * Renderers run on the site rather than during the build. Following the
+ * anywidget convention, a renderer associates an `element` (the mdast node
+ * type / custom element name) with a `source` ESM module that default-exports
+ * a render function `({ el, node }) => void | () => void`.
+ */
+export type RendererSpec = {
+  name: string;
+  doc?: string;
+  /**
+   * The mdast node type / custom element name that this renderer is
+   * responsible for rendering on the site.
+   */
+  element: string;
+  /**
+   * Path to the anywidget-style ESM module that renders the element. This is
+   * resolved relative to the plugin file when the plugin is loaded.
+   */
+  source: string;
+};
+
+/**
  * Create MyST plugins that export this from a file,
  * or combine multiple plugins to a single object.
  */
@@ -141,10 +164,11 @@ export type MystPlugin = {
   directives?: DirectiveSpec[];
   roles?: RoleSpec[];
   transforms?: TransformSpec[];
+  renderers?: RendererSpec[];
 };
 
 export type ValidatedMystPlugin = Required<
-  Pick<MystPlugin, 'directives' | 'roles' | 'transforms'>
+  Pick<MystPlugin, 'directives' | 'roles' | 'transforms' | 'renderers'>
 > & {
   paths: string[];
 };
