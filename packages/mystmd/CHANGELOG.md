@@ -1,5 +1,12 @@
 # mystmd
 
+## 1.11.0
+
+### Patch Changes
+
+- 3252535: Allow `grid` directives to be used in `figure` directives
+- 659279c: Use NodeJS parallelism parallelism feature
+
 ## 1.10.1
 
 ## 1.10.0

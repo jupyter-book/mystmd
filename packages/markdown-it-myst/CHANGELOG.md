@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.18
+
+### Patch Changes
+
+- 12f4721: Fix dependencies / types
+
 ## 1.0.17
 
 ### Patch Changes
