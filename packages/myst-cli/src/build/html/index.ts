@@ -192,7 +192,8 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
           if (route.binary && resp.body) {
             await new Promise<void>((resolve, reject) => {
               const filename = path.join(htmlDir, route.path);
-              if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
+              if (!fs.existsSync(filename))
+                fs.mkdirSync(path.dirname(filename), { recursive: true });
               const fileWriteStream = fs.createWriteStream(filename);
               resp.body!.pipe(fileWriteStream);
               resp.body!.on('error', reject);
@@ -205,7 +206,9 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
           }
         } catch (error) {
           if (!route.optional) throw error;
-          session.log.warn(`Could not fetch optional asset ${route.url}: ${(error as Error).message}`);
+          session.log.warn(
+            `Could not fetch optional asset ${route.url}: ${(error as Error).message}`,
+          );
         }
       }),
     ),
