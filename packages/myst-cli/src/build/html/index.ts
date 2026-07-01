@@ -29,9 +29,13 @@ export async function currentSiteRoutes(
   session: ISession,
   host: string,
   baseurl: string | undefined,
-): Promise<{ url: string; path: string; binary?: boolean }[]> {
+): Promise<{ url: string; path: string; binary?: boolean; optional?: boolean }[]> {
   const state = session.store.getState();
   const siteConfig = selectors.selectCurrentSiteConfig(state);
+  // Without a configured favicon, the theme falls back to fetching a default
+  // icon from mystmd.org; that fetch is optional, so that if the remote site is
+  // down it doesn't break the build.
+  const hasFavicon = !!siteConfig?.options?.favicon;
   return (siteConfig?.projects ?? [])
     ?.map((proj) => {
       if (!proj.path) return [];
@@ -70,11 +74,12 @@ export async function currentSiteRoutes(
           url: `${host}/${asset}`,
           path: asset,
         })),
-        ...['favicon.ico'].map((asset) => ({
-          url: `${host}/${asset}`,
-          path: asset,
+        {
+          url: `${host}/favicon.ico`,
+          path: 'favicon.ico',
           binary: true,
-        })),
+          optional: !hasFavicon,
+        },
       ];
     })
     .flat();
@@ -178,22 +183,29 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   await Promise.all(
     routes.map(async (route) =>
       limitConnections(async () => {
-        const resp = await fetchWithRetry(session, route.url);
-        if (!resp.ok) {
-          session.log.error(`Error fetching ${route.url}`);
-          return;
-        }
-        if (route.binary && resp.body) {
-          await new Promise<void>((resolve) => {
-            const filename = path.join(htmlDir, route.path);
-            if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
-            const fileWriteStream = fs.createWriteStream(filename);
-            resp.body!.pipe(fileWriteStream);
-            fileWriteStream.on('finish', resolve);
-          });
-        } else {
-          const content = await resp.text();
-          writeFileToFolder(path.join(htmlDir, route.path), content);
+        try {
+          const resp = await fetchWithRetry(session, route.url);
+          if (!resp.ok) {
+            session.log.error(`Error fetching ${route.url}`);
+            return;
+          }
+          if (route.binary && resp.body) {
+            await new Promise<void>((resolve, reject) => {
+              const filename = path.join(htmlDir, route.path);
+              if (!fs.existsSync(filename)) fs.mkdirSync(path.dirname(filename), { recursive: true });
+              const fileWriteStream = fs.createWriteStream(filename);
+              resp.body!.pipe(fileWriteStream);
+              resp.body!.on('error', reject);
+              fileWriteStream.on('error', reject);
+              fileWriteStream.on('finish', resolve);
+            });
+          } else {
+            const content = await resp.text();
+            writeFileToFolder(path.join(htmlDir, route.path), content);
+          }
+        } catch (error) {
+          if (!route.optional) throw error;
+          session.log.warn(`Could not fetch optional asset ${route.url}: ${(error as Error).message}`);
         }
       }),
     ),
