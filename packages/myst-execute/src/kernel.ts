@@ -133,7 +133,7 @@ export async function executeCodeCell(kernel: Kernel.IKernelConnection, code: st
       }
     }
   };
-  let status: 'abort' | 'error' | 'ok' | undefined;
+  let status: 'abort' | 'aborted' | 'error' | 'ok' | undefined;
   future.onReply = (msg: KernelMessage.IExecuteReplyMsg) => {
     status = msg.content.status;
   };
