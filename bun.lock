@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "mystmd",
@@ -99,7 +100,7 @@
       "name": "myst-cli",
       "version": "1.10.1",
       "dependencies": {
-        "@jupyterlab/services": "^7.3.0",
+        "@jupyterlab/services": "^7.6.0",
         "@reduxjs/toolkit": "^2.1.0",
         "adm-zip": "^0.5.10",
         "async-mutex": "^0.5.0",
@@ -126,31 +127,31 @@
         "mdast": "^3.0.0",
         "meca": "^1.0.8",
         "mime-types": "^2.1.35",
-        "myst-cli-utils": "^2.0.13",
-        "myst-common": "^1.9.5",
-        "myst-config": "^1.9.5",
-        "myst-execute": "^0.3.3",
+        "myst-cli-utils": "^2.0.14",
+        "myst-common": "^1.10.0",
+        "myst-config": "^1.10.0",
+        "myst-execute": "^0.4.0",
         "myst-ext-button": "^0.0.1",
         "myst-ext-card": "^1.0.9",
         "myst-ext-exercise": "^1.0.9",
-        "myst-ext-grid": "^1.0.9",
+        "myst-ext-grid": "^1.1.0",
         "myst-ext-icon": "^0.0.2",
         "myst-ext-proof": "^1.0.12",
         "myst-ext-reactive": "^1.0.9",
         "myst-ext-tabs": "^1.0.9",
-        "myst-frontmatter": "^1.9.5",
-        "myst-migrate": "^1.8.2",
-        "myst-parser": "^1.7.0",
+        "myst-frontmatter": "^1.10.0",
+        "myst-migrate": "^1.10.1",
+        "myst-parser": "^1.7.3",
         "myst-spec": "^0.0.5",
-        "myst-spec-ext": "^1.9.5",
+        "myst-spec-ext": "^1.10.0",
         "myst-templates": "^1.0.27",
         "myst-to-docx": "^1.0.16",
         "myst-to-jats": "^1.0.35",
         "myst-to-md": "^1.0.16",
-        "myst-to-tex": "^1.0.45",
-        "myst-to-typst": "^0.0.36",
+        "myst-to-tex": "^1.0.46",
+        "myst-to-typst": "^0.0.38",
         "myst-toc": "^0.1.4",
-        "myst-transforms": "^1.3.47",
+        "myst-transforms": "^1.3.50",
         "nanoid": "^5.1.6",
         "nbtx": "^0.4.0",
         "node-fetch": "^3.3.1",
@@ -159,7 +160,7 @@
         "redux": "^5.0.1",
         "simple-validators": "^1.2.0",
         "strip-ansi": "^7.0.1",
-        "tex-to-myst": "^1.0.45",
+        "tex-to-myst": "^1.0.46",
         "unified": "^10.1.2",
         "unist-util-filter": "^4.0.0",
         "unist-util-remove": "^3.1.0",
@@ -226,8 +227,8 @@
       "name": "myst-config",
       "version": "1.10.0",
       "dependencies": {
-        "myst-common": "^1.9.5",
-        "myst-frontmatter": "^1.9.5",
+        "myst-common": "^1.10.0",
+        "myst-frontmatter": "^1.10.0",
         "simple-validators": "^1.2.0",
       },
       "devDependencies": {
@@ -254,7 +255,7 @@
       "version": "0.4.0",
       "dependencies": {
         "@jupyterlab/nbformat": "^3.5.2",
-        "@jupyterlab/services": "^7.3.0",
+        "@jupyterlab/services": "^7.6.0",
         "chalk": "^5.2.0",
         "get-port": "^6.1.2",
         "myst-cli-utils": "^2.0.13",
@@ -307,7 +308,7 @@
         "myst-common": "^1.7.2",
       },
       "devDependencies": {
-        "myst-parser": "^1.5.9",
+        "myst-parser": "^1.7.1",
       },
     },
     "packages/myst-ext-icon": {
@@ -565,7 +566,7 @@
         "vfile-reporter": "^7.0.4",
       },
       "devDependencies": {
-        "myst-parser": "^1.6.4",
+        "myst-parser": "^1.7.1",
       },
     },
     "packages/myst-to-typst": {
@@ -796,37 +797,37 @@
 
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
-    "@jupyter/ydoc": ["@jupyter/ydoc@3.1.0", "", { "dependencies": { "@jupyterlab/nbformat": "^3.0.0 || ^4.0.0-alpha.21 || ^4.0.0", "@lumino/coreutils": "^1.11.0 || ^2.0.0", "@lumino/disposable": "^1.10.0 || ^2.0.0", "@lumino/signaling": "^1.10.0 || ^2.0.0", "y-protocols": "^1.0.5", "yjs": "^13.5.40" } }, "sha512-+hLNUBZr8Zz8NiuaoYKINDURDJHbjFGxg8EcSU52y+rBe412TsoFxfPSng4eP7w3cZFrVlm7D+8K0nAMHxj0ZQ=="],
+    "@jupyter/ydoc": ["@jupyter/ydoc@4.1.0", "", { "dependencies": { "@jupyterlab/nbformat": "^3.0.0 || ^4.0.0-alpha.21 || ^4.0.0", "@lumino/coreutils": "^1.11.0 || ^2.0.0", "@lumino/disposable": "^1.10.0 || ^2.0.0", "@lumino/signaling": "^1.10.0 || ^2.0.0", "y-protocols": "^1.0.5", "yjs": "^13.5.40" } }, "sha512-XOJbuSKCWpyd87ekpppGTm7iGiEZPONxLiiM6jOBZ2y8uvDhEdb6ltn0Rt8GR2ZEvcLC+MgSE+IGTnguKEhzNA=="],
 
-    "@jupyterlab/coreutils": ["@jupyterlab/coreutils@6.4.8", "", { "dependencies": { "@lumino/coreutils": "^2.2.1", "@lumino/disposable": "^2.1.4", "@lumino/signaling": "^2.1.4", "minimist": "~1.2.0", "path-browserify": "^1.0.0", "url-parse": "~1.5.4" } }, "sha512-y7NGkh31fJaRMDGPfi6uwUeP3eCJrwNSVqmEo0bN9qxiJsysRGOBKPAFuFUS3IKD/au79EwyKHgxhBZxLwiqBQ=="],
+    "@jupyterlab/coreutils": ["@jupyterlab/coreutils@6.6.1", "", { "dependencies": { "@lumino/coreutils": "^2.2.2", "@lumino/disposable": "^2.1.5", "@lumino/signaling": "^2.1.5", "minimist": "~1.2.0", "path-browserify": "^1.0.0", "url-parse": "~1.5.4" } }, "sha512-1DjMEoiHi3CwycFVM0RWfn53+0zGhJ064SKqVeYKxxFFJdN3u7ezClduRiIGEQXAiums8w+9QLlljBx/M+kaUw=="],
 
     "@jupyterlab/nbformat": ["@jupyterlab/nbformat@3.5.2", "", { "dependencies": { "@lumino/coreutils": "^1.11.0" } }, "sha512-Ml5hNpS9tMqZ9ThI24+iXHgX71XWQAysyPOU1vA3idvTGCbGhVc4FaZcDX17uepA7yIEUitlj4xQGtJR8hNzuA=="],
 
-    "@jupyterlab/services": ["@jupyterlab/services@7.4.8", "", { "dependencies": { "@jupyter/ydoc": "^3.1.0", "@jupyterlab/coreutils": "^6.4.8", "@jupyterlab/nbformat": "^4.4.8", "@jupyterlab/settingregistry": "^4.4.8", "@jupyterlab/statedb": "^4.4.8", "@lumino/coreutils": "^2.2.1", "@lumino/disposable": "^2.1.4", "@lumino/polling": "^2.1.4", "@lumino/properties": "^2.0.3", "@lumino/signaling": "^2.1.4", "ws": "^8.11.0" } }, "sha512-ftv5+It2nGu+i0lWFgTIqMR9KV4YfG+Mg37lscndDGOfJ5YM3sxl61pU2Zv7YrdYLyMwA9xzXpcMHQdzCoIuZw=="],
+    "@jupyterlab/services": ["@jupyterlab/services@7.6.1", "", { "dependencies": { "@jupyter/ydoc": "^4.0.0", "@jupyterlab/coreutils": "^6.6.1", "@jupyterlab/nbformat": "^4.6.1", "@jupyterlab/settingregistry": "^4.6.1", "@jupyterlab/statedb": "^4.6.1", "@lumino/coreutils": "^2.2.2", "@lumino/disposable": "^2.1.5", "@lumino/polling": "^2.1.5", "@lumino/properties": "^2.0.4", "@lumino/signaling": "^2.1.5", "ws": "^8.11.0" } }, "sha512-pZ3B+m6bPZs3oUO0hgNd61hI9LlDKN3q931XWe4gWr8S/BwY9RHxoIe/mDgP38G+dS5P1ONKpaFXGICJkvUoQg=="],
 
-    "@jupyterlab/settingregistry": ["@jupyterlab/settingregistry@4.4.8", "", { "dependencies": { "@jupyterlab/nbformat": "^4.4.8", "@jupyterlab/statedb": "^4.4.8", "@lumino/commands": "^2.3.2", "@lumino/coreutils": "^2.2.1", "@lumino/disposable": "^2.1.4", "@lumino/signaling": "^2.1.4", "@rjsf/utils": "^5.13.4", "ajv": "^8.12.0", "json5": "^2.2.3" }, "peerDependencies": { "react": ">=16" } }, "sha512-V7fP4nmstjzGttCMP0ISJB9Gy1S76Z1AYmyXtEgsSFzOeF51hjWAUJpLUiRqMebSmy5aVDj1CdjWIYAxx/sGXw=="],
+    "@jupyterlab/settingregistry": ["@jupyterlab/settingregistry@4.6.1", "", { "dependencies": { "@jupyterlab/nbformat": "^4.6.1", "@jupyterlab/statedb": "^4.6.1", "@lumino/commands": "^2.3.3", "@lumino/coreutils": "^2.2.2", "@lumino/disposable": "^2.1.5", "@lumino/signaling": "^2.1.5", "@rjsf/utils": "^5.13.4", "ajv": "^8.12.0", "json5": "^2.2.3" }, "peerDependencies": { "react": ">=16" } }, "sha512-iQlzSchm7TsnXZUKSXJApGHO3KB1WQE3svenGkPBuqP+kO6DiXY7w5v4c+SCRmAXSrvSZ03QfGLWzCeAi8DsRQ=="],
 
-    "@jupyterlab/statedb": ["@jupyterlab/statedb@4.4.8", "", { "dependencies": { "@lumino/commands": "^2.3.2", "@lumino/coreutils": "^2.2.1", "@lumino/disposable": "^2.1.4", "@lumino/properties": "^2.0.3", "@lumino/signaling": "^2.1.4" } }, "sha512-VbFEKSDb6Rz8BLToYg4Fz33FNLLp2EYXulA6fcBmELJVyQNB0ZtdTnHKtzpRr0ihmdVLi7vv4PCChHdm49lSaQ=="],
+    "@jupyterlab/statedb": ["@jupyterlab/statedb@4.6.1", "", { "dependencies": { "@lumino/commands": "^2.3.3", "@lumino/coreutils": "^2.2.2", "@lumino/disposable": "^2.1.5", "@lumino/properties": "^2.0.4", "@lumino/signaling": "^2.1.5" } }, "sha512-rF+3oTMCCyiw4OV0caIB0E/lUHncxR73S2uxFEzMxTnIPyA1usO3X5Ln92XqrLLj0acUqexZELCY2PYZSX0wZA=="],
 
-    "@lumino/algorithm": ["@lumino/algorithm@2.0.3", "", {}, "sha512-DIcF7cIrGEC1Wh8DNjdwaL7IdcNs4Jj1VjO/90oHefeQPszKgc6DSfCxvbQiRanKR6tl/JL7tq4ZRPZES2oVAA=="],
+    "@lumino/algorithm": ["@lumino/algorithm@2.0.4", "", {}, "sha512-gddBhESPqu25KWLeAK9Kz8tS9Ph7P45i0CNG7Ia4XMhK9PHLtTsBdJTC9jP+MqhbzC8zDT/4ekvYRV9ojRPj7Q=="],
 
-    "@lumino/commands": ["@lumino/commands@2.3.2", "", { "dependencies": { "@lumino/algorithm": "^2.0.3", "@lumino/coreutils": "^2.2.1", "@lumino/disposable": "^2.1.4", "@lumino/domutils": "^2.0.3", "@lumino/keyboard": "^2.0.3", "@lumino/signaling": "^2.1.4", "@lumino/virtualdom": "^2.0.3" } }, "sha512-aAFEiUpp2hrkQU82Z85w1L80g0iDzsQRncLBa+pqVR/k0k1lz6H9F6xZ1ff+lBumZKKtsxBxNomvd0hfxLLqGw=="],
+    "@lumino/commands": ["@lumino/commands@2.3.3", "", { "dependencies": { "@lumino/algorithm": "^2.0.4", "@lumino/coreutils": "^2.2.2", "@lumino/disposable": "^2.1.5", "@lumino/domutils": "^2.0.4", "@lumino/keyboard": "^2.0.4", "@lumino/signaling": "^2.1.5", "@lumino/virtualdom": "^2.0.4" } }, "sha512-7Ci0QdFzt4NKFMhULr19sJPpOLHJw/oYlq6Pb0/Kq1s05+cIoLimr5wiyjkbAlNoGO/8A8SEBGHy3uctZz6G3A=="],
 
-    "@lumino/coreutils": ["@lumino/coreutils@2.2.1", "", { "dependencies": { "@lumino/algorithm": "^2.0.3" } }, "sha512-yij4TnxDIum7xfFUsVvZB0oLv4shs2mNbn3juwtEIsruvVBPmurNzKX0Y8z2QetbP2AZ6MSFtBzEKsihf0H0VA=="],
+    "@lumino/coreutils": ["@lumino/coreutils@2.2.2", "", { "dependencies": { "@lumino/algorithm": "^2.0.4" } }, "sha512-zaKJaK7rawPATn2BGHkbMrR6oK3s9PxNe9KreLwWF2dB4ZBHDiEmNLRyHRorfJ7XqVOEXAsAAj0jFn+qJPC/4Q=="],
 
-    "@lumino/disposable": ["@lumino/disposable@2.1.4", "", { "dependencies": { "@lumino/signaling": "^2.1.4" } }, "sha512-qTJiDbglPE2QnG4x4gtBcRbcfKQibxyyinNGKcNDrcK2TGTbbhK5PpMQ8d70l2V2Xw2pb/LfksBAg5pxkJ/G4A=="],
+    "@lumino/disposable": ["@lumino/disposable@2.1.5", "", { "dependencies": { "@lumino/signaling": "^2.1.5" } }, "sha512-hO9AkJK0oEGzxopuxI8LaZqwzSNwXJTGCdr5K4gh6al+zxpN7rOCh6Aq3zDxkIHJU4zybxv8r02ardx9XJsG3A=="],
 
-    "@lumino/domutils": ["@lumino/domutils@2.0.3", "", {}, "sha512-bXAbZg3mf2ZDNdBBpCGDike3U+osRGHePTh8H2Ud2KwaN4g/5IryFJm/TiO4K5IYs91bWF2Zqhf3FsdbZKHlGw=="],
+    "@lumino/domutils": ["@lumino/domutils@2.0.4", "", {}, "sha512-naYGUQn3e0CLtz/tjKOZP8SOBg0SW7EguhkxLpNUXlVUvx7rVsfr0VI22FVL+jgI0FbxXpEkxpSMxtK73jxJAg=="],
 
-    "@lumino/keyboard": ["@lumino/keyboard@2.0.3", "", {}, "sha512-bU2OxAR8a9eNBdV0YFjU6/lVVpbOw1gM7yHOuDGDdNu4J0UpKapFoR9gopNGSaHTmTwDtx9RHdFfIAgHwjZ+VQ=="],
+    "@lumino/keyboard": ["@lumino/keyboard@2.0.4", "", {}, "sha512-kIVkdSz8F5wtZr8hZp0CMX+E0eMCOnFH6XCT7j2UBQ80ERJHFy0eX+IbNo3dtRQ7+CcDhBV4hQquFNFa+/04QQ=="],
 
-    "@lumino/polling": ["@lumino/polling@2.1.4", "", { "dependencies": { "@lumino/coreutils": "^2.2.1", "@lumino/disposable": "^2.1.4", "@lumino/signaling": "^2.1.4" } }, "sha512-gSkxlIJ/4/esY2G7bsRrY9A4KimDMHTo0shaD+MCbhd09fZMCWJoDMcA447/dykB1rM5NXgugNLjpdGGL/e8cw=="],
+    "@lumino/polling": ["@lumino/polling@2.1.5", "", { "dependencies": { "@lumino/coreutils": "^2.2.2", "@lumino/disposable": "^2.1.5", "@lumino/signaling": "^2.1.5" } }, "sha512-YhQRWTNRVSi5R5uatwh1jkxASY5JKyAGWmtnfQOZWLDUFmsIjOTsS8NaYg1BgneZjWM3fbA18dCDDT7PPs5X1g=="],
 
-    "@lumino/properties": ["@lumino/properties@2.0.3", "", {}, "sha512-zkXIU5uYz/ScHCHGl5Bt4gMYsfPxZEduZd80zqDslBWvTIMro3NnzLe66NMnecbdr5N3hDJagYyA8//Qy3XjiA=="],
+    "@lumino/properties": ["@lumino/properties@2.0.4", "", {}, "sha512-XsL2qLZk+1FbfuTrkyjciI8PMDw3YcaBkqVQ+iv7OOJf9bUlrmTpCMY0Hu5d3hV2W3TWlRsdbvRRLEBJSKv0iA=="],
 
-    "@lumino/signaling": ["@lumino/signaling@2.1.4", "", { "dependencies": { "@lumino/algorithm": "^2.0.3", "@lumino/coreutils": "^2.2.1" } }, "sha512-nC5Z6d9om369Jkh1Vp3b7C89hV4cjr1fQDVcxhemyKXwc9r6VW7FpKixC+jElcAknP5KLj1FAa8Np+K06mMkEA=="],
+    "@lumino/signaling": ["@lumino/signaling@2.1.5", "", { "dependencies": { "@lumino/algorithm": "^2.0.4", "@lumino/coreutils": "^2.2.2" } }, "sha512-Wkx6WR45ynmKBlW0GBEoh4xk9+QluKr1JHuMftqcStBHSQBCnN54UKRRDbySXHGRhhx6p4neu7sGomgQSlQK8w=="],
 
-    "@lumino/virtualdom": ["@lumino/virtualdom@2.0.3", "", { "dependencies": { "@lumino/algorithm": "^2.0.3" } }, "sha512-q2C8eBxPvvOOQjN3KuxZ+vJi082JH/GF7KwMdaWsy5g+7wjKdnXPuLQFTBLOrVqIzmbxBDlLeFr93CEhdQXcyQ=="],
+    "@lumino/virtualdom": ["@lumino/virtualdom@2.0.4", "", { "dependencies": { "@lumino/algorithm": "^2.0.4" } }, "sha512-7MFthA9KUsqZTGm/D98FZt1QupjIGyd3XyB4SIugn6DQAqhjBiyykCZydnRq3qmuMHybQel33dNIbHpzyNyQwA=="],
 
     "@manypkg/find-root": ["@manypkg/find-root@1.1.0", "", { "dependencies": { "@babel/runtime": "^7.5.5", "@types/node": "^12.7.1", "find-up": "^4.1.0", "fs-extra": "^8.1.0" } }, "sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA=="],
 
@@ -2664,13 +2665,13 @@
 
     "@eslint/eslintrc/strip-json-comments": ["strip-json-comments@3.1.1", "", {}, "sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig=="],
 
-    "@jupyter/ydoc/@lumino/coreutils": ["@lumino/coreutils@1.12.1", "", { "peerDependencies": { "crypto": "1.0.1" } }, "sha512-JLu3nTHzJk9N8ohZ85u75YxemMrmDzJdNgZztfP7F7T7mxND3YVNCkJG35a6aJ7edu1sIgCjBxOvV+hv27iYvQ=="],
+    "@jupyter/ydoc/@jupyterlab/nbformat": ["@jupyterlab/nbformat@4.6.1", "", { "dependencies": { "@lumino/coreutils": "^2.2.2" } }, "sha512-+dB/edJjn7JDFiyN4nGw+quxBwUFGktgbR8udQeJweDne5mPMArpwCez/HBFkIW/816UX6+gSji01wTP4y10Lw=="],
 
     "@jupyterlab/nbformat/@lumino/coreutils": ["@lumino/coreutils@1.12.1", "", { "peerDependencies": { "crypto": "1.0.1" } }, "sha512-JLu3nTHzJk9N8ohZ85u75YxemMrmDzJdNgZztfP7F7T7mxND3YVNCkJG35a6aJ7edu1sIgCjBxOvV+hv27iYvQ=="],
 
-    "@jupyterlab/services/@jupyterlab/nbformat": ["@jupyterlab/nbformat@4.4.8", "", { "dependencies": { "@lumino/coreutils": "^2.2.1" } }, "sha512-zhpmu4jkIGgjLRzClifnVmM1NKfrC+A7Gcz8hnXJBinJwf6nMZaQnnXo+J6G93e0epw0E/YBrJ1kI/JJWLMeCg=="],
+    "@jupyterlab/services/@jupyterlab/nbformat": ["@jupyterlab/nbformat@4.6.1", "", { "dependencies": { "@lumino/coreutils": "^2.2.2" } }, "sha512-+dB/edJjn7JDFiyN4nGw+quxBwUFGktgbR8udQeJweDne5mPMArpwCez/HBFkIW/816UX6+gSji01wTP4y10Lw=="],
 
-    "@jupyterlab/settingregistry/@jupyterlab/nbformat": ["@jupyterlab/nbformat@4.4.8", "", { "dependencies": { "@lumino/coreutils": "^2.2.1" } }, "sha512-zhpmu4jkIGgjLRzClifnVmM1NKfrC+A7Gcz8hnXJBinJwf6nMZaQnnXo+J6G93e0epw0E/YBrJ1kI/JJWLMeCg=="],
+    "@jupyterlab/settingregistry/@jupyterlab/nbformat": ["@jupyterlab/nbformat@4.6.1", "", { "dependencies": { "@lumino/coreutils": "^2.2.2" } }, "sha512-+dB/edJjn7JDFiyN4nGw+quxBwUFGktgbR8udQeJweDne5mPMArpwCez/HBFkIW/816UX6+gSji01wTP4y10Lw=="],
 
     "@jupyterlab/settingregistry/json5": ["json5@2.2.3", "", { "bin": "lib/cli.js" }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
 
