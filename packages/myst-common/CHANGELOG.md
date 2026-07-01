@@ -1,5 +1,17 @@
 # myst-common
 
+## 1.10.1
+
+### Patch Changes
+
+- 7fda16f: Switch to ipynb build cache
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+  - myst-spec@0.0.6
+  - myst-frontmatter@1.10.1
+
 ## 1.10.0
 
 ### Patch Changes
