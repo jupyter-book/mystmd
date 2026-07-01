@@ -5,7 +5,7 @@ const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
 
 export const refRole: RoleSpec = {
   name: 'ref',
-  alias: ['eq', 'numref', 'prf:ref'],
+  alias: ['eq', 'numref', 'prf:ref', 'proof:ref'],
   body: {
     type: String,
     required: true,

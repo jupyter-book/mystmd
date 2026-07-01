@@ -88,4 +88,24 @@ describe('proof directive', () => {
     });
     expect(output).toEqual(expected);
   });
+
+  it('proof directive parses without prf: prefix', async () => {
+    const content = '```{proof} Proof Title\nProof content\n```';
+    const output = mystParse(content, {
+      directives: [proofDirective],
+    });
+    const proof = (output as any).children[0].children[0];
+    expect(proof.type).toEqual('proof');
+    expect(proof.kind).toEqual(undefined);
+  });
+
+  it('proof:theorem parses the same as prf:theorem', async () => {
+    const content = '```{proof:theorem} Theorem Title\nTheorem content\n```';
+    const output = mystParse(content, {
+      directives: [proofDirective],
+    });
+    const theorem = (output as any).children[0].children[0];
+    expect(theorem.type).toEqual('proof');
+    expect(theorem.kind).toEqual('theorem');
+  });
 });
