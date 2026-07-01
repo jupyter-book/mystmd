@@ -21,6 +21,8 @@ Specifically:
 - When you run `myst start`, the engine builds `_build/site` (content JSON, config, assets), serves it on `CONTENT_CDN_PORT`, and launches your theme with the template’s `build.start` command.
 - A theme should read `_build/site/config.json` first, fetch page JSON from `/content/{slug}.json`, and serve the app on `PORT` (Remix/Vite/Next-style).
 
+Each page JSON contains an `mdast` field holding the resolved AST that the theme then renders - see the [AST primer](xref:spec/ast-primer) for its structure.
+
 Live reloads are facilitated by a websocket endpoint at `/socket`, which processes JSON messages. Static assets, and template options with type `file` are copied into `_build/site/public` and served from `/`.
 
 ## Theme metadata (`template.yml`)
