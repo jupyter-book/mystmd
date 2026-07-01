@@ -31,7 +31,14 @@ import type { PageFrontmatter } from 'myst-frontmatter';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
-  return { type: 'block', kind, data: JSON.parse(JSON.stringify(cell.metadata)), children };
+  const data = JSON.parse(JSON.stringify(cell.metadata));
+  // Stash the nbformat cell `id` so it can be promoted to a durable anchor
+  // downstream
+  const cellId = (cell as { id?: unknown }).id;
+  if (typeof cellId === 'string' && cellId.length > 0) {
+    data._jupyterCellId = cellId;
+  }
+  return { type: 'block', kind, data, children };
 }
 
 /**
