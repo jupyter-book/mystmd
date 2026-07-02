@@ -199,6 +199,14 @@ cases:
         content: outputs/basic-site-config.json
       - path: basic-site/_build/site/myst.xref.json
         content: outputs/basic-site-myst.xref.json
+  - title: Abbreviations directive site build
+    cwd: abbreviations-directive
+    command: myst build
+    outputs:
+      - path: abbreviations-directive/_build/site/content/index.json
+      - path: abbreviations-directive/_build/site/content/page-1.json
+      - path: abbreviations-directive/_build/site/content/page-2.json
+      - path: abbreviations-directive/_build/site/content/page-3.json
   - title: Alternate config file
     cwd: alternate-config
     command: myst --config foo.yml build

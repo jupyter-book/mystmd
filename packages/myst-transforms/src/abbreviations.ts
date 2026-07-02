@@ -82,9 +82,10 @@ export const abbreviationPlugin: Plugin<[Options], GenericParent, GenericParent>
   };
 
 export function abbreviationListChildren(abbreviations?: Record<string, string | null>) {
+  // turns an abbreviations object into a clean, sorted list of abbreviation entries.
   const entries = Object.entries(abbreviations ?? {})
-    .filter((entry): entry is [string, string] => !!entry[1])
-    .sort(([a], [b]) => a.localeCompare(b));
+    .filter((entry): entry is [string, string] => !!entry[1]) // Keeps only entries where the value exists
+    .sort(([a], [b]) => a.localeCompare(b)); // Sort alphabetically by abbreviation key.
 
   if (!entries.length) return [];
 

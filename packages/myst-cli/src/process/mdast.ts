@@ -30,6 +30,7 @@ import {
   checkLinkTextTransform,
   indexIdentifierPlugin,
   buildTocTransform,
+  abbreviationsListTransform,
 } from 'myst-transforms';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
@@ -97,6 +98,16 @@ const htmlHandlers = {
     return result;
   },
 };
+
+function collectAbbreviations(session: ISession, pageReferenceStates: ReferenceState[]) {
+  const cache = castSession(session);
+  const abbreviations: Record<string, string | null> = {};
+  pageReferenceStates.forEach((state) => {
+    const pageAbbreviations = cache.$getMdast(state.filePath)?.post?.frontmatter?.abbreviations;
+    if (pageAbbreviations) Object.assign(abbreviations, pageAbbreviations);
+  });
+  return abbreviations;
+}
 
 export type TransformFn = (
   session: ISession,
@@ -344,6 +355,9 @@ export async function postProcessMdast(
       projectSlug,
       mdastPost.slug,
     );
+    abbreviationsListTransform(mdast, {
+      abbreviations: collectAbbreviations(session, pageReferenceStates),
+    });
   }
   // NOTE: This is doing things in place, we should potentially make this a different state?
   const transformers = [

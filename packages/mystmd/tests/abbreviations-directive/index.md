@@ -1,4 +1,4 @@
-# Abbreviations Directive
+# Abbreviations Directive (index.md)
 
 This page uses API, CLI, and MyST so the existing inline abbreviation transform
 can still be checked alongside the new directive.
