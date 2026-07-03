@@ -1,6 +1,6 @@
 import type { Container } from 'myst-spec';
 
-const PROOF_KINDS = [
+export const PROOF_KINDS = [
   'proof',
   'axiom',
   'lemma',
