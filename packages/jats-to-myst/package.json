@@ -26,7 +26,7 @@
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
-    "test": "bun test",
+    "test": "bun test --pass-with-no-tests",
     "test:watch": "bun test --watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
@@ -37,7 +37,7 @@
   "dependencies": {
     "doi-utils": "^2.0.5",
     "jats-tags": "^1.0.8",
-    "jats-xml": "^1.0.8",
+    "jats-xml": "^1.1.7",
     "myst-common": "^1.9.2",
     "myst-frontmatter": "^1.9.2",
     "myst-spec": "^0.0.5",

@@ -42,8 +42,13 @@
     "mdast-util-to-markdown": "^1.5.0",
     "myst-common": "^1.8.3",
     "myst-frontmatter": "^1.8.3",
+    "myst-spec": "^0.0.5",
+    "unified": "^10.1.2",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
     "vfile-reporter": "^7.0.4"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.5"
   }
 }

@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "chalk": "^5.2.0",
+    "commander": "^10.0.1",
     "pretty-hrtime": "^1.0.3",
     "tree-kill": "^1.2.2"
   },

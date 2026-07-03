@@ -39,13 +39,18 @@
   "dependencies": {
     "myst-common": "^1.9.4",
     "myst-frontmatter": "^1.9.4",
+    "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.9.4",
     "myst-ext-proof": "^1.0.11",
+    "unified": "^10.1.2",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
+    "vfile": "^5.3.7",
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
-    "myst-parser": "^1.7.1"
+    "js-yaml": "^4.1.0",
+    "myst-parser": "^1.7.1",
+    "unist-builder": "^3.0.0"
   }
 }

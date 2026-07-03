@@ -30,6 +30,7 @@
     "url": "https://github.com/jupyter-book/myst-spec/issues"
   },
   "devDependencies": {
+    "@jupyterlab/nbformat": "^3.5.2",
     "copyfiles": "^2.4.1"
   }
 }

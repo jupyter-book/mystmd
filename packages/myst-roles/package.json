@@ -34,5 +34,8 @@
   "dependencies": {
     "myst-common": "^1.10.0",
     "myst-spec-ext": "^1.10.0"
+  },
+  "devDependencies": {
+    "vfile": "^5.3.7"
   }
 }

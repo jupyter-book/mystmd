@@ -36,6 +36,7 @@
     "myst-spec-ext": "^1.7.8"
   },
   "devDependencies": {
-    "myst-parser": "^1.5.11"
+    "myst-parser": "^1.5.11",
+    "vfile": "^5.3.7"
   }
 }
