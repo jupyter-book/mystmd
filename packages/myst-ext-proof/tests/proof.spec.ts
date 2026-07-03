@@ -89,7 +89,7 @@ describe('proof directive', () => {
     expect(output).toEqual(expected);
   });
 
-  it('proof directive parses without prf: prefix', async () => {
+  it('parses proof directive without prf: prefix', async () => {
     const content = '```{proof} Proof Title\nProof content\n```';
     const output = mystParse(content, {
       directives: [proofDirective],
@@ -99,7 +99,7 @@ describe('proof directive', () => {
     expect(proof.kind).toEqual(undefined);
   });
 
-  it('proof:theorem parses the same as prf:theorem', async () => {
+  it('parses proof:theorem the same as prf:theorem', async () => {
     const content = '```{proof:theorem} Theorem Title\nTheorem content\n```';
     const output = mystParse(content, {
       directives: [proofDirective],
