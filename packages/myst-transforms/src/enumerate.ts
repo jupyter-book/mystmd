@@ -803,7 +803,11 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
     // Change the link into a cross-reference!
     const xref = link as unknown as CrossReference;
     xref.type = 'crossReference';
-    xref.identifier = reference.identifier;
+    // Prefer the identifier of the target that actually matched: getTarget
+    // above tries the identifier verbatim before falling back to the
+    // normalized form, and case-sensitive targets (e.g. Python API objects
+    // registered by plugins) must not be re-normalized away.
+    xref.identifier = target?.node.identifier ?? reference.identifier;
     xref.label = reference.label;
     delete xref.kind; // This will be deprecated, no need to set, and remove if it is there
     delete (xref as any).url;
@@ -823,7 +827,8 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateResolve
         // Change the cite into a cross-reference!
         const xref = cite as unknown as CrossReference;
         xref.type = 'crossReference';
-        xref.identifier = reference.identifier;
+        // As above: keep the identifier of the target that matched verbatim
+        xref.identifier = target?.node.identifier ?? reference.identifier;
         xref.label = reference.label;
         delete cite.error;
         if (target) implicitTargetWarning(target, node, opts);

@@ -5,6 +5,7 @@ import {
   formatHeadingEnumerator,
   incrementHeadingCounts,
   initializeTargetCounts,
+  resolveReferenceLinksTransform,
 } from './enumerate';
 import { u } from 'unist-builder';
 import { VFile } from 'vfile';
@@ -31,6 +32,27 @@ describe('Heading counts and formatting', () => {
     [[1, 2, 0, null, 0, 0], '1.2'],
   ])('formatHeadingEnumerator(%s)}', (counts, out) => {
     expect(formatHeadingEnumerator(counts)).toEqual(out);
+  });
+});
+
+describe('reference resolution', () => {
+  test('links to case-sensitive targets keep the matched identifier', () => {
+    // Targets with exact-case identifiers (e.g. Python API objects registered
+    // by a plugin): re.Match (class) and re.match (function) are distinct.
+    const tree = u('root', [
+      u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+      u('div', { identifier: 'sample.match', html_id: 'sample.match', children: [] }),
+      u('link', { url: '#sample.Match' }, [u('text', 'class ref')]),
+      u('link', { url: '#sample.match' }, [u('text', 'function ref')]),
+    ]);
+    const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+    enumerateTargetsTransform(tree, { state });
+    resolveReferenceLinksTransform(tree, { state });
+    const [classRef, functionRef] = (tree.children as any[]).filter(
+      (node) => node.type === 'crossReference',
+    );
+    expect(classRef.identifier).toBe('sample.Match');
+    expect(functionRef.identifier).toBe('sample.match');
   });
 });
 
