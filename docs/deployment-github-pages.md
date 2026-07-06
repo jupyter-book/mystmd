@@ -77,7 +77,7 @@ jobs:
         uses: actions/configure-pages@v3
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
       - name: Install MyST Markdown
         run: npm install -g mystmd
       - name: Build HTML Assets
