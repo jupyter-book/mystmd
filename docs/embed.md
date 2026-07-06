@@ -137,7 +137,7 @@ You can then refer to content in these sites in two ways:
 
 When you build your MyST project, the content that your `#label` points to will be embedded in-place of the directive.
 
-:::{prf:example} Embedding from the MyST Spec
+:::{proof:example} Embedding from the MyST Spec
 
 The following content is embedded from `![](xref:spec#admonition)`:
 
@@ -157,7 +157,7 @@ This is also helpful for including content snippets, such as a table or an equat
 
 See {myst:directive}`the {include} directive documentation <include>` for details about all the arguments you can give to `{include}`.
 
-:::{prf:example} Equation Bank
+:::{proof:example} Equation Bank
 :label: eg:equation-bank
 It is common practice to keep complex equations out of the main document so that they can be shared between slides, papers, and different renderings of a document. The `equations` folder in our documentation has a `curl.tex` file:
 

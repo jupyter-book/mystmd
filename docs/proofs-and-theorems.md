@@ -5,7 +5,7 @@ description: MyST supports creating and referencing algorithms, axioms, conjectu
 thumbnail: ./thumbnails/proof.png
 ---
 
-All proof directives can be included using the `prf:kind` pattern, where the proof directives are shown in [](#proof-list). The directive is enumerated by default and can take in an optional title argument which is shown in brackets after the proof.
+All proof directives can be included using the `proof:kind` pattern, where the proof directives are shown in [](#proof-list). A plain proof can also be written without a kind, as `{proof}`. The directive is enumerated by default and can take in an optional title argument which is shown in brackets after the proof.
 
 :::{note} Same as Sphinx Proof 🎉
 :class: dropdown
@@ -14,12 +14,14 @@ The implementation and documentation for proofs, theorems, etc. is based on [Sph
 
 Changes to the original extension include being able to click on the proof label (e.g. "Theorem 1"), and having a link to that proof anchor. We have also updated the styles from both Sphinx and Jupyter Book to be more distinct from admonitions.
 
-You can also reference proofs with any cross-reference syntax (including the {myst:role}`prf:ref` role). We recommend the Markdown link syntax.
+A plain proof does not need a kind prefix at all — use `{proof}`.
+
+You can also reference proofs with any cross-reference syntax (including the {myst:role}`proof:ref` role). We recommend the Markdown link syntax.
 :::
 
-Here is an example of a `{prf:theorem}` with a custom title:
+Here is an example of a `{proof:theorem}` with a custom title:
 
-:::{prf:theorem} Orthogonal-Projection-Theorem
+:::{proof:theorem} Orthogonal-Projection-Theorem
 :label: my-theorem
 
 Given $y \in \mathbb R^n$ and linear subspace $S \subset \mathbb R^n$,
@@ -42,20 +44,20 @@ The vector $\hat y$ is called the **orthogonal projection** of $y$ onto $S$.
 :label: proof-list
 :header-rows: 0
 
-* - `prf:algorithm`
-  - `prf:axiom`
-  - `prf:conjecture`
-* - `prf:corollary`
-  - `prf:criteria`
-  - `prf:definition`
-* - `prf:example`
-  - `prf:lemma`
-  - `prf:observation`
-* - `prf:property`
-  - `prf:proposition`
-  - `prf:proof`
-* - `prf:remark`
-  - `prf:theorem`
+* - `proof:algorithm`
+  - `proof:axiom`
+  - `proof:conjecture`
+* - `proof:corollary`
+  - `proof:criteria`
+  - `proof:definition`
+* - `proof:example`
+  - `proof:lemma`
+  - `proof:observation`
+* - `proof:property`
+  - `proof:proposition`
+  - `proof` (plain)
+* - `proof:remark`
+  - `proof:theorem`
   -
 ```
 :::{myst:directive} proof
@@ -73,7 +75,7 @@ You can refer to a proof using the standard link syntax:
 :::{tip} Compatibility with Sphinx Proof
 :class: dropdown
 
-You may also use the `{prf:ref}` role like: `` {prf:ref}`my-theorem` ``, which will replace the reference with the theorem number like so: {prf:ref}`my-theorem`. When an explicit text is provided, this caption will serve as the title of the reference. For example, ``{prf:ref}`Orthogonal-Projection-Theorem <my-theorem>` `` will produce: {prf:ref}`Orthogonal-Projection-Theorem <my-theorem>`.
+You may also use the `{proof:ref}` role like: `` {proof:ref}`my-theorem` ``, which will replace the reference with the theorem number like so: {proof:ref}`my-theorem`. When an explicit text is provided, this caption will serve as the title of the reference. For example, ``{proof:ref}`Orthogonal-Projection-Theorem <my-theorem>` `` will produce: {proof:ref}`Orthogonal-Projection-Theorem <my-theorem>`.
 :::
 
 ## Hiding Proof Content
@@ -83,7 +85,7 @@ To hide the directive, simply add `:class: dropdown` as a directive option.
 **Example**
 
 ```{myst}
-:::{prf:theorem}
+:::{proof:theorem}
 :class: dropdown
 
 This is an example of how to hide the content of a directive.
@@ -95,7 +97,7 @@ This is an example of how to hide the content of a directive.
 ### Proofs
 
 ````{myst}
-:::{prf:proof}
+:::{proof}
 :label: full-proof
 Let $z$ be any other point in $S$ and use the fact that $S$ is a linear subspace to deduce
 
@@ -114,7 +116,7 @@ _Source:_ Adapted from [QuantEcon](https://python-advanced.quantecon.org/orth_pr
 ### Theorems
 
 ````{myst}
-:::{prf:theorem} Orthogonal-Projection-Theorem
+:::{proof:theorem} Orthogonal-Projection-Theorem
 :label: my-theorem
 
 Given $y \in \mathbb R^n$ and linear subspace $S \subset \mathbb R^n$,
@@ -140,7 +142,7 @@ _Source:_ [QuantEcon](https://python-advanced.quantecon.org/orth_proj.html#The-O
 ### Axioms
 
 ```{myst}
-:::{prf:axiom} Completeness of $\mathbb{R}$
+:::{proof:axiom} Completeness of $\mathbb{R}$
 :label: my-axiom
 
 Every Cauchy sequence on the real line is convergent.
@@ -152,7 +154,7 @@ _Source:_ {cite}`economic-dynamics-book`
 ### Lemmas
 
 ````{myst}
-:::{prf:lemma}
+:::{proof:lemma}
 :label: my-lemma
 
 If $\hat P$ is the fixed point of the map $\mathcal B \circ \mathcal D$ and $\hat F$ is the robust policy as given in [(7)](https://python-advanced.quantecon.org/robustness.html#equation-rb-oc-ih), then
@@ -170,7 +172,7 @@ _Source:_ [QuantEcon](https://python-advanced.quantecon.org/robustness.html#Appe
 ### Definitions
 
 ```{myst}
-:::{prf:definition}
+:::{proof:definition}
 :label: my-definition
 
 The *economical expansion problem* (EEP) for
@@ -191,7 +193,7 @@ _Source:_ [QuantEcon](https://python-advanced.quantecon.org)
 ### Criteria
 
 ````{myst}
-:::{prf:criterion} Weyl's criterion
+:::{proof:criterion} Weyl's criterion
 :label: weyls-criterion
 
 Weyl's criterion states that the sequence $a_n$ is equidistributed modulo $1$ if
@@ -208,7 +210,7 @@ _Source:_ [Wikipedia](https://en.wikipedia.org/wiki/Equidistributed_sequence#Wey
 ### Remarks
 
 ```{myst}
-:::{prf:remark}
+:::{proof:remark}
 :label: my-remark
 
 More generally there is a class of density functions
@@ -229,7 +231,7 @@ _Source:_ [QuantEcon](https://python-advanced.quantecon.org/black_litterman.html
 ### Conjectures
 
 ```{myst}
-:::{prf:conjecture} Fake $\gamma$ conjecture
+:::{proof:conjecture} Fake $\gamma$ conjecture
 :label: my-conjecture
 This is a dummy conjecture to illustrate that one can use math in titles.
 :::
@@ -238,7 +240,7 @@ This is a dummy conjecture to illustrate that one can use math in titles.
 ### Corollaries
 
 ```{myst}
-:::{prf:corollary}
+:::{proof:corollary}
 :label: my-corollary
 
 If $A$ is a convergent matrix, then there exists a matrix norm such
@@ -251,7 +253,7 @@ _Source:_ [QuantEcon](https://python-intro.quantecon.org/_static/lecture_specifi
 ### Algorithms
 
 ```{myst}
-:::{prf:algorithm} Ford–Fulkerson
+:::{proof:algorithm} Ford–Fulkerson
 :label: my-algorithm
 
 **Inputs** Given a Network $G=(V,E)$ with flow capacity $c$, a source node $s$, and a sink node $t$
@@ -274,7 +276,7 @@ _Source:_ [Wikipedia](https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algor
 ### Examples
 
 ````{myst}
-:::{prf:example}
+:::{proof:example}
 :label: my-example
 
 Next, we shut down randomness in demand and assume that the demand shock
@@ -301,7 +303,7 @@ _Source:_ [QuantEcon](https://python.quantecon.org/lq_inventories.html#Example-2
 ### Properties
 
 ```{myst}
-:::{prf:property}
+:::{proof:property}
 :label: my-property
 
 This is a dummy property to illustrate the directive.
@@ -311,7 +313,7 @@ This is a dummy property to illustrate the directive.
 ### Observations
 
 ```{myst}
-:::{prf:observation}
+:::{proof:observation}
 :label: my-observation
 
 This is a dummy observation directive.
@@ -321,7 +323,7 @@ This is a dummy observation directive.
 ### Propositions
 
 ```{myst}
-:::{prf:proposition}
+:::{proof:proposition}
 :label: my-proposition
 
 This is a dummy proposition directive.
@@ -331,7 +333,7 @@ This is a dummy proposition directive.
 ### Assumptions
 
 ```{myst}
-:::{prf:assumption}
+:::{proof:assumption}
 :label: my-assumption
 
 This is a dummy assumption directive.
