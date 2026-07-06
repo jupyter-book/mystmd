@@ -1,8 +1,3 @@
-// Disabled (renamed out of vitest's *.spec.ts discovery): './build' imports meca, which
-// declares myst-cli-utils as a devDependency instead of a dependency, so under bun's
-// isolated linker this file crashes at import time before any test runs (meca -> myst-cli-utils
-// fails to resolve). Fix proposed upstream at continuous-foundation/jats; re-enable (rename
-// back to build.spec.ts) once a fixed meca version is published and bumped here.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ExportFormats } from 'myst-frontmatter';
 import { exportSite, getAllowedExportFormats, getRequestedExportFormats } from './build';

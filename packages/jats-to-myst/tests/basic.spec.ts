@@ -1,10 +1,3 @@
-// Disabled (renamed out of bun test's *.spec.ts discovery): jats-utils declares myst-common
-// as a devDependency instead of a dependency, so under bun's isolated linker this file crashes
-// at import time (`../src` -> jats-xml -> jats-utils -> myst-common fails to resolve). This was
-// the only test file in this package, so package.json's "test" script now also passes
-// --pass-with-no-tests. Fix proposed upstream at continuous-foundation/jats; re-enable (rename
-// back to basic.spec.ts, and --pass-with-no-tests can come back out) once a fixed jats-utils
-// version is published and bumped here.
 import { describe, expect, test } from 'vitest';
 import fs from 'node:fs';
 import { unified } from 'unified';
