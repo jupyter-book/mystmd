@@ -316,6 +316,12 @@ export interface IReferenceStateResolver {
   vfile: VFile;
   /**
    * If the page is provided, it will only look at that page.
+   *
+   * Looks up the identifier verbatim first, falling back to the normalized
+   * (lowercased) form. This is case-sensitive matching with a
+   * backward-compatible fallback, not case-insensitive matching: a target
+   * registered with an exact-case identifier (e.g. `sample.Match`) is never
+   * shadowed by a differently-cased sibling (e.g. `sample.match`).
    */
   getTarget: (identifier?: string, page?: string) => Target | undefined;
   getAllTargets: () => Target[];
@@ -482,7 +488,11 @@ export class ReferenceState implements IReferenceStateResolver {
 
   getTarget(identifier?: string): Target | undefined {
     if (!identifier) return undefined;
-    return this.targets[identifier];
+    // Case-sensitive match first, then fall back to the normalized form prose
+    // labels are stored under, so an exact-case target (e.g. a plugin-registered
+    // Python API object) is never shadowed by a differently-cased sibling.
+    const normalized = normalizeLabel(identifier)?.identifier;
+    return this.targets[identifier] ?? (normalized ? this.targets[normalized] : undefined);
   }
 
   getAllTargets(): Target[] {
@@ -770,7 +780,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
     }
     const identifier = link.url.replace(/^#/, '');
     const reference = normalizeLabel(identifier);
-    const target = opts.state.getTarget(identifier) ?? opts.state.getTarget(reference?.identifier);
+    const target = opts.state.getTarget(identifier);
     const fileTarget = opts.state.getFileTarget(reference?.identifier);
     if (!(target || fileTarget) || !reference) {
       if (!opts.state.vfile || !link.url.startsWith('#')) return;
@@ -803,10 +813,8 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
     // Change the link into a cross-reference!
     const xref = link as unknown as CrossReference;
     xref.type = 'crossReference';
-    // Prefer the identifier of the target that actually matched: getTarget
-    // above tries the identifier verbatim before falling back to the
-    // normalized form, and case-sensitive targets (e.g. Python API objects
-    // registered by plugins) must not be re-normalized away.
+    // Keep the matched target's own identifier so a case-sensitive target
+    // isn't re-normalized away; fall back to the normalized label for file targets.
     xref.identifier = target?.node.identifier ?? reference.identifier;
     xref.label = reference.label;
     delete xref.kind; // This will be deprecated, no need to set, and remove if it is there
@@ -821,13 +829,14 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateResolve
     if (!cite.error) return;
     const reference = normalizeLabel(cite.label);
     if (reference) {
-      const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference.identifier);
+      const target = opts.state.getTarget(cite.label);
       const fileTarget = opts.state.getFileTarget(reference.identifier);
       if (target || fileTarget) {
         // Change the cite into a cross-reference!
         const xref = cite as unknown as CrossReference;
         xref.type = 'crossReference';
-        // As above: keep the identifier of the target that matched verbatim
+        // Keep the matched target's own identifier so a case-sensitive target isn't
+        // re-normalized away; fall back to the normalized label for file targets.
         xref.identifier = target?.node.identifier ?? reference.identifier;
         xref.label = reference.label;
         delete cite.error;

@@ -54,6 +54,37 @@ describe('reference resolution', () => {
     expect(classRef.identifier).toBe('sample.Match');
     expect(functionRef.identifier).toBe('sample.match');
   });
+
+  describe('ReferenceState.getTarget', () => {
+    test('matches an exact-case identifier verbatim', () => {
+      const tree = u('root', [
+        u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+      ]);
+      const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+      enumerateTargetsTransform(tree, { state });
+      expect(state.getTarget('sample.Match')?.node.identifier).toBe('sample.Match');
+    });
+
+    test('falls back to the normalized form for prose labels', () => {
+      // Prose labels are stored normalized (lowercased) by normalizeLabel at
+      // creation time, so a differently-cased lookup must still find them.
+      const tree = u('root', [u('heading', { identifier: 'my-section', children: [] })]);
+      const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+      enumerateTargetsTransform(tree, { state });
+      expect(state.getTarget('My-Section')?.node.identifier).toBe('my-section');
+    });
+
+    test('does not let a normalized fallback shadow a case-distinct sibling', () => {
+      const tree = u('root', [
+        u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+        u('div', { identifier: 'sample.match', html_id: 'sample.match', children: [] }),
+      ]);
+      const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+      enumerateTargetsTransform(tree, { state });
+      expect(state.getTarget('sample.Match')?.node.identifier).toBe('sample.Match');
+      expect(state.getTarget('sample.match')?.node.identifier).toBe('sample.match');
+    });
+  });
 });
 
 describe('enumeration', () => {
