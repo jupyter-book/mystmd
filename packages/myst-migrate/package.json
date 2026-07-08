@@ -29,6 +29,7 @@
     "vfile-message": "^3.0.0"
   },
   "devDependencies": {
-    "@jupyterlab/nbformat": "^3.5.2"
+    "@jupyterlab/nbformat": "^3.5.2",
+    "@types/mdast": "^3.0.12"
   }
 }

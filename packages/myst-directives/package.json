@@ -36,10 +36,15 @@
     "csv-parse": "^5.5.5",
     "js-yaml": "^4.1.0",
     "myst-common": "^1.10.0",
+    "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.10.0",
     "json5": "^1.0.2",
     "nanoid": "^5.1.6",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "@types/json5": "^0.0.29"
   }
 }

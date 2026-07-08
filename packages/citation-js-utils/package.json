@@ -38,6 +38,7 @@
     "@citation-js/core": "^0.7.18",
     "@citation-js/plugin-bibtex": "^0.7.18",
     "@citation-js/plugin-csl": "^0.7.18",
+    "doi-utils": "^2.0.5",
     "sanitize-html": "^2.7.0"
   },
   "devDependencies": {

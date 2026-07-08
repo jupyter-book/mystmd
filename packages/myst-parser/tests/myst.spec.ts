@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import yaml from 'js-yaml';
 import { visit } from 'unist-util-visit';
 import { mystParse } from '../src';
@@ -34,10 +35,8 @@ const SKIP_TESTS = [
   '506', // This is a link issue?
 ];
 
-// TODO: import this from myst-spec properly!
-const directory = fs.existsSync('../../node_modules/myst-spec/dist/examples')
-  ? '../../node_modules/myst-spec/dist/examples'
-  : '../../../node_modules/myst-spec/dist/examples';
+const mystSpecPackageJson = createRequire(import.meta.url).resolve('myst-spec/package.json');
+const directory = path.join(path.dirname(mystSpecPackageJson), 'dist/examples');
 
 const files: string[] = fs.readdirSync(directory).filter((name) => name.endsWith('.yml'));
 
