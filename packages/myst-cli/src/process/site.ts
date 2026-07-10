@@ -52,6 +52,8 @@ import { cpus } from 'node:os';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
+  ImageExtensions.webm,
+  ImageExtensions.avif,
   ImageExtensions.webp,
   ImageExtensions.svg,
   ImageExtensions.gif,
