@@ -315,6 +315,8 @@ The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2).
 ```
 
+(local-docs-workflows)=
+
 ### Local docs workflows (preview/build)
 
 To run a MyST server with your local changes and a preview of the documentation, run:
@@ -322,6 +324,10 @@ To run a MyST server with your local changes and a preview of the documentation,
 ```shell
 $ bun run docs
 ```
+
+This builds the `mystmd` packages, and starts a live-reloading preview server.
+
+The `docs/` plugins import several `myst-*` packages as `workspace:*` dependencies, so that they build against the source versions in this repository (not against npm). If you only change the plugins in `docs/*.mjs`, you will need to rebuild the packages and restart the server.
 
 ## Local development: myst-theme
 

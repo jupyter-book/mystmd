@@ -28,6 +28,26 @@
         "vitest": "^3.2.4",
       },
     },
+    "docs": {
+      "name": "mystmd-docs",
+      "version": "0.0.0",
+      "dependencies": {
+        "myst-common": "workspace:*",
+        "myst-directives": "workspace:*",
+        "myst-ext-button": "workspace:*",
+        "myst-ext-card": "workspace:*",
+        "myst-ext-exercise": "workspace:*",
+        "myst-ext-grid": "workspace:*",
+        "myst-ext-proof": "workspace:*",
+        "myst-ext-tabs": "workspace:*",
+        "myst-migrate": "workspace:*",
+        "myst-parser": "workspace:*",
+        "myst-roles": "workspace:*",
+        "tex-to-myst": "workspace:*",
+        "unist-builder": "^3.0.0",
+        "unist-util-select": "^4.0.3",
+      },
+    },
     "packages/citation-js-utils": {
       "name": "citation-js-utils",
       "version": "1.2.8",
@@ -2126,6 +2146,8 @@
     "myst-transforms": ["myst-transforms@workspace:packages/myst-transforms"],
 
     "mystmd": ["mystmd@workspace:packages/mystmd"],
+
+    "mystmd-docs": ["mystmd-docs@workspace:docs"],
 
     "nanoid": ["nanoid@5.1.6", "", { "bin": "bin/nanoid.js" }, "sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg=="],
 
