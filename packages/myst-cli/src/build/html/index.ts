@@ -234,6 +234,7 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
     copyStaticFiles(session, projectConfig?.static_files ?? [], htmlDir, proj.path);
   }
   fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
+  fs.copySync(path.join(session.sitePath(), 'public.json'), path.join(htmlDir, 'public.json'));
   fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
 
   // NOTE: HTML static output needs to patch the contents, this is done on the fly by the server
