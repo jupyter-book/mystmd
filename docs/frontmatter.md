@@ -1,8 +1,8 @@
-# Content frontmatter options
+# Content frontmatter option
 
-The following table lists the available frontmatter fields. If a field has sub-fields, see the relevant description on the page below.
+The following table lists the available frontmatter fields. If a field has sub-field, see the relevant description on the page below.
 
-## Where to put these fields
+## Where to put these field
 
 Placement depends on the **Field Behavior** column below:
 
