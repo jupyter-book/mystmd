@@ -101,6 +101,33 @@ describe('enumeration', () => {
     expect(state.getTarget('h2')?.node.enumerator).toBe('1.1');
     expect(state.getTarget('h3')?.node.enumerator).toBe('2');
   });
+  test('heading references respect the numbering offset', () => {
+    const tree = u('root', [
+      u('heading', { identifier: 'h1', depth: 2 }, [u('text', 'First')]),
+      u('heading', { identifier: 'h2', depth: 3 }, [u('text', 'Second')]),
+    ]);
+    const state = new ReferenceState('my-file.md', {
+      frontmatter: {
+        numbering: {
+          title: { offset: 1 },
+          heading_2: { enabled: true, template: 'First %s' },
+          heading_3: { enabled: true, template: 'Second %s' },
+        },
+      },
+      vfile: new VFile(),
+    });
+    enumerateTargetsTransform(tree, { state });
+    const references = ['h1', 'h2'].map((identifier) => u('crossReference', { identifier }));
+    references.forEach((reference) => state.resolveReferenceContent(reference as any));
+    expect(references).toMatchObject([
+      { enumerator: '1', template: 'First %s', children: [{ value: 'First ' }, { value: '1' }] },
+      {
+        enumerator: '1.1',
+        template: 'Second %s',
+        children: [{ value: 'Second ' }, { value: '1.1' }],
+      },
+    ]);
+  });
   test('sub-figures', () => {
     const tree = u('root', [
       u('container', { identifier: 'fig:1', kind: 'figure' }, [
