@@ -663,7 +663,7 @@
         "myst-frontmatter": "^1.10.0",
         "myst-spec": "^0.0.5",
         "myst-spec-ext": "^1.10.0",
-        "tex-to-typst": "^0.0.20",
+        "tex-to-typst": "^0.0.21",
         "unified": "^10.1.2",
         "unist-util-select": "^4.0.3",
         "vfile": "^5.3.7",
@@ -2523,7 +2523,7 @@
 
     "tex-to-myst": ["tex-to-myst@workspace:packages/tex-to-myst"],
 
-    "tex-to-typst": ["tex-to-typst@0.0.20", "", { "dependencies": { "@unified-latex/unified-latex": "^1.4.0", "@unified-latex/unified-latex-util-arguments": "^1.4.0", "@unified-latex/unified-latex-util-parse": "^1.4.0", "unified": "^10.1.2" } }, "sha512-q6cVBkEYAX+N8wgA5pmyw4I1URm12X0JDpBEEozo626G8MjJuOfsDeMwuLzodHJPuvsk/LRRtANxpqK8JwpiXQ=="],
+    "tex-to-typst": ["tex-to-typst@0.0.21", "", { "dependencies": { "@unified-latex/unified-latex": "^1.4.0", "@unified-latex/unified-latex-util-arguments": "^1.4.0", "@unified-latex/unified-latex-util-parse": "^1.4.0", "unified": "^10.1.2" } }, "sha512-EgAErpOxUaE0heF/GZ1aQ10QXCEr9Wy7FIMBkgwU5dLzXu1d3/MijvTvc5wJOgeKrx2ptzXz/2GfUDyguD9XlQ=="],
 
     "text-table": ["text-table@0.2.0", "", {}, "sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw=="],
 
