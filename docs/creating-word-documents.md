@@ -6,7 +6,7 @@ description: Export to Microsoft Word directly from MyST Markdown.
 You can render your MyST documents as Microsoft Word documents.
 
 ```{figure} ./images/word-export.png
-:name: fig-export-to-word
+:label: fig-export-to-word
 :width: 50%
 
 Export to a Microsoft Word document to easily share with your colleagues.
@@ -29,7 +29,7 @@ exports:
 ---
 ```
 
-To build the exports, use the `myst build` command, which will work with your [project structure](./project-overview.md) if it exists and create a document in the output path that you specify.
+To build the exports, use the `myst build` command, which will work with your project structure if it exists and create a document in the output path that you specify.
 
 ```bash
 myst build my-document.md --docx
@@ -44,7 +44,7 @@ Based on the `output` field in the export list in the [frontmatter](#export-fron
 The default export creates links for cross references and citations, and the first time this is opened Microsoft Word asks you if you would like to link these. **Click Yes**.
 
 ```{figure} ./images/export-word-link.png
-:name: export-word-link
+:label: export-word-link
 :width: 40%
 
 Allow word to fix links for cross-references and citations.
@@ -61,7 +61,7 @@ Currently MyST export does not fully create math in Word's format, instead, $\La
 4. Click convert
 
 ```{figure} ./images/convert-word-equations.png
-:name: convert-word-equations
+:label: convert-word-equations
 :width: 100%
 
 To fix equations in Word, use the equation toolbar to select `LaTeX` and from the dropdown select, all professional, then click convert.
@@ -69,7 +69,7 @@ To fix equations in Word, use the equation toolbar to select `LaTeX` and from th
 
 ## Rendering Word with `myst-to-docx`
 
-The rendering process for word documents uses the [`myst-to-docx`](myst:myst-to-docx) package. The library works together with `mystmd` for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
+The rendering process for word documents uses the `myst-to-docx` package. The library works together with `mystmd` for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
 
 ```{mermaid}
 flowchart LR

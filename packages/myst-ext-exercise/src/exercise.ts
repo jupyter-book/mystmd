@@ -1,5 +1,6 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
 import { createId, normalizeLabel } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from 'myst-directives';
 
 export const exerciseDirective: DirectiveSpec = {
   name: 'exercise',
@@ -8,14 +9,10 @@ export const exerciseDirective: DirectiveSpec = {
     type: 'myst',
   },
   options: {
-    label: {
-      type: String,
-    },
-    class: {
-      type: String,
-    },
+    ...commonDirectiveOptions('exercise'),
     nonumber: {
       type: Boolean,
+      doc: 'Legacy flag to disable numbering of exercises; equivalent to `enumerated: false`',
     },
     hidden: {
       type: Boolean,
@@ -35,20 +32,30 @@ export const exerciseDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const nonumber = (data.options?.nonumber as boolean) ?? false;
-    // Numbered, unlabeled exercises still need a label
-    const backupLabel = nonumber ? undefined : `exercise-${createId()}`;
-    const rawLabel = (data.options?.label as string) || backupLabel;
-    const { label, identifier } = normalizeLabel(rawLabel) || {};
+
     const exercise: GenericNode = {
       type: 'exercise',
-      label,
-      identifier,
-      class: data.options?.class as string,
       hidden: data.options?.hidden as boolean,
-      enumerated: !nonumber,
       children: children as any[],
     };
+    addCommonDirectiveOptions(data, exercise);
+
+    // Override default `enumerated` behavior
+    if (data.options?.nonumber !== undefined) {
+      // If `nonumber` is defined, it takes precedence over enumerated
+      exercise.enumerated = !data.options.nonumber as boolean;
+    } else {
+      // Default `enumerated` value is true if unspecified
+      exercise.enumerated = (data.options?.enumerated as boolean | undefined) ?? true;
+    }
+
+    // Numbered, unlabeled exercises still need a label
+    const backupLabel = exercise.enumerated ? `exercise-${createId()}` : undefined;
+    const rawLabel = (data.options?.label as string) || backupLabel;
+    const { label, identifier } = normalizeLabel(rawLabel) || {};
+    exercise.label = label;
+    exercise.identifier = identifier;
+
     if (data.name.endsWith('-start')) {
       exercise.gate = 'start';
     }
@@ -64,12 +71,7 @@ export const solutionDirective: DirectiveSpec = {
     required: true,
   },
   options: {
-    label: {
-      type: String,
-    },
-    class: {
-      type: String,
-    },
+    ...commonDirectiveOptions('solution'),
     hidden: {
       type: Boolean,
     },
@@ -92,16 +94,12 @@ export const solutionDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const rawLabel = data.options?.label as string;
-    const { label, identifier } = normalizeLabel(rawLabel) || {};
     const solution: GenericNode = {
       type: 'solution',
-      label,
-      identifier,
-      class: data.options?.class as string,
       hidden: data.options?.hidden as boolean,
       children: children as any[],
     };
+    addCommonDirectiveOptions(data, solution);
     if (data.name.endsWith('-start')) {
       solution.gate = 'start';
     }

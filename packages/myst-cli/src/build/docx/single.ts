@@ -3,27 +3,29 @@ import path from 'node:path';
 import type { Content } from 'mdast';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats } from 'myst-frontmatter';
+import {
+  FRONTMATTER_ALIASES,
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  validateProjectFrontmatter,
+} from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
-import type { LinkTransformer } from 'myst-transforms';
 import { htmlTransform } from 'myst-transforms';
-import { fileError, fileWarn, RuleId, TemplateKind } from 'myst-common';
+import { fileError, fileWarn, RuleId, TemplateKind, toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
+import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
+import { frontmatterValidationOpts } from '../../frontmatter.js';
 import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
 import type { RendererData } from '../../transforms/types.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
-import type { ExportOptions, ExportResults, ExportWithOutput } from '../types.js';
+import type { ExportFnOptions, ExportResults, ExportWithOutput } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
-import { collectWordExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 import { createFooter } from './footers.js';
 import { createArticleTitle, createReferenceTitle } from './titles.js';
 
@@ -55,16 +57,32 @@ function defaultWordRenderer(
     serializer.render(node);
   });
   serializer.renderChildren(mdast);
-  const referencesDocStates = Object.values(references.cite?.data ?? {})
-    .map(({ html }) => html)
-    .sort((a, b) => a.localeCompare(b))
-    .map((html) => {
-      return { type: 'html', value: html };
-    });
-  if (referencesDocStates.length > 0) {
+
+  // Take each reference
+  const referenceNodes = Object.values(references.cite?.data ?? {})
+    // Parse the HTML into mdast
+    .map(({ html }) => htmlTransform({ type: 'root', children: [{ type: 'html', value: html }] }))
+    // Replace "root of phrasing" with "paragraph of phrasing"
+    .map((root) => ({ type: 'paragraph', children: root.children }))
+    // Parse out the string representation (to drop formatting)
+    .map((node) => ({
+      repr: toText(node),
+      node,
+    }))
+    // Sort the string representation
+    .sort((a, b) => a.repr.localeCompare(b.repr))
+    // Drop the string representation
+    .map(({ node }) => node);
+
+  if (referenceNodes.length > 0) {
     serializer.render(createReferenceTitle());
-    const referencesRoot = htmlTransform({ type: 'root', children: referencesDocStates as any });
+
+    const referencesRoot = {
+      type: 'root',
+      children: referenceNodes,
+    };
     serializer.renderChildren(referencesRoot);
+    serializer.closeBlock();
   }
   selectAll('footnoteDefinition', mdast).forEach((footnote) => {
     serializer.render(footnote);
@@ -80,22 +98,25 @@ export async function runWordExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles } = exportOptions;
+  const { clean, projectPath, extraLinkTransformers, execute } = opts ?? {};
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
-  if (!article) return { tempFolders: [] };
+  if (!article?.file) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const vfile = new VFile();
   vfile.path = output;
   const imageWriteFolder = createTempFolder(session);
-  const [data] = await getFileContent(session, [article], {
+  const [data] = await getFileContent(session, [article.file], {
     projectPath,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     extraLinkTransformers,
+    preFrontmatters: [
+      filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    ],
+    execute,
   });
   const mystTemplate = new MystTemplate(session, {
     kind: TemplateKind.docx,
@@ -110,14 +131,21 @@ export async function runWordExport(
   });
   await mystTemplate.ensureTemplateExistsOnPath();
   const toc = tic();
+
+  const exportFrontmatter = validateProjectFrontmatter(
+    filterKeys(exportOptions, [...PROJECT_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  data.frontmatter = { ...data.frontmatter, ...exportFrontmatter };
   const { options, doc } = mystTemplate.prepare({
     frontmatter: data.frontmatter,
-    parts: [],
+    parts: {},
     options: { ...data.frontmatter.options, ...exportOptions },
     sourceFile: file,
   });
   const renderer = exportOptions.renderer ?? defaultWordRenderer;
-  await finalizeMdast(session, data.mdast, data.frontmatter, article, {
+  await finalizeMdast(session, data.mdast, data.frontmatter, article.file, {
     imageWriteFolder,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     simplifyFigures: true,
@@ -127,38 +155,4 @@ export async function runWordExport(
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
   session.log.info(toc(`📄 Exported DOCX in %s, copying to ${output}`));
   return { tempFolders: [imageWriteFolder] };
-}
-
-export async function localArticleToWord(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-): Promise<ExportResults> {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectWordExportOptions(session, file, 'docx', [ExportFormats.docx], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      const exportResult = await runWordExport(
-        session,
-        file,
-        exportOptions,
-        projectPath,
-        opts.clean,
-        extraLinkTransformers,
-      );
-      results.tempFolders.push(...exportResult.tempFolders);
-    }),
-    opts.throwOnFailure,
-  );
-  return results;
 }

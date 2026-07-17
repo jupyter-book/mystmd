@@ -1,16 +1,23 @@
 title: Kernel Spec
 cases:
-  - title: empty object returns self
+  - title: empty object has defaults
     raw:
       kernelspec: {}
     normalized:
-      kernelspec: {}
+      kernelspec:
+        name: python3
+        display_name: python3 Kernel
+    warnings: 2
   - title: extra keys removed
     raw:
       kernelspec:
         extra: ''
+        name: python3
+        display_name: Python 3
     normalized:
-      kernelspec: {}
+      kernelspec:
+        name: python3
+        display_name: Python 3
     warnings: 1
   - title: full object returns self
     raw:

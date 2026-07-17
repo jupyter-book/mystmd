@@ -1,0 +1,603 @@
+{
+  "kind": "Article",
+  "sha256": "a542170b6b18e70ebde6038fb79ef24d6cc07c98bb2de3dfe4adadbce155ba3a",
+  "slug": "joke",
+  "location": "/joke.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Galliformes Contribution to Humor",
+    "downloads": [
+      {
+        "title": "joke.md",
+        "filename": "joke.md",
+        "format": "md",
+        "static": true
+      }
+    ],
+    "authors": [
+      {
+        "nameParsed": { "literal": "Franklin Koch", "given": "Franklin", "family": "Koch" },
+        "name": "Franklin Koch",
+        "affiliations": ["Curvenote"],
+        "id": "contributors-myst-generated-uid-0"
+      }
+    ],
+    "date": "2024-07-20",
+    "affiliations": [{ "id": "Curvenote", "name": "Curvenote" }],
+    "exports": [{ "format": "md", "filename": "joke.md" }]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 12, "column": 1 },
+              "end": { "line": 12, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Why did the chicken cross the road?",
+                "position": {
+                  "start": { "line": 12, "column": 1 },
+                  "end": { "line": 12, "column": 1 }
+                }
+              }
+            ],
+            "indexEntries": [
+              {
+                "entry": "Joke",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Joke", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Galliformes",
+                "subEntry": { "value": "Chicken", "kind": "see" },
+                "emphasis": false
+              }
+            ],
+            "identifier": "why-did-the-chicken-cross-the-road",
+            "label": "Why did the chicken cross the road?",
+            "html_id": "why-did-the-chicken-cross-the-road",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 14, "column": 1 },
+              "end": { "line": 14, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "To get to the other side.",
+                "position": {
+                  "start": { "line": 14, "column": 1 },
+                  "end": { "line": 14, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 16, "column": 1 },
+              "end": { "line": 16, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Classic anti-humor!",
+                "position": {
+                  "start": { "line": 16, "column": 1 },
+                  "end": { "line": 16, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "block",
+            "children": [
+              {
+                "type": "definitionList",
+                "children": [
+                  {
+                    "type": "definitionTerm",
+                    "children": [{ "type": "text", "value": "C" }],
+                    "label": "index-heading-c",
+                    "identifier": "index-heading-c",
+                    "html_id": "index-heading-c"
+                  },
+                  {
+                    "type": "definitionDescription",
+                    "children": [
+                      { "type": "text", "value": "Chicken:" },
+                      { "type": "text", "value": " See also " },
+                      {
+                        "type": "crossReference",
+                        "identifier": "index-heading-r",
+                        "label": "index-heading-r",
+                        "children": [{ "type": "text", "value": "Reptilian ancestors" }],
+                        "kind": "definitionTerm",
+                        "template": "{name}",
+                        "resolved": true,
+                        "html_id": "index-heading-r"
+                      },
+                      {
+                        "type": "list",
+                        "children": [
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Egg: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "chicken-vs-egg",
+                                    "label": "Chicken vs. Egg",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Chicken vs. Egg",
+                                        "position": {
+                                          "start": { "line": 11, "column": 1 },
+                                          "end": { "line": 11, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "chicken-vs-egg",
+                                    "remote": true,
+                                    "url": "/first",
+                                    "dataUrl": "/first.json"
+                                  },
+                                  { "type": "text", "value": ", " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "does-it-matter-which-came-first",
+                                    "label": "Does it matter which came first?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Does it matter which came first?",
+                                        "position": {
+                                          "start": { "line": 10, "column": 1 },
+                                          "end": { "line": 10, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "does-it-matter-which-came-first",
+                                    "remote": true,
+                                    "url": "/recipes",
+                                    "dataUrl": "/recipes.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Joke: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "why-did-the-chicken-cross-the-road",
+                                    "label": "Why did the chicken cross the road?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Why did the chicken cross the road?",
+                                        "position": {
+                                          "start": { "line": 12, "column": 1 },
+                                          "end": { "line": 12, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "why-did-the-chicken-cross-the-road"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Recipe: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "does-it-matter-which-came-first",
+                                    "label": "Does it matter which came first?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Does it matter which came first?",
+                                        "position": {
+                                          "start": { "line": 10, "column": 1 },
+                                          "end": { "line": 10, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "does-it-matter-which-came-first",
+                                    "remote": true,
+                                    "url": "/recipes",
+                                    "dataUrl": "/recipes.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "definitionTerm",
+                    "children": [{ "type": "text", "value": "E" }],
+                    "label": "index-heading-e",
+                    "identifier": "index-heading-e",
+                    "html_id": "index-heading-e"
+                  },
+                  {
+                    "type": "definitionDescription",
+                    "children": [
+                      { "type": "text", "value": "Egg:" },
+                      {
+                        "type": "list",
+                        "children": [
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "-cited: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "introduction",
+                                    "label": "Introduction",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Introduction",
+                                        "position": {
+                                          "start": { "line": 11, "column": 1 },
+                                          "end": { "line": 11, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "introduction",
+                                    "remote": true,
+                                    "url": "/",
+                                    "dataUrl": "/index.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Chicken: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "chicken-vs-egg",
+                                    "label": "Chicken vs. Egg",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Chicken vs. Egg",
+                                        "position": {
+                                          "start": { "line": 11, "column": 1 },
+                                          "end": { "line": 11, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "chicken-vs-egg",
+                                    "remote": true,
+                                    "url": "/first",
+                                    "dataUrl": "/first.json"
+                                  },
+                                  { "type": "text", "value": ", " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "does-it-matter-which-came-first",
+                                    "label": "Does it matter which came first?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Does it matter which came first?",
+                                        "position": {
+                                          "start": { "line": 10, "column": 1 },
+                                          "end": { "line": 10, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "does-it-matter-which-came-first",
+                                    "remote": true,
+                                    "url": "/recipes",
+                                    "dataUrl": "/recipes.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Recipe: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "does-it-matter-which-came-first",
+                                    "label": "Does it matter which came first?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Does it matter which came first?",
+                                        "position": {
+                                          "start": { "line": 10, "column": 1 },
+                                          "end": { "line": 10, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "does-it-matter-which-came-first",
+                                    "remote": true,
+                                    "url": "/recipes",
+                                    "dataUrl": "/recipes.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "definitionTerm",
+                    "children": [{ "type": "text", "value": "G" }],
+                    "label": "index-heading-g",
+                    "identifier": "index-heading-g",
+                    "html_id": "index-heading-g"
+                  },
+                  {
+                    "type": "definitionDescription",
+                    "children": [
+                      { "type": "text", "value": "Galliformes:" },
+                      { "type": "text", "value": " See " },
+                      {
+                        "type": "crossReference",
+                        "identifier": "index-heading-c",
+                        "label": "index-heading-c",
+                        "children": [{ "type": "text", "value": "Chicken" }],
+                        "kind": "definitionTerm",
+                        "template": "{name}",
+                        "resolved": true,
+                        "html_id": "index-heading-c"
+                      },
+                      { "type": "list", "children": [] }
+                    ]
+                  },
+                  {
+                    "type": "definitionTerm",
+                    "children": [{ "type": "text", "value": "J" }],
+                    "label": "index-heading-j",
+                    "identifier": "index-heading-j",
+                    "html_id": "index-heading-j"
+                  },
+                  {
+                    "type": "definitionDescription",
+                    "children": [
+                      { "type": "text", "value": "Joke:" },
+                      {
+                        "type": "list",
+                        "children": [
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Chicken: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "why-did-the-chicken-cross-the-road",
+                                    "label": "Why did the chicken cross the road?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Why did the chicken cross the road?",
+                                        "position": {
+                                          "start": { "line": 12, "column": 1 },
+                                          "end": { "line": 12, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "why-did-the-chicken-cross-the-road"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "definitionTerm",
+                    "children": [{ "type": "text", "value": "R" }],
+                    "label": "index-heading-r",
+                    "identifier": "index-heading-r",
+                    "html_id": "index-heading-r"
+                  },
+                  {
+                    "type": "definitionDescription",
+                    "children": [
+                      { "type": "text", "value": "Recipe:" },
+                      {
+                        "type": "list",
+                        "children": [
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Chicken: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "does-it-matter-which-came-first",
+                                    "label": "Does it matter which came first?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Does it matter which came first?",
+                                        "position": {
+                                          "start": { "line": 10, "column": 1 },
+                                          "end": { "line": 10, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "does-it-matter-which-came-first",
+                                    "remote": true,
+                                    "url": "/recipes",
+                                    "dataUrl": "/recipes.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "listItem",
+                            "children": [
+                              {
+                                "type": "paragraph",
+                                "children": [
+                                  { "type": "text", "value": "Egg: " },
+                                  { "type": "text", "value": " " },
+                                  {
+                                    "type": "crossReference",
+                                    "identifier": "does-it-matter-which-came-first",
+                                    "label": "Does it matter which came first?",
+                                    "children": [
+                                      {
+                                        "type": "text",
+                                        "value": "Does it matter which came first?",
+                                        "position": {
+                                          "start": { "line": 10, "column": 1 },
+                                          "end": { "line": 10, "column": 1 }
+                                        }
+                                      }
+                                    ],
+                                    "kind": "heading",
+                                    "template": "{name}",
+                                    "resolved": true,
+                                    "html_id": "does-it-matter-which-came-first",
+                                    "remote": true,
+                                    "url": "/recipes",
+                                    "dataUrl": "/recipes.json"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      { "type": "text", "value": "Reptilian ancestors:" },
+                      { "type": "text", "value": " " },
+                      {
+                        "type": "crossReference",
+                        "identifier": "chicken-vs-egg",
+                        "label": "Chicken vs. Egg",
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "Chicken vs. Egg",
+                            "position": {
+                              "start": { "line": 11, "column": 1 },
+                              "end": { "line": 11, "column": 1 }
+                            }
+                          }
+                        ],
+                        "kind": "heading",
+                        "template": "{name}",
+                        "resolved": true,
+                        "html_id": "chicken-vs-egg",
+                        "remote": true,
+                        "url": "/first",
+                        "dataUrl": "/first.json"
+                      },
+                      { "type": "list", "children": [] }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "data": { "part": "index" }
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

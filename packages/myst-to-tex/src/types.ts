@@ -10,6 +10,7 @@ export type Handler = (node: any, state: ITexSerializer, parent: any) => void;
 
 export type PreambleData = {
   hasProofs?: boolean;
+  hasIndex?: boolean;
   printGlossaries?: boolean;
   glossary: Record<string, [string, string]>;
   abbreviations: Record<string, [string, string]>;
@@ -22,7 +23,15 @@ export type LatexResult = {
   commands: Record<string, string>;
 };
 
+/**
+ * This type has string keys (commands) and object values (name, desc, macro, etc)
+ */
 export type MathPlugins = Required<PageFrontmatter>['math'];
+
+/**
+ * This type only has command/macro strings as key/value pairs
+ */
+export type SimplifiedMathPlugins = Record<string, string>;
 
 export type Options = MystToTexSettings & {
   handlers?: Record<string, Handler>;
@@ -41,7 +50,8 @@ export type StateData = {
   nextHeadingIsFrameTitle?: boolean;
   nextCaptionId?: string;
   hasProofs?: boolean;
-  mathPlugins: Required<PageFrontmatter>['math'];
+  hasIndex?: boolean;
+  mathPlugins: SimplifiedMathPlugins;
   imports: Set<string>;
 };
 

@@ -1,0 +1,22 @@
+version: 1
+project:
+  id: 36470d68-33d2-4b16-b0cf-5c955396fe57
+  keywords:
+    - my-kw
+  authors:
+    - John Doe
+  license: CC-BY-4.0
+  math:
+    a: defined-in-project-b
+    c: defined-in-project-b
+  parts:
+    footer: "Footer from **extended** config"
+site:
+  template: book-theme
+  nav: []
+  actions:
+    - title: Learn More
+      url: https://mystmd.org/guide
+  domains: []
+extends:
+  - ../proj-c/macros.yml

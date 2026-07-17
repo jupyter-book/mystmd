@@ -1,36 +1,42 @@
 import AdmZip from 'adm-zip';
+import fs from 'node:fs';
 import path from 'node:path';
 import which from 'which';
 import { makeExecutable, tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
+import {
+  FRONTMATTER_ALIASES,
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  articlesWithFile,
+  validateProjectFrontmatter,
+} from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTypst from 'myst-to-typst';
 import type { TypstResult } from 'myst-to-typst';
-import type { LinkTransformer } from 'myst-transforms';
+import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { selectAll } from 'unist-util-select';
 import type { TypstTemplateImports } from 'jtex';
+import { VFile } from 'vfile';
 import { mergeTypstTemplateImports, renderTemplate, renderTypstImports } from 'jtex';
-import { findCurrentProjectAndLoad } from '../config.js';
+import { frontmatterValidationOpts } from '../frontmatter.js';
 import { finalizeMdast } from '../process/mdast.js';
-import { loadProjectFromDisk } from '../project/load.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { ImageExtensions } from '../utils/resolveExtension.js';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import { getFileContent } from './utils/getFileContent.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { createTempFolder } from '../utils/createTempFolder.js';
+import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
 import version from '../version.js';
 import { cleanOutput } from './utils/cleanOutput.js';
-import type { ExportWithOutput, ExportOptions, ExportResults } from './types.js';
+import type { ExportWithOutput, ExportResults, ExportFnOptions } from './types.js';
 import { writeBibtexFromCitationRenderers } from './utils/bibtex.js';
-import { collectTexExportOptions } from './utils/collectExportOptions.js';
-import { resolveAndLogErrors } from './utils/resolveAndLogErrors.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TYPST_IMAGE_EXTENSIONS = [
@@ -46,14 +52,13 @@ export function isTypstAvailable() {
 
 export async function runTypstExecutable(session: ISession, typstFile: string) {
   if (!isTypstAvailable()) {
-    session.log.debug('typst CLI must be installed to build PDFs from typst');
-    return;
+    throw new Error('The typst CLI must be installed to build PDFs with typst');
   }
   if (path.extname(typstFile) !== '.typ') {
     throw new Error(`invalid input file for typst executable: ${typstFile}`);
   }
   session.log.debug('Running typst compile');
-  await makeExecutable(`typst compile ${typstFile}`, session.log)();
+  await makeExecutable(`typst compile "${typstFile}"`, session.log)();
 }
 
 export function mdastToTypst(
@@ -86,7 +91,9 @@ export function extractTypstPart(
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
 ): TypstResult | TypstResult[] | undefined {
-  const part = extractPart(mdast, partDefinition.id);
+  const part = extractPart(mdast, partDefinition.id, {
+    frontmatterParts: resolveFrontmatterParts(session, frontmatter),
+  });
   if (!part) return undefined;
   if (!partDefinition.as_list) {
     // Do not build glossaries when extracting parts: references cannot be mapped to definitions
@@ -121,24 +128,48 @@ export function extractTypstPart(
   });
 }
 
+function titleToTypstHeading(session: ISession, title: string, depth = 1) {
+  const headingMdast = {
+    type: 'root',
+    children: [
+      {
+        type: 'heading',
+        depth,
+        children: [{ type: 'text', value: title }],
+      },
+    ],
+  };
+  const content = mdastToTypst(session, headingMdast, {}, {}, null, false);
+  return content.value;
+}
+
 export async function localArticleToTypstRaw(
   session: ISession,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const content = await getFileContent(session, articles, {
-    projectPath,
-    imageExtensions: TYPST_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const { projectPath, extraLinkTransformers, execute } = opts ?? {};
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TYPST_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
+      execute,
+    },
+  );
 
   const toc = tic();
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: path.join(path.dirname(output), 'files'),
         imageAltOutputFolder: 'files/',
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
@@ -152,20 +183,31 @@ export async function localArticleToTypstRaw(
     writeFileToFolder(output, results[0].value);
   } else {
     const { dir, name, ext } = path.parse(output);
-    const includeFileBases = results.map((result, ind) => {
-      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
-      const includeFile = path.format({ dir, ext, base });
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `= ${title}\n\n`;
+    let includeContent = '';
+    let fileInd = 0;
+    let addPageBreak = false;
+    articles.forEach((article) => {
+      if (addPageBreak) includeContent += '#pagebreak()\n\n';
+      addPageBreak = false;
+      if (article.file) {
+        const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
+        const includeFile = path.format({ dir, ext, base });
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `${titleToTypstHeading(session, title, article.level)}\n\n`;
+        }
+        writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
+        includeContent += `#include "${base}"\n\n`;
+        fileInd++;
+        addPageBreak = true;
+      } else if (article.title) {
+        includeContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }
-      writeFileToFolder(includeFile, `${part}${result.value}`);
-      return base;
     });
-    const includeContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
     writeFileToFolder(output, includeContent);
   }
+  await runTypstExecutable(session, output);
   // TODO: add imports and macros?
   return { tempFolders: [] };
 }
@@ -174,17 +216,26 @@ export async function localArticleToTypstTemplated(
   session: ISession,
   file: string,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  force?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
+  const { projectPath, extraLinkTransformers, clean, ci, execute } = opts ?? {};
   const filesPath = path.join(path.dirname(output), 'files');
-  const content = await getFileContent(session, articles, {
-    projectPath,
-    imageExtensions: TYPST_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TYPST_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
+      execute,
+    },
+  );
   const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
@@ -216,11 +267,35 @@ export async function localArticleToTypstTemplated(
     macros: [],
     commands: {},
   };
+  const state = session.store.getState();
+  const projectFrontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
+  if (file === selectors.selectCurrentProjectFile(state)) {
+    // If export is defined at the project level, prioritize project parts over page parts
+    partDefinitions.forEach((def) => {
+      const part = extractTypstPart(
+        session,
+        { type: 'root', children: [] },
+        {},
+        def,
+        projectFrontmatter,
+        templateYml,
+      );
+      if (Array.isArray(part)) {
+        // This is the case if def.as_list is true
+        part.forEach((item) => {
+          collected = mergeTypstTemplateImports(collected, item);
+        });
+        parts[def.id] = part.map(({ value }) => value);
+      } else if (part != null) {
+        collected = mergeTypstTemplateImports(collected, part);
+        parts[def.id] = part?.value ?? '';
+      }
+    });
+  }
   const hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
@@ -233,7 +308,7 @@ export async function localArticleToTypstTemplated(
           addWarningForFile(
             session,
             file,
-            `multiple values for part '${def.id}' found; ignoring value from ${article}`,
+            `multiple values for part '${def.id}' found; ignoring value from ${fileArticles[ind].file}`,
             'error',
             { ruleId: RuleId.texRenders },
           );
@@ -256,29 +331,49 @@ export async function localArticleToTypstTemplated(
 
   let frontmatter: Record<string, any>;
   let typstContent: string;
-  const versionString = `/* Written by MyST v${version} */`;
+  const versionComment = ci ? '' : `/* Written by MyST v${version} */\n\n`;
   if (results.length === 1) {
     frontmatter = content[0].frontmatter;
     typstContent = results[0].value;
   } else {
-    const state = session.store.getState();
-    frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
+    frontmatter = projectFrontmatter;
     const { dir, name, ext } = path.parse(output);
-    const includeFileBases = results.map((result, ind) => {
-      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
-      const includeFile = path.format({ dir, ext, base });
-      const exports = renderTypstImports(false, collected);
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `= ${title}\n\n`;
+    typstContent = '';
+    let fileInd = 0;
+    let addPageBreak = false;
+    articles.forEach((article) => {
+      if (addPageBreak) typstContent += '#pagebreak()\n\n';
+      addPageBreak = false;
+      if (article.file) {
+        const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
+        const includeFile = path.format({ dir, ext, base });
+        const exports = renderTypstImports(false, collected);
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `${titleToTypstHeading(session, title, article.level)}\n\n`;
+        }
+        writeFileToFolder(
+          includeFile,
+          `${versionComment}${exports}\n\n${part}${results[fileInd].value}`,
+        );
+        typstContent += `#include "${base}"\n\n`;
+        fileInd++;
+        addPageBreak = true;
+      } else if (article.title) {
+        typstContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
       }
-      writeFileToFolder(includeFile, `${versionString}\n\n${exports}\n\n${part}${result.value}`);
-      return base;
     });
-    typstContent = includeFileBases.map((base) => `#include "${base}"`).join('\n');
   }
-  typstContent = `${versionString}\n\n${typstContent}`;
+  const vfile = new VFile();
+  vfile.path = file;
+  const exportFrontmatter = validateProjectFrontmatter(
+    filterKeys(templateOptions, [...PROJECT_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  frontmatter = { ...frontmatter, ...exportFrontmatter };
+  typstContent = `${versionComment}${typstContent}`;
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
   renderTemplate(mystTemplate, {
     contentOrPath: typstContent,
@@ -289,9 +384,10 @@ export async function localArticleToTypstTemplated(
     bibliography: bibtexWritten ? DEFAULT_BIB_FILENAME : undefined,
     sourceFile: file,
     imports: collected,
-    force,
+    force: clean,
     packages: templateYml.packages,
     filesPath,
+    removeVersionComment: ci,
   });
   await runTypstExecutable(session, output);
   return { tempFolders: [], hasGlossaries };
@@ -301,28 +397,14 @@ export async function runTypstExport( // DBG: Must return an info on whether glo
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   let result: ExportResults;
   if (exportOptions.template === null) {
-    result = await localArticleToTypstRaw(
-      session,
-      exportOptions,
-      projectPath,
-      extraLinkTransformers,
-    );
+    result = await localArticleToTypstRaw(session, exportOptions, opts);
   } else {
-    result = await localArticleToTypstTemplated(
-      session,
-      file,
-      exportOptions,
-      projectPath,
-      clean,
-      extraLinkTransformers,
-    );
+    result = await localArticleToTypstTemplated(session, file, exportOptions, opts);
   }
   return result;
 }
@@ -331,67 +413,40 @@ export async function runTypstZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
-  const texFolder = createTempFolder(session);
+  const typFolder = createTempFolder(session);
   exportOptions.output = path.join(
-    texFolder,
-    `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
+    typFolder,
+    `${path.basename(zipOutput, path.extname(zipOutput))}.typ`,
   );
-  await runTypstExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  await runTypstExport(session, file, exportOptions, { ...(opts ?? {}), clean: false });
   session.log.info(`🤐 Zipping typst outputs to ${zipOutput}`);
   const zip = new AdmZip();
-  zip.addLocalFolder(texFolder);
+  zip.addLocalFolder(typFolder);
   zip.writeZip(zipOutput);
-  return { tempFolders: [texFolder] };
+  return { tempFolders: [typFolder] };
 }
 
-export async function localArticleToTypst(
+export async function runTypstPdfExport(
   session: ISession,
   file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
+  exportOptions: ExportWithOutput,
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'typ', [ExportFormats.tex], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      let exportResults: ExportResults;
-      if (path.extname(exportOptions.output) === '.zip') {
-        exportResults = await runTypstZipExport(
-          session,
-          file,
-          exportOptions,
-          projectPath,
-          opts.clean,
-          extraLinkTransformers,
-        );
-      } else {
-        exportResults = await runTypstExport(
-          session,
-          file,
-          exportOptions,
-          projectPath,
-          opts.clean,
-          extraLinkTransformers,
-        );
-      }
-      results.tempFolders.push(...exportResults.tempFolders);
-    }),
-    opts.throwOnFailure,
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
+  const pdfOutput = exportOptions.output;
+  const typFolder = createTempFolder(session);
+  exportOptions.output = path.join(
+    typFolder,
+    `${path.basename(pdfOutput, path.extname(pdfOutput))}.typ`,
   );
-  return results;
+  await runTypstExport(session, file, exportOptions, { ...(opts ?? {}), clean: false });
+  const writeFolder = path.dirname(pdfOutput);
+  session.log.info(`🖨  Rendering typst pdf to ${pdfOutput}`);
+  if (!fs.existsSync(writeFolder)) fs.mkdirSync(writeFolder, { recursive: true });
+  fs.copyFileSync(exportOptions.output.replace('.typ', '.pdf'), pdfOutput);
+  return { tempFolders: [typFolder] };
 }

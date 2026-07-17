@@ -2,22 +2,23 @@ cases:
   - title: heading numbering
     opts:
       numbering:
-        heading_1: true
+        heading_1:
+          enabled: true
     before:
       type: root
       children:
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: one
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: two
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: three
@@ -25,19 +26,19 @@ cases:
       type: root
       children:
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: one
           enumerator: '1'
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: two
           enumerator: '2'
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: three
@@ -45,23 +46,24 @@ cases:
   - title: heading numbering - unnumbered
     opts:
       numbering:
-        heading_1: true
+        heading_1:
+          enabled: true
     before:
       type: root
       children:
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: one
         - type: heading
-          depth: 1
+          depth: 2
           enumerated: false
           children:
             - type: text
               value: nope
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: two
@@ -69,19 +71,19 @@ cases:
       type: root
       children:
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: one
           enumerator: '1'
         - type: heading
-          depth: 1
+          depth: 2
           enumerated: false
           children:
             - type: text
               value: nope
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: two
@@ -89,22 +91,28 @@ cases:
   - title: heading numbering - levels
     opts:
       numbering:
-        heading_1: true
-        heading_2: true
-        heading_3: true
-        heading_4: true
-        heading_5: true
-        heading_6: true
+        heading_1:
+          enabled: true
+        heading_2:
+          enabled: true
+        heading_3:
+          enabled: true
+        heading_4:
+          enabled: true
+        heading_5:
+          enabled: true
+        heading_6:
+          enabled: true
     before:
       type: root
       children:
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: one
         - type: heading
-          depth: 2
+          depth: 3
           children:
             - type: text
               value: one.one
@@ -119,7 +127,7 @@ cases:
             - type: text
               value: one.one.two
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: two
@@ -138,13 +146,13 @@ cases:
       type: root
       children:
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: one
           enumerator: '1'
         - type: heading
-          depth: 2
+          depth: 3
           children:
             - type: text
               value: one.one
@@ -154,15 +162,15 @@ cases:
           children:
             - type: text
               value: one.one.one
-          enumerator: '1.1.1'
+          enumerator: '1.1.0.1'
         - type: heading
           depth: 5
           children:
             - type: text
               value: one.one.two
-          enumerator: '1.1.2'
+          enumerator: '1.1.0.2'
         - type: heading
-          depth: 1
+          depth: 2
           children:
             - type: text
               value: two
@@ -178,16 +186,22 @@ cases:
           children:
             - type: text
               value: two.zero.one
-          enumerator: '2.0.1'
+          enumerator: '2.0.0.1'
   - title: heading numbering - disabled
     opts:
       numbering:
-        heading_1: false
-        heading_2: false
-        heading_3: false
-        heading_4: false
-        heading_5: false
-        heading_6: false
+        heading_1:
+          enabled: false
+        heading_2:
+          enabled: false
+        heading_3:
+          enabled: false
+        heading_4:
+          enabled: false
+        heading_5:
+          enabled: false
+        heading_6:
+          enabled: false
     before:
       type: root
       children:
@@ -250,7 +264,8 @@ cases:
   - title: math numbering - inside directive
     opts:
       numbering:
-        equation: true
+        equation:
+          enabled: true
     before:
       type: root
       children:
@@ -286,7 +301,8 @@ cases:
   - title: math numbering - disabled
     opts:
       numbering:
-        equation: false
+        equation:
+          enabled: false
     before:
       type: root
       children:
@@ -592,8 +608,10 @@ cases:
   - title: container numbering - disabled
     opts:
       numbering:
-        figure: false
-        table: false
+        figure:
+          enabled: false
+        table:
+          enabled: false
     before:
       type: root
       children:
@@ -650,3 +668,83 @@ cases:
                       children:
                         - type: text
                           value: Something! A legend!?
+  - title: heading numbering with start
+    opts:
+      numbering:
+        heading_1:
+          enabled: true
+          start: 5
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: two
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: three
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: one
+          enumerator: '5'
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: two
+          enumerator: '6'
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: three
+          enumerator: '7'
+  - title: heading numbering with enumerator
+    opts:
+      numbering:
+        enumerator:
+          enumerator: A%s
+        heading_1:
+          enabled: true
+    before:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: one
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: two
+    after:
+      type: root
+      children:
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: one
+          enumerator: 'A1'
+        - type: heading
+          depth: 2
+          children:
+            - type: text
+              value: two
+          enumerator: 'A2'

@@ -6,6 +6,7 @@ export * from './site/index.js';
 
 export type Config = {
   version: 1;
+  extend?: string[];
   project?: ProjectConfig;
   site?: SiteConfig;
 };

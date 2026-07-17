@@ -1,7 +1,24 @@
 import { u } from 'unist-builder';
 import { mystParse } from 'myst-parser';
 import { defaultDirectives } from 'myst-directives';
+import { defaultRoles } from 'myst-roles';
+import { cardDirective } from 'myst-ext-card';
+import { buttonRole } from 'myst-ext-button';
+import { gridDirectives } from 'myst-ext-grid';
+import { proofDirective } from 'myst-ext-proof';
+import { exerciseDirectives } from 'myst-ext-exercise';
+import { tabDirectives } from 'myst-ext-tabs';
 import { fileError } from 'myst-common';
+
+const allDirectives = [
+  ...defaultDirectives,
+  ...gridDirectives,
+  ...exerciseDirectives,
+  ...tabDirectives,
+  cardDirective,
+  proofDirective,
+];
+const allRoles = [...defaultRoles, buttonRole];
 
 /**
  * @param {import('myst-common').OptionDefinition} option
@@ -25,8 +42,8 @@ function createOption(directive, optName, option) {
           optName === 'arg'
             ? 'Directive Argument'
             : optName === 'body'
-            ? 'Directive Body'
-            : optName,
+              ? 'Directive Body'
+              : optName,
         ),
       ]),
       ...(optType
@@ -73,7 +90,7 @@ const mystDirective = {
   },
   run(data, vfile) {
     const name = data.arg;
-    const directive = defaultDirectives.find((d) => d.name === name);
+    const directive = allDirectives.find((d) => d.name === name);
     if (!directive) {
       fileError(vfile, `myst:directive: Unknown myst directive "${name}"`);
       return [];
@@ -116,6 +133,49 @@ const mystDirective = {
   },
 };
 
+/**
+ * Create a documentation section for a directive
+ *
+ * @type {import('myst-common').DirectiveSpec}
+ */
+const mystRole = {
+  name: 'myst:role',
+  arg: {
+    type: String,
+    required: true,
+  },
+  run(data, vfile) {
+    const name = data.arg;
+    const role = allRoles.find((d) => d.name === name);
+    if (!role) {
+      fileError(vfile, `myst:role: Unknown myst role "${name}"`);
+      return [];
+    }
+    const heading = u('heading', { depth: 2, identifier: `role-${name}` }, [
+      u('inlineCode', name),
+      u('text', ' role'),
+    ]);
+    const doc = role.doc ? mystParse(role.doc).children : [];
+    let alias = [];
+    if (role.alias && role.alias.length > 0) {
+      alias = [
+        u('paragraph', [
+          u('strong', [u('text', 'Alias')]),
+          u('text', ': '),
+          ...role.alias
+            .map((a, i) => {
+              const c = [u('inlineCode', a)];
+              if (i < role.alias.length - 1) c.push(u('text', ', '));
+              return c;
+            })
+            .flat(),
+        ]),
+      ];
+    }
+    return [heading, u('div', [...doc, ...alias])];
+  },
+};
+
 const REF_PATTERN = /^(.+?)<([^<>]+)>$/; // e.g. 'Labeled Reference <ref>'
 
 /**
@@ -134,13 +194,41 @@ const mystDirectiveRole = {
     const [, modified, rawLabel] = match ?? [];
     const label = rawLabel ?? data.body;
     const [name, opt] = label?.split('.') ?? [];
-    const directive = defaultDirectives.find((d) => d.name === name || d.alias?.includes(name));
+    const directive = allDirectives.find((d) => d.name === name || d.alias?.includes(name));
     const identifier = opt
       ? `directive-${directive?.name ?? name}-${opt}`
       : `directive-${directive?.name ?? name}`;
-    return [
-      u('crossReference', { identifier }, [u('inlineCode', modified?.trim() || opt || name)]),
-    ];
+    var textToDisplay = modified?.trim() || name;
+    if (opt) {
+      textToDisplay = `${textToDisplay}.${opt}`;
+    }
+    return [u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)])];
+  },
+};
+
+/**
+ * Create a documentation section for a directive
+ *
+ * @type {import('myst-common').RoleSpec}
+ */
+const mystRoleRole = {
+  name: 'myst:role',
+  body: {
+    type: String,
+    required: true,
+  },
+  run(data) {
+    const match = REF_PATTERN.exec(data.body);
+    const [, modified, rawLabel] = match ?? [];
+    const label = rawLabel ?? data.body;
+    const [name, opt] = label?.split('.') ?? [];
+    const role = allRoles.find((d) => d.name === name || d.alias?.includes(name));
+    const identifier = opt ? `role-${role?.name ?? name}-${opt}` : `role-${role?.name ?? name}`;
+    var textToDisplay = modified?.trim() || name;
+    if (opt) {
+      textToDisplay = `${textToDisplay}.${opt}`;
+    }
+    return [u('crossReference', { identifier }, [u('inlineCode', `{${textToDisplay}}`)])];
   },
 };
 
@@ -151,8 +239,8 @@ const plugin = {
   name: 'MyST Documentation Plugins',
   author: 'Rowan Cockett',
   license: 'MIT',
-  directives: [mystDirective],
-  roles: [mystDirectiveRole],
+  directives: [mystDirective, mystRole],
+  roles: [mystDirectiveRole, mystRoleRole],
 };
 
 export default plugin;

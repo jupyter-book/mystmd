@@ -1,5 +1,228 @@
 # myst-spec-ext
 
+## 1.10.0
+
+## 1.9.5
+
+### Patch Changes
+
+- 7b989d4: Cheanges to suport first version of anywidget
+
+## 1.9.4
+
+## 1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+
+## 1.9.0
+
+### Patch Changes
+
+- 1735db4: Add support for iframe title.
+
+## 1.8.4
+
+## 1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- 9cb280a4b: Add typst option to inlineMath node
+
+## 1.8.1
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+
+## 1.8.0
+
+## 1.7.13
+
+## 1.7.12
+
+## 1.7.11
+
+## 1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+
+## 1.7.8
+
+### Patch Changes
+
+- fad8f673: Add new button role
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+
+## 1.7.6
+
+## 1.7.5
+
+## 1.7.4
+
+### Patch Changes
+
+- eb411d0b: Allow for iframe to have a placeholder
+
+## 1.7.3
+
+## 1.7.2
+
+### Patch Changes
+
+- 4a3ee6db: Keep track of implicit vs. explicit pages in project TOC
+
+## 1.7.1
+
+## 1.7.0
+
+### Minor Changes
+
+- 5f8f0b0d: Add support for seach index generation
+
+## 1.6.1
+
+## 1.6.0
+
+### Patch Changes
+
+- 85db77c7: Add urlOptimized to image type
+
+## 1.5.4
+
+### Patch Changes
+
+- 4e880f3e: Add open to the admonition
+
+## 1.5.3
+
+### Patch Changes
+
+- 857c5acf: Add raw directives/roles for inserting tex/typst-specific content
+
+## 1.5.2
+
+## 1.5.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
+## 1.5.0
+
+## 1.4.7
+
+## 1.4.6
+
+## 1.4.5
+
+## 1.4.4
+
+## 1.4.3
+
+## 1.4.2
+
+## 1.4.1
+
+### Patch Changes
+
+- 61c7291: Add Link to myst-spec-ext, update crossReference
+- da9ca5b2: Add remote base URL for the external links to help with recursion!
+
+## 1.4.0
+
+### Patch Changes
+
+- ab863c8a: Add CrossReference
+
+## 1.3.0
+
+### Minor Changes
+
+- f656e572: Add topic directive
+
+### Patch Changes
+
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+
+## 1.2.0
+
+## 1.1.35
+
+## 1.1.34
+
+## 1.1.33
+
+## 1.1.32
+
+### Patch Changes
+
+- 20108545: Add tightness to math node extension
+
+## 1.1.31
+
+## 1.1.30
+
+### Patch Changes
+
+- 42af3800: Require `kind` for `Container`
+
+## 1.1.29
+
+### Patch Changes
+
+- cbad68cc: Add raw directive
+
+## 1.1.28
+
+### Patch Changes
+
+- cff47b14: Add enumerator to citations and cite nodes
+
+## 1.1.27
+
+## 1.1.26
+
+## 1.1.25
+
+## 1.1.24
+
+### Patch Changes
+
+- d5416ff8: Allow the figure container to have an extensible kind
+
+## 1.1.23
+
+### Patch Changes
+
+- 50416784: Add code cell metadata placeholder image to output children
+
+## 1.1.22
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+
 ## 1.1.21
 
 ## 1.1.20

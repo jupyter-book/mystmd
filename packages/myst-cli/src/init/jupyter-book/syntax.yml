@@ -1,0 +1,145 @@
+cases:
+  - title: Glossary with single term and definition
+    source: |
+      :::{glossary}
+      foo
+        bar
+      :::
+    result: |
+      :::{glossary}
+      foo
+      : bar
+      :::
+  - title: Glossary with three single term and definition
+    source: |
+      :::{glossary}
+      foo
+        foo def
+
+      bar
+        bar def
+
+      baz
+        baz def
+      :::
+    result: |
+      :::{glossary}
+      foo
+      : foo def
+
+      bar
+      : bar def
+
+      baz
+      : baz def
+      :::
+  - title: Glossary with three single term and definition, and a double term and definition
+    source: |
+      :::{glossary}
+      foo
+        foo def
+
+      bar
+        bar def
+
+      biff
+      baff
+        baff def
+
+      baz
+        baz def
+      :::
+    result: |
+      :::{glossary}
+      foo
+      : foo def
+
+      bar
+      : bar def
+
+      biff
+      : baff def
+
+      baff
+      : {term}`biff`
+
+      baz
+      : baz def
+      :::
+  - title: Glossary with double term and single definition
+    source: |
+      :::{glossary}
+      baz
+      foo
+        bar
+      :::
+    result: |
+      :::{glossary}
+      baz
+      : bar
+
+      foo
+      : {term}`baz`
+      :::
+  - title: Glossary with term and several definition lines
+    source: |
+      :::{glossary}
+      foo
+        bar
+        baz
+      :::
+    result: |
+      :::{glossary}
+      foo
+      : bar
+        baz
+      :::
+  - title: A Markdown link (unchanged)
+    source: |
+      [A link](https://google.com)
+  - title: Admonition with incorrectly cased name
+    source: |
+      :::{noTE}
+      I am a note
+
+      - foo
+      :::
+    result: |
+      :::{note}
+      I am a note
+
+      - foo
+      :::
+  - title: Admonition with correctly cased name
+    source: |
+      :::{note}
+      I am a note
+
+      - foo
+      :::
+  - title: Admonition with space between backticks and name
+    source: |
+      ``` {noTE}
+      I am a note
+
+      - foo
+      ```
+    result: |
+      ```{note}
+      I am a note
+
+      - foo
+      ```
+  - title: Admonition with space between colon-fence and name
+    source: |
+      ::: {noTE}
+      I am a note
+
+      - foo
+      :::
+    result: |
+      :::{note}
+      I am a note
+
+      - foo
+      :::

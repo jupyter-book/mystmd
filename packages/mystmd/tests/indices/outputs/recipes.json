@@ -1,0 +1,662 @@
+{
+  "kind": "Article",
+  "sha256": "837d1c1824967d89248827f0b2008476242fdc6c546104b2719f516560c5bbf1",
+  "slug": "recipes",
+  "location": "/recipes.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Chicken and Egg Recipes",
+    "downloads": [
+      {
+        "title": "recipes.md",
+        "filename": "recipes.md",
+        "format": "md",
+        "static": true
+      }
+    ],
+    "authors": [
+      {
+        "nameParsed": { "literal": "Franklin Koch", "given": "Franklin", "family": "Koch" },
+        "name": "Franklin Koch",
+        "affiliations": ["Curvenote"],
+        "id": "contributors-myst-generated-uid-0"
+      }
+    ],
+    "date": "2024-07-20",
+    "affiliations": [{ "id": "Curvenote", "name": "Curvenote" }],
+    "exports": [
+      {
+        "format": "md",
+        "filename": "recipes.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "heading",
+            "depth": 2,
+            "position": {
+              "start": { "line": 10, "column": 1 },
+              "end": { "line": 10, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Does it matter which came first?",
+                "position": {
+                  "start": { "line": 10, "column": 1 },
+                  "end": { "line": 10, "column": 1 }
+                }
+              }
+            ],
+            "indexEntries": [
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Egg", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Egg",
+                "subEntry": { "value": "Recipe", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Recipe",
+                "subEntry": { "value": "Egg", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Chicken",
+                "subEntry": { "value": "Recipe", "kind": "entry" },
+                "emphasis": false
+              },
+              {
+                "entry": "Recipe",
+                "subEntry": { "value": "Chicken", "kind": "entry" },
+                "emphasis": false
+              }
+            ],
+            "identifier": "does-it-matter-which-came-first",
+            "label": "Does it matter which came first?",
+            "html_id": "does-it-matter-which-came-first",
+            "implicit": true
+          },
+          {
+            "type": "paragraph",
+            "position": {
+              "start": { "line": 12, "column": 1 },
+              "end": { "line": 13, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "I don’t think it matters if the chicken or the egg came first.\nThey both make great dinners! 🍗",
+                "position": {
+                  "start": { "line": 12, "column": 1 },
+                  "end": { "line": 12, "column": 1 }
+                }
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "position": {
+              "start": { "line": 15, "column": 1 },
+              "end": { "line": 15, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Simple Chicken Recipe: Grilled Chicken Breasts",
+                "position": {
+                  "start": { "line": 15, "column": 1 },
+                  "end": { "line": 15, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "simple-chicken-recipe-grilled-chicken-breasts",
+            "label": "Simple Chicken Recipe: Grilled Chicken Breasts",
+            "html_id": "simple-chicken-recipe-grilled-chicken-breasts",
+            "implicit": true
+          },
+          {
+            "type": "heading",
+            "depth": 4,
+            "position": {
+              "start": { "line": 17, "column": 1 },
+              "end": { "line": 17, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Ingredients:",
+                "position": {
+                  "start": { "line": 17, "column": 1 },
+                  "end": { "line": 17, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "ingredients",
+            "label": "Ingredients:",
+            "html_id": "ingredients",
+            "implicit": true
+          },
+          {
+            "type": "list",
+            "ordered": false,
+            "spread": false,
+            "position": {
+              "start": { "line": 19, "column": 1 },
+              "end": { "line": 23, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 19, "column": 1 },
+                  "end": { "line": 19, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "2 boneless, skinless chicken breasts",
+                        "position": {
+                          "start": { "line": 19, "column": 1 },
+                          "end": { "line": 19, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 20, "column": 1 },
+                  "end": { "line": 20, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "1 tablespoon olive oil",
+                        "position": {
+                          "start": { "line": 20, "column": 1 },
+                          "end": { "line": 20, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 21, "column": 1 },
+                  "end": { "line": 21, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Salt and pepper to taste",
+                        "position": {
+                          "start": { "line": 21, "column": 1 },
+                          "end": { "line": 21, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 22, "column": 1 },
+                  "end": { "line": 23, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Optional: lemon juice, garlic powder, or your favorite seasoning",
+                        "position": {
+                          "start": { "line": 22, "column": 1 },
+                          "end": { "line": 22, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 4,
+            "position": {
+              "start": { "line": 24, "column": 1 },
+              "end": { "line": 24, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Instructions:",
+                "position": {
+                  "start": { "line": 24, "column": 1 },
+                  "end": { "line": 24, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "instructions",
+            "label": "Instructions:",
+            "html_id": "instructions",
+            "implicit": true
+          },
+          {
+            "type": "list",
+            "ordered": true,
+            "start": 1,
+            "spread": false,
+            "position": {
+              "start": { "line": 26, "column": 1 },
+              "end": { "line": 30, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 26, "column": 1 },
+                  "end": { "line": 26, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Preheat your grill to medium-high heat.",
+                        "position": {
+                          "start": { "line": 26, "column": 1 },
+                          "end": { "line": 26, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 27, "column": 1 },
+                  "end": { "line": 27, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Brush the chicken breasts with olive oil and season with salt, pepper, and any optional seasonings.",
+                        "position": {
+                          "start": { "line": 27, "column": 1 },
+                          "end": { "line": 27, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 28, "column": 1 },
+                  "end": { "line": 28, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Grill the chicken for about 6-7 minutes on each side, or until the internal temperature reaches 165°F (75°C).",
+                        "position": {
+                          "start": { "line": 28, "column": 1 },
+                          "end": { "line": 28, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 29, "column": 1 },
+                  "end": { "line": 30, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Let the chicken rest for a few minutes before serving.",
+                        "position": {
+                          "start": { "line": 29, "column": 1 },
+                          "end": { "line": 29, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 3,
+            "position": {
+              "start": { "line": 31, "column": 1 },
+              "end": { "line": 31, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Simple Egg Recipe: Scrambled Eggs",
+                "position": {
+                  "start": { "line": 31, "column": 1 },
+                  "end": { "line": 31, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "simple-egg-recipe-scrambled-eggs",
+            "label": "Simple Egg Recipe: Scrambled Eggs",
+            "html_id": "simple-egg-recipe-scrambled-eggs",
+            "implicit": true
+          },
+          {
+            "type": "heading",
+            "depth": 4,
+            "position": {
+              "start": { "line": 33, "column": 1 },
+              "end": { "line": 33, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Ingredients:",
+                "position": {
+                  "start": { "line": 33, "column": 1 },
+                  "end": { "line": 33, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "ingredients",
+            "label": "Ingredients:",
+            "html_id": "ingredients-1",
+            "implicit": true
+          },
+          {
+            "type": "list",
+            "ordered": false,
+            "spread": false,
+            "position": {
+              "start": { "line": 35, "column": 1 },
+              "end": { "line": 39, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 35, "column": 1 },
+                  "end": { "line": 35, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "2 eggs",
+                        "position": {
+                          "start": { "line": 35, "column": 1 },
+                          "end": { "line": 35, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 36, "column": 1 },
+                  "end": { "line": 36, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "1 tablespoon milk (optional)",
+                        "position": {
+                          "start": { "line": 36, "column": 1 },
+                          "end": { "line": 36, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 37, "column": 1 },
+                  "end": { "line": 37, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Salt and pepper to taste",
+                        "position": {
+                          "start": { "line": 37, "column": 1 },
+                          "end": { "line": 37, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 38, "column": 1 },
+                  "end": { "line": 39, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "1 teaspoon butter",
+                        "position": {
+                          "start": { "line": 38, "column": 1 },
+                          "end": { "line": 38, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "depth": 4,
+            "position": {
+              "start": { "line": 40, "column": 1 },
+              "end": { "line": 40, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "text",
+                "value": "Instructions:",
+                "position": {
+                  "start": { "line": 40, "column": 1 },
+                  "end": { "line": 40, "column": 1 }
+                }
+              }
+            ],
+            "identifier": "instructions",
+            "label": "Instructions:",
+            "html_id": "instructions-1",
+            "implicit": true
+          },
+          {
+            "type": "list",
+            "ordered": true,
+            "start": 1,
+            "spread": false,
+            "position": {
+              "start": { "line": 42, "column": 1 },
+              "end": { "line": 45, "column": 1 }
+            },
+            "children": [
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 42, "column": 1 },
+                  "end": { "line": 42, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Crack the eggs into a bowl, add milk (if using), and beat until well combined.",
+                        "position": {
+                          "start": { "line": 42, "column": 1 },
+                          "end": { "line": 42, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 43, "column": 1 },
+                  "end": { "line": 43, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Melt the butter in a non-stick skillet over medium heat.",
+                        "position": {
+                          "start": { "line": 43, "column": 1 },
+                          "end": { "line": 43, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 44, "column": 1 },
+                  "end": { "line": 44, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Pour in the eggs and cook, stirring gently, until they are just set.",
+                        "position": {
+                          "start": { "line": 44, "column": 1 },
+                          "end": { "line": 44, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "listItem",
+                "spread": true,
+                "position": {
+                  "start": { "line": 45, "column": 1 },
+                  "end": { "line": 45, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "paragraph",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "Season with salt and pepper to taste, then serve.",
+                        "position": {
+                          "start": { "line": 45, "column": 1 },
+                          "end": { "line": 45, "column": 1 }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

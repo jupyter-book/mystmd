@@ -1,11 +1,11 @@
 {
   "name": "myst-directives",
-  "version": "1.0.21",
+  "version": "1.7.3",
   "sideEffects": false,
   "license": "MIT",
   "description": "Default directive definitions for MyST",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/myst-directives",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-directives",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,26 +17,34 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystmd.git"
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
   },
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystmd/issues"
+    "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
+    "csv-parse": "^5.5.5",
     "js-yaml": "^4.1.0",
-    "myst-common": "^1.1.21",
-    "myst-spec-ext": "^1.1.21",
-    "nanoid": "^4.0.2",
+    "myst-common": "^1.10.0",
+    "myst-spec": "^0.0.5",
+    "myst-spec-ext": "^1.10.0",
+    "json5": "^1.0.2",
+    "nanoid": "^5.1.6",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "@types/json5": "^0.0.29"
   }
 }

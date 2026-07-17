@@ -1,5 +1,473 @@
 # myst-common
 
+## 1.10.0
+
+### Patch Changes
+
+- Updated dependencies [c738873]
+  - myst-frontmatter@1.10.0
+
+## 1.9.5
+
+### Patch Changes
+
+- 7b989d4: Cheanges to suport first version of anywidget
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+
+## 1.9.4
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - myst-frontmatter@1.9.4
+
+## 1.9.3
+
+### Patch Changes
+
+- 88d2136: Add a key, results in a react error
+- Updated dependencies [d45faf3]
+  - myst-frontmatter@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- myst-frontmatter@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- a742dda: Add support for notebook cell output scroll metadata
+- c2d895a: Enable message info to take a key for error_rules reporting/ignoring
+  - myst-frontmatter@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- 30acc57: Add cache control for execution
+- Updated dependencies [30acc57]
+  - myst-frontmatter@1.9.0
+
+## 1.8.4
+
+### Patch Changes
+
+- myst-frontmatter@1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- df8bbb0: add rule default severity
+- c736b16: add descriptions to error rules
+- Updated dependencies [6783dae]
+  - myst-frontmatter@1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- myst-frontmatter@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [fefffffd]
+  - myst-frontmatter@1.8.1
+
+## 1.8.0
+
+### Patch Changes
+
+- myst-frontmatter@1.8.0
+
+## 1.7.13
+
+### Patch Changes
+
+- Updated dependencies [1aa5825]
+  - myst-frontmatter@1.7.13
+
+## 1.7.12
+
+### Patch Changes
+
+- 483f2b7: Load plugins earlier, before parsing frontmatter parts
+- Updated dependencies [8a0ee19e]
+  - myst-frontmatter@1.7.12
+
+## 1.7.11
+
+### Patch Changes
+
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+
+## 1.7.10
+
+### Patch Changes
+
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- Updated dependencies [7448083f]
+  - myst-frontmatter@1.7.9
+
+## 1.7.8
+
+### Patch Changes
+
+- myst-frontmatter@1.7.8
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator to project config
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+  - myst-frontmatter@1.7.7
+
+## 1.7.6
+
+### Patch Changes
+
+- 67bc9b8d: Use NotebookCellTags for raises-exception and skip-execution
+- 0d82810f: Improve label duplication warning
+- Updated dependencies [6f6032b7]
+  - myst-frontmatter@1.7.6
+
+## 1.7.5
+
+### Patch Changes
+
+- Updated dependencies [8ea9365]
+  - myst-frontmatter@1.7.5
+
+## 1.7.4
+
+### Patch Changes
+
+- myst-frontmatter@1.7.4
+
+## 1.7.3
+
+### Patch Changes
+
+- 2bce565: Add `slugToUrl` function that changes from a myst slug to an equivalent url
+  - myst-frontmatter@1.7.3
+
+## 1.7.2
+
+### Patch Changes
+
+- 4a3ee6db: Consume frontmatter parts in static exports
+- 4a3ee6db: Load frontmatter parts as separate files for processing
+- Updated dependencies [897136f]
+- Updated dependencies [918223b8]
+- Updated dependencies [4a3ee6db]
+  - myst-frontmatter@1.7.2
+
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [3c65de0]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+  - myst-frontmatter@1.7.1
+
+## 1.7.0
+
+### Patch Changes
+
+- myst-frontmatter@1.7.0
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies [760e411]
+  - myst-frontmatter@1.6.1
+
+## 1.6.0
+
+### Patch Changes
+
+- 8ba7b73a: Add `ValidatedMystPlugin` to make types more strict
+- Updated dependencies [9c1b8c73]
+  - myst-frontmatter@1.6.0
+
+## 1.5.4
+
+### Patch Changes
+
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [e2b74f4d]
+  - myst-frontmatter@1.5.4
+
+## 1.5.3
+
+### Patch Changes
+
+- Updated dependencies [313b218]
+  - myst-frontmatter@1.5.3
+
+## 1.5.2
+
+### Patch Changes
+
+- 134598fd: Add index directives/roles to myst-cli
+- 3fd53be8: Add better validation and post-processing to JSON files
+- Updated dependencies [38a45645]
+  - myst-frontmatter@1.5.2
+
+## 1.5.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+
+## 1.5.0
+
+### Minor Changes
+
+- 0576d5ad: Add support for executable (IPC) plugins
+
+### Patch Changes
+
+- Updated dependencies [8c487991]
+- Updated dependencies [f6aa726c]
+- Updated dependencies [478c4d4f]
+  - myst-frontmatter@1.5.0
+
+## 1.4.7
+
+### Patch Changes
+
+- 1e2092dc: Fix typo in rule-id
+  - myst-frontmatter@1.4.7
+
+## 1.4.6
+
+### Patch Changes
+
+- Updated dependencies [4cea894]
+  - myst-frontmatter@1.4.6
+
+## 1.4.5
+
+### Patch Changes
+
+- Updated dependencies [ad969c37]
+  - myst-frontmatter@1.4.5
+
+## 1.4.4
+
+### Patch Changes
+
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - myst-frontmatter@1.4.4
+
+## 1.4.3
+
+### Patch Changes
+
+- Updated dependencies [f4d5231]
+  - myst-frontmatter@1.4.3
+
+## 1.4.2
+
+### Patch Changes
+
+- 9e311c38: Switch to structuredClone
+  - myst-frontmatter@1.4.2
+
+## 1.4.1
+
+### Patch Changes
+
+- 61c7291: Move target node selection utils to myst-common
+- 1e24a9f7: Add ROR link resolvers
+  - myst-frontmatter@1.4.1
+
+## 1.4.0
+
+### Minor Changes
+
+- 7a04910f: Rename Toc to TOC
+
+### Patch Changes
+
+- ab863c8a: Add check for empty link text
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+  - myst-frontmatter@1.4.0
+
+## 1.3.0
+
+### Patch Changes
+
+- e0cd47e3: Support new-page/page-break tags in tex/typst/docx
+  - myst-frontmatter@1.3.0
+
+## 1.2.0
+
+### Minor Changes
+
+- 9271361: Add support for nested parsing via a context object
+
+### Patch Changes
+
+- 2c4e3057: Respect part aliases in parts frontmatter and extractPart function
+- Updated dependencies [2c4e3057]
+  - myst-frontmatter@1.2.0
+
+## 1.1.35
+
+### Patch Changes
+
+- Updated dependencies [be3befd]
+- Updated dependencies [be3befd]
+  - myst-frontmatter@1.1.35
+
+## 1.1.34
+
+### Patch Changes
+
+- 5aa3ea2f: Handle blocks with empty children
+- 5aa3ea2f: Extract parts is more careful to remove parts from tree
+- Updated dependencies [c38cc28]
+  - myst-frontmatter@1.1.34
+
+## 1.1.33
+
+### Patch Changes
+
+- 855414ff: Fix bug causing pdf exports to fail
+  - myst-frontmatter@1.1.33
+
+## 1.1.32
+
+### Patch Changes
+
+- bba5baf9: Add ruleid for determining export format
+- 117d6008: Allow parts mapping to be case insensitive.
+- ebe65816: Remove quotes from label identifiers
+- 20108545: Add block tightness to the directive data
+- 117d6008: Case insensitivity in parts, and allow spaces when picking up JATS titles.
+- Updated dependencies [6f0183de]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [bba5baf9]
+- Updated dependencies [62620a8d]
+- Updated dependencies [bba5baf9]
+  - myst-frontmatter@1.1.32
+
+## 1.1.31
+
+### Patch Changes
+
+- 1880a465: Update extractParts to pull implicit parts from sections based on heading
+- 22c5fff: Add `doc` to the myst-role spec.
+- Updated dependencies [1880a465]
+  - myst-frontmatter@1.1.31
+
+## 1.1.30
+
+### Patch Changes
+
+- myst-frontmatter@1.1.30
+
+## 1.1.29
+
+### Patch Changes
+
+- Updated dependencies [5565d60]
+  - myst-frontmatter@1.1.29
+
+## 1.1.28
+
+### Patch Changes
+
+- 3c9d9962: Log missing citations in the correct place
+- cff47b14: Add enumerator to citations and cite nodes
+- cff47b14: Add cli warnings for invalid citation labels
+  - myst-frontmatter@1.1.28
+
+## 1.1.27
+
+### Patch Changes
+
+- Updated dependencies [f1ee6f7]
+  - myst-frontmatter@1.1.27
+
+## 1.1.26
+
+### Patch Changes
+
+- 9cdd2044: Add inline code rule for errors
+  - myst-frontmatter@1.1.26
+
+## 1.1.25
+
+### Patch Changes
+
+- Updated dependencies [03db3a35]
+  - myst-frontmatter@1.1.25
+
+## 1.1.24
+
+### Patch Changes
+
+- myst-frontmatter@1.1.24
+
+## 1.1.23
+
+### Patch Changes
+
+- 01322e48: Move IExpressionResult types to myst-common
+- Updated dependencies [50416784]
+  - myst-frontmatter@1.1.23
+
+## 1.1.22
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+
 ## 1.1.21
 
 ### Patch Changes
@@ -260,7 +728,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - 3fba7cb7: Modify extractPart to no longer support tags
 
 ## 0.0.4

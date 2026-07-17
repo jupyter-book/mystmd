@@ -1,5 +1,308 @@
 # tex-to-myst
 
+## 1.0.46
+
+### Patch Changes
+
+- 2b2177f: Fix \string macro leaking its name into image filenames in tex-to-myst.
+  Remove quotes when reading filenames from includegraphics.
+
+## 1.0.45
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+  - myst-spec-ext@1.9.4
+
+## 1.0.44
+
+### Patch Changes
+
+- Updated dependencies [88d2136]
+- Updated dependencies [d45faf3]
+  - myst-common@1.9.3
+  - myst-frontmatter@1.9.3
+  - myst-spec-ext@1.9.3
+
+## 1.0.43
+
+### Patch Changes
+
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+
+## 1.0.42
+
+## 1.0.41
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.0.40
+
+### Patch Changes
+
+- f888081: Fix tex figures with no arguments
+
+## 1.0.39
+
+### Patch Changes
+
+- 3ce5404c: Update width of image
+- Updated dependencies [eb411d0b]
+  - myst-spec-ext@1.7.4
+  - myst-common@1.7.4
+  - myst-frontmatter@1.7.4
+
+## 1.0.38
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
+## 1.0.37
+
+### Patch Changes
+
+- e3c3efa7: Add latex support for hyperlink and hypertarget
+- 5d5c2893: Add cancel to latex
+- Updated dependencies [760e411]
+  - myst-frontmatter@1.6.1
+  - myst-common@1.6.1
+  - myst-spec-ext@1.6.1
+
+## 1.0.36
+
+## 1.0.35
+
+### Patch Changes
+
+- 0625105e: Citation improvements for latex (citealp)
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [4e880f3e]
+- Updated dependencies [e2b74f4d]
+  - myst-frontmatter@1.5.4
+  - myst-spec-ext@1.5.4
+  - myst-common@1.5.4
+
+## 1.0.34
+
+### Patch Changes
+
+- Updated dependencies [857c5acf]
+- Updated dependencies [313b218]
+  - myst-spec-ext@1.5.3
+  - myst-frontmatter@1.5.3
+  - myst-common@1.5.3
+
+## 1.0.33
+
+## 1.0.32
+
+### Patch Changes
+
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+  - myst-spec-ext@1.5.2
+
+## 1.0.31
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
+## 1.0.30
+
+### Patch Changes
+
+- 8fb32d3a: Support wrapfigure environment
+- cc68b984: Differentiate behavior of newcommand, renewcommand, providecommand
+- de4c3912: Remove curly braces around properties in verbatim latex handler
+- Updated dependencies [1e2092dc]
+  - myst-common@1.4.7
+  - myst-frontmatter@1.4.7
+  - myst-spec-ext@1.4.7
+
+## 1.0.29
+
+### Patch Changes
+
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - myst-frontmatter@1.4.4
+  - myst-common@1.4.4
+  - myst-spec-ext@1.4.4
+
+## 1.0.28
+
+## 1.0.27
+
+### Patch Changes
+
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
+## 1.0.26
+
+### Patch Changes
+
+- 54bb6522: Export latex default handlers
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-frontmatter@1.2.0
+  - myst-common@1.2.0
+  - myst-spec-ext@1.2.0
+
+## 1.0.25
+
+### Patch Changes
+
+- 5b6f367e: Add more listings styles for verbatim environment.
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [c38cc28]
+  - myst-common@1.1.34
+  - myst-frontmatter@1.1.34
+  - myst-spec-ext@1.1.34
+
+## 1.0.24
+
+### Patch Changes
+
+- d247a88: Parse latex table alignments and longtable
+- Updated dependencies [bba5baf9]
+- Updated dependencies [117d6008]
+- Updated dependencies [ebe65816]
+- Updated dependencies [20108545]
+- Updated dependencies [6f0183de]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [bba5baf9]
+- Updated dependencies [20108545]
+- Updated dependencies [117d6008]
+- Updated dependencies [62620a8d]
+- Updated dependencies [bba5baf9]
+  - myst-common@1.1.32
+  - myst-spec-ext@1.1.32
+  - myst-frontmatter@1.1.32
+
+## 1.0.23
+
+### Patch Changes
+
+- 1880a465: Fix bug where certain affiliations without authors crash tex-to-myst
+- Updated dependencies [1880a465]
+- Updated dependencies [22c5fff]
+- Updated dependencies [1880a465]
+  - myst-common@1.1.31
+  - myst-frontmatter@1.1.31
+  - myst-spec-ext@1.1.31
+
+## 1.0.22
+
+### Patch Changes
+
+- 8c148f7: Add Function and Procedure to algorithm handlers
+- Updated dependencies [3c9d9962]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+  - myst-common@1.1.28
+  - myst-spec-ext@1.1.28
+  - myst-frontmatter@1.1.28
+
+## 1.0.21
+
+### Patch Changes
+
+- 84a89663: Support verbatim comment environment
+- 0234a0ff: Add support for texttimes
+- 9f359e2b: Support quote and displayquote environments as well as epigraph macro
+- 822ee744: Change \\ in latex to add a break, already supported in tables.
+- 5ed4fa65: Support textrm
+- 6a97176d: Add quotation to handlers
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-frontmatter@1.1.26
+  - myst-spec-ext@1.1.26
+
+## 1.0.20
+
+### Patch Changes
+
+- 4ac0833: Add tex-include to allow for input of sub-tex files
+- 4ac0833: Recognize input / include statements
+- Updated dependencies [03db3a35]
+  - myst-frontmatter@1.1.25
+  - myst-common@1.1.25
+  - myst-spec-ext@1.1.25
+
+## 1.0.19
+
+### Patch Changes
+
+- d5416ff8: Add subref, subfigure, and landscape functions for tex
+- Updated dependencies [d5416ff8]
+  - myst-spec-ext@1.1.24
+  - myst-common@1.1.24
+  - myst-frontmatter@1.1.24
+
+## 1.0.18
+
+### Patch Changes
+
+- e2e6caa7: Support cref
+- Updated dependencies [50416784]
+- Updated dependencies [50416784]
+- Updated dependencies [01322e48]
+  - myst-frontmatter@1.1.23
+  - myst-spec-ext@1.1.23
+  - myst-common@1.1.23
+
+## 1.0.17
+
+### Patch Changes
+
+- cb3bad07: Improve latex characters
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.0.16
 
 ### Patch Changes
@@ -65,7 +368,6 @@
 - fb4cb203: Ensure spaces are picked up after macros
 - 3980b6ff: Ensure there is no space before ~
 - 417efdc9: Add `algorithm` and `algorithmic` handlers for latex parsing
-
   - Figures: Environment centering
   - newtheorem in frontmatter is parsed
   - safely ignore `itemsep`, `setcounter`, `cmidrule` for now

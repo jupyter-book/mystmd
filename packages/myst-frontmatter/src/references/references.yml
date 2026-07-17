@@ -1,0 +1,104 @@
+title: References
+frontmatter: project
+cases:
+  - title: valid reference passes
+    raw:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: myst
+    normalized:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: myst
+  - title: case is normalized
+    raw:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: MyST
+    normalized:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: myst
+  - title: warn on unknown kind
+    raw:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: myst-xref
+    normalized:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: myst-xref
+    warnings: 1
+  - title: sphinx kind coerces
+    raw:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: sphinx
+    normalized:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: intersphinx
+  - title: allow no kind
+    raw:
+      references:
+        mystmd:
+          url: https://mystmd.org
+    normalized:
+      references:
+        mystmd:
+          url: https://mystmd.org
+  - title: error on no url
+    raw:
+      references:
+        mystmd:
+          kind: myst
+    normalized: {}
+    errors: 1
+  - title: error on invalid url
+    raw:
+      references:
+        mystmd:
+          url: not-a-url
+          kind: myst
+    normalized: {}
+    errors: 1
+  - title: coerce string to object
+    raw:
+      references:
+        mystmd: https://mystmd.org
+    normalized:
+      references:
+        mystmd:
+          url: https://mystmd.org
+  - title: remove trailing slash
+    raw:
+      references:
+        mystmd:
+          url: https://mystmd.org/
+          kind: myst
+    normalized:
+      references:
+        mystmd:
+          url: https://mystmd.org
+          kind: myst
+  - title: invalid references errors
+    raw:
+      references: https://mystmd.org
+    normalized: {}
+    errors: 1
+  - title: complex key errors
+    raw:
+      references:
+        http/path:
+          url: https://mystmd.org
+          kind: myst
+    normalized: {}
+    errors: 1

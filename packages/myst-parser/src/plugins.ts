@@ -5,8 +5,14 @@ export { default as frontMatterPlugin } from 'markdown-it-front-matter';
 export { default as footnotePlugin } from 'markdown-it-footnote';
 export { default as tasklistPlugin } from 'markdown-it-task-lists';
 export { default as deflistPlugin } from 'markdown-it-deflist';
-export { mystPlugin, citationsPlugin } from 'markdown-it-myst';
-export { mystBlockPlugin, colonFencePlugin } from 'markdown-it-myst-extras';
+export {
+  rolePlugin,
+  directivePlugin,
+  citationsPlugin,
+  blockPlugin,
+  colonFencePlugin,
+  mystPlugin,
+} from 'markdown-it-myst';
 export type { MathExtensionOptions } from './math.js';
 export { plugin as mathPlugin } from './math.js';
 

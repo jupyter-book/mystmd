@@ -8,6 +8,7 @@ import { VFile } from 'vfile';
 
 type TestCase = {
   title: string;
+  skip?: boolean;
   markdown: string;
   mdast: Record<string, any>;
   warnings?: number;
@@ -26,9 +27,18 @@ const casesList: TestCases[] = fs
     return yaml.load(content) as TestCases;
   });
 
+const only = ''; // Can set this to a test title
+
 casesList.forEach(({ title, cases }) => {
+  const casesToUse = cases.filter((c) => (!only && !c.skip) || (only && c.title === only));
+  const skippedCases = cases.filter((c) => c.skip || (only && c.title !== only));
+  if (casesToUse.length === 0) return;
   describe(title, () => {
-    test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
+    if (skippedCases.length > 0) {
+      // Log to test output for visibility
+      test.skip.each(skippedCases.map((c): [string, TestCase] => [c.title, c]))('%s', () => {});
+    }
+    test.each(casesToUse.map((c): [string, TestCase] => [c.title, c]))(
       '%s',
       (_, { markdown, mdast, warnings = 0 }) => {
         const vfile = new VFile();

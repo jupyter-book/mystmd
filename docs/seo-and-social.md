@@ -1,5 +1,6 @@
 ---
 title: Search Engines and Social
+short_title: Search Engines & Social
 description: How to have your site content indexed by Google and support rich link previews.
 ---
 
@@ -46,7 +47,7 @@ site:
 ```
 
 This will turn the `Allow: /` to `Disallow: /`, which will indicate to search engine crawlers to not crawl any URLs.
-This is a good setting for trasient sites or sites that are showing, for example, changes on a pull-request.
+This is a good setting for transient sites or sites that are showing, for example, changes on a pull-request.
 
 ## sitemap.xml
 

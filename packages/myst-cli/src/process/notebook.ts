@@ -1,9 +1,7 @@
-import { computeHash } from 'myst-cli-utils';
 import { NotebookCell, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
-import type { MinifiedOutput } from 'nbtx';
 import type {
   IAttachments,
   ICell,
@@ -12,18 +10,28 @@ import type {
   IOutput,
   MultilineString,
 } from '@jupyterlab/nbformat';
-import { CELL_TYPES, minifyCellOutput, ensureString } from 'nbtx';
+import { CELL_TYPES, ensureString } from 'nbtx';
 import { VFile } from 'vfile';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
-import { castSession } from '../session/cache.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-import type { Code } from 'myst-spec-ext';
+import type { Code, InlineExpression } from 'myst-spec';
+import { findExpression, metadataSection } from '../transforms/inlineExpressions.js';
+import type { IUserExpressionMetadata } from '../transforms/inlineExpressions.js';
+import { frontmatterValidationOpts } from '../frontmatter.js';
+
+import { filterKeys } from 'simple-validators';
+import {
+  validatePageFrontmatter,
+  PAGE_FRONTMATTER_KEYS,
+  FRONTMATTER_ALIASES,
+} from 'myst-frontmatter';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 function blockParent(cell: ICell, children: GenericNode[]) {
-  const type = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
-  return { type: 'block', meta: JSON.stringify({ type, ...cell.metadata }), children };
+  const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
+  return { type: 'block', kind, data: JSON.parse(JSON.stringify(cell.metadata)), children };
 }
 
 /**
@@ -70,8 +78,29 @@ export async function processNotebook(
   session: ISession,
   file: string,
   content: string,
-  opts?: { minifyMaxCharacters?: number },
 ): Promise<GenericParent> {
+  const { mdast } = await processNotebookFull(session, file, content);
+  return mdast;
+}
+
+/**
+ * Embed the Jupyter output data for a user expression into the AST
+ */
+function embedInlineExpressions(
+  userExpressions: IUserExpressionMetadata[] | undefined,
+  block: GenericNode,
+) {
+  const inlineNodes = selectAll('inlineExpression', block) as InlineExpression[];
+  inlineNodes.forEach((inlineExpression) => {
+    inlineExpression.result = findExpression(userExpressions, inlineExpression.value)?.result;
+  });
+}
+
+export async function processNotebookFull(
+  session: ISession,
+  file: string,
+  content: string,
+): Promise<{ mdast: GenericParent; frontmatter: PageFrontmatter; widgets: Record<string, any> }> {
   const { log } = session;
   const { metadata, cells } = JSON.parse(content) as INotebookContent;
   // notebook will be empty, use generateNotebookChildren, generateNotebookOrder here if we want to populate those
@@ -79,7 +108,25 @@ export async function processNotebook(
   const language = metadata?.kernelspec?.language ?? 'python';
   log.debug(`Processing Notebook: "${file}"`);
 
-  const cache = castSession(session);
+  // Load frontmatter from notebook metadata
+  const vfile = new VFile();
+  vfile.path = file;
+  // Pull out only the keys we care about
+  const filteredMetadata = filterKeys(metadata ?? {}, [
+    ...PAGE_FRONTMATTER_KEYS,
+    // Include aliased entries for page frontmatter keys
+    ...Object.entries(FRONTMATTER_ALIASES)
+      .filter(([_, value]) => PAGE_FRONTMATTER_KEYS.includes(value))
+      .map(([key, _]) => key),
+  ]);
+  const frontmatter = validatePageFrontmatter(
+    filteredMetadata ?? {},
+    frontmatterValidationOpts(vfile),
+  );
+
+  // Load widgets from notebook metadata
+  // TODO validation / sanitation
+  const widgets = (metadata?.widgets ?? {}) as Record<string, any>;
 
   let end = cells.length;
   if (cells && cells.length > 1 && cells?.[cells.length - 1].source.length === 0) {
@@ -93,14 +140,16 @@ export async function processNotebook(
         const cellContent = ensureString(cell.source);
         // If the first cell is a frontmatter block, do not put a block break above it
         const omitBlockDivider = index === 0 && cellContent.startsWith('---\n');
-        const cellMdast = parseMyst(session, cellContent, file);
+        const cellMdast = parseMyst(session, cellContent, file, { ignoreFrontmatter: index > 0 });
         if (cell.attachments) {
           replaceAttachmentsTransform(session, cellMdast, cell.attachments as IAttachments, file);
         }
         if (omitBlockDivider) {
           return acc.concat(...cellMdast.children);
         }
-        return acc.concat(blockParent(cell, cellMdast.children));
+        const block = blockParent(cell, cellMdast.children) as GenericNode;
+        embedInlineExpressions(block.data?.[metadataSection], block);
+        return acc.concat(block);
       }
       if (cell.cell_type === CELL_TYPES.raw) {
         const raw: Code = {
@@ -118,26 +167,24 @@ export async function processNotebook(
           value: ensureString(cell.source),
         };
 
-        const output: { type: 'output'; id: string; data: MinifiedOutput[] } = {
-          type: 'output',
+        const outputs = {
+          type: 'outputs',
           id: nanoid(),
-          data: [],
+          children: (cell.outputs as IOutput[]).map((output) => ({
+            type: 'output',
+            jupyter_data: output,
+            children: [],
+          })),
         };
-
-        if (cell.outputs && (cell.outputs as IOutput[]).length > 0) {
-          const minified: MinifiedOutput[] = await minifyCellOutput(
-            cell.outputs as IOutput[],
-            cache.$outputs,
-            { computeHash, maxCharacters: opts?.minifyMaxCharacters },
-          );
-          output.data = minified;
-        }
-        return acc.concat(blockParent(cell, [code, output]));
+        return acc.concat(blockParent(cell, [code, outputs]));
       }
       return acc;
     },
     Promise.resolve([] as GenericNode[]),
   );
 
-  return { type: 'root', children: items };
+  logMessagesFromVFile(session, vfile);
+
+  const mdast = { type: 'root', children: items };
+  return { mdast, frontmatter, widgets };
 }

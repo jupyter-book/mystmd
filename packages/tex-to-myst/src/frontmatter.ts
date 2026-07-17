@@ -57,6 +57,7 @@ function extractEmailFromName(author: { name?: GenericNode | string; email?: str
 function getAuthorOrEmailFromNode(node: GenericNode | string) {
   if (typeof node === 'string') return extractEmailFromName({ name: node });
   const copy = copyNode(node);
+  remove(copy, 'break');
   const author: { name?: GenericNode | string; email?: string } = {};
   (selectAll('inlineCode,link', copy) as GenericNode[]).forEach((n) => {
     const maybeEmail = toText(n);
@@ -87,7 +88,7 @@ function addAffiliation(node: GenericNode, state: ITexParser) {
   state.closeParagraph();
   const renderedAffil = state.stack.pop();
   const fmAffil = { id: affilNumber, name: getContentFromRenderedSpan(renderedAffil) };
-  if (!affilNumber) {
+  if (!affilNumber && fm.authors.length > 0) {
     const lastAuthor = fm.authors[fm.authors.length - 1];
     if (!lastAuthor.affiliations) lastAuthor.affiliations = [];
     lastAuthor.affiliations.push(childrenOrString(fmAffil.name) as any);
@@ -111,15 +112,24 @@ function cleanMacro(macro: string) {
   return macro.trim().replace(/(^\$)|(\$$)/g, '');
 }
 
-function newCommand(showWarning: boolean) {
+function newCommand(opts?: { override?: boolean; warn?: 'defined' | 'undefined' }) {
   return (node: GenericNode, state: ITexParser) => {
     state.closeParagraph();
     const [nameNode, macroNode] = getArguments(node, 'group');
     getPositionExtents(macroNode);
     const name = originalValue(state.tex, { position: getPositionExtents(nameNode) });
     const macro = originalValue(state.tex, { position: getPositionExtents(macroNode) });
-    if (state.data.macros[name] && showWarning) {
-      state.warn(`Multiple macros defined with the same value: "${name}": "${macro}"`, node);
+    if (state.data.macros[name]) {
+      if (opts?.warn === 'defined') {
+        state.warn(
+          `Multiple macros defined with the same value${opts?.override ? '; overriding' : ''}: "${name}": "${macro}"`,
+          node,
+        );
+      }
+      if (!opts?.override) return;
+    }
+    if (!state.data.macros[name] && opts?.warn === 'undefined') {
+      state.warn(`Attempting to redefine a currently undefined macro: "${name}": "${macro}"`, node);
     }
     state.data.macros[name] = cleanMacro(macro);
     const macroName = name.replace(/^\\/, '');
@@ -144,8 +154,12 @@ const FRONTMATTER_HANDLERS: Record<string, Handler> = {
       state.warn(`Multiple packages imported with the same name: "${p}"`, node);
     });
   },
-  macro_newcommand: newCommand(true),
-  macro_renewcommand: newCommand(false),
+  /** `newcommand` defines a new command, and makes an error if it is already defined. */
+  macro_newcommand: newCommand({ warn: 'defined', override: true }),
+  /** `renewcommand` redefines a predefined command, and makes an error if it is not yet defined. */
+  macro_renewcommand: newCommand({ warn: 'undefined', override: true }),
+  /** `providecommand` defines a new command if it isn't already defined. */
+  macro_providecommand: newCommand({ override: false }),
   macro_date(node, state) {
     state.closeParagraph();
     // No action for now

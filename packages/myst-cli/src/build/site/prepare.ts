@@ -1,24 +1,8 @@
 import fs from 'node:fs';
 import { tic } from 'myst-cli-utils';
-import type { LinkTransformer } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
+import type { ProcessSiteOptions } from '../../process/site.js';
 import { processSite } from '../../process/site.js';
-import type { TransformFn } from '../../process/mdast.js';
-
-export type Options = {
-  html?: boolean;
-  strict?: boolean;
-  headless?: boolean;
-  checkLinks?: boolean;
-  yes?: boolean;
-  port?: number;
-  serverPort?: number;
-  writeToc?: boolean;
-  keepHost?: boolean;
-  extraLinkTransformers?: LinkTransformer[];
-  extraTransforms?: TransformFn[];
-  defaultTemplate?: string;
-};
 
 export function cleanSiteContent(session: ISession, info = true): void {
   const toc = tic();
@@ -37,16 +21,7 @@ export function ensureBuildFoldersExist(session: ISession): void {
   session.log.debug(`Build folders created for site content: ${session.sitePath()}`);
 }
 
-export async function buildSite(session: ISession, opts: Options) {
-  const { writeToc, strict, checkLinks, extraLinkTransformers, extraTransforms, defaultTemplate } =
-    opts;
+export async function buildSite(session: ISession, opts: ProcessSiteOptions) {
   ensureBuildFoldersExist(session);
-  await processSite(session, {
-    writeToc,
-    strict,
-    checkLinks,
-    extraLinkTransformers,
-    extraTransforms,
-    defaultTemplate,
-  });
+  await processSite(session, opts);
 }

@@ -61,6 +61,34 @@ cases:
               children:
                 - type: text
                   value: MyST
+  - title: Abbreviation with null
+    opts:
+      abbreviations:
+        HR: Heart Rate
+        SHRILL: null
+    before:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: Beating HR is not SHRILL
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Beating '
+            - type: abbreviation
+              title: Heart Rate
+              children:
+                - type: text
+                  value: HR
+            - type: text
+              value: ' is not '
+            - type: text
+              value: SHRILL
   - title: Abbreviation first time long
     opts:
       firstTimeLong: true

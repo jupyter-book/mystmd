@@ -86,9 +86,19 @@ export function getImageWidth(width?: number | string, maxWidth = MAX_DOCX_IMAGE
   return (lineWidth / 100) * maxWidth;
 }
 
-async function getImageDimensions(file: Blob | Buffer): Promise<{ width: number; height: number }> {
+/**
+ * Get the dimensions of an image using the browser's `Image` object.
+ * @param file - The image file.
+ * @returns The dimensions of the image.
+ * @note This is a browser only function, server side this function should return undefined
+ * and the `buffer-image-size` package should be used to get the dimensions.
+ */
+async function getImageDimensions(
+  file: Blob | Buffer,
+): Promise<{ width: number; height: number } | undefined> {
+  if (typeof (globalThis as any).Image === 'undefined') return undefined;
   return new Promise((resolve, reject) => {
-    const img = new Image();
+    const img = new (globalThis as any).Image();
     // the following handler will fire after a successful loading of the image
     img.onload = () => {
       const { naturalWidth: width, naturalHeight: height } = img;
@@ -120,7 +130,10 @@ export async function fetchImagesAsBuffers(
       const response = await fetch(image.url);
       const blob = await response.blob();
       const buffer = await blob.arrayBuffer();
-      dimensions[image.url] = await getImageDimensions(blob);
+      const dims = await getImageDimensions(blob);
+      if (dims !== undefined) {
+        dimensions[image.url] = dims;
+      }
       buffers[image.url] = Buffer.from(buffer);
     }),
   );

@@ -11,6 +11,7 @@ type TestCase = {
   latex: string;
   mdast: Record<string, any>;
   printGlossaries: boolean;
+  expectGlossary?: boolean;
 };
 
 type TestCases = {
@@ -33,13 +34,13 @@ casesList.forEach(({ title, latexGlossary, cases }) => {
   describe(title, () => {
     test.each(cases.map((c): [string, string, TestCase] => [c.title, latexGlossary, c]))(
       '%s',
-      (_, expectedLatexGlossary, { latex, mdast, printGlossaries }) => {
+      (_, expectedLatexGlossary, { latex, mdast, printGlossaries, expectGlossary }) => {
         const pipe = unified().use(mystToTex, { printGlossaries });
         pipe.runSync(mdast as any);
         const file = pipe.stringify(mdast as any);
         const { suffix } = generatePreamble((file.result as LatexResult).preamble);
         const latexValue = (file.result as LatexResult).value + suffix;
-        const printedGlossary = printGlossaries ? `\n${expectedLatexGlossary}` : '';
+        const printedGlossary = expectGlossary ? `\n${expectedLatexGlossary}` : '';
         const expectedResult = `${latex}${printedGlossary}`;
         expect(latexValue).toEqual(expectedResult);
       },

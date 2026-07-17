@@ -11,7 +11,7 @@ MyST (Markedly Structured Text) was designed to make it easier to create publish
 
 ### Headings
 
-Markdown syntax denotes headers starting with between 1 to 6 `#`.
+Markdown syntax denotes headers starting with between 1 to 6 `#` symbols.
 For example, a level 3 header looks like:
 
 ```{myst}
@@ -137,6 +137,7 @@ any _text_
 ### Valid HTML
 
 Any valid HTML may also be included in a MyST document and rendered to HTML. However, you must set the option `allowDangerousHtml: true` in the MyST parser.
+This option needs to be set internally in the parser, and is not exposed to the user as a command line flag or `myst.yml` setting.
 
 ## Inline Markup
 
@@ -167,7 +168,7 @@ Link with alternative text and optional title:
 Link to an image can be done similar to other inline links, or you may use HTML syntax to include image size, etc.
 
 ```{myst}
-![alt](https://source.unsplash.com/random/500x200/?fruit "title")
+![alt](https://github.com/rowanc1/pics/blob/main/apples.png?raw=true "title")
 ```
 
 ```{seealso}
@@ -184,5 +185,5 @@ break
 ```
 
 ```{seealso}
-[](./typography.md) provides other roles for subscript, superscript, abbeviations, and other text formatting.
+[](./typography.md) provides other roles for subscript, superscript, abbreviations, and other text formatting.
 ```

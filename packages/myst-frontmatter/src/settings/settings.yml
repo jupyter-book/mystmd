@@ -24,3 +24,19 @@ cases:
         what: ok
     warnings: 1
     normalized: {}
+  - title: infer dois from urls
+    raw:
+      settings:
+        infer_dois_from_urls: true
+    errors: 0
+    normalized:
+      settings:
+        infer_dois_from_urls: true
+  - title: infer dois from urls alias
+    raw:
+      settings:
+        inferDoisFromUrls: true
+    errors: 0
+    normalized:
+      settings:
+        infer_dois_from_urls: true

@@ -1,5 +1,77 @@
 # markdown-it-myst
 
+## 1.0.17
+
+### Patch Changes
+
+- 70b417c: Stop citation label parsing at `<` so following HTML and autolinks are preserved
+
+## 1.0.16
+
+### Patch Changes
+
+- 9355519: Add multi-line to role parsing
+
+## 1.0.15
+
+### Patch Changes
+
+- bc240a8: Make citation parsing less aggressive
+
+## 1.0.14
+
+### Patch Changes
+
+- 770eece: Footnotes and role parsing
+
+## 1.0.13
+
+### Patch Changes
+
+- cd8ee79: Update MarkdownIt to 13 for all dependencies, add types to dependencieswq
+
+## 1.0.12
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+
+## 1.0.11
+
+### Patch Changes
+
+- c6213ed: Add inline options
+
+## 1.0.10
+
+### Patch Changes
+
+- c758f1b5: Directive option flag is always a boolean
+
+## 1.0.9
+
+### Patch Changes
+
+- 5ac2d0bc: Fix inline parsing for roles
+
+## 1.0.8
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
+## 1.0.7
+
+### Patch Changes
+
+- 6a57ab77: Only trim end of line for myst-directives, not both the start and end of lines. This is important for keeping indentation in code blocks.
+
+## 1.0.6
+
+### Patch Changes
+
+- 20108545: Add block tightness to the directives
+
 ## 1.0.5
 
 ### Patch Changes

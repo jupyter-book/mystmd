@@ -1,6 +1,7 @@
 import type { Plugin } from 'unified';
-import type { Node, Directive, Role } from 'myst-spec';
+import type { Directive, Node, Role } from 'myst-spec';
 import type { VFile } from 'vfile';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 export type GenericNode<T extends Record<string, any> = Record<string, any>> = {
   type: string;
@@ -18,7 +19,10 @@ export type GenericParent<T extends Record<string, any> = Record<string, any>> =
 
 export type Citations = {
   order: string[];
-  data: Record<string, { html: string; number: number; doi: string | undefined }>;
+  data: Record<
+    string,
+    { label: string; html: string; enumerator: string; doi?: string; url?: string }
+  >;
 };
 
 export enum NotebookCell {
@@ -35,6 +39,9 @@ export enum NotebookCellTags {
   'removeCell' = 'remove-cell',
   'removeInput' = 'remove-input',
   'removeOutput' = 'remove-output',
+  'scrollOutput' = 'scroll-output',
+  'skipExecution' = 'skip-execution',
+  'raisesException' = 'raises-exception',
 }
 
 export type References = {
@@ -67,7 +74,7 @@ export type OptionDefinition = ArgDefinition & {
 
 export type DirectiveData = {
   name: string;
-  node: Directive;
+  node: Directive & { tight?: boolean | 'before' | 'after' };
   arg?: ParseTypes;
   options?: Record<string, ParseTypes>;
   body?: ParseTypes;
@@ -77,6 +84,11 @@ export type RoleData = {
   name: string;
   node: Role;
   body?: ParseTypes;
+  options?: Record<string, ParseTypes>;
+};
+
+export type DirectiveContext = {
+  parseMyst: (source: string, offset?: number) => GenericParent;
 };
 
 export type DirectiveSpec = {
@@ -87,12 +99,14 @@ export type DirectiveSpec = {
   options?: Record<string, OptionDefinition>;
   body?: BodyDefinition;
   validate?: (data: DirectiveData, vfile: VFile) => DirectiveData;
-  run: (data: DirectiveData, vfile: VFile) => GenericNode[];
+  run: (data: DirectiveData, vfile: VFile, ctx: DirectiveContext) => GenericNode[];
 };
 
 export type RoleSpec = {
   name: string;
   alias?: string[];
+  doc?: string;
+  options?: Record<string, OptionDefinition>;
   body?: BodyDefinition;
   validate?: (data: RoleData, vfile: VFile) => RoleData;
   run: (data: RoleData, vfile: VFile) => GenericNode[];
@@ -124,9 +138,15 @@ export type MystPlugin = {
   name?: string;
   author?: string;
   license?: string;
-  directives: DirectiveSpec[];
-  roles: RoleSpec[];
-  transforms: TransformSpec[];
+  directives?: DirectiveSpec[];
+  roles?: RoleSpec[];
+  transforms?: TransformSpec[];
+};
+
+export type ValidatedMystPlugin = Required<
+  Pick<MystPlugin, 'directives' | 'roles' | 'transforms'>
+> & {
+  paths: string[];
 };
 
 export enum TargetKind {
@@ -151,3 +171,6 @@ export enum AdmonitionKind {
   tip = 'tip',
   warning = 'warning',
 }
+export type FrontmatterPart = { mdast: GenericParent; frontmatter?: PageFrontmatter };
+
+export type FrontmatterParts = Record<string, FrontmatterPart>;

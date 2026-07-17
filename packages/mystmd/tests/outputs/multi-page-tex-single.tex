@@ -1,0 +1,67 @@
+\documentclass[a4paper,11pt,oneside]{book}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+
+% Make list items more compact
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep, topsep=0pt}
+
+
+
+% Style quotes
+\usepackage{xcolor}
+% Change links to basic
+\hypersetup{
+  colorlinks,
+  linkcolor={black},
+  citecolor={black},
+  % urlcolor={blue!80!black}
+  urlcolor={black}
+}
+\usepackage{framed}
+\definecolor{quoteshade}{rgb}{0.95,0.95,1}
+\renewenvironment{quote}{%
+  \def\FrameCommand{%
+    \hspace{1pt}%
+    {\color{darkblue}\vrule width 2pt}%
+    {\color{quoteshade}\vrule width 4pt}%
+    \colorbox{quoteshade}%
+  }%
+  \MakeFramed{\advance\hsize-\width\FrameRestore}
+  \noindent\hspace{-8pt}% disable indenting first paragraph
+  \begin{adjustwidth}
+  \vspace{2pt}\vspace{2pt}%
+}
+{%
+  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
+
+\title{\Huge \textbf{Page One}}
+\author{\textsc{Franklin Koch}}
+
+\begin{document}
+\sloppy
+
+\frontmatter
+\maketitle
+
+\tableofcontents
+% \listoffigures
+% \listoftables
+
+\mainmatter
+
+% \include{preface.tex}
+% \include{acknowledgements.tex}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Integer vitae justo eget magna fermentum iaculis eu non. Lobortis scelerisque fermentum dui faucibus in. Turpis nunc eget lorem dolor sed. Venenatis lectus magna fringilla urna. Nibh praesent tristique magna sit amet purus gravida. Egestas pretium aenean pharetra magna ac. Morbi tristique senectus et netus et malesuada fames ac turpis. Quis risus sed vulputate odio ut. Et netus et malesuada fames ac turpis egestas integer eget. Nibh sit amet commodo nulla. Lectus mauris ultrices eros in cursus. Malesuada proin libero nunc consequat interdum varius. Eget nunc lobortis mattis aliquam faucibus purus in massa. Consequat id porta nibh venenatis cras sed felis eget velit.
+
+
+
+\end{document}

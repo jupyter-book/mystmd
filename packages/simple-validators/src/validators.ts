@@ -1,6 +1,12 @@
 import type { KeyOptions, ValidationOptions } from './types.js';
-import { formatDate } from './utils.js';
 
+/**
+ * Check if a value is neither null nor undefined.
+ *
+ * NOTE: This returns false for null, which may not be what you want.
+ * Consider using `=== undefined` checks directly if you need null to propagate as a valid value.
+ * See: https://github.com/jupyter-book/mystmd/issues/2659
+ */
 export function defined<T = any>(val: T | null | undefined): val is T {
   return val != null;
 }
@@ -90,7 +96,12 @@ export function validateNumber(
  */
 export function validateString(
   input: any,
-  opts: { coerceNumber?: boolean; maxLength?: number; regex?: string | RegExp } & ValidationOptions,
+  opts: {
+    coerceNumber?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    regex?: string | RegExp;
+  } & ValidationOptions,
 ): string | undefined {
   let value = input as string;
   if (opts.coerceNumber && typeof value === 'number') {
@@ -98,6 +109,9 @@ export function validateString(
     value = String(value);
   }
   if (typeof value !== 'string') return validationError(`must be string`, opts);
+  if (opts.minLength && value.length < opts.minLength) {
+    return validationError(`must be greater than ${opts.minLength} chars`, opts);
+  }
   if (opts.maxLength && value.length > opts.maxLength) {
     return validationError(`must be less than ${opts.maxLength} chars`, opts);
   }
@@ -130,7 +144,10 @@ export function validateUrl(input: any, opts: { includes?: string } & Validation
   return value;
 }
 
-export function validateSubdomain(input: string, opts: ValidationOptions) {
+export function validateDomain(
+  input: string,
+  opts: { minParts?: number; maxParts?: number } & ValidationOptions,
+) {
   let value = validateString(input, { ...opts, maxLength: 2048 });
   if (value === undefined) return value;
   if (!value.startsWith('https://') && !value.startsWith('http://')) {
@@ -140,7 +157,7 @@ export function validateSubdomain(input: string, opts: ValidationOptions) {
   try {
     url = new URL(value);
   } catch {
-    return validationError(`must be valid domain: ${input}`, opts);
+    return validationError(`domain must be valid when used as a URL: ${input}`, opts);
   }
   const { hash, host, pathname, protocol, search } = url;
   if (protocol !== 'http:' && protocol !== 'https:') {
@@ -149,11 +166,17 @@ export function validateSubdomain(input: string, opts: ValidationOptions) {
   if ((pathname && pathname !== '/') || hash || search) {
     return validationError(`must not specify path, query, or fragment: ${input}`, opts);
   }
-  if (!host.match(/^.+\..+\..+$/)) {
-    return validationError(`must be a subdomain: ${input}`, opts);
-  }
+  const numParts = host.split('.').length;
+  if (opts.minParts !== undefined && opts.minParts > numParts)
+    return validationError(`must have at least ${opts.minParts} parts: ${input}`, opts);
+  if (opts.maxParts !== undefined && opts.maxParts < numParts)
+    return validationError(`must have at most ${opts.minParts} parts: ${input}`, opts);
   // `host` is already lowercased, but we can be super explicit!
   return host.toLowerCase();
+}
+
+export function validateSubdomain(input: string, opts: ValidationOptions) {
+  return validateDomain(input, { ...opts, minParts: 3 });
 }
 
 /**
@@ -207,29 +230,141 @@ export function validateEnum<T>(
   return input;
 }
 
+// This pattern implements the date pattern from ISO8601
+// Technically, it's also RFC3339 (a particular profile of ISO8601 i.e. YYYY-MM-DD
+// There is also a trailing capture group for timestamps
+const ISO8601_DATE_PATTERN = /^(\d\d\d\d)(?:-(\d\d))?(?:-(\d\d))?(T.*)?$/;
+// This pattern implements the following ABNF from RFC2822: `[ day-of-week "," ] date`
+// with a trailing capture group for time-like information
+const RFC2822_DATE_PATTERN =
+  /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),)?\s*(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d\d\d\d)\s*([^\s].*)?$/;
+
+const MONTH_TO_NUMBER = new Map(
+  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(
+    (elem, index) => [elem, index + 1],
+  ),
+);
+
 /**
- * Validate date string or object
- *
- * Uses javascript Date() constructor; any input to the constructor that returns
- * a valid date is valid input. This includes ISO 8601 formatted strings and
- * IETF timestamps are valid.
+ * Build an ISO8601-compliant date string
  */
-export function validateDate(input: any, opts: ValidationOptions) {
-  const date = new Date(input);
-  if (!date.getDate()) {
-    return validationError(
-      `invalid date "${input}" - must be ISO 8601 format or IETF timestamp`,
-      opts,
-    );
+function buildISO8601DateString(year: number, month: number, day: number): string {
+  const paddedMonth = `${month}`.padStart(2, '0');
+  const paddedDay = `${day}`.padStart(2, '0');
+  return `${year}-${paddedMonth}-${paddedDay}`;
+}
+
+function dateErrorString(input: string) {
+  return `invalid date "${input}" - must be a full date "YYYY-MM-DD" (ISO 8601) or calendar date "Sat, 1 Jan 2000" (RFC 2822)`;
+}
+
+function revalidateDate(
+  input: any,
+  result: string,
+  opts: ValidationOptions & { dateIsLocal?: boolean },
+): string | undefined {
+  // We put this into the validation date function recursively to see if it comes back with the same date
+  // For example "2024-02-31" is invalid
+  const validated = validateDate(new Date(result), {
+    ...opts,
+    suppressErrors: true,
+    suppressWarnings: true,
+  });
+  if (validated !== result) {
+    return validationError(dateErrorString(input), opts);
   }
-  return typeof input === 'string' ? input : formatDate(date);
+  return result;
 }
 
 /**
- * Validates value is an object
+ * Validate date string or object
+ *
+ * Parses strings as ISO 8601 dates, or a variant of RFC 2822 dates, falling back to the Date constructor otherwise.
+ * Parses Date objects as UTC or local dates according to the given options.
+ */
+export function validateDate(
+  input: any,
+  opts: ValidationOptions & { dateIsLocal?: boolean },
+): string | undefined {
+  // String format dates
+  if (typeof input === 'string') {
+    // Try ISO 8601
+    let match = input.match(ISO8601_DATE_PATTERN);
+    if (match) {
+      const [year, month, day, tail] = match.slice(1, 5);
+      // Is a timestamp component present?
+      if (tail !== undefined) {
+        validationWarning(
+          `Date "${input}" should not include a time component ("${tail}"), which has been ignored`,
+          opts,
+        );
+      }
+      // Rebuild the string, dropping time
+      const result = [year, month ?? '01', day ?? '01'].join('-');
+      if (month === undefined || day === undefined) {
+        validationWarning(
+          `non-standard date "${input}": interpreting date as "${result}".\nPlease use a full date "YYYY-MM-DD" (ISO 8601).`,
+          opts,
+        );
+      }
+      return revalidateDate(input, result, opts);
+    }
+
+    // Try a variant of RFC2822
+    match = input.match(RFC2822_DATE_PATTERN);
+    if (match) {
+      const [day, month, year, tail] = match.slice(2, 6);
+
+      // Is a timestamp component present?
+      if (tail !== undefined) {
+        validationWarning(
+          `Date "${input}" should not include a time component ("${tail}"), which has been ignored`,
+          opts,
+        );
+      }
+
+      const numericYear = parseInt(year);
+      const numericMonth = MONTH_TO_NUMBER.get(month)!; // Convert Jan to 1 etc.
+      const numericDay = parseInt(day);
+
+      // Build an ISO8601 date string
+      const result = buildISO8601DateString(numericYear, numericMonth, numericDay);
+      return revalidateDate(input, result, opts);
+    }
+    // Try falling back on JS parsing and assume it's parsed in the local timezone
+    const parsed = Date.parse(input);
+    if (isNaN(parsed)) {
+      return validationError(dateErrorString(input), opts);
+    }
+    const localDate = new Date(parsed);
+    const result = buildISO8601DateString(
+      localDate.getFullYear(),
+      localDate.getMonth() + 1,
+      localDate.getDate(),
+    );
+    validationWarning(
+      `non-standard date "${input}": interpreting date as "${result}".\nPlease use a full date "YYYY-MM-DD" (ISO 8601).`,
+      opts,
+    );
+    return result;
+  }
+  // Handle pre-existing date objects
+  else if (input instanceof Date) {
+    // Is the given timestamp representative of a UTC calendar date
+    return opts.dateIsLocal // Default is UTC!
+      ? buildISO8601DateString(input.getFullYear(), input.getMonth() + 1, input.getDate())
+      : buildISO8601DateString(input.getUTCFullYear(), input.getUTCMonth() + 1, input.getUTCDate());
+  } else {
+    return validationError(dateErrorString(input), opts);
+  }
+}
+
+/**
+ * Validates value is an object with string keys
  */
 export function validateObject(input: any, opts: ValidationOptions) {
   if (typeof input !== 'object') return validationError(`must be object`, opts);
+  if (Array.isArray(input)) return validationError(`must be object, not array`, opts);
   return input as Record<string, any>;
 }
 
@@ -324,7 +459,14 @@ export function validateList<T>(
 }
 
 /**
- * Copy 'base' object and fill any 'keys' that are missing with their values from 'filler'
+ * Copy 'base' object and fill any 'keys' that are missing (undefined) with their values from 'filler'.
+ * We treat `null` as intentional values, not "undefined".
+ * `null` in base is respected and not overwritten.
+ * Explicit `null` in filler is copied when base is undefined.
+ *
+ * NOTE: We intentionally use `=== undefined` checks instead of the `defined()` function
+ * because `defined()` treats `null` as "not defined", but we need `null` to propagate
+ * See: https://github.com/jupyter-book/mystmd/issues/2659
  */
 export function fillMissingKeys<T extends Record<string, any>>(
   base: T,
@@ -333,7 +475,8 @@ export function fillMissingKeys<T extends Record<string, any>>(
 ): T {
   const output: T = { ...base };
   keys.forEach((key) => {
-    if (!defined(output[key]) && defined(filler[key])) {
+    // Use direct undefined checks, not defined(), to allow null propagation
+    if (output[key] === undefined && filler[key] !== undefined) {
       const k = key as keyof T;
       output[k] = filler[k];
     }

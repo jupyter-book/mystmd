@@ -7,14 +7,15 @@ import {
   validateNumber,
   validateObjectKeys,
   validateString,
-  validateUrl,
   validationWarning,
 } from 'simple-validators';
 import { stashPlaceholder } from '../utils/referenceStash.js';
 import { validateDoi } from '../utils/validators.js';
 import type { Affiliation } from './types.js';
+import { SOCIAL_LINKS_ALIASES, SOCIAL_LINKS_KEYS } from '../socials/types.js';
+import { validateSocialLinks } from '../socials/validators.js';
 
-const AFFILIATION_KEYS = [
+export const AFFILIATION_KEYS = [
   'id',
   'address',
   'city',
@@ -28,20 +29,20 @@ const AFFILIATION_KEYS = [
   'ringgold',
   'ror',
   'doi',
-  'url',
   'email',
   'phone',
   'fax',
+  ...SOCIAL_LINKS_KEYS,
 ];
 
-const AFFILIATION_ALIASES = {
+export const AFFILIATION_ALIASES = {
   ref: 'id', // Used in QMD to reference an affiliation
   region: 'state',
   province: 'state',
   zipcode: 'postal_code',
   zip_code: 'postal_code',
-  website: 'url',
   institution: 'name',
+  ...SOCIAL_LINKS_ALIASES,
 };
 
 /**
@@ -57,12 +58,19 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
     opts,
   );
   if (value === undefined) return undefined;
+  // If affiliation only has an id, give it a matching name; this is equivalent to the case
+  // where a simple string is provided as an affiliation.
+  if (Object.keys(value).length === 1 && value.id) {
+    value.name = value.id;
+  }
   const output: Affiliation = {};
   if (defined(value.id)) {
     output.id = validateString(value.id, incrementOptions('id', opts));
   }
   if (defined(value.name)) {
     output.name = validateString(value.name, incrementOptions('name', opts));
+  } else {
+    validationWarning('affiliation should include name/institution', opts);
   }
   if (defined(value.department)) {
     output.department = validateString(value.department, incrementOptions('department', opts));
@@ -111,21 +119,12 @@ export function validateAffiliation(input: any, opts: ValidationOptions) {
   if (defined(value.email)) {
     output.email = validateEmail(value.email, incrementOptions('email', opts));
   }
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
+  validateSocialLinks(value, opts, output);
   if (defined(value.phone)) {
     output.phone = validateString(value.phone, incrementOptions('phone', opts));
   }
   if (defined(value.fax)) {
     output.fax = validateString(value.fax, incrementOptions('fax', opts));
-  }
-  // If affiliation only has an id, give it a matching name; this is equivalent to the case
-  // where a simple string is provided as an affiliation.
-  if (Object.keys(output).length === 1 && output.id) {
-    return stashPlaceholder(output.id);
-  } else if (!output.name) {
-    validationWarning('affiliation should include name/institution', opts);
   }
   return output;
 }

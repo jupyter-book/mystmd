@@ -10,8 +10,8 @@ describe('resolveInputs', () => {
   beforeEach(() => memfs.vol.reset());
   it('default path and url fill correctly', async () => {
     expect(resolveInputs(new Session(), { kind: TemplateKind.tex })).toEqual({
-      templatePath: 'templates/tex/myst/curvenote',
-      templateUrl: 'https://api.mystmd.org/templates/tex/myst/curvenote',
+      templatePath: 'templates/tex/myst/plain_latex',
+      templateUrl: 'https://api.mystmd.org/templates/tex/myst/plain_latex',
     });
   });
   it('template as path to template file exists', async () => {

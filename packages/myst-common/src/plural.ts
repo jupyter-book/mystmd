@@ -15,8 +15,8 @@ export function plural(f: string, count?: number | any[] | Record<any, any>): st
     (typeof count === 'number'
       ? count
       : Array.isArray(count)
-      ? count?.length
-      : Object.keys(count ?? {}).length) ?? 0;
+        ? count?.length
+        : Object.keys(count ?? {}).length) ?? 0;
   return f
     .replace('%s', String(num))
     .replace(/\((?:([a-z0-9A-Z-]*)\|)?([a-z0-9A-Z-]*)\)/g, num === 1 ? '$1' : '$2');

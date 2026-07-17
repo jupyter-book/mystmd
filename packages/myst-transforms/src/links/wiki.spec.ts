@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { VFile } from 'vfile';
-import type { Link } from './types';
+import type { Link } from 'myst-spec-ext';
 import { WikiTransformer } from './wiki';
 
 describe('Test WikiTransformer', () => {
@@ -131,5 +131,14 @@ describe('Test WikiTransformer', () => {
     expect(link.children).toEqual([{ type: 'text', value: 'Knowledge tree' }]);
     expect(link.data?.wiki).toEqual('https://wiki.seg.org/');
     expect(link.data?.page).toEqual('Knowledge_tree');
+  });
+  test('any wiki permalink', async () => {
+    const t = new WikiTransformer();
+    const link: Link = {
+      type: 'link',
+      url: 'https://en.wikipedia.org/w/index.php?title=Ecotourism&oldid=1291722475',
+      children: [],
+    };
+    expect(t.test(link.url)).toBe(false);
   });
 });

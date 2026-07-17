@@ -241,7 +241,16 @@ options:
       - Curvenote
 ```
 
-The options can be of `type:` `string`, `boolean` or `choice`. For all of your variable names, prefer `lowercase_underscores` for the naming convention. You can also provide a `title` for any `part` or `option`.
+The options can be of `type:` `string`, `boolean`, `choice`, or `file`. You can also provide a `title` for any `part` or `option`.
+
+If you use dashes in option names (i.e., `my-option` instead of `my_option`), you have to access them within brackets in your template:
+
+```
+[#- if options['my-option'] -#]
+#show: somefunction.with(
+  option: "[-options['my-option']-]"
+)
+```
 
 ## Content, Imports and Packages
 
@@ -325,4 +334,4 @@ You can choose to also list your template so that it is available to any one els
 See [](./contribute-a-template.md) for more information!
 ```
 
-Nice work on creating a template, share the word on [twitter](https://twitter.com/intent/tweet?text=I%20just%20created%20a%20new%20MyST%20Markdown%20template!&url=https://mystmd.org/jtex/create-a-latex-template&via=executablebooks), and think about [contributing your template](./contribute-a-template.md) to make it discoverable to other users!
+Nice work on creating a template, share the word on [twitter](https://twitter.com/intent/tweet?text=I%20just%20created%20a%20new%20MyST%20Markdown%20template!&url=https://mystmd.org/jtex/create-a-latex-template&via=MystMarkdown), and think about [contributing your template](./contribute-a-template.md) to make it discoverable to other users!

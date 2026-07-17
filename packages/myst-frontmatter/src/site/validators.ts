@@ -4,6 +4,7 @@ import {
   incrementOptions,
   validateList,
   validateObject,
+  validateObjectKeys,
   validateString,
   validationError,
 } from 'simple-validators';
@@ -14,43 +15,8 @@ import type { ReferenceStash } from '../utils/referenceStash.js';
 import { validateAndStashObject } from '../utils/referenceStash.js';
 import { validateGithubUrl } from '../utils/validators.js';
 import { validateVenue } from '../venues/validators.js';
-import type { SiteFrontmatter } from './types.js';
+import { FRONTMATTER_ALIASES, PAGE_KNOWN_PARTS, type SiteFrontmatter } from './types.js';
 import { RESERVED_EXPORT_KEYS } from '../exports/validators.js';
-
-export const SITE_FRONTMATTER_KEYS = [
-  'title',
-  'subtitle',
-  'short_title',
-  'description',
-  'thumbnail',
-  'thumbnailOptimized',
-  'banner',
-  'bannerOptimized',
-  'authors',
-  'contributors',
-  'venue',
-  'github',
-  'keywords',
-  'affiliations',
-  'funding',
-  'options',
-];
-
-export const FRONTMATTER_ALIASES = {
-  author: 'authors',
-  contributor: 'contributors',
-  affiliation: 'affiliations',
-  export: 'exports',
-  jupyter: 'thebe',
-  part: 'parts',
-  ack: 'acknowledgments',
-  acknowledgements: 'acknowledgments',
-  availability: 'data_availability',
-  plain_language_summary: 'summary',
-  quote: 'epigraph',
-  lay_summary: 'summary',
-  image: 'thumbnail',
-};
 
 export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: SiteFrontmatter = {};
@@ -76,6 +42,15 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (defined(value.bannerOptimized)) {
     // No validation, this is expected to be set programmatically
     output.bannerOptimized = value.bannerOptimized;
+  }
+  if (defined(value.tags)) {
+    output.tags = validateList(
+      value.tags,
+      incrementOptions('tags', opts),
+      (file, index: number) => {
+        return validateString(file, incrementOptions(`tags.${index}`, opts));
+      },
+    );
   }
   const stash: ReferenceStash = {};
   if (defined(value.affiliations)) {
@@ -127,6 +102,36 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       },
     );
   }
+  if (defined(value.reviewers)) {
+    output.reviewers = validateList(
+      value.reviewers,
+      { coerce: true, ...incrementOptions('reviewers', opts) },
+      (reviewer, ind) => {
+        return validateAndStashObject(
+          reviewer,
+          stash,
+          'contributors',
+          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
+          incrementOptions(`reviewers.${ind}`, opts),
+        );
+      },
+    );
+  }
+  if (defined(value.editors)) {
+    output.editors = validateList(
+      value.editors,
+      { coerce: true, ...incrementOptions('editors', opts) },
+      (editor, ind) => {
+        return validateAndStashObject(
+          editor,
+          stash,
+          'contributors',
+          (v: any, o: ValidationOptions) => validateContributor(v, stash, o),
+          incrementOptions(`editors.${ind}`, opts),
+        );
+      },
+    );
+  }
   if (defined(value.venue)) {
     output.venue = validateVenue(value.venue, incrementOptions('venue', opts));
   }
@@ -151,6 +156,9 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       },
     );
   }
+  if (defined(value.copyright)) {
+    output.copyright = validateString(value.copyright, incrementOptions('copyright', opts));
+  }
   if (defined(value.options)) {
     const optionsOptions = incrementOptions('options', opts);
     const options = validateObject(value.options, optionsOptions);
@@ -164,10 +172,44 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
       });
     }
   }
+  const partsOptions = incrementOptions('parts', opts);
+  let parts: Record<string, any> | undefined;
+  if (defined(value.parts)) {
+    parts = validateObjectKeys(
+      value.parts,
+      { optional: PAGE_KNOWN_PARTS, alias: FRONTMATTER_ALIASES },
+      { keepExtraKeys: true, suppressWarnings: true, ...partsOptions },
+    );
+  }
+  PAGE_KNOWN_PARTS.forEach((partKey) => {
+    if (defined(value[partKey])) {
+      parts ??= {};
+      if (parts[partKey]) {
+        validationError(`duplicate value for part ${partKey}`, partsOptions);
+      } else {
+        parts[partKey] = value[partKey];
+      }
+    }
+  });
+  if (parts) {
+    const partsEntries = Object.entries(parts)
+      .map(([k, v]) => {
+        return [
+          k,
+          validateList(v, { coerce: true, ...incrementOptions(k, partsOptions) }, (item, index) => {
+            return validateString(item, incrementOptions(`${k}.${index}`, partsOptions));
+          }),
+        ];
+      })
+      .filter((entry): entry is [string, string[]] => !!entry[1]?.length);
+    if (partsEntries.length > 0) {
+      output.parts = Object.fromEntries(partsEntries);
+    }
+  }
 
-  // Contributor resolution should happen last
-  const stashContribAuthors = stash.contributors?.filter(
-    (contrib) => stash.authorIds?.includes(contrib.id),
+  // Author/Contributor/Affiliation resolution should happen last
+  const stashContribAuthors = stash.contributors?.filter((contrib) =>
+    stash.authorIds?.includes(contrib.id),
   );
   const stashContribNonAuthors = stash.contributors?.filter(
     (contrib) => !stash.authorIds?.includes(contrib.id),
@@ -175,10 +217,12 @@ export function validateSiteFrontmatterKeys(value: Record<string, any>, opts: Va
   if (stashContribAuthors?.length) {
     output.authors = stashContribAuthors;
     // Ensure there is a corresponding author if an email is provided
-    const corresponding = output.authors?.find((a) => a.corresponding !== undefined);
-    const email = output.authors?.find((a) => a.email);
-    if (!corresponding && email) {
-      email.corresponding = true;
+    const correspondingAuthor = output.authors?.find((a) => a.corresponding);
+    const personWithEmail = output.authors?.find(
+      (a) => a.email && !a.collaboration && a.corresponding === undefined,
+    );
+    if (!correspondingAuthor && personWithEmail) {
+      personWithEmail.corresponding = true;
     }
   }
   if (stashContribNonAuthors?.length) {

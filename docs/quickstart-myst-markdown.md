@@ -8,7 +8,7 @@ description: MyST (Markedly Structured Text) is designed to create publication-q
 
 :::{important} Objective
 
-The goal of this quickstart guide is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in markdown files or markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
+The goal of this quickstart guide is to showcase the most used features of the MyST authoring experience. The MyST syntax can be used in Markdown files or Markdown cells in Jupyter Notebooks to add figures, tables, equations, cross-references, hover-links and citations.
 :::
 
 :::{tip}
@@ -17,9 +17,9 @@ During this how to guide, you can make changes and experiment with MyST syntax i
 
 ## Overview
 
-{abbr}`MyST (Markedly Structured Text)` is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [reStructuredText](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is is a superset of [CommonMark](./commonmark.md).
+{abbr}`MyST (Markedly Structured Text)` is designed to create publication-quality documents written entirely in Markdown. The extensions and design of MyST is inspired by the [Sphinx](https://www.sphinx-doc.org/) and [reStructuredText](https://docutils.sourceforge.io/rst.html) (RST) ecosystems and is a superset of [CommonMark](./commonmark.md).
 
-MyST allows you to directly create “directives” and “roles” that extend markdown to support technical and scientific documents. Directives are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md). MyST also supports rich information about linking to other documents in common services (like Wikipedia or a DOI link), these allow for rich-previews of the links as well as easy ways to include citations.
+MyST allows you to directly create “directives” and “roles” that extend Markdown to support technical and scientific documents. Directives are block-level extension points, like [callout panels](./admonitions.md), [tabs](./dropdowns-cards-and-tabs.md), [figures](./figures.md) or [embedded charts](./interactive-notebooks.ipynb); and roles are inline extension points, for components like [cross-references](./cross-references.md), [external references](./external-references.md), [citations](./citations.md), or [inline math](./math.md). MyST also supports rich information about linking to other documents in common services (like Wikipedia or a DOI link), these allow for rich-previews of the links as well as easy ways to include citations.
 
 ## Typography
 
@@ -46,12 +46,13 @@ See [](./typography.md) to learn in depth about all typographical elements. The 
 
 Directives are multi-line containers that include an identifier, arguments, options, and content. Examples include [admonitions](./admonitions.md), [figures](./figures.md), and [equations](./math.md). At its simplest, you can use directives using a "fence" (either [back-ticks or colons](#example-fence)) and the name of the directive enclosed in braces (`{name}`).
 
-For example, try editing the following `{figure}` directive, you can center the figure with an `:align: center` option or change the `colons` for `backticks`.
+For example, try editing the following {myst:directive}`figure` directive, you can center the figure with an `:align: center` option or change the `colons` for `backticks`.
 
 ```{myst}
 
-:::{figure} https://source.unsplash.com/random/400x200?meditation
+:::{figure} https://github.com/rowanc1/pics/blob/main/banff-tall.png?raw=true
 :align: right
+:width: 40%
 
 The picture would look better if it is `:align: center`-ed!
 :::
@@ -104,7 +105,7 @@ As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is info
     Designing the user-experience of scientific communication is _really_ important.
 
 [^3]:
-    Just as an example of having lots of helpful information at your finger-tips, it would be nice to see the video of that article, _right_? Well here it is:
+    Just as an example of having lots of helpful information at your fingertips, it would be nice to see the video of that article, _right_? Well here it is:
 
     :::{iframe} https://www.youtube.com/embed/yYcQf-Yq8B0
     :::
@@ -121,13 +122,13 @@ As you have seen in the links in MyST (e.g. [](./frontmatter.md)), there is info
 Try clicking the footnote above, you can nest information and interactive figures for the interested reader! You can help with reading comprehension by around 26% by providing information when the reader needs it!!
 :::
 
-To link to a document, for example [](./frontmatter.md), is done through a simple Markdown link `[](./frontmatter.md)`, you can put your own content in between the square brackets, but if you leave it out the link contents will be filled in with the title of the page. If you define the frontmatter on that page (i.e. the description and tooltip), you will also see that information when you hover over the link. This also works for links to Wikipedia (e.g. [Ponyies 🐴](https://en.wikipedia.org/wiki/New_Forest_pony)) as well as Github code (e.g. [](https://github.com/executablebooks/mystmd/blob/main/README.md)).
+To link to a document, for example [](./frontmatter.md), is done through a simple Markdown link `[](./frontmatter.md)`, you can put your own content in between the square brackets, but if you leave it out the link contents will be filled in with the title of the page. If you define the frontmatter on that page (i.e. the description and tooltip), you will also see that information when you hover over the link. This also works for links to Wikipedia (e.g. [Ponies 🐴](https://en.wikipedia.org/wiki/New_Forest_pony)) as well as Github code (e.g. [](https://github.com/jupyter-book/mystmd/blob/main/README.md)).
 
 To create a cross-reference, you need to label a "target", like a figure, section, equation or table (or anything!!). To be referenceable, these elements can add the `label` option in many directives. To then reference the figure, use the link syntax again pointing to the label as the target `[](#my-fig)`. If you leave the title blank the default will fill in with an enumerated "Figure 1".
 
 ````{myst}
-```{figure} https://source.unsplash.com/random/500x200/?mountain
-:name: my-fig
+```{figure} https://github.com/rowanc1/pics/blob/main/mountains.png?raw=true
+:label: my-fig
 :align: center
 
 My **bold** mountain 🏔🚠.
@@ -160,7 +161,7 @@ See [](./citations.md) for more information about using citations and references
 
 ## What's Next?
 
-We hope the above sections in this overview should have given you a sense of the types of things that MyST can do! Once you write a document in MyST, you can use the command line tools to translate that into a [scientific PDF article](./creating-pdf-documents.md), or a [Word Document](./creating-word-documents.md) or a [website](./quickstart-myst-websites.md) like this site!
+We hope the above sections in this overview should have given you a sense of the types of things that MyST can do! Once you write a document in MyST, you can use the command line tools to translate that into a [scientific PDF article](./creating-pdf-documents.md), or a [Word Document](./creating-word-documents.md) or a [website](./quickstart-myst-documents.md) like this site!
 
 ```{mermaid}
 flowchart LR
@@ -176,5 +177,7 @@ flowchart LR
 ```
 
 :::{seealso}
-You might also want to explore tools and extensions, like the [JupyterLab MyST extension](https://github.com/executablebooks/jupyterlab-myst), [VSCode extension](https://marketplace.visualstudio.com/items?itemName=ExecutableBookProject.myst-highlight) or [Curvenote](https://curvenote.com/for/writing) to make your rendering and writing of MyST easier.
+You might also want to explore tools and extensions, like the [JupyterLab MyST extension](https://github.com/jupyter-book/jupyterlab-myst), [VSCode extension](https://marketplace.visualstudio.com/items?itemName=ExecutableBookProject.myst-highlight) or [Curvenote](https://curvenote.com/for/writing) to make your rendering and writing of MyST easier.
 :::
+
+![](#quickstart-cards)

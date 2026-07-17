@@ -3,6 +3,7 @@ import type { Image, Table, Code, Math } from 'myst-spec';
 import { select } from 'unist-util-select';
 import { getColumnWidths } from './tables.js';
 import type { Handler } from './types.js';
+import { addIndexEntries } from './utils.js';
 
 export enum CaptionKind {
   fig = 'fig',
@@ -39,7 +40,13 @@ function switchKind(node: Image | Table | Code | Math) {
 export function determineCaptionKind(node: GenericNode): CaptionKind | null {
   let kind = switchKind(node as any);
   node.children?.forEach((n) => {
-    if (!kind) kind = determineCaptionKind(n);
+    const nKind = determineCaptionKind(n);
+    if (!kind) {
+      kind = nKind;
+    } else if (nKind) {
+      // If there are multiple node kinds, revert to figure
+      kind = CaptionKind.fig;
+    }
   });
   return kind;
 }
@@ -55,7 +62,7 @@ function nodeToCommand(node: Image | Table | Code | Math) {
       return fullWidth ? 'table*' : 'table';
     case CaptionKind.code:
       // TODO full width code
-      return 'code';
+      return 'figure';
     case CaptionKind.eq:
       return 'figure'; // not sure what to do here.
     default:
@@ -70,7 +77,7 @@ function nodeToLaTeXOptions(node: Image | Table | Code | Math) {
     case CaptionKind.table:
       return '!htbp';
     case CaptionKind.code:
-      return 'H';
+      return 'h';
     case CaptionKind.eq:
     default:
       return undefined;
@@ -127,6 +134,7 @@ export const containerHandler: Handler = (node, state) => {
   state.data.isInContainer = lastContainer;
   state.write(`\n\\end{${command}}`);
   if (after) state.write(after);
+  addIndexEntries(node, state);
   state.closeBlock(node);
 };
 

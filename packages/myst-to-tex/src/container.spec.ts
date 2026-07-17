@@ -22,4 +22,18 @@ describe('determineCaptionKind', () => {
     };
     expect(determineCaptionKind(node)).toEqual(null);
   });
+  it('container[code] -> code', () => {
+    const node = {
+      type: 'container',
+      children: [{ type: 'code' }],
+    };
+    expect(determineCaptionKind(node)).toEqual(CaptionKind.code);
+  });
+  it('container[code, image] -> figure', () => {
+    const node = {
+      type: 'container',
+      children: [{ type: 'code' }, { type: 'image' }],
+    };
+    expect(determineCaptionKind(node)).toEqual(CaptionKind.fig);
+  });
 });

@@ -19,6 +19,7 @@ export const docRole: RoleSpec = {
       'Usage of the {doc} role is not recommended, use a markdown link to the file instead.',
       {
         source: 'role:doc',
+        node: data.node,
         note: `For {doc}\`${body}\` use [${modified || ''}](${url})`,
         ruleId: RuleId.roleBodyCorrect,
       },

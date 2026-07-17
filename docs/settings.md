@@ -1,9 +1,31 @@
 ---
-title: Settings
+title: Project settings
 description: Project and page settings for MyST
 ---
 
 The `settings` field in the project or page frontmatter allows you to change how the parsing, transforms, plugins, or other behaviors of mystmd.
+
+Here's an example of settings specified in **project frontmatter**
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  settings:
+    output_matplotlib_strings: remove
+    output_stderr: remove-warn
+```
+
+Here's an example of settings in **page frontmatter**
+
+```{code-block} yaml
+:filename: page.md
+
+settings:
+  output_matplotlib_strings: remove
+  output_stderr: remove-warn
+```
+
+(project-settings)=
 
 ## Available settings fields
 
@@ -16,6 +38,8 @@ output_stderr
     - `"remove-warn"` or `"remove-error"`: remove all stderr, and log a warning or error
     - `"warn"` or "error": log a warning or error if a stderr is found
 
+: Can be controlled or overridden by a [notebook cell tag](#tbl:notebook-cell-tags).
+
 (setting:output_stdout)=
 output_stdout
 : Remove, warn or error on stdout outputs. (e.g. long text outputs, like text-based progress bars)
@@ -25,14 +49,48 @@ output_stdout
     - `"remove-warn"` or `"remove-error"`: remove all stdout, and log a warning or error
     - `"warn"` or "error": log a warning or error if a stdout is found
 
+: Can be controlled or overridden by a [notebook cell tag](#tbl:notebook-cell-tags).
+
 (setting:output_matplotlib_strings)=
 output_matplotlib_strings
-: Remove, warn or error on matplotlib strings outputs. (e.g. `<Figure size 720x576 with 1 Axes>` or `Text(0.5, 0.98, 'Test 1')`). These can also be suppressed by ending your cell content with a semicolon in Jupyter Notebooks. The default is to remove these and warn (`"remove-warn"`).
+: Remove, warn, or error on cell outputs that return a string-based Python object (e.g., matplotlib strings outputs, such as `<Figure size 720x576 with 1 Axes>` or `Text(0.5, 0.98, 'Test 1')`). These can also be suppressed by ending your cell content with a semicolon in Jupyter Notebooks. The default is to remove these and warn (`"remove-warn"`).
 
     - `"show"`: show all matplotlib strings in outputs
     - `"remove"`: remove all matplotlib strings in outputs
     - `"remove-warn"` (default) or `"remove-error"`: remove all matplotlib strings in outputs, and log a warning or error
     - `"warn"` or "error": log a warning or error if matplotlib strings in outputs
+
+## Markdown Parsing Settings
+
+Adding an object of `parser` to the settings will allow you to control various parser behaviors.
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  settings:
+    parser:
+      dollarmath: false
+```
+
+:::{warning}
+Markdown parsing settings currently only work on the `myst.yml` project settings, not the page frontmatter.
+:::
+
+(setting:parser:dollarmath)=
+dollarmath
+: Enable or disable inline dollar math parsing (e.g., `$x^2$` syntax).
+
+    - `true` (default): Enable inline dollar math parsing
+    - `false`: Disable inline dollar math parsing
+
+    When disabled, dollar signs (`$`) will be treated as regular text characters and not parsed as math delimiters. This can be useful if you have frequent uses of dollar signs, such as currency, in your content that are not meant to be math.
+
+(setting:infer_dois_from_urls)=
+infer_dois_from_urls
+: Infer DOIs from non-doi.org link URLs (for example, publisher article pages, biorxiv, or zenodo).
+
+    - `false` (default): Only `doi.org` links, raw DOI strings, and `doi:` links are recognized
+    - `true`: infer DOIs from all links that end in a valid DOI (legacy behavior)
 
 ## LaTeX Rendering Settings
 
@@ -52,3 +110,99 @@ beamer
 
     - `true`: Add `\begin{frame}` environment for each block, delimited by `+++`, and enable presentation outline with block metadata `+++ {"outline":true}`
     - `false` (default): No extra `\begin{frame}` environment will be used
+
+(setting:error_rules)=
+
+## Error Rules
+
+The `error_rules` list in the project configuration can be used to disable or modify logging rules in the CLI:
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  error_rules:
+    - rule: math-eqnarray-replaced
+      severity: ignore
+    - rule: link-resolves
+      severity: ignore
+      keys:
+        - /known-internal-link
+        - https://flaky-connection.com
+        - 'https://example.org/**'
+        - 'https://*.example.com/**'
+```
+
+The `severity` of each rule can be set to `ignore`, `warn`, or `error`. If the rule is triggered, then the severity listed will be adopted rather than the default log message severity. For example, the above configuration updates will no longer warn on `math-eqnarray-replaced` and will also ignore the two explicit links and the two link patterns listed in the configuration when running `myst build --check-links --strict`.
+
+**The default severity is `ignore`**. Simply listing the rule IDs as strings will ignore those rules.
+
+**To discover the rule ID**, run myst in debug mode (i.e. `myst --debug build`) to get the error (and optional key) printed to the console.
+
+Some error rules support a `key` field that identifies specific instances of the error. This allows you to target particular cases rather than all instances of a rule. For example, the `link-resolves` rule uses the URL as the key, allowing you to ignore specific broken links while still checking others. Similarly, the `doi-link-valid` rule uses the DOI value as the key, so you can ignore specific invalid DOIs while still validating others. When a rule supports keys, you can provide a list of keys (or key patterns) in the `keys` field to match multiple specific instances.
+
+:::{seealso .dropdown} List of Error Rules
+
+The full list of errors and warnings used across MyST with their defaults shown.
+
+```{myst:error-rules-list}
+
+```
+
+:::
+
+### Pattern Matching in Keys
+
+Keys support glob patterns, allowing you to match multiple URLs or paths with a single pattern. Patterns use the same glob syntax as many modern build tools:
+
+- `*` matches any characters except `/` (e.g., `https://example.com/*` matches `https://example.com/page` but not `https://example.com/path/to/page`)
+- `**` matches any characters including `/` (e.g., `https://example.org/**` matches all URLs under `example.org`)
+- `?` matches a single character (e.g., `page?` matches `page1`, `page2`, etc.)
+- `*.example.com` matches any subdomain (e.g., `www.example.com`, `blog.example.com`)
+- Brace expansion like `{www,blog}.example.com` matches either `www.example.com` or `blog.example.com`
+- Use `{http,https}://` to match both HTTP and HTTPS protocols (e.g., `{http,https}://api.example.com/**` matches both protocol variants)
+
+:::{note .dropdown} Automatically Skipped Domains
+
+The following domains are automatically skipped by the link checker and do not need to be added to error_rules:
+
+- `example.com`, `example.org`, `example.net` (and their `www.` variants) - Reserved for documentation per RFC 2606
+- `linkedin.com`, `twitter.com`, `medium.com`, `wikipedia.org` - Block automated access from CI environments
+
+:::
+
+### Fail builds with broken links
+
+To fail CI when there are broken external links, combine `--check-links` with `--strict`:
+
+```shell
+$ myst build --check-links --strict
+```
+
+Both flags are needed:
+
+- `--check-links` checks every external link and reports broken ones in the build log, but on its own does not cause the build to fail.
+- `--strict` exits non-zero on any errors reported during the build.
+
+Together they will cause a build to fail if any links are broken.
+
+#### Ignore specific URLs
+
+To skip some URL patterns (e.g. if you know they are flaky), add those URLs as `keys` under the `link-resolves` rule in your `myst.yml` with `severity: ignore`.
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  error_rules:
+    - rule: link-resolves
+      severity: ignore
+      keys:
+        - '{http,https}://legacy-api.mysite.com/**'
+        - '{http,https}://staging.mysite.com/**'
+```
+
+The `keys` values support glob patterns - see [Pattern Matching in Keys](#pattern-matching-in-keys) above.
+
+:::{tip} Omitting `severity:` has the same effect as `severity: ignore`
+
+Entries listed under `error_rules` default to `severity: ignore` (see [the error rules section](#setting:error_rules)). Setting it explicitly makes the intent obvious at a glance.
+:::

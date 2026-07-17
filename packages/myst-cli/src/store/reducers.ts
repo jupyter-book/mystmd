@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
 import { combineReducers } from 'redux';
-import type { BuildWarning, ExternalLinkResult } from './types.js';
+import type { BuildWarning, ExternalLinkResult, ValidatedRawConfig } from './types.js';
 import type { LocalProject } from '../project/types.js';
 
 export const projects = createSlice({
@@ -33,15 +33,20 @@ export const config = createSlice({
   initialState: {
     rawConfigs: {},
     projects: {},
+    projectParts: {},
+    fileParts: {},
     sites: {},
     filenames: {},
   } as {
     currentProjectPath: string | undefined;
     currentSitePath: string | undefined;
-    rawConfigs: Record<string, { raw: Record<string, any>; validated: Record<string, any> }>;
-    projects: Record<string, ProjectConfig>;
-    sites: Record<string, SiteConfig>;
+    rawConfigs: Record<string, { raw: Record<string, any>; validated: ValidatedRawConfig }>;
+    projects: Record<string, Record<string, any>>;
+    projectParts: Record<string, string[]>;
+    fileParts: Record<string, string[]>;
+    sites: Record<string, Record<string, any>>;
     filenames: Record<string, string>;
+    configExtensions?: string[];
   },
   reducers: {
     receiveCurrentProjectPath(state, action: PayloadAction<{ path: string }>) {
@@ -54,7 +59,7 @@ export const config = createSlice({
       state,
       action: PayloadAction<{
         raw: Record<string, any>;
-        validated: Record<string, any>;
+        validated: ValidatedRawConfig;
         path: string;
         file: string;
       }>,
@@ -70,6 +75,24 @@ export const config = createSlice({
     receiveProjectConfig(state, action: PayloadAction<ProjectConfig & { path: string }>) {
       const { path, ...payload } = action.payload;
       state.projects[resolve(path)] = payload;
+    },
+    receiveConfigExtension(state, action: PayloadAction<{ file: string }>) {
+      state.configExtensions ??= [];
+      state.configExtensions.push(action.payload.file);
+    },
+    receiveProjectPart(state, action: PayloadAction<{ partFile: string; path: string }>) {
+      const { path, partFile } = action.payload;
+      const partFiles = state.projectParts[resolve(path)] ?? [];
+      if (!partFiles.includes(partFile)) {
+        state.projectParts[resolve(path)] = [...partFiles, partFile];
+      }
+    },
+    receiveFilePart(state, action: PayloadAction<{ partFile: string; file: string }>) {
+      const { file, partFile } = action.payload;
+      const partFiles = state.fileParts[resolve(file)] ?? [];
+      if (!partFiles.includes(partFile)) {
+        state.fileParts[resolve(file)] = [...partFiles, partFile];
+      }
     },
   },
 });
@@ -110,6 +133,7 @@ export const watch = createSlice({
     },
     addLocalDependency(state, action: PayloadAction<{ path: string; dependency: string }>) {
       const { path, dependency } = action.payload;
+      if (!state.files[resolve(path)]) state.files[resolve(path)] = {};
       const existingDeps = [...(state.files[resolve(path)].localDependencies ?? [])];
       if (!existingDeps.includes(dependency)) {
         state.files[resolve(path)].localDependencies = [...existingDeps, dependency];
@@ -149,6 +173,7 @@ export const watch = createSlice({
         dataUrl,
       } = action.payload;
       const resolvedPath = resolve(path);
+      if (!state.files[resolvedPath]) state.files[resolvedPath] = {};
       if (title) state.files[resolvedPath].title = title;
       if (short_title) state.files[resolvedPath].short_title = short_title;
       if (description) state.files[resolvedPath].description = description;

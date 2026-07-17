@@ -1,0 +1,51 @@
+cases:
+  - title: Math directive
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: math
+          value: Ax = b
+          children:
+            - type: math
+              value: |-
+                Ax = b
+    myst: |-
+      ```{math}
+      Ax = b
+      ```
+    html: |-
+      <div class="math-display">Ax = b</div>
+    latex: |-
+      \begin{equation}
+      Ax = b
+      \end{equation}
+
+  - title: Math directive with label
+    id: math
+    mdast:
+      type: root
+      children:
+        - type: mystDirective
+          name: math
+          options:
+            label: matrix
+          value: Ax = b
+          children:
+            - type: math
+              identifier: matrix
+              label: matrix
+              value: |-
+                Ax = b
+    myst: |-
+      ```{math}
+      :label: matrix
+      Ax = b
+      ```
+    html: |-
+      <div id="matrix" class="math-display">Ax = b</div>
+    latex: |-
+      \begin{equation}
+      \label{matrix}
+      Ax = b
+      \end{equation}

@@ -1,0 +1,44 @@
+name: MyST Install Action
+description: Install Bun, MyST, and other dependencies
+inputs:
+  node:
+    description: 'Node version to install'
+    required: true
+    default: '24'
+  bun-version:
+    description: 'Bun version to install'
+    required: false
+    default: 'latest'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install libxml
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libxml2-utils
+      shell: bash
+    # Even though we use bun for test runners, the mystmd bundle uses node,
+    # so we need to install node and test against multiple versions.
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ inputs.node }}
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: ${{ inputs.bun-version }}
+    - name: Install python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+        cache-dependency-path: '.github/requirements/requirements-execute.txt'
+    - name: Install execution requirements for ipykernel and jupyter-server
+      run: python -m pip install -r .github/requirements/requirements-execute.txt
+      shell: bash
+    - name: Install node deps and build Myst
+      run: |
+        bun install
+        bun run build
+        bun run link
+      shell: bash

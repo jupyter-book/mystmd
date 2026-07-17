@@ -1,0 +1,16 @@
+title: myst-to-typst code
+cases:
+  - title: proof
+    mdast:
+      type: root
+      children:
+        - type: exercise
+          identifier: my-exercise
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Recall...
+    typst: |-
+      #proof(kind: "exercise", supplement: "Exercise", labelName: "my-exercise")[
+      Recall...]

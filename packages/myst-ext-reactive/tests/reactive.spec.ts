@@ -13,7 +13,7 @@ describe('reactive tests', () => {
           type: 'mystDirective',
           options: {
             name: 'visitors',
-            value: 5,
+            value: '5',
             format: '.0f',
           },
           children: [

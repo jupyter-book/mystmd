@@ -1,8 +1,8 @@
-import type { Contributor, ProjectFrontmatter, Affiliation } from 'myst-frontmatter';
+import type { Contributor, Affiliation } from 'myst-frontmatter';
 import * as credit from 'credit-roles';
 import { doi } from 'doi-utils';
 import { orcid } from 'orcid';
-import type { Element, IJatsSerializer } from './types.js';
+import type { Element, FrontmatterWithParts, IJatsSerializer } from './types.js';
 
 export function getJournalIds(): Element[] {
   // [{ type: 'element', name: 'journal-id', attributes: {'journal-id-type': ...}, text: ...}]
@@ -59,7 +59,7 @@ export function getJournalMeta(): Element | null {
  *
  * See: https://jats.nlm.nih.gov/archiving/tag-library/1.3/element/article-title.html
  */
-export function getArticleTitle(frontmatter: ProjectFrontmatter): Element[] {
+export function getArticleTitle(frontmatter: FrontmatterWithParts): Element[] {
   const title = frontmatter?.title;
   const subtitle = frontmatter?.subtitle;
   const short_title = frontmatter?.short_title;
@@ -156,7 +156,7 @@ function nameElementFromContributor(contrib: Contributor): Element | undefined {
  *
  * Authors are tagged as contrib-type="author"
  */
-export function getArticleAuthors(frontmatter: ProjectFrontmatter): Element[] {
+export function getArticleAuthors(frontmatter: FrontmatterWithParts): Element[] {
   const generateContrib = (author: Contributor, type?: string): Element => {
     const attributes: Record<string, any> = {};
     const elements: Element[] = [];
@@ -302,7 +302,7 @@ function instWrapElementsFromAffiliation(affiliation: Affiliation, includeDept =
   return elements;
 }
 
-export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element[] {
+export function getArticleAffiliations(frontmatter: FrontmatterWithParts): Element[] {
   if (!frontmatter.affiliations?.length) return [];
   // Only add affiliations from authors, not contributors
   const affIds = [
@@ -393,7 +393,7 @@ export function getArticleAffiliations(frontmatter: ProjectFrontmatter): Element
   return affs ? affs : [];
 }
 
-export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[] {
+export function getArticlePermissions(frontmatter: FrontmatterWithParts): Element[] {
   // copyright-statement: '© 2023, Authors et al'
   // copyright-year: '2023'
   // copyright-holder: 'Authors et al'
@@ -460,14 +460,14 @@ export function getArticlePermissions(frontmatter: ProjectFrontmatter): Element[
     : [];
 }
 
-export function getKwdGroup(frontmatter: ProjectFrontmatter): Element[] {
+export function getKwdGroup(frontmatter: FrontmatterWithParts): Element[] {
   const kwds = frontmatter.keywords?.map((keyword): Element => {
     return { type: 'element', name: 'kwd', elements: [{ type: 'text', text: keyword }] };
   });
   return kwds?.length ? [{ type: 'element', name: 'kwd-group', elements: kwds }] : [];
 }
 
-export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
+export function getFundingGroup(frontmatter: FrontmatterWithParts): Element[] {
   const fundingGroups = frontmatter.funding?.map((fund): Element => {
     const elements: Element[] = [];
     if (fund.awards?.length) {
@@ -588,23 +588,23 @@ export function getFundingGroup(frontmatter: ProjectFrontmatter): Element[] {
   return fundingGroups ? fundingGroups : [];
 }
 
-export function getArticleVolume(frontmatter: ProjectFrontmatter): Element[] {
-  const text = frontmatter.biblio?.volume;
+export function getArticleVolume(frontmatter: FrontmatterWithParts): Element[] {
+  const text = frontmatter.volume?.number;
   return text
     ? [{ type: 'element', name: 'volume', elements: [{ type: 'text', text: `${text}` }] }]
     : [];
 }
 
-export function getArticleIssue(frontmatter: ProjectFrontmatter): Element[] {
-  const text = frontmatter.biblio?.issue;
+export function getArticleIssue(frontmatter: FrontmatterWithParts): Element[] {
+  const text = frontmatter.issue?.number;
   return text
     ? [{ type: 'element', name: 'issue', elements: [{ type: 'text', text: `${text}` }] }]
     : [];
 }
 
-export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
+export function getArticlePages(frontmatter: FrontmatterWithParts): Element[] {
   // fpage/lpage, page-range, or elocation-id
-  const { first_page, last_page } = frontmatter.biblio ?? {};
+  const { first_page, last_page } = frontmatter ?? {};
   const pages: Element[] = [];
   if (first_page) {
     pages.push({
@@ -623,7 +623,7 @@ export function getArticlePages(frontmatter: ProjectFrontmatter): Element[] {
   return pages;
 }
 
-export function getArticleIds(frontmatter: ProjectFrontmatter): Element[] {
+export function getArticleIds(frontmatter: FrontmatterWithParts): Element[] {
   const ids: Element[] = [];
   if (doi.validate(frontmatter.doi)) {
     ids.push({
@@ -636,7 +636,10 @@ export function getArticleIds(frontmatter: ProjectFrontmatter): Element[] {
   return ids;
 }
 
-export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element {
+export function getArticleMeta(
+  frontmatter?: FrontmatterWithParts,
+  state?: IJatsSerializer,
+): Element {
   const elements = [];
   if (frontmatter) {
     elements.push(
@@ -690,7 +693,7 @@ export function getArticleMeta(frontmatter?: ProjectFrontmatter, state?: IJatsSe
  *
  * This element must be defined in a JATS article and must include <article-meta>
  */
-export function getFront(frontmatter?: ProjectFrontmatter, state?: IJatsSerializer): Element[] {
+export function getFront(frontmatter?: FrontmatterWithParts, state?: IJatsSerializer): Element[] {
   const elements: Element[] = [];
   const journalMeta = getJournalMeta();
   if (journalMeta) elements.push(journalMeta);

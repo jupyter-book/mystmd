@@ -1,32 +1,52 @@
 ---
-title: Citations and bibliography
+title: Citations and Bibliography
+short_title: Citations & Bibliography
 description: Add academic citations to your documents easily, have hover-references and an automatically created bibliography.
 thumbnail: ./thumbnails/citations.png
 ---
 
-Citations automatically show up in your site, including a references section at the bottom of the page. These citations are able to be clicked on to see more information, like the abstract. There are two different ways to add citations to your documents: (1) adding a markdown link to a [DOI](wiki:Digital_object_identifier); and (2) by adding a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
+Citations automatically show up in your site, including a references section at the bottom of the page.
+These citations are able to be clicked on to see more information, like the abstract.
+There are two different ways to add citations to your documents:
+
+1. Add a Markdown link to a [DOI](wiki:Digital_object_identifier); and
+2. Add a BibTeX file, which can be exported from any reference manager, and adding a `cite` role to your content.
 
 (doi-links)=
 
 ## Simple Referencing with a DOI Link
 
-Link to any DOI in your markdown files or Jupyter Notebooks by including a link to the DOI. Provided the `DOI` is formatted correctly, this will be transformed during the build process to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be automatically added to the reference section at the bottom of your notebook (see below👇).
+Link to any DOI in your Markdown files or Jupyter Notebooks by including a link to the DOI.
+This will be transformed to a citation with a pop-up panel on hover like this: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040), and the reference information will be added to the reference section at the bottom of the page. Here's some example syntax:
 
 ```md
-This is a link in markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
+This is a link in Markdown: [Cockett, 2022](https://doi.org/10.5281/zenodo.6476040).
 ```
 
-It is also possible to to drop the link text, that is:\
-`<doi:10.5281/zenodo.6476040>` or `[](doi:10.5281/zenodo.6476040)`,\
-which will insert the citation text in the correct format (e.g. adding an italic "_et al._", etc.).
+To automatically insert the citation text, provide a standalone DOI link without link text:
 
-Providing your DOIs as full links has the advantage that on other rendering platforms (e.g. GitHub), your citation will still be shown as a link. If you have many citations, however, this will slow down the build process as the citation information is fetched dynamically.
+- `[](doi:10.5281/zenodo.6476040)`
+- `<doi:10.5281/zenodo.6476040>`
+
+For example: <https://doi.org/10.5281/zenodo.6476040>.
+
+If the BibTeX file in your project has this DOI, that citation will be used.
+
+If the BibTex file does not have this DOI, the citation data will be downloaded from `https://doi.org` (and cached to a local file in the `_build` directory).
+
+**Clear the DOI cache** with : `myst clean --cache`.
+
+**To modify the style of the inserted citation text**: Use the styles in {ref}`table-pandoc-citations` (this works with or without a BibTeX file)
+
+:::{warning} Many citations will slow down your build
+If you have many citations that aren't present in a local BibTeX file, it may slow down the build process as the citation information is fetched dynamically.
+:::
 
 :::{note} Dealing with complex DOIs
 :class: dropdown
-If your DOI does not follow modern standards (e.g. strange characters or contains multiple `/`s), you must include the `https://doi.org` in the URL and may have to URL encode the DOI string to be recognized as a URL in markdown.
+If your DOI does not follow modern standards (e.g. strange characters or contains multiple `/`s), you must include the `https://doi.org` in the URL and may have to URL encode the DOI string to be recognized as a URL in Markdown.
 
-For the DOI, `10.1175/1520-0493(1972)100<0081:OTAOSH>2.3.CO;2` there are `<`, `;` and `()` characters that do not work well with markdown URL parsing. There are two options:
+For the DOI, `10.1175/1520-0493(1972)100<0081:OTAOSH>2.3.CO;2` there are `<`, `;` and `()` characters that do not work well with Markdown URL parsing. There are two options:
 
 1. use the service https://shortdoi.org, which will give you a unique, persistent smaller DOI that will parse correctly, in this case `https://doi.org/cr3qwn` (which becomes https://doi.org/cr3qwn); or
 2. URL encode this to: \
@@ -38,11 +58,36 @@ For DOIs with multiple slashes in the identifier you also have to use the full h
 
 :::
 
+### Numbered Citations
+
+The default citations are narrative, for numbered citations, these can be set in the `site.options.numbered_references` in your `myst.yml` (See [](#site-options)).
+
+```{code} yaml
+:filename: myst.yml
+site:
+  options:
+    numbered_references: true
+```
+
+![](#page-site-options-note)
+
+### Writing DOIs to BibTeX
+
+If you encounter problems fetching DOIs from `https://doi.org`, for example the downloaded citation does not include all the data you expect or requests to `https://doi.org` are failing on an automated continuous integration platform, you may write your DOI citations to file using the MyST command:
+
+```bash
+myst build --doi-bib
+```
+
+This will generate a BibTeX file `myst.doi.bib` which you may then rename, edit, and save to your project.
+On subsequent builds, the DOIs will be loaded from this file rather than fetched remotely.
+
 ## Including BibTeX
 
 A standard way of including references for $\LaTeX$ is using <wiki:BibTeX>, you can include a `*.bib` file or files in the same directory as your content directory for the project. These will provide the reference keys for that project.
 
-If you want to explicitly reference which BibTeX files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files. This will load the files in order specified.
+If you want to explicitly reference which BibTeX files to use, as well as what order to resolve them in, you can use the `bibliography` field in your frontmatter, which is a string array of local or remote files.
+This will load the files in order specified.
 
 ```yaml
 bibliography:
@@ -55,11 +100,15 @@ The remote BibTeX can be helpful for working with reference managers that suppor
 ## Markdown Citations
 
 You can add citations to any BibTeX entry using the citation key preceded by an `@`, for example, `@author2023`.
-This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#citation-syntax). Multiple citations can be grouped together with square brackets, separated with semi-colons. It is also possible to add a prefix or suffix to parenthetical citations, for example, `[e.g. @author2023, chap. 3; @author1995]`. To add a suffix to a narrative citation, follow the citation with the suffix in square brackets, for example, `@author2023 [chap. 3]`. As with a link to a DOI, you can also use the DOI directly instead of the BibTeX key.
+This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#citation-syntax).
+Multiple citations can be grouped together with square brackets, separated with semi-colons.
+It is also possible to add a prefix or suffix to parenthetical citations, for example, `[e.g. @author2023, chap. 3; @author1995]`.
+To add a suffix to a narrative citation, follow the citation with the suffix in square brackets, for example, `@author2023 [chap. 3]`.
+As with a link to a DOI, you can also use the DOI directly instead of the BibTeX key.
 
 ```{list-table} Examples of Markdown citations
 :header-rows: 1
-:name: table-pandoc-citations
+:label: table-pandoc-citations
 * - Markdown
   - Rendered
   - Explanation
@@ -86,9 +135,21 @@ This syntax follows the [pandoc citation syntax](https://pandoc.org/MANUAL.html#
   - Citation using a DOI directly
 ```
 
+Citations that are embedded in links will _not_ be parsed as citations.
+For example: [@jupyter-book](https://github.com/jupyter-book) or https://hackmd.io/@turingway/B1OnVLe-3.
+
+:::{note} Mixing URLs and `@citations`
+If you have a citation directly after a URL without whitespace, it may be treated as part of the URL rather than as a citation.
+
+For example, `https://mystmd.org,@scipy2025` will treat `@scipy2025` as part of the URL. To cite after a URL, add a space (`See https://mystmd.org, @scipy2025`) or use angle brackets (`See <https://mystmd.org>,@scipy2025`).
+
+**Avoid URLs with @ in square brackets**. A URL with `@` inside square brackets like `[https://hackmd.io/@user]` will be parsed as a citation, to avoid this you can escape the first bracket with a backslash `\[`.
+:::
+
 ## Citation Roles
 
-MyST also provides a number of roles for compatibility with Sphinx and JupyterBook. To create a citation role in Markdown, use either a parenthetical or textual citation:
+MyST also provides a number of roles for compatibility with Sphinx and Jupyter Book V1.
+To create a citation role in Markdown, use either a parenthetical or textual citation:
 
 ```md
 This is a parenthetical citation {cite:p}`cockett2015`.
@@ -100,7 +161,7 @@ You can also add prefix and suffix {cite:p}`{see}cockett2015{fig 1}`.
 This is the difference between: {cite:p}`cockett2015` and {cite:t}`cockett2015`. You can have many citation keys in a single role, by separating them with a semicolon, `;`, for example: {cite:p}`cockett2015; heagy2017`.
 Including a prefix or suffix is displayed as {cite:p}`{see}cockett2015{fig 1}`.
 
-You can also include DOIs in citations (`cite`, `cite:t`, and `cite:p`) which will be linked in the same way as a simple markdown link, but will match the reference style of the project.
+You can also include DOIs in citations (`cite`, `cite:t`, and `cite:p`) which will be linked in the same way as a simple Markdown link, but will match the reference style of the project.
 
 ```md
 This will be a citation: {cite}`10.1093/nar/22.22.4673`.

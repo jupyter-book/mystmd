@@ -1,6 +1,7 @@
 import { RuleId, fileWarn } from 'myst-common';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types.js';
+import type { Link } from 'myst-spec-ext';
+import type { LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
 
 const RESOLVER = 'https://scicrunch.org/resolver/';
@@ -42,7 +43,7 @@ export class RRIDTransformer implements LinkTransformer {
       return false;
     }
     link.url = `${RESOLVER}${rrid}`;
-    link.data = { rrid };
+    link.data = { ...link.data, rrid };
     link.internal = false;
     updateLinkTextIfEmpty(link, rrid);
     return true;

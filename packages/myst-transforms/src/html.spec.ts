@@ -419,4 +419,110 @@ describe('Test reconstructHtmlTransform', () => {
       ],
     });
   });
+  test('video tags in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<video loop mute src="test.mp4" />' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [{ type: 'image', url: 'test.mp4' }],
+    });
+  });
+  test('more open tags than close tags', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        { type: 'html', value: '<table>\n<tr>\n<th>Heading</th>\n</tr>' },
+        { type: 'html', value: '<tr>\n<td>data</td>\n</tr>' },
+        { type: 'html', value: '</table>' },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value: '<table>\n<tr>\n<th>Heading</th>\n</tr><tr>\n<td>data</td>\n</tr></table>',
+        },
+      ],
+    });
+  });
+  test('iframe tags in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<iframe class="my-iframe" src="https://example.com" />' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'iframe',
+          src: 'https://example.com',
+          class: 'my-iframe',
+          width: '100%',
+        },
+      ],
+    });
+  });
+  test('iframe tags with title attribute', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value: '<iframe src="https://example.com/video" title="Example Video" />',
+        },
+      ],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'iframe',
+          src: 'https://example.com/video',
+          title: 'Example Video',
+          width: '100%',
+        },
+      ],
+    });
+  });
+  test('image tags in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<img src="image.png" width="300px" height="50%" />' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'image',
+          url: 'image.png',
+          width: '300px',
+          height: '50%',
+        },
+      ],
+    });
+  });
+  test('u tag in html', async () => {
+    const mdast = {
+      type: 'root',
+      children: [{ type: 'html', value: '<u>underline</u>' }],
+    };
+    htmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'underline',
+          children: [{ type: 'text', value: 'underline' }],
+        },
+      ],
+    });
+  });
 });

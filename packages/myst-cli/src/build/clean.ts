@@ -26,7 +26,10 @@ export type CleanOptions = {
   site?: boolean;
   html?: boolean;
   temp?: boolean;
+  logs?: boolean;
+  cache?: boolean;
   exports?: boolean;
+  execute?: boolean;
   templates?: boolean;
   all?: boolean;
   yes?: boolean;
@@ -42,7 +45,10 @@ const ALL_OPTS: CleanOptions = {
   site: true,
   html: true,
   temp: true,
+  logs: true,
+  cache: true,
   exports: true,
+  execute: true,
   templates: true,
 };
 const DEFAULT_OPTS: CleanOptions = {
@@ -55,11 +61,29 @@ const DEFAULT_OPTS: CleanOptions = {
   site: true,
   html: true,
   temp: true,
+  logs: true,
   exports: true,
+  execute: true,
 };
 
 function coerceOpts(opts: CleanOptions) {
-  const { docx, pdf, tex, xml, md, meca, site, html, temp, exports, templates, all } = opts;
+  const {
+    docx,
+    pdf,
+    tex,
+    xml,
+    md,
+    meca,
+    site,
+    html,
+    temp,
+    logs,
+    cache,
+    exports,
+    execute,
+    templates,
+    all,
+  } = opts;
   if (all) return { ...opts, ...ALL_OPTS };
   if (
     !docx &&
@@ -71,7 +95,10 @@ function coerceOpts(opts: CleanOptions) {
     !site &&
     !html &&
     !temp &&
+    !logs &&
+    !cache &&
     !exports &&
+    !execute &&
     !templates
   ) {
     return { ...opts, ...DEFAULT_OPTS };
@@ -112,7 +139,7 @@ function deduplicatePaths(paths: string[]) {
 
 export async function clean(session: ISession, files: string[], opts: CleanOptions) {
   opts = coerceOpts(opts);
-  const { site, html, temp, exports, templates, yes } = opts;
+  const { site, html, temp, logs, cache, exports, execute, templates, yes } = opts;
   let pathsToDelete: string[] = [];
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
   if (exports) {
@@ -125,7 +152,7 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     });
   }
   let buildFolders: string[] = [];
-  if (temp || exports || templates || html) {
+  if (temp || logs || cache || exports || execute || templates || html) {
     const projectPaths = [
       ...getProjectPaths(session),
       ...exportOptionsList.map((exp) => exp.$project),
@@ -138,12 +165,15 @@ export async function clean(session: ISession, files: string[], opts: CleanOptio
     buildFolders.push(session.buildPath());
   }
   buildFolders = [...new Set(buildFolders)].sort();
-  if (temp || exports || templates || html) {
+  if (temp || logs || cache || exports || templates || execute || html) {
     buildFolders.forEach((folder) => {
       if (temp) pathsToDelete.push(path.join(folder, 'temp'));
+      if (logs) pathsToDelete.push(path.join(folder, 'logs'));
+      if (cache) pathsToDelete.push(path.join(folder, 'cache'));
       if (exports) pathsToDelete.push(path.join(folder, 'exports'));
       if (templates) pathsToDelete.push(path.join(folder, 'templates'));
       if (html) pathsToDelete.push(path.join(folder, 'html'));
+      if (execute) pathsToDelete.push(path.join(folder, 'execute'));
     });
   }
   if (site) {

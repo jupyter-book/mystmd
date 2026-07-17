@@ -269,6 +269,163 @@ cases:
   - title: algorithmic - if-else
     tex: |
       \begin{algorithm}
+      \caption{Euclid's algorithm}\label{euclid}
+      \begin{algorithmic}[1]
+      \Function{Euclid}{$a,b$}\Comment{The g.c.d. of a and b}
+      \State $r\gets a\bmod b$
+      \While{$r\not=0$}\Comment{We have the answer if r is 0}
+      \State $a\gets b$
+      \State $b\gets r$
+      \State $r\gets a\bmod b$
+      \EndWhile\label{euclidendwhile}
+      \State \textbf{return} $b$\Comment{The gcd is b}
+      \EndFunction
+      \end{algorithmic}
+      \end{algorithm}
+    tree:
+      type: root
+      children:
+        - type: proof
+          children:
+            - children:
+                - type: text
+                  value: Euclid’s algorithm
+              type: admonitionTitle
+            - children:
+                - children:
+                    - type: text
+                      value: function
+                  type: strong
+                - children:
+                    - type: text
+                      value: ' Euclid'
+                  type: smallcaps
+                - type: text
+                  value: '( '
+                - type: inlineMath
+                  value: a,b
+                - type: text
+                  value: ' '
+                - type: text
+                  value: ')'
+              enumerator: '1'
+              indent: 0
+              type: algorithmLine
+            - children:
+                - type: text
+                  value: The g.c.d. of a and b
+              style:
+                float: right
+              type: span
+            - children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: r\gets a\bmod b
+                - type: text
+                  value: ''
+              enumerator: '2'
+              indent: 1
+              type: algorithmLine
+            - children:
+                - children:
+                    - type: text
+                      value: while
+                  type: strong
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: r\not=0
+                - type: text
+                  value: ' '
+                - children:
+                    - type: text
+                      value: do
+                  type: strong
+              enumerator: '3'
+              indent: 1
+              type: algorithmLine
+            - children:
+                - type: text
+                  value: We have the answer if r is 0
+              style:
+                float: right
+              type: span
+            - children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: a\gets b
+                - type: text
+                  value: ''
+              enumerator: '4'
+              indent: 2
+              type: algorithmLine
+            - children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: b\gets r
+                - type: text
+                  value: ''
+              enumerator: '5'
+              indent: 2
+              type: algorithmLine
+            - children:
+                - type: text
+                  value: ''
+                - type: inlineMath
+                  value: r\gets a\bmod b
+                - type: text
+                  value: ''
+              enumerator: '6'
+              indent: 2
+              type: algorithmLine
+            - children:
+                - children:
+                    - type: text
+                      value: end while
+                  type: strong
+              enumerator: '7'
+              identifier: euclidendwhile
+              indent: 1
+              label: euclidendwhile
+              type: algorithmLine
+            - children:
+                - type: text
+                  value: ''
+                - children:
+                    - type: text
+                      value: return
+                  type: strong
+                - type: text
+                  value: ' '
+                - type: inlineMath
+                  value: b
+                - children:
+                    - type: text
+                      value: The gcd is b
+                  style:
+                    float: right
+                  type: span
+              enumerator: '8'
+              indent: 1
+              type: algorithmLine
+            - children:
+                - children:
+                    - type: text
+                      value: end function
+                  type: strong
+              enumerator: '9'
+              indent: 0
+              type: algorithmLine
+          enumerated: true
+          identifier: euclid
+          kind: algorithm
+          label: euclid
+  - title: algorithmic - if-else
+    tex: |
+      \begin{algorithm}
       \caption{An algorithm with caption}\label{alg:cap}
       \begin{algorithmic}
       \Require $n \geq 0$

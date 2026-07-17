@@ -1,0 +1,1 @@
+Any of {ref}`text` | {ref}`html` | {ref}`emphasisstatic` | {ref}`strongstatic` | {ref}`inlinecode` | {ref}`break` | {ref}`image` | {ref}`imagereference` | {ref}`role` | {ref}`subscriptstatic` | {ref}`superscriptstatic` | {ref}`underlinestatic` | {ref}`inlinemath`

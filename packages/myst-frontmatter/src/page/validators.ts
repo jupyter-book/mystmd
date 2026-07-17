@@ -2,114 +2,95 @@ import type { ValidationOptions } from 'simple-validators';
 import {
   defined,
   incrementOptions,
-  validateList,
   validateObjectKeys,
   validateString,
-  validateObject,
-  validationError,
   validateBoolean,
+  validateObject,
+  validateUrl,
+  validationWarning,
 } from 'simple-validators';
-import {
-  PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  validateProjectAndPageFrontmatterKeys,
-} from '../project/validators.js';
-import type { PageFrontmatter } from './types.js';
+import { validateProjectAndPageFrontmatterKeys } from '../project/validators.js';
+import { PAGE_FRONTMATTER_KEYS, type PageFrontmatter } from './types.js';
 import { validateKernelSpec } from '../kernelspec/validators.js';
+import { validateExecute } from '../execute/validators.js';
 import { validateJupytext } from '../jupytext/validators.js';
-import { FRONTMATTER_ALIASES } from '../site/validators.js';
+import { FRONTMATTER_ALIASES } from '../site/types.js';
 
-const KNOWN_PARTS = [
-  'abstract',
-  'summary',
-  'keypoints',
-  'dedication',
-  'epigraph',
-  'data_availability',
-  'acknowledgments',
-];
-
-export const PAGE_FRONTMATTER_KEYS = [
-  ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
-  // These keys only exist on the page
-  'kernelspec',
-  'jupytext',
-  'tags',
-  'parts',
-  'content_includes_title',
-  ...KNOWN_PARTS,
-];
-
+/**
+ * Frontmatter keys that inherit from project to page when not set on the page.
+ * Add new keys here if you want them to propagate from project-level config to pages.
+ */
 export const USE_PROJECT_FALLBACK = [
   'authors',
+  'reviewers',
+  'editors',
   'date',
   'doi',
   'arxiv',
+  'pmid',
+  'pmcid',
   'open_access',
   'license',
   'github',
+  'edit_url',
+  'source_url',
   'binder',
   'source',
   'subject',
   'venue',
-  'biblio',
+  'volume',
+  'issue',
+  'first_page',
+  'last_page',
   'numbering',
   'keywords',
   'funding',
+  'copyright',
   'affiliations',
 ];
 
 export function validatePageFrontmatterKeys(value: Record<string, any>, opts: ValidationOptions) {
   const output: PageFrontmatter = validateProjectAndPageFrontmatterKeys(value, opts);
+  if (defined(value.label)) {
+    output.label = validateString(value.label, incrementOptions('label', opts));
+  }
   if (defined(value.kernelspec)) {
     output.kernelspec = validateKernelSpec(value.kernelspec, incrementOptions('kernelspec', opts));
   }
   if (defined(value.jupytext)) {
     output.jupytext = validateJupytext(value.jupytext, incrementOptions('jupytext', opts));
   }
-  if (defined(value.tags)) {
-    output.tags = validateList(
-      value.tags,
-      incrementOptions('tags', opts),
-      (file, index: number) => {
-        return validateString(file, incrementOptions(`tags.${index}`, opts));
-      },
-    );
+  if (defined(value.execute)) {
+    output.execute = validateExecute(value.execute, incrementOptions('execute', opts));
   }
-  const partsOptions = incrementOptions('parts', opts);
-  let parts: Record<string, any> | undefined;
-  if (defined(value.parts)) {
-    parts = validateObject(value.parts, partsOptions);
+  if (defined(value.skip_execution)) {
+    output.execute ??= {};
+    if (defined(output.execute.skip)) {
+      validationWarning(
+        `both execute.skip and deprecated skip_execution are defined, taking execute.skip`,
+        opts,
+      );
+    } else {
+      validationWarning(`skip_execution is deprecated in favour of execute.skip`, opts);
+      output.execute.skip = validateBoolean(
+        value.skip_execution,
+        incrementOptions('skip_execution', opts),
+      );
+    }
   }
-  KNOWN_PARTS.forEach((partKey) => {
-    if (defined(value[partKey])) {
-      parts ??= {};
-      if (parts[partKey]) {
-        validationError(`duplicate value for part ${partKey}`, partsOptions);
-      } else {
-        parts[partKey] = value[partKey];
-      }
-    }
-  });
-  if (parts) {
-    const partsEntries = Object.entries(parts)
-      .map(([k, v]) => {
-        return [
-          k,
-          validateList(v, { coerce: true, ...incrementOptions(k, partsOptions) }, (item, index) => {
-            return validateString(item, incrementOptions(`${k}.${index}`, partsOptions));
-          }),
-        ];
-      })
-      .filter((entry): entry is [string, string[]] => !!entry[1]?.length);
-    if (partsEntries.length > 0) {
-      output.parts = Object.fromEntries(partsEntries);
-    }
+  if (defined(value.enumerator)) {
+    output.enumerator = validateString(value.enumerator, incrementOptions('enumerator', opts));
   }
   if (defined(value.content_includes_title)) {
     output.content_includes_title = validateBoolean(
       value.content_includes_title,
       incrementOptions('content_includes_title', opts),
     );
+  }
+  if (defined(value.site)) {
+    // These are validated later based on the siteTemplate
+    // At this point, they just need to be an object
+    output.site = validateObject(value.site, incrementOptions('site', opts));
   }
   return output;
 }
@@ -121,7 +102,7 @@ export function validatePageFrontmatter(input: any, opts: ValidationOptions) {
   const value =
     validateObjectKeys(
       input,
-      { optional: PAGE_FRONTMATTER_KEYS, alias: FRONTMATTER_ALIASES },
+      { optional: PAGE_FRONTMATTER_KEYS, alias: { ...FRONTMATTER_ALIASES, name: 'label' } },
       opts,
     ) || {};
   return validatePageFrontmatterKeys(value, opts);

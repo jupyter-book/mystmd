@@ -1,5 +1,314 @@
 # myst-to-tex
 
+## 1.0.46
+
+## 1.0.45
+
+### Patch Changes
+
+- 045953f: β Remove 'ß' mapping from utils
+- Updated dependencies [045953f]
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+  - myst-spec-ext@1.9.4
+
+## 1.0.44
+
+### Patch Changes
+
+- fe6080c: MyST-to-TeX: add support for checkboxes
+- Updated dependencies [88d2136]
+- Updated dependencies [d45faf3]
+  - myst-common@1.9.3
+  - myst-frontmatter@1.9.3
+  - myst-spec-ext@1.9.3
+
+## 1.0.43
+
+### Patch Changes
+
+- b8ed7ca: Paragraph after table without container
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+
+## 1.0.42
+
+### Patch Changes
+
+- 973db009e: Add `toc` node to render Table of Contents in Typst and LaTeX.
+
+## 1.0.41
+
+### Patch Changes
+
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.0.40
+
+## 1.0.39
+
+### Patch Changes
+
+- Updated dependencies [eb411d0b]
+  - myst-spec-ext@1.7.4
+  - myst-common@1.7.4
+  - myst-frontmatter@1.7.4
+
+## 1.0.38
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-ext-proof@1.0.11
+
+## 1.0.37
+
+### Patch Changes
+
+- 594a0f87: Top level AMS environments are not wrapped
+- adb3c75a: Allow index entries on many more nodes for myst-to-tex
+- Updated dependencies [760e411]
+  - myst-frontmatter@1.6.1
+  - myst-common@1.6.1
+  - myst-spec-ext@1.6.1
+
+## 1.0.36
+
+### Patch Changes
+
+- 822fd2d5: Ensure that AMS Math environments are only used if there is a single environment that encloses the entire math environment.
+
+## 1.0.35
+
+### Patch Changes
+
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [4e880f3e]
+- Updated dependencies [e2b74f4d]
+  - myst-frontmatter@1.5.4
+  - myst-spec-ext@1.5.4
+  - myst-common@1.5.4
+
+## 1.0.34
+
+### Patch Changes
+
+- 857c5acf: Add raw directives/roles for inserting tex/typst-specific content
+- Updated dependencies [857c5acf]
+- Updated dependencies [313b218]
+  - myst-spec-ext@1.5.3
+  - myst-frontmatter@1.5.3
+  - myst-common@1.5.3
+
+## 1.0.33
+
+### Patch Changes
+
+- 8b75342d: Fix handling of remove- for exports
+
+## 1.0.32
+
+### Patch Changes
+
+- 134598fd: Support index in latex export
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+  - myst-spec-ext@1.5.2
+
+## 1.0.31
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-ext-proof@1.0.10
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
+## 1.0.30
+
+### Patch Changes
+
+- Updated dependencies [1e2092dc]
+  - myst-common@1.4.7
+  - myst-frontmatter@1.4.7
+  - myst-spec-ext@1.4.7
+
+## 1.0.29
+
+### Patch Changes
+
+- 65ade89: Consume new math structure
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - myst-frontmatter@1.4.4
+  - myst-common@1.4.4
+  - myst-spec-ext@1.4.4
+
+## 1.0.28
+
+### Patch Changes
+
+- 8851eca7: Support `div` and `span` in typst and tex
+
+## 1.0.27
+
+### Patch Changes
+
+- e0cd47e3: Support new-page/page-break tags in tex/typst/docx
+- e0cd47e3: Support no-pdf, no-typst alongside no-tex
+- Updated dependencies [3b008cbb]
+- Updated dependencies [69457615]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-ext-proof@1.0.9
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
+## 1.0.26
+
+### Patch Changes
+
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-frontmatter@1.2.0
+  - myst-common@1.2.0
+  - myst-spec-ext@1.2.0
+
+## 1.0.25
+
+### Patch Changes
+
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [c38cc28]
+  - myst-common@1.1.34
+  - myst-frontmatter@1.1.34
+  - myst-spec-ext@1.1.34
+
+## 1.0.24
+
+### Patch Changes
+
+- 20108545: Respect math node tightness
+- Updated dependencies [bba5baf9]
+- Updated dependencies [117d6008]
+- Updated dependencies [ebe65816]
+- Updated dependencies [20108545]
+- Updated dependencies [6f0183de]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [bba5baf9]
+- Updated dependencies [20108545]
+- Updated dependencies [117d6008]
+- Updated dependencies [62620a8d]
+- Updated dependencies [bba5baf9]
+  - myst-common@1.1.32
+  - myst-spec-ext@1.1.32
+  - myst-frontmatter@1.1.32
+
+## 1.0.23
+
+### Patch Changes
+
+- 1b3c9e24: Properly handle AMS environments, and no longer wrap with equation environment.
+- Updated dependencies [1880a465]
+- Updated dependencies [22c5fff]
+- Updated dependencies [1880a465]
+  - myst-common@1.1.31
+  - myst-frontmatter@1.1.31
+  - myst-spec-ext@1.1.31
+
+## 1.0.22
+
+### Patch Changes
+
+- Updated dependencies [3c9d9962]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+  - myst-common@1.1.28
+  - myst-spec-ext@1.1.28
+  - myst-frontmatter@1.1.28
+
+## 1.0.21
+
+### Patch Changes
+
+- aa877413: Notebook figures become tex figures, not code
+- aa877413: Fix glossary tex rendering with no terms
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-frontmatter@1.1.26
+  - myst-spec-ext@1.1.26
+
+## 1.0.20
+
+### Patch Changes
+
+- Updated dependencies [03db3a35]
+  - myst-frontmatter@1.1.25
+  - myst-common@1.1.25
+  - myst-spec-ext@1.1.25
+
+## 1.0.19
+
+### Patch Changes
+
+- Updated dependencies [d5416ff8]
+  - myst-spec-ext@1.1.24
+  - myst-common@1.1.24
+  - myst-frontmatter@1.1.24
+
+## 1.0.18
+
+### Patch Changes
+
+- Updated dependencies [50416784]
+- Updated dependencies [50416784]
+- Updated dependencies [01322e48]
+  - myst-frontmatter@1.1.23
+  - myst-spec-ext@1.1.23
+  - myst-common@1.1.23
+
+## 1.0.17
+
+### Patch Changes
+
+- 7596172: Pass heading depth through multi-page transform
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+  - myst-ext-proof@1.0.8
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.0.16
 
 ### Patch Changes
@@ -103,7 +412,6 @@
 ### Patch Changes
 
 - 74d48372: Add more infinity symbols to recognized LaTeX parsing
-
   - ∞ ∝ ⧜ ⧝ ♾
 
 - 51011604: Add corollary and proof to supported latex proof kinds
@@ -399,7 +707,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - Updated dependencies [184ad9f9]
 - Updated dependencies [615c1441]
 - Updated dependencies [3fba7cb7]

@@ -1,0 +1,17 @@
+version: 1
+project:
+  id: d040ca98-d48a-487f-9745-8d337ff305eb
+  keywords: []
+  authors: []
+  github: https://github.com/jupyter-book/mystmd
+  math:
+    '\one': 'b'
+    '\three': 'd'
+    '\five': 'x = \one'
+site:
+  template: book-theme
+  nav: []
+  actions:
+    - title: Learn More
+      url: https://mystmd.org/guide
+  domains: []

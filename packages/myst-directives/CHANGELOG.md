@@ -1,5 +1,369 @@
 # myst-directives
 
+## 1.7.3
+
+### Patch Changes
+
+- myst-common@1.10.0
+- myst-spec-ext@1.10.0
+
+## 1.7.2
+
+## 1.7.1
+
+### Patch Changes
+
+- a5b550d: Allow code-cell directive to use code options
+
+## 1.7.0
+
+### Minor Changes
+
+- 7b989d4: Adding the MyST widget directive (AnyWidget compatible)
+
+### Patch Changes
+
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+
+## 1.6.5
+
+## 1.6.4
+
+### Patch Changes
+
+- myst-common@1.9.4
+- myst-spec-ext@1.9.4
+
+## 1.6.3
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+
+## 1.6.2
+
+### Patch Changes
+
+- f1ccba4: Add docstring to `myst` plugin
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+
+## 1.6.1
+
+### Patch Changes
+
+- 1735db4: Add support for iframe title.
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-spec-ext@1.9.0
+  - myst-common@1.9.0
+
+## 1.6.0
+
+### Patch Changes
+
+- myst-common@1.8.4
+- myst-spec-ext@1.8.4
+
+## 1.5.17
+
+### Patch Changes
+
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+  - myst-common@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 1.5.16
+
+### Patch Changes
+
+- Updated dependencies [9cb280a4b]
+  - myst-spec-ext@1.8.2
+  - myst-common@1.8.2
+
+## 1.5.15
+
+### Patch Changes
+
+- 0b284816: Add typst as an option to the math nodes.
+- Updated dependencies [0b284816]
+  - myst-spec-ext@1.8.1
+  - myst-common@1.8.1
+
+## 1.5.14
+
+### Patch Changes
+
+- d09a748f: Enable ranges in emphasize lines (e.g. "5,7-9") for code blocks in addition to comma-separated line numbers.
+
+## 1.5.13
+
+### Patch Changes
+
+- c6213ed: Move QMD admonition recognition to a transform
+- c6213ed: div node does not require a body
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
+## 1.5.12
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- aa49c51c: Added support for include directive options when not using the literal option.
+- Updated dependencies [75bbb180]
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+
+## 1.5.11
+
+### Patch Changes
+
+- Updated dependencies [fad8f673]
+  - myst-spec-ext@1.7.8
+  - myst-common@1.7.8
+
+## 1.5.10
+
+### Patch Changes
+
+- 9717b067: Add caption to code-block options
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+  - myst-common@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.5.9
+
+### Patch Changes
+
+- d7a6fddd: Add support for commonDirectiveOptions in all directives
+
+## 1.5.8
+
+### Patch Changes
+
+- eb411d0b: Allow for iframe to have a placeholder
+- Updated dependencies [eb411d0b]
+  - myst-spec-ext@1.7.4
+  - myst-common@1.7.4
+
+## 1.5.7
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
+## 1.5.6
+
+## 1.5.5
+
+### Patch Changes
+
+- Updated dependencies [85db77c7]
+- Updated dependencies [8ba7b73a]
+  - myst-spec-ext@1.6.0
+  - myst-common@1.6.0
+
+## 1.5.4
+
+### Patch Changes
+
+- 60fc2574: Ensure é ends up in the E index.
+- 88396dd: Add enumerator and enumerated to directives
+- 4e880f3e: Add open to the admonition
+- Updated dependencies [4e880f3e]
+  - myst-spec-ext@1.5.4
+  - myst-common@1.5.4
+
+## 1.5.3
+
+### Patch Changes
+
+- 857c5acf: Add raw directives/roles for inserting tex/typst-specific content
+- Updated dependencies [857c5acf]
+  - myst-spec-ext@1.5.3
+  - myst-common@1.5.3
+
+## 1.5.2
+
+### Patch Changes
+
+- 134598fd: Add index directives/roles to myst-cli
+- Updated dependencies [134598fd]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-spec-ext@1.5.2
+
+## 1.5.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
+## 1.5.0
+
+### Minor Changes
+
+- d04ceb6a: Drop `output` directive
+
+### Patch Changes
+
+- Updated dependencies [0576d5ad]
+  - myst-common@1.5.0
+  - myst-spec-ext@1.5.0
+
+## 1.4.4
+
+### Patch Changes
+
+- 933b7b33: Fix caption for CSV table
+  - myst-common@1.4.5
+  - myst-spec-ext@1.4.5
+
+## 1.4.3
+
+### Patch Changes
+
+- c0f51ee5: Add additional documentation
+- Updated dependencies [9e311c38]
+  - myst-common@1.4.2
+  - myst-spec-ext@1.4.2
+
+## 1.4.2
+
+### Patch Changes
+
+- 59b523c4: Support empty cells in csv-table
+
+## 1.4.1
+
+### Patch Changes
+
+- ddb29b0: Switch to browser parsing for csv
+
+## 1.4.0
+
+### Minor Changes
+
+- f656e572: Add topic directive
+- a3e3aa0c: Add the csv-table directive
+
+### Patch Changes
+
+- 3241933: Add div directive
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+- f13d451d: Correctly place tags in code-block
+- f13d451d: add label to code-cell
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+
+## 1.3.0
+
+### Patch Changes
+
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-common@1.2.0
+  - myst-spec-ext@1.2.0
+
+## 1.2.3
+
+### Patch Changes
+
+- myst-common@1.1.35
+- myst-spec-ext@1.1.35
+
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+  - myst-common@1.1.34
+  - myst-spec-ext@1.1.34
+
+## 1.2.1
+
+### Patch Changes
+
+- 20108545: Add math tightness to the directive
+- Updated dependencies [bba5baf9]
+- Updated dependencies [117d6008]
+- Updated dependencies [ebe65816]
+- Updated dependencies [20108545]
+- Updated dependencies [20108545]
+- Updated dependencies [117d6008]
+  - myst-common@1.1.32
+  - myst-spec-ext@1.1.32
+
+## 1.2.0
+
+### Minor Changes
+
+- a9250ae6: Add `aside` directive
+
+### Patch Changes
+
+- Updated dependencies [1880a465]
+- Updated dependencies [22c5fff]
+  - myst-common@1.1.31
+  - myst-spec-ext@1.1.31
+
+## 1.1.0
+
+### Minor Changes
+
+- 42af3800: Add support for epigraphs and pull-quotes using a new blockquote directive.
+
+### Patch Changes
+
+- Updated dependencies [42af3800]
+  - myst-spec-ext@1.1.30
+  - myst-common@1.1.30
+
+## 1.0.24
+
+### Patch Changes
+
+- cbad68cc: Add raw directive
+- Updated dependencies [cbad68cc]
+  - myst-spec-ext@1.1.29
+  - myst-common@1.1.29
+
+## 1.0.23
+
+### Patch Changes
+
+- Updated dependencies [3c9d9962]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+  - myst-common@1.1.28
+  - myst-spec-ext@1.1.28
+
+## 1.0.22
+
+### Patch Changes
+
+- Updated dependencies [f78db0bf]
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.0.21
 
 ### Patch Changes
@@ -9,9 +373,8 @@
   This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
 
   Addresses:
-
-  - https://github.com/executablebooks/mystmd/pull/748
-  - https://github.com/executablebooks/mystmd/issues/816
+  - https://github.com/jupyter-book/mystmd/pull/748
+  - https://github.com/jupyter-book/mystmd/issues/816
 
 - bfed37b: Make table directive less opinionated
 - 9573382a: Remove `code-cell` language warning in jupytext notebooks

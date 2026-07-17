@@ -6,25 +6,21 @@ import mime from 'mime-types';
 import { copyFileMaintainPath, copyFileToFolder, isDirectory, tic } from 'myst-cli-utils';
 import { RuleId, fileError, fileWarn } from 'myst-common';
 import { ExportFormats } from 'myst-frontmatter';
-import type { LinkTransformer } from 'myst-transforms';
 import { selectAll } from 'unist-util-select';
 import { VFile } from 'vfile';
 import { createManifestXml, type ManifestItem } from 'meca';
-import { findCurrentProjectAndLoad } from '../../config.js';
 import { runJatsExport } from '../jats/single.js';
 import { loadFile } from '../../process/file.js';
-import { loadProjectFromDisk } from '../../project/load.js';
-import { writeTocFromProject } from '../../project/toToc.js';
+import { writeTOCToConfigFile } from '../../project/toTOC.js';
 import type { LocalProjectPage } from '../../project/types.js';
 import type { ISession } from '../../session/types.js';
 import { castSession } from '../../session/cache.js';
 import { selectors } from '../../store/index.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
-import type { ExportWithOutput, ExportOptions } from '../types.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
+import type { ExportWithOutput, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
-import { collectBasicExportOptions, collectExportOptions } from '../utils/collectExportOptions.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
+import { collectExportOptions } from '../utils/collectExportOptions.js';
 
 function mediaTypeFromFile(file: string) {
   const mediaType = mime.lookup(file);
@@ -151,14 +147,13 @@ export async function runMecaExport(
   session: ISession,
   sourceFile: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ) {
   const toc = tic();
   const { output, articles } = exportOptions;
+  const { projectPath, clean, extraLinkTransformers } = opts ?? {};
   // At this point, export options are resolved to contain zero or one articles
-  const article = articles?.[0];
+  const articleFile = articles?.[0]?.file;
   const vfile = new VFile();
   vfile.path = output;
   const fileCopyErrorLogFn = (m: string) => {
@@ -169,22 +164,20 @@ export async function runMecaExport(
   const manifestItems: ManifestItem[] = [];
   const jatsExports = await collectExportOptions(
     session,
-    article ? [article] : [],
+    articleFile ? [articleFile] : [],
     [ExportFormats.xml],
     {
       projectPath,
     },
   );
-  if (jatsExports.length === 0 && article) {
+  if (jatsExports.length === 0 && articleFile) {
     // If no JATS export is defined but MECA specifies an article, build JATS implicitly from that article
     const jatsOutput = path.join(mecaFolder, 'article.xml');
     await runJatsExport(
       session,
       sourceFile,
       { ...exportOptions, output: jatsOutput },
-      projectPath,
-      clean,
-      extraLinkTransformers,
+      { projectPath, clean, extraLinkTransformers },
     );
     addManifestItem(manifestItems, 'article-metadata', mecaFolder, jatsOutput);
     const jatsFiles = path.join(mecaFolder, 'files');
@@ -240,12 +233,12 @@ export async function runMecaExport(
       });
     }
   });
-  // Copy any existing pdf/docx/tex-zip exports
+  // Copy any existing pdf/docx/tex-zip/typst exports
   const manuscriptExports = (
     await collectExportOptions(
       session,
-      article ? [article] : [],
-      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex],
+      articleFile ? [articleFile] : [],
+      [ExportFormats.docx, ExportFormats.pdf, ExportFormats.tex, ExportFormats.typst],
       {
         projectPath,
       },
@@ -287,6 +280,11 @@ export async function runMecaExport(
         bundle,
         fileCopyErrorLogFn,
       );
+      // Ensure that an explicit TOC is present
+      if (configDest) {
+        await writeTOCToConfigFile(project, configFile, configDest);
+      }
+
       addManifestItem(manifestItems, 'article-source', mecaFolder, configDest);
       // Copy requirements and resources
       await copyFilesFromConfig(
@@ -297,13 +295,6 @@ export async function runMecaExport(
         fileCopyErrorLogFn,
       );
     }
-    // Copy table of contents or write one if it does not exist
-    if (fs.existsSync(path.join(projectPath, '_toc.yml'))) {
-      copyFileToFolder(session, path.join(projectPath, '_toc.yml'), bundle, fileCopyErrorLogFn);
-    } else {
-      writeTocFromProject(project, bundle);
-    }
-    addManifestItem(manifestItems, 'article-source', mecaFolder, path.join(bundle, '_toc.yml'));
     // Write all source markdown/ipynb/etc files
     const projectPages = [
       { page: project.file, itemType: 'article-source' },
@@ -338,8 +329,8 @@ export async function runMecaExport(
         );
       }),
     );
-  } else if (article) {
-    const articleDest = copyFileToFolder(session, article, bundle, fileCopyErrorLogFn);
+  } else if (articleFile) {
+    const articleDest = copyFileToFolder(session, articleFile, bundle, fileCopyErrorLogFn);
     addManifestItem(manifestItems, 'article-source', mecaFolder, articleDest);
   }
   if (fs.existsSync(bundle)) {
@@ -358,35 +349,4 @@ export async function runMecaExport(
   logMessagesFromVFile(session, vfile);
   session.log.info(toc(`🤐 MECA output copied and zipped to ${output} in %s`));
   return { tempFolders: [] };
-}
-
-export async function localProjectToMeca(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-) {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'zip', [ExportFormats.meca], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      await runMecaExport(
-        session,
-        file,
-        exportOptions,
-        projectPath,
-        opts.clean,
-        extraLinkTransformers,
-      );
-    }),
-    opts.throwOnFailure,
-  );
 }

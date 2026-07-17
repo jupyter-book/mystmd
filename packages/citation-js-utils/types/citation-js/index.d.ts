@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/prefer-namespace-keyword */
 // https://fettblog.eu/typescript-react-extending-jsx-elements/
-
-declare module 'citation-js' {
-  export type CitationFormatOptions = {
+declare module '@citation-js/plugin-bibtex' {}
+declare module '@citation-js/plugin-csl' {}
+declare module '@citation-js/core/lib/plugins/input/csl.js' {
+  export function clean(data: any): any {}
+}
+declare module '@citation-js/core' {
+  export type OutputOptions = {
     format: 'string';
     type: 'html' | 'json' | 'string';
     style:
@@ -17,7 +21,7 @@ declare module 'citation-js' {
   };
 
   // This is duplicated for export in index.ts
-  export type CitationJson = {
+  export type CSL = {
     type?: 'article-journal' | string;
     id: string;
     author?: { given: string; family: string }[];
@@ -37,17 +41,26 @@ declare module 'citation-js' {
   } & Record<string, any>;
 
   export class Cite {
-    constructor(input?: string | CitationJson);
+    constructor(input?: any);
 
-    static parse: any;
+    static async(data: any): Promise<Cite>;
 
-    set(data: string | Cite): this;
+    set(data: any): this;
 
-    get: (opts: CitationFormatOptions) => string;
+    format: (format: string, options: any) => string | object[];
 
-    data: CitationJson[];
-
-    static new(): any;
+    data: CSL[];
   }
-  export default Cite;
+
+  // Only declare types for used config fields
+  export const plugins: {
+    config: {
+      get(format: string): {
+        format: {
+          useIdAsLabel?: boolean;
+          checkLabel?: boolean;
+        };
+      };
+    };
+  };
 }

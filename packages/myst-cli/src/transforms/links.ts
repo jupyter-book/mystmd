@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import pLimit from 'p-limit';
-import fetch from 'node-fetch';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { updateLinkTextIfEmpty } from 'myst-transforms';
-import type { LinkTransformer, Link } from 'myst-transforms';
-import { RuleId, fileError, plural } from 'myst-common';
-import { hashAndCopyStaticFile, tic } from 'myst-cli-utils';
+import type { LinkTransformer } from 'myst-transforms';
+import { RuleId, fileError, normalizeLabel, plural } from 'myst-common';
+import { computeHash, hashAndCopyStaticFile, tic } from 'myst-cli-utils';
+import type { CrossReference, Link } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
@@ -15,6 +15,9 @@ import { links } from '../store/reducers.js';
 import type { ExternalLinkResult } from '../store/types.js';
 import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
+import { loadFromCache, writeToCache } from '../session/cache.js';
+
+const LINK_MAX_AGE = 30; // in days
 
 // These limit access from command line tools by default
 const skippedDomains = [
@@ -23,7 +26,18 @@ const skippedDomains = [
   'medium.com',
   'twitter.com',
   'en.wikipedia.org',
+  // Reserved domains for documentation and examples (RFC 2606)
+  'example.com',
+  'example.org',
+  'example.net',
+  'www.example.com',
+  'www.example.org',
+  'www.example.net',
 ];
+
+function checkLinkCacheFilename(url: string) {
+  return `checkLink-${computeHash(url)}.json`;
+}
 
 export async function checkLink(session: ISession, url: string): Promise<ExternalLinkResult> {
   const cached = selectors.selectLinkStatus(session.store.getState(), url);
@@ -46,10 +60,17 @@ export async function checkLink(session: ISession, url: string): Promise<Externa
       return link;
     }
     session.log.debug(`Checking that "${url}" exists`);
-    const resp = await fetch(url, { headers: EXT_REQUEST_HEADERS });
+    const filename = checkLinkCacheFilename(url);
+    const linkCache = loadFromCache(session, filename, { maxAge: LINK_MAX_AGE });
+    const resp = linkCache
+      ? JSON.parse(linkCache)
+      : await session.fetch(url, { headers: EXT_REQUEST_HEADERS });
     link.ok = resp.ok;
     link.status = resp.status;
     link.statusText = resp.statusText;
+    if (link.ok && !linkCache) {
+      writeToCache(session, filename, JSON.stringify(link));
+    }
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
     session.log.debug(`Error fetching ${url} ${(error as Error).message}`);
@@ -68,32 +89,39 @@ type LinkInfo = {
 
 export type LinkLookup = Record<string, LinkInfo>;
 
+export function getSourceFolder(link: string, sourceFile: string, projectFolder: string): string {
+  return link.startsWith(path.sep) ? projectFolder : path.dirname(sourceFile);
+}
 /**
  * Compute link node file path relative to site root (currently, only the working directory)
+ *
+ * @param pathFromLink Path from link node URL relative to file where it is defined
+ * @param file File where link is defined
+ * @deprecated Use getSourceFolder and fileFromSourceFolder to correctly resolve paths
+ */
+export function fileFromRelativePath(pathFromLink: string, file?: string): string | undefined {
+  const folder = file ? path.dirname(file) : undefined;
+  return fileFromSourceFolder(pathFromLink, folder);
+}
+
+/**
+ * Compute link node file path relative to a source folder.
  *
  * If path has no extension, this function looks for .md then .ipynb.
  * If a '#target' is present at the end of the path, it is maintained.
  * If file does not exists, returns undefined.
  *
- * @param pathFromLink Path from link node URL relative to file where it is defined
- * @param file File where link is defined
- * @param sitePath Root path of site / session; from here all relative paths in the store are defined
+ * @param pathFromLink Path from link node URL relative to the folder
+ * @param folder Folder path to resolve from
  */
-export function fileFromRelativePath(
-  pathFromLink: string,
-  file?: string,
-  sitePath?: string,
-): string | undefined {
+export function fileFromSourceFolder(pathFromLink: string, folder?: string): string | undefined {
   let target: string[];
   [pathFromLink, ...target] = pathFromLink.split('#');
-  // The URL is encoded (e.g. %20 --> space)
   pathFromLink = decodeURIComponent(pathFromLink);
-  if (!sitePath) sitePath = '.';
-  if (file) {
-    pathFromLink = path.relative(sitePath, path.resolve(path.dirname(file), pathFromLink));
+  if (folder) {
+    pathFromLink = path.resolve(path.join(folder, pathFromLink));
   }
   if (fs.existsSync(pathFromLink) && fs.lstatSync(pathFromLink).isDirectory()) {
-    // This should only return true for files
     return undefined;
   }
   if (!fs.existsSync(pathFromLink)) {
@@ -120,26 +148,41 @@ export class StaticFileTransformer implements LinkTransformer {
 
   test(url?: string) {
     if (!url) return false;
-    const linkFileWithTarget = fileFromRelativePath(url, this.filePath);
+    const sourceFileFolder = getSourceFolder(url, this.filePath, this.session.sourcePath());
+    const linkFileWithTarget = fileFromSourceFolder(url, sourceFileFolder);
     return !!linkFileWithTarget;
   }
 
   transform(link: Link, file: VFile): boolean {
     const urlSource = link.urlSource || link.url;
-    const linkFileWithTarget = fileFromRelativePath(urlSource, this.filePath);
+    const sourceFileFolder = getSourceFolder(urlSource, this.filePath, this.session.sourcePath());
+    const linkFileWithTarget = fileFromSourceFolder(urlSource, sourceFileFolder);
     if (!linkFileWithTarget) {
       // Not raising a warning here, this should be caught in the test above
       return false;
     }
-    const [linkFile, ...target] = linkFileWithTarget.split('#');
+    const [linkFile] = linkFileWithTarget.split('#');
+    const target = linkFileWithTarget.slice(linkFile.length + 1);
+    const reference = normalizeLabel(target);
     const { url, title, dataUrl } =
       selectors.selectFileInfo(this.session.store.getState(), linkFile) || {};
-    if (url != null) {
-      // Replace relative file link with resolved site path
-      // TODO: lookup the and resolve the hash as well
-      link.url = [url, ...(target || [])].join('#');
-      link.internal = true;
+    // If the link is non-static, and can be resolved locally
+    if (url != null && link.static !== true) {
       if (dataUrl) link.dataUrl = dataUrl;
+      if (reference) {
+        // Change the link into a cross-reference!
+        const xref = link as unknown as CrossReference;
+        xref.type = 'crossReference';
+        xref.identifier = reference.identifier;
+        xref.label = reference.label;
+        xref.url = url;
+        xref.remote = true;
+        return true;
+      } else {
+        // Replace relative file link with resolved site path
+        link.url = [url, ...(target || [])].join('#');
+        link.internal = true;
+      }
     } else {
       // Copy relative file to static folder and replace with absolute link
       const copiedFile = hashAndCopyStaticFile(
@@ -179,13 +222,18 @@ export async function checkLinksTransform(
   const linkResults = await Promise.all(
     linkNodes.map(async (link) =>
       limitOutgoingConnections(async () => {
-        const { position, url } = link;
+        const { position, url, type } = link;
+        // Allow cards to have undefined URLs
+        if (type === 'card' && !url) {
+          return '';
+        }
         const check = await checkLink(session, url);
         if (check.ok || check.skipped) return url as string;
         const status = check.status ? ` (${check.status}, ${check.statusText})` : '';
         addWarningForFile(session, file, `Link for "${url}" did not resolve.${status}`, 'error', {
           position,
           ruleId: RuleId.linkResolves,
+          key: url,
         });
         return url as string;
       }),

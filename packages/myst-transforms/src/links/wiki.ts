@@ -1,6 +1,7 @@
 import { RuleId, fileError, fileWarn } from 'myst-common';
+import type { Link } from 'myst-spec-ext';
 import type { VFile } from 'vfile';
-import type { Link, LinkTransformer } from './types.js';
+import type { LinkTransformer } from './types.js';
 import { updateLinkTextIfEmpty, withoutHttp } from './utils.js';
 
 const DEFAULT_LANGUAGE = 'en';
@@ -18,6 +19,8 @@ export class WikiTransformer implements LinkTransformer {
 
   lang?: string;
 
+  formatsText = true;
+
   constructor(opts?: { url?: string; lang?: string }) {
     // Ensure for the link formatting that the URL ends in a "/"
     this.wikiUrl = removeWiki(
@@ -30,8 +33,11 @@ export class WikiTransformer implements LinkTransformer {
   test(uri?: string): boolean {
     if (!uri) return false;
     if (uri.startsWith('wiki:')) return true;
-    if (uri.match(ANY_WIKIPEDIA_ORG)) return true;
-    if (withoutHttp(uri).startsWith(withoutHttp(this.wikiUrl))) return true;
+    if (uri.match(ANY_WIKIPEDIA_ORG) || withoutHttp(uri).startsWith(withoutHttp(this.wikiUrl))) {
+      // For now, don't match alternative links of the form /w/index.php?oldid=...&title=...
+      // In future, we should support both normalising non-permalinks with ?title=..., and permalinks with oldid=
+      return !uri.match(/\/w\/index\.php(\?[^/]*)?$/);
+    }
     return false;
   }
 
@@ -86,6 +92,7 @@ export class WikiTransformer implements LinkTransformer {
       .replace(/(?:^_)|(?:_$)/g, '');
     link.url = `${result.wiki}wiki/${page}`;
     link.data = {
+      ...link.data,
       page: page,
       wiki: result.wiki,
       lang: result.lang,

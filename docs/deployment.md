@@ -1,12 +1,43 @@
 ---
-title: Deploying your MyST Site
-short_title: Deployment
-description: Deploy your
+title: Host your MyST Site
+short_title: Web hosting
+description: Deploy your MyST site to static HTML or a MyST-aware server.
 ---
 
-The default themes for MyST sites are applications that render structured data _dynamically_, and are not static HTML sites. This choice allows the websites to include many [performance enhancements](./accessibility-and-performance.md) such as pre-fetching for instant page-transitions, loading indicators, and smaller network payloads. However, these advantages require that your website either (a) requires a web server or service that understands MyST sites; or (b) is changed to an HTML export that does not include these features but does allow you to host static files on services like GitHub pages.
+There are two different ways to host MyST websites online.
 
-## Creating Static HTML
+- **As a static website**. An HTML file is generated for each page at once. The collection of HTML files and website assets can be served from static site hosts (like [GitHub Pages](https://docs.github.com/en/pages), [Netlify](https://netlify.com), and [ReadTheDocs](https://readthedocs.org)).
+- **As an application**. A MyST _server_ is run that dynamically generates pages when a user visits them. Your site can be served by a hosting provider that supports applications (like [Curvenote](https://curvenote.com) or [Vercel](https://vercel.com))
+
+The high-level differences between these approaches are outlined in [](#deployment-comparison).
+:::{table} High-Level Comparison of MyST Site Deployment Types
+:label: deployment-comparison
+
+| Deployment Type | High Performance | Seamless Updates | Static Hosting |
+| :-------------: | :--------------: | :--------------: | :------------: |
+| Static website  |        ❌        |        ❌        |       ✅       |
+|   MyST server   |        ✅        |        ✅        |       ❌       |
+
+:::
+
+:::{note} MyST was designed to be deployed as an application
+Deploying MyST as an application has many benefits. For example, [performance enhancements](./accessibility-and-performance.md) (like pre-fetching for instant page-transitions, loading indicators, and smaller network payloads) and easier upgrades as new MyST versions are released.
+
+The [default themes](#default-web-themes) for MyST are designed to be MyST applications rather than static sites, but the core functionality is equally shared between the two options.
+:::
+
+% - Static deployments are MPA (each page own HTML document), SSG (rendered ahead of time)
+% - Servers are SPA (request JSON), SSR+hydration
+%- Term definitions?
+% - SPA vs MPA
+% - SSR vs CSR vs SSG
+
+The choice between static hosts and application-based hosts often comes down to the type of website hosting that is available, and the amount of complexity that you're willing to deal with in deploying your site.
+The sections below share a few considerations to help you make a decision.
+
+## Static Websites
+
+### Creating Static HTML
 
 To create a static HTML export of your MyST site, build it as HTML:
 
@@ -14,30 +45,22 @@ To create a static HTML export of your MyST site, build it as HTML:
 myst build --html
 ```
 
-After the build process, you can see the folder in `_build/html`, which has all assets for your static website. You can verify that the site is working correctly by starting a static web-server, for example,\
-`npx serve _build/html`\
+After the build process, you can see the folder in `_build/html`, which has all assets for your static website. You can verify that the site is working correctly by starting a static web-server, for example,
+
+```shell
+npx serve _build/html
+```
+
 which will serve a static version of the site.
 
 :::{danger} Static sites should have an `index.html`
 :class: dropdown
 
-Your site should be configured with a single project at the root, this can be done by removing the `site.projects` list so that the site builds at the root url, rather than in a nested folder.
+A static site needs an `index.html` at its root.
+MyST generates one automatically when your site has a single project built at the root URL, which is the default.
 
-If your project is configured to be in a nested folder using a project `slug`, a site index will _not_ be created and your project will be instead accessible at a nested slug.
-
-To fix this, change your `site` configuration to use a flat rather than nested project:
-
-```yaml
-version: 1
-# Your project must be listed in the same myst.yml configuration
-project: ...
-site:
-  title: Site Title
-  # Delete the following `site.projects` configuration:
-  # projects:
-  #   - slug: nested-folder
-  #     path: .
-```
+If a root `index.html` is _not_ generated, your project is being built under a nested URL instead of at the root.
+You're probably using the [deprecated `projects:` configuration](#multiple-projects-deprecated), and should remove it.
 
 :::
 
@@ -47,151 +70,101 @@ site:
 If you are using Git, add the `_build` folder to your `.gitignore` so that it is not tracked. This folder contains auto-generated assets that can easily be re-built -- for example in a Continuous Integration system like GitHub Actions.
 :::
 
-## Deploying to GitHub Pages
-
-GitHub Pages[^pages] allows you to host your project in a folder, which is your repositories name, for example:\
-`https://owner.github.io/repository_name`\
-To get setup with GitHub Pages, ensure that your repository is hosted in GitHub and you are in the root of the Git repository.
-
-🛠 In the root of your git repository run `myst init --gh-pages`
-
-The command will ask you questions about which branch to deploy from (e.g. `main`) and the name of the GitHub Action (e.g. `deploy.yml`). It will then create a GitHub Action[^actions] that will run next time you push your code to the main branch you specified.
-
-:::{figure} ./images/myst-init-gh-pages.png
-:class: framed
-The command `myst init --gh-pages` will guide you through deploying to GitHub Pages.
-:::
-
-[^actions]: To learn more about GitHub Actions, see the [GitHub documentation](https://docs.github.com/en/actions/quickstart). These are YAML files created in the `.github/workflows` folder in the root of your repository.
-[^pages]: To learn more about GitHub Pages, see the [GitHub documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
-
-Navigate to your repository settings, click on Pages and enable GitHub pages. When choosing the source, use `GitHub Actions`:
-
-🛠 Turn on GitHub Pages using **GitHub Actions** as the source.
-
-To trigger action, push your code with the workflow to main.
-
-:::{warning} Custom Domains
-GitHub allow you to host your static content on a custom domain, doing so _may_ require you to change the `BASE_URL` environment variable in the action. If you have unstyled content, try changing the `BASE_URL` to a blank string: `BASE_URL=''` (note the **single quotes**!); this serves the build assets from the root of your domain, rather than the default, which is the name or your repository.
-:::
-
-:::{tip} `BASE_URL` environment variable
+:::{tip} Static HTML generates folder-based HTML files
 :class: dropdown
-The build and site assets are in the `/build` folder, which would point outside of the current repository to a repository called 'build', which probably doesn't exist!
 
-To fix this, we can change the base url that the site is mounted to, which can be done through the `BASE_URL` environment variable:
+When you generate static HTML using MyST, routes to documents (e.g. `/folder/mydoc`) must be rendered into static HTML files. MyST will turn routes into HTML paths like so:
 
+```
+/myfolder/mydoc/index.html
+```
+
+When the browser sends a request to the route `/folder/mydoc`, the server interprets that as request for the HTML file `/myfolder/mydoc/index.html`, and returns that.
+
+Some SSGs instead return HTML files like `/myfolder/mydoc.html`, and this can trigger different behavior depending on the hosting platform you're using. However, `/myfolder/mydoc/index.html` is generally a safer bet, which is why it is the default.
+
+See [the trailing slash and hosting provider guide](https://github.com/slorber/trailing-slash-guide) for more information about the impact of this behavior across hosting providers.
+
+_Inspired from the [excellent Docusaurus documentation](https://docusaurus.io/docs/advanced/routing#routes-become-html-files)_
+:::
+
+(deploy:base-url)=
+### Custom domains and the base URL
+
+When deploying static HTML to the web, you may have to specify a Base URL so that links resolve properly.
+This happens when you serve your MyST site from a *subfolder* of a parent URL.
+For example:
+
+- `mysite.org/`: **Does not** require a `BASE_URL` to be set, because the root site is where your MyST site lives.
+- `mysite.org/docs/`: **Does** require a `BASE_URL` to be set, because your MyST HTML files will be in `docs/`, not the root.
+
+If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
+
+In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets.
+
+::::{tab-set}
+:::{tab-item} Bash
 ```bash
 export BASE_URL="/repository_name"
+myst build --html
 ```
+:::
+:::{tab-item} Powershell
+```powershell
+$env:BASE_URL = "/folder1/folder2" 
+myst build --html
+```
+:::
+:::{tab-item} Fish
+```fish
+set -x BASE_URL "/folder1/folder2"
+myst build --html
+```
+:::
+:::{tab-item} CMD
+```cmd
+set BASE_URL=/folder1/folder2
+myst build --html
+```
+:::
+::::
 
-The base URL is _absolute_ and should not end with a trailing slash. This can be done automatically in a GitHub Action by looking to the `github.event.repository.name` variable.
+:::{tip} Set `BASE_URL` in your CI/CD
+You can set environment variables in many CI/CD services like GitHub Actions and Netlify.
+This can be a useful way to ensure the `BASE_URL` is set before your site is deployed.
 :::
 
-:::{note} Full GitHub Action
-:class: dropdown
+### Services for Static Web Hosting
 
-The GitHub Action to build and deploy your site automatically is:
+The contents of the `_build/html` can be served from any static web server. The following articles outline the process of deploying your static site to well-known website providers:
 
-```{code} yaml
-:filename: deploy.yml
-# This file was created automatically with `myst init --gh-pages` 🪄 💚
+(static-web-services-dropdown)=
 
-name: MyST GitHub Pages Deploy
-on:
-  push:
-    # Runs on pushes targeting the default branch
-    branches: [main]
-env:
-  # `BASE_URL` determines the website is served from, including CSS & JS assets
-  # You may need to change this to `BASE_URL: ''`
-  BASE_URL: /${{ github.event.repository.name }}
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: 'pages'
-  cancel-in-progress: false
-jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-      - name: Install MyST Markdown
-        run: npm install -g mystmd
-      - name: Build HTML Assets
-        run: myst build --html
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: './_build/html'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
-```
-
+:::{toc}
+:context: children
 :::
 
-## Deploying to Curvenote
+## Application Websites
 
-Curvenote provides a free service to host your MyST sites with an up-to-date theme ([deployment documentation](https://github.com/curvenote/action-myst-publish) for MyST sites). The websites are hosted on a `curve.space` subdomain with your username or a [custom domain](https://curvenote.com/docs/web/custom-domains). To configure the domain(s) add them to your site configuration:
+### Creating Structured Site Data
 
-```yaml
-site:
-  domains:
-    - username.curve.space
+MyST servers consume _structured data_ that represents a MyST website. These data can be built using the `myst build` command,
+
+```shell
+myst build --site
 ```
 
-You can then deploy the site using:
+which populates the `_build/site` directory with information about your website including the metadata, cross-references, static images, and [MyST AST](https://mystmd.org/spec).
 
-```bash
-curvenote deploy
-```
+### Deploying to a MyST-Aware Server
 
-You can also deploy from a GitHub action, which will build your site and then deploy it to Curvenote.
+:::{note}
+At present, only [Curvenote](https://curvenote.com/) provides out-of-the-box support for deployment of MyST websites:
+:::
 
-🛠 In the root of your git repository run `myst init --gh-curvenote`
+% TODO: vercel/netlify server
 
-The command will ask you questions about which branch to deploy from (e.g. `main`) and the name of the GitHub Action (e.g. `deploy.yml`). It will then create a GitHub Action[^actions] that will run next time you push your code to the main branch you specified. Ensure that you including setting up your `CURVENOTE_TOKEN` which can be created from your Curvenote profile.
-
-:::{tip} Full GitHub Actions
-:class: dropdown
-
-You can use GitHub actions to build and deploy your site automatically when you merge new documents, for example.
-
-See the documentation for the action, including setting up your `CURVENOTE_TOKEN`:\
-https://github.com/curvenote/action-myst-publish
-
-```yaml
-name: deploy-myst-site
-on:
-  push:
-    branches:
-      - main
-permissions:
-  contents: read
-  pull-requests: write
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy 🚀
-        uses: curvenote/action-myst-publish@v1
-        env:
-          CURVENOTE_TOKEN: ${{ secrets.CURVENOTE_TOKEN }}
-```
-
+:::{card} Curvenote
+:link: ./deployment-curvenote.md
+Deploy to Curvenote as a dynamic site with a managed MyST theme.
 :::

@@ -8,18 +8,27 @@ import {
   validateList,
   validateObjectKeys,
   validateString,
-  validateUrl,
   validationError,
   validationWarning,
 } from 'simple-validators';
-import { validateAffiliation } from '../affiliations/validators.js';
-import type { ReferenceStash } from '../utils/referenceStash.js';
-import { validateAndStashObject } from '../utils/referenceStash.js';
-import type { Contributor, Name } from './types.js';
-import { formatName, parseName } from '../utils/parseName.js';
 import { orcid } from 'orcid';
+import {
+  AFFILIATION_ALIASES,
+  AFFILIATION_KEYS,
+  validateAffiliation,
+} from '../affiliations/validators.js';
+import { formatName, parseName } from '../utils/parseName.js';
+import type { ReferenceStash } from '../utils/referenceStash.js';
+import {
+  isStashPlaceholder,
+  stashPlaceholder,
+  validateAndStashObject,
+} from '../utils/referenceStash.js';
+import type { Contributor, Name } from './types.js';
+import { SOCIAL_LINKS_ALIASES, SOCIAL_LINKS_KEYS } from '../socials/types.js';
+import { validateSocialLinks } from '../socials/validators.js';
 
-const CONTRIBUTOR_KEYS = [
+const PERSON_KEYS = [
   'id',
   'userId',
   'name',
@@ -32,18 +41,17 @@ const CONTRIBUTOR_KEYS = [
   'roles',
   'affiliations',
   'collaborations',
-  'twitter',
-  'github',
-  'url',
   'note',
   'phone',
   'fax',
+  ...SOCIAL_LINKS_KEYS,
 ];
-const CONTRIBUTOR_ALIASES = {
+const PERSON_ALIASES = {
+  ref: 'id', // Used in QMD to reference a contributor
   role: 'roles',
   'equal-contributor': 'equal_contributor',
   affiliation: 'affiliations',
-  website: 'url',
+  ...SOCIAL_LINKS_ALIASES,
 };
 
 const NAME_KEYS = [
@@ -69,8 +77,10 @@ const NAME_ALIASES = {
  */
 export function validateName(input: any, opts: ValidationOptions) {
   let output: Name;
+  let raiseCommaWarnings = false;
   if (typeof input === 'string') {
     output = parseName(input);
+    raiseCommaWarnings = true;
   } else {
     const value = validateObjectKeys(input, { optional: NAME_KEYS, alias: NAME_ALIASES }, opts);
     if (value === undefined) return undefined;
@@ -101,25 +111,31 @@ export function validateName(input: any, opts: ValidationOptions) {
     }
     if (Object.keys(output).length === 1 && output.literal) {
       output = { ...output, ...parseName(output.literal) };
+      raiseCommaWarnings = true;
     } else if (!output.literal) {
       output.literal = formatName(output);
+      if (output.literal.startsWith(',')) {
+        validationWarning(
+          `unexpected comma at beginning of name: ${output.literal} - you may need to define 'name.literal' explicitly`,
+          opts,
+        );
+      }
     }
   }
-  const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
-    if (part && part.includes(',')) {
-      validationWarning(`unexpected comma in name part: ${part}`, o);
-    }
-  };
-  warnOnComma(output.given, incrementOptions('given', opts));
-  warnOnComma(output.family, incrementOptions('family', opts));
-  warnOnComma(output.non_dropping_particle, incrementOptions('non_dropping_particle', opts));
-  warnOnComma(output.dropping_particle, incrementOptions('dropping_particle', opts));
-  warnOnComma(output.suffix, incrementOptions('suffix', opts));
-  if (!output.family) {
-    validationWarning(`No family name for name '${output.literal}'`, opts);
-  }
-  if (!output.given) {
-    validationWarning(`No given name for name '${output.literal}'`, opts);
+  if (raiseCommaWarnings) {
+    const warnOnComma = (part: string | undefined, o: ValidationOptions) => {
+      if (part && part.includes(',')) {
+        validationWarning(
+          `unexpected comma in name part: ${part} - you may need to define 'name' explicitly as an object`,
+          o,
+        );
+      }
+    };
+    warnOnComma(output.given, incrementOptions('given', opts));
+    warnOnComma(output.family, incrementOptions('family', opts));
+    warnOnComma(output.non_dropping_particle, incrementOptions('non_dropping_particle', opts));
+    warnOnComma(output.dropping_particle, incrementOptions('dropping_particle', opts));
+    warnOnComma(output.suffix, incrementOptions('suffix', opts));
   }
   return output;
 }
@@ -127,16 +143,39 @@ export function validateName(input: any, opts: ValidationOptions) {
 /**
  * Validate Contributor object against the schema
  */
-export function validateContributor(input: any, stash: ReferenceStash, opts: ValidationOptions) {
-  if (typeof input === 'string') {
-    input = { id: input, name: input };
-  }
-  const value = validateObjectKeys(
+export function validateContributor(
+  input: any,
+  stash: ReferenceStash,
+  opts: ValidationOptions,
+): Contributor | undefined {
+  const inputAff = validateObjectKeys(
     input,
-    { optional: CONTRIBUTOR_KEYS, alias: CONTRIBUTOR_ALIASES },
-    opts,
+    { optional: AFFILIATION_KEYS, alias: AFFILIATION_ALIASES },
+    {
+      ...opts,
+      suppressErrors: true,
+      suppressWarnings: true,
+    },
   );
+  if (inputAff?.collaboration === true) {
+    return validateAffiliation(input, opts);
+  }
+  if (typeof input === 'string') {
+    input = stashPlaceholder(input);
+  }
+  const value = validateObjectKeys(input, { optional: PERSON_KEYS, alias: PERSON_ALIASES }, opts);
   if (value === undefined) return undefined;
+  if (inputAff && Object.keys(inputAff).length > Object.keys(value).length) {
+    validationWarning(
+      'contributor may be a collaboration, not a person - if so, add "collaboration: true"',
+      opts,
+    );
+  }
+  // If contributor only has an id, give it a matching name; this is equivalent to the case
+  // where a simple string is provided as a contributor.
+  if (Object.keys(value).length === 1 && value.id) {
+    value.name = value.id;
+  }
   const output: Contributor = {};
   if (defined(value.id)) {
     output.id = validateString(value.id, incrementOptions('id', opts));
@@ -225,6 +264,9 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
     if (typeof affiliations === 'string') {
       affiliations = affiliations.split(';').map((aff) => aff.trim());
     }
+    if (!Array.isArray(affiliations)) {
+      affiliations = [affiliations];
+    }
     output.affiliations = validateList(affiliations, affiliationsOpts, (aff) => {
       return validateAndStashObject(
         aff,
@@ -235,15 +277,7 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
       );
     });
   }
-  if (defined(value.twitter)) {
-    output.twitter = validateString(value.twitter, incrementOptions('twitter', opts));
-  }
-  if (defined(value.github)) {
-    output.github = validateString(value.github, incrementOptions('github', opts));
-  }
-  if (defined(value.url)) {
-    output.url = validateUrl(value.url, incrementOptions('url', opts));
-  }
+  validateSocialLinks(value, opts, output);
   if (defined(value.phone)) {
     output.phone = validateString(value.phone, incrementOptions('phone', opts));
   }
@@ -252,6 +286,15 @@ export function validateContributor(input: any, stash: ReferenceStash, opts: Val
   }
   if (defined(value.note)) {
     output.note = validateString(value.note, incrementOptions('note', opts));
+  }
+  if (isStashPlaceholder(output) || !output.nameParsed) return output;
+  if (value.nameParsed || (value.name && typeof value.name !== 'string')) return output;
+  const suffix = " - if this is intended, you may define 'name' explicitly as an object";
+  if (!output.nameParsed.given) {
+    validationWarning(`No given name for name '${output.nameParsed.literal}'${suffix}`, opts);
+  }
+  if (!output.nameParsed.family) {
+    validationWarning(`No family name for name '${output.nameParsed.literal}'${suffix}`, opts);
   }
   return output;
 }

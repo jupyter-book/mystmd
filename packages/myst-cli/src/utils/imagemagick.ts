@@ -7,16 +7,35 @@ import { RuleId } from 'myst-common';
 import type { ISession } from '../session/types.js';
 import { addWarningForFile } from './addWarningForFile.js';
 
+function magickCommandAvailable(): boolean {
+  return !!which.sync('magick', { nothrow: true });
+}
+
+function convertCommandAvailable(): boolean {
+  return !!which.sync('convert', { nothrow: true });
+}
+
 export function isImageMagickAvailable() {
-  return which.sync('convert', { nothrow: true });
+  return magickCommandAvailable() || convertCommandAvailable();
 }
 
-export function isWebpAvailable() {
-  return which.sync('cwebp', { nothrow: true });
+export function imageMagickCommand() {
+  if (!magickCommandAvailable() && convertCommandAvailable()) {
+    return 'convert';
+  }
+  return 'magick';
 }
 
-export function isGif2webpAvailable() {
-  return which.sync('gif2webp', { nothrow: true });
+export function isWebpAvailable(): boolean {
+  return !!which.sync('cwebp', { nothrow: true });
+}
+
+export function isDwebpAvailable(): boolean {
+  return !!which.sync('dwebp', { nothrow: true });
+}
+
+export function isGif2webpAvailable(): boolean {
+  return !!which.sync('gif2webp', { nothrow: true });
 }
 
 const LARGE_IMAGE = 1024 * 1024 * 1.5;
@@ -51,24 +70,64 @@ export async function extractFirstFrameOfGif(session: ISession, gif: string, wri
   const png = path.join(writeFolder, pngFile);
   if (fs.existsSync(png)) {
     session.log.debug(`Cached file found for extracted GIF: ${gif}`);
-  } else {
-    const executable = `convert -density 600 -colorspace RGB ${gif}[0] ${png}`;
-    session.log.debug(`Executing: ${executable}`);
-    const exec = makeExecutable(executable, session.log);
-    try {
-      await exec();
-    } catch (err) {
-      addWarningForFile(
-        session,
-        gif,
-        `Could not extract an image from gif: ${gif} - ${err}`,
-        'error',
-        {
-          ruleId: RuleId.imageFormatConverts,
-        },
-      );
-      return null;
-    }
+    return pngFile;
+  }
+  const executable = `${imageMagickCommand()} -density 600 -colorspace RGB ${gif}[0] ${png}`;
+  session.log.debug(`Executing: ${executable}`);
+  const exec = makeExecutable(executable, session.log);
+  try {
+    await exec();
+  } catch (err) {
+    addWarningForFile(
+      session,
+      gif,
+      `Could not extract an image from gif: ${gif} - ${err}`,
+      'error',
+      {
+        ruleId: RuleId.imageFormatConverts,
+      },
+    );
+    return null;
+  }
+  return pngFile;
+}
+
+/**
+ * webp -> png using dwebp
+ */
+export async function convertWebpToPng(session: ISession, source: string, writeFolder: string) {
+  if (!fs.existsSync(source)) return null;
+  const { name, ext } = path.parse(source);
+  if (ext !== '.webp') return null;
+  const pngFile = `${name}.png`;
+  const png = path.join(writeFolder, pngFile);
+  if (fs.existsSync(png)) {
+    session.log.debug(`Cached file found for converted PNG: ${source}`);
+    return pngFile;
+  }
+  const debugLogger = {
+    // We cannot destructure the logger here, bunyan complains
+    debug(...args: any[]) {
+      session.log.debug(...args);
+    },
+    error(...args: any[]) {
+      session.log.debug(...args);
+    },
+  };
+  const exec = makeExecutable(`dwebp "${source}" -o "${png}"`, debugLogger);
+  try {
+    await exec();
+  } catch (err) {
+    addWarningForFile(
+      session,
+      source,
+      `Could not extract a PNG from WEBP: ${source} - ${err}`,
+      'error',
+      {
+        ruleId: RuleId.imageFormatConverts,
+      },
+    );
+    return null;
   }
   return pngFile;
 }
@@ -92,7 +151,7 @@ export async function convert(
     session.log.debug(`Cached file found for converted ${inputFormatUpper}: ${input}`);
     return filename;
   } else {
-    const executable = `convert -density 600 -colorspace RGB ${input}${
+    const executable = `${imageMagickCommand()} -density 600 -colorspace RGB ${input}${
       options?.trim ? ' -trim' : ''
     } ${output}`;
     session.log.debug(`Executing: ${executable}`);
@@ -129,8 +188,11 @@ export async function convert(
 export async function convertImageToWebp(
   session: ISession,
   image: string,
-  quality = 80,
-  overwrite = false,
+  {
+    quality = 80,
+    overwrite = false,
+    maxSize = LARGE_IMAGE,
+  }: { quality?: number; overwrite?: boolean; maxSize?: number },
 ): Promise<string | null> {
   if (!fs.existsSync(image)) {
     // If the image does not exist, it will be caught elsewhere prior to webp conversion
@@ -146,7 +208,7 @@ export async function convertImageToWebp(
 
   const { size } = fs.statSync(image);
   // PDF and TIFF are not image formats that can be used in most web-browsers
-  if (size > LARGE_IMAGE && !(imageExt === '.pdf' || imageExt === '.tiff')) {
+  if (size > maxSize && !(imageExt === '.pdf' || imageExt === '.tiff')) {
     const inMB = (size / (1024 * 1024)).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -155,7 +217,7 @@ export async function convertImageToWebp(
       session,
       image,
       `Image is too large (${inMB} MB) to convert to webp (build will be slow).`,
-      'warn',
+      (isGif2webpAvailable() && imageExt === '.gif') || isWebpAvailable() ? 'warn' : 'debug',
       { ruleId: RuleId.imageFormatOptimizes },
     );
     return null;
@@ -184,14 +246,14 @@ export async function convertImageToWebp(
   const convertGif = makeExecutable(`gif2webp -q ${quality} "${image}" -o "${webp}"`, debugLogger);
   // Density has to be BEFORE the PDF
   const convertPdfPng = makeExecutable(
-    `convert -density 600 -colorspace RGB ${image} -trim ${png}`,
+    `${imageMagickCommand()} -density 600 -colorspace RGB ${image} -trim ${png}`,
     debugLogger,
   );
   const convertPdfWebP = makeExecutable(`cwebp -q ${quality} "${png}" -o "${webp}"`, debugLogger);
 
   try {
     if (path.extname(image) === '.pdf') {
-      if (!isImageMagickAvailable() && !isWebpAvailable()) {
+      if (!isImageMagickAvailable() || !isWebpAvailable()) {
         addWarningForFile(
           session,
           image,
@@ -209,7 +271,7 @@ export async function convertImageToWebp(
           session,
           image,
           `Could not convert from image ${image} to webp:\ngif2webp is required\n`,
-          'warn',
+          'debug',
           { ruleId: RuleId.imageFormatOptimizes },
         );
         return null;
@@ -221,7 +283,7 @@ export async function convertImageToWebp(
           session,
           image,
           `Could not convert from image ${image} to webp:\ncwebp is required\n`,
-          'warn',
+          'debug',
           { ruleId: RuleId.imageFormatOptimizes },
         );
         return null;

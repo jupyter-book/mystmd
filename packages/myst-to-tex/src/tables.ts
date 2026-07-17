@@ -1,5 +1,6 @@
 import type { Table, TableRow, TableCell as SpecTableCell } from 'myst-spec';
 import type { ITexSerializer } from './types.js';
+import { addIndexEntries } from './utils.js';
 
 export const TOTAL_TABLE_WIDTH = 886;
 
@@ -56,7 +57,7 @@ export function getColumnWidths(node: Table) {
   const fractionalWidths = widths.map((w: number) => w / total);
   const columnSpec = fractionalWidths.map((w: number) => renderPColumn(w)).join('');
 
-  const numColumns = widths.length > 0 ? widths.length : node?.children[0]?.children?.length ?? 0;
+  const numColumns = widths.length > 0 ? widths.length : (node?.children[0]?.children?.length ?? 0);
 
   return { widths: fractionalWidths, columnSpec, numColumns };
 }
@@ -101,6 +102,7 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
   if (!numColumns) {
     throw new Error('invalid table format, no columns');
   }
+  addIndexEntries(node, state);
   state.data.isInTable = true; // this is cleared at the end of this function
   if (!state.data.isInContainer) {
     state.write('\\bigskip\\noindent');
@@ -197,6 +199,6 @@ export function renderNodeToLatex(node: Table, state: ITexSerializer) {
   state.closeBlock(node);
   state.data.isInTable = false;
   if (!state.data.isInContainer) {
-    state.write('\\bigskip');
+    state.write('\\bigskip\n\n');
   }
 }

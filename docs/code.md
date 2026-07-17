@@ -1,5 +1,6 @@
 ---
-title: Code and code-blocks
+title: Code and Code-blocks
+short_title: Code & Code-blocks
 description: Code and code-blocks can be used to show programming languages.
 thumbnail: ./thumbnails/code.png
 numbering:
@@ -31,11 +32,11 @@ A list of language names supported by the  `myst-react` package is here: [HLJS l
 
 ## Code blocks
 
-The above code is not a directive, it is just standard markdown syntax, which cannot add a {myst:directive}`code.caption` or {myst:directive}`code.label`. To caption or label blocks of code use the {myst:directive}`code` directive.
+The above code is not a directive, it is just standard Markdown syntax, which cannot add a {myst:directive}`code.caption` or {myst:directive}`code.label`. To caption or label blocks of code use the {myst:directive}`code` directive.
 
 ````{myst}
 ```{code} python
-:name: my-program
+:label: my-program
 :caption: Creating a TensorMesh using SimPEG
 from discretize import TensorMesh
 
@@ -45,12 +46,13 @@ hy = [(1, 40)]
 mesh = TensorMesh([hx, hy])
 ```
 
-In the [](#my-program), we create a mesh for simulation using [SimPEG](https://discretize.simpeg.xyz/).
+In @my-program, we create a mesh for simulation using [SimPEG](https://discretize.simpeg.xyz/).
 ````
 
 ## Numbering and Highlighting
 
 To add numbers and emphasis to lines use the {myst:directive}`code` directive. You can use {myst:directive}`code.linenos` which is a flag, with no value, and {myst:directive}`code.emphasize-lines` with a comma-separated list of line numbers to emphasize.
+These options also work with {myst:directive}`code-cell` directives (see [](#code-cell:linenos)).
 
 ````{code} md
 :linenos:
@@ -67,9 +69,9 @@ You can also set the start number using the {myst:directive}`code.lineno-start` 
 ```{tip} Docutils and Sphinx Compatibility
 :class: dropdown
 
-For full compatibility with Sphinx we suggest using `{code-block}` directive, which is an alias of the {myst:directive}`code` directive. The MyST implementation supports both the Sphinx [`{code-block} directive`](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) as well as the `docutils` [{code} directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#code) implementation, which only supports the `number-lines` option.
+For full compatibility with Sphinx we suggest using {myst:directive}`code-block` directive, which is an alias of the {myst:directive}`code` directive. The MyST implementation supports both the Sphinx [`{code-block} directive`](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block) as well as the `docutils` [{code} directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#code) implementation, which only supports the `number-lines` option.
 
-You can use either `code` or `code-block` directive documented above or even a normal markdown code block.
+You can use either `code` or `code-block` directive documented above or even a normal Markdown code block.
 All implementations in MyST are resolved to the same `code` type in the abstract syntax tree.
 ```
 
@@ -85,11 +87,13 @@ project:
 ```
 ````
 
-## Including Files
+(docs:literalinclude)=
+
+## Including Code Files
 
 If your code is in a separate file you can use the {myst:directive}`literalinclude` directive (or the {myst:directive}`include` directive with the {myst:directive}`include.literal` flag).
 This directive is helpful for showing code snippets without duplicating your content.
-
+For parsing the file, see the documentation in [](#docs:include).
 For example, a `literalinclude` of a snippet of the `myst.yml` such as:
 
 ````markdown
@@ -108,16 +112,12 @@ creates a snippet that has matching line numbers, and starts at a line including
 :lineno-match:
 ```
 
-:::{note} Auto Reload
-If you are working with the auto-reload (e.g. `myst start`), currently you will need to save the file with the {myst:directive}`literalinclude` directive for the contents to update.code for the contents to update.
+:::{important} Paths are Relative
+The {myst:directive}`argument <include.arg>` of a {myst:directive}`literalinclude` directive is the file path, which is relative to the file from which it was referenced.
 :::
 
-The argument of an include directive is the file path ({myst:directive}`docs <include.arg>`), which is relative to the file from which it was referenced.
-By default the file will be parsed using MyST, you can also set the file to be {myst:directive}`include.literal`, which will show as a code-block; this is the same as using the {myst:directive}`literalinclude` directive.
-
-If in {myst:directive}`include.literal` mode, the directive also accepts all of the options from the `code-block` (e.g. {myst:directive}`include.linenos`).
+In {myst:directive}`include.literal` mode, the include directive also accepts all of the options from the `code-block` (e.g. {myst:directive}`include.linenos`).
 To select a portion of the file to be shown using the {myst:directive}`include.start-at`/{myst:directive}`include.start-after` selectors with the {myst:directive}`include.end-before`/{myst:directive}`include.end-at`, which use a snippet of included text.
 
 Alternatively, you can explicitly select the lines (e.g. `1,3,5-10,20-`) or the {myst:directive}`include.start-line`/{myst:directive}`include.end-line` (which is zero based for compatibility with Sphinx).
-
 The include directive is based on [RST](https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment) and [Sphinx](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-literalinclude).

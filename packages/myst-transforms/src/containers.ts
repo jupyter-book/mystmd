@@ -1,5 +1,13 @@
 import type { Plugin } from 'unified';
-import { fileError, fileWarn, liftChildren, normalizeLabel, RuleId, plural } from 'myst-common';
+import {
+  fileError,
+  fileWarn,
+  liftChildren,
+  normalizeLabel,
+  RuleId,
+  plural,
+  transferTargetAttrs,
+} from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { remove } from 'unist-util-remove';
 import { select, selectAll } from 'unist-util-select';
@@ -10,10 +18,14 @@ const SUBFIGURE_TYPES = [
   'block',
   'container',
   'image',
+  'mermaid',
   'iframe',
   'table',
   'code',
   'output',
+  'card',
+  'anywidget',
+  'grid',
 ];
 
 /** Raise a warning if caption includes content that is expected to be directly on the figure */
@@ -56,16 +68,15 @@ function createSubfigure(node: GenericNode, parent: GenericParent): GenericParen
     delete node.alt;
   }
   const { label, identifier } = normalizeLabel(node.label) ?? {};
+  node.label = label;
+  node.identifier = identifier;
   const subfigure = {
     type: 'container',
     kind: node.kind ?? parent.kind ?? 'figure',
     subcontainer: true,
-    label,
-    identifier,
     children,
   };
-  delete node.label;
-  delete node.identifier;
+  transferTargetAttrs(node, subfigure);
   return subfigure;
 }
 
@@ -105,7 +116,7 @@ function hoistContentOutOfParagraphs(tree: GenericParent) {
  * Update container children and add sub-figures
  *
  * - Valid container nodes are ensured to be first children.
- *   These include image/iframe/table/code/embed/block/container nodes.
+ *   These include image/iframe/table/code/embed/block/container/anywidget/grid nodes.
  * - If multiple of these are present, they are nested as sub-figures.
  *   (This does not include placeholder images, which are left unchanged)
  * - A warning is raised if these node types are found in caption or legend
@@ -115,6 +126,10 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
   const containers = selectAll('container', tree) as GenericParent[];
   // Process in reverse so subfigure processing persists
   containers.reverse().forEach((container) => {
+    // We don't need to process quotes
+    if (container.kind === 'quote') {
+      return;
+    }
     hoistContentOutOfParagraphs(container);
     let subfigures: GenericNode[] = [];
     let placeholderImage: GenericNode | undefined;
@@ -185,7 +200,7 @@ export function containerChildrenTransform(tree: GenericParent, vfile: VFile) {
         {
           node: container,
           ruleId: RuleId.containerChildrenValid,
-          note: 'Valid content types include image, referenced notebook cell, table, code, iframe, subfigure',
+          note: 'Valid content types include image, referenced notebook cell, table, code, cards, iframe, subfigure, anywidget, grid',
         },
       );
     }

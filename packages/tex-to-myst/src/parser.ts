@@ -26,8 +26,9 @@ import { FOOTNOTE_HANDLERS } from './footnotes.js';
 import { SIUNITX_HANDLERS } from './siunitx.js';
 import { CHEM_HANDLERS } from './chem.js';
 import { ALGORITHM_HANDLERS } from './algorithms.js';
+import { QUOTE_HANDLERS } from './quotes.js';
 
-const DEFAULT_HANDLERS: Record<string, Handler> = {
+export const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...BASIC_TEXT_HANDLERS,
   ...FRONTMATTER_HANDLERS,
   ...TEXT_MARKS_HANDLERS,
@@ -36,6 +37,7 @@ const DEFAULT_HANDLERS: Record<string, Handler> = {
   ...MATH_HANDLERS,
   ...LIST_HANDLERS,
   ...LINK_HANDLERS,
+  ...QUOTE_HANDLERS,
   ...CITATION_HANDLERS,
   ...CHARACTER_HANDLERS,
   ...SECTION_HANDLERS,
@@ -130,7 +132,13 @@ export class TexParser implements ITexParser {
     });
   }
 
-  pushNode(el?: GenericNode) {
+  pushNode(el?: GenericNode | GenericNode[]) {
+    if (Array.isArray(el)) {
+      el.forEach((e) => {
+        this.pushNode(e);
+      });
+      return;
+    }
     const top = this.top();
     if (this.stack.length && el && 'children' in top) {
       if (!el.position) el.position = this.currentPosition;
@@ -167,8 +175,8 @@ export class TexParser implements ITexParser {
         child.type === 'macro'
           ? `macro_${child.content}`
           : child.type === 'environment'
-          ? `env_${child.env}`
-          : child.type;
+            ? `env_${child.env}`
+            : child.type;
       this.currentPosition = child.position ?? this.currentPosition;
       const handler = this.handlers[kind] ?? this.data.dynamicHandlers[kind];
       if (handler) {
@@ -272,7 +280,8 @@ export class TexParser implements ITexParser {
     this.closeNode();
   }
 
-  closeNode() {
+  closeNode(type?: string) {
+    if (type && this.top().type !== type) return this.top();
     const node = this.stack.pop();
     this.pushNode(node);
     return node as GenericNode;

@@ -1,5 +1,666 @@
 # myst-transforms
 
+## 1.3.50
+
+### Patch Changes
+
+- Updated dependencies [c738873]
+  - myst-frontmatter@1.10.0
+  - myst-common@1.10.0
+  - myst-spec-ext@1.10.0
+  - myst-to-html@1.7.3
+
+## 1.3.49
+
+### Patch Changes
+
+- e8803fc: Recognize `anywidget` as valid figure container content so figures wrapping the `{anywidget}` directive no longer error during transforms and exports such as MECA. Fixes #2809
+  .
+  - myst-to-html@1.7.2
+
+## 1.3.48
+
+### Patch Changes
+
+- myst-to-html@1.7.1
+
+## 1.3.47
+
+### Patch Changes
+
+- e78417e: Add children context to toc directive
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-spec-ext@1.9.5
+  - myst-common@1.9.5
+  - myst-to-html@1.7.0
+
+## 1.3.46
+
+### Patch Changes
+
+- 72505e1: Fix URL generation bug in toc directive
+  - myst-to-html@1.6.5
+
+## 1.3.45
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+  - myst-spec-ext@1.9.4
+  - myst-to-html@1.6.4
+
+## 1.3.44
+
+### Patch Changes
+
+- 2e6e81f: Add support for new Outputs node
+- Updated dependencies [2e6e81f]
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+  - myst-to-html@1.6.3
+
+## 1.3.43
+
+### Patch Changes
+
+- cc0bcec: Improve robustness of link transform (when a link has no url)
+- c2d895a: Enable key-based ignores of warnings for DOIs
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-spec-ext@1.9.1
+  - myst-frontmatter@1.9.1
+  - myst-to-html@1.6.2
+
+## 1.3.42
+
+### Patch Changes
+
+- c7af16c: Add mhchem extension
+- 1735db4: Add support for iframe title.
+- Updated dependencies [1735db4]
+- Updated dependencies [30acc57]
+  - myst-spec-ext@1.9.0
+  - myst-frontmatter@1.9.0
+  - myst-common@1.9.0
+  - myst-to-html@1.6.1
+
+## 1.3.41
+
+### Patch Changes
+
+- aab5f02: Handle undefined URLs in formatting link text
+- 4fb0d72: Resolve links and image/embed/include paths relative to project root if they starts with `/`
+- Updated dependencies [cd8ee79]
+  - myst-to-html@1.6.0
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+  - myst-spec-ext@1.8.4
+
+## 1.3.40
+
+### Patch Changes
+
+- 13bd33a: :wrench: Refactorings to clean up table-of-contents transform
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+  - myst-to-html@1.5.17
+
+## 1.3.39
+
+### Patch Changes
+
+- ae6123412: Expose admonition header test function
+- Updated dependencies [9cb280a4b]
+  - myst-spec-ext@1.8.2
+  - myst-common@1.8.2
+  - myst-frontmatter@1.8.2
+  - myst-to-html@1.5.16
+
+## 1.3.38
+
+### Patch Changes
+
+- cb76fb71: Add URLs to toc-directive
+
+## 1.3.37
+
+### Patch Changes
+
+- 224da08d: Underline tag in html is underline not emphasis
+- Updated dependencies [0b284816]
+- Updated dependencies [fefffffd]
+  - myst-spec-ext@1.8.1
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+  - myst-to-html@1.5.15
+
+## 1.3.36
+
+### Patch Changes
+
+- 8871ca8a: Improve symbol replacements.
+- 423a1913: Add image width/height reading to html parsing
+  - myst-common@1.8.0
+  - myst-frontmatter@1.8.0
+  - myst-spec-ext@1.8.0
+
+## 1.3.35
+
+### Patch Changes
+
+- 813c2a66: Do not recognise permalink-style wiki links
+  - myst-to-html@1.5.14
+
+## 1.3.34
+
+### Patch Changes
+
+- c6213ed: Move QMD admonition recognition to a transform
+- 7d68c88e: block data class
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+  - myst-to-html@1.5.13
+
+## 1.3.33
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- 0941552: Blocks can now set `kind` and `class`
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+  - myst-common@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.3.32
+
+### Patch Changes
+
+- 0052853: New TOC directive
+- 75bbb180: Change footnotes to use enumerator over number
+- 92839fba: Add support for `class` in block data
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+  - myst-to-html@1.5.12
+
+## 1.3.31
+
+### Patch Changes
+
+- eacacd95: Fix unwanted continuous numbering for some enumerated types
+- Updated dependencies [fad8f673]
+  - myst-spec-ext@1.7.8
+  - myst-common@1.7.8
+  - myst-frontmatter@1.7.8
+  - myst-to-html@1.5.11
+
+## 1.3.30
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator customization to numbering items
+- 614ed0ec: Remove some heading depth magic
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+
+## 1.3.29
+
+### Patch Changes
+
+- e3309c24: Quiet warning about newLineInDisplayMode
+- 9717b067: Add caption to code-block options
+- cefb2a15: join gates plugin moved before blocks
+- 71018741: Read iframe from html source
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+  - myst-to-html@1.5.10
+
+## 1.3.28
+
+### Patch Changes
+
+- 3aa40b03: No trailing slash for end of links
+- Updated dependencies [a27bd886]
+  - myst-to-html@1.5.9
+
+## 1.3.27
+
+### Patch Changes
+
+- Updated dependencies [eb411d0b]
+  - myst-spec-ext@1.7.4
+  - myst-common@1.7.4
+  - myst-frontmatter@1.7.4
+  - myst-to-html@1.5.8
+
+## 1.3.26
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-to-html@1.5.7
+
+## 1.3.25
+
+### Patch Changes
+
+- myst-to-html@1.5.6
+
+## 1.3.24
+
+### Patch Changes
+
+- Updated dependencies [85db77c7]
+- Updated dependencies [9c1b8c73]
+- Updated dependencies [8ba7b73a]
+  - myst-spec-ext@1.6.0
+  - myst-frontmatter@1.6.0
+  - myst-common@1.6.0
+  - myst-to-html@1.5.5
+
+## 1.3.23
+
+### Patch Changes
+
+- 60fc2574: Ensure é ends up in the E index.
+- d1d3cda9: Expand github alerts see https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts
+- 85520edd: Allow for explicit ignoring of longer abbreviations
+- 88396dd: Add enumerator and enumerated to directives
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [4e880f3e]
+- Updated dependencies [e2b74f4d]
+  - myst-frontmatter@1.5.4
+  - myst-spec-ext@1.5.4
+  - myst-common@1.5.4
+  - myst-to-html@1.5.4
+
+## 1.3.22
+
+### Patch Changes
+
+- Updated dependencies [857c5acf]
+- Updated dependencies [313b218]
+  - myst-spec-ext@1.5.3
+  - myst-frontmatter@1.5.3
+  - myst-common@1.5.3
+  - myst-to-html@1.5.3
+
+## 1.3.21
+
+### Patch Changes
+
+- 134598fd: Add index directives/roles to myst-cli
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+  - myst-spec-ext@1.5.2
+  - myst-to-html@1.5.2
+
+## 1.3.20
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-spec-ext@1.5.1
+  - myst-to-html@1.5.1
+  - myst-common@1.5.1
+
+## 1.3.19
+
+### Patch Changes
+
+- 661039d4: Do not duplicate h1 title nested in block
+- 19e96e27: Fix conversion of hast fragments to mdast fragments
+- 1239104c: Change code caption numbers from 'Code' to 'Program'
+- Updated dependencies [8c487991]
+- Updated dependencies [f6aa726c]
+- Updated dependencies [0576d5ad]
+- Updated dependencies [478c4d4f]
+  - myst-frontmatter@1.5.0
+  - myst-common@1.5.0
+  - myst-spec-ext@1.5.0
+  - myst-to-html@1.5.0
+
+## 1.3.18
+
+### Patch Changes
+
+- 2a8fe63f: Combine html nodes split by whitespace in reconstructHtml transform
+- Updated dependencies [1e2092dc]
+  - myst-common@1.4.7
+  - myst-frontmatter@1.4.7
+  - myst-spec-ext@1.4.7
+
+## 1.3.17
+
+### Patch Changes
+
+- 1b6ee5e2: Support HTML video tags
+- Updated dependencies [4cea894]
+  - myst-frontmatter@1.4.6
+  - myst-common@1.4.6
+  - myst-spec-ext@1.4.6
+
+## 1.3.16
+
+### Patch Changes
+
+- 3d93fdb9: Footnotes that are reused should have the same number
+- Updated dependencies [ad969c37]
+  - myst-frontmatter@1.4.5
+  - myst-common@1.4.5
+  - myst-spec-ext@1.4.5
+  - myst-to-html@1.4.4
+
+## 1.3.15
+
+### Patch Changes
+
+- dd007024: Fix link transform for card links
+- 65ade89: Consume new math structure
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - myst-frontmatter@1.4.4
+  - myst-common@1.4.4
+  - myst-spec-ext@1.4.4
+
+## 1.3.14
+
+### Patch Changes
+
+- dfbcb62d: Fix broken term xrefs by no removing identifier on xref node
+- e82914e2: Better error messages for empty link text
+- Updated dependencies [f4d5231]
+  - myst-frontmatter@1.4.3
+  - myst-common@1.4.3
+  - myst-spec-ext@1.4.3
+
+## 1.3.13
+
+### Patch Changes
+
+- Updated dependencies [9e311c38]
+  - myst-to-html@1.4.3
+  - myst-common@1.4.2
+  - myst-frontmatter@1.4.2
+  - myst-spec-ext@1.4.2
+
+## 1.3.12
+
+### Patch Changes
+
+- da9ca5b2: Add remote base URL for the external links to help with recursion!
+- 9bd9ec83: Replace xref text when using angle brackets
+- 61c7291: Support cite-style syntax for myst xrefs
+- 7c6f45c4: Enable existing `node.data` to flow through transforms, allowing upstream user data to be preserved and available in the AST.
+- 61c7291: Links with file and target resolve as cross-references
+- 61c7291: Update embed transform to allow myst project cross-references
+- 61c7291: Move target node selection utils to myst-common
+- 1e24a9f7: Add ROR link resolvers
+- Updated dependencies [61c7291]
+- Updated dependencies [da9ca5b2]
+- Updated dependencies [61c7291]
+- Updated dependencies [1e24a9f7]
+  - myst-spec-ext@1.4.1
+  - myst-common@1.4.1
+  - myst-frontmatter@1.4.1
+
+## 1.3.11
+
+### Patch Changes
+
+- ab863c8a: Change loadIntersphinx -> loadReferences and include MyST xrefs
+- ab863c8a: Split out function for getting link text from target node
+- ab863c8a: Warn on duplicate identifiers across project pages
+- ab863c8a: Add check for empty link text
+- ab863c8a: Add link transform for myst xrefs
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+- Updated dependencies [7a04910f]
+  - myst-frontmatter@1.4.0
+  - myst-spec-ext@1.4.0
+  - myst-common@1.4.0
+
+## 1.3.10
+
+### Patch Changes
+
+- 1734bffd: Included files remove frontmatter and update math/abbr
+- 7efe77a0: Ensure include file frontmatter takes priority
+- 9a30092f: Support details/summary in HTML
+
+## 1.3.9
+
+### Patch Changes
+
+- myst-to-html@1.4.2
+
+## 1.3.8
+
+### Patch Changes
+
+- myst-to-html@1.4.1
+
+## 1.3.7
+
+### Patch Changes
+
+- 3b008cbb: Move from using `data.type = notebook-code` to `block.kind = notebook-code`
+- a3e3aa0c: Support span and div in html parser
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+  - myst-to-html@1.4.0
+
+## 1.3.6
+
+### Patch Changes
+
+- 37a03c23: Allow mermaid as a valid figure child
+- Updated dependencies [2c4e3057]
+- Updated dependencies [9271361]
+  - myst-frontmatter@1.2.0
+  - myst-common@1.2.0
+  - myst-spec-ext@1.2.0
+  - myst-to-html@1.3.0
+
+## 1.3.5
+
+### Patch Changes
+
+- d17f6806: Support tex includes directly in myst processing
+- d17f6806: Handle circular includes with nice errors and no infinite loops
+- d17f6806: Revive basic recursive include
+- 1be2c741: Lowercase the `R` language to `r` in a transform
+
+## 1.3.4
+
+### Patch Changes
+
+- Updated dependencies [be3befd]
+- Updated dependencies [be3befd]
+  - myst-frontmatter@1.1.35
+  - myst-common@1.1.35
+  - myst-spec-ext@1.1.35
+  - myst-to-html@1.2.3
+
+## 1.3.3
+
+### Patch Changes
+
+- ab7fa83c: add html align property to table headers and data
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [c38cc28]
+  - myst-common@1.1.34
+  - myst-frontmatter@1.1.34
+  - myst-spec-ext@1.1.34
+  - myst-to-html@1.2.2
+
+## 1.3.2
+
+### Patch Changes
+
+- 20108545: Keep math tightness when lifting from paragraphs
+- Updated dependencies [bba5baf9]
+- Updated dependencies [117d6008]
+- Updated dependencies [ebe65816]
+- Updated dependencies [20108545]
+- Updated dependencies [6f0183de]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [bba5baf9]
+- Updated dependencies [20108545]
+- Updated dependencies [117d6008]
+- Updated dependencies [62620a8d]
+- Updated dependencies [bba5baf9]
+  - myst-common@1.1.32
+  - myst-spec-ext@1.1.32
+  - myst-frontmatter@1.1.32
+  - myst-to-html@1.2.1
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies [1880a465]
+- Updated dependencies [22c5fff]
+- Updated dependencies [1880a465]
+  - myst-common@1.1.31
+  - myst-frontmatter@1.1.31
+  - myst-spec-ext@1.1.31
+  - myst-to-html@1.2.0
+
+## 1.3.0
+
+### Minor Changes
+
+- 42af3800: Add support for epigraphs and pull-quotes using a new blockquote directive.
+
+### Patch Changes
+
+- Updated dependencies [42af3800]
+  - myst-spec-ext@1.1.30
+  - myst-common@1.1.30
+  - myst-frontmatter@1.1.30
+  - myst-to-html@1.1.0
+
+## 1.2.5
+
+### Patch Changes
+
+- a4c7a116: Do not recursively call include transform
+- 5565d60: Consume expanded numbering frontmatter
+- Updated dependencies [cbad68cc]
+- Updated dependencies [5565d60]
+  - myst-spec-ext@1.1.29
+  - myst-frontmatter@1.1.29
+  - myst-common@1.1.29
+  - myst-to-html@1.0.24
+
+## 1.2.4
+
+### Patch Changes
+
+- Updated dependencies [3c9d9962]
+- Updated dependencies [cff47b14]
+- Updated dependencies [cff47b14]
+  - myst-common@1.1.28
+  - myst-spec-ext@1.1.28
+  - myst-to-html@1.0.23
+
+## 1.2.3
+
+### Patch Changes
+
+- 9cdd2044: Flatten inline code by default
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-spec-ext@1.1.26
+
+## 1.2.2
+
+### Patch Changes
+
+- 4ac0833: Export more include directive content for finer-grain use
+- 4ac0833: Add tex-include to allow for input of sub-tex files
+- 4ac0833: Allow include directive to be recursive
+  - myst-common@1.1.25
+  - myst-spec-ext@1.1.25
+
+## 1.2.1
+
+### Patch Changes
+
+- 1fcbbbc6: Prevent basic transforms from modifying headings by default
+- d5416ff8: Allow for {subEnumerator} to be a reference target template.
+- Updated dependencies [d5416ff8]
+  - myst-spec-ext@1.1.24
+  - myst-common@1.1.24
+
+## 1.2.0
+
+### Minor Changes
+
+- d2e6e780: Sort (frontmatter) abbreviations definitions by length
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- 7596172: Allow page frontmatter in export articles
+- 85ae9b4a: Support cross-references to file allowing labels on lifted headers
+- ffc1061f: Allow enumeration to start at a different number
+- aa335d74: Gather page frontmatter on load
+- 7596172: Simplify heading transform to use firstDepth and modify mdast processing correspondingly
+- aa335d74: Add heading depth transform to normalize headings
+- Updated dependencies [f78db0bf]
+- Updated dependencies [f78db0bf]
+  - myst-to-html@1.0.22
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.1.19
 
 ### Patch Changes
@@ -9,9 +670,8 @@
   This should ensure proper representation of the document as a notebook, and ensure that it can be treated the same as a noteobok that originated in an `ipynb` by web front ends.
 
   Addresses:
-
-  - https://github.com/executablebooks/mystmd/pull/748
-  - https://github.com/executablebooks/mystmd/issues/816
+  - https://github.com/jupyter-book/mystmd/pull/748
+  - https://github.com/jupyter-book/mystmd/issues/816
   - myst-common@1.1.21
   - myst-spec-ext@1.1.21
   - myst-to-html@1.0.21
@@ -502,7 +1162,7 @@
 ### Patch Changes
 
 - 17daf15e: Introduce GithubTransformer for file links.
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - Updated dependencies [184ad9f9]
 - Updated dependencies [3fba7cb7]
   - intersphinx@0.0.4

@@ -1,17 +1,19 @@
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import katex from 'katex';
+import 'katex/contrib/mhchem/mhchem.js';
 import type { InlineMath, Node } from 'myst-spec';
 import type { Math } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
 import { RuleId, copyNode, fileError, fileWarn, normalizeLabel } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 import { unnestTransform } from './unnest.js';
 
 const TRANSFORM_NAME = 'myst-transforms:math';
 
 type Options = {
-  macros?: Record<string, string>;
+  macros?: Required<PageFrontmatter>['math'];
   mathML?: boolean;
 };
 
@@ -19,7 +21,7 @@ const replacements = {
   ' ': ' ',
 };
 
-const buildInMacros = {
+const builtInMacros = {
   '\\mbox': '\\text{#1}', // mbox is not supported in KaTeX, this is an OK fallback
 };
 
@@ -42,16 +44,28 @@ function labelMathNodes(file: VFile, node: Math | InlineMath) {
   const label = match[1];
   const normalized = normalizeLabel(label);
   if (node.type === 'math' && normalized) {
-    if (node.enumerated === false) {
-      fileWarn(file, `Labelling an unnumbered math node with "\\label{${label}}"`, {
-        node,
-        source: TRANSFORM_NAME,
-        ruleId: RuleId.mathLabelLifted,
-      });
+    if (node.label) {
+      fileWarn(
+        file,
+        `Math node is already labeled "${node.label}" - ignoring inline "\\label{${label}}"`,
+        {
+          node,
+          source: TRANSFORM_NAME,
+          ruleId: RuleId.mathLabelLifted,
+        },
+      );
+    } else {
+      if (node.enumerated === false) {
+        fileWarn(file, `Labelling an unnumbered math node with "\\label{${label}}"`, {
+          node,
+          source: TRANSFORM_NAME,
+          ruleId: RuleId.mathLabelLifted,
+        });
+      }
+      node.identifier = normalized.identifier;
+      node.label = normalized.label;
+      (node as any).html_id = normalized.html_id;
     }
-    node.identifier = normalized.identifier;
-    node.label = normalized.label;
-    (node as any).html_id = normalized.html_id;
   } else if (node.type === 'inlineMath') {
     fileWarn(file, `Cannot use "\\label{${label}}" in inline math`, {
       node,
@@ -125,12 +139,19 @@ function removeWarnings(result: RenderResult, predicate: (warning: string) => bo
 function tryRender(file: VFile, node: Node, value: string, opts?: Options): RenderResult {
   const displayMode = node.type === 'math';
   const warnings: string[] = [];
+  let simplifiedMacros: Record<string, string> = {};
+  if (opts?.macros) {
+    simplifiedMacros = Object.fromEntries(
+      Object.entries(opts.macros).map(([k, v]) => [k, v.macro]),
+    );
+  }
   try {
     const html = katex.renderToString(value, {
       displayMode,
       output: opts?.mathML ? 'mathml' : undefined,
-      macros: { ...buildInMacros, ...opts?.macros },
+      macros: { ...builtInMacros, ...simplifiedMacros },
       strict: (f: string, m: string) => {
+        if (f === 'newLineInDisplayMode') return;
         warnings.push(`${f}, ${m}`);
       },
     });
@@ -241,6 +262,33 @@ export function mathNestingTransform(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   file: VFile,
 ) {
+  // Dollar math can be nested inside of a paragraph
+  // This finds those and marks them as `tight` in some way, depending on where they are in the paragraph
+  // Directives and AMSMath will never follow this path
+  const paragraphs = selectAll('paragraph', tree) as GenericParent[];
+  paragraphs.forEach((paragraph) => {
+    if (paragraph.children.length === 1) return; // no need to traverse, the math node can never be tight!
+    paragraph.children.forEach((child, index) => {
+      if (child.type !== 'math') return;
+      const math = child as Math;
+      const before = paragraph.children[index - 1];
+      const after = paragraph.children[index + 1];
+      if (index === 0) {
+        math.tight = 'after';
+      } else if (index === paragraph.children.length - 1) {
+        math.tight = 'before';
+      } else {
+        math.tight = true;
+      }
+      // Note: There is likely a bug in the dollar-math parser that we are correcting here
+      if (before?.type === 'text') {
+        before.value = before.value?.replace(/\n$/, '') ?? '';
+      }
+      if (after?.type === 'text') {
+        after.value = after.value?.replace(/^\n/, '') ?? '';
+      }
+    });
+  });
   unnestTransform(tree as GenericParent, 'paragraph', 'math');
 }
 
@@ -253,6 +301,7 @@ export function mathLabelTransform(tree: GenericParent, file: VFile) {
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function subequationTransform(tree: GenericParent, file: VFile) {
   const nodes = selectAll('mathGroup > math', tree) as Math[];
   nodes.forEach((node) => {

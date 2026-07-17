@@ -1,0 +1,10 @@
+version: 1
+author: Not The Author
+project:
+  export:
+    format: tex
+    title: Lorem Ipsum
+    author: Franklin Koch
+    template: ../templates/tex
+    output: _build/out.tex
+    article: input.md

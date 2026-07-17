@@ -1,22 +1,44 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { tic } from 'myst-cli-utils';
+import { tic, isUrl } from 'myst-cli-utils';
 import { TexParser } from 'tex-to-myst';
 import { VFile } from 'vfile';
-import { RuleId, toText } from 'myst-common';
+import { doi } from 'doi-utils';
+import type { GenericParent } from 'myst-common';
+import { RuleId, toText, fileError, fileWarn } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
+import { validatePageFrontmatter, fillProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
-import { getPageFrontmatter } from '../frontmatter.js';
+import { frontmatterValidationOpts, getPageFrontmatter } from '../frontmatter.js';
 import type { ISession, ISessionWithCache } from '../session/types.js';
 import { castSession } from '../session/cache.js';
-import { warnings, watch } from '../store/reducers.js';
-import type { RendererData } from '../transforms/types.js';
-import { logMessagesFromVFile } from '../utils/logMessagesFromVFile.js';
+import { config, projects, warnings, watch } from '../store/reducers.js';
+import type { PreRendererData, RendererData } from '../transforms/types.js';
+import { logMessagesFromVFile } from '../utils/logging.js';
+import { isValidFile, parseFilePath } from '../utils/resolveExtension.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
-import { loadCitations } from './citations.js';
+import { resolveToAbsolute } from '../utils/resolveToAbsolute.js';
+import { loadBibTeXCitationRenderers } from './citations.js';
 import { parseMyst } from './myst.js';
-import { processNotebook } from './notebook.js';
+import { processNotebookFull } from './notebook.js';
+import { selectors } from '../store/index.js';
+import { defined, incrementOptions, validateObjectKeys, validateEnum } from 'simple-validators';
+import type { ValidationOptions } from 'simple-validators';
+
+type LoadFileOptions = {
+  preFrontmatter?: Record<string, any>;
+  keepTitleNode?: boolean;
+  kind?: SourceFileKind;
+};
+
+export type LoadFileResult = {
+  kind: SourceFileKind;
+  mdast: GenericParent;
+  frontmatter?: PageFrontmatter;
+  identifiers?: string[];
+  widgets?: Record<string, any>;
+};
 
 function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const sha256 = createHash('sha256').update(content).digest('hex');
@@ -24,6 +46,171 @@ function checkCache(cache: ISessionWithCache, content: string, file: string) {
   const mdast = cache.$getMdast(file);
   const useCache = mdast?.pre && mdast.sha256 === sha256;
   return { useCache, sha256 };
+}
+
+export function loadMdFile(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+): LoadFileResult {
+  const vfile = new VFile();
+  vfile.path = file;
+  const mdast = parseMyst(session, content, file);
+  const { frontmatter, identifiers } = getPageFrontmatter(
+    session,
+    mdast,
+    vfile,
+    opts?.preFrontmatter,
+    opts?.keepTitleNode,
+  );
+  return { kind: opts?.kind ?? SourceFileKind.Article, mdast, frontmatter, identifiers };
+}
+
+export async function loadNotebookFile(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+): Promise<LoadFileResult> {
+  const vfile = new VFile();
+  vfile.path = file;
+  const {
+    mdast,
+    frontmatter: nbFrontmatter,
+    widgets,
+  } = await processNotebookFull(session, file, content);
+  const { frontmatter: cellFrontmatter, identifiers } = getPageFrontmatter(
+    session,
+    mdast,
+    vfile,
+    opts?.preFrontmatter,
+    opts?.keepTitleNode,
+  );
+  const frontmatter = fillProjectFrontmatter(
+    cellFrontmatter,
+    nbFrontmatter,
+    frontmatterValidationOpts(vfile),
+  );
+  return { kind: opts?.kind ?? SourceFileKind.Notebook, mdast, frontmatter, identifiers, widgets };
+}
+
+export function loadTexFile(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+): LoadFileResult {
+  const vfile = new VFile();
+  vfile.path = file;
+  const tex = new TexParser(content, vfile);
+  const frontmatter = validatePageFrontmatter(
+    {
+      title: toText(tex.data.frontmatter.title as any),
+      short_title: toText(tex.data.frontmatter.short_title as any),
+      authors: tex.data.frontmatter.authors,
+      // TODO: affiliations: tex.data.frontmatter.affiliations,
+      keywords: tex.data.frontmatter.keywords,
+      math: tex.data.macros,
+      bibliography: tex.data.bibliography,
+      ...(opts?.preFrontmatter ?? {}),
+    },
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  return {
+    kind: opts?.kind ?? SourceFileKind.Article,
+    mdast: tex.ast as GenericParent,
+    frontmatter,
+  };
+}
+
+export function mystJSONValidationOpts(
+  vfile: VFile,
+  opts?: { property?: string; ruleId?: RuleId },
+): ValidationOptions {
+  return {
+    property: opts?.property ?? 'file',
+    file: vfile.path,
+    messages: {},
+    errorLogFn: (message: string) => {
+      fileError(vfile, message, { ruleId: opts?.ruleId ?? RuleId.mystJsonValid });
+    },
+    warningLogFn: (message: string) => {
+      fileWarn(vfile, message, { ruleId: opts?.ruleId ?? RuleId.mystJsonValid });
+    },
+  };
+}
+
+function validateMySTJSON(
+  input: any,
+  opts: ValidationOptions,
+): { mdast: GenericParent; kind: SourceFileKind; frontmatter: PageFrontmatter } | undefined {
+  const value = validateObjectKeys(
+    input,
+    { required: ['mdast'], optional: ['kind', 'frontmatter'] },
+    opts,
+  );
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const { mdast } = value;
+
+  let kind: undefined | SourceFileKind;
+  if (defined(value.kind)) {
+    kind = validateEnum<SourceFileKind>(value.kind, {
+      ...incrementOptions('kind', opts),
+      enum: SourceFileKind,
+    });
+  }
+  let frontmatter: undefined | PageFrontmatter;
+  if (defined(value.frontmatter)) {
+    frontmatter = validatePageFrontmatter(value.frontmatter, incrementOptions('frontmatter', opts));
+  }
+
+  return {
+    mdast,
+    kind: kind ?? SourceFileKind.Article,
+    frontmatter: frontmatter ?? {},
+  };
+}
+
+export function loadMySTJSON(
+  session: ISession,
+  content: string,
+  file: string,
+  opts?: LoadFileOptions,
+) {
+  const vfile = new VFile();
+  vfile.path = file;
+
+  const rawData = JSON.parse(content);
+  const result = validateMySTJSON(rawData, mystJSONValidationOpts(vfile));
+  if (result === undefined) {
+    logMessagesFromVFile(session, vfile);
+    throw new Error('Unable to load JSON file: error during validation');
+  } else {
+    const { mdast, kind, frontmatter: pageFrontmatter } = result;
+    const { frontmatter, identifiers } = getPageFrontmatter(
+      session,
+      mdast,
+      vfile,
+      { ...pageFrontmatter, ...opts?.preFrontmatter },
+      opts?.keepTitleNode,
+    );
+    logMessagesFromVFile(session, vfile);
+    return { mdast, kind: opts?.kind ?? kind, frontmatter, identifiers };
+  }
+}
+
+function getLocation(file: string, projectPath?: string) {
+  let location = file;
+  if (projectPath) {
+    location = `/${path.relative(projectPath, file)}`;
+  }
+  // ensure forward slashes and not windows backslashes
+  return location.replaceAll('\\', '/');
 }
 
 /**
@@ -35,96 +222,79 @@ function checkCache(cache: ISessionWithCache, content: string, file: string) {
  * @param projectPath path to project directory
  * @param extension pre-computed file extension
  * @param opts loading options
+ *
+ * @param opts.preFrontmatter raw page frontmatter, prioritized over frontmatter
+ *     read from the file. Fields defined here will override fields defined
+ *     in the file. Unlike project and page frontmatter which are carefully
+ *     combined to maintain affiliations, keep all math macros, etc, this
+ *     override simply replaces fields prior to any further processing or
+ *     validation.
  */
 export async function loadFile(
   session: ISession,
   file: string,
   projectPath?: string,
-  extension?: '.md' | '.ipynb' | '.bib',
-  opts?: { minifyMaxCharacters?: number },
-) {
-  await session.loadPlugins();
+  extension?: '.md' | '.ipynb' | '.tex' | '.bib' | '.myst.json',
+  opts?: LoadFileOptions,
+): Promise<PreRendererData | undefined> {
   const toc = tic();
   session.store.dispatch(warnings.actions.clearWarnings({ file }));
   const cache = castSession(session);
   let success = true;
-
-  let location = file;
-  if (projectPath) {
-    location = `/${path.relative(projectPath, file)}`;
-  }
-  // ensure forward slashes and not windows backslashes
-  location = location.replaceAll('\\', '/');
-  const vfile = new VFile();
-  vfile.path = file;
-
+  let pre: PreRendererData | undefined;
+  let successMessage: string | undefined;
   try {
-    const ext = extension || path.extname(file).toLowerCase();
-    switch (ext) {
-      case '.md': {
-        const content = fs.readFileSync(file).toString();
-        const { sha256, useCache } = checkCache(cache, content, file);
-        if (useCache) break;
-        const mdast = parseMyst(session, content, file);
-        const { frontmatter, identifiers } = getPageFrontmatter(session, mdast, vfile);
+    const content = fs.readFileSync(file).toString();
+    const { sha256, useCache } = checkCache(cache, content, file);
+    if (useCache) {
+      successMessage = `loadFile: ${file} already loaded.`;
+      pre = cache.$getMdast(file)?.pre;
+    } else {
+      const ext = extension || parseFilePath(file).ext.toLowerCase();
+      let loadResult: LoadFileResult | undefined;
+      switch (ext) {
+        case '.md': {
+          loadResult = loadMdFile(session, content, file, opts);
+          break;
+        }
+        case '.ipynb': {
+          loadResult = await loadNotebookFile(session, content, file, opts);
+          break;
+        }
+        case '.tex': {
+          loadResult = loadTexFile(session, content, file, opts);
+          break;
+        }
+        case '.bib': {
+          const renderers = await loadBibTeXCitationRenderers(session, file);
+          cache.$citationRenderers[file] = renderers;
+          Object.entries(renderers).forEach(([id, renderer]) => {
+            const normalizedDOI = doi.normalize(renderer.getDOI())?.toLowerCase();
+            if (!normalizedDOI || cache.$doiRenderers[normalizedDOI]) return;
+            cache.$doiRenderers[normalizedDOI] = { id, render: renderer };
+          });
+          break;
+        }
+        case '.myst.json': {
+          loadResult = loadMySTJSON(session, content, file);
+          break;
+        }
+        default:
+          addWarningForFile(session, file, 'Unrecognized extension', 'error', {
+            ruleId: RuleId.mystFileLoads,
+          });
+          session.log.info(
+            `"${file}": Please rerun the build with "-c" to ensure the built files are cleared.`,
+          );
+          success = false;
+      }
+      if (loadResult) {
+        pre = { file, location: getLocation(file, projectPath), ...loadResult };
         cache.$setMdast(file, {
           sha256,
-          pre: { kind: SourceFileKind.Article, file, location, mdast, frontmatter, identifiers },
+          pre,
         });
-        break;
       }
-      case '.ipynb': {
-        const content = fs.readFileSync(file).toString();
-        const { sha256, useCache } = checkCache(cache, content, file);
-        if (useCache) break;
-        const mdast = await processNotebook(cache, file, content, opts);
-        const { frontmatter, identifiers } = getPageFrontmatter(session, mdast, vfile);
-        cache.$setMdast(file, {
-          sha256,
-          pre: { kind: SourceFileKind.Notebook, file, location, mdast, frontmatter, identifiers },
-        });
-        break;
-      }
-      case '.bib': {
-        const renderer = await loadCitations(session, file);
-        cache.$citationRenderers[file] = renderer;
-        break;
-      }
-      case '.tex': {
-        const content = fs.readFileSync(file).toString();
-        const { sha256, useCache } = checkCache(cache, content, file);
-        if (useCache) break;
-        const tex = new TexParser(content, vfile);
-        logMessagesFromVFile(session, vfile);
-        const frontmatter: PageFrontmatter = {
-          title: toText(tex.data.frontmatter.title as any),
-          short_title: toText(tex.data.frontmatter.short_title as any),
-          authors: tex.data.frontmatter.authors,
-          // TODO: affiliations: tex.data.frontmatter.affiliations,
-          keywords: tex.data.frontmatter.keywords,
-          math: tex.data.macros,
-          bibliography: tex.data.bibliography,
-        };
-        cache.$setMdast(file, {
-          sha256,
-          pre: {
-            kind: SourceFileKind.Article,
-            file,
-            mdast: tex.ast as any,
-            location,
-            frontmatter,
-          },
-        });
-        break;
-      }
-      default:
-        addWarningForFile(session, file, 'Unrecognized extension', 'error', {
-          ruleId: RuleId.mystFileLoads,
-        });
-        session.log.info(
-          `"${file}": Please rerun the build with "-c" to ensure the built files are cleared.`,
-        );
-        success = false;
     }
   } catch (error) {
     session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
@@ -133,7 +303,140 @@ export async function loadFile(
     });
     success = false;
   }
-  if (success) session.log.debug(toc(`loadFile: loaded ${file} in %s.`));
+  if (success) session.log.debug(successMessage ?? toc(`loadFile: loaded ${file} in %s.`));
+  if (pre?.frontmatter) {
+    pre.frontmatter.parts = await loadFrontmatterParts(
+      session,
+      file,
+      'parts',
+      pre.frontmatter,
+      projectPath,
+    );
+  }
+  return pre;
+}
+
+/**
+ * Load and process frontmatter parts (e.g., footer, sidebar) from various sources.
+ *
+ * Parts can be a few things in the frontmatter:
+ * - Remote URLs (https://example.com/footer.md) - fetched and cached locally
+ * - Local file paths (footer.md) - loaded relative to the config file
+ * - Inline content (e.g. `footer: Foo *bar*.`) - parsed and cached using a synthetic path so we can refer to it
+ *
+ * Returns a modified parts object where each part value is replaced with the
+ * resolved file path (or synthetic path for inline content).
+ */
+export async function loadFrontmatterParts(
+  session: ISession,
+  file: string,
+  property: string,
+  frontmatter: PageFrontmatter,
+  projectPath?: string,
+) {
+  const { parts, ...pageFrontmatter } = frontmatter;
+  const vfile = new VFile();
+  vfile.path = file;
+  const modifiedParts: [string, string[]][] = await Promise.all(
+    Object.entries(parts ?? {}).map(async ([part, contents]) => {
+      let partFile: string;
+      // Remote URL - fetch and cache locally
+      if (contents.length === 1 && isUrl(contents[0])) {
+        partFile = await resolveToAbsolute(session, path.dirname(file), contents[0], {
+          allowRemote: true,
+        });
+        // If for some reason it didn't download the file won't exist so we just return
+        if (!fs.existsSync(partFile)) {
+          fileWarn(vfile, `Failed to fetch remote part file: ${contents[0]}`);
+          return [part, contents];
+        }
+        await loadFile(session, partFile, projectPath, undefined, {
+          kind: SourceFileKind.Part,
+          preFrontmatter: pageFrontmatter,
+        });
+        // Local file - load and register for file watching
+      } else if (contents.length === 1 && isValidFile(contents[0])) {
+        partFile = path.resolve(path.dirname(file), contents[0]);
+        if (!fs.existsSync(partFile)) {
+          fileWarn(vfile, `Part file does not exist: ${partFile}`);
+          return [part, contents];
+        }
+        await loadFile(session, partFile, projectPath, undefined, {
+          kind: SourceFileKind.Part,
+          /** Frontmatter from the source page is prioritized over frontmatter from the part file itself */
+          preFrontmatter: pageFrontmatter,
+        });
+        // Track local dependencies so watch mode can rebuild when part files change.
+        session.store.dispatch(
+          watch.actions.addLocalDependency({
+            path: file,
+            dependency: partFile,
+          }),
+        );
+        const proj = selectors.selectLocalProject(session.store.getState(), projectPath ?? '.');
+        // If a part is also listed as a project page, warn on explicit entries and drop implicit
+        // ones (from patterns/auto-discovery) to avoid duplicate processing.
+        if (proj?.index === partFile) {
+          fileWarn(vfile, `index file is also used as a part: ${partFile}`);
+        } else if (proj) {
+          const filteredPages = proj.pages.filter((page) => {
+            const { file: pageFile, implicit } = page as any;
+            if (!pageFile) return true;
+            if (pageFile !== partFile) return true;
+            if (!implicit) {
+              fileWarn(vfile, `project file is also used as a part: ${partFile}`);
+            }
+            return !implicit;
+          });
+          const newProj = { ...proj, pages: filteredPages };
+          session.store.dispatch(projects.actions.receive(newProj));
+        }
+        // Inline content - parse markdown and cache with synthetic path
+        // Note: multiple entries (contents.length > 1) are always treated as inline markdown blocks.
+      } else {
+        const cache = castSession(session);
+        partFile = `${path.resolve(file)}#${property}.${part}`;
+        if (contents.length !== 1 || contents[0] !== partFile || !cache.$getMdast(contents[0])) {
+          const mdast = {
+            type: 'root',
+            children: contents.map((content) => {
+              const root = parseMyst(session, content, file);
+              return {
+                type: 'block',
+                data: { part },
+                children: root.children,
+              };
+            }),
+          };
+          cache.$setMdast(partFile, {
+            pre: {
+              kind: SourceFileKind.Part,
+              file: partFile,
+              mdast,
+              // Same frontmatter as the containing page
+              frontmatter: { ...pageFrontmatter },
+              location: getLocation(file, projectPath),
+            },
+          });
+        }
+        session.store.dispatch(
+          config.actions.receiveFilePart({
+            partFile,
+            file,
+          }),
+        );
+      }
+      session.store.dispatch(
+        config.actions.receiveProjectPart({
+          partFile,
+          path: projectPath ?? '.',
+        }),
+      );
+      return [part, [partFile]];
+    }),
+  );
+  logMessagesFromVFile(session, vfile);
+  return Object.fromEntries(modifiedParts);
 }
 
 /**
@@ -178,4 +481,20 @@ export function selectFile(session: ISession, file: string): RendererData | unde
     return undefined;
   }
   return mdastPost;
+}
+
+export async function getRawFrontmatterFromFile(
+  session: ISession,
+  file: string,
+  projectPath?: string,
+) {
+  const state = session.store.getState();
+  if (projectPath && path.resolve(file) === selectors.selectLocalConfigFile(state, projectPath)) {
+    return selectors.selectLocalProjectConfig(state, projectPath);
+  }
+  const cache = castSession(session);
+  if (!cache.$getMdast(file)) await loadFile(session, file, projectPath);
+  const result = cache.$getMdast(file);
+  if (!result || !result.pre) return undefined;
+  return result.pre.frontmatter;
 }

@@ -6,7 +6,7 @@ thumbnail: ./thumbnails/typography.png
 
 ## Headings
 
-Markdown syntax denotes headers starting with between 1 to 6 `#`.
+Markdown syntax denotes headers starting with between 1 to 6 `#` symbols.
 For example, a level 3 header looks like:
 
 ```{myst}
@@ -43,7 +43,7 @@ In {sc}`MyST`, you {del}`should never` {u}`underline` _text_.
 
 ## Line Breaks
 
-To put a line break, without a paragraph, use a `\` followed by a new line. This corresponds to a `<br>` in HTML and `\\` in $\LaTeX$. For example, here is the [worlds shortest poem](wiki:Lines_on_the_Antiquity_of_Microbes):
+To put a line break, without a paragraph, use a `\` followed by a new line. This corresponds to a `<br>` in HTML and `\\` in $\LaTeX$. For example, here is the [world's shortest poem](wiki:Lines_on_the_Antiquity_of_Microbes):
 
 ```{myst}
 Fleas \
@@ -55,7 +55,7 @@ By Strickland Gillilan
 
 ## Bullet points and numbered lists
 
-You can use bullet points and numbered lists as you would in standard markdown. Starting a line with either a `-` or `*` for a bullet point, and `1.` for numbered lists. These lists can be nested using two spaces at the start of the line.
+You can use bullet points and numbered lists as you would in standard Markdown. Starting a line with either a `-` or `*` for a bullet point, and `1.` for numbered lists. These lists can be nested using two spaces at the start of the line.
 
 ```{myst}
 - Lists can start with `-` or `*`
@@ -81,21 +81,33 @@ You can use GitHub Flavoured Markdown to create task lists, these may be read on
 
 For inline typography for subscript and superscript formatting, it is best practice to use a text-based representation over resorting to math exponents, i.e. `4$^{th}$`.
 This is required in some journal submissions, and using these roles ensure that the output in HTML and $\LaTeX$ is correct.
-The two roles for subscript and superscript are `sub` and `sup`[^long-names], respectively.
+The two roles for subscript and superscript are {myst:role}`sub` and {myst:role}`sup`[^long-names], respectively.
 
 ```{myst}
 H{sub}`2`O, and 4{sup}`th` of July
 ```
 
-[^long-names]: These two roles are also accessible through `subscript` and `superscript`.
+[^long-names]: These two roles are also accessible through {myst:role}`subscript` and {myst:role}`superscript`.
 
 % For chemicals you can use the {chem}`H2O`
+
+(keyboard-input)=
+
+## Keyboard Input
+
+To denote textual _user_ input from a keyboard, such as {kbd}`Ctrl` + {kbd}`Space`, you can use the {myst:role}`kbd` role[^long-names-kbd].
+
+[^long-names-kbd]: This role is also accessible through {myst:role}`keyboard`.
+
+```{myst}
+{kbd}`Ctrl` + {kbd}`Space`
+```
 
 (abbr-role)=
 
 ## Abbreviations
 
-To create an abbreviation, you can use the `abbr` role, in HTML this will ensure that the title of the acronym or abbreviation appears in the title when you hover over the element. In the role, follow the syntax `HR (Heart Rate)` with the abbreviation first followed by the expanded title in parenthesis.
+To create an abbreviation, you can use the {myst:role}`abbr` role, in HTML this will ensure that the title of the acronym or abbreviation appears in the title when you hover over the element. In the role, follow the syntax `HR (Heart Rate)` with the abbreviation first followed by the expanded title in parentheses.
 
 ```{myst}
 Well {abbr}`MyST (Markedly Structured Text)` is cool!
@@ -111,11 +123,22 @@ See [](#abbreviations) for more information.
 
 ## Quotations
 
-Quotations are controlled with standard Markdown syntax, by inserting a caret (`>`) symbol in front of one or more lines of text. You can provide an attribution to a blockquote by adding `- author or source` to the final line.
+Quotations are controlled with standard Markdown syntax, by inserting a caret (`>`) symbol in front of one or more lines of text. You can provide an attribution to a blockquote by adding a final paragraph whose text starts with `--` or an em-dash (`—`), followed by the author or source. The blank `>` line is required!
 
 ```{myst}
 > We know what we are, but know not what we may be.
-> - Hamlet act 4, Scene 5
+>
+> -- Hamlet act 4, Scene 5
+```
+
+The quotes can also be created using a directive (either {myst:directive}`blockquote` or {myst:directive}`epigraph`), which allows you to add classes or labels to the quote. MyST also supports {myst:directive}`pull-quote` directive, which act as attention-grabbing visual elements.
+
+```{myst}
+:::{pull-quote}
+We know what we are, but know not what we may be.
+:::
+
+They say the owl was a baker’s daughter. Lord, we know what we are, but know not what we may be. God be at your table.
 ```
 
 (definition-lists)=
@@ -158,7 +181,7 @@ Term 3
 : > A quote
 : A final definition, that can even include images:
 
-  ![Beach!](https://source.unsplash.com/random/400x200?beach,ocean)
+  ![Sunset at the Beach!](https://github.com/rowanc1/pics/blob/main/sunset.png?raw=true)
 ```
 ````
 
@@ -181,7 +204,7 @@ If the label is an integer, then it will always use that integer for the rendere
 All footnote definitions are collected, and displayed at the bottom of the page for print or as hover-notes online.
 Note that un-referenced footnote definitions will not be displayed.
 
-Any preceding text after a footnote definitions, which is indented by four or more spaces, will also be included in the footnote definition.
+Any preceding text after a footnote definition, which is indented by four or more spaces, will also be included in the footnote definition.
 
 ````{tip}
 :class: dropdown
@@ -197,7 +220,7 @@ That's exactly right[^1].
     - and some *serious* points 💥
     - and even images!
 
-    ![Beach!](https://source.unsplash.com/random/400x200?beach,ocean)
+    ![Mountains!](https://github.com/rowanc1/pics/blob/main/mountains.png?raw=true)
 
     Plus any preceding unindented lines,
 that are not separated by a blank line

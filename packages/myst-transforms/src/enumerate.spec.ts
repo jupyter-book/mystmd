@@ -4,8 +4,10 @@ import {
   enumerateTargetsTransform,
   formatHeadingEnumerator,
   incrementHeadingCounts,
+  initializeTargetCounts,
 } from './enumerate';
 import { u } from 'unist-builder';
+import { VFile } from 'vfile';
 
 describe('Heading counts and formatting', () => {
   test.each([
@@ -33,6 +35,26 @@ describe('Heading counts and formatting', () => {
 });
 
 describe('enumeration', () => {
+  test('figure enumerators', () => {
+    const tree = u('root', [
+      u('heading', { identifier: 'ha', depth: 2 }),
+      u('heading', { identifier: 'hb', depth: 3 }),
+      u('heading', { identifier: 'hc', depth: 3 }),
+      u('container', { kind: 'figure', identifier: 'fig1' }),
+    ]);
+    const state = new ReferenceState('my-file.md', {
+      frontmatter: {
+        numbering: {
+          heading_1: { enabled: true },
+          heading_2: { enabled: true },
+          figure: { enumerator: 'FancyTemplateSoon.%s' },
+        },
+      },
+      vfile: new VFile(),
+    });
+    enumerateTargetsTransform(tree, { state });
+    expect(state.getTarget('fig1')?.node.enumerator).toBe('FancyTemplateSoon.1');
+  });
   test('sub-equations', () => {
     const tree = u('root', [
       u('mathGroup', { identifier: 'eq:1' }, [
@@ -48,7 +70,10 @@ describe('enumeration', () => {
         u('math', { identifier: 'eq:3-4', kind: 'subequation' }),
       ]),
     ]);
-    const state = new ReferenceState('my-file.md', { numbering: { enumerator: 'A.%s' } });
+    const state = new ReferenceState('my-file.md', {
+      frontmatter: { numbering: { enumerator: { enumerator: 'A.%s' } } },
+      vfile: new VFile(),
+    });
     enumerateTargetsTransform(tree, { state });
     expect(state.getTarget('eq:1')?.node.enumerator).toBe('A.1');
     expect(state.getTarget('eq:1a')?.node.enumerator).toBe('A.1a');
@@ -63,12 +88,13 @@ describe('enumeration', () => {
   });
   test('headers', () => {
     const tree = u('root', [
-      u('heading', { identifier: 'h1', depth: 1 }),
-      u('heading', { identifier: 'h2', depth: 2 }),
-      u('heading', { identifier: 'h3', depth: 1 }),
+      u('heading', { identifier: 'h1', depth: 2 }),
+      u('heading', { identifier: 'h2', depth: 3 }),
+      u('heading', { identifier: 'h3', depth: 2 }),
     ]);
     const state = new ReferenceState('my-file.md', {
-      numbering: { heading_1: true, heading_2: true },
+      frontmatter: { numbering: { heading_1: { enabled: true }, heading_2: { enabled: true } } },
+      vfile: new VFile(),
     });
     enumerateTargetsTransform(tree, { state });
     expect(state.getTarget('h1')?.node.enumerator).toBe('1');
@@ -84,7 +110,10 @@ describe('enumeration', () => {
       ]),
       u('container', { identifier: 'fig:2', kind: 'figure' }, []),
     ]);
-    const state = new ReferenceState('my-file.md', { numbering: { enumerator: 'A.%s' } });
+    const state = new ReferenceState('my-file.md', {
+      frontmatter: { numbering: { enumerator: { enumerator: 'A.%s' } } },
+      vfile: new VFile(),
+    });
     enumerateTargetsTransform(tree, { state });
     expect(state.getTarget('fig:1')?.node.enumerator).toBe('A.1');
     expect(state.getTarget('fig:1a')?.node.enumerator).toBe('a');
@@ -94,5 +123,91 @@ describe('enumeration', () => {
     expect(state.getTarget('fig:1-c')?.node.enumerator).toBe('c');
     expect(state.getTarget('fig:1-c')?.node.parentEnumerator).toBe('A.1');
     expect(state.getTarget('fig:2')?.node.enumerator).toBe('A.2');
+  });
+});
+describe('initializeTargetCounts', () => {
+  test('no inputs initializes heading', () => {
+    expect(initializeTargetCounts({})).toEqual({ heading: [0, 0, 0, 0, 0, 0] });
+  });
+  test('previousCounts unchanged if continue is true', () => {
+    const initialCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+      other: { main: 0, sub: 0 },
+    };
+    expect(
+      initializeTargetCounts({ all: { continue: true, enabled: true } }, initialCounts as any),
+    ).toEqual(initialCounts);
+  });
+  test('numbering starts are respected', () => {
+    const numbering = {
+      heading_1: { enabled: true, start: 5 },
+      heading_2: { enabled: false, start: 2 },
+      heading_5: { enabled: true, start: 2 },
+      figure: { enabled: true, start: 5 },
+      other: { enabled: true, start: 8 },
+    };
+    expect(initializeTargetCounts(numbering)).toEqual({
+      heading: [4, null, 0, 0, 1, 0],
+      figure: { main: 4, sub: 0 },
+      other: { main: 7, sub: 0 },
+    });
+  });
+  test('previousCounts override are prioritized', () => {
+    const previousCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+      other: { main: 3, sub: 0 },
+    };
+    expect(
+      initializeTargetCounts(
+        {
+          heading_1: { continue: true, enabled: true },
+          heading_2: { continue: true, enabled: true },
+          heading_3: { continue: true, enabled: true },
+          heading_4: { continue: true, enabled: true },
+          heading_5: { continue: true, enabled: true },
+          heading_6: { continue: true, enabled: true },
+          figure: { continue: true, enabled: true },
+          other: { continue: true, enabled: true },
+        },
+        previousCounts as any,
+      ),
+    ).toEqual(previousCounts);
+  });
+  test('explicit numberings override previous', () => {
+    const previousCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+    };
+    const numbering = {
+      heading_1: { enabled: true, start: 5, continue: true },
+      heading_2: { enabled: false, start: 2, continue: true },
+      heading_5: { enabled: true, start: 2, continue: true },
+      figure: { enabled: true, start: 5, continue: true },
+      code: { enabled: true, start: 8, continue: true },
+    };
+    expect(initializeTargetCounts(numbering, previousCounts as any)).toEqual({
+      heading: [4, null, 0, 0, 1, 0],
+      figure: { main: 4, sub: 0 },
+      code: { main: 7, sub: 0 },
+    });
+  });
+  test('unknown numberings reset from previousCounts', () => {
+    const previousCounts = {
+      heading: [5, 3, 1, 0, null, null],
+      figure: { main: 7, sub: 2 },
+      exercise: { main: 5, sub: 0 },
+    };
+    const numbering = {
+      heading_1: { enabled: true, start: 5, continue: true },
+      heading_2: { enabled: false, start: 2, continue: true },
+      heading_5: { enabled: true, start: 2, continue: true },
+      figure: { enabled: true, start: 5, continue: true },
+    };
+    expect(initializeTargetCounts(numbering, previousCounts as any)).toEqual({
+      heading: [4, null, 0, 0, 1, 0],
+      figure: { main: 4, sub: 0 },
+    });
   });
 });

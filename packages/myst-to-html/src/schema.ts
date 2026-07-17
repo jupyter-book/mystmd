@@ -56,7 +56,7 @@ const captionNumber: Handler = (h, node) => {
 };
 
 const math: Handler = (h, node) => {
-  const attrs = { id: node.identifier || undefined, class: 'math block' };
+  const attrs = { id: node.identifier || undefined, class: 'math-display' };
   if (node.value.indexOf('\n') !== -1) {
     const mathHast = h(node, 'div', attrs, [u('text', node.value)]);
     return h(node, 'pre', [mathHast]);
@@ -65,7 +65,7 @@ const math: Handler = (h, node) => {
 };
 
 const inlineMath: Handler = (h, node) => {
-  return h(node, 'span', { class: 'math inline' }, [
+  return h(node, 'span', { class: 'math-inline' }, [
     u('text', node.value.replace(/\r?\n|\r/g, ' ')),
   ]);
 };
@@ -161,6 +161,7 @@ const mdast: Handler = (h, node) => h(node, 'div', { id: node.id });
 const mermaid: Handler = (h, node) => h(node, 'div', { class: 'margin' });
 const myst: Handler = (h, node) => h(node, 'div', { class: 'margin' });
 const output: Handler = (h, node) => h(node, 'div', { class: 'output' });
+const keyboard: Handler = (h, node) => h(node, 'kbd', all(h, node));
 
 export const mystToHast: Plugin<[Options?], string, GenericParent> =
   (opts) => (tree: GenericParent) => {
@@ -202,6 +203,7 @@ export const mystToHast: Plugin<[Options?], string, GenericParent> =
         mermaid,
         myst,
         output,
+        keyboard,
         ...opts?.handlers,
       },
     });

@@ -27,23 +27,27 @@ export function renderTexImports(
   existingPackages?: string[],
   preamble?: string,
 ): string {
-  if (!templateImports || typeof templateImports === 'string') return templateImports || '';
-  const packages = new Set(templateImports.imports);
-  const imports = writeTexLabelledComment(
-    'imports',
-    createTexImportCommands(packages, existingPackages),
-    commentLength,
-  );
-  const commands = writeTexLabelledComment(
-    'math commands',
-    createTexMathCommands(templateImports.commands),
-    commentLength,
-  );
-  const block = `${imports}${commands}`;
-  if (!block) return '';
-  const percents = ''.padEnd(commentLength, '%');
+  let importsAndCommands: string;
+  if (!templateImports || typeof templateImports === 'string') {
+    importsAndCommands = templateImports || '';
+  } else {
+    const packages = new Set(templateImports.imports);
+    const imports = writeTexLabelledComment(
+      'imports',
+      createTexImportCommands(packages, existingPackages),
+      commentLength,
+    );
+    const commands = writeTexLabelledComment(
+      'math commands',
+      createTexMathCommands(templateImports.commands),
+      commentLength,
+    );
+    importsAndCommands = `${imports}${commands}`;
+  }
   const preambleContent = preamble ? `${preamble}\n` : '';
-  return `${percents}\n${block}${percents}\n${preambleContent}`;
+  if (!importsAndCommands) return preambleContent;
+  const percents = ''.padEnd(commentLength, '%');
+  return `${percents}\n${importsAndCommands}${percents}\n${preambleContent}`;
 }
 
 export function mergeTexTemplateImports(

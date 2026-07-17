@@ -29,19 +29,26 @@ cases:
       doi: 10.1000/abcd/efg012
       arxiv: https://arxiv.org/example
       open_access: true
-      license: {}
+      license: CC-BY-4.0
       github: https://github.com/example
       binder: https://example.com/binder
       source: https://example.com/source
       subject: ''
-      biblio: {}
+      volume:
+        number: 12
+      issue:
+        number: 12
+      first_page: 100
+      last_page: 200
       oxa: ''
       math:
         a: b
       subtitle: sub
       short_title: short
-      date: 14 Dec 2021
-      kernelspec: {}
+      date: '14 Dec 2021'
+      kernelspec:
+        name: python3
+        display_name: Python 3
       jupytext: {}
       keywords:
         - example
@@ -68,23 +75,38 @@ cases:
       affiliations:
         - id: univb
           name: University B
-      name: example.md
+      label: example.md
       doi: 10.1000/abcd/efg012
-      arxiv: https://arxiv.org/example
+      identifiers:
+        arxiv: https://arxiv.org/example
       open_access: true
-      license: {}
+      license:
+        content:
+          id: CC-BY-4.0
+          name: Creative Commons Attribution 4.0 International
+          url: https://creativecommons.org/licenses/by/4.0/
+          CC: true
+          free: true
       github: https://github.com/example
       binder: https://example.com/binder
       source: https://example.com/source
       subject: ''
-      biblio: {}
+      volume:
+        number: 12
+      issue:
+        number: 12
+      first_page: 100
+      last_page: 200
       oxa: ''
       math:
-        a: b
+        a:
+          macro: b
       subtitle: sub
       short_title: short
-      date: 14 Dec 2021
-      kernelspec: {}
+      date: '2021-12-14'
+      kernelspec:
+        name: python3
+        display_name: Python 3
       jupytext: {}
       keywords:
         - example

@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage{datetime}
+\usepackage{graphicx}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%  imports  %%%%%%%%%%%%%%%%%%%
+\usepackage{amsmath}
+%%%%%%%%%%%%%%%%%  math commands  %%%%%%%%%%%%%%%%
+\newcommand{\three}{d}
+\newcommand{\one}{x}
+\newcommand{\five}{x = \one}
+\newcommand{\six}{d = \three}
+\newcommand{\seven}{d = \six}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% colors for hyperlinks
+\hypersetup{colorlinks=true, allcolors=blue}
+
+\newcommand{\logo}{
+  \href{https://curvenote.com}{\includegraphics[width=2cm]{curvenote.png}}
+}
+
+\title{Testing Math Plugins}
+
+\author{}
+
+\newdate{articleDate}{1}{1}{2024}
+\date{\displaydate{articleDate}}
+
+\begin{document}
+\maketitle
+\begin{center}\logo\end{center}
+
+
+\section{No plugins}
+
+\begin{equation}
+a^2 + b^2 = c^2
+\end{equation}
+
+\section{Simple plugin}
+
+Project frontmatter should give us \texttt{d}
+
+\begin{equation}
+d = \three
+\end{equation}
+
+Page should override and we should see \texttt{x}
+
+\begin{equation}
+x = \one
+\end{equation}
+
+\section{Macros should recurse}
+
+Page frontmatter should fill in this project macro
+
+\begin{equation}
+\five
+\end{equation}
+
+Project frontmatter should fill in this page macro
+
+\begin{equation}
+\six
+\end{equation}
+
+Double recurse
+
+\begin{equation}
+\seven
+\end{equation}
+
+
+\end{document}

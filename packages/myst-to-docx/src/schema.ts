@@ -18,8 +18,9 @@ import {
   Table,
   TableCell,
   Paragraph,
+  PageBreak,
 } from 'docx';
-import { RuleId, fileError } from 'myst-common';
+import { RuleId, fileError, getMetadataTags } from 'myst-common';
 import type {
   Parent,
   Heading,
@@ -84,7 +85,11 @@ const paragraph: Handler<ParagraphNode> = (state, node) => {
 };
 
 const block: Handler<Block> = (state, node) => {
-  if (node.visibility === 'remove') return;
+  if (node.visibility === 'remove' || node.visibility === 'hide') return;
+  const metadataTags = getMetadataTags(node);
+  if (metadataTags.includes('page-break') || metadataTags.includes('new-page')) {
+    state.current.push(new PageBreak());
+  }
   state.renderChildren(node as Parent);
 };
 
@@ -432,7 +437,7 @@ const caption: Handler<Caption> = (state, node) => {
 };
 
 function getFootnoteNumber(node: FootnoteReference | FootnoteDefinition): number {
-  return node.number ?? Number(node.identifier);
+  return Number.parseInt(node.enumerator as string, 10) ?? Number(node.identifier);
 }
 
 const footnoteDefinition: Handler<FootnoteDefinition> = (state, node) => {

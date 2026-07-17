@@ -13,12 +13,15 @@ export type MessageInfo = {
   url?: string;
   fatal?: boolean;
   ruleId?: RuleId | string;
+  /** This key can be combined with the ruleId to suppress a warning */
+  key?: string;
 };
 
-function addMessageInfo(message: VFileMessage, info?: MessageInfo) {
+function addMessageInfo(message: VFileMessage & { key?: string }, info?: MessageInfo) {
   if (info?.note) message.note = info.note;
   if (info?.url) message.url = info.url;
   if (info?.ruleId) message.ruleId = info.ruleId as string;
+  if (info?.key) message.key = info.key;
   if (info?.fatal) message.fatal = true;
   return message;
 }
@@ -41,6 +44,9 @@ const numbers = '0123456789';
 const nanoidAZ = customAlphabet(alpha, 1);
 const nanoidAZ9 = customAlphabet(alpha + numbers, 9);
 
+/**
+ * Create random 10-digit alphanumeric string
+ */
 export function createId() {
   return nanoidAZ() + nanoidAZ9();
 }
@@ -58,6 +64,7 @@ export function normalizeLabel(
   if (!label) return undefined;
   const identifier = label
     .replace(/[\t\n\r ]+/g, ' ')
+    .replace(/['‘’"“”]+/g, '') // These can make matching difficult, especially in glossaries and terms
     .trim()
     .toLowerCase();
   const html_id = createHtmlId(identifier) as string;
@@ -72,6 +79,46 @@ export function createHtmlId(identifier?: string): string | undefined {
     .replace(/^([0-9-])/, 'id-$1') // Ensure that the id starts with a letter
     .replace(/-[-]+/g, '-') // Replace repeated `-`s
     .replace(/(?:^[-]+)|(?:[-]+$)/g, ''); // Remove repeated `-`s at the start or the end
+}
+
+/**
+ * Transfer all target-related attributes from one node to another
+ *
+ * During mdast transformation, these attributes (including: label,
+ * identifier, html_id, indexEntries) are often moved. For example
+ * `mystTarget` information propagates to the next node, `image`
+ * attributes may propagate to parent `container` node, etc.
+ *
+ * This shared function helps insure attributes are not lost along the way.
+ */
+export function transferTargetAttrs(sourceNode: GenericNode, destNode: GenericNode, vfile?: VFile) {
+  if (sourceNode.label) {
+    if (destNode.label && vfile && destNode.label !== sourceNode.label) {
+      fileWarn(vfile, `label "${destNode.label}" replaced with "${sourceNode.label}"`, {
+        node: destNode,
+      });
+    }
+    if (destNode.label && vfile && destNode.label === sourceNode.label) {
+      fileWarn(vfile, `duplicate label "${destNode.label}" replacement`, {
+        node: destNode,
+      });
+    }
+    destNode.label = sourceNode.label;
+    delete sourceNode.label;
+  }
+  if (sourceNode.identifier) {
+    destNode.identifier = sourceNode.identifier;
+    delete sourceNode.identifier;
+  }
+  if (sourceNode.html_id) {
+    destNode.html_id = sourceNode.html_id;
+    delete sourceNode.html_id;
+  }
+  if (sourceNode.indexEntries) {
+    if (!destNode.indexEntries) destNode.indexEntries = [];
+    destNode.indexEntries.push(...sourceNode.indexEntries);
+    delete sourceNode.indexEntries;
+  }
 }
 
 /**
@@ -130,7 +177,7 @@ export function toText(content?: Node[] | Node | null): string {
 }
 
 export function copyNode<T extends Node | Node[]>(node: T): T {
-  return JSON.parse(JSON.stringify(node));
+  return structuredClone(node);
 }
 
 export function mergeTextNodes(node: GenericNode): GenericNode {
@@ -179,4 +226,26 @@ export function writeTexLabelledComment(title: string, commands: string[], comme
   const end = ''.padEnd(Math.floor(len), '%');
   const titleBlock = `${start}  ${title}  ${end}\n`;
   return `${titleBlock}${commands.join('\n')}\n`;
+}
+
+export function getMetadataTags(node: GenericNode) {
+  if (!node.data) return [];
+  const tags: string[] = node.data.tags ?? [];
+  Object.entries(node.data).forEach(([key, val]) => {
+    if (val === true || (typeof val === 'string' && val.toLowerCase() === 'true')) {
+      tags.push(key);
+    }
+  });
+  return tags.map((tag) => tag.toLowerCase());
+}
+
+/**
+ * Change from a slug such as `folder.subfolder.index` to a URL (`folder/subfolder`).
+ *
+ * @param slug
+ * @returns url
+ */
+export function slugToUrl<T extends string | undefined>(slug: T): T {
+  if (slug == null) return undefined as T;
+  return slug.replace(/\.index$/, '').replace(/\./g, '/') as T;
 }

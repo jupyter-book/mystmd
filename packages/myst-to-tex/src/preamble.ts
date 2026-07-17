@@ -12,14 +12,21 @@ class TexGlossaryAndAcronymSerializer {
     glossaryDefinitions: Record<string, [string, string]>,
     acronymDefinitions: Record<string, [string, string]>,
   ) {
-    this.printedDefinitions = this.renderGlossary();
-    this.preamble = [
-      this.renderCommonImports(Object.keys(acronymDefinitions).keys.length > 0),
-      this.renderImports('glossary', this.createGlossaryDirectives(glossaryDefinitions)),
-      this.renderImports('acronyms', this.createAcronymDirectives(acronymDefinitions)),
-    ]
-      .filter((item) => !!item)
-      .join('\n');
+    const withGlossary = Object.keys(glossaryDefinitions).length > 0;
+    const withAcronym = Object.keys(acronymDefinitions).length > 0;
+    if (!withGlossary && !withAcronym) {
+      this.printedDefinitions = '';
+      this.preamble = '';
+    } else {
+      this.printedDefinitions = this.renderGlossary();
+      this.preamble = [
+        this.renderCommonImports(withAcronym),
+        this.renderImports('glossary', this.createGlossaryDirectives(glossaryDefinitions)),
+        this.renderImports('acronyms', this.createAcronymDirectives(acronymDefinitions)),
+      ]
+        .filter((item) => !!item)
+        .join('\n');
+    }
   }
 
   private renderGlossary(): string {
@@ -87,10 +94,15 @@ export function generatePreamble(data: PreambleData): { preamble: string; suffix
   if (data.hasProofs) {
     preambleLines.push(new TexProofSerializer().preamble);
   }
+  if (data.hasIndex) {
+    preambleLines.push('\\makeindex');
+  }
   if (data.printGlossaries) {
     const glossaryState = new TexGlossaryAndAcronymSerializer(data.glossary, data.abbreviations);
     preambleLines.push(glossaryState.preamble);
-    suffix = `\n${glossaryState.printedDefinitions}`;
+    if (glossaryState.printedDefinitions) {
+      suffix = `\n${glossaryState.printedDefinitions}`;
+    }
   }
   return { preamble: preambleLines.join('\n'), suffix };
 }
@@ -101,6 +113,7 @@ export function mergePreambles(
   warningLogFn: (message: string) => void,
 ) {
   const hasProofs = current.hasProofs || next.hasProofs;
+  const hasIndex = current.hasIndex || next.hasIndex;
   const printGlossaries = current.printGlossaries || next.printGlossaries;
   Object.keys(next.glossary).forEach((key) => {
     if (Object.keys(current.glossary).includes(key)) {
@@ -114,5 +127,5 @@ export function mergePreambles(
   });
   const glossary = { ...next.glossary, ...current.glossary };
   const abbreviations = { ...next.abbreviations, ...current.abbreviations };
-  return { hasProofs, printGlossaries, glossary, abbreviations };
+  return { hasProofs, hasIndex, printGlossaries, glossary, abbreviations };
 }

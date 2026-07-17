@@ -6,7 +6,7 @@ function labelWrapper(handler: Handle) {
   return (node: any, _: Parent, state: NestedState, info: Info): string => {
     const ident = node.identifier ?? node.label;
     const prefix = ident ? `(${ident})=\n` : '';
-    return `${prefix}${handler(node, _, state, info)}`;
+    return `${node.implicit ? '' : prefix}${handler(node, _, state, info)}`;
   };
 }
 

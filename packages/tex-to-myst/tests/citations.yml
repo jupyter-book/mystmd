@@ -241,3 +241,18 @@ cases:
                   suffix: Fig. 7(a)
                   label: jon90
                   identifier: jon90
+  - title: citealp
+    tex: (see, for example, the review in \citealp{jon90})
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: '(see, for example, the review in '
+            - type: cite
+              kind: parenthetical
+              label: jon90
+              identifier: jon90
+            - type: text
+              value: )

@@ -1,0 +1,15 @@
+version: 1
+project:
+  id: 7c806d98-0093-41ae-9889-dea2b9019064
+  title: MyST Config Extend Test
+  math:
+    a: defined-in-project-a
+    b: defined-in-project-a
+site:
+  template: ../../templates/site/myst/book-theme
+  nav: []
+  actions:
+    - title: Learn More
+      url: https://mystmd.org/guide
+  domains: []
+extends: ../proj-b/myst.yml

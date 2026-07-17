@@ -1,0 +1,8 @@
+version: 1
+project:
+  exclude: outputs/myst.doi.bib
+site:
+  nav: []
+  actions: []
+  domains: []
+  template: ../templates/site/myst/book-theme

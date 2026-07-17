@@ -1,33 +1,12 @@
-import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, NotebookCell, RuleId } from 'myst-common';
+import type { GenericParent } from 'myst-common';
+import { fileWarn, RuleId } from 'myst-common';
 import { selectAll } from 'unist-util-select';
-import type { InlineExpression } from 'myst-spec-ext';
-import type { StaticPhrasingContent } from 'myst-spec';
-import { blockMetadataTransform } from 'myst-transforms';
+import type { StaticPhrasingContent, InlineExpression, IExpressionResult } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import { BASE64_HEADER_SPLIT } from './images.js';
 
 export const metadataSection = 'user_expressions';
-
-export interface IBaseExpressionResult {
-  status: string;
-}
-
-export interface IExpressionOutput extends IBaseExpressionResult {
-  status: 'ok';
-  data: Record<string, string>;
-  metadata: Record<string, string>;
-}
-
-export interface IExpressionError extends IBaseExpressionResult {
-  status: 'error';
-  traceback: string[];
-  ename: string;
-  evalue: string;
-}
-
-export type IExpressionResult = IExpressionError | IExpressionOutput;
 
 export interface IUserExpressionMetadata {
   expression: string;
@@ -38,11 +17,11 @@ export interface IUserExpressionsMetadata {
   [metadataSection]: IUserExpressionMetadata[];
 }
 
-function findExpression(
-  expressions: IUserExpressionMetadata[],
+export function findExpression(
+  expressions: IUserExpressionMetadata[] | undefined,
   value: string,
 ): IUserExpressionMetadata | undefined {
-  return expressions.find((expr) => expr.expression === value);
+  return expressions?.find((expr) => expr.expression === value);
 }
 
 function processLatex(value: string) {
@@ -51,6 +30,10 @@ function processLatex(value: string) {
     .replace(/^\$(\\displaystyle)?/, '')
     .replace(/\$$/, '')
     .trim();
+}
+
+function stripTextQuotes(content: string) {
+  return content.replace(/^(["'])(.*)\1$/, '$2');
 }
 
 function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingContent[] {
@@ -69,11 +52,18 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
           },
         ];
       } else if (mimeType === 'text/latex') {
-        content = [{ type: 'inlineMath', value: processLatex(value) }];
+        content = [{ type: 'inlineMath', value: processLatex(value as string) }];
       } else if (mimeType === 'text/html') {
-        content = [{ type: 'html', value }];
+        content = [{ type: 'html', value: value as string }];
       } else if (mimeType === 'text/plain') {
-        content = [{ type: 'text', value }];
+        // Allow the user / libraries to explicitly indicate that quotes should be preserved
+        const stripQuotes = result.metadata?.['strip-quotes'] ?? true;
+        content = [
+          {
+            type: 'text',
+            value: stripQuotes ? stripTextQuotes(value as string) : (value as string),
+          },
+        ];
       }
     });
     if (content) return content;
@@ -85,30 +75,14 @@ function renderExpression(node: InlineExpression, file: VFile): StaticPhrasingCo
   return [];
 }
 
-export function transformInlineExpressions(mdast: GenericParent, file: VFile) {
-  // Ensure block metadata is correctly structured
-  blockMetadataTransform(mdast, file);
-  const blocks = selectAll('block', mdast).filter(
-    (node) => node.data?.type === NotebookCell.content && node.data?.[metadataSection],
-  ) as GenericNode[];
-
-  let count = 0;
-
-  blocks.forEach((node) => {
-    const userExpressions = node.data?.[metadataSection] as IUserExpressionMetadata[];
-    const inlineNodes = selectAll('inlineExpression', node) as InlineExpression[];
-    inlineNodes.forEach((inlineExpression) => {
-      const data = findExpression(userExpressions, inlineExpression.value);
-      if (!data) return;
-      count += 1;
-      inlineExpression.identifier = `eval-${count}`;
-      inlineExpression.result = data.result;
-      inlineExpression.children = renderExpression(inlineExpression, file);
-    });
+export function transformRenderInlineExpressions(mdast: GenericParent, file: VFile) {
+  const inlineNodes = selectAll('inlineExpression', mdast) as InlineExpression[];
+  inlineNodes.forEach((inlineExpression) => {
+    inlineExpression.children = renderExpression(inlineExpression, file);
   });
 }
 
-export const inlineExpressionsPlugin: Plugin<[], GenericParent, GenericParent> =
+export const renderInlineExpressionsPlugin: Plugin<[], GenericParent, GenericParent> =
   () => (tree, file) => {
-    transformInlineExpressions(tree, file);
+    transformRenderInlineExpressions(tree, file);
   };

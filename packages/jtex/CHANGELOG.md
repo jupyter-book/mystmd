@@ -1,5 +1,106 @@
 # jtex
 
+## 1.0.21
+
+### Patch Changes
+
+- ef5a928: Update node version
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-common@1.9.5
+
+## 1.0.20
+
+### Patch Changes
+
+- b9de3469: Change typst exports to be less- conflict prone.
+- Updated dependencies [2bce565]
+  - myst-common@1.7.3
+  - myst-frontmatter@1.7.3
+
+## 1.0.19
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-templates@1.0.23
+
+## 1.0.18
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - simple-validators@1.0.6
+  - myst-frontmatter@1.5.1
+  - myst-cli-utils@2.0.10
+  - myst-templates@1.0.20
+  - myst-common@1.5.1
+
+## 1.0.17
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- Updated dependencies [69457615]
+- Updated dependencies [e0cd47e3]
+  - myst-templates@1.0.18
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
+## 1.0.16
+
+### Patch Changes
+
+- 7d9ffa14: Typst compile in quotes
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [5aa3ea2f]
+- Updated dependencies [c38cc28]
+  - myst-common@1.1.34
+  - myst-frontmatter@1.1.34
+
+## 1.0.15
+
+### Patch Changes
+
+- aa877413: Fix glossary tex rendering with no terms
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-frontmatter@1.1.26
+
+## 1.0.14
+
+### Patch Changes
+
+- 4b5ca6a2: Add build ci option to not write versions
+- Updated dependencies [50416784]
+- Updated dependencies [01322e48]
+  - myst-frontmatter@1.1.23
+  - myst-common@1.1.23
+
+## 1.0.13
+
+### Patch Changes
+
+- 9178a214: Allow typst to have multiple pages for export (e.g. as a book)
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [a7e15710]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+  - myst-common@1.1.22
+  - myst-templates@1.0.16
+
 ## 1.0.12
 
 ### Patch Changes
@@ -331,7 +432,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - 615c1441: Jtex can now be used to pre-render word templates
 - 615c1441: Sessions are now aware of their build path (making things more consistent)
   For example, change the template location to the site working directory.

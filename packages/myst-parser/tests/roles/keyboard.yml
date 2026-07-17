@@ -1,0 +1,53 @@
+title: keyboard roles
+cases:
+  - title: keyboard role parses
+    markdown: '{keyboard}`Ctrl` + {keyboard}`Space`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: keyboard
+              value: Ctrl
+              children:
+                - type: keyboard
+                  children:
+                    - type: text
+                      value: Ctrl
+            - type: text
+              value: ' + '
+            - type: mystRole
+              name: keyboard
+              value: Space
+              children:
+                - type: keyboard
+                  children:
+                    - type: text
+                      value: Space
+
+  - title: kbd role parses
+    markdown: '{kbd}`Ctrl` + {kbd}`Space`'
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: mystRole
+              name: kbd
+              value: Ctrl
+              children:
+                - type: keyboard
+                  children:
+                    - type: text
+                      value: Ctrl
+            - type: text
+              value: ' + '
+            - type: mystRole
+              name: kbd
+              value: Space
+              children:
+                - type: keyboard
+                  children:
+                    - type: text
+                      value: Space

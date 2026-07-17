@@ -1,6 +1,7 @@
 import type { Cite, CiteGroup, CiteKind } from 'myst-spec-ext';
 import type { RoleSpec, RoleData } from 'myst-common';
 import { normalizeLabel } from 'myst-common';
+import { addCommonRoleOptions, commonRoleOptions } from './utils.js';
 
 export const citeRole: RoleSpec = {
   name: 'cite',
@@ -26,6 +27,7 @@ export const citeRole: RoleSpec = {
     'cite:cauthors',
     // 'cite:empty',
   ],
+  options: { ...commonRoleOptions('cite') },
   body: {
     type: String,
     required: true,
@@ -34,7 +36,9 @@ export const citeRole: RoleSpec = {
     const content = data.body as string;
     const labels = content.split(/[,;]/).map((s) => s.trim());
     const kind: CiteKind =
-      data.name.startsWith('cite:p') || data.name.includes('par') ? 'parenthetical' : 'narrative';
+      data.name.startsWith('cite:p') || data.name.includes('par') || data.name.includes('cite:alp')
+        ? 'parenthetical'
+        : 'narrative';
     const children = labels.map((c) => {
       // {cite:p}`{see}1977:nelson{p. 1166}`
       const groups = /^(?:\{([^{]*)\})?([^{]*)(?:\{([^{]*)\})?$/;
@@ -57,14 +61,14 @@ export const citeRole: RoleSpec = {
       return cite;
     });
     if (data.name === 'cite' && children.length === 1) {
+      addCommonRoleOptions(data, children[0]);
       return children;
     }
-    return [
-      {
-        type: 'citeGroup',
-        kind,
-        children,
-      },
-    ];
+    if (data.name.includes('cite:alp')) {
+      return children;
+    }
+    const citeGroup: CiteGroup = { type: 'citeGroup', kind, children };
+    addCommonRoleOptions(data, citeGroup);
+    return [citeGroup];
   },
 };

@@ -4,8 +4,10 @@ import { select } from 'unist-util-select';
 import type { Block, Code, Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
 import { RuleId, fileError, toText, fileWarn, normalizeLabel } from 'myst-common';
+import { fillProjectFrontmatter } from 'myst-frontmatter';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
+import { liftMystDirectivesAndRolesTransform } from './liftMystDirectivesAndRoles.js';
 
 type Options = {
   /**
@@ -14,6 +16,19 @@ type Options = {
    * so the title can be picked up by the frontmatter.
    */
   propagateTargets?: boolean;
+  /**
+   * `preFrontmatter` overrides frontmatter from the file. It must be taken
+   * into account this early so title is not removed if preFrontmatter.title
+   * is defined.
+   */
+  preFrontmatter?: Record<string, any>;
+  /**
+   * By default, if the page starts with an H1 heading and has no title in the
+   * frontmatter, the heading will become the title and be removed.
+   * If `keepTitleNode` is true, the heading will still become the title
+   * but the node will not be removed.
+   */
+  keepTitleNode?: boolean;
 };
 
 export function getFrontmatter(
@@ -21,11 +36,24 @@ export function getFrontmatter(
   tree: GenericParent,
   opts: Options = { propagateTargets: true },
 ): { tree: GenericParent; frontmatter: Record<string, any>; identifiers: string[] } {
-  if (opts.propagateTargets) mystTargetsTransform(tree);
+  if (opts.propagateTargets) {
+    liftMystDirectivesAndRolesTransform(tree);
+    mystTargetsTransform(tree, file);
+  }
   const firstParent =
     (tree.children[0]?.type as any) === 'block' ? (tree.children[0] as any as Block) : tree;
   const firstNode = firstParent.children?.[0] as Code;
-  const secondNode = firstParent.children?.[1] as Heading;
+  const nextNonCommentNode = firstParent.children
+    ?.slice(1)
+    ?.find((child) => child.type !== 'comment');
+  let secondNode: Heading | undefined;
+  if (nextNonCommentNode?.type === 'block') {
+    secondNode = nextNonCommentNode?.children?.find((child) => child.type !== 'comment') as
+      | Heading
+      | undefined;
+  } else {
+    secondNode = nextNonCommentNode as Heading | undefined;
+  }
   let frontmatter: Record<string, any> = {};
   const identifiers: string[] = [];
   const firstIsYaml = firstNode?.type === 'code' && firstNode?.lang === 'yaml';
@@ -39,6 +67,19 @@ export function getFrontmatter(
         ruleId: RuleId.frontmatterIsYaml,
       });
     }
+  }
+  if (opts.preFrontmatter) {
+    frontmatter = fillProjectFrontmatter(opts.preFrontmatter, frontmatter, {
+      property: 'frontmatter',
+      file: file.path,
+      messages: {},
+      errorLogFn: (message: string) => {
+        fileError(file, message, { ruleId: RuleId.validPageFrontmatter });
+      },
+      warningLogFn: (message: string) => {
+        fileWarn(file, message, { ruleId: RuleId.validPageFrontmatter });
+      },
+    });
   }
   if (frontmatter.content_includes_title != null) {
     fileWarn(file, `'frontmatter' cannot explicitly set: content_includes_title`, {
@@ -55,16 +96,17 @@ export function getFrontmatter(
     frontmatter.title = title;
     frontmatter.content_includes_title = true;
   }
-  const nextNode = firstIsYaml ? secondNode : (firstNode as unknown as Heading);
+  const firstIsComment = (firstNode as any)?.type === 'comment';
+  const nextNode = firstIsYaml || firstIsComment ? secondNode : (firstNode as unknown as Heading);
   const nextNodeIsH1 = nextNode?.type === 'heading' && nextNode.depth === 1;
   // Explicitly handle the case of an H1 directly after the frontmatter
   if (nextNodeIsH1 && !titleNull) {
     const title = toText(nextNode.children);
     // Only remove the title if it is the same
-    if (frontmatter.title && frontmatter.title === title) {
-      // If this has a label what do we do? Add this label as a document reference
+    if (frontmatter.title && frontmatter.title === title && !opts.keepTitleNode) {
       (nextNode as any).type = '__delete__';
       frontmatter.content_includes_title = false;
+      // If this has a label add it to the page identifiers for reference resolution
       if (nextNode.label) {
         const { identifier } = normalizeLabel(nextNode.label) ?? {};
         if (identifier) identifiers.push(identifier);

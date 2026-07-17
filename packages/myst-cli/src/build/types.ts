@@ -1,14 +1,30 @@
 import type { File } from 'docx';
-import type { Export } from 'myst-frontmatter';
+import type { Export, ExportArticle, ExportFormats } from 'myst-frontmatter';
 import type { RendererDoc } from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import type { RendererData } from '../transforms/types.js';
+import type { TransformFn } from '../process/mdast.js';
 
-export type ExportWithOutput = Export & {
-  articles: string[];
+export type RendererFn = (
+  session: ISession,
+  data: RendererData,
+  doc: RendererDoc,
+  opts: Record<string, any>,
+  staticPath: string,
+  vfile: VFile,
+) => File;
+
+export type ExportWithFormat = Export & {
+  format: ExportFormats;
+};
+
+export type ExportWithOutput = ExportWithFormat & {
+  articles: ExportArticle[];
   output: string;
+  /** renderer is only used for word exports */
+  renderer?: RendererFn;
 };
 
 export type ExportWithInputOutput = ExportWithOutput & {
@@ -16,26 +32,13 @@ export type ExportWithInputOutput = ExportWithOutput & {
   $project?: string;
 };
 
-export type ExportOptions = {
-  filename?: string;
-  template?: string | null;
-  disableTemplate?: boolean;
-  templateOptions?: Record<string, any>;
-  clean?: boolean;
-  glossaries?: boolean;
-  zip?: boolean;
-  force?: boolean;
+export type ExportFnOptions = {
   projectPath?: string;
-  watch?: boolean;
-  throwOnFailure?: boolean;
-  renderer?: (
-    session: ISession,
-    data: RendererData,
-    doc: RendererDoc,
-    opts: Record<string, any>,
-    staticPath: string,
-    vfile: VFile,
-  ) => File;
+  clean?: boolean;
+  extraLinkTransformers?: LinkTransformer[];
+  extraTransforms?: TransformFn[];
+  ci?: boolean;
+  execute?: boolean;
 };
 
 export type ExportResults = {
@@ -48,7 +51,5 @@ export type ExportFn = (
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ) => Promise<ExportResults>;

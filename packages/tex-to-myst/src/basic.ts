@@ -83,7 +83,9 @@ export const BASIC_TEXT_HANDLERS: Record<string, Handler> = {
   parbreak: closeParagraph,
   macro_par: closeParagraph,
   macro_break: closeParagraph,
-  ['macro_\\']: closeParagraph,
+  ['macro_\\'](node: GenericNode, state: ITexParser) {
+    state.addLeaf('break');
+  },
   // newpage isn't really appropriate in a web context
   // We could make this into a block in the future?
   macro_newpage: closeParagraph,

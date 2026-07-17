@@ -1,6 +1,6 @@
-title: myst-to-typst admonitions
+title: myst-to-typst lists
 cases:
-  - title: important admonition
+  - title: important list
     mdast:
       type: root
       children:
@@ -25,3 +25,27 @@ cases:
       - This is a list
         + My other, nested
         + bullet point list!
+  - title: List with new lines
+    mdast:
+      type: root
+      children:
+        - type: list
+          children:
+            - type: listItem
+              spread: true
+              children:
+                - type: text
+                  value: |-
+                    A list
+                    with a new line
+            - type: listItem
+              spread: true
+              children:
+                - type: text
+                  value: |
+                    And math
+                - type: inlineMath
+                  value: Ax=b
+    typst: |-
+      - A list with a new line
+      - And math $A x = b$

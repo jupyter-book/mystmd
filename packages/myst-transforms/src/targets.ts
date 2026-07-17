@@ -6,7 +6,8 @@ import type { Target, Parent } from 'myst-spec';
 import type { Heading } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { GenericParent } from 'myst-common';
-import { normalizeLabel, toText } from 'myst-common';
+import { normalizeLabel, toText, transferTargetAttrs } from 'myst-common';
+import type { VFile } from 'vfile';
 
 /**
  * Propagate target identifier/value to subsequent node
@@ -24,23 +25,20 @@ import { normalizeLabel, toText } from 'myst-common';
  * Note, this should happen after `mystDirective`s have been lifted,
  * and other structural changes to the tree that don't preserve labels.
  */
-export function mystTargetsTransform(tree: GenericParent) {
+export function mystTargetsTransform(tree: GenericParent, vfile: VFile) {
   visit(tree, 'mystTarget', (node: Target, index: number, parent: Parent) => {
     // TODO: have multiple targets and collect the labels
     const nextNode = findAfter(parent, index) as any;
-    const normalized = normalizeLabel(node.label);
+    const normalized = { ...node, ...normalizeLabel(node.label) };
     if (nextNode && normalized) {
-      // TODO: raise error if the node is already labelled
-      nextNode.identifier = normalized.identifier;
-      nextNode.label = normalized.label;
-      nextNode.html_id = normalized.html_id;
+      transferTargetAttrs(normalized, nextNode, vfile);
     }
   });
   remove(tree, 'mystTarget');
 }
 
-export const mystTargetsPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree) => {
-  mystTargetsTransform(tree);
+export const mystTargetsPlugin: Plugin<[], GenericParent, GenericParent> = () => (tree, vfile) => {
+  mystTargetsTransform(tree, vfile);
 };
 
 /**

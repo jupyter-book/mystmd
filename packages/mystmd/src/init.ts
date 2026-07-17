@@ -1,31 +1,34 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { Session, init } from 'myst-cli';
+import { Session, init, makeSiteOption, readableName } from 'myst-cli';
 import { clirun } from './clirun.js';
 import {
   makeProjectOption,
-  makeSiteOption,
-  makeWriteTocOption,
+  makeWriteTOCOption,
   makeGithubPagesOption,
   makeGithubCurvenoteOption,
+  makeReadTheDocsOption,
 } from './options.js';
 
 export function makeInitCLI(program: Command) {
   const command = new Command('init')
-    .description('Initialize a MyST project in the current directory')
-    .addOption(makeProjectOption('Initialize config for MyST project content'))
-    .addOption(makeSiteOption('Initialize config for MyST site'))
-    .addOption(makeWriteTocOption())
+    .description(`Initialize a ${readableName()} project in the current directory`)
+    .addOption(makeProjectOption(`Initialize config for ${readableName()} project content`))
+    .addOption(makeSiteOption(`Initialize config for ${readableName()} site`))
+    .addOption(makeWriteTOCOption())
     .addOption(makeGithubPagesOption())
     .addOption(makeGithubCurvenoteOption())
-    .action(clirun(Session, init, program));
+    .addOption(makeReadTheDocsOption())
+    .action(clirun(Session, init, program, { keepAlive: true }));
   return command;
 }
 
 // The default command runs `myst init` with no arguments
 export function addDefaultCommand(program: Command) {
   program.action(async (...args: any[]) => {
-    if (program.args.length === 0) return clirun(Session, init, program)(args);
+    if (program.args.length === 0) {
+      return clirun(Session, init, program, { keepAlive: true }).call(program, ...args);
+    }
     console.error(
       `${chalk.red(`Invalid command: `)}${chalk.bold(program.args.join(' '))}\n\n${chalk.dim(
         'See --help for a list of available commands.\n',

@@ -43,10 +43,6 @@ function fillReferenceEnumerators(node: GenericNode, enumerator: string | number
   findAndReplace(node as Content, { '%s': num, '{number}': num });
 }
 
-function copyNode(node: GenericNode): GenericNode {
-  return JSON.parse(JSON.stringify(node));
-}
-
 function kindFromNode(node: GenericNode): string | undefined {
   return node.type === 'container' ? node.kind : node.type;
 }
@@ -106,7 +102,7 @@ export class State {
       }
       if (node.identifier) {
         this.targets[node.identifier] = {
-          node: copyNode(node),
+          node: structuredClone(node),
           kind: kind as TargetKind,
         };
       }
@@ -170,13 +166,13 @@ export class State {
       node.resolved = true;
     } else if (kinds.ref.ref && kinds.target.heading) {
       if (noNodeChildren) {
-        node.children = copyNode(target.node).children;
+        node.children = structuredClone(target.node).children;
       }
       node.resolved = true;
     } else if (kinds.ref.ref && (kinds.target.figure || kinds.target.table)) {
       if (noNodeChildren) {
         const caption = select('caption > paragraph', target.node) as GenericNode;
-        node.children = copyNode(caption).children;
+        node.children = structuredClone(caption).children;
       }
       node.resolved = true;
     } else if (kinds.ref.numref && kinds.target.figure && target.node.enumerator) {

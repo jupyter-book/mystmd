@@ -26,6 +26,21 @@ describe('cite roles', () => {
         },
       ],
     ],
+    ['cite:alp', '1987:nelson', [{ type: 'cite', kind: 'parenthetical', label: '1987:nelson' }]],
+    ['cite:alps', '1987:nelson', [{ type: 'cite', kind: 'parenthetical', label: '1987:nelson' }]],
+    [
+      'cite:authorpar',
+      '1987:nelson',
+      [
+        {
+          type: 'citeGroup',
+          kind: 'parenthetical',
+          children: [
+            { type: 'cite', kind: 'parenthetical', label: '1987:nelson', partial: 'author' },
+          ],
+        },
+      ],
+    ],
     [
       'cite:p',
       '1987:nelson,2001:schechter',

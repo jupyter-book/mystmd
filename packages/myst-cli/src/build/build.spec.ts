@@ -1,59 +1,58 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ExportFormats } from 'myst-frontmatter';
-import { exportSite, getExportFormats } from './build';
+import { exportSite, getAllowedExportFormats, getRequestedExportFormats } from './build';
 import { Session } from '../session';
 import { config } from '../store/reducers';
 
-describe('getExportFormats', () => {
-  it('no build target in options and force returns no formats', async () => {
-    expect(getExportFormats({ force: true })).toEqual([]);
-  });
-  it('all build targets false in options and force returns no formats', async () => {
-    expect(
-      getExportFormats({ force: true, docx: false, pdf: false, tex: false, xml: false }),
-    ).toEqual([]);
+describe('get export formats', () => {
+  it('all build targets false in options no formats', async () => {
+    expect(getAllowedExportFormats({ docx: false, pdf: false, tex: false, xml: false })).toEqual(
+      [],
+    );
+    expect(getRequestedExportFormats({ docx: false, pdf: false, tex: false, xml: false })).toEqual(
+      [],
+    );
   });
   it('no build target in options returns all formats', async () => {
-    expect(getExportFormats({})).toEqual([]);
-  });
-  it('all build targets false in options returns no formats', async () => {
-    expect(
-      getExportFormats({ force: false, docx: false, pdf: false, tex: false, xml: false }),
-    ).toEqual([]);
+    expect(getAllowedExportFormats({})).toEqual([]);
+    expect(getRequestedExportFormats({})).toEqual([]);
   });
   it('single build target true in options returns single format', async () => {
-    expect(getExportFormats({ docx: true, pdf: false, tex: false, xml: false })).toEqual([
+    expect(getAllowedExportFormats({ docx: true, pdf: false, tex: false, xml: false })).toEqual([
+      ExportFormats.docx,
+    ]);
+    expect(getRequestedExportFormats({ docx: true, pdf: false, tex: false, xml: false })).toEqual([
       ExportFormats.docx,
     ]);
   });
-  it('single build target true in options and force returns single format', async () => {
-    expect(
-      getExportFormats({ force: true, docx: true, pdf: false, tex: false, xml: false }),
-    ).toEqual([ExportFormats.docx]);
-  });
   it('single build target true in options and all returns all formats', async () => {
-    expect(getExportFormats({ all: true, docx: true, pdf: false, tex: false, xml: false })).toEqual(
-      [
-        ExportFormats.docx,
-        ExportFormats.pdf,
-        ExportFormats.tex,
-        ExportFormats.typst,
-        ExportFormats.xml,
-        ExportFormats.md,
-        ExportFormats.meca,
-      ],
-    );
-  });
-  it('all build targets true in options returns all formats', async () => {
-    expect(getExportFormats({ docx: true, pdf: true, tex: true, xml: true })).toEqual([
+    expect(
+      getAllowedExportFormats({ all: true, docx: true, pdf: false, tex: false, xml: false }),
+    ).toEqual([
       ExportFormats.docx,
       ExportFormats.pdf,
+      ExportFormats.pdftex,
+      ExportFormats.typst,
+      ExportFormats.tex,
+      ExportFormats.xml,
+      ExportFormats.md,
+      ExportFormats.meca,
+      ExportFormats.cff,
+    ]);
+    expect(
+      getRequestedExportFormats({ all: true, docx: true, pdf: false, tex: false, xml: false }),
+    ).toEqual([ExportFormats.docx]);
+  });
+  it('all build targets true in options returns all formats', async () => {
+    expect(getAllowedExportFormats({ docx: true, pdf: true, tex: true, xml: true })).toEqual([
+      ExportFormats.docx,
+      ExportFormats.pdf,
+      ExportFormats.pdftex,
+      ExportFormats.typst,
       ExportFormats.tex,
       ExportFormats.xml,
     ]);
-  });
-  it('all build targets true in options and force returns all formats', async () => {
-    expect(getExportFormats({ force: true, docx: true, pdf: true, tex: true, xml: true })).toEqual([
+    expect(getRequestedExportFormats({ docx: true, pdf: true, tex: true, xml: true })).toEqual([
       ExportFormats.docx,
       ExportFormats.pdf,
       ExportFormats.tex,
@@ -91,7 +90,7 @@ describe('exportSite', () => {
   it('force with existing config does not export site', async () => {
     expect(exportSite(sessionWithConfig, { force: true })).toBeFalsy();
   });
-  it.each(['docx', 'pdf', 'tex', 'xml', 'md', 'meca'])(
+  it.each(['docx', 'pdf', 'tex', 'xml', 'md', 'meca', 'cff'])(
     '%s with existing config does not export site',
     (opt) => {
       const opts: Record<string, boolean> = {};

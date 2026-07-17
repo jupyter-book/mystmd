@@ -1,5 +1,323 @@
 # myst-frontmatter
 
+## 1.10.0
+
+### Minor Changes
+
+- c738873: Add static_files option to project frontmatter for copying files into build output with stable URLs
+
+## 1.9.5
+
+### Patch Changes
+
+- 7b989d4: Updates to latest SPDX JLOB
+
+## 1.9.4
+
+### Patch Changes
+
+- 045953f: Inherit edit_url from project config
+- Updated dependencies [045953f]
+  - simple-validators@1.2.0
+
+## 1.9.3
+
+### Patch Changes
+
+- d45faf3: Add dollarmath parser settings to project
+- Updated dependencies [3feacef]
+  - myst-toc@0.1.4
+
+## 1.9.2
+
+## 1.9.1
+
+## 1.9.0
+
+### Minor Changes
+
+- 30acc57: Add cache control for execution
+
+## 1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- 6783dae: Allow math as an alias for equation in numbering.
+
+## 1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- fefffffd: Update licenses
+
+## 1.8.0
+
+## 1.7.13
+
+### Patch Changes
+
+- 1aa5825: Bump frontmatter to reflect change to simple-validators
+- Updated dependencies [5031289b]
+  - simple-validators@1.1.1
+
+## 1.7.12
+
+### Patch Changes
+
+- 8a0ee19e: Add social media project frontmatter
+
+## 1.7.11
+
+### Patch Changes
+
+- 91bed6d0: Add additional social profiles (linkedin, bluesky, mastodon, threads). Enable affiliations to have social profiles.
+
+## 1.7.10
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+
+## 1.7.9
+
+### Patch Changes
+
+- 7448083f: Add support for skipping execution of individual notebooks
+
+## 1.7.8
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable continuous numbering across pages
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator customization to numbering items
+- 00a47c4: Add edit url to file frontmatter
+
+## 1.7.6
+
+### Patch Changes
+
+- 6f6032b7: OSI updates
+
+## 1.7.5
+
+### Patch Changes
+
+- 8ea9365: Improvements to spdx license validation
+
+## 1.7.4
+
+## 1.7.3
+
+## 1.7.2
+
+### Patch Changes
+
+- 897136f: Nest external identifiers in frontmatter
+- 918223b8: Add pubmed identifiers to frontmatter
+- 4a3ee6db: Support parts in site config
+
+## 1.7.1
+
+### Patch Changes
+
+- 3c65de0: Add more frontmatter fields for different venue types
+- 64a33837: Allow custom licenses outside SPDX
+- 3c65de0: Deprecate biblio in favor of complete volume/issue objects
+
+## 1.7.0
+
+## 1.6.1
+
+### Patch Changes
+
+- 760e411: Enable site options on each page
+
+## 1.6.0
+
+### Minor Changes
+
+- 9c1b8c73: Make `name`, `display_name` soft-required fields for kernelspec
+
+## 1.5.4
+
+### Patch Changes
+
+- 85520edd: Allow for explicit ignoring of longer abbreviations
+- da224b78: Reduce scope of date parsing, and validate to ISO8601
+- e2b74f4d: Update licenses
+- Updated dependencies [da224b78]
+- Updated dependencies [85520edd]
+  - simple-validators@1.1.0
+
+## 1.5.3
+
+### Patch Changes
+
+- 313b218: Add dois to venue and biblio
+
+## 1.5.2
+
+### Patch Changes
+
+- 38a45645: Add CITATION.cff build target
+
+## 1.5.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - simple-validators@1.0.6
+  - myst-toc@0.1.2
+
+## 1.5.0
+
+### Patch Changes
+
+- 8c487991: Keep all contributors/affiliations until final page resolution
+- f6aa726c: Allow parts in project frontmatter
+- 478c4d4f: Extend (and deduplicate) lists when extending project frontmatter
+
+## 1.4.7
+
+## 1.4.6
+
+### Patch Changes
+
+- 4cea894: Combine site options when using config extend
+
+## 1.4.5
+
+### Patch Changes
+
+- ad969c37: Add tags to project frontmatter
+- Updated dependencies [20beec96]
+  - myst-toc@0.1.1
+
+## 1.4.4
+
+### Patch Changes
+
+- 65ade89: Math frontmatter coerces to object with name/description
+- 435c4329: Update licenses from spdx
+- Updated dependencies [65ade89]
+  - simple-validators@1.0.5
+
+## 1.4.3
+
+### Patch Changes
+
+- f4d5231: Load and fill frontmatter from extend config key
+
+## 1.4.2
+
+## 1.4.1
+
+## 1.4.0
+
+### Patch Changes
+
+- ab863c8a: Alias name/label in prjoect/page frontmatter and respect as identifiers
+- ab863c8a: Improve frontmatter reference validation
+
+## 1.3.0
+
+## 1.2.0
+
+### Patch Changes
+
+- 2c4e3057: Respect part aliases in parts frontmatter and extractPart function
+
+## 1.1.35
+
+### Patch Changes
+
+- be3befd: Fix circular deps
+- be3befd: Move site aliases to prevent circular dependencies
+
+## 1.1.34
+
+### Patch Changes
+
+- c38cc28: Add downloads to page/project frontmatter and site config
+
+## 1.1.33
+
+## 1.1.32
+
+### Patch Changes
+
+- 6f0183de: Add copyright to frontmatter
+- 62620a8d: Allow referencing contributors with ref:
+- 62620a8d: Make no-give-name warning less agressive
+- 62620a8d: Add reviewers and editors to frontmatter
+- ffb239a9: Add collaborations to Contributor type
+- ffb239a9: Always find a corresponding author unless (1) no email or (2) all corresponding:false
+- bba5baf9: Add zip to export frontmatter
+- 62620a8d: More care around name warnings - do not warn on explicitly defined parts
+- bba5baf9: Update export validation for optional format
+
+## 1.1.31
+
+### Patch Changes
+
+- 1880a465: Expand parts to other aliases
+
+## 1.1.30
+
+## 1.1.29
+
+### Patch Changes
+
+- 5565d60: Expand numbering items to include template and start
+
+## 1.1.28
+
+## 1.1.27
+
+### Patch Changes
+
+- f1ee6f7: Add id to project frontmatter and populate on init
+
+## 1.1.26
+
+## 1.1.25
+
+### Patch Changes
+
+- 03db3a35: allow author affiliations to be an object and change it into an array for validation
+
+## 1.1.24
+
+## 1.1.23
+
+### Patch Changes
+
+- 50416784: Update licensese
+
+## 1.1.22
+
+### Patch Changes
+
+- 7596172: Support export toc
+- 7596172: Allow page frontmatter in export articles
+- 7596172: Change export articles into objects with file/title/level
+- 7596172: Pass heading depth through multi-page transform
+- 7596172: Enumerate multi-article export formats
+- 7596172: Allow page frontmatter in export article validation
+- 9178a214: Allow typst to have multiple pages for export (e.g. as a book)
+- 7596172: Add export frontmatter at template render time
+- ffc1061f: Allow enumeration to start at a different number
+- aa335d74: Gather page frontmatter on load
+
 ## 1.1.21
 
 ### Patch Changes
@@ -258,7 +576,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - 615c1441: Sessions are now aware of their build path (making things more consistent)
   For example, change the template location to the site working directory.
 

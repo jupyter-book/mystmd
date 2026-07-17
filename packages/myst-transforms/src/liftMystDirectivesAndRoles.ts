@@ -1,6 +1,6 @@
 import type { Plugin } from 'unified';
 import type { GenericNode, GenericParent } from 'myst-common';
-import { liftChildren } from 'myst-common';
+import { liftChildren, transferTargetAttrs } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 
 /**
@@ -15,11 +15,12 @@ export function liftMystDirectivesAndRolesTransform(tree: GenericParent) {
   directives.forEach((n) => {
     const child = n.children?.[0];
     if (!child) return;
-    if (n.identifier && !child.identifier) {
-      child.identifier = n.identifier;
-      child.label = n.label;
-      child.html_id = n.html_id;
+    if (child.identifier) {
+      delete n.identifier;
+      delete n.label;
+      delete n.html_id;
     }
+    transferTargetAttrs(n, child);
   });
   liftChildren(tree, 'mystDirective');
   liftChildren(tree, 'mystRole');

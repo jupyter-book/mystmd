@@ -1,0 +1,18 @@
+cases:
+  - title: Header with id label
+    id: target
+    mdast:
+      type: root
+      children:
+        - type: mystTarget
+          label: my_ID
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: My Header
+    myst: |-
+      (my_ID)=
+      # My Header
+    html: |-
+      <h1 id="my_id">My Header</h1>

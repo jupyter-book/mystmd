@@ -10,6 +10,7 @@ export type PreRendererData = {
   kind: SourceFileKind;
   frontmatter?: PageFrontmatter;
   identifiers?: string[];
+  widgets?: Record<string, any>;
 };
 
 export type RendererData = PreRendererData & {
@@ -20,4 +21,9 @@ export type RendererData = PreRendererData & {
   dependencies: Dependency[];
 };
 
-export type SingleCitationRenderer = { id: string; render: CitationRenderer[''] };
+export type SingleCitationRenderer = {
+  id: string;
+  render: CitationRenderer[''];
+  /** If remote: true, this citation was loaded from the web */
+  remote?: boolean;
+};

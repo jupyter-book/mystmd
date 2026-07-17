@@ -6,29 +6,34 @@ import { tic, writeFileToFolder } from 'myst-cli-utils';
 import type { References, GenericParent } from 'myst-common';
 import { extractPart, RuleId, TemplateKind } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { ExportFormats } from 'myst-frontmatter';
+import {
+  FRONTMATTER_ALIASES,
+  PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
+  articlesWithFile,
+  validateProjectFrontmatter,
+} from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import mystToTex, { mergePreambles, generatePreamble } from 'myst-to-tex';
 import type { LatexResult, PreambleData } from 'myst-to-tex';
-import type { LinkTransformer } from 'myst-transforms';
+import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { select, selectAll } from 'unist-util-select';
-import { findCurrentProjectAndLoad } from '../../config.js';
+import { VFile } from 'vfile';
+import { frontmatterValidationOpts } from '../../frontmatter.js';
 import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import { getFileContent } from '../utils/getFileContent.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import type { ExportWithOutput, ExportOptions, ExportResults } from '../types.js';
+import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
+import type { ExportWithOutput, ExportResults, ExportFnOptions } from '../types.js';
 import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
-import { collectTexExportOptions } from '../utils/collectExportOptions.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 export const DEFAULT_BIB_FILENAME = 'main.bib';
 const TEX_IMAGE_EXTENSIONS = [
@@ -68,7 +73,9 @@ export function extractTexPart(
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
 ): LatexResult | LatexResult[] | undefined {
-  const part = extractPart(mdast, partDefinition.id);
+  const part = extractPart(mdast, partDefinition.id, {
+    frontmatterParts: resolveFrontmatterParts(session, frontmatter),
+  });
   if (!part) return undefined;
   if (!partDefinition.as_list) {
     // Do not build glossaries when extracting parts: references cannot be mapped to definitions
@@ -103,24 +110,48 @@ export function extractTexPart(
   });
 }
 
+function titleToTexHeading(session: ISession, title: string, depth = 1) {
+  const headingMdast = {
+    type: 'root',
+    children: [
+      {
+        type: 'heading',
+        depth,
+        children: [{ type: 'text', value: title }],
+      },
+    ],
+  };
+  const content = mdastToTex(session, headingMdast, {}, {}, null, false);
+  return content.value;
+}
+
 export async function localArticleToTexRaw(
   session: ISession,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { articles, output } = templateOptions;
-  const content = await getFileContent(session, articles, {
-    projectPath,
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const { projectPath, extraLinkTransformers, execute } = opts ?? {};
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TEX_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
+      execute,
+    },
+  );
 
   const toc = tic();
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: path.join(path.dirname(output), 'files'),
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
@@ -133,19 +164,25 @@ export async function localArticleToTexRaw(
   if (results.length === 1) {
     writeFileToFolder(output, results[0].value);
   } else {
+    let includeContent = '';
+    let fileInd = 0;
     const { dir, name, ext } = path.parse(output);
-    const includeFileBases = results.map((result, ind) => {
-      const base = `${name}-${content[ind]?.slug ?? ind}${ext}`;
-      const includeFile = path.format({ dir, ext, base });
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `\\section{${title}}\n\n`;
+    articles.forEach((article) => {
+      if (article.file) {
+        const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
+        const includeFile = path.format({ dir, ext, base });
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `${titleToTexHeading(session, title, article.level)}\n\n`;
+        }
+        writeFileToFolder(includeFile, `${part}${results[fileInd]?.value}`);
+        includeContent += `\\include{${base}}\n\n`;
+        fileInd++;
+      } else if (article.title) {
+        includeContent += `${titleToTexHeading(session, article.title, article.level)}\n\n`;
       }
-      writeFileToFolder(includeFile, `${part}${result.value}`);
-      return base;
     });
-    const includeContent = includeFileBases.map((base) => `\\include{${base}}`).join('\n');
     writeFileToFolder(output, includeContent);
   }
   // TODO: add imports and macros?
@@ -156,17 +193,26 @@ export async function localArticleToTexTemplated(
   session: ISession,
   file: string,
   templateOptions: ExportWithOutput,
-  projectPath?: string,
-  force?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
   const { output, articles, template } = templateOptions;
+  const { projectPath, extraLinkTransformers, clean, ci, execute } = opts ?? {};
   const filesPath = path.join(path.dirname(output), 'files');
-  const content = await getFileContent(session, articles, {
-    projectPath,
-    imageExtensions: TEX_IMAGE_EXTENSIONS,
-    extraLinkTransformers,
-  });
+  const fileArticles = articlesWithFile(articles);
+  const content = await getFileContent(
+    session,
+    fileArticles.map((article) => article.file),
+    {
+      projectPath,
+      imageExtensions: TEX_IMAGE_EXTENSIONS,
+      extraLinkTransformers,
+      titleDepths: fileArticles.map((article) => article.level),
+      preFrontmatters: fileArticles.map((article) =>
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ),
+      execute,
+    },
+  );
   const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
@@ -204,8 +250,7 @@ export async function localArticleToTexTemplated(
   let hasGlossaries = false;
   const results = await Promise.all(
     content.map(async ({ mdast, frontmatter, references }, ind) => {
-      const article = articles[ind];
-      await finalizeMdast(session, mdast, frontmatter, article, {
+      await finalizeMdast(session, mdast, frontmatter, fileArticles[ind].file, {
         imageWriteFolder: filesPath,
         imageAltOutputFolder: 'files/',
         imageExtensions: TEX_IMAGE_EXTENSIONS,
@@ -218,7 +263,7 @@ export async function localArticleToTexTemplated(
           addWarningForFile(
             session,
             file,
-            `multiple values for part '${def.id}' found; ignoring value from ${article}`,
+            `multiple values for part '${def.id}' found; ignoring value from ${fileArticles[ind].file}`,
             'error',
             { ruleId: RuleId.texRenders },
           );
@@ -250,19 +295,33 @@ export async function localArticleToTexTemplated(
     const state = session.store.getState();
     frontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
     const { dir, name, ext } = path.parse(output);
-    const includeFilenames = results.map((result, ind) => {
-      const includeFilename = `${name}-${content[ind]?.slug ?? ind}`;
-      const includeFile = path.format({ dir, ext, base: `${includeFilename}${ext}` });
-      let part = '';
-      const { title, content_includes_title } = content[ind]?.frontmatter ?? {};
-      if (title && !content_includes_title) {
-        part = `\\section{${title}}\n\n`;
+    texContent = '';
+    let fileInd = 0;
+    articles.forEach((article) => {
+      if (article.file) {
+        const includeFilename = `${name}-${content[fileInd]?.slug ?? fileInd}`;
+        const includeFile = path.format({ dir, ext, base: `${includeFilename}${ext}` });
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          part = `${titleToTexHeading(session, title, article.level)}\n\n`;
+        }
+        writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
+        texContent += `\\include{${includeFilename}}\n\n`;
+        fileInd++;
+      } else if (article.title) {
+        texContent += `${titleToTexHeading(session, article.title, article.level)}\n\n`;
       }
-      writeFileToFolder(includeFile, `${part}${result.value}`);
-      return includeFilename;
     });
-    texContent = includeFilenames.map((base) => `\\include{${base}}`).join('\n');
   }
+  const vfile = new VFile();
+  vfile.path = file;
+  const exportFrontmatter = validateProjectFrontmatter(
+    filterKeys(templateOptions, [...PROJECT_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+    frontmatterValidationOpts(vfile),
+  );
+  logMessagesFromVFile(session, vfile);
+  frontmatter = { ...frontmatter, ...exportFrontmatter };
   // Fill in template
   session.log.info(toc(`📑 Exported TeX in %s, copying to ${output}`));
   const { preamble, suffix } = generatePreamble(preambleData);
@@ -276,9 +335,10 @@ export async function localArticleToTexTemplated(
     sourceFile: file,
     imports: collectedImports,
     preamble,
-    force,
+    force: clean,
     packages: templateYml.packages,
     filesPath,
+    removeVersionComment: ci,
   });
   return { tempFolders: [], hasGlossaries };
 }
@@ -287,23 +347,14 @@ export async function runTexExport( // DBG: Must return an info on whether gloss
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   let result: ExportResults;
   if (exportOptions.template === null) {
-    result = await localArticleToTexRaw(session, exportOptions, projectPath, extraLinkTransformers);
+    result = await localArticleToTexRaw(session, exportOptions, opts);
   } else {
-    result = await localArticleToTexTemplated(
-      session,
-      file,
-      exportOptions,
-      projectPath,
-      clean,
-      extraLinkTransformers,
-    );
+    result = await localArticleToTexTemplated(session, file, exportOptions, opts);
   }
   return result;
 }
@@ -312,69 +363,21 @@ export async function runTexZipExport(
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ): Promise<ExportResults> {
-  if (clean) cleanOutput(session, exportOptions.output);
+  if (opts?.clean) cleanOutput(session, exportOptions.output);
   const zipOutput = exportOptions.output;
   const texFolder = createTempFolder(session);
   exportOptions.output = path.join(
     texFolder,
     `${path.basename(zipOutput, path.extname(zipOutput))}.tex`,
   );
-  await runTexExport(session, file, exportOptions, projectPath, false, extraLinkTransformers);
+  await runTexExport(session, file, exportOptions, opts);
   session.log.info(`🤐 Zipping tex outputs to ${zipOutput}`);
   const zip = new AdmZip();
   zip.addLocalFolder(texFolder);
   zip.writeZip(zipOutput);
   return { tempFolders: [texFolder] };
-}
-
-export async function localArticleToTex(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-): Promise<ExportResults> {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectTexExportOptions(session, file, 'tex', [ExportFormats.tex], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  const results: ExportResults = { tempFolders: [] };
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      let exportResults: ExportResults;
-      if (path.extname(exportOptions.output) === '.zip') {
-        exportResults = await runTexZipExport(
-          session,
-          file,
-          exportOptions,
-          projectPath,
-          opts.clean,
-          extraLinkTransformers,
-        );
-      } else {
-        exportResults = await runTexExport(
-          session,
-          file,
-          exportOptions,
-          projectPath,
-          opts.clean,
-          extraLinkTransformers,
-        );
-      }
-      results.tempFolders.push(...exportResults.tempFolders);
-    }),
-    opts.throwOnFailure,
-  );
-  return results;
 }
 
 function hasGlossary(mdast: GenericParent): boolean {

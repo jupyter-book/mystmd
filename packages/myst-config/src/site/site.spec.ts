@@ -88,16 +88,18 @@ describe('validateSiteAction', () => {
     };
     expect(validateSiteAction(siteAction, opts)).toEqual(siteAction);
   });
-  it('invalid url errors', async () => {
+  it('relative url passes', async () => {
     expect(validateSiteAction({ title: 'example', url: '/a/b/c/d' }, opts)).toEqual({
       title: 'example',
       url: '/a/b/c/d',
     });
     expect(opts.messages.errors?.length).toEqual(undefined);
   });
-  it('invalid url errors', async () => {
-    expect(validateSiteAction({ title: 'example', url: '?something' }, opts)).toBeUndefined();
-    expect(opts.messages.errors?.length).toEqual(1);
+  it('invalid url passes', async () => {
+    expect(validateSiteAction({ title: 'example', url: '?something' }, opts)).toEqual({
+      title: 'example',
+      url: '?something',
+    });
   });
   it('valid path returns self', async () => {
     expect(validateSiteAction({ title: 'example', url: '/a/b' }, opts)).toEqual({
@@ -114,9 +116,19 @@ describe('validateSiteConfig', () => {
       nav: [{ title: 'cool folder', children: [{ title: 'cool page', url: '/test/cool-page' }] }],
       actions: [{ title: 'Go To Example', url: 'https://example.com', static: false }],
       domains: ['test.curve.space'],
-      favicon: 'curvenote.png',
+      options: { favicon: 'curvenote.png' },
     };
     expect(validateSiteConfig(siteConfig, opts)).toEqual(siteConfig);
+  });
+  it('valid favicon is moved to options', async () => {
+    const siteConfig = {
+      projects: [{ path: 'my-proj', slug: 'test' }],
+      favicon: 'curvenote.png',
+    };
+    expect(validateSiteConfig(siteConfig, opts)).toEqual({
+      projects: [{ path: 'my-proj', slug: 'test' }],
+      options: { favicon: 'curvenote.png' },
+    });
   });
   it('invalid list values are filtered', async () => {
     expect(
@@ -124,7 +136,6 @@ describe('validateSiteConfig', () => {
         {
           projects: [{ path: 'my-proj', slug: '/my/proj' }],
           nav: [{ title: 'cool folder', children: 'a' }],
-          actions: [{ title: 'Go To Example', url: 'bad_url', static: false }],
           domains: ['example.com'],
         },
         opts,
@@ -132,10 +143,9 @@ describe('validateSiteConfig', () => {
     ).toEqual({
       projects: [],
       nav: [],
-      actions: [],
       domains: [],
     });
-    expect(opts.messages.errors?.length).toEqual(4);
+    expect(opts.messages.errors?.length).toEqual(3);
   });
   it('invalid required values error', async () => {
     expect(

@@ -1,18 +1,30 @@
 ---
 title: Directives
-description: Code and code-blocks can be used to show programming languages.
+description: A full list of the directives included in MyST Markdown by default.
+label: directives_list
 ---
+
+To learn more about the syntax and usage of the directives, please refer to the [](#syntax:directives) section of the documentation.
 
 :::{myst:directive} admonition
 :::
 
+:::{myst:directive} aside
+:::
+
 :::{myst:directive} bibliography
+:::
+
+:::{myst:directive} blockquote
 :::
 
 :::{myst:directive} code
 :::
 
 :::{myst:directive} code-cell
+:::
+
+:::{myst:directive} csv-table
 :::
 
 :::{myst:directive} dropdown
@@ -36,13 +48,7 @@ description: Code and code-blocks can be used to show programming languages.
 :::{myst:directive} include
 :::
 
-:::{myst:directive} table
-:::
-
 :::{myst:directive} list-table
-:::
-
-:::{myst:directive} margin
 :::
 
 :::{myst:directive} math
@@ -57,5 +63,8 @@ description: Code and code-blocks can be used to show programming languages.
 :::{myst:directive} myst
 :::
 
-:::{myst:directive} output
+:::{myst:directive} table
+:::
+
+:::{myst:directive} toc
 :::

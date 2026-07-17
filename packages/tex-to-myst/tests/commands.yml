@@ -13,6 +13,46 @@ cases:
         '\ii': '{i\mkern1mu}'
         '\f': '\mathcal{F}_{#1}\left[#2\right]'
         '\FFT': '\mathcal{F}_{\mathbf{r}\to\mathbf{k}}'
+  - title: reusing newcommand for same macro warns
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\ZZ }}
+      \newcommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+    warnings: 1
+  - title: newcommand then renewcommand does not warn
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\ZZ }}
+      \renewcommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+  - title: renewcommand without new command warns
+    tex: |-
+      \renewcommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+    warnings: 1
+  - title: providecommand with new macro adds macro
+    tex: |-
+      \providecommand{\angstroms}{\text{\normalfont\AA }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
+  - title: providecommand after newcommand does nothing
+    tex: |-
+      \newcommand{\angstroms}{\text{\normalfont\AA }}
+      \providecommand{\angstroms}{\text{\normalfont\ZZ }}
+    text: ''
+    data:
+      macros:
+        '\angstroms': '\text{\normalfont\AA }'
   - title: newtheorem
     tex: |-
       \newtheorem{proposition}{Proposition}

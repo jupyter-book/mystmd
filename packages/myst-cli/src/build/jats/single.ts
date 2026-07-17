@@ -1,22 +1,19 @@
 import path from 'node:path';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
-import { ExportFormats } from 'myst-frontmatter';
+import { FRONTMATTER_ALIASES, PAGE_FRONTMATTER_KEYS } from 'myst-frontmatter';
 import { writeJats } from 'myst-to-jats';
-import type { LinkTransformer } from 'myst-transforms';
+import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
-import { findCurrentProjectAndLoad } from '../../config.js';
 import { combineCitationRenderers } from '../../process/citations.js';
 import { finalizeMdast } from '../../process/mdast.js';
-import { loadProjectFromDisk } from '../../project/load.js';
 import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import { KNOWN_IMAGE_EXTENSIONS } from '../../utils/resolveExtension.js';
-import type { ExportWithOutput, ExportOptions } from '../types.js';
+import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
+import type { ExportWithOutput, ExportFnOptions } from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
-import { collectBasicExportOptions } from '../utils/collectExportOptions.js';
 import { getFileContent } from '../utils/getFileContent.js';
-import { resolveAndLogErrors } from '../utils/resolveAndLogErrors.js';
 
 /**
  * Build a MyST project as JATS XML
@@ -28,21 +25,24 @@ export async function runJatsExport(
   session: ISession,
   sourceFile: string,
   exportOptions: ExportWithOutput,
-  projectPath?: string,
-  clean?: boolean,
-  extraLinkTransformers?: LinkTransformer[],
+  opts?: ExportFnOptions,
 ) {
   const toc = tic();
   const { output, articles, sub_articles } = exportOptions;
+  const { clean, projectPath, extraLinkTransformers, execute } = opts ?? {};
   // At this point, export options are resolved to contain one-and-only-one article
   const article = articles[0];
-  if (!article) return { tempFolders: [] };
+  if (!article?.file) return { tempFolders: [] };
   if (clean) cleanOutput(session, output);
   const processedContents = (
-    await getFileContent(session, [article, ...(sub_articles ?? [])], {
+    await getFileContent(session, [article.file, ...(sub_articles ?? [])], {
       projectPath,
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
+      preFrontmatters: [
+        filterKeys(article, [...PAGE_FRONTMATTER_KEYS, ...Object.keys(FRONTMATTER_ALIASES)]),
+      ], // only apply to article, not sub_articles
+      execute,
     })
   ).map((content) => {
     const { kind, file, mdast, frontmatter, slug } = content;
@@ -60,7 +60,12 @@ export async function runJatsExport(
       });
     }),
   );
-  const [processedArticle, ...processedSubArticles] = processedContents;
+  const [processedArticle, ...processedSubArticles] = processedContents.map(
+    ({ frontmatter, ...contents }) => {
+      const parts = resolveFrontmatterParts(session, frontmatter);
+      return { frontmatter: { ...frontmatter, parts }, ...contents };
+    },
+  );
   const vfile = new VFile();
   vfile.path = output;
   const jats = writeJats(vfile, processedArticle as any, {
@@ -70,7 +75,12 @@ export async function runJatsExport(
     abstractParts: [
       { part: 'abstract' },
       {
-        part: ['plain-language-summary', 'plain-language-abstract', 'summary'],
+        part: [
+          'plain-language-summary',
+          'plain-language-abstract',
+          'summary',
+          'plain language summary',
+        ],
         type: 'plain-language-summary',
         title: 'Plain Language Summary',
       },
@@ -78,7 +88,7 @@ export async function runJatsExport(
     ],
     backSections: [
       {
-        part: ['data-availability', 'data_availability', 'availability'],
+        part: ['data-availability', 'data_availability', 'availability', 'data availability'],
         type: 'data-availability',
         title: 'Data Availability',
       },
@@ -89,35 +99,4 @@ export async function runJatsExport(
   session.log.info(toc(`📑 Exported JATS in %s, copying to ${output}`));
   writeFileToFolder(output, jats.result as string);
   return { tempFolders: [] };
-}
-
-export async function localArticleToJats(
-  session: ISession,
-  file: string,
-  opts: ExportOptions,
-  templateOptions?: Record<string, any>,
-  extraLinkTransformers?: LinkTransformer[],
-) {
-  let { projectPath } = opts;
-  if (!projectPath) projectPath = findCurrentProjectAndLoad(session, path.dirname(file));
-  if (projectPath) await loadProjectFromDisk(session, projectPath);
-  const exportOptionsList = (
-    await collectBasicExportOptions(session, file, 'xml', [ExportFormats.xml], projectPath, opts)
-  ).map((exportOptions) => {
-    return { ...exportOptions, ...templateOptions };
-  });
-  await resolveAndLogErrors(
-    session,
-    exportOptionsList.map(async (exportOptions) => {
-      await runJatsExport(
-        session,
-        file,
-        exportOptions,
-        projectPath,
-        opts.clean,
-        extraLinkTransformers,
-      );
-    }),
-    opts.throwOnFailure,
-  );
 }

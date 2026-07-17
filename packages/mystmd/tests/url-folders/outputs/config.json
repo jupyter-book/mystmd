@@ -1,0 +1,90 @@
+{
+  "options": {},
+  "nav": [],
+  "actions": [],
+  "projects": [
+    {
+      "exports": [],
+      "bibliography": [],
+      "title": "Readme",
+      "slug": "my-proj",
+      "index": "readme",
+      "pages": [
+        {
+          "slug": "one-with-dots",
+          "title": "Filename with dots",
+          "description": "",
+          "date": "",
+          "thumbnail": "",
+          "thumbnailOptimized": "",
+          "banner": "",
+          "bannerOptimized": "",
+          "tags": [],
+          "level": 1
+        },
+        {
+          "slug": "two",
+          "title": "Two",
+          "description": "",
+          "date": "",
+          "thumbnail": "",
+          "thumbnailOptimized": "",
+          "banner": "",
+          "bannerOptimized": "",
+          "tags": [],
+          "level": 1
+        },
+        { "title": "One", "level": 1 },
+        {
+          "slug": "one-folder.page",
+          "title": "Page in folder with dots",
+          "description": "",
+          "date": "",
+          "thumbnail": "",
+          "thumbnailOptimized": "",
+          "banner": "",
+          "bannerOptimized": "",
+          "tags": [],
+          "level": 2
+        },
+        { "title": "Two", "level": 1 },
+        {
+          "slug": "two-1.index",
+          "title": "Index in subfolder",
+          "description": "",
+          "date": "",
+          "thumbnail": "",
+          "thumbnailOptimized": "",
+          "banner": "",
+          "bannerOptimized": "",
+          "tags": [],
+          "level": 2
+        },
+        {
+          "slug": "two.a",
+          "title": "Page A in subfolder",
+          "description": "",
+          "date": "",
+          "thumbnail": "",
+          "thumbnailOptimized": "",
+          "banner": "",
+          "bannerOptimized": "",
+          "tags": [],
+          "level": 2
+        },
+        {
+          "slug": "two.page",
+          "title": "Page in subfolder",
+          "description": "",
+          "date": "",
+          "thumbnail": "",
+          "thumbnailOptimized": "",
+          "banner": "",
+          "bannerOptimized": "",
+          "tags": [],
+          "level": 2
+        }
+      ]
+    }
+  ]
+}

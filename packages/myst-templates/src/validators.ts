@@ -1,21 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { globSync } from 'glob';
-import { hashAndCopyStaticFile, isDirectory } from 'myst-cli-utils';
+import { hashAndCopyStaticFile, isDirectory, isUrl } from 'myst-cli-utils';
 import { TemplateKind, TemplateOptionType } from 'myst-common';
 import type { ReferenceStash } from 'myst-frontmatter';
 import {
   PAGE_FRONTMATTER_KEYS,
+  PROJECT_FRONTMATTER_KEYS,
   RESERVED_EXPORT_KEYS,
   validateAffiliation,
   validateAndStashObject,
   validateContributor,
   validateGithubUrl,
   validateLicenses,
-  validatePageFrontmatter,
+  validateProjectFrontmatter,
 } from 'myst-frontmatter';
 import {
   defined,
+  filterKeys,
   incrementOptions,
   validateBoolean,
   validateChoice,
@@ -41,7 +43,7 @@ import type {
 } from './types.js';
 import { KIND_TO_EXT } from './download.js';
 
-export type FileOptions = { copyFolder?: string; relativePathFrom?: string };
+export type FileOptions = { copyFolder?: string; relativePathFrom?: string; allowRemote?: boolean };
 
 export type FileValidationOptions = ValidationOptions & FileOptions;
 
@@ -49,10 +51,14 @@ export type FileValidationOptions = ValidationOptions & FileOptions;
  *
  * Resolved relative to the file cached on validation options.
  * Full resolved path is returned.
+ *
+ * If opts.allowRemote is true, input may be a URL.
+ * In this case, the URL is returned unchanged.
  */
 function validateFile(session: ISession, input: any, opts: FileValidationOptions) {
   const filename = validateString(input, opts);
   if (!filename) return;
+  if (opts.allowRemote && isUrl(filename)) return filename;
   let resolvedFile: string;
   if (opts.file) {
     resolvedFile = path.resolve(path.dirname(opts.file), filename);
@@ -207,7 +213,10 @@ export function validateTemplateDoc(
   options: Record<string, any>,
   opts: ValidationOptions,
 ) {
-  const output = validatePageFrontmatter(frontmatter, opts);
+  const output = validateProjectFrontmatter(
+    filterKeys(frontmatter, PROJECT_FRONTMATTER_KEYS),
+    opts,
+  );
   if (output === undefined) return undefined;
   const filteredDoc = docDefinitions.filter((def) => {
     return conditionMet(def, { ...options });
@@ -502,7 +511,7 @@ export function validateTemplateStyle(input: any, opts: ValidationOptions) {
 export function validateTemplateYml(
   session: ISession,
   input: any,
-  opts: ValidationOptions & { templateDir?: string },
+  opts: ValidationOptions & { templateDir?: string; validateFiles?: boolean },
 ) {
   const inputObj = validateObject(input, opts);
   if (inputObj === undefined) return undefined;
@@ -637,7 +646,7 @@ export function validateTemplateYml(
       },
     );
   }
-  if (defined(value.files)) {
+  if (defined(value.files) && (opts?.validateFiles ?? true)) {
     output.files = validateList(value.files, incrementOptions('files', opts), (val, ind) => {
       const fileOpts = incrementOptions(`files.${ind}`, opts);
       const file = validateString(val, fileOpts);

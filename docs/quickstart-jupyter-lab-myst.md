@@ -1,8 +1,7 @@
 ---
-title: Working with MyST in Jupyter Lab
-subtitle: MyST has full support in Jupyter
+title: MyST with Jupyter Interfaces
+subtitle: MyST has support in Jupyter frontends
 subject: MyST Quickstart Tutorial
-short_title: MyST in Jupyter
 description: MyST Markdown can be used in JupyterLab with support for all MyST syntax as well as inline execution.
 thumbnail: ./thumbnails/jupyterlab-myst.png
 ---
@@ -40,7 +39,7 @@ To follow along on _without_ installing anything, you can try to [![Launch on Bi
 pip install jupyterlab_myst
 ```
 
-See the GitHub repository, [jupyterlab-myst](https://github.com/executablebooks/jupyterlab-myst) for full installation instructions.
+See the GitHub repository, [jupyterlab-myst](https://github.com/jupyter-book/jupyterlab-myst) for full installation instructions.
 
 :::{tip} 🛠 Verify the installation
 :class: dropdown
@@ -66,7 +65,7 @@ Our goal will be to try out some of the main features of `jupyterlab-myst`, incl
 🛠 Download the example content, and navigate into the folder:
 
 ```bash
-git clone https://github.com/executablebooks/jupyterlab-myst-quickstart.git
+git clone https://github.com/jupyter-book/jupyterlab-myst-quickstart.git
 cd jupyterlab-myst-quickstart
 ```
 
@@ -80,7 +79,7 @@ jupyter lab
 
 :::{figure} ./images/jupyterlab-myst.png
 :width: 100%
-:name: jupyterlab-myst
+:label: jupyterlab-myst
 
 MyST in JupyterLab, showing frontmatter and admonitions that are natively rendered! 🎉
 :::
@@ -95,9 +94,10 @@ More Coming Soon™
 
 ---
 
+(inline-expressions)=
 ## Inline Expressions
 
-JupyterLab MyST allows you to create and evaluate inline expressions using the `{eval}` role.
+JupyterLab MyST allows you to create and evaluate inline expressions using the {myst:role}`eval` role.
 These turn your markdown cells into places that you can quickly evaluate a simple expression, such as:
 
 - The value of the variable `x`: `` {eval}`x` ``
@@ -105,6 +105,7 @@ These turn your markdown cells into places that you can quickly evaluate a simpl
 
 :::{figure} ./videos/eval-array.mp4
 :class: framed
+:label: fig:eval-array
 
 Use the `` {eval}`x` `` role to evaluate an expression, which can be text, an image, an equation, or even an `ipywidgets` slider.
 :::
@@ -135,17 +136,9 @@ Edit task lists with the `jupyterlab-myst` plugin directly in the rendered view.
 
 ## Conclusion 🥳
 
-For now, that's it for this quickstart tutorial, please see the content in the notebooks or help contribute to the docs to help document these features! Other tutorials to explore are:
+For now, that's it for this quickstart tutorial, please see the content in the notebooks or help contribute to the docs to help document these features!
 
-:::{card} MyST Documents 📑
-:link: ./quickstart-myst-documents.md
-Learn the basics of MyST Markdown, and export to a Word document, PDF, and $\LaTeX$!
-:::
-
-:::{card} MyST Markdown Guide 📖
-:link: ./quickstart-myst-markdown.md
-See an overview of MyST Markdown syntax with inline demos and examples.
-:::
+![](#quickstart-cards)
 
 [binder-badge]: https://mybinder.org/badge_logo.svg
 [binder-link]: https://mybinder.org/v2/gh/executablebooks/jupyterlab-myst-quickstart/main?urlpath=lab

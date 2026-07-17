@@ -82,3 +82,9 @@ cases:
   - title: thin space
     tex: Thin\,space
     text: 'Thin space'
+  - title: °
+    tex: \degree
+    text: °
+  - title: ° (text)
+    tex: \textdegree
+    text: °

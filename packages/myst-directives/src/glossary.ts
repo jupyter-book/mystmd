@@ -1,4 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const glossaryDirective: DirectiveSpec = {
   name: 'glossary',
@@ -6,12 +7,15 @@ export const glossaryDirective: DirectiveSpec = {
     type: 'myst',
     required: true,
   },
+  options: {
+    ...commonDirectiveOptions('glossary'),
+  },
   run(data: DirectiveData): GenericNode[] {
-    return [
-      {
-        type: 'glossary',
-        children: data.body as GenericNode[],
-      },
-    ];
+    const glossary = {
+      type: 'glossary',
+      children: data.body as GenericNode[],
+    };
+    addCommonDirectiveOptions(data, glossary);
+    return [glossary];
   },
 };

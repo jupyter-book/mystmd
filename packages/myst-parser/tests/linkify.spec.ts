@@ -104,4 +104,39 @@ describe('linkify', () => {
       ],
     });
   });
+  it('dont linkify .py', () => {
+    const content = 'Link in paragraph: example.py';
+    const expected = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: 'Link in paragraph: example.py' }],
+        },
+      ],
+    };
+    expect(stripPositions(mystParse(content))).toEqual(expected);
+    expect(stripPositions(mystParse(content, { markdownit: { linkify: true } }))).toEqual(expected);
+  });
+  it('dont linkify .es', () => {
+    const content =
+      'A rising convention in French to be gender neutral and inclusive is to mix the two versions with a dot: enseignant.es.';
+    const expected = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'text',
+              value:
+                'A rising convention in French to be gender neutral and inclusive is to mix the two versions with a dot: enseignant.es.',
+            },
+          ],
+        },
+      ],
+    };
+    expect(stripPositions(mystParse(content))).toEqual(expected);
+    expect(stripPositions(mystParse(content, { markdownit: { linkify: true } }))).toEqual(expected);
+  });
 });

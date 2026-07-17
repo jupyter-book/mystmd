@@ -1,5 +1,100 @@
 # myst-to-docx
 
+## 1.0.16
+
+### Patch Changes
+
+- 8c82b34: Removing `@ts-expect` rules in favour of typed checks
+- Updated dependencies [88d2136]
+- Updated dependencies [d45faf3]
+  - myst-common@1.9.3
+  - myst-frontmatter@1.9.3
+  - myst-spec-ext@1.9.3
+
+## 1.0.15
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+  - myst-spec-ext@1.8.3
+
+## 1.0.14
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+- Updated dependencies [7448083f]
+- Updated dependencies [75bbb180]
+  - myst-frontmatter@1.7.9
+  - myst-spec-ext@1.7.9
+  - myst-common@1.7.9
+
+## 1.0.13
+
+### Patch Changes
+
+- 67bc9b8d: Update static exports to hide hidden code cells and blocks.
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.0.12
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
+## 1.0.11
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
+## 1.0.10
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- e0cd47e3: Support new-page/page-break tags in tex/typst/docx
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
+## 1.0.9
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.0.8
 
 ### Patch Changes
@@ -292,7 +387,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - 0b2298fd: Add admonitions to docx
 - Updated dependencies [184ad9f9]
 - Updated dependencies [615c1441]

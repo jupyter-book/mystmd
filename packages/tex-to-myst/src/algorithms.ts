@@ -4,17 +4,20 @@ import { normalizeLabel } from 'myst-common';
 import { type Paragraph } from 'myst-spec';
 import { type AlgorithmLine } from 'myst-spec-ext';
 import type { Handler, ITexParser } from './types.js';
-import { getArguments } from './utils.js';
+import { getArguments, texToText } from './utils.js';
 import { select, selectAll } from 'unist-util-select';
 
 function addNestingStatement(
   node: GenericNode,
   state: ITexParser,
-  { before, after }: { before: string; after?: string },
+  {
+    before,
+    after,
+  }: { before: string | GenericNode | GenericNode[]; after?: string | GenericNode | GenericNode[] },
 ) {
   state.closeParagraph();
   state.openParagraph({ indent: state.data.algorithm_indent });
-  state.pushNode(u('strong', [u('text', before)]));
+  state.pushNode(typeof before === 'string' ? u('strong', [u('text', before)]) : before);
   const args = getArguments(node, 'group');
   const children = args[args.length - 1];
   if (children) {
@@ -23,7 +26,7 @@ function addNestingStatement(
   }
   if (after) {
     state.text(' ');
-    state.pushNode(u('strong', [u('text', after)]));
+    state.pushNode(typeof after === 'string' ? u('strong', [u('text', after)]) : after);
   }
   state.closeParagraph();
   state.data.algorithm_indent ??= 0;
@@ -61,6 +64,18 @@ export function createTheoremHandler(name: string): Handler {
     state.renderChildren(node);
     state.closeParagraph();
     state.closeNode();
+  };
+}
+
+function createNamedFunctionHandler(name: string): Handler {
+  return function (node, state) {
+    const args = getArguments(node, 'group');
+    const funcName = args.length > 1 ? ` ${texToText(args[0])}` : '';
+    const before = funcName
+      ? [u('strong', [u('text', name)]), u('smallcaps', [u('text', funcName)]), u('text', '(')]
+      : `${name}(`;
+    const after = funcName ? u('text', ')') : ')'; // default is a strong ")"
+    addNestingStatement(node, state, { before, after });
   };
 }
 
@@ -159,6 +174,14 @@ export const ALGORITHM_HANDLERS: Record<string, Handler> = {
   },
   macro_EndIf(node, state) {
     finishNestingStatement(node, state, { text: 'end if' });
+  },
+  macro_Procedure: createNamedFunctionHandler('procedure'),
+  macro_EndProcedure(node, state) {
+    finishNestingStatement(node, state, { text: 'end procedure' });
+  },
+  macro_Function: createNamedFunctionHandler('function'),
+  macro_EndFunction(node, state) {
+    finishNestingStatement(node, state, { text: 'end function' });
   },
   macro_Comment(node, state) {
     const args = getArguments(node, 'group');

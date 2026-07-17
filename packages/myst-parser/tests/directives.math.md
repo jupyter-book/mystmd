@@ -24,7 +24,7 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 Math directive:
 .
 ```{math}
-:name: a-test
+:label: a-test
 w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 ```
 .

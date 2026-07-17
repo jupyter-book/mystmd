@@ -3,7 +3,7 @@ version: 1
 project:
   keywords: []
   authors: []
-  github: https://github.com/executablebooks/mystmd
+  github: https://github.com/jupyter-book/mystmd
 site:
   template: book-theme
   nav: []

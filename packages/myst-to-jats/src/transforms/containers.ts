@@ -1,5 +1,5 @@
 import type { Plugin } from 'unified';
-import type { Blockquote, Legend, Caption, FlowContent } from 'myst-spec';
+import type { Node, Blockquote, Legend, Caption, FlowContent } from 'myst-spec';
 import type { Container } from 'myst-spec-ext';
 import { select, selectAll } from 'unist-util-select';
 import { remove } from 'unist-util-remove';

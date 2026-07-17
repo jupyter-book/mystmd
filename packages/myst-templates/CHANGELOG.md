@@ -1,5 +1,129 @@
 # myst-templates
 
+## 1.0.27
+
+### Patch Changes
+
+- 045953f: Add support for pluggable API URL
+- Updated dependencies [045953f]
+  - simple-validators@1.2.0
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+
+## 1.0.26
+
+### Patch Changes
+
+- 6a5fe67: Persist explicit corresponding=false in template exports
+- a85b321: Update to package dependencies and typescript
+- Updated dependencies [a85b321]
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-cli-utils@2.0.12
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+
+## 1.0.25
+
+### Patch Changes
+
+- 4b7c81a5: Change default LaTeX template
+
+## 1.0.24
+
+### Patch Changes
+
+- d35eecf2: Add a `--template` flag to `myst` that allows the user to specify a custom location for `template.yml`. When that flag is specified, the template is local, and therefore we do not validate the `files` section of the template.
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+
+## 1.0.23
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
+## 1.0.22
+
+### Patch Changes
+
+- 313b218: Eliminate frontmatter validation warnings for template doc
+- Updated dependencies [313b218]
+  - myst-frontmatter@1.5.3
+  - myst-common@1.5.3
+
+## 1.0.21
+
+### Patch Changes
+
+- 0b3bf03: Validate template doc as project frontmatter
+- Updated dependencies [134598fd]
+- Updated dependencies [38a45645]
+- Updated dependencies [3fd53be8]
+  - myst-common@1.5.2
+  - myst-frontmatter@1.5.2
+
+## 1.0.20
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - simple-validators@1.0.6
+  - myst-frontmatter@1.5.1
+  - myst-cli-utils@2.0.10
+  - myst-common@1.5.1
+
+## 1.0.19
+
+### Patch Changes
+
+- fec350ab: Allow remote files for template/site options
+- Updated dependencies [4cea894]
+  - myst-frontmatter@1.4.6
+  - myst-common@1.4.6
+
+## 1.0.18
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- Updated dependencies [e0cd47e3]
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
+## 1.0.17
+
+### Patch Changes
+
+- 36decbb4: Move fetch function to session
+- Updated dependencies [36decbb4]
+- Updated dependencies [f1ee6f7]
+  - myst-cli-utils@2.0.8
+  - myst-frontmatter@1.1.27
+  - myst-common@1.1.27
+
+## 1.0.16
+
+### Patch Changes
+
+- a7e15710: Show date as UTC date
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+  - myst-common@1.1.22
+
 ## 1.0.15
 
 ### Patch Changes
@@ -356,7 +480,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - 615c1441: Sessions are now aware of their build path (making things more consistent)
   For example, change the template location to the site working directory.
 

@@ -1,11 +1,17 @@
-import type { Root, Parent, Code } from 'myst-spec';
+import type { Root, Parent } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
-import { fileError, toText } from 'myst-common';
+import { fileError, fileWarn, toText, getMetadataTags } from 'myst-common';
 import { captionHandler, containerHandler } from './container.js';
-// import { renderNodeToLatex } from './tables.js';
-import type { Handler, ITypstSerializer, TypstResult, Options, StateData } from './types.js';
+import type {
+  Handler,
+  ITypstSerializer,
+  TypstResult,
+  Options,
+  StateData,
+  RenderChildrenOptions,
+} from './types.js';
 import {
   getLatexImageWidth,
   hrefToLatexText,
@@ -13,10 +19,11 @@ import {
   stringToTypstMath,
   stringToTypstText,
 } from './utils.js';
-import MATH_HANDLERS, { withRecursiveCommands } from './math.js';
+import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
-import type { Admonition, FootnoteDefinition } from 'myst-spec-ext';
+import type { Admonition, Code, CrossReference, FootnoteDefinition, TabItem } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
+import { proofHandlers } from './proofs.js';
 
 export type { TypstResult } from './types.js';
 
@@ -51,10 +58,20 @@ const admonitionMacros = {
     '#let warningBlock(body, heading: [Warning]) = admonition(body, heading: heading, color: yellow)',
 };
 
-const blockquote = `#let blockquote(node, color: gray) = {
-  let stroke = (left: 2pt + color.darken(20%))
-  set text(fill: black.lighten(40%), style: "oblique")
-  block(width: 100%, inset: 8pt, stroke: stroke)[#node]
+const tabSet = `
+#let tabSet(body) = {
+  block(width: 100%, stroke: luma(240), [#body])
+}`;
+const tabItem = `
+#let tabItem(body, heading: none) = {
+  let title
+  if heading != none {
+    title = block(width: 100%, inset: (x: 8pt, y: 4pt), fill: luma(250))[#text(9pt, weight: "bold")[#heading]]
+  }
+  block(width: 100%, [
+    #title
+    #block(width: 100%, inset: (x: 8pt, bottom: 8pt))[#body]
+  ])
 }`;
 
 const INDENT = '  ';
@@ -71,6 +88,14 @@ const linkHandler = (node: any, state: ITypstSerializer) => {
   }
 };
 
+function prevCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
+  const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
+  if (!ind) return false;
+  const prev = parent?.children?.[ind - 1];
+  if (!prev?.value) return false;
+  return (prev?.type === 'text' && !!prev.value.match(/[a-zA-Z0-9\-_]$/)) || false;
+}
+
 function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
   const ind = parent?.children?.findIndex((n: GenericNode) => n === node);
   if (!ind) return false;
@@ -81,27 +106,47 @@ function nextCharacterIsText(parent: GenericNode, node: GenericNode): boolean {
 
 const handlers: Record<string, Handler> = {
   text(node, state) {
-    state.text(node.value);
+    // We do not want markdown formatting to be carried over to typst
+    // As the meaning in lists, etc. is different
+    state.text(node.value.replaceAll('\n', ' '));
   },
   paragraph(node, state) {
-    state.renderChildren(node, 2);
+    const { identifier } = node;
+    const after = identifier ? ` <${identifier}>` : undefined;
+    state.renderChildren(node, 2, { after });
   },
   heading(node, state) {
     const { depth, identifier, enumerated } = node;
     state.write(`${Array(depth).fill('=').join('')} `);
     state.renderChildren(node);
-    if (enumerated !== false && identifier) {
+    if (enumerated !== false && identifier && !state.data.headingIdentifiers.includes(identifier)) {
       state.write(` <${identifier}>`);
+      // Duplicate headings cause hard failures in typst
+      state.data.headingIdentifiers.push(identifier);
     }
     state.write('\n\n');
   },
   block(node, state) {
-    if (node.visibility === 'remove') return;
+    const metadataTags = getMetadataTags(node);
+    if (metadataTags.includes('no-typst')) return;
+    if (metadataTags.includes('no-pdf')) return;
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
+    if (metadataTags.includes('page-break') || metadataTags.includes('new-page')) {
+      state.write('#pagebreak(weak: true)\n');
+    }
+    if (node.data?.part === 'index') {
+      state.data.isInIndex = true;
+    }
     state.renderChildren(node, 2);
   },
   blockquote(node, state) {
-    state.useMacro(blockquote);
-    state.renderEnvironment(node, 'blockquote');
+    if (state.data.isInBlockquote) {
+      state.renderChildren(node);
+      return;
+    }
+    state.write('#quote(block: true)[');
+    state.renderChildren(node);
+    state.write(']');
   },
   definitionList(node, state) {
     let dedent = false;
@@ -126,6 +171,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node);
   },
   code(node: Code, state) {
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     let ticks = '```';
     while (node.value.includes(ticks)) {
       ticks += '`';
@@ -139,10 +185,17 @@ const handlers: Record<string, Handler> = {
     state.addNewLine();
   },
   list(node, state) {
+    const setStart = node.ordered && node.start && node.start !== 1;
+    if (setStart) {
+      state.write(`#set enum(start: ${node.start})`);
+    }
     state.data.list ??= { env: [] };
     state.data.list.env.push(node.ordered ? '+' : '-');
-    state.renderChildren(node, 2);
+    state.renderChildren(node, setStart ? 1 : 2);
     state.data.list.env.pop();
+    if (setStart) {
+      state.write('#set enum(start: 1)\n\n');
+    }
   },
   listItem(node, state) {
     const listEnv = state.data.list?.env ?? [];
@@ -173,8 +226,9 @@ const handlers: Record<string, Handler> = {
     }
   },
   strong(node, state, parent) {
+    const prev = prevCharacterIsText(parent, node);
     const next = nextCharacterIsText(parent, node);
-    if (nodeOnlyHasTextChildren(node) && !next) {
+    if (nodeOnlyHasTextChildren(node) && !(prev || next)) {
       state.write('*');
       state.renderChildren(node);
       state.write('*');
@@ -183,8 +237,9 @@ const handlers: Record<string, Handler> = {
     }
   },
   emphasis(node, state, parent) {
+    const prev = prevCharacterIsText(parent, node);
     const next = nextCharacterIsText(parent, node);
-    if (nodeOnlyHasTextChildren(node) && !next) {
+    if (nodeOnlyHasTextChildren(node) && !prev && !next) {
       state.write('_');
       state.renderChildren(node);
       state.write('_');
@@ -228,6 +283,15 @@ const handlers: Record<string, Handler> = {
   abbreviation(node, state) {
     state.renderChildren(node);
   },
+  inlineExpression(node, state) {
+    // TODO: This is **very** simple at the moment
+    // It will work for inline nodes likely only, we can make it better soon
+    fileWarn(state.file, 'inlineExpression rendering in typst is in beta', {
+      node,
+      note: 'Rendering will work only for text nodes',
+    });
+    state.renderChildren(node);
+  },
   link: linkHandler,
   admonition(node: Admonition, state) {
     state.useMacro(admonition);
@@ -242,7 +306,7 @@ const handlers: Record<string, Handler> = {
     }
     state.useMacro(admonitionMacros[node.kind]);
     state.write(`#${node.kind}Block`);
-    if (title && toText(title).toLowerCase().replace(' ', '') !== node.kind) {
+    if (title && toText(title).toLowerCase().replaceAll(' ', '') !== node.kind) {
       state.write('(heading: [');
       state.renderChildren(title);
       state.write('])');
@@ -269,38 +333,61 @@ const handlers: Record<string, Handler> = {
     }
     state.write(')\n\n');
   },
+  iframe(node, state) {
+    const image = node.children?.[0];
+    if (!image || image.placeholder !== true) return;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { width: nodeWidth, url: nodeSrc, align } = image;
+    const src = nodeSrc;
+    const width = getLatexImageWidth(nodeWidth);
+    state.write(`#image("${src}"`);
+    if (!state.data.isInTable) {
+      state.write(`, width: ${width}`);
+    }
+    state.write(')\n\n');
+  },
   container: containerHandler,
   caption: captionHandler,
   legend: captionHandler,
   captionNumber: () => undefined,
-  crossReference(node, state, parent) {
-    // Look up reference and add the text
-    // const usedTemplate = node.template?.includes('%s') ? node.template : undefined;
-    // const text = (usedTemplate ?? toText(node))?.replace(/\s/g, '~') || '%s';
+  crossReference(node: CrossReference, state, parent) {
+    if (node.remoteBaseUrl) {
+      // We don't want to handle remote references, treat them as links
+      const url =
+        node.remoteBaseUrl +
+        (node.url === '/' ? '' : (node.url ?? '')) +
+        (node.html_id ? `#${node.html_id}` : '');
+      linkHandler({ ...node, url: url }, state);
+      return;
+    }
     const id = node.identifier;
-    // state.write(text.replace(/%s/g, `@${id}`));
-    const next = nextCharacterIsText(parent, node);
-    state.write(next ? `#[@${id}]` : `@${id}`);
-  },
-  citeGroup(node, state) {
-    state.renderChildren(node, 0, ' ');
-  },
-  cite(node, state) {
-    if (node.protocol === 'doi' || node.label?.startsWith('https://doi.org')) {
-      linkHandler(node, state);
+    if (node.children && node.children.length > 0) {
+      state.write(`#link(<${id}>)[`);
+      state.renderChildren(node);
+      state.write(']');
     } else {
-      state.write(`#cite(<${node.label}>`);
-      if (node.kind === 'narrative') state.write(`, form: "prose"`);
-      // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
-      if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
-      state.write(`)`);
+      // Note that we don't need to protect against the previous character as text
+      const next = nextCharacterIsText(parent, node);
+      state.write(next ? `#[@${id}]` : `@${id}`);
     }
   },
+  citeGroup(node, state) {
+    state.renderChildren(node, 0, { delim: ' ' });
+  },
+  cite(node, state) {
+    const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(node.label);
+    const label = needsLabel ? `label("${node.label}")` : `<${node.label}>`;
+    state.write(`#cite(${label}`);
+    if (node.kind === 'narrative') state.write(`, form: "prose"`);
+    // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
+    if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
+    state.write(`)`);
+  },
   embed(node, state) {
-    state.renderChildren(node);
+    state.renderChildren(node, 2);
   },
   include(node, state) {
-    state.renderChildren(node);
+    state.renderChildren(node, 2);
   },
   footnoteReference(node, state) {
     if (!node.identifier) return;
@@ -329,6 +416,82 @@ const handlers: Record<string, Handler> = {
   //     );
   //   }
   // },
+  div(node, state) {
+    state.renderChildren(node, 1);
+  },
+  span(node, state) {
+    state.renderChildren(node, 0, { trimEnd: false });
+    if (node.identifier && !state.data.isInIndex) {
+      state.write(` #label("${node.identifier}")`);
+    }
+  },
+  raw(node, state) {
+    if (node.typst) {
+      state.write(node.typst);
+    } else if (node.children?.length) {
+      state.renderChildren(node, undefined, { trimEnd: false });
+    }
+  },
+  tabSet(node, state) {
+    state.useMacro(tabSet);
+    state.write('#tabSet[\n');
+    state.renderChildren(node);
+    state.write('\n]\n\n');
+  },
+  tabItem(node: TabItem, state) {
+    state.useMacro(tabItem);
+    state.ensureNewLine();
+    const title = node.title;
+    state.write(`#tabItem(heading: [${title}])[\n`);
+    state.renderChildren(node);
+    state.write('\n]\n\n');
+  },
+  toc(node, state) {
+    const title = node.children?.[0];
+    state.write('#outline(');
+    if (node.depth) {
+      state.write(`depth: ${node.depth},\n`);
+    }
+    if (title) {
+      state.write('title: [');
+      state.text(toText(title));
+      state.write('],\n');
+    }
+    state.write(')\n\n');
+  },
+  card(node, state) {
+    state.useMacro('#let card(content) = [#content]');
+    if (!(state.data.isInFigure || state.data.isInTable || state.data.isInBlockquote)) {
+      //FIXME: this is very inelegant. How to avoid # when within a function call?
+      state.write('#');
+    }
+
+    state.write('card([\n');
+    if (node.url) {
+      node.children?.push({ type: 'paragraph', children: [{ type: 'text', value: node.url }] });
+    }
+    state.renderChildren(node);
+
+    state.write('])');
+
+    state.ensureNewLine();
+    state.write('\n');
+  },
+
+  cardTitle(node, state) {
+    state.write('*');
+    state.renderChildren(node);
+    state.write('*');
+    state.ensureNewLine();
+    state.write('\n');
+  },
+  root(node, state) {
+    state.renderChildren(node);
+  },
+  footer() {
+    return;
+  },
+  ...proofHandlers,
 };
 
 class TypstSerializer implements ITypstSerializer {
@@ -341,8 +504,10 @@ class TypstSerializer implements ITypstSerializer {
   constructor(file: VFile, tree: Root, opts?: Options) {
     file.result = '';
     this.file = file;
-    this.options = opts ?? {};
-    this.data = { mathPlugins: {}, macros: new Set() };
+    const { math, ...otherOpts } = opts ?? {};
+    this.options = { ...otherOpts };
+    if (math) this.options.math = resolveRecursiveCommands(math);
+    this.data = { mathPlugins: {}, macros: new Set(), headingIdentifiers: [] };
     this.handlers = opts?.handlers ?? handlers;
     this.footnotes = Object.fromEntries(
       selectAll('footnoteDefinition', tree).map((node) => {
@@ -384,7 +549,16 @@ class TypstSerializer implements ITypstSerializer {
     this.addNewLine();
   }
 
-  renderChildren(node: Partial<Parent>, trailingNewLines = 0, delim = '') {
+  renderChildren(
+    node: Partial<Parent> | Parent[],
+    trailingNewLines = 0,
+    opts: RenderChildrenOptions = {},
+  ) {
+    if (Array.isArray(node)) {
+      this.renderChildren({ children: node }, trailingNewLines, opts);
+      return;
+    }
+    const { delim = '', trimEnd = true, after } = opts;
     const numChildren = node.children?.length ?? 0;
     node.children?.forEach((child, index) => {
       if (!child) return;
@@ -399,7 +573,8 @@ class TypstSerializer implements ITypstSerializer {
       }
       if (delim && index + 1 < numChildren) this.write(delim);
     });
-    this.trimEnd();
+    if (trimEnd) this.trimEnd();
+    if (after) this.write(after);
     for (let i = trailingNewLines; i--; ) this.addNewLine();
   }
 
@@ -422,7 +597,7 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     const tex = (file.result as string).trim();
     const result: TypstResult = {
       macros: [...state.data.macros],
-      commands: withRecursiveCommands(state),
+      commands: state.data.mathPlugins,
       value: tex,
     };
     file.result = result;

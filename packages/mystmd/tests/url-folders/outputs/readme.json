@@ -1,0 +1,94 @@
+{
+  "kind": "Article",
+  "sha256": "ca3e01fc6ae3483978338499528e00852728d72d3230d8ff3559cb9014c2bd9e",
+  "slug": "readme",
+  "location": "/readme.md",
+  "dependencies": [],
+  "frontmatter": {
+    "title": "Readme",
+    "content_includes_title": false,
+    "exports": [
+      {
+        "format": "md",
+        "filename": "readme.md"
+      }
+    ]
+  },
+  "mdast": {
+    "type": "root",
+    "children": [
+      {
+        "type": "block",
+        "children": [
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 3, "column": 1 }, "end": { "line": 3, "column": 1 } },
+            "children": [
+              {
+                "type": "crossReference",
+                "position": {
+                  "start": { "line": 3, "column": 1 },
+                  "end": { "line": 3, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "xref to subfolder",
+                    "position": {
+                      "start": { "line": 3, "column": 1 },
+                      "end": { "line": 3, "column": 1 }
+                    }
+                  }
+                ],
+                "identifier": "my-thing",
+                "label": "my-thing",
+                "kind": "heading",
+                "template": "{name}",
+                "resolved": true,
+                "html_id": "my-thing",
+                "remote": true,
+                "url": "/my-proj/two/page",
+                "dataUrl": "/my-proj/two.page.json"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "position": { "start": { "line": 5, "column": 1 }, "end": { "line": 5, "column": 1 } },
+            "children": [
+              {
+                "type": "crossReference",
+                "url": "/my-proj/two/page",
+                "position": {
+                  "start": { "line": 5, "column": 1 },
+                  "end": { "line": 5, "column": 1 }
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "explicit xref to subfolder",
+                    "position": {
+                      "start": { "line": 5, "column": 1 },
+                      "end": { "line": 5, "column": 1 }
+                    }
+                  }
+                ],
+                "urlSource": "two/page.md#my-thing",
+                "dataUrl": "/my-proj/two.page.json",
+                "identifier": "my-thing",
+                "label": "my-thing",
+                "remote": true,
+                "protocol": "file",
+                "kind": "heading",
+                "template": "{name}",
+                "resolved": true,
+                "html_id": "my-thing"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "references": { "cite": { "order": [], "data": {} } }
+}

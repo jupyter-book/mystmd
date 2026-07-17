@@ -1,7 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { addWarningForFile } from 'myst-cli';
 import { Session } from '../session';
 import { RuleId } from 'myst-common';
+import { addWarningForFile } from '../utils/addWarningForFile';
+
+describe('Session.clone', () => {
+  it('copies configFiles', async () => {
+    const configFiles = ['foo.yml'];
+    const session = new Session({ configFiles: configFiles });
+    const sessionClone = await session.clone();
+    expect(session.configFiles).toEqual(configFiles);
+    expect(sessionClone.configFiles).toEqual(configFiles);
+  });
+});
 
 describe('session warnings', () => {
   it('getAllWarnings returns for single session', async () => {
@@ -25,7 +35,7 @@ describe('session warnings', () => {
   });
   it('getAllWarnings returns clone warnings', async () => {
     const session = new Session();
-    const clone = session.clone();
+    const clone = await session.clone();
     addWarningForFile(session, 'my-file-0', 'my message', 'error', {
       ruleId: RuleId.bibFileExists,
     });
@@ -55,7 +65,7 @@ describe('session warnings', () => {
   });
   it('getAllWarnings deduplicates clone warnings', async () => {
     const session = new Session();
-    const clone = session.clone();
+    const clone = await session.clone();
     addWarningForFile(session, 'my-file', 'my message', 'error', { ruleId: RuleId.bibFileExists });
     addWarningForFile(clone, 'my-file', 'my message', 'error', { ruleId: RuleId.bibFileExists });
     expect(session.getAllWarnings(RuleId.bibFileExists)).toEqual([

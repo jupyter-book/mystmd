@@ -8,11 +8,10 @@ assignees: ''
 
 <!-- A clear and concise description. Thanks for your contribution! -->
 
-<!-- Please include the version you are using by typing `myst -v` and, if relevant, a debug log from running your comand with option `-d` -->
+<!-- Please include the version you are using by typing `myst -v` and, if relevant, a debug log from running your command with option `-d` -->
 
 ## Description
 
 ## Proposed solution
 
 ## Additional notes
-

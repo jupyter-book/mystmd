@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import yaml from 'js-yaml';
 import { visit } from 'unist-util-visit';
 import { mystParse } from '../src';
@@ -34,10 +35,8 @@ const SKIP_TESTS = [
   '506', // This is a link issue?
 ];
 
-// TODO: import this from myst-spec properly!
-const directory = fs.existsSync('../../node_modules/myst-spec/dist/examples')
-  ? '../../node_modules/myst-spec/dist/examples'
-  : '../../../node_modules/myst-spec/dist/examples';
+const mystSpecPackageJson = createRequire(import.meta.url).resolve('myst-spec/package.json');
+const directory = path.join(path.dirname(mystSpecPackageJson), 'dist/examples');
 
 const files: string[] = fs.readdirSync(directory).filter((name) => name.endsWith('.yml'));
 
@@ -85,6 +84,31 @@ function stripPositions(tree: GenericParent) {
   return tree;
 }
 
+function fixMystDirectives(tree: GenericParent) {
+  selectAll('mystDirective', tree).forEach((node) => {
+    // Node markdown is trimmed
+    (node as any).value = (node as any).value?.trim();
+    // These are added on afterwards and we aren't taking them into account in myst spec
+    delete (node as any).tight;
+    // fix the options
+    Object.entries((node as any).options ?? {}).forEach(([key, val]) => {
+      const options = (node as any).options;
+      if (val === true) {
+        options[key] = true; // a flag
+      } else if (!isNaN(Number(val))) {
+        options[key] = Number(val);
+      } else if (typeof val === 'string' && val.toLowerCase() === 'true') {
+        options[key] = true;
+      } else if (typeof val === 'string' && val.toLowerCase() === 'false') {
+        options[key] = false;
+      } else {
+        options[key] = val;
+      }
+    });
+  });
+  return tree;
+}
+
 function replaceMystCommentNodes(tree: GenericParent) {
   selectAll('comment', tree).forEach((node) => {
     // In a future version of the spec, hopefully this is removed
@@ -106,20 +130,22 @@ function replaceCommentNodes(tree: GenericParent) {
 describe('Testing myst --> mdast conversions', () => {
   test.each(mystCases)('%s', (_, { myst, mdast }) => {
     if (myst) {
-      const mdastString = yaml.dump(mdast);
-      const newAst = replaceMystCommentNodes(
-        stripPositions(
-          mystParse(myst, {
-            mdast: {
-              hoistSingleImagesOutofParagraphs: false,
-              nestBlocks: false,
-            },
-            extensions: {
-              frontmatter: false, // Frontmatter screws with some tests!
-              citations: false,
-              smartquotes: false,
-            },
-          }),
+      const newAst = fixMystDirectives(
+        replaceMystCommentNodes(
+          stripPositions(
+            mystParse(myst, {
+              mdast: {
+                hoistSingleImagesOutofParagraphs: false,
+                listItemParagraphs: false,
+                nestBlocks: false,
+              },
+              extensions: {
+                frontmatter: false, // Frontmatter screws with some tests!
+                citations: false,
+                smartquotes: false,
+              },
+            }),
+          ),
         ),
       );
       // Figure caption/legend creation described in myst-spec has been moved
@@ -128,13 +154,7 @@ describe('Testing myst --> mdast conversions', () => {
       if (myst.includes('{figure}')) {
         containerChildrenTransform(newAst, new VFile());
       }
-      const newAstString = yaml.dump(newAst);
-      if (newAstString.includes('startingLineNumber: 2')) {
-        console.log('FIX ME IN 0.0.5');
-        console.log(newAstString);
-        return;
-      }
-      expect(newAstString).toEqual(mdastString);
+      expect(newAst).toEqual(mdast);
     }
   });
 });
@@ -189,6 +209,6 @@ describe('Testing mdast --> html conversions', () => {
 
 if (skipped.length) {
   describe('Skipped Tests', () => {
-    test.skip.each(skipped)('%s', () => null);
+    test.skip.each(skipped)('%s', () => undefined);
   });
 }

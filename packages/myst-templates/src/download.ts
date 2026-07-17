@@ -6,7 +6,6 @@ import { glob } from 'glob';
 import yaml from 'js-yaml';
 import { copyFileMaintainPath, isDirectory } from 'myst-cli-utils';
 import { TemplateKind } from 'myst-common';
-import fetch from 'node-fetch';
 import { validateUrl } from 'simple-validators';
 import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types.js';
 
@@ -20,7 +19,7 @@ export const KIND_TO_EXT: Record<TemplateKind, string | undefined> = {
 };
 
 const DEFAULT_TEMPLATES = {
-  tex: 'tex/myst/curvenote',
+  tex: 'tex/myst/plain_latex',
   typst: 'typst/myst/lapreprint-typst',
   docx: 'docx/myst/default',
   site: 'site/myst/book-theme',
@@ -184,7 +183,7 @@ export async function downloadTemplate(
 export async function fetchTemplateDownloadLink(session: ISession, opts: { templateUrl: string }) {
   const { templateUrl } = opts;
   session.log.info(`🔍 Querying template metadata from ${templateUrl}`);
-  const resLink = await fetch(templateUrl);
+  const resLink = await session.fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
       `Problem with template link "${templateUrl}": ${resLink.status} ${resLink.statusText}`,
@@ -206,7 +205,7 @@ export async function downloadAndUnzipTemplate(
   opts: { templatePath: string },
 ) {
   session.log.info(`🐕 Fetching template from ${downloadUrl}`);
-  const res = await fetch(downloadUrl);
+  const res = await session.fetch(downloadUrl);
   if (!res.ok) {
     throw new Error(
       `Problem downloading template "${downloadUrl}": ${res.status} ${res.statusText}`,
@@ -219,7 +218,7 @@ export async function downloadAndUnzipTemplate(
   await new Promise((resolve, reject) => {
     res.body?.pipe(fileStream);
     res.body?.on('error', reject);
-    fileStream.on('finish', resolve);
+    fileStream.on('finish', resolve as () => void);
   });
   session.log.debug(`Unzipping template on disk ${zipFile}`);
 
@@ -232,7 +231,7 @@ export async function fetchPublicTemplate(session: ISession, name: string, kind?
   const url = templatesUrl(session);
   const templateUrl = `${url}/${normalizeTemplateName({ template: name, kind })}`;
   session.log.debug(`Fetching template listing information from ${templateUrl}`);
-  const resLink = await fetch(templateUrl);
+  const resLink = await session.fetch(templateUrl);
   if (!resLink.ok) {
     throw new Error(
       `Problem with template link "${templateUrl}": ${resLink.status} ${resLink.statusText}`,
@@ -250,7 +249,7 @@ export async function listPublicTemplates(
   }
   const url = listingUrl(session, kind);
   session.log.debug('Fetching template listing information');
-  const resLink = await fetch(url);
+  const resLink = await session.fetch(url);
   if (!resLink.ok) {
     throw new Error(`Problem with template link "${url}": ${resLink.status} ${resLink.statusText}`);
   }

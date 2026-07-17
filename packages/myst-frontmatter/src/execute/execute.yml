@@ -1,0 +1,45 @@
+title: Execute
+cases:
+  - title: empty object is empty
+    raw:
+      execute: {}
+    normalized:
+      execute: {}
+  - title: extra keys removed
+    raw:
+      execute:
+        extra: ''
+        skip: true
+    normalized:
+      execute:
+        skip: true
+    warnings: 1
+  - title: full object returns self
+    raw:
+      execute:
+        skip: true
+        depends_on_env:
+          - FOO
+          - BAR
+    normalized:
+      execute:
+        skip: true
+        depends_on_env:
+          - FOO
+          - BAR
+  - title: renamed skip is aliased
+    raw:
+      skip_execution: true
+    normalized:
+      execute:
+        skip: true
+    warnings: 1
+  - title: renamed skip and new alias warns
+    raw:
+      skip_execution: true
+      execute:
+        skip: false
+    normalized:
+      execute:
+        skip: false
+    warnings: 1

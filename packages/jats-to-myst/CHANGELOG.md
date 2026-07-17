@@ -1,5 +1,197 @@
 # jats-to-myst
 
+## 1.0.35
+
+### Patch Changes
+
+- Updated dependencies [2e6e81f]
+  - myst-transforms@1.3.44
+  - myst-spec-ext@1.9.2
+  - myst-common@1.9.2
+  - myst-frontmatter@1.9.2
+
+## 1.0.34
+
+### Patch Changes
+
+- Updated dependencies [91bed6d0]
+- Updated dependencies [c6213ed]
+- Updated dependencies [7d68c88e]
+  - myst-frontmatter@1.7.11
+  - myst-transforms@1.3.34
+  - myst-common@1.7.11
+  - myst-spec-ext@1.7.11
+
+## 1.0.33
+
+### Patch Changes
+
+- 26e8d199: Update doi-utils to 2.0.5, elife improvements
+- Updated dependencies [26e8d199]
+- Updated dependencies [0941552]
+  - myst-frontmatter@1.7.10
+  - myst-transforms@1.3.33
+  - myst-common@1.7.10
+  - myst-spec-ext@1.7.10
+
+## 1.0.32
+
+### Patch Changes
+
+- 415ed138: Update DOI utils to ensure a `.` is present after the 10
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-transforms@1.3.30
+  - myst-spec-ext@1.7.7
+  - myst-common@1.7.7
+
+## 1.0.31
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [e3309c24]
+- Updated dependencies [9717b067]
+- Updated dependencies [cefb2a15]
+- Updated dependencies [71018741]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-transforms@1.3.29
+  - myst-frontmatter@1.7.6
+  - myst-spec-ext@1.7.6
+
+## 1.0.30
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+- Updated dependencies [ce3c11c]
+  - myst-transforms@1.3.26
+
+## 1.0.29
+
+### Patch Changes
+
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [897136f]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [918223b8]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [4a3ee6db]
+  - myst-common@1.7.2
+  - myst-frontmatter@1.7.2
+  - myst-spec-ext@1.7.2
+
+## 1.0.28
+
+### Patch Changes
+
+- Updated dependencies [3c65de0]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+  - myst-frontmatter@1.7.1
+  - myst-common@1.7.1
+  - myst-spec-ext@1.7.1
+
+## 1.0.27
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-frontmatter@1.5.1
+  - myst-transforms@1.3.20
+  - myst-spec-ext@1.5.1
+  - myst-common@1.5.1
+
+## 1.0.26
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- Updated dependencies [3b008cbb]
+- Updated dependencies [e0cd47e3]
+- Updated dependencies [f656e572]
+- Updated dependencies [a3e3aa0c]
+  - myst-transforms@1.3.7
+  - myst-spec-ext@1.3.0
+  - myst-common@1.3.0
+  - myst-frontmatter@1.3.0
+
+## 1.0.25
+
+### Patch Changes
+
+- Updated dependencies [d17f6806]
+- Updated dependencies [d17f6806]
+- Updated dependencies [d17f6806]
+- Updated dependencies [1be2c741]
+  - myst-transforms@1.3.5
+
+## 1.0.24
+
+### Patch Changes
+
+- Updated dependencies [f1ee6f7]
+  - myst-frontmatter@1.1.27
+  - myst-common@1.1.27
+  - myst-spec-ext@1.1.27
+
+## 1.0.23
+
+### Patch Changes
+
+- Updated dependencies [9cdd2044]
+- Updated dependencies [9cdd2044]
+  - myst-common@1.1.26
+  - myst-transforms@1.2.3
+  - myst-frontmatter@1.1.26
+  - myst-spec-ext@1.1.26
+
+## 1.0.22
+
+### Patch Changes
+
+- Updated dependencies [1fcbbbc6]
+- Updated dependencies [d5416ff8]
+- Updated dependencies [d5416ff8]
+  - myst-transforms@1.2.1
+  - myst-spec-ext@1.1.24
+  - myst-common@1.1.24
+  - myst-frontmatter@1.1.24
+
+## 1.0.21
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- Updated dependencies [7596172]
+- Updated dependencies [f78db0bf]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [85ae9b4a]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+- Updated dependencies [7596172]
+- Updated dependencies [aa335d74]
+- Updated dependencies [d2e6e780]
+  - myst-frontmatter@1.1.22
+  - myst-transforms@1.2.0
+  - myst-spec-ext@1.1.22
+  - myst-common@1.1.22
+
 ## 1.0.20
 
 ### Patch Changes

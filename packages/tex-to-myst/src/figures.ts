@@ -24,17 +24,18 @@ function centering(node: GenericNode, state: ITexParser) {
   }
 }
 
+function renderFigure(node: GenericNode, state: ITexParser) {
+  state.closeParagraph();
+  state.openNode('container', { kind: 'figure' });
+  state.renderChildren(node);
+  state.closeParagraph();
+  state.closeNode();
+}
+
 const FIGURE_HANDLERS: Record<string, Handler> = {
-  env_figure(node, state) {
-    state.closeParagraph();
-    state.openNode('container', { kind: 'figure' });
-    state.renderChildren(node);
-    state.closeParagraph();
-    state.closeNode();
-  },
-  env_subfigure(node, state) {
-    state.renderChildren(node);
-  },
+  env_figure: renderFigure,
+  env_subfigure: renderFigure,
+  env_wrapfigure: renderFigure,
   env_centering(node, state) {
     centering(node, state);
     state.renderChildren(node);
@@ -42,9 +43,20 @@ const FIGURE_HANDLERS: Record<string, Handler> = {
   macro_centering: centering,
   macro_includegraphics(node, state) {
     state.closeParagraph();
-    const url = texToText(getArguments(node, 'group'));
-    // TODO: width, placement, etc.
-    state.pushNode(u('image', { url }));
+    const url = texToText(getArguments(node, 'group')).replace(/"/g, '');
+    const args = getArguments(node, 'argument')?.[0]?.content ?? [];
+    // TODO: better width, placement, etc.
+    if (
+      args.length === 4 &&
+      args[0].content === 'width' &&
+      args[1].content === '=' &&
+      Number.isFinite(Number.parseFloat(args[2].content))
+    ) {
+      const width = `${Math.round(Number.parseFloat(args[2].content) * 100)}%`;
+      state.pushNode(u('image', { url, width }));
+    } else {
+      state.pushNode(u('image', { url }));
+    }
   },
   macro_caption: renderCaption,
   macro_captionof: renderCaption,

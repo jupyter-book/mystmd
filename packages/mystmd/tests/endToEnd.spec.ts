@@ -10,10 +10,13 @@ type TestFile = {
 type TestCase = {
   title: string;
   cwd: string;
+  env?: Record<string, any>;
+  timeout?: number;
   command: string;
+  expectFailure?: boolean;
   outputs: {
     path: string;
-    content: string;
+    content?: string;
   }[];
 };
 
@@ -26,28 +29,52 @@ function resolve(relative: string) {
   return path.resolve(__dirname, relative);
 }
 
-describe('End-to-end cli export tests', () => {
+function cleanHashes(text: string) {
+  return text
+    .replace(/,\s*"urlOptimized":\s*"[-./a-z0-9]{0,50}"/g, '')
+    .replace(/,\s*"thumbnailOptimized":\s*"[-./a-z0-9]{0,50}"/g, '')
+    .replace(/-[a-f0-9]{32}\./g, '.')
+    .replace(/"key":\s*"[a-zA-Z0-9]{10}"/g, '"key": "keyABC0123"')
+    .replace(/"myst":\s*"[0-9]+\.[0-9]+\.[0-9]+"/g, '"myst": "0.0.0"');
+}
+
+const only = '';
+const TIMEOUT = 35000; // Long-ish to allow for the execution tests
+describe.concurrent('End-to-end cli export tests', { timeout: TIMEOUT }, () => {
   const cases = loadCases('exports.yml');
-  test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
-    '%s',
-    async (_, { cwd, command, outputs }) => {
-      // Clean expected outputs if they already exist
-      await Promise.all(
-        outputs.map(async (output) => {
-          if (fs.existsSync(resolve(output.path))) {
-            await exec(`rm ${resolve(output.path)}`, { cwd: resolve(cwd) });
-          }
-        }),
-      );
-      // Run CLI command
-      await exec(command, { cwd: resolve(cwd) });
-      // Expect correct output
-      outputs.forEach((output) => {
-        expect(fs.existsSync(resolve(output.path))).toBeTruthy();
-        expect(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' })).toEqual(
-          fs.readFileSync(resolve(output.content), { encoding: 'utf-8' }),
+  test.each(
+    cases.filter((c) => !only || c.title === only).map((c): [string, TestCase] => [c.title, c]),
+  )('%s', async (_, { cwd, env, command, expectFailure, outputs, timeout }) => {
+    // Clean expected outputs if they already exist
+    await Promise.all(
+      outputs.map(async (output) => {
+        if (fs.existsSync(resolve(output.path))) {
+          await exec(`rm ${resolve(output.path)}`, { cwd: resolve(cwd) });
+        }
+      }),
+    );
+    // Run CLI command and assert non-zero exit when expectFailure is set
+    const run = exec(command, { cwd: resolve(cwd), env: { ...process.env, ...env }, timeout });
+    if (expectFailure) {
+      await expect(run).rejects.toThrow();
+    } else {
+      await run;
+    }
+    // Expect correct output
+    outputs.forEach((output) => {
+      expect(fs.existsSync(resolve(output.path))).toBeTruthy();
+      if (!output.content) return;
+      if (path.extname(output.content) === '.json') {
+        expect(
+          JSON.parse(cleanHashes(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' }))),
+        ).toMatchObject(
+          JSON.parse(cleanHashes(fs.readFileSync(resolve(output.content), { encoding: 'utf-8' }))),
         );
-      });
-    },
-  );
+      } else {
+        expect(cleanHashes(fs.readFileSync(resolve(output.path), { encoding: 'utf-8' }))).toEqual(
+          cleanHashes(fs.readFileSync(resolve(output.content), { encoding: 'utf-8' })),
+        );
+      }
+    });
+  });
 });

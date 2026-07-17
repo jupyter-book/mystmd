@@ -1,12 +1,13 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const mathDirective: DirectiveSpec = {
   name: 'math',
   options: {
-    label: {
+    ...commonDirectiveOptions('math'),
+    typst: {
       type: String,
-      alias: ['name'],
+      doc: 'Typst-specific math content. If not provided, LaTeX content will be converted to Typst.',
     },
   },
   body: {
@@ -14,14 +15,14 @@ export const mathDirective: DirectiveSpec = {
     required: true,
   },
   run(data: DirectiveData): GenericNode[] {
-    const { label, identifier } = normalizeLabel(data.options?.label as string | undefined) || {};
-    return [
-      {
-        type: 'math',
-        identifier,
-        label,
-        value: data.body as string,
-      },
-    ];
+    const math = addCommonDirectiveOptions(data, { type: 'math', value: data.body as string });
+    if (data.node.tight) {
+      // The default `false` is not written to the AST
+      math.tight = data.node.tight;
+    }
+    if (data.options?.typst) {
+      math.typst = data.options.typst as string;
+    }
+    return [math];
   },
 };

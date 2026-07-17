@@ -79,12 +79,15 @@ export const LatexSpecialSymbols = {
   AA: 'Å',
   dots: '…',
   ldots: '…',
+  texttimes: '×',
   textellipsis: '…',
-  textdegree: 'º',
+  textdegree: '°',
+  degree: '°',
   textasciitilde: '~',
   textvisiblespace: ' ', // Not sure this will work, but close enough
   ' ': ' ', // this is a single backslash followed by a space
   ',': THIN_SPACE, // this is a thin space (https://en.wikipedia.org/wiki/Thin_space) `\,` in latex
+  string: '', // \string is a TeX primitive that produces the literal character of the next token (e.g. \string~ → ~). The next token remains a separate node, so \string itself renders as nothing.
 };
 
 export const phrasingTypes = new Set([
@@ -98,6 +101,8 @@ export const phrasingTypes = new Set([
   'smallcaps',
   'link',
   'span',
+  'delete',
+  'crossReference',
 ]);
 
 export const UNHANDLED_ERROR_TEXT = 'Unhandled TEX conversion';
@@ -107,6 +112,20 @@ export function originalValue(original: string, node: Pick<GenericNode, 'positio
   const to = node.position?.end.offset;
   if (from == null || to == null) return '';
   return original.slice(from, to);
+}
+
+export function hasStar(node: GenericNode): boolean {
+  const first = node.args?.[0];
+  if (!first) return false;
+  if (
+    first.content?.length === 1 &&
+    first.content[0].type === 'string' &&
+    first.content[0].content === '*' &&
+    first.openMark === '' &&
+    first.closeMark === ''
+  )
+    return true;
+  return false;
 }
 
 export function getArguments(
@@ -186,7 +205,7 @@ function lastNode(node: GenericNode): GenericNode {
     const lastArg = node.args?.[node.args.length - 1];
     const last = lastNode(lastArg);
     // This is a bit of a hack, we need to put the positions around the arguments
-    if (node.type === 'macro' && last.position?.end.offset && lastArg.closeMark.match(/^\}|\]$/)) {
+    if (node.type === 'macro' && last?.position?.end.offset && lastArg.closeMark.match(/^\}|\]$/)) {
       lastArg.position = {
         ...lastArg.content[0].position,
         end: { ...last.position.end, offset: last.position.end.offset + 1 },

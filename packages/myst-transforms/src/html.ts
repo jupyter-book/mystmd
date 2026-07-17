@@ -2,7 +2,7 @@ import { unified } from 'unified';
 import type { Plugin } from 'unified';
 import { liftChildren, normalizeLabel } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
-import type { Parent } from 'myst-spec';
+import type { Parent, TableCell } from 'myst-spec';
 import { mystToHtml } from 'myst-to-html';
 import type { Element } from 'rehype-format';
 import { fromHtml } from 'hast-util-from-html';
@@ -38,6 +38,13 @@ function convertStylesStringToObject(stringStyles: string) {
   }, {});
 }
 
+function getAlignment(alignment?: string): TableCell['align'] {
+  if (!alignment) return undefined;
+  if (alignment === 'center') return 'center';
+  if (alignment === 'left') return 'left';
+  if (alignment === 'right') return 'right';
+}
+
 function addClassAndIdentifier(
   node: GenericNode,
   attrs: Record<string, string | Record<string, string> | number | boolean> = {},
@@ -65,6 +72,8 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       const attrs = addClassAndIdentifier(node, { header: true });
       const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
       const colSpan = Number.parseInt(node.properties.colSpan, 10);
+      const align = getAlignment(node.properties.align);
+      if (align && align !== 'left') attrs.align = align;
       if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
       if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
       return h(node, 'tableCell', attrs, all(h, node));
@@ -77,12 +86,22 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       const attrs = addClassAndIdentifier(node);
       const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
       const colSpan = Number.parseInt(node.properties.colSpan, 10);
+      const align = getAlignment(node.properties.align);
+      if (align && align !== 'left') attrs.align = align;
       if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
       if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
       return h(node, 'tableCell', attrs, all(h, node));
     },
     _brKeep(h: H, node: any) {
       return h(node, '_break');
+    },
+    span(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'span', attrs, all(h, node));
+    },
+    div(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'div', attrs, all(h, node));
     },
     a(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
@@ -95,7 +114,24 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       attrs.url = String(node.properties.src || '');
       if (node.properties.title) attrs.title = node.properties.title;
       if (node.properties.alt) attrs.alt = node.properties.alt;
+      if (node.properties.width) attrs.width = node.properties.width;
+      if (node.properties.height) attrs.height = node.properties.height;
       return h(node, 'image', attrs);
+    },
+    video(h: H, node: any) {
+      // Currently this creates an image node, we should change this to video in the future
+      const attrs = addClassAndIdentifier(node);
+      attrs.url = String(node.properties.src || '');
+      if (node.properties.title) attrs.title = node.properties.title;
+      if (node.properties.alt) attrs.alt = node.properties.alt;
+      return h(node, 'image', attrs);
+    },
+    iframe(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      attrs.src = String(node.properties.src || '');
+      attrs.width = '100%';
+      if (node.properties.title) attrs.title = node.properties.title;
+      return h(node, 'iframe', attrs);
     },
     figure(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
@@ -114,9 +150,24 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
     sub(h: H, node: any) {
       return h(node, 'subscript', all(h, node));
     },
+    kbd(h: H, node: any) {
+      return h(node, 'keyboard', all(h, node));
+    },
     cite(h: H, node: any) {
       const attrs = addClassAndIdentifier(node);
       return attrs.label ? h(node, 'cite', attrs, all(h, node)) : all(h, node);
+    },
+    details(h: H, node: any) {
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'details', attrs, all(h, node));
+    },
+    summary(h: H, node: any) {
+      return h(node, 'summary', all(h, node));
+    },
+    u(h: H, node: any) {
+      // The default is emphasis
+      const attrs = addClassAndIdentifier(node);
+      return h(node, 'underline', attrs, all(h, node));
     },
   },
 };
@@ -139,7 +190,7 @@ export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) 
         n.tagName = '_brKeep';
       });
     }
-    const mdast = unified().use(rehypeRemark, { handlers }).runSync(hast);
+    const mdast = unified().use(rehypeRemark, { handlers, document: false }).runSync(hast);
     node.type = 'htmlParsed';
     node.children = mdast.children as Parent[];
     visit(node, (n: any) => delete n.position);
@@ -246,6 +297,16 @@ function reconstructHtml(tree: GenericParent) {
   htmlOpenNodes.forEach((node: GenericNode) => {
     delete node.children;
   });
+  // Finalize children by combining consecutive html nodes
+  const combined: GenericNode[] = [];
+  tree.children.forEach((child) => {
+    if (combined[combined.length - 1]?.type === 'html' && child.type === 'html') {
+      combined[combined.length - 1].value = `${combined[combined.length - 1].value}${child.value}`;
+    } else if (child.type !== '__delete__') {
+      combined.push(child);
+    }
+  });
+  tree.children = combined;
 }
 
 /**

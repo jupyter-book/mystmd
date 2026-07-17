@@ -1,7 +1,6 @@
 export * from './build.js';
 export * from './clean.js';
 export * from './docx/index.js';
-export * from './init.js';
 export * from './pdf/index.js';
 export * from './site/index.js';
 export * from './tex/index.js';
@@ -9,4 +8,6 @@ export * from './types.js';
 export * from './utils/index.js';
 export * from './html/index.js';
 export * from './meca/index.js';
+export * from './jats/index.js';
 export * from './typst.js';
+export * from './legacy.js';

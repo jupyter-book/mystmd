@@ -10,35 +10,61 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 2
           submodules: recursive
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: 18.x
-      - run: npm install
-      - run: npm run lint:format
-      - run: npm run lint
+          bun-version: latest
+      - run: bun install
+      - name: Check formatting (style rules etc)
+        run: bun run lint:format
+      - name: Run linter (code correctness etc)
+        run: bun run lint
+      - name: Check for circular dependencies
+        run: bun run lint:circular
+      - name: Ensure changeset has the right structure and doesn't contain ignored packages
+        run: bun run version
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ['16', '18', '20']
-    name: Testing on node ${{ matrix.node }}
+        node: ["20", "22", "24"]
+    name: Testing with bun and node ${{ matrix.node }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
           submodules: recursive
-      - run: sudo apt-get update
-      - run: sudo apt-get install -y libxml2-utils
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3
+      - uses: ./.github/actions/install
         with:
-          node-version: ${{ matrix.node }}
-          cache: 'npm'
-      - run: npm install
-      - run: npm run test
+          node: ${{ matrix.node }}
+      - name: Run tests
+        run: bun run test
+  # This is just an additional check to make sure the build passes with our docs
+  docs:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    name: Running test docs build
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+          submodules: recursive
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - name: Install myst
+        uses: ./.github/actions/install
+      - name: Install docs dependencies
+        run: |
+          pip install -r docs/requirements.txt
+      - name: Build docs
+        run: |
+          cd docs
+          myst build --html --execute

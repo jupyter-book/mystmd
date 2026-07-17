@@ -1,5 +1,47 @@
 # myst-cli-utils
 
+## 2.0.14
+
+### Patch Changes
+
+- e8803fc: Await signals to terminate processes
+
+## 2.0.13
+
+### Patch Changes
+
+- 519ef0e: Kill process trees on linux when shutting down the application and jupyter servers
+
+## 2.0.12
+
+### Patch Changes
+
+- a85b321: Update to package dependencies and typescript
+
+## 2.0.11
+
+### Patch Changes
+
+- b14e0fb3: Force exit when the task is complete.
+
+## 2.0.10
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+
+## 2.0.9
+
+### Patch Changes
+
+- ca09d63: Restore basic session on myst-cli-utils
+
+## 2.0.8
+
+### Patch Changes
+
+- 36decbb4: Move fetch function to session
+
 ## 2.0.7
 
 ### Patch Changes
@@ -90,7 +132,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 
 ## 0.0.5
 

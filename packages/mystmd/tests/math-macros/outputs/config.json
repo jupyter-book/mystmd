@@ -1,0 +1,24 @@
+{
+  "options": {},
+  "nav": [],
+  "actions": [
+    { "title": "Learn More", "url": "https://mystmd.org/guide", "internal": false, "static": false }
+  ],
+  "projects": [
+    {
+      "math": {
+        "\\one": { "macro": "b" },
+        "\\three": { "macro": "d" },
+        "\\five": { "macro": "x = \\one" }
+      },
+      "github": "https://github.com/jupyter-book/mystmd",
+      "keywords": [],
+      "id": "d040ca98-d48a-487f-9745-8d337ff305eb",
+      "exports": [],
+      "bibliography": [],
+      "title": "Testing Math Plugins",
+      "index": "index",
+      "pages": []
+    }
+  ]
+}

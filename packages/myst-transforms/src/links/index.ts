@@ -1,8 +1,12 @@
 export { linksTransform, linksPlugin } from './plugin.js';
 export { MystTransformer } from './myst.js';
+export { SphinxTransformer } from './sphinx.js';
 export { WikiTransformer } from './wiki.js';
 export { RRIDTransformer } from './rrid.js';
-export { DOITransformer } from './doi.js';
+export { RORTransformer } from './ror.js';
+export { DOITransformer, isRecognizedDoi } from './doi.js';
+export type { DoiOptions } from './doi.js';
 export { GithubTransformer } from './github.js';
-export type { LinkTransformer, Link } from './types.js';
+export type { LinkTransformer, MystXRef, MystXRefs, ResolvedExternalReference } from './types.js';
 export { updateLinkTextIfEmpty } from './utils.js';
+export { checkLinkTextTransform } from './check.js';

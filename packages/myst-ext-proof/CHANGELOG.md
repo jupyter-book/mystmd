@@ -1,5 +1,41 @@
 # myst-ext-proof
 
+## 1.0.12
+
+### Patch Changes
+
+- d7a6fddd: Add support for commonDirectiveOptions in all directives
+
+## 1.0.11
+
+### Patch Changes
+
+- ce3c11c: Update inter-version deps
+
+## 1.0.10
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - myst-common@1.5.1
+
+## 1.0.9
+
+### Patch Changes
+
+- 69457615: Update dependencies
+- Updated dependencies [e0cd47e3]
+  - myst-common@1.3.0
+
+## 1.0.8
+
+### Patch Changes
+
+- f78db0bf: Update myst-spec
+- Updated dependencies [f78db0bf]
+  - myst-common@1.1.22
+
 ## 1.0.7
 
 ### Patch Changes

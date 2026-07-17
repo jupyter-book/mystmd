@@ -1,6 +1,6 @@
 ---
 title: Dropdowns, Grids, Tabs and Cards
-short_title: Grids, Tabs and Cards
+short_title: Grids, Tabs & Cards
 description: Add advanced user-interface elements to your MyST documents with grids, cards, tabs, and dropdowns.
 thumbnail: ./thumbnails/dropdowns-cards-and-tabs.png
 ---
@@ -9,7 +9,7 @@ thumbnail: ./thumbnails/dropdowns-cards-and-tabs.png
 
 ## Dropdowns
 
-Dropdowns can be used to toggle content and show it only when a user clicks on the header panel. These use the standard HTML `<details>` element, meaning they also will work without Javascript. The dropdown can have a title, as the directive argument, and the open option can be used to initialise the dropdown in the open state.
+Dropdowns can be used to toggle content and show it only when a user clicks on the header panel. These use the standard HTML `<details>` element, meaning they also will work without JavaScript. The dropdown can have a title, as the directive argument, and the open option can be used to initialise the dropdown in the open state.
 
 ```{myst}
 :::{dropdown} Dropdown Title
@@ -27,7 +27,7 @@ You can also hide the body of your admonition blocks so that users must click a 
 To turn an admonition into a dropdown, add the option `:class: dropdown` to them. See [](#admonition-dropdown) for more information.
 ```
 
-### Cards
+## Cards
 
 Cards provide an easy way for you to content into a standard “header”, “body”, “footer” structure that has a similar alignment and visual style. It is useful for creating galleries or high-visibility collections of links and information.
 For example, a card with a header, title, body, and footer:
@@ -41,13 +41,16 @@ Card content
 ```
 ````
 
-You can also add a `link` argument to the card, which will allow you to make the entire card clickable.
+You can also add a `link` option to the card, which will allow you to make the entire card clickable:
+
+```{myst}
 
 :::{card} Clickable Card
 :link: https://mystmd.org
 
 The entire card can be clicked to navigate to `mystmd.org`.
 :::
+```
 
 ````{note} Compatibility with Sphinx design
 :class: dropdown
@@ -74,29 +77,54 @@ Footer
 Note that, card headers and footers are optional. If you don’t include ^^^ or +++ in your card, they will not show up.
 ````
 
-### `card` reference
+:::{myst:directive} card
+:::
 
-**Arguments** _(optional, markdown)_
-: The `card` can take a single argument that is the title as a string.
+(ui:buttons)=
+## Buttons
 
-**Options**
-: No options for the `card` are required
+A button is an element with text content that triggers an action to navigate to an internal or external reference upon a user click. Use the {myst:role}`button` role followed by the text content and target path to create a button.
 
-    header _(optional, markdown)_
-    : Styled content at the top of the card
+```{myst}
+{button}`MyST Role Spec <roles.md>`
+```
 
-    footer _(optional, markdown)_
-    : Styled content at the bottom of the card
+```{myst}
+{button}`MyST-MD GitHub <https://github.com/jupyter-book/mystmd>`
+```
 
-### Grids
+```{myst}
+{button}`A button without a link!`
+```
+
+(grids)=
+## Grids
 
 Grids allow you to structure arbitrary chunks of content in a grid-like system.
 
-To generate a grid, use the ` ```{grid} ` wrapper directive along with ` ```{card} ` directives inside.
+To generate a grid, use the `:::{grid} ...` wrapper directive along with `:::{grid-item}` or `:::{card}` directives inside.
 
-The numbers supplied in the argument are column counts to be used on different screen sizes e.g. `1 1 2 3` corresponding to extra-small (<576px), small (768px), medium (992px) and large screens (>1200px).
+The numbers supplied in the argument are column counts to be used on different screen sizes e.g. `1 1 2 3` corresponding to smallest (<768px), medium (768px – 1024px), large (1024px – 1280px), and extra-large screens (>1280px). These pixel widths are determined by the theme (e.g. the book theme), which uses the default Tailwind CSS breakpoints.
 
-For example:
+Example with grid-items:
+
+```{myst}
+::::{grid} 1 1 12 12
+
+:::{grid-item}
+:columns: 3
+This is one sentence. It occupies the narrower column.
+:::
+
+:::{grid-item}
+:columns: 9
+This is another longer sentence which requires more space. It occupies the wider column.
+:::
+
+::::
+```
+
+Example with cards:
 
 ```{myst}
 ::::{grid} 1 1 2 3
@@ -117,6 +145,9 @@ Execute notebook cells, store results, and insert outputs across pages.
 :::
 ::::
 ```
+
+:::{myst:directive} grid
+:::
 
 ## Tabs
 
@@ -148,23 +179,8 @@ Synced content for tab 2
 ```
 ````
 
-### `tab-item` reference
+:::{myst:directive} tab-set
+:::
 
-**Arguments** _(required: `1`, string)_
-: The `tab-item` requires a single argument that is the title as a string.
-
-    ```{warning}
-    :class: dropdown
-    # Note: the `tab-item` title is not currently not parsed
-
-    The current implementation does not parse the tab title properly, and markup in this field will not be parsed.
-    ```
-
-**Options**
-: No options for the `tab-item` are required
-
-    sync _(optional, string)_
-    : A key that is used to sync the selected tab across multiple tab-sets.
-
-    selected _(flag, no-value)_
-    : a flag indicating whether the tab should be selected by default.
+:::{myst:directive} tab-item
+:::

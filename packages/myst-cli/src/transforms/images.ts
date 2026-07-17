@@ -1,11 +1,9 @@
 import fs from 'node:fs';
-import mime from 'mime-types';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, plural } from 'myst-common';
 import { computeHash, hashAndCopyStaticFile, isUrl } from 'myst-cli-utils';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import fetch from 'node-fetch';
 import path from 'node:path';
 import type { VFileMessage } from 'vfile-message';
 import type { PageFrontmatter } from 'myst-frontmatter';
@@ -14,21 +12,19 @@ import { extFromMimeType } from 'nbtx';
 import type { ISession } from '../session/types.js';
 import { castSession } from '../session/cache.js';
 import { watch } from '../store/index.js';
-import { EXT_REQUEST_HEADERS } from '../utils/headers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
-import { ImageExtensions, KNOWN_IMAGE_EXTENSIONS } from '../utils/resolveExtension.js';
-import { imagemagick, inkscape } from '../utils/index.js';
-
+import { fetchRemoteAsset } from '../utils/fetchRemoteAsset.js';
+import {
+  ImageExtensions,
+  KNOWN_IMAGE_EXTENSIONS,
+  KNOWN_VIDEO_EXTENSIONS,
+} from '../utils/resolveExtension.js';
+import { ffmpeg, imagemagick, inkscape } from '../utils/index.js';
+import { getSourceFolder } from './links.js';
 export const BASE64_HEADER_SPLIT = ';base64,';
 
 function isBase64(data: string) {
   return data.split(BASE64_HEADER_SPLIT).length === 2;
-}
-
-function getGithubRawUrl(url?: string): string | undefined {
-  const GITHUB_BLOB = /^(?:https?:\/\/)?github\.com\/([^/]+)\/([^/]+)\/blob\//;
-  if (!url?.match(GITHUB_BLOB)) return undefined;
-  return url.replace(GITHUB_BLOB, 'https://raw.githubusercontent.com/$1/$2/');
 }
 
 /**
@@ -62,47 +58,30 @@ async function writeBase64(
 export async function downloadAndSaveImage(
   session: ISession,
   url: string,
-  file: string,
+  stem: string,
   fileFolder: string,
 ): Promise<string | undefined> {
   const exists = fs.existsSync(fileFolder);
-  const fileMatch = exists && fs.readdirSync(fileFolder).find((f) => path.parse(f).name === file);
-  if (exists && fileMatch) {
+  // Check whether file with stem exists (but unknown extension)
+  const existingName =
+    exists && fs.readdirSync(fileFolder).find((f) => path.parse(f).name === stem);
+
+  if (exists && existingName) {
     session.log.debug(`Cached image found for: ${url}...`);
-    return fileMatch;
+    return existingName;
   }
-  const filePath = path.join(fileFolder, file);
-  session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${filePath}`);
+  session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${stem}`);
   try {
-    const github = getGithubRawUrl(url);
-    const res = await fetch(github ?? url, { headers: EXT_REQUEST_HEADERS });
-    const contentType = res.headers.get('content-type') || '';
-    const extension = mime.extension(contentType);
-    if (!extension || !contentType) throw new Error('No content-type for image found.');
+    const { name, contentType } = await fetchRemoteAsset(session, url, fileFolder, stem);
     if (!contentType.startsWith('image/')) {
-      throw new Error(`ContentType "${contentType}" is not an image`);
+      throw new Error(`${url} content-type "${contentType}" is not an image`);
     }
-    if (!fs.existsSync(fileFolder)) fs.mkdirSync(fileFolder, { recursive: true });
-    // Write to a file
-    const fileStream = fs.createWriteStream(`${filePath}.${extension}`);
-    await new Promise((resolve, reject) => {
-      if (!res.body) {
-        reject(`no response body from ${url}`);
-      } else {
-        res.body.pipe(fileStream);
-        res.body.on('error', reject);
-        fileStream.on('finish', resolve);
-      }
-    });
-    await new Promise((r) => setTimeout(r, 50));
-    const fileName = `${file}.${extension}`;
-    session.log.debug(`Image successfully saved to: ${fileName}`);
-    return fileName;
+    return name;
   } catch (error) {
     session.log.debug(`\n\n${(error as Error).stack}\n\n`);
     addWarningForFile(
       session,
-      file,
+      stem,
       `Error saving image "${url}": ${(error as Error).message}`,
       'error',
       { ruleId: RuleId.imageDownloads },
@@ -130,7 +109,7 @@ export async function saveImageInStaticFolder(
   writeFolder: string,
   opts?: { altOutputFolder?: string; position?: VFileMessage['position'] },
 ): Promise<{ urlSource: string; url: string } | null> {
-  const sourceFileFolder = path.dirname(sourceFile);
+  const sourceFileFolder = getSourceFolder(urlSource, sourceFile, session.sourcePath());
   const imageLocalFile = path.join(sourceFileFolder, urlSource);
   let file: string | undefined;
   if (isUrl(urlSource)) {
@@ -167,9 +146,9 @@ export function transformImagesToEmbed(mdast: GenericParent) {
   const images = selectAll('image', mdast) as GenericNode[];
   images.forEach((image) => {
     // If image URL starts with #, replace this node with embed node
-    if (image.url.startsWith('#')) {
+    if (image.url.startsWith('xref:') || image.url.startsWith('#')) {
       image.type = 'embed';
-      image.source = { label: image.url.substring(1) };
+      image.source = { label: image.url.startsWith('xref:') ? image.url : image.url.substring(1) };
       image['remove-input'] = image['remove-input'] ?? true;
       delete image.url;
       return;
@@ -193,7 +172,7 @@ export function transformImagesWithoutExt(
       const sortedExtensions = [
         // Valid extensions
         ...(opts?.imageExtensions ?? []),
-        // Convertable extensions
+        // Convertible extensions
         ...Object.keys(conversionFnLookup),
         // All known extensions
         ...KNOWN_IMAGE_EXTENSIONS,
@@ -245,6 +224,8 @@ type ConversionOpts = {
   file: string;
   inkscapeAvailable: boolean;
   imagemagickAvailable: boolean;
+  dwebpAvailable: boolean;
+  ffmpegAvailable: boolean;
 };
 
 type ConversionFn = (
@@ -258,14 +239,27 @@ type ConversionFn = (
  * Factory function for all simple imagemagick conversions
  */
 function imagemagickConvert(
-  to: ImageExtensions,
   from: ImageExtensions,
+  to: ImageExtensions,
   options?: { trim?: boolean },
 ) {
   return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
     const { imagemagickAvailable } = opts;
     if (imagemagickAvailable) {
-      return imagemagick.convert(to, from, session, source, writeFolder, options);
+      return imagemagick.convert(from, to, session, source, writeFolder, options);
+    }
+    return null;
+  };
+}
+
+/**
+ * Factory function for all simple ffmpeg conversions
+ */
+function ffmpegConvert(from: ImageExtensions, to: ImageExtensions) {
+  return async (session: ISession, source: string, writeFolder: string, opts: ConversionOpts) => {
+    const { ffmpegAvailable } = opts;
+    if (ffmpegAvailable) {
+      return ffmpeg.convert(from, to, session, source, writeFolder);
     }
     return null;
   };
@@ -336,6 +330,22 @@ async function gifToPng(
 }
 
 /**
+ * webp -> png using dwebp
+ */
+async function webpToPng(
+  session: ISession,
+  source: string,
+  writeFolder: string,
+  opts: ConversionOpts,
+) {
+  const { dwebpAvailable } = opts;
+  if (dwebpAvailable) {
+    return imagemagick.convertWebpToPng(session, source, writeFolder);
+  }
+  return null;
+}
+
+/**
  * These are all the available image conversion functions
  *
  * Get the function to convert from one extension to another with
@@ -354,6 +364,9 @@ const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
   [ImageExtensions.gif]: {
     [ImageExtensions.png]: gifToPng,
   },
+  [ImageExtensions.webp]: {
+    [ImageExtensions.png]: webpToPng,
+  },
   [ImageExtensions.eps]: {
     // Currently the inkscape CLI has a bug which prevents EPS conversions;
     // once that is fixed, we may uncomment the rest of this section to
@@ -366,6 +379,12 @@ const conversionFnLookup: Record<string, Record<string, ConversionFn>> = {
   },
   [ImageExtensions.tif]: {
     [ImageExtensions.png]: imagemagickConvert(ImageExtensions.tif, ImageExtensions.png),
+  },
+  [ImageExtensions.mov]: {
+    [ImageExtensions.mp4]: ffmpegConvert(ImageExtensions.mov, ImageExtensions.mp4),
+  },
+  [ImageExtensions.avi]: {
+    [ImageExtensions.mp4]: ffmpegConvert(ImageExtensions.avi, ImageExtensions.mp4),
   },
 };
 
@@ -409,7 +428,7 @@ export async function transformImageFormats(
   // Build a lookup of {[extension]: [list of images]} for extensions not in validExts
   const invalidImages: Record<string, GenericNode[]> = {};
   images.forEach((image) => {
-    const ext = path.extname(image.url);
+    const ext = path.extname(image.url).toLowerCase();
     if (validExts.includes(ext as ImageExtensions)) return;
     if (invalidImages[ext]) {
       invalidImages[ext].push(image);
@@ -419,8 +438,10 @@ export async function transformImageFormats(
   });
   if (Object.keys(invalidImages).length === 0) return;
 
-  const inkscapeAvailable = !!inkscape.isInkscapeAvailable();
-  const imagemagickAvailable = !!imagemagick.isImageMagickAvailable();
+  const inkscapeAvailable = inkscape.isInkscapeAvailable();
+  const imagemagickAvailable = imagemagick.isImageMagickAvailable();
+  const dwebpAvailable = imagemagick.isDwebpAvailable();
+  const ffmpegAvailable = ffmpeg.isFfmpegAvailable();
 
   /**
    * convert runs the input conversion functions on the image
@@ -438,6 +459,8 @@ export async function transformImageFormats(
           file,
           inkscapeAvailable,
           imagemagickAvailable,
+          dwebpAvailable,
+          ffmpegAvailable,
         });
       }
     }
@@ -450,10 +473,10 @@ export async function transformImageFormats(
       addWarningForFile(
         session,
         file,
-        `Cannot convert image "${path.basename(image.url)}" - may not correctly render.`,
+        `To convert image "${path.basename(image.url)}" you must install imagemagick.`,
         'error',
         {
-          note: 'To convert this image, you must install imagemagick',
+          note: `Image ${path.basename(image.url)} may not render correctly`,
           position: image.position,
           ruleId: RuleId.imageFormatConverts,
         },
@@ -489,6 +512,11 @@ export async function transformImageFormats(
   }
   unconvertableImages.forEach((image) => {
     const badExt = path.extname(image.url) || '<no extension>';
+    if (badExt === '.*') {
+      // There is already a warning for the wild card extensions.
+      // See https://github.com/jupyter-book/mystmd/issues/2123
+      return;
+    }
     addWarningForFile(
       session,
       file,
@@ -508,7 +536,7 @@ export async function transformThumbnail(
   file: string,
   frontmatter: PageFrontmatter,
   writeFolder: string,
-  opts?: { altOutputFolder?: string; webp?: boolean },
+  opts?: { altOutputFolder?: string; webp?: boolean; maxSizeWebp?: number },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {
   let thumbnail = frontmatter.thumbnail;
   // If the thumbnail is explicitly null, don't add an image
@@ -518,7 +546,9 @@ export async function transformThumbnail(
   }
   if (!thumbnail && mdast) {
     // The thumbnail isn't found, grab it from the mdast, excluding videos
-    const [image] = (selectAll('image', mdast) as Image[]).filter((n) => !n.url.endsWith('.mp4'));
+    const [image] = (selectAll('image', mdast) as Image[]).filter((n) => {
+      return !KNOWN_VIDEO_EXTENSIONS.find((ext) => n.url.endsWith(ext));
+    });
     if (!image) {
       session.log.debug(`${file}#frontmatter.thumbnail is not set, and there are no images.`);
       return;
@@ -540,6 +570,7 @@ export async function transformThumbnail(
     const optimized = await imagemagick.convertImageToWebp(
       session,
       path.join(writeFolder, fileMatch),
+      { maxSize: opts.maxSizeWebp },
     );
     if (optimized) {
       const urlOptimized = url.replace(fileMatch, optimized);
@@ -555,7 +586,7 @@ export async function transformBanner(
   file: string,
   frontmatter: { banner?: string | null; bannerOptimized?: string },
   writeFolder: string,
-  opts?: { altOutputFolder?: string; webp?: boolean },
+  opts?: { altOutputFolder?: string; webp?: boolean; maxSizeWebp?: number },
 ): Promise<{ url: string; urlOptimized?: string } | undefined> {
   const banner = frontmatter.banner;
   // If the thumbnail is explicitly null, don't add an image
@@ -576,6 +607,7 @@ export async function transformBanner(
     const optimized = await imagemagick.convertImageToWebp(
       session,
       path.join(writeFolder, fileMatch),
+      { maxSize: opts.maxSizeWebp },
     );
     if (optimized) {
       const urlOptimized = url.replace(fileMatch, optimized);
@@ -588,7 +620,7 @@ export async function transformBanner(
 
 export async function transformWebp(
   session: ISession,
-  opts: { file: string; imageWriteFolder: string },
+  opts: { file: string; imageWriteFolder: string; maxSizeWebp?: number },
 ) {
   const { file, imageWriteFolder } = opts;
   const cache = castSession(session);
@@ -597,7 +629,7 @@ export async function transformWebp(
   if (!fs.existsSync(imageWriteFolder)) return; // No images exist to copy - not necessarily an error
   const writeFolderContents = fs.readdirSync(imageWriteFolder);
   const { mdast, frontmatter } = postData;
-  const images = selectAll('image', mdast) as GenericNode[];
+  const images = selectAll('image', mdast) as Image[];
   await Promise.all(
     images.map(async (image) => {
       if (!image.url) return;
@@ -607,6 +639,7 @@ export async function transformWebp(
         const result = await imagemagick.convertImageToWebp(
           session,
           path.join(imageWriteFolder, fileMatch),
+          { maxSize: opts.maxSizeWebp },
         );
         if (result) image.urlOptimized = image.url.replace(fileMatch, result);
       } catch (error) {
@@ -625,6 +658,7 @@ export async function transformWebp(
             const result = await imagemagick.convertImageToWebp(
               session,
               path.join(imageWriteFolder, fileMatch),
+              { maxSize: opts.maxSizeWebp },
             );
             if (result) {
               frontmatter[attrOptimized] = frontmatter[attr]?.replace(fileMatch, result);
@@ -650,7 +684,7 @@ function isValidImageNode(node: GenericNode, validExts: ImageExtensions[]) {
   return (
     node.type === 'image' &&
     node.url &&
-    validExts.includes(path.extname(node.url) as ImageExtensions)
+    validExts.includes(path.extname(node.url).toLowerCase() as ImageExtensions)
   );
 }
 

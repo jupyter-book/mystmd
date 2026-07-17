@@ -1,0 +1,20 @@
+name: Request an enhancement 💡
+description: Suggest an idea for this project
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your contribution! Please check if your enhancement has been discussed in [MyST Enhancement Proposals](https://github.com/jupyter-book/myst-enhancement-proposals/).
+  - type: textarea
+    attributes:
+      label: Proposal
+      description: A clear and concise description of your enhancement idea.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional notes
+      description: Any other context or information about your enhancement request.
+    validations:
+      required: false

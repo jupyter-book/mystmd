@@ -1,14 +1,17 @@
 ---
-title: Math and equations
+title: Math and Equations
+short_title: Math & Equations
 description: Use LaTeX style math in your documents, including references, inline math, and equations.
 thumbnail: ./thumbnails/math.png
 ---
 
 There are several ways to make writing math in your documents as familiar as possible.
-Math can either be (1) inline or (2) displayed as an equation block.
+Math can either be (1) inline or (2) displayed as an equation block.[^katex]
 In addition to the usual MyST syntax, you can also use "dollar math", which is derived from $\LaTeX$
 and surrounds inline math with single dollar signs (`$`), and equation blocks with two dollar signs (`$$`).
 The details of using inline math and equations are below.
+
+[^katex]: The default MyST themes use [KaTeX](https://github.com/KaTeX/KaTeX) to render math in websites. This is similar to [MathJax](https://www.mathjax.org/), which was used by Jupyter Book 1, but has a few differences. Almost all math should work the exact same way, but if you were using more custom LaTeX or MathJax workflows, you may need to investigate how to port them to KaTeX. See [the KaTeX documentation](https://katex.org/docs/).
 
 For example, here is an example of a cross-product, which we reference in the docs below!
 
@@ -105,7 +108,7 @@ The label implementation does not yet work for `sub-equations` and may not work 
 equation
 : basic equation environment, similar to a math directive or dollar-math
 
-multiline
+multline
 : variation equation, used for equations that don’t fit on a single line
 
 gather
@@ -181,22 +184,24 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 ````
 
 ```{warning}
-If you are using JupyterBook or Sphinx, there are the following limitations:
+If you are using Jupyter Book or Sphinx, there are the following limitations:
 (1) the `label` analysis of the source is not yet implemented;
-(2) you can not reference equations using the `{numref}` role; and
+(2) you can not reference equations using the {myst:role}`numref` role; and
 (3) labels must not have spaces or start with a number (this is good practice anyways!).
 ```
 `````
 
-### Disabling Numbering
+## Customizing Numbering
 
-TODO!
+To change the reference format for math, you can use the frontmatter under the `numbering` field [see numbering](#numbering).
+To override numbering for a specific equation you can use the {myst:directive}`math.enumerated` option on the math directive.
 
-### Customizing Numbering
-
-To change the reference format, you can use the frontmatter under the `xxx` field.
-
-TODO!
+```markdown
+:::{math}
+:enumerated: false
+Ax = b
+:::
+```
 
 (math-macros)=
 
@@ -227,10 +232,38 @@ The `math` macros are parsed as `yaml` in the frontmatter and can easily be shar
 When using the YAML syntax for the `math` macros, use **single quotes** around the strings. The single quote yaml syntax means you do not have to text-escape the strings, otherwise backslashes `\f`, `\n`, `\b`, `\r`, `\t` and other symbols have to be escaped which is difficult to remember and leads to all sorts of strange errors.
 ```
 
-The `key` is the command that you are defining, in the demo above `\dobs` or `\dpred`, the command should include the `\`. The value of the entry should be the macro definition, if the definition contains `#1` then there will be one required argument for the macro that should be supplied in braces when you use it (e.g. `\dpred{m}`). The macros can be nested as in the example where `\dobs{\mref}` uses two macros.
+The `key` is the command that you are defining, in the demo above `\dobs`, `\dpred`, and `\mref`; the command should include the leading `\`. The value of the entry should be the macro definition. If the definition contains `#1` then there will be one required argument for the macro that should be supplied in braces when you use it (e.g. `\dpred{m}`). The macros can be nested as in the example where `\dpred{\mref}` uses two macros.
 
 In the macro in the example above, `\mathbf{d}_\text{pred}\left( #1 \right)`, the `#1` is the first and only required argument, and is placed in between left and right brackets. The numbering for arguments starts at one, and other arguments can be added with `#2`, `#3`, etc. and then input in a command using `\command{arg1}{arg2}`.
 
 ```{seealso}
 In the future the information collected in the math macro will expand to include alt text, color, or interaction information (e.g. hover, substitution) to improve accessibility and interactivity.
 ```
+
+
+(typst-math)=
+
+### Typst-specific Math Content
+
+When exporting to Typst format, you can provide Typst-specific math content using the `typst` option. This allows you to use native Typst syntax instead of relying on [`tex-to-typst`](https://github.com/continuous-foundation/tex-to-typst) conversion, which may give incorrect results.
+
+Example with typst argument in a math block:
+
+````{myst}
+```{math}
+:typst: root(3, x)
+\sqrt[3]{x}
+```
+````
+
+When the `typst` option is provided, it will be used directly in Typst output instead of converting the LaTeX content.
+
+For inline math, you can also use the `typst` option with the math role:
+
+```{myst}
+{math typst="typst"}`latex`
+```
+
+:::{important} Improve the Math Conversion
+If your LaTeX math does not convert automatically to typst, please open an [issue here](https://github.com/continuous-foundation/tex-to-typst/issues/new).
+:::

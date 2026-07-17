@@ -1,12 +1,19 @@
 ---
-title: Scientific PDFs
+title: Create a PDF
 description: Export to over 400 journal templates from a MyST Markdown file, which uses LaTeX and can create print-ready, multi-column, professional PDF documents.
 ---
 
-You can render your MyST documents as print-ready scientific papers, by converting to $\LaTeX$ and render to over 400 journal templates already available. Alternatively, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
+MyST can create a PDF for print-ready scientific papers or books.
+It does so by first _rendering_ your MyST document into [$\LaTeX$](#render-latex) or [Typst](#render-typst) and then using those engines to create a PDF.
+
+Myst uses **templates** to allow you to control the look and feel of the final PDF output. The [MyST Templates organization](https://github.com/myst-templates) contains templates for rendering MyST documents into the structure of over 400 journals.
+
+:::{seealso}
+In addition to PDF, you can also render your documents as Beamer presentations or as [Microsoft Word](./creating-word-documents.md) to share with other collaborators.
+:::
 
 ```{figure} ./images/pdf-exports.png
-:name: fig-export-to-pdf
+:label: fig-export-to-pdf
 :width: 100%
 
 Export to over 400 journal templates from a MyST Markdown file, which uses $\LaTeX$ and can create print-ready, multi-column, professional PDF documents.
@@ -18,13 +25,14 @@ Export to over 400 journal templates from a MyST Markdown file, which uses $\LaT
 See the quickstart tutorial for getting started with exporting to Word documents, $\LaTeX$ and PDFs with various templates.
 :::
 
-## Exporting to PDF
+## How to export to PDF
 
-To create a new `pdf` export type for your MyST document, in your document frontmatter, add an `exports` list:
+To create a new `pdf` export type for your MyST document, add an `exports` list to either your [document frontmatter](./frontmatter.md) or your `myst.yml` configuration file.
 
 (export-frontmatter-pdf)=
 
-```yaml
+```{code-block} yaml
+:filename: article.md
 ---
 title: My PDF
 exports:
@@ -34,7 +42,7 @@ exports:
 ---
 ```
 
-To build the exports, use the `myst build` command, which will work with your [project structure](./project-overview.md) if it exists and create a document in the output path that you specify.
+To build the exports, use the `myst build` command, which will work with your project structure if it exists and create a document in the output path that you specify.
 
 ```bash
 myst build my-document.md --pdf
@@ -42,16 +50,19 @@ myst build my-document.md --pdf
 
 Based on the `output` field in the export list in the [frontmatter](#export-frontmatter-pdf), the PDF and a log file will be written to `exports/my-document.pdf` and any associated log files. If the output file is a folder, the document name will be used with a `.pdf` or `.tex` extension, as appropriate. Any necessary auxiliary files (e.g. for example `*.png` or `*.bib`) will be added to the base folder (`exports/` above).
 
+(render-latex)=
 ## Rendering PDFs with $\LaTeX$
 
 ```{danger}
 :class: dropdown
-# PDF exports require $\LaTeX$ to be installed
+# PDF exports require $\LaTeX$ or Typst to be installed
 
 The default PDF renderer uses $\LaTeX$ to create PDFs, which means that to work locally you will need to [](#install-latex). A warning will occur if MyST cannot find a $\LaTeX$ environment, as well as forcing the build process and reporting any errors.
+
+As an alternative, for faster PDF builds, you may use [Typst](#rendering-pdfs-with-typst) instead.
 ```
 
-The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](myst:jtex) templating library, to convert to $\LaTeX$ the [`myst-to-tex`](myst:myst-to-tex) packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
+The rendering process for scientific PDFs uses $\LaTeX$ and makes use of the [`jtex`](xref:jtex) templating library, to convert to $\LaTeX$ the `myst-to-tex` packages is used. The libraries work together for sharing information about [frontmatter](./frontmatter.md) (e.g. title, keywords, authors, and affiliations).
 
 ```{mermaid}
 flowchart LR
@@ -86,6 +97,117 @@ Ensure that you download a full distribution with appropriate libraries installe
 
 % Probably a note in the future about running this remotely?
 
+(rendering-pdfs-with-typst)=
+
+### LaTeX export gotchas
+
+By default, MyST-rendered PDFs will use the `\section` command as the top-level heading in LaTeX. This is standard for scientific papers and short reports. However, if you are writing a book or long document (e.g. with Jupyter Book), this may cause errors as LaTeX expects the `\chapter` or `\part` command to be top-level. MyST can accomodate for this difference by manually setting the `level` key to each file you wish to export, as per the table below:
+
+| Level | Corresponding LaTeX command |
+| ----- | --------------------------- |
+| -1    | `\part`                     |
+| 0     | `\chapter`                  |
+| 1     | `\section`                  |
+| 2     | `\subsection`               |
+| 3     | `\subsubsection`            |
+
+For instance, assuming you had the following directory structure:
+
+```
+.
+├── chapter-one
+│  ├── index.md
+│  ├── section-one.md
+│  └── section-two.md
+├── chapter-two
+│  ├── index.md
+│  ├── section-one.md
+│  └── section-two.md
+├── index.md
+└── myst.yml
+```
+
+And the following table of contents in your `myst.yml`:
+
+```yml
+toc:
+  - file: index.md
+  - file: chapter-one/index.md
+    children:
+      - file: chapter-one/section-one.md
+      - file: chapter-one/section-two.md
+  - file: chapter-two/index.md
+    children:
+      - file: chapter-two/section-one.md
+      - file: chapter-two/section-two.md
+# ... rest of your config
+```
+
+By default, MyST will assign `chapter-one/index.md` with the `\section` command in LaTeX, instead of the `\chapter` command. To be able to change this behavior, you will need to set the `level` key for every page, as follows:
+
+```yml
+exports:
+  - format: pdf
+    template: plain_latex_book
+    output: my_book.pdf
+    articles:
+      - file: index.md
+        level: 0
+      - file: chapter-one/index.md
+        level: 0
+      - file: chapter-one/section-one.md
+        level: 1
+      - file: chapter-one/section-two.md
+        level: 1
+      - file: chapter-two/index.md
+        level: 0
+      - file: chapter-two/section-one.md
+        level: 1
+      - file: chapter-two/section-two.md
+        level: 1
+```
+
+This will render the chapters using the `\chapter` command, ensuring it is consistent with LaTeX's book rendering.
+
+## Rendering PDFs with Typst
+
+[Typst](https://typst.app) is a markup-based typesetting language. It is **significantly faster and simpler than using $\LaTeX$** with results of equal or better quality.
+
+(typst:install)=
+### How to install Typst
+
+Follow [the Typst installation instructions](https://github.com/typst/typst?tab=readme-ov-file#installation) for several options to install Typst.
+We **strongly recommend using the latest releases of Typst**. If you get a confusing Typst error, a good first step is to upgrade your version of Typst.
+
+:::{warning} Do not use `npm` to install Typst
+The version of Typst on `npm` (or similar community-managed installation services) is often out-of-date, and we recommend [following the Typst instructions directly](https://github.com/typst/typst?tab=readme-ov-file#installation).
+:::
+
+### How to render PDFs with Typst
+
+To render Typst PDFs locally, you must first [install Typst](#typst:install).
+
+Then add Typst to your export targets. Add `format: typst` and select a Typst template. Below is an example that also defines the output PDF to generate:
+
+```{code-block} yaml
+:filename: article.md
+---
+title: My PDF
+exports:
+  - format: typst
+    template: lapreprint-typst
+    output: exports/my-document.pdf
+---
+```
+Finally, build the PDF output with Typst using the following command:
+
+```bash
+myst build article.md --typst
+```
+
+You can use [document frontmatter](./frontmatter.md) to control various aspects of your Typst outputs.
+The Typst templates use the [MyST templating library](xref:jtex) and support the same configuration as [$\LaTeX$](#render-latex).
+
 ## Choosing a Template
 
 There are currently 422 journals supported[^journals] and it is straight forward to add new personal templates, or contribute them back to the community.
@@ -94,7 +216,7 @@ There are currently 422 journals supported[^journals] and it is straight forward
 
     This is the total number of _journals_ that can be created from MyST, which is a higher number than the number of _templates_, as some templates support many different journal exports. As we add more templates we will probably switch this number to templates, which is closer to 15, but that doesn't sound as impressive out of the gate. 🚀
 
-To list all of the public templates, use the `myst templates` command:
+Templates exist for both $\LaTeX$ and Typst builds. To list all of the public templates, use the `myst templates` command:
 
 ```bash
 myst templates list --pdf --tag two-column
@@ -126,32 +248,32 @@ myst templates list arxiv_two_column --tex
 
 There are two ways to provide information to a template, through `parts` and `options`.
 
+
 ## Template `parts`
 
-The `parts` of a template are things like `abstract`, `acknowledgments` or `data_availability`, they are usually written pieces of a document, but are placed specifically in a template. For example, an abstract usually has a place in templates, with a box or other typographic choices applied. These parts can be marked as `required`, and will raise error in the PDF export process, however, myst will always try to complete the build.
+The `parts` of a template are things like `abstract`, `acknowledgments` or `data_availability`, see [](./document-parts.md) for more information. These parts are usually written pieces of a document, but are placed specifically in a template. For example, an abstract usually has a place in templates, with a box or other typographic choices applied. These parts can be marked as `required`, and will raise error in the PDF export process, however, myst will always try to complete the build.
 
-A `part` of a template is defined using metadata on a MyST [block](./blocks.md):
+A `part` of a template can be defined using the [page frontmatter](#parts:frontmatter) or [metadata on a block](#parts:blocks). An example of using the frontmatter is:
 
-```markdown
-+++ { "part": "abstract" }
-
-MyST (Markedly Structured Text) is designed to create publication-quality documents
-written entirely in Markdown. The markup and publishing build system is fantastic,
-MyST seamlessly exports to any PDF template, while collecting metadata to make your
-writing process as easy as possible.
-
-+++
-
-# Introduction
+```{code-block} yaml
+:filename: article.md
+---
+abstract: |
+  MyST (Markedly Structured Text) is designed to create publication-quality documents
+  written entirely in Markdown. The markup and publishing build system is fantastic,
+  MyST seamlessly exports to any PDF template, while collecting metadata to make your
+  writing process as easy as possible.
+---
 ```
 
 ### Template `options`
 
-Template authors should choose to use [standard frontmatter](./frontmatter.md) properties where possible, however, all templates can also expose custom options through their [](/jtex/template-yml). Include options for the build in the exports list. For example, to turn on `line_numbers` in the template, add the option to the dictionary.
+Template authors should choose to use [standard frontmatter](./frontmatter.md) properties where possible, however, all templates can also expose custom options through their [](xref:jtex#template-yml). Include options for the build in the exports list. For example, to turn on `line_numbers` in the template, add the option to the dictionary.
 
 ```{code-block} yaml
 :linenos:
 :emphasize-lines: 7
+:filename: article.md
 ---
 title: My PDF
 exports:
@@ -164,6 +286,47 @@ exports:
 
 Any unrecognized, or malformed entries will be logged as errors as well as required options that are not provided.
 
+
+### Use `extend` to set options
+Using [`extend` configuration](#composing-myst-yml) you can create an `export.yml` file which is referred to in the `myst.yml` file. For example, this configuration tells `myst.yml` to look for an `export.yml` file for configuration:
+
+```{code-block} yaml
+:filename: myst.yml
+---
+extends:
+  - export.yml
+---
+```
+
+And the `export.yml` file defines the export configuration to use in the project:
+
+```{code-block} yaml
+:filename: export.yml
+---
+version: 1
+project:
+
+  downloads:
+    - id: output-pdf1
+
+  exports:
+    - id: output-pdf1
+      format: typst
+      template: https://github.com/myst-templates/plain_typst_book
+      output: book.pdf
+      # additional options
+
+      #### Cover picture
+      cover: Cover.PNG
+      #Coverposition:
+      # coverwidth:
+
+      #### Logo at top of position
+      logo: logo.svg
+      logo_width: 10
+---      
+```
+
 ## Creating a Template
 
 The export list can also point to local templates, for $\LaTeX$ these are built using [`jtex`](/jtex), and you can learn more about how to create a template for: [any $\LaTeX$ document](/jtex/create-a-latex-template) and [Beamer presentations](/jtex/create-a-beamer-template).
@@ -171,6 +334,7 @@ The export list can also point to local templates, for $\LaTeX$ these are built 
 To make use of the template locally, validate it using `jtex check` and then point to the template folder in your export:
 
 ```{code-block} yaml
+:filename: article.md
 :linenos:
 :emphasize-lines: 5
 :caption: The template can be a path to a `jtex` template, which contains a `template.yml` and `template.tex` as well as any other `cls` or `def` files.
@@ -185,6 +349,104 @@ exports:
 
 Please consider [contributing your template](/jtex/contribute-a-template) to the growing list of templates so that other people can benefit and improve your work!
 
-## Excluding Source
+## Excluding Content from Specific Exports
 
-If you have a block or notebook cell that you do now want to render to your LaTeX output, add the `no-tex` tag to the cell.
+If you have a [block](./blocks.md) or notebook cell that you do not want to render to your $\LaTeX$ output, add the `no-tex` tag to the cell. Similarly, to exclude a cell from Typst, use `no-typst`. To exclude a cell from both formats, use `no-pdf`.
+
+````markdown
++++{"no-pdf": true}
+This will not be in the pdf
++++
+````
+
+## Including Content with Specific Exports
+
+If you need to inject some $\LaTeX$- or Typst-specific content into their respective exports, you may use the `{raw:latex}` or `{raw:typst}` role and directive. For example, to insert a new page in Typst with two columns:
+
+````markdown
+```{raw:typst}
+#set page(columns: 2, margin: (x: 1.5cm, y: 2cm),);
+```
+````
+
+The content in these directives and roles will be included exactly as written in their respective exports, and will be ignored in all other contexts.
+
+(multi-article-exports)=
+
+## Multi-Article Exports
+
+Sometimes you may want to combine multiple MyST documents into a single export, for example a thesis or a book. MyST makes this possible with multi-article exports for PDFs built with either $\LaTeX$ or Typst.
+
+For perform a multi-article export, add multiple `articles` to the export frontmatter:
+
+```{code-block} yaml
+:filename: article.md
+---
+title: My PDF
+exports:
+  - format: pdf
+    template: plain_latex_book
+    output: exports/my-thesis.pdf
+    articles:
+      - introduction.md
+      - project-one.md
+      - project-two.md
+      - conclusions.md
+---
+```
+
+As an alternative to listing articles in MyST frontmatter, you may specify a table of contents using the [Jupyter Book V1 format](#toc-format):
+
+```{code-block} yaml
+:filename: article.md
+---
+title: My PDF
+exports:
+  - format: pdf
+    template: plain_latex_book
+    output: exports/my-thesis.pdf
+    toc: thesis_toc.yml
+---
+```
+
+By default if no `articles` are given, exports defined in page frontmatter will produce a single-article export from of that page, and exports defined in the `myst.yml` project configuration will produce a multi-article export based on the project structure.
+
+## Custom Frontmatter for Exports
+
+Export frontmatter may differ from page or project frontmatter. For example, you may with to give your export its own title, which does not match the project title. To do so, add the alternative frontmatter to your export:
+
+```{code-block} yaml
+:filename: article.md
+---
+title: My Interactive Research!
+exports:
+  - format: pdf
+    title: My Static Research as a PDF
+    output: exports/my-document.pdf
+---
+```
+
+You may redefine [any frontmatter fields](./frontmatter.md). These redefined fields will replace the values found in page frontmatter and `myst.yml` project configuration.
+
+Further, for [](#multi-article-exports), you may redefine frontmatter for every specific page. To do so, you must use a list of article objects (as opposed to a `_toc.yml` file or a list of article names):
+
+```{code-block} yaml
+:filename: article.md
+---
+title: My PDF
+exports:
+  - format: pdf
+    title: My Thesis
+    date: 10 May 2023
+    template: plain_latex_book
+    output: exports/my-thesis.pdf
+    articles:
+      - file: introduction.md
+        title: Introduction to This Thesis
+      - file: project-one.md
+      - file: project-two.md
+      - file: conclusions.md
+        title: Summary of this Thesis
+---
+```
+

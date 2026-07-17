@@ -1,12 +1,12 @@
 Testing named figures and numbered references:
 .
 ```{figure} https://jupyterbook.org/_static/logo.png
-:name: test3
+:label: test3
 The Jupyter Book Logo!
 ```
 
 ```{figure} https://jupyterbook.org/_static/logo.png
-:name: test4
+:label: test4
 The Jupyter Book Logo again!
 ```
 The reference to {ref}`test3` and {ref}`test4`.

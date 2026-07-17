@@ -10,6 +10,16 @@ cases:
               label: cockett2015
     typst: |-
       #cite(<cockett2015>)
+  - title: cite single URL
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              label: https://doi.org/10.1038/s41586-022-04892-x               
+    typst: |-
+      #cite(label("https://doi.org/10.1038/s41586-022-04892-x"))
   - title: cite multiple
     mdast:
       type: root

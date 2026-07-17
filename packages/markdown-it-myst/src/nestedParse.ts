@@ -14,6 +14,7 @@ export function nestedCoreParse(
   env: any,
   initLine: number,
   includeRule = true,
+  inline: boolean,
 ): Token[] {
   // disable all core rules after pluginRuleName
   const tempDisabledCore: string[] = [];
@@ -36,14 +37,45 @@ export function nestedCoreParse(
 
   md.core.ruler.disable(tempDisabledCore);
 
+  // For inline parsing, we need to disable all block level parsing except paragraphs
+  const blockRules = (md.block.ruler as any).__rules__
+    .map(({ name }: { name: string }) => name)
+    .filter((n: string) => n !== 'paragraph');
+  if (inline) md.block.ruler.disable(blockRules);
+
   let tokens = [];
   try {
     tokens = md.parse(src, env);
   } finally {
     md.core.ruler.enable(tempDisabledCore);
+    if (inline) md.block.ruler.enable(blockRules);
   }
   for (const token of tokens) {
     token.map = token.map !== null ? [token.map[0] + initLine, token.map[1] + initLine] : token.map;
+  }
+  // If not inline, return the tokens as is
+  if (!inline) return tokens;
+  // This handles the case where inline arguments are parsed independently
+  // and appear to the parser as paragraphs.
+  // Ensure the body node has only **inline** children
+  if (
+    tokens.length === 3 &&
+    tokens[0].type === 'paragraph_open' &&
+    tokens[1].type === 'inline' &&
+    tokens[2].type === 'paragraph_close'
+  ) {
+    return [tokens[1]];
+  }
+  // There is a bug when footnote references are used that they can interfere with the role body parsing
+  // These footnotes are still in the state, but should not be returned here
+  if (
+    tokens[0].type === 'paragraph_open' &&
+    tokens[1].type === 'inline' &&
+    tokens[2].type === 'paragraph_close' &&
+    tokens[3].type === 'footnote_block_open' &&
+    tokens[tokens.length - 1].type === 'footnote_block_close'
+  ) {
+    return [tokens[1]];
   }
   return tokens;
 }
@@ -55,24 +87,21 @@ export function nestedPartToTokens(
   state: StateCore,
   pluginRuleName: string,
   inline: boolean,
-) {
+): Token[] {
   if (!part) return [];
   const openToken = new state.Token(`${partName}_open`, '', 1);
   openToken.content = part;
   openToken.hidden = true;
   openToken.map = [lineNumber, lineNumber];
-  let nestedTokens = nestedCoreParse(state.md, pluginRuleName, part, state.env, lineNumber, true);
-  // Note: This handles the case where inline arguments are parsed independently
-  //       and appear to the parser as paragraphs.
-  if (
-    inline &&
-    nestedTokens.length === 3 &&
-    nestedTokens[0].type === 'paragraph_open' &&
-    nestedTokens[1].type === 'inline' &&
-    nestedTokens[2].type === 'paragraph_close'
-  ) {
-    nestedTokens = [nestedTokens[1]];
-  }
+  const nestedTokens = nestedCoreParse(
+    state.md,
+    pluginRuleName,
+    part,
+    state.env,
+    lineNumber,
+    true,
+    inline,
+  );
   const closeToken = new state.Token(`${partName}_close`, '', -1);
   closeToken.hidden = true;
   return [openToken, ...nestedTokens, closeToken];

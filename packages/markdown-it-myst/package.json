@@ -1,11 +1,11 @@
 {
   "name": "markdown-it-myst",
-  "version": "1.0.5",
+  "version": "1.0.17",
   "sideEffects": false,
   "license": "MIT",
   "description": "markdown-it tokenizer for MyST roles and directives",
   "author": "Franklin Koch <franklin@curvenote.com>",
-  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/markdown-it-myst",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/markdown-it-myst",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,23 +17,31 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystmd.git"
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
   },
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
   "bugs": {
-    "url": "https://github.com/executablebooks/mystmd/issues"
+    "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "markdown-it": "^13.0.1",
-    "vfile": "^5.3.7"
+    "vfile": "^5.3.7",
+    "vfile-message": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "markdown-it-footnote": "^4.0.0"
+  },
+  "peerDependencies": {
+    "@types/markdown-it": "^13.0.1",
+    "markdown-it": "^13.0.1"
   }
 }

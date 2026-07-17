@@ -1,0 +1,64 @@
+cases:
+  - title: Empty section at beginning
+    name: section
+    source: |-
+      section:
+      foo: bar
+      bar:
+        - baz
+        - foo
+      section:
+        body: "hi"
+    result:
+      start: 1
+      stop: 1
+  - title: Empty section at end
+    name: section
+    source: |-
+      foo: bar
+      bar:
+        - baz
+        - foo
+      section:
+    result:
+      start: 5
+      stop: 5
+  - title: Section at beginning
+    name: section
+    source: |-
+      section:
+        body: "hi"
+      foo: bar
+      bar:
+        - baz
+        - foo
+    result:
+      start: 1
+      stop: 2
+      indent: 2
+  - title: Section at end
+    name: section
+    source: |-
+      foo: bar
+      bar:
+        - baz
+        - foo   
+      section:
+        body: "hi"
+    result:
+      start: 5
+      stop: 6
+      indent: 2
+  - title: Section with comment
+    name: section
+    source: |-
+      foo: bar
+      bar:
+        - baz
+        - foo   
+      section:  # This is a section
+        body: "hi"
+    result:
+      start: 5
+      stop: 6
+      indent: 2

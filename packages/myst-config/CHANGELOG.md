@@ -1,5 +1,488 @@
 # myst-config
 
+## 1.10.0
+
+### Minor Changes
+
+- c738873: Add static_files option to project frontmatter for copying files into build output with stable URLs
+
+### Patch Changes
+
+- Updated dependencies [c738873]
+  - myst-frontmatter@1.10.0
+  - myst-common@1.10.0
+
+## 1.9.5
+
+### Patch Changes
+
+- Updated dependencies [7b989d4]
+- Updated dependencies [7b989d4]
+  - myst-frontmatter@1.9.5
+  - myst-common@1.9.5
+
+## 1.9.4
+
+### Patch Changes
+
+- Updated dependencies [045953f]
+  - simple-validators@1.2.0
+  - myst-frontmatter@1.9.4
+  - myst-common@1.9.4
+
+## 1.9.3
+
+### Patch Changes
+
+- Updated dependencies [88d2136]
+- Updated dependencies [d45faf3]
+  - myst-common@1.9.3
+  - myst-frontmatter@1.9.3
+
+## 1.9.2
+
+### Patch Changes
+
+- myst-common@1.9.2
+- myst-frontmatter@1.9.2
+
+## 1.9.1
+
+### Patch Changes
+
+- Updated dependencies [a742dda]
+- Updated dependencies [c2d895a]
+  - myst-common@1.9.1
+  - myst-frontmatter@1.9.1
+
+## 1.9.0
+
+### Patch Changes
+
+- Updated dependencies [30acc57]
+  - myst-frontmatter@1.9.0
+  - myst-common@1.9.0
+
+## 1.8.4
+
+### Patch Changes
+
+- eba4f34: Favicon on site option is under options.
+  - myst-common@1.8.4
+  - myst-frontmatter@1.8.4
+
+## 1.8.3
+
+### Patch Changes
+
+- Updated dependencies [df8bbb0]
+- Updated dependencies [c736b16]
+- Updated dependencies [6783dae]
+  - myst-common@1.8.3
+  - myst-frontmatter@1.8.3
+
+## 1.8.2
+
+### Patch Changes
+
+- myst-common@1.8.2
+- myst-frontmatter@1.8.2
+
+## 1.8.1
+
+### Patch Changes
+
+- Updated dependencies [fefffffd]
+  - myst-frontmatter@1.8.1
+  - myst-common@1.8.1
+
+## 1.8.0
+
+### Minor Changes
+
+- febc0de9: Enable external URLs in table of contents
+
+### Patch Changes
+
+- myst-common@1.8.0
+- myst-frontmatter@1.8.0
+
+## 1.7.13
+
+### Patch Changes
+
+- Updated dependencies [5031289b]
+- Updated dependencies [1aa5825]
+  - simple-validators@1.1.1
+  - myst-frontmatter@1.7.13
+  - myst-common@1.7.13
+
+## 1.7.12
+
+### Patch Changes
+
+- Updated dependencies [483f2b7]
+- Updated dependencies [8a0ee19e]
+  - myst-common@1.7.12
+  - myst-frontmatter@1.7.12
+
+## 1.7.11
+
+### Patch Changes
+
+- Updated dependencies [91bed6d0]
+  - myst-frontmatter@1.7.11
+  - myst-common@1.7.11
+
+## 1.7.10
+
+### Patch Changes
+
+- Updated dependencies [26e8d199]
+  - myst-frontmatter@1.7.10
+  - myst-common@1.7.10
+
+## 1.7.9
+
+### Patch Changes
+
+- 75bbb180: Change footnotes to use enumerator over number
+- 75bbb180: Add version to config file
+- Updated dependencies [7448083f]
+  - myst-frontmatter@1.7.9
+  - myst-common@1.7.9
+
+## 1.7.8
+
+### Patch Changes
+
+- myst-common@1.7.8
+- myst-frontmatter@1.7.8
+
+## 1.7.7
+
+### Patch Changes
+
+- 614ed0ec: Enable title numbering
+- 614ed0ec: Add enumerator to project config
+- Updated dependencies [614ed0ec]
+- Updated dependencies [415ed138]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [614ed0ec]
+- Updated dependencies [00a47c4]
+- Updated dependencies [614ed0ec]
+  - myst-frontmatter@1.7.7
+  - myst-common@1.7.7
+
+## 1.7.6
+
+### Patch Changes
+
+- Updated dependencies [67bc9b8d]
+- Updated dependencies [0d82810f]
+- Updated dependencies [6f6032b7]
+  - myst-common@1.7.6
+  - myst-frontmatter@1.7.6
+
+## 1.7.5
+
+### Patch Changes
+
+- Updated dependencies [8ea9365]
+  - myst-frontmatter@1.7.5
+  - myst-common@1.7.5
+
+## 1.7.4
+
+### Patch Changes
+
+- myst-common@1.7.4
+- myst-frontmatter@1.7.4
+
+## 1.7.3
+
+### Patch Changes
+
+- Updated dependencies [2bce565]
+  - myst-common@1.7.3
+  - myst-frontmatter@1.7.3
+
+## 1.7.2
+
+### Patch Changes
+
+- 4a3ee6db: Support parts in site config
+- 4a3ee6db: Parse project-level parts to mdast
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [897136f]
+- Updated dependencies [4a3ee6db]
+- Updated dependencies [918223b8]
+- Updated dependencies [4a3ee6db]
+  - myst-common@1.7.2
+  - myst-frontmatter@1.7.2
+
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [3c65de0]
+- Updated dependencies [64a33837]
+- Updated dependencies [3c65de0]
+  - myst-frontmatter@1.7.1
+
+## 1.7.0
+
+### Patch Changes
+
+- myst-frontmatter@1.7.0
+
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies [760e411]
+  - myst-frontmatter@1.6.1
+
+## 1.6.0
+
+### Patch Changes
+
+- Updated dependencies [9c1b8c73]
+  - myst-frontmatter@1.6.0
+
+## 1.5.4
+
+### Patch Changes
+
+- Updated dependencies [85520edd]
+- Updated dependencies [da224b78]
+- Updated dependencies [e2b74f4d]
+- Updated dependencies [85520edd]
+  - myst-frontmatter@1.5.4
+  - simple-validators@1.1.0
+
+## 1.5.3
+
+### Patch Changes
+
+- Updated dependencies [313b218]
+  - myst-frontmatter@1.5.3
+
+## 1.5.2
+
+### Patch Changes
+
+- Updated dependencies [38a45645]
+  - myst-frontmatter@1.5.2
+
+## 1.5.1
+
+### Patch Changes
+
+- b3e9df9d: Update to Project Jupyter and change all URLs
+- Updated dependencies [b3e9df9d]
+  - simple-validators@1.0.6
+  - myst-frontmatter@1.5.1
+
+## 1.5.0
+
+### Minor Changes
+
+- 0576d5ad: Add support for executable (IPC) plugins
+
+### Patch Changes
+
+- Updated dependencies [8c487991]
+- Updated dependencies [f6aa726c]
+- Updated dependencies [478c4d4f]
+  - myst-frontmatter@1.5.0
+
+## 1.4.7
+
+### Patch Changes
+
+- myst-frontmatter@1.4.7
+
+## 1.4.6
+
+### Patch Changes
+
+- Updated dependencies [4cea894]
+  - myst-frontmatter@1.4.6
+
+## 1.4.5
+
+### Patch Changes
+
+- Updated dependencies [ad969c37]
+  - myst-frontmatter@1.4.5
+
+## 1.4.4
+
+### Patch Changes
+
+- Updated dependencies [65ade89]
+- Updated dependencies [65ade89]
+- Updated dependencies [435c4329]
+  - simple-validators@1.0.5
+  - myst-frontmatter@1.4.4
+
+## 1.4.3
+
+### Patch Changes
+
+- f4d5231: Add extend key to top-level config
+- Updated dependencies [f4d5231]
+  - myst-frontmatter@1.4.3
+
+## 1.4.2
+
+### Patch Changes
+
+- myst-frontmatter@1.4.2
+
+## 1.4.1
+
+### Patch Changes
+
+- myst-frontmatter@1.4.1
+
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies [ab863c8a]
+- Updated dependencies [ab863c8a]
+  - myst-frontmatter@1.4.0
+
+## 1.3.0
+
+### Patch Changes
+
+- myst-frontmatter@1.3.0
+
+## 1.2.0
+
+### Patch Changes
+
+- 80930b39: Add error_rules to turn off warnings and errors in the CLI.
+- Updated dependencies [2c4e3057]
+  - myst-frontmatter@1.2.0
+
+## 1.1.35
+
+### Patch Changes
+
+- Updated dependencies [be3befd]
+- Updated dependencies [be3befd]
+  - myst-frontmatter@1.1.35
+
+## 1.1.34
+
+### Patch Changes
+
+- c38cc28: Relax site action validation and move later in the build
+- c38cc28: Add downloads to page/project frontmatter and site config
+- Updated dependencies [c38cc28]
+  - myst-frontmatter@1.1.34
+
+## 1.1.33
+
+### Patch Changes
+
+- myst-frontmatter@1.1.33
+
+## 1.1.32
+
+### Patch Changes
+
+- Updated dependencies [6f0183de]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [62620a8d]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [ffb239a9]
+- Updated dependencies [bba5baf9]
+- Updated dependencies [62620a8d]
+- Updated dependencies [bba5baf9]
+  - myst-frontmatter@1.1.32
+
+## 1.1.31
+
+### Patch Changes
+
+- Updated dependencies [1880a465]
+  - myst-frontmatter@1.1.31
+
+## 1.1.30
+
+### Patch Changes
+
+- myst-frontmatter@1.1.30
+
+## 1.1.29
+
+### Patch Changes
+
+- Updated dependencies [5565d60]
+  - myst-frontmatter@1.1.29
+
+## 1.1.28
+
+### Patch Changes
+
+- myst-frontmatter@1.1.28
+
+## 1.1.27
+
+### Patch Changes
+
+- Updated dependencies [f1ee6f7]
+  - myst-frontmatter@1.1.27
+
+## 1.1.26
+
+### Patch Changes
+
+- e81a169: Exclude files listed in project confg from myst build and watch
+  - myst-frontmatter@1.1.26
+
+## 1.1.25
+
+### Patch Changes
+
+- Updated dependencies [03db3a35]
+  - myst-frontmatter@1.1.25
+
+## 1.1.24
+
+### Patch Changes
+
+- myst-frontmatter@1.1.24
+
+## 1.1.23
+
+### Patch Changes
+
+- Updated dependencies [50416784]
+  - myst-frontmatter@1.1.23
+
+## 1.1.22
+
+### Patch Changes
+
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [7596172]
+- Updated dependencies [9178a214]
+- Updated dependencies [7596172]
+- Updated dependencies [ffc1061f]
+- Updated dependencies [aa335d74]
+  - myst-frontmatter@1.1.22
+
 ## 1.1.21
 
 ### Patch Changes
@@ -323,7 +806,7 @@
 
 ### Patch Changes
 
-- 184ad9f9: Move to https://github.com/executablebooks/mystmd
+- 184ad9f9: Move to https://github.com/jupyter-book/mystmd
 - Updated dependencies [184ad9f9]
 - Updated dependencies [615c1441]
   - myst-frontmatter@0.0.3

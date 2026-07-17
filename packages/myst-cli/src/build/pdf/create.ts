@@ -11,7 +11,7 @@ import { docLinks } from '../../docs.js';
 import type { ISession } from '../../session/types.js';
 import type { ExportResults, ExportWithOutput } from '../types.js';
 import { uniqueArray } from '../../utils/uniqueArray.js';
-import { logMessagesFromVFile } from '../../utils/logMessagesFromVFile.js';
+import { logMessagesFromVFile } from '../../utils/logging.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { isLatexmkAvailable, isMakeglossariesAvailable } from './utils.js';
@@ -246,6 +246,7 @@ async function runCommands(
     pdfBuild,
     buildPath,
     vfile,
+    true,
   );
 
   return { buildError, toc };
@@ -260,6 +261,7 @@ async function runPdfBuildCommand(
   pdfBuild: string,
   buildPath: string,
   vfile: VFile,
+  debugLogsOnly?: boolean,
 ) {
   if (!isLatexmkAvailable()) {
     fileError(
@@ -289,7 +291,7 @@ async function runPdfBuildCommand(
 
   let buildError = false;
   try {
-    session.log.info(`🖨  Rendering PDF ${templateLogString} to ${pdfBuild}`);
+    if (!debugLogsOnly) session.log.info(`🖨  Rendering PDF ${templateLogString} to ${pdfBuild}`);
     session.log.debug(`Running command:\n> ${buildCommand}`);
     await exec(buildCommand, { cwd: buildPath });
     session.log.debug(`Done building LaTeX.`);

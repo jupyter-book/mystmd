@@ -1,6 +1,6 @@
 {
   "name": "citation-js-utils",
-  "version": "1.0.2",
+  "version": "1.2.8",
   "description": "Utilities for citation-js.",
   "type": "module",
   "exports": "./dist/index.js",
@@ -12,14 +12,14 @@
     "clean": "rimraf dist",
     "lint": "eslint -c .eslintrc.cjs src/**/*.ts",
     "lint:format": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/executablebooks/mystmd.git"
+    "url": "git+https://github.com/jupyter-book/mystmd.git"
   },
   "keywords": [
     "citation-js"
@@ -27,15 +27,18 @@
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/executablebooks/mystmd/issues"
+    "url": "https://github.com/jupyter-book/mystmd/issues"
   },
-  "homepage": "https://github.com/executablebooks/mystmd/tree/main/packages/citation-js-utils",
+  "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/citation-js-utils",
   "engines": {
-    "node": ">=12",
-    "npm": ">=6"
+    "node": ">=20",
+    "npm": ">=10"
   },
   "dependencies": {
-    "citation-js": "^0.6.3",
+    "@citation-js/core": "^0.7.18",
+    "@citation-js/plugin-bibtex": "^0.7.18",
+    "@citation-js/plugin-csl": "^0.7.18",
+    "doi-utils": "^2.0.5",
     "sanitize-html": "^2.7.0"
   },
   "devDependencies": {

@@ -1,0 +1,69 @@
+title: myst-to-tex notebook features
+cases:
+  - title: notebook-code
+    mdast:
+      type: root
+      children:
+        - type: block
+          kind: notebook-code
+          children:
+            - type: code
+              executable: true
+              lang: python
+              value: |-
+                # I am visible
+                source = "Hello World"
+
+                print(source)
+              visibility: show
+            - type: code
+              data:
+                type: output
+              value: 'Hello World
+
+                '
+              visibility: show
+          data:
+            tags: []
+          visibility: show
+    latex: |-
+      \begin{verbatim}
+      # I am visible
+      source = "Hello World"
+
+      print(source)
+      \end{verbatim}
+
+      \begin{verbatim}
+      Hello World
+      \end{verbatim}
+  - title: notebook-code-remove
+    mdast:
+      type: root
+      children:
+        - type: block
+          kind: notebook-code
+          children:
+            - type: code
+              executable: true
+              lang: python
+              value: |-
+                # I am invisible
+                source = "Hello World"
+
+                print(source)
+              visibility: remove
+            - type: code
+              data:
+                type: output
+              value: 'Hello World
+
+                '
+              visibility: show
+          data:
+            tags: []
+          visibility: show
+    latex: |-
+      \begin{verbatim}
+      Hello World
+      \end{verbatim}

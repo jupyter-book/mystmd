@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
 import type { LocalProject, LocalProjectPage } from '../project/types.js';
 import type { RootState } from './reducers.js';
-import type { BuildWarning, ExternalLinkResult } from './types.js';
+import type { BuildWarning, ExternalLinkResult, ValidatedRawConfig } from './types.js';
 
 function mutableCopy(obj?: Record<string, any>) {
   if (!obj) return;
@@ -50,6 +50,23 @@ export function selectCurrentProjectConfig(state: RootState): ProjectConfig | un
   return mutableCopy(state.local.config.projects[resolve(state.local.config.currentProjectPath)]);
 }
 
+export function selectProjectParts(state: RootState, path: string): string[] {
+  return [...(state.local.config.projectParts[resolve(path)] ?? [])];
+}
+
+export function selectFileParts(state: RootState, file: string): string[] {
+  return [...(state.local.config.fileParts[resolve(file)] ?? [])];
+}
+
+export function selectFileFromPart(state: RootState, partFile: string): string | undefined {
+  let file: string | undefined;
+  Object.entries(state.local.config.fileParts).forEach(([key, value]) => {
+    if (file) return;
+    if (value.includes(partFile)) file = key;
+  });
+  return file;
+}
+
 export function selectCurrentProjectPath(state: RootState): string | undefined {
   return state.local.config.currentProjectPath;
 }
@@ -65,8 +82,12 @@ export function selectLocalConfigFile(state: RootState, path: string): string | 
 export function selectLocalRawConfig(
   state: RootState,
   path: string,
-): { raw: Record<string, any>; validated: Record<string, any> } | undefined {
+): { raw: Record<string, any>; validated: ValidatedRawConfig } | undefined {
   return mutableCopy(state.local.config.rawConfigs[resolve(path)]);
+}
+
+export function selectConfigExtensions(state: RootState): string[] {
+  return [...(state.local.config.configExtensions ?? [])];
 }
 
 export function selectReloadingState(state: RootState) {

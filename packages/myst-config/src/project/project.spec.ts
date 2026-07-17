@@ -20,6 +20,18 @@ describe('validateProjectConfig', () => {
     };
     expect(validateProjectConfig(projConfig, opts)).toEqual(projConfig);
   });
+  it('single exclude coerces', async () => {
+    expect(
+      validateProjectConfig(
+        {
+          exclude: 'license.md',
+        },
+        opts,
+      ),
+    ).toEqual({
+      exclude: ['license.md'],
+    });
+  });
   it('invalid exclude omitted', async () => {
     expect(validateProjectConfig({ exclude: ['license.md', 5] }, opts)).toEqual({
       exclude: ['license.md'],

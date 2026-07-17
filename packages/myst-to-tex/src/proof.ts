@@ -5,6 +5,7 @@ import type { ProofContainer, ProofKind } from 'myst-ext-proof';
 import { select } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
 import type { Handler } from './types.js';
+import { addIndexEntries } from './utils.js';
 
 function kindToEnvironment(kind: ProofKind): string {
   switch (kind) {
@@ -55,7 +56,7 @@ export const proofHandler: Handler = (node, state) => {
     t.type = '__delete__';
   }
   const newNode = remove(node, '__delete__') as GenericNode;
-
+  addIndexEntries(node, state);
   state.write('\\begin{');
   state.write(env);
   state.write('}');

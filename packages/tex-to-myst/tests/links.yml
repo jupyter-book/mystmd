@@ -47,14 +47,54 @@ cases:
       children:
         - type: paragraph
           children:
-            - type: link
-              url: mainlemma
+            - type: crossReference
+              identifier: mainlemma
+              label: mainlemma
               children:
                 - type: text
                   value: 'lemma '
                 - type: crossReference
                   identifier: mainlemma
                   label: mainlemma
+                  noLink: true
                   children:
                     - type: text
                       value: '%s'
+  - title: hyperlink
+    tex: \hyperlink{WRIC}{weak return impatience}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: link
+              url: WRIC
+              children:
+                - type: text
+                  value: weak return impatience
+  - title: hyperref
+    tex: \hyperref[sec:introduction]{Introduction Section}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              label: sec:introduction
+              identifier: sec:introduction
+              children:
+                - type: text
+                  value: Introduction Section
+  - title: hypertarget
+    tex: \hypertarget{WRIC}{Some text}
+    tree:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              label: WRIC
+              identifier: wric
+              children:
+                - type: text
+                  value: Some text

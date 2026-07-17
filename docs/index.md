@@ -3,9 +3,9 @@ title: MyST Markdown Tools
 description: MyST (Markedly Structured Text) is designed to create publication-quality documents written entirely in Markdown.
 ---
 
-{abbr}`MyST (Markedly Structured Text)` is an ecosystem of open-source, community-driven tools designed to revolutionize scientific communication. Our powerful authoring framework supports blogs, online books, scientific papers, reports and journals articles.
+{abbr}`MyST (Markedly Structured Text)` is an [ecosystem of open-source, community-driven tools](./overview.md) designed to revolutionize scientific communication. Our powerful authoring framework supports blogs, online books, scientific papers, reports and journals articles.
 
-:::{card} Install MyST 👩‍💻
+:::{card} Get Started With MyST 👩‍💻
 :link: ./quickstart.md
 Start here to get up and running with the `myst` command-line tools.
 :::
@@ -22,7 +22,7 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 :class: framed
 :::
 
-🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./integrating-jupyter.md)
+🪄📊 **Live graphs** can be embedded directly in your documentation or articles with computation backed by Jupyter or JupyterLite – running locally, on Binder, or directly in your browser. Get up and running with Thebe in [](./in-page-execution.md)
 
 :::{figure} ./videos/thebe.mp4
 :class: framed
@@ -44,41 +44,31 @@ We think {abbr}`MyST (Markedly Structured Text)` is really cool, some of the fea
 
 ## Quickstart Tutorials
 
-Get up and running with MyST with the following **quickstart tutorials**:
-
-:::{card} Publish a Website 🌎
-:link: ./quickstart-myst-websites.md
-Learn the basics of customizing a MyST Website, including sharing frontmatter between pages.
-:::
-
-:::{card} Create Scientific Publications 📑
-:link: ./quickstart-myst-documents.md
-Learn the basics of MyST Markdown, and export to a Word document, PDF, and $\LaTeX$!
-:::
-
-:::{card} MyST Markdown Guide 📖
-:link: ./quickstart-myst-markdown.md
-See an overview of MyST Markdown syntax with inline demos and examples.
-:::
+![](#quickstart-cards)
 
 :::{seealso}
 :class: dropdown
 
-# Coming from JupyterBook or Sphinx?
+# Coming from Jupyter Book V1 or Sphinx?
 
 👋 We are glad you are here! 💚
 
-There are many ways that `mystmd` can be used with JupyterBook and Sphinx. We recommend that you read [background on `mystmd`](./background.md), which goes over how these projects overlap and work together!
+There are many ways that `mystmd` can be used with Jupyter Book and Sphinx. We recommend that you read [a high-level overview of MyST](./overview.md) as well as [the project background](./background.md), which goes over how these projects overlap and work together!
 
 TL;DR
-: **Yes**, you can use `mystmd` with your JupyterBook! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
-: **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in Javascript not Python!
-: JupyterBook and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+: **Yes**, you can use `mystmd` with your Jupyter Book! `mystmd` can create [scientific PDFs](./creating-pdf-documents.md) and can natively read the [`_toc.yml`](./table-of-contents.md) as well as all of your existing MyST Markdown content and [Jupyter Notebooks](./interactive-notebooks.ipynb).
+: **Yes**, `mystmd` is compatible with [intersphinx](#intersphinx) even though it is written in JavaScript not Python!
+: Jupyter Book and `mystmd` have **overlap** in the ability to create online books like this one. `mystmd` has some extra capabilities for [cross-references](./cross-references.md), interactivity and [performance](./accessibility-and-performance.md).
+: For more information see this [upgrade guide from Jupyter Book v1 to v2](https://next.jupyterbook.org/upgrade/).
 :::
+
+## Cite `mystmd`
+
+To cite or read more references about the `mystmd` project and related tools, see [](./cite.md).
 
 ## Project Goals
 
-MyST is part of the [Executable Books](https://executablebooks.org/) organization, and is an open-source, community-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
+MyST is part of the [Project Jupyter](https://jupyter.org/) organization, and is an open-source, community-driven project to improve scientific communication, including integrations into Jupyter Notebooks and computational results.
 
 ::::{grid} 1 1 2 3
 
@@ -118,17 +108,17 @@ Read about performance »
 
 **Technical Goals**
 
-- `mystmd` is a Javascript parser and command line tool for working with MyST Markdown
+- `mystmd` is a JavaScript parser and command line tool for working with MyST Markdown
 - Parse MyST into a standardized [AST](wiki:Abstract_Syntax_Tree), that follows [the MyST Spec](https://mystmd.org/spec)
 - Translate and render MyST into:
-  - Modern [interactive websites](./quickstart-myst-websites.md), using React (like this website!)
+  - Modern [interactive websites](./quickstart-myst-documents.md), using React (like this website!)
   - PDFs and $\LaTeX$ documents, with [specific templates for over 400 journals](./creating-pdf-documents.md)
   - Microsoft Word [export](./creating-word-documents.md)
 - Provide functionality for [cross-referencing](./cross-references.md), [external structured links](./external-references.md), and [scientific citations](./citations.md)
 
 **Architecture**
 
-The `mystmd` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF & $\LaTeX$](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./quickstart-myst-websites.md), or [JATS](./creating-jats-xml.md).
+The `mystmd` command line tool can be used to parse MyST Markdown and Jupyter Notebooks into an AST. This data can be saved as JSON, or rendered to a website (like this one!) or any number of formats including [PDF & $\LaTeX$](./creating-pdf-documents.md), [Word](./creating-word-documents.md), [React](./quickstart-myst-documents.md), or [JATS](./creating-jats-xml.md).
 
 ```{mermaid}
 flowchart LR
@@ -143,14 +133,12 @@ flowchart LR
   D <--> J[JATS]
 ```
 
-```{important}
-:class: dropdown
-**Using Sphinx or Python?**
+```{important .dropdown} Using Sphinx or Python?
 
-For integration with **Sphinx**, use the Python implementation for MyST or JupyterBook, which can be found at:
+For integration with **Sphinx**, use the Python implementation for MyST or Jupyter Book V1, which can be found at:
 
 - [MyST Python Parser for Sphinx](https://myst-parser.readthedocs.io/en/latest/)
-- [JupyterBook](https://jupyterbook.org/)
+- [Jupyter Book](https://jupyterbook.org/)
 
-Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the **Javascript** MyST Markdown CLI.
+Although many tools in the [MyST Ecosystem](https://mystmd.org) follow the same conventions and [specification](https://mystmd.org/spec), the following documentation refers only to the `mystmd` CLI.
 ```

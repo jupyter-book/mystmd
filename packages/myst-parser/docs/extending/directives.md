@@ -4,7 +4,7 @@ Let's explore creating a `figure` directive, which takes an image `src` as an `a
 
 ````markdown
 ```{figure} ../image.png
-:name: my-figure
+:label: my-figure
 
 A cool caption! 😎
 ```

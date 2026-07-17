@@ -1,0 +1,21 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: Bad title
+  author: Bad author
+  export:
+    format: tex
+    title: One Two Three!
+    author: Franklin Koch
+    template: ../templates/tex
+    output: _build/out.tex
+    articles:
+      - file: one.md
+        level: 0
+        title: Page One
+      - file: two.md
+        level: 0
+        title: Page Two
+      - file: three.md
+        level: 0
+        title: Page Three

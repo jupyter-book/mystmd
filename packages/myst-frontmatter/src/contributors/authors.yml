@@ -69,6 +69,38 @@ cases:
           name: University
         - id: Company
           name: Company
+  - title: Affiliations can be an object
+    raw:
+      authors:
+        - id: jn
+          name: Just A. Name
+          affiliation:
+            id: ubc
+            name: University of British Columbia
+        - id: rc
+          name: Remote Control
+          affiliation: ubc
+    normalized:
+      authors:
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+          affiliations:
+            - ubc
+        - id: rc
+          name: Remote Control
+          nameParsed:
+            literal: Remote Control
+            given: Remote
+            family: Control
+          affiliations:
+            - ubc
+      affiliations:
+        - id: ubc
+          name: University of British Columbia
   - title: First email is corresponding
     raw:
       author:
@@ -102,6 +134,42 @@ cases:
             family: Name
           email: example@example.com
           corresponding: false
+  - title: Next email is corresponding if first is false
+    raw:
+      author:
+        - id: jn
+          name: Just A. Name
+          email: example@example.com
+          corresponding: false
+        - id: ne
+          name: No Email
+        - id: an
+          name: A. Nother Name
+          email: example@example.com
+    normalized:
+      authors:
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+          email: example@example.com
+          corresponding: false
+        - id: ne
+          name: No Email
+          nameParsed:
+            literal: No Email
+            given: No
+            family: Email
+        - id: an
+          name: A. Nother Name
+          nameParsed:
+            literal: A. Nother Name
+            given: A. Nother
+            family: Name
+          email: example@example.com
+          corresponding: true
   - title: Respect corresponding flag
     raw:
       authors:
@@ -129,6 +197,45 @@ cases:
             family: Name
           email: example@example.com
           corresponding: true
+  - title: First email is corresponding (unless collaboration)
+    raw:
+      author:
+        id: my-group
+        name: Research Group
+        collaboration: true
+        email: example@example.com
+    normalized:
+      authors:
+        - id: my-group
+          name: Research Group
+          collaboration: true
+          email: example@example.com
+  - title: Collaboration cannot be corresponding (first Person gets corresponding flag)
+    raw:
+      authors:
+        - id: my-group
+          name: Research Group
+          collaboration: true
+          email: example@example.com
+          corresponding: true
+        - id: jn
+          name: Just A. Name
+          email: example@example.com
+    normalized:
+      authors:
+        - id: my-group
+          name: Research Group
+          collaboration: true
+          email: example@example.com
+        - id: jn
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+          email: example@example.com
+          corresponding: true
+    warnings: 1
   - title: Warn if author has no name
     raw:
       authors:
@@ -150,7 +257,20 @@ cases:
           email: example@example.com
           corresponding: true
     warnings: 1
-  - title: Warn if author has no family name
+  - title: Allow no family name if defined explicitly
+    raw:
+      authors:
+        - name:
+            literal: Someone
+            given: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: 'Someone'
+          nameParsed:
+            literal: 'Someone'
+            given: Someone
+  - title: Warn if computed literal starts with comma
     raw:
       authors:
         - name:
@@ -163,7 +283,20 @@ cases:
             literal: ', Someone'
             given: Someone
     warnings: 1
-  - title: Warn if author has no given name
+  - title: Allow explicit literal to start with comma
+    raw:
+      authors:
+        - name:
+            literal: ', Someone'
+            given: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: ', Someone'
+          nameParsed:
+            literal: ', Someone'
+            given: Someone
+  - title: Warn if parsed author name has no given name
     raw:
       authors:
         - name: Someone
@@ -175,6 +308,18 @@ cases:
             literal: 'Someone'
             family: Someone
     warnings: 1
+  - title: Allow no given name if defined explicitly
+    raw:
+      authors:
+        - name:
+            family: Someone
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: 'Someone'
+          nameParsed:
+            literal: 'Someone'
+            family: Someone
   - title: Parsed name is maintained
     raw:
       authors:
@@ -195,26 +340,38 @@ cases:
             non_dropping_particle: von
             family: Junior
             suffix: Jr.
-  - title: Name object with lots of commas warns
+  - title: Name object with explicit commas is ok
     raw:
       authors:
         - name:
-            literal: Commas, here, are, great,
-            given: Commas,
-            non_dropping_particle: here,
-            family: are,
-            suffix: warnings,
+            literal: Doe, John, III, M.D.
+            family: Doe
+            given: John
+            suffix: III, M.D.
     normalized:
       authors:
         - id: contributors-generated-uid-0
-          name: Commas, here, are, great,
+          name: Doe, John, III, M.D.
           nameParsed:
-            literal: Commas, here, are, great,
-            given: Commas,
-            non_dropping_particle: here,
-            family: are,
-            suffix: warnings,
-    warnings: 4
+            literal: Doe, John, III, M.D.
+            family: Doe
+            given: John
+            suffix: III, M.D.
+  - title: Name that parses to values with commas warns
+    raw:
+      authors:
+        - name:
+            literal: Doe, John, III, M.D.
+    normalized:
+      authors:
+        - id: contributors-generated-uid-0
+          name: Doe, John, III, M.D.
+          nameParsed:
+            literal: Doe, John, III, M.D.
+            family: Doe, John
+            given: M.D.
+            suffix: III
+    warnings: 1
   - title: Name string with extra comma warns
     raw:
       authors:
@@ -310,3 +467,29 @@ cases:
             given: Just A.
             family: Name
     warnings: 1
+  - title: author as id resolves as placeholder
+    raw:
+      author:
+        id: Just A. Name
+    normalized:
+      authors:
+        - id: Just A. Name
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name
+  - title: reviewer as ref resolves as placeholder
+    raw:
+      reviewer:
+        ref: Just A. Name
+    normalized:
+      reviewers:
+        - Just A. Name
+      contributors:
+        - id: Just A. Name
+          name: Just A. Name
+          nameParsed:
+            literal: Just A. Name
+            given: Just A.
+            family: Name

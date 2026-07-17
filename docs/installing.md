@@ -1,24 +1,74 @@
 ---
-title: Installing MyST Markdown Command Line Interface
-short_title: Installing MyST
+title: Install the MyST Markdown Command Line Interface
+subtitle: Install the MyST CLI using your favourite package manager
+short_title: Install MyST
 description: MyST Markdown is available through Node and npm, install the package with `npm install mystmd`.
 ---
 
-+++
+To install the MyST CLI, choose your preferred package manager. If you do not know what a package manager is, _it is recommended that you install MyST with `mamba` from conda-forge_.
 
-The MyST Markdown Command Line Interface (CLI) is available through [NodeJS](./installing-prerequisites.md) and the node package manager, `npm`. Node is used by Jupyter as well as many other Python packages so you may already have it installed on your _PATH_ and the following command may just work 🤞.
+(installing-myst-tabs)=
+:::::{tab-set}
+(installing-conda-forge)=
+::::{tab-item} conda-forge
 
-🛠️ [Install NodeJS](./installing-prerequisites.md), either version 16, 18 or 20
+You can install using `mamba` (<https://mamba.readthedocs.io>), see [Getting started with Miniforge](xref:biapol#ref:miniforge_python).
 
-```{important} Installing Node
+🛠 Then install `mystmd` from `conda-forge`:
 
-If you do not have `node` installed you can look at our how to guide for [Installing NodeJS](./installing-prerequisites.md). If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystmd/issues).
+```shell
+mamba install -c conda-forge mystmd
 ```
 
-🛠️ Choose either PyPI, Conda, Mamba or NPM and run the following command:
+You may also use [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html) which comes packaged with the [Anaconda](https://www.anaconda.com/download/success) python distribution.
 
-:::{embed} #installing-myst-tabs
+🛠 Then install `mystmd` from `conda-forge`:
+
+```shell
+conda install -c conda-forge mystmd
+```
+
+::::
+::::{tab-item} PyPI
+
+🛠 Install `mystmd`:
+
+```shell
+pip install mystmd
+```
+
+🛠 Ensure `mystmd` is ready for use:
+
+MyST needs `node` (<https://nodejs.org>) in order to run correctly. If `node` is not already installed, starting `myst` will prompt you to install it:
+
+```shell
+$ myst -v
+Node.js (node) is required to run MyST, but could not be found.
+Install Node.js in '/root/.local/share/myst/20.0.0'? (y/N): y
+Attempting to install Node.js in /root/.local/share/myst/20.0.0 ...
+Successfully installed Node.js 20.0.0
+v1.3.4
+```
+
+:::{note} Installing Node.js Manually
+:class: dropdown
+
+The `mystmd` package on PyPI ships with the ability to install `node` (<https://nodejs.org>). If you would prefer to install NodeJS manually, see [Installing NodeJS](./install-node.md):
 :::
+
+::::
+::::{tab-item} NPM
+
+Ensure your `node` (<https://nodejs.org>) is up to date (>v20), see [Installing NodeJS](./install-node.md).
+
+🛠 Then install `mystmd` using npm, yarn or pnpm:
+
+```shell
+npm install -g mystmd
+```
+
+::::
+:::::
 
 This will install `myst` globally (`-g`) on your system and add a link to the main CLI tool. To see if things worked, try checking the version with:
 
@@ -29,23 +79,33 @@ myst --version
 This command should print the current version of the package. If all is good, you can type `myst` again in your terminal and it will list the help with all of the options available to you.
 
 ```{note}
-If you have any challenges installing, please [open an issue here](https://github.com/executablebooks/mystmd/issues).
+If you have any challenges installing, please [open an issue here](https://github.com/jupyter-book/mystmd/issues).
 ```
 
-+++
-
-## Updating MyST
-
-There are new releases of the MyST Markdown CLI every few weeks, to update to the latest version of `myst`, use:
-
-```shell
-npm update -g mystmd
-```
-
-Try the `myst --version` command before and after, with an update you should be on the most up to date version (see [npm](https://npmjs.com/package/mystmd) for the latest version!). If you are not, try `npm uninstall -g mystmd` or without the `-g` global flag, until `myst` is no longer available on your command line. Then try installing again!
-
-+++
-
-### Dependencies for $\LaTeX$ and PDF
+## Dependencies for $\LaTeX$ and PDF
 
 If you are exporting to $\LaTeX$ with an open-source template specified (see all [templates](https://github.com/myst-templates)) or if you are creating a PDF you will need to install a version of [LaTeX](https://www.latex-project.org/get).
+
+:::::{tab-set}
+::::{tab-item} conda-forge
+
+🛠 Install `mamba` (<https://mamba.readthedocs.io>), see <xref:biapol#ref:miniforge_python>.
+
+```shell
+$ mamba --version
+mamba 1.5.8
+conda 24.7.1
+```
+
+🛠 Install `texlive-core`, `latexmk`, and `imagemagick` from `conda-forge`:
+
+```shell
+$ mamba install -c conda-forge texlive-core latexmk imagemagick
+```
+
+`imagemagick` is optional, but recommended if your documents include images that need conversion for PDF output.
+
+For Debian or Ubuntu based systems, the equivalent packages commonly include `texlive-xetex`, `texlive-fonts-recommended`, `texlive-plain-generic`, `latexmk`, and `imagemagick`.
+
+::::
+:::::

@@ -1,5 +1,4 @@
 export type { ValidationOptions, KeyOptions } from './types.js';
-export { getDate, formatDate } from './utils.js';
 export {
   defined,
   locationSuffix,
@@ -11,6 +10,7 @@ export {
   validateNumber,
   validateUrl,
   validateSubdomain,
+  validateDomain,
   validateEmail,
   validateChoice,
   validateEnum,

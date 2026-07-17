@@ -1,15 +1,51 @@
 import type { GenericNode, GenericParent } from 'myst-common';
-import { fileWarn, RuleId } from 'myst-common';
+import { fileError, fileWarn, RuleId, transferTargetAttrs } from 'myst-common';
 import type { Code, Container, Include } from 'myst-spec-ext';
 import { selectAll } from 'unist-util-select';
 import type { Caption } from 'myst-spec';
 import type { Plugin } from 'unified';
 import type { VFile } from 'vfile';
+import type { PageFrontmatter } from 'myst-frontmatter';
+
+type ParseResult = { mdast: GenericParent; frontmatter?: PageFrontmatter };
 
 export type Options = {
   loadFile: (filename: string) => Promise<string | undefined> | string | undefined;
-  parseContent: (filename: string, content: string) => Promise<GenericNode[]> | GenericNode[];
+  resolveFile: (
+    includeFile: string,
+    sourceFile: string,
+    sourcePath: string,
+    vfile: VFile,
+  ) => string | undefined;
+  parseContent: (filename: string, content: string) => Promise<ParseResult> | ParseResult;
+  sourceFile: string;
+  sourcePath: string;
+  stack?: string[];
 };
+
+/**
+ * Pluck any relevant frontmatter from include files
+ *
+ * For now, this only includes math macros and abbreviations; all other
+ * include frontmatter is ignored.
+ *
+ * If values are defined on both the page and the include file,
+ * values from the include file will take priority.
+ */
+function updateFrontmatterFromInclude(
+  frontmatter: PageFrontmatter,
+  includeFrontmatter?: PageFrontmatter,
+) {
+  if (frontmatter.math || includeFrontmatter?.math) {
+    frontmatter.math = { ...frontmatter.math, ...includeFrontmatter?.math };
+  }
+  if (frontmatter.abbreviations || includeFrontmatter?.abbreviations) {
+    frontmatter.abbreviations = {
+      ...frontmatter.abbreviations,
+      ...includeFrontmatter?.abbreviations,
+    };
+  }
+}
 
 /**
  * This is the {include} directive, that loads from disk.
@@ -17,13 +53,32 @@ export type Options = {
  * RST documentation:
  *  - https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment
  */
-export async function includeDirectiveTransform(tree: GenericParent, file: VFile, opts: Options) {
+export async function includeDirectiveTransform(
+  tree: GenericParent,
+  frontmatter: PageFrontmatter,
+  vfile: VFile,
+  opts: Options,
+) {
   const includeNodes = selectAll('include', tree) as Include[];
+  if (includeNodes.length === 0) return;
+  if (!opts?.stack) opts.stack = [opts.sourceFile];
   await Promise.all(
     includeNodes.map(async (node) => {
-      const rawContent = await opts.loadFile(node.file);
+      // If the transform has already run, don't run it again!
+      if (node.children && node.children.length > 0) return;
+      const fullFile = opts.resolveFile(node.file, opts.sourceFile, opts.sourcePath, vfile);
+      if (!fullFile) return;
+      // If we encounter the same include file twice in a single stack, return
+      if (opts.stack?.includes(fullFile)) {
+        fileError(vfile, `Include Directive: "${fullFile}" depends on itself`, {
+          ruleId: RuleId.includeContentLoads,
+          note: [...opts.stack, fullFile].join(' > '),
+        });
+        return;
+      }
+      const rawContent = await opts.loadFile(fullFile);
       if (rawContent == null) return;
-      const { content, startingLineNumber } = filterIncludedContent(file, node.filter, rawContent);
+      const { content, startingLineNumber } = filterIncludedContent(vfile, node.filter, rawContent);
       let children: GenericNode[];
       if (node.literal) {
         const code: Code = {
@@ -64,20 +119,26 @@ export async function includeDirectiveTransform(tree: GenericParent, file: VFile
           };
           const container: Container = {
             type: 'container',
-            kind: 'code' as any,
-            // Move the label to the container
-            label: code.label,
-            identifier: code.identifier,
+            kind: 'code',
             children: [code as any, caption],
           };
-          delete code.label;
-          delete code.identifier;
+          // Move the label to the container
+          transferTargetAttrs(code, container, vfile);
           children = [container];
         }
       } else {
-        children = await opts.parseContent(node.file, content);
+        const parsed = await opts.parseContent(fullFile, content);
+        children = parsed.mdast.children;
+        updateFrontmatterFromInclude(frontmatter, parsed.frontmatter);
       }
       node.children = children as any;
+      if (!node.children?.length) return;
+      // Recurse!
+      await includeDirectiveTransform(node as GenericParent, frontmatter, vfile, {
+        ...opts,
+        stack: [...(opts.stack ?? []), fullFile],
+        sourceFile: fullFile,
+      });
     }),
   );
 }
@@ -170,7 +231,10 @@ export function filterIncludedContent(
   return { content: lines.slice(startLine, endLine + 1).join('\n'), startingLineNumber };
 }
 
-export const includeDirectivePlugin: Plugin<[Options], GenericParent, GenericParent> =
-  (opts) => async (tree, file) => {
-    await includeDirectiveTransform(tree as GenericParent, file, opts);
-  };
+export const includeDirectivePlugin: Plugin<
+  [PageFrontmatter, Options],
+  GenericParent,
+  GenericParent
+> = (frontmatter, opts) => async (tree, file) => {
+  await includeDirectiveTransform(tree as GenericParent, frontmatter, file, opts);
+};

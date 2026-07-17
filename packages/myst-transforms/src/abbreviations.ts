@@ -9,7 +9,7 @@ import { findAndReplace } from 'mdast-util-find-and-replace';
 
 type Options = {
   /** An object of abbreviations { "TLA": "Three Letter Acronym" } */
-  abbreviations?: Record<string, string>;
+  abbreviations?: Record<string, string | null>;
   /**
    * Expand the abbreviation the first time it is encountered,
    *
@@ -30,14 +30,22 @@ function replaceText(mdast: GenericParent, opts: Options) {
       .map(([abbr, title]) => [
         abbr,
         (value: any, { stack }: RegExpMatchObject) => {
+          if (!title) {
+            // Change the type of this match to a transient node to guard from further replacements
+            return u('__skippedAbbreviation__', value);
+          }
           if (stack.slice(-1)[0].type !== 'text') return false;
           const parent = stack.find((p) => doNotModifyParents.has(p.type));
           if (parent) return false;
-          return u('abbreviation', { title }, [u('text', value)]) as any;
+          return u('abbreviation', { title }, [u('text', value)]);
         },
       ]),
   );
   findAndReplace(mdast as any, replacements);
+  // Restore the original `text` type of the transient replacements performed above
+  selectAll('__skippedAbbreviation__', mdast).forEach((n) => {
+    n.type = 'text';
+  });
 }
 
 export function abbreviationTransform(mdast: GenericParent, opts?: Options) {

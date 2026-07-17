@@ -2,7 +2,7 @@ import YAML from 'js-yaml';
 import type { Handle } from 'mdast-util-to-markdown';
 import { RuleId, fileError } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
-import { licensesToString } from 'myst-frontmatter';
+import { simplifyLicenses } from 'myst-frontmatter';
 import type { Root } from 'myst-spec';
 import { selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
@@ -81,7 +81,7 @@ export function runValidators(tree: Root, validators: Record<string, Validator>,
 export function addFrontmatter(page: string, frontmatter?: PageFrontmatter) {
   if (!frontmatter || !Object.keys(frontmatter).length) return page;
   const fm = frontmatter.license
-    ? { ...frontmatter, license: licensesToString(frontmatter.license) }
+    ? { ...frontmatter, license: simplifyLicenses(frontmatter.license) }
     : { ...frontmatter };
   return `---\n${YAML.dump(fm)}---\n${page}`;
 }

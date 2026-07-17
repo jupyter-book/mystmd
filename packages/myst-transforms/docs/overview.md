@@ -1,28 +1,7 @@
 ---
-title: Overview
+title: What's in store
 description: List of transforms included in the myst-transforms package.
 ---
-
-These transforms take AST from `mystmd` and turn it into usable forms, enforce document structure, or provide other utilities.
-
-These utilities are available on npm:
-
-```bash
-npm install myst-transforms
-```
-
-You can use the plugins as follows:
-
-```typescript
-import { unified } from 'unified';
-import { mathPlugin } from 'myst-transforms';
-
-unified()
-  .use(mathPlugin, { macros: {} }) // Add the plugin with any options
-  .run(tree); // Run the AST through the set of plugins
-
-// The AST has now been modified in place.
-```
 
 ## List of Transforms
 
@@ -78,4 +57,7 @@ Targets
 
 ## Plugin Collections
 
-A few of the plugins are exposed in a `basicTransformationsPlugin` does a number of the expected transformations without any user supplied options. See the code for exactly which plugins are included. If you are depending on this, ideally use the individual plugins directly, which will always provide options.
+A few of the plugins are exposed in a `basicTransformationsPlugin` that does a number of the expected transformations without any user supplied options.  
+See the code (look for function `basicTransformations` in file `packages/myst-transforms/src/basic.ts`) for exactly which plugins are included.
+
+If you are depending on this, ideally use the individual plugins directly, which will always provide options.

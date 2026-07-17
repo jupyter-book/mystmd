@@ -70,6 +70,7 @@ import type {
   ArticleContent,
   DocumentOptions,
   JatsPart,
+  FrontmatterWithParts,
 } from './types.js';
 import { ACKNOWLEDGMENT_PARTS, ABSTRACT_PARTS } from './types.js';
 import {
@@ -284,6 +285,7 @@ type Handlers = {
   si: Handler<GenericNode>;
   proof: Handler<GenericNode>;
   algorithmLine: Handler<AlgorithmLine>;
+  outputs: Handler<GenericNode>;
   output: Handler<GenericNode>;
   embed: Handler<GenericNode>;
   supplementaryMaterial: Handler<SupplementaryMaterial>;
@@ -305,7 +307,7 @@ const handlers: Handlers = {
     state.renderInline(node, 'title');
   },
   block(node, state) {
-    if (node.visibility === 'remove') return;
+    if (node.visibility === 'remove' || node.visibility === 'hide') return;
     state.renderChildren(node);
   },
   blockquote(node, state) {
@@ -631,22 +633,25 @@ const handlers: Handlers = {
     state.renderChildren(node);
     state.closeNode();
   },
+  outputs(node, state) {
+    state.renderChildren(node);
+  },
   output(node, state) {
     if (state.data.isInContainer) {
-      if (!node.data?.[0]) return;
-      alternativesFromMinifiedOutput(node.data[0], state);
+      if (!node.jupyter_data) return;
+      alternativesFromMinifiedOutput(node.jupyter_data, state);
       return;
     }
     const { identifier } = node;
     const attrs: Attributes = { 'sec-type': 'notebook-output' };
-    node.data?.forEach((output: any, index: number) => {
+    if (node.jupyter_data) {
       state.openNode('sec', {
         ...attrs,
-        id: identifier && !state.data.isNotebookArticleRep ? `${identifier}-${index}` : undefined,
+        id: identifier && !state.data.isNotebookArticleRep ? identifier : undefined,
       });
-      alternativesFromMinifiedOutput(output, state);
+      alternativesFromMinifiedOutput(node.jupyter_data, state);
       state.closeNode();
-    });
+    }
   },
   embed(node, state) {
     if (state.data.isInContainer) {
@@ -713,11 +718,13 @@ function createText(text: string): Element {
 }
 
 function renderPart(vfile: VFile, mdast: GenericParent, part: string | string[], opts?: Options) {
+  const { frontmatterParts, ...otherOpts } = opts ?? {};
   const partMdast = extractPart(mdast, part, {
     removePartData: true,
+    frontmatterParts,
   });
   if (!partMdast) return undefined;
-  const serializer = new JatsSerializer(vfile, partMdast as Root, opts);
+  const serializer = new JatsSerializer(vfile, partMdast as Root, otherOpts);
   return serializer.render(true).elements();
 }
 
@@ -754,7 +761,7 @@ function renderBackSection(vfile: VFile, mdast: GenericParent, def: JatsPart, op
   return sec;
 }
 
-class JatsSerializer implements IJatsSerializer {
+export class JatsSerializer implements IJatsSerializer {
   file: VFile;
   data: StateData;
   handlers: Record<string, Handler>;
@@ -930,6 +937,7 @@ export class JatsDocument {
       ...this.options,
       isNotebookArticleRep,
       extractAbstract: true,
+      frontmatterParts: this.content.frontmatter?.parts,
     });
     const inventory: IdInventory = {};
     referenceTargetTransform(articleState.mdast as any, inventory, this.content.citations);
@@ -945,7 +953,7 @@ export class JatsDocument {
     }
     affiliationIdTransform(
       [this.content.frontmatter, ...subArticles.map((a) => a.frontmatter)].filter(
-        (fm): fm is PageFrontmatter => !!fm,
+        (fm): fm is Omit<PageFrontmatter, 'parts'> => !!fm,
       ),
       'aff',
     );
@@ -981,7 +989,7 @@ export class JatsDocument {
   }
 
   frontStub(
-    frontmatter?: PageFrontmatter,
+    frontmatter?: FrontmatterWithParts,
     state?: IJatsSerializer,
     notebookRep?: boolean,
   ): Element[] {
@@ -1021,6 +1029,7 @@ export class JatsDocument {
       isSubArticle: true,
       slug: content.slug,
       extractAbstract: !notebookRep,
+      frontmatterParts: content.frontmatter?.parts,
     });
   }
 
@@ -1075,7 +1084,7 @@ export function writeJats(file: VFile, content: ArticleContent, opts?: DocumentO
 }
 
 const plugin: Plugin<
-  [SourceFileKind, PageFrontmatter?, CitationRenderer?, string?, DocumentOptions?],
+  [SourceFileKind, FrontmatterWithParts?, CitationRenderer?, string?, DocumentOptions?],
   Root,
   VFile
 > = function (kind, frontmatter, citations, slug, opts) {

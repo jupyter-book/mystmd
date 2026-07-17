@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+
 import { join, resolve } from 'node:path';
 import { isDirectory, isUrl } from 'myst-cli-utils';
 import { RuleId } from 'myst-common';
@@ -10,11 +11,12 @@ import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { getAllBibTexFilesOnPath } from '../utils/getAllBibtexFiles.js';
-import { validateTOC } from '../utils/toc.js';
+import { tocFile, validateSphinxTOC } from '../utils/toc.js';
 import { projectFromPath } from './fromPath.js';
-import { projectFromToc } from './fromToc.js';
-import { writeTocFromProject } from './toToc.js';
+import { projectFromTOC, projectFromSphinxTOC, getIgnoreFiles } from './fromTOC.js';
 import type { LocalProject, LocalProjectPage } from './types.js';
+import { writeTOCToConfigFile } from './toTOC.js';
+import { binaryName, readableName } from '../utils/whiteLabelling.js';
 
 /**
  * Load project structure from disk
@@ -31,60 +33,93 @@ import type { LocalProject, LocalProjectPage } from './types.js';
 export async function loadProjectFromDisk(
   session: ISession,
   path?: string,
-  opts?: { index?: string; writeToc?: boolean; warnOnNoConfig?: boolean; reloadProject?: boolean },
+  opts?: { index?: string; writeTOC?: boolean; warnOnNoConfig?: boolean; reloadProject?: boolean },
 ): Promise<LocalProject> {
   path = path || resolve('.');
   if (!opts?.reloadProject) {
     const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
     if (cachedProject) return cachedProject;
   }
-  const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), path);
-  const file = join(path, session.configFiles[0]);
+  await loadConfig(session, path, opts);
+  const state = session.store.getState();
+  const projectConfig = selectors.selectLocalProjectConfig(state, path);
+  const projectConfigFile =
+    selectors.selectLocalConfigFile(state, path) ?? join(path, session.configFiles[0]);
   if (!projectConfig && opts?.warnOnNoConfig) {
     addWarningForFile(
       session,
-      file,
-      `Loading project from path with no config file: ${path}\nConsider running "myst init --project" in that directory`,
+      projectConfigFile,
+      `Loading project from path with no config file: ${path}\nConsider running "${binaryName()} init --project" in that directory`,
       'warn',
       { ruleId: RuleId.projectConfigExists },
     );
   }
   let newProject: Omit<LocalProject, 'bibliography'> | undefined;
-  let { index, writeToc } = opts || {};
-  const projectConfigFile = selectors.selectLocalConfigFile(session.store.getState(), path);
-  if (validateTOC(session, path)) {
-    newProject = projectFromToc(session, path);
-    if (writeToc) session.log.warn('Not writing the table of contents, it already exists!');
-    writeToc = false;
+  let { index, writeTOC } = opts || {};
+  let legacyToc = false;
+  const siteConfig = selectors.selectLocalSiteConfig(state, path);
+  const folders = !!siteConfig?.options?.folders;
+  const sphinxTOCFile = validateSphinxTOC(session, path) ? tocFile(path) : undefined;
+  if (projectConfig?.toc !== undefined) {
+    newProject = projectFromTOC(session, path, projectConfig.toc, 1, projectConfigFile, {
+      urlFolders: folders,
+    });
+    if (sphinxTOCFile) {
+      addWarningForFile(
+        session,
+        sphinxTOCFile,
+        `Ignoring legacy Jupyter Book TOC in favor of myst.yml TOC: ${sphinxTOCFile}`,
+        'warn',
+        {
+          ruleId: RuleId.encounteredLegacyTOC,
+        },
+      );
+    }
+    if (writeTOC) session.log.warn('Not writing the table of contents, it already exists!');
+    writeTOC = false;
+  } else if (sphinxTOCFile) {
+    // Legacy validator
+    legacyToc = true;
+    if (!writeTOC) {
+      // Do not warn if user is explicitly upgrading toc
+      // TODO: Add this back as a warning rather than debug as we surface this feature more
+      session.log.debug(`Encountered legacy Jupyter Book TOC: ${sphinxTOCFile}`);
+      session.log.debug(
+        `To upgrade to a ${readableName()} TOC, try running \`${binaryName()} init --write-toc\``,
+      );
+      // addWarningForFile(
+      //   session,
+      //   filename,
+      //   `Encountered legacy jupyterbook TOC: ${sphinxTOCFile}`,
+      //   'warn',
+      //   {
+      //     ruleId: RuleId.encounteredLegacyTOC,
+      //     note: 'To upgrade to a MyST TOC, try running `myst init --write-toc`',
+      //   },
+      // );
+    }
+    newProject = projectFromSphinxTOC(session, path, undefined, { urlFolders: folders });
   } else {
-    const project = selectors.selectLocalProject(session.store.getState(), path);
-    if (!index && project?.file) {
+    const project = selectors.selectLocalProject(state, path);
+    if (!index && !project?.implicitIndex && project?.file) {
+      // If there is no new index, keep the original unless it was implicit previously
       index = project.file;
     }
-    newProject = projectFromPath(session, path, index);
+    newProject = projectFromPath(session, path, index, { urlFolders: folders });
   }
   if (!newProject) {
     throw new Error(`Could not load project from ${path}`);
   }
-  if (writeToc) {
-    try {
+  if (writeTOC) {
+    if (legacyToc) {
       session.log.info(
-        `📓 Writing '_toc.yml' file to ${path === '.' ? 'the current directory' : path}`,
-      );
-      writeTocFromProject(newProject, path);
-      // Re-load from TOC just in case there are subtle differences with resulting project
-      newProject = projectFromToc(session, path);
-    } catch {
-      addWarningForFile(
-        session,
-        projectConfigFile,
-        `Error writing '_toc.yml' file to ${path}`,
-        'error',
-        { ruleId: RuleId.tocWritten },
+        `⬆️ Upgrading legacy Jupyter Book TOC to ${readableName()}: ${tocFile(path)}`,
       );
     }
+    session.log.info(`💾 Writing new TOC to: ${projectConfigFile}`);
+    await writeTOCToConfigFile(newProject, projectConfigFile, projectConfigFile);
   }
-  const allBibFiles = getAllBibTexFilesOnPath(session, path);
+  const allBibFiles = getAllBibTexFilesOnPath(session, path, getIgnoreFiles(session, path));
   let bibliography: string[];
   if (projectConfig?.bibliography) {
     const bibConfigPath = `${projectConfigFile}#bibliography`;
@@ -114,21 +149,24 @@ export async function loadProjectFromDisk(
   return project;
 }
 
-export function findProjectsOnPath(session: ISession, path: string) {
+export async function findProjectsOnPath(session: ISession, path: string) {
   let projectPaths: string[] = [];
   const content = fs.readdirSync(path);
   if (session.configFiles.filter((file) => content.includes(file)).length) {
-    loadConfig(session, path);
+    await loadConfig(session, path);
     if (selectors.selectLocalProjectConfig(session.store.getState(), path)) {
       projectPaths.push(path);
     }
   }
-  content
-    .map((dir) => join(path, dir))
-    .filter((file) => isDirectory(file))
-    .forEach((dir) => {
-      projectPaths = projectPaths.concat(findProjectsOnPath(session, dir));
-    });
+  const projs = await Promise.all(
+    content
+      .map((dir) => join(path, dir))
+      .filter((file) => isDirectory(file))
+      .map(async (dir) => await findProjectsOnPath(session, dir)),
+  );
+  projs.forEach((p) => {
+    projectPaths = projectPaths.concat(p);
+  });
   return projectPaths;
 }
 

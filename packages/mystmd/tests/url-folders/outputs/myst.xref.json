@@ -1,0 +1,26 @@
+{
+  "version": "1",
+  "references": [
+    { "kind": "page", "data": "/content/my-proj/readme.json", "url": "/my-proj/" },
+    {
+      "kind": "page",
+      "data": "/content/my-proj/one-with-dots.json",
+      "url": "/my-proj/one-with-dots"
+    },
+    { "kind": "page", "data": "/content/my-proj/two.json", "url": "/my-proj/two" },
+    {
+      "kind": "page",
+      "data": "/content/my-proj/one-folder.page.json",
+      "url": "/my-proj/one-folder/page"
+    },
+    { "kind": "page", "data": "/content/my-proj/two-1.index.json", "url": "/my-proj/two-1" },
+    { "kind": "page", "data": "/content/my-proj/two.a.json", "url": "/my-proj/two/a" },
+    { "kind": "page", "data": "/content/my-proj/two.page.json", "url": "/my-proj/two/page" },
+    {
+      "identifier": "my-thing",
+      "kind": "heading",
+      "data": "/content/my-proj/two.page.json",
+      "url": "/my-proj/two/page"
+    }
+  ]
+}

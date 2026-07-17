@@ -279,4 +279,55 @@ describe('extendFrontmatter', () => {
       },
     ]);
   });
+  it('corresponding=false is persisted in extended frontmatter', async () => {
+    const frontmatter: PageFrontmatter = {
+      authors: [
+        {
+          name: 'John Doe',
+          corresponding: true,
+          email: 'john@example.com',
+        },
+        {
+          name: 'Jane Doe',
+          corresponding: false,
+        },
+        {
+          name: 'Bob Smith',
+        },
+      ],
+    };
+    const doc = extendFrontmatter(frontmatter);
+    expect(doc.authors).toEqual([
+      {
+        name: 'John Doe',
+        given_name: 'John',
+        surname: 'Doe',
+        corresponding: {
+          value: true,
+          index: 1,
+          letter: 'A',
+        },
+        email: 'john@example.com',
+        index: 1,
+        letter: 'A',
+      },
+      {
+        name: 'Jane Doe',
+        given_name: 'Jane',
+        surname: 'Doe',
+        corresponding: {
+          value: false,
+        },
+        index: 2,
+        letter: 'B',
+      },
+      {
+        name: 'Bob Smith',
+        given_name: 'Bob',
+        surname: 'Smith',
+        index: 3,
+        letter: 'C',
+      },
+    ]);
+  });
 });

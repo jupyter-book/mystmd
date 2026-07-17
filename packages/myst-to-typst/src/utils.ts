@@ -16,7 +16,7 @@ const TILDE = 'xxxxTILDExxxx';
 
 const hrefOnlyReplacements: Record<string, string> = {
   // Not allowed characters
-  // Typst escaped characters are: \ & ` $ # _ * { } [ ] ^
+  // Typst escaped characters are: \ & ` $ # _ * @ { } [ ] ^
   '&': '\\&',
   '`': '\\`',
   $: '\\$',
@@ -28,6 +28,8 @@ const hrefOnlyReplacements: Record<string, string> = {
   '[': '\\[',
   ']': '\\]',
   '^': '\\^',
+  '@': '\\@',
+  ';': '\\;',
 };
 
 const textOnlyReplacements: Record<string, string> = {
@@ -48,8 +50,8 @@ const textOnlyReplacements: Record<string, string> = {
   '©': '#emoji.copyright ',
   '®': '#emoji.reg ',
   '™': '#emoji.tm ',
-  '<': '\\< ',
-  '>': '\\> ',
+  '<': '\\<',
+  '>': '\\>',
   ' ': '~',
   ' ': '~',
   // eslint-disable-next-line no-irregular-whitespace
@@ -104,9 +106,11 @@ const mathReplacements: Record<string, string> = {
   '×': 'times',
   Α: 'A',
   α: 'alpha',
+  𝜶: 'alpha',
   Β: 'B',
   β: 'beta',
   ß: 'beta',
+  𝜷: 'beta',
   Γ: 'Gamma',
   γ: 'gamma',
   Δ: 'Delta',
@@ -114,6 +118,7 @@ const mathReplacements: Record<string, string> = {
   δ: 'delta',
   Ε: 'E',
   ε: 'epsilon',
+  𝝴: 'epsilon',
   Ζ: 'Z',
   ζ: 'zeta',
   Η: 'H',

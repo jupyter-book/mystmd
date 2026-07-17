@@ -1,53 +1,176 @@
 version: 1
 project:
   title: MyST Markdown
-  github: https://github.com/executablebooks/mystmd
+  github: https://github.com/jupyter-book/mystmd
+  # Uncomment to test launch buttons
+  jupyter:
+    binder:
+      repo: https://github.com/jupyter-book/thebe-binder-base
   license:
     code: MIT
     content: CC-BY-4.0
   subject: MyST Markdown
   references:
-    python: https://docs.python.org/3.7/
+    python: https://docs.python.org/3.13/
     jupyterbook: https://jupyterbook.org/en/stable/
     jtex: https://mystmd.org/jtex/
     spec: https://mystmd.org/spec/
-  abbreviations:
-    AST: Abstract Syntax Tree
-    DOI: Digital Object Identifier
-    MyST: Markedly Structured Text
-    CLI: Command Line Interface
-    HTML: Hypertext Markup Language
-    PDF: Portable Document Format
-    AMS: American Mathematical Society
-    RRID: Research Resource Identifier
-    CSS: Cascading Style Sheet
-    CRediT: Contributor Roles Taxonomy
-    ROR: Research Organization Registry
-    ISNI: International Standard Name Identifier
-    NISO: National Information Standards Organization
-    YAML: Yet Another Markup Language
-    WASM: WebAssembly
-    REES: Reproducible Execution Environment Specification
-    URL: Uniform Resource Locator
-    XML: Extensible Markup Language
-    PID: Persistent Identifier
-    ID: Identifier
-    JATS: Journal Article Tag Suite
-    VoR: Version of Record
-    LTS: Long Term Support
-    POSIX: Portable Operating System Interface
-    RST: reStructuredText
-    SPDX: Software Package Data Exchange
-    API: Application Programming Interface
-    GPU: Graphics Processing Unit
-    TPU: Tensor Processing Unit
-    JSON: JavaScript Object Notation
-    TLA: Three Letter Acronym
-    OA: Open Access
+    biapol: https://biapol.github.io/blog/
+
   plugins:
     - directives.mjs
-    - unsplash.mjs
+    - picsum.mjs
+    - latex.mjs
+    - error-rules.mjs
+    - versions.mjs
+    - templates.mjs
+    - type: executable
+      path: picsum.py
+    - type: executable
+      path: markup.py
+    - type: javascript
+      path: markup.mjs
+
+  error_rules:
+    - rule: link-resolves
+      severity: ignore
+      keys:
+        - /robots.txt
+        - /sitemap.xml
+        - /jtex/template-yml
+        - /jtex
+        - /jtex/create-a-latex-template
+        - /jtex/create-a-beamer-template
+        - /jtex/contribute-a-template
+
+  toc:
+    - file: index.md
+    - file: installing.md
+    - title: Tutorials
+      children:
+        - file: quickstart.md
+        - file: quickstart-myst-documents.md
+        - file: quickstart-executable-documents.md
+        - file: quickstart-static-exports.md
+        - file: quickstart-myst-markdown.md
+        - file: quickstart-jupyter-lab-myst.md
+    - title: Configuration and setup
+      children:
+        - file: configuration.md
+        - file: frontmatter.md
+        - file: settings.md
+        - file: table-of-contents.md
+        - file: document-parts.md
+        - file: authorship.md
+    - title: Authoring
+      children:
+        - file: typography.md
+        - file: admonitions.md
+        - file: figures.md
+        - file: math.md
+        - file: tables.md
+        - file: code.md
+        - file: cross-references.md
+        - file: external-references.md
+        - file: embed.md
+        - file: citations.md
+        - file: proofs-and-theorems.md
+        - file: exercises.md
+        - file: blocks.md
+        - file: diagrams.md
+        - file: asides.md
+        - file: dropdowns-cards-and-tabs.md
+        - file: glossaries-and-terms.md
+        - file: writing-in-latex.md
+        - file: inline-options.md
+    - title: Executable Content
+      children:
+        - file: execute-notebooks.md
+        - file: notebooks-with-markdown.md
+        - file: reuse-jupyter-outputs.md
+        - file: interactive-notebooks.ipynb
+        - file: in-page-execution.md
+        - file: website-launch-buttons.md
+        - file: notebook-configuration.md
+        - file: md-vs-ipynb.md
+    - title: Websites
+      children:
+        - file: website-templates.md
+        - file: website-navigation.md
+        - file: website-metadata.md
+        # - file: themes-and-extensions.md
+        - file: seo-and-social.md
+        - file: website-style.md
+        - file: accessibility-and-performance.md
+        # - file: search.md
+        - file: analytics.md
+        - file: website-downloads.md
+        - file: deployment.md
+          children:
+            - file: deployment-github-pages.md
+            - file: deployment-gitlab.md
+            - file: deployment-curvenote.md
+            - file: deployment-netlify.md
+            - file: deployment-readthedocs.md
+            - file: deployment-webserver.md
+        - file: website-landing-pages.md
+
+        # - file: publishing.md
+    - title: Document exports
+      children:
+        - file: documents-exports.md
+        - file: creating-pdf-documents.md
+        - file: creating-word-documents.md
+        - file: creating-jats-xml.md
+        - file: creating-citation-cff.md
+    - file: plugins.md
+      children:
+        - file: javascript-plugins.md
+        - file: plugins-distribute.md
+        - file: executable-plugins.md
+        - file: widgets.md
+        - file: plugins-debug.md
+        - title: Use cases
+          children:
+            - file: plugins-ast.md
+            - file: plugins-dry.md
+    - title: Reference
+      children:
+        - file: install-node.md
+        - file: update-myst.md
+        - file: commonmark.md
+        - file: syntax-overview.md
+        - file: directives.md
+        - file: roles.md
+        - file: glossary.md
+        - file: versions.md
+    - title: About MyST
+      children:
+        - file: overview.md
+        - file: guiding-principles.md
+        - file: background.md
+    - title: Contribute
+      children:
+        - file: contributing.md
+        - file: developer.md
+        - file: theme-developer.md
+        - file: contribute-templates.md
+        - file: contribute-docs.md
+        - file: contribute-build-locally.md
+        - file: contribute-add-feature.md
+    - file: cite.md
+
+extends:
+  - abbreviations.yml
+
 site:
   title: MyST Markdown Guide
+  #template: ../../myst-theme/.deploy/book/template.yml
   domains:
     - mystmd-guide.curve.space
+  options:
+    style: public/style.css
+  parts:
+    # This just tests this locally, it shouldn't be in the mystmd.org/guide site
+    # Note the CSS won't work because we aren't pulling it in
+    footer: https://github.com/jupyter-book/jupyterbook.org/raw/refs/heads/main/docs/_site/footer.md

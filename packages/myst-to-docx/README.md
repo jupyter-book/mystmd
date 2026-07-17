@@ -106,4 +106,4 @@ The `state` is the `DocxSerializerState` and has helper methods to interact with
 ## Resources
 
 - [docx](https://docx.js.org/)
-- [myst-spec](https://github.com/executablebooks/myst-spec)
+- [myst-spec](https://github.com/jupyter-book/myst-spec)

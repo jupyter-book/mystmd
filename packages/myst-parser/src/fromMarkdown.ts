@@ -1,23 +1,67 @@
+import type MarkdownIt from 'markdown-it';
 import type Token from 'markdown-it/lib/token.js';
 import { u } from 'unist-builder';
-import type { GenericNode, GenericParent } from 'myst-common';
+import type { DirectiveSpec, GenericNode, GenericParent, RoleSpec } from 'myst-common';
 import type { Text } from 'myst-spec';
-import type { TokenHandlerSpec } from './types.js';
+import type { VFile } from 'vfile';
+import type { MathExtensionOptions } from './math.js';
 
 const UNHIDDEN_TOKENS = new Set([
   'parsed_directive_open',
   'parsed_directive_close',
   'directive_arg_open',
   'directive_arg_close',
-  'directive_option_open',
-  'directive_option_close',
   'directive_body_open',
   'directive_body_close',
+  'myst_option_open',
+  'myst_option_close',
   'parsed_role_open',
   'parsed_role_close',
   'role_body_open',
   'role_body_close',
 ]);
+
+export type MdastOptions = {
+  handlers?: Record<string, TokenHandlerSpec>;
+  hoistSingleImagesOutofParagraphs?: boolean;
+  listItemParagraphs?: boolean;
+  nestBlocks?: boolean;
+};
+
+export type TokenHandlerSpec = {
+  type: string;
+  getAttrs?: (
+    token: Token,
+    tokens: Token[],
+    index: number,
+    state: MarkdownParseState,
+  ) => Record<string, any>;
+  attrs?: Record<string, any>;
+  noCloseToken?: boolean;
+  isText?: boolean;
+  isLeaf?: boolean;
+};
+
+export type AllOptions = {
+  vfile: VFile;
+  markdownit: MarkdownIt.Options;
+  extensions: {
+    smartquotes?: boolean;
+    colonFences?: boolean;
+    frontmatter?: boolean;
+    math?: boolean | MathExtensionOptions;
+    footnotes?: boolean;
+    citations?: boolean;
+    deflist?: boolean;
+    tasklist?: boolean;
+    tables?: boolean;
+    blocks?: boolean;
+    strikethrough?: boolean;
+  };
+  mdast: MdastOptions;
+  directives: DirectiveSpec[];
+  roles: RoleSpec[];
+};
 
 export function withoutTrailingNewline(str: string) {
   return str[str.length - 1] == '\n' ? str.slice(0, str.length - 1) : str;
@@ -28,9 +72,11 @@ export function withoutTrailingNewline(str: string) {
  * Loosely based on prosemirror-markdown
  */
 export class MarkdownParseState {
+  src: string;
   stack: GenericNode[];
   handlers: Record<string, TokenHandler>;
-  constructor(handlers: Record<string, TokenHandlerSpec>) {
+  constructor(src: string, handlers: Record<string, TokenHandlerSpec>) {
+    this.src = src;
     this.stack = [u('root', [] as GenericParent[])];
     this.handlers = getTokenHandlers(handlers);
   }
@@ -77,8 +123,9 @@ export class MarkdownParseState {
     tokens?.forEach((token, index) => {
       if (token.hidden && !UNHIDDEN_TOKENS.has(token.type)) return;
       const handler = this.handlers[token.type];
-      if (!handler)
+      if (!handler) {
         throw new Error(`Token type ${token.type} not supported by tokensToMyst parser`);
+      }
       handler(this, token, tokens, index);
     });
   }
@@ -111,8 +158,14 @@ type TokenHandler = (
   index: number,
 ) => void;
 
-function getAttrs(spec: TokenHandlerSpec, token: Token, tokens: Token[], index: number) {
-  const attrs = spec.getAttrs?.(token, tokens, index) || spec.attrs || {};
+function getAttrs(
+  state: MarkdownParseState,
+  spec: TokenHandlerSpec,
+  token: Token,
+  tokens: Token[],
+  index: number,
+) {
+  const attrs = spec.getAttrs?.(token, tokens, index, state) || spec.attrs || {};
   if ('type' in attrs) throw new Error('You can not have "type" as attrs.');
   if ('children' in attrs) throw new Error('You can not have "children" as attrs.');
   return attrs;
@@ -134,17 +187,17 @@ function getTokenHandlers(specHandlers: Record<string, TokenHandlerSpec>) {
             withoutTrailingNewline(tok.content),
             tok,
             spec.type,
-            getAttrs(spec, tok, tokens, i),
+            getAttrs(state, spec, tok, tokens, i),
           );
           return;
         }
-        state.openNode(nodeType, tok, getAttrs(spec, tok, tokens, i), spec.isLeaf);
+        state.openNode(nodeType, tok, getAttrs(state, spec, tok, tokens, i), spec.isLeaf);
         state.addText(withoutTrailingNewline(tok.content), tok);
         state.closeNode();
       };
     } else {
       handlers[type + '_open'] = (state, tok, tokens, i) =>
-        state.openNode(nodeType, tok, getAttrs(spec, tok, tokens, i));
+        state.openNode(nodeType, tok, getAttrs(state, spec, tok, tokens, i));
       handlers[type + '_close'] = (state) => state.closeNode();
     }
   });

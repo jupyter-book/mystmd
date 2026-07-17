@@ -1,38 +1,21 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
-import { normalizeLabel } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from 'myst-directives';
+import { PROOF_KINDS } from './types.js';
+
+// e.g. 'prf:theorem' (legacy, kept for backward compatibility) and 'proof:theorem' (preferred)
+const KIND_ALIASES = PROOF_KINDS.flatMap((kind) => [`prf:${kind}`, `proof:${kind}`]);
 
 export const proofDirective: DirectiveSpec = {
   name: 'proof',
-  alias: [
-    'prf:proof',
-    'prf:theorem',
-    'prf:axiom',
-    'prf:lemma',
-    'prf:definition',
-    'prf:criterion',
-    'prf:remark',
-    'prf:conjecture',
-    'prf:corollary',
-    'prf:algorithm',
-    'prf:example',
-    'prf:property',
-    'prf:observation',
-    'prf:proposition',
-    'prf:assumption',
-  ],
+  alias: KIND_ALIASES,
   arg: {
     type: 'myst',
   },
   options: {
-    label: {
-      type: String,
-      alias: ['name'],
-    },
-    class: {
-      type: String,
-    },
+    ...commonDirectiveOptions('proof'),
     nonumber: {
       type: Boolean,
+      doc: 'Legacy flag to disable numbering of proofs; equivalent to `enumerated: false`',
     },
   },
   body: {
@@ -50,18 +33,21 @@ export const proofDirective: DirectiveSpec = {
     if (data.body) {
       children.push(...(data.body as GenericNode[]));
     }
-    const nonumber = (data.options?.nonumber as boolean) ?? false;
-    const rawLabel = data.options?.label as string;
-    const { label, identifier } = normalizeLabel(rawLabel) || {};
+
+    // Let `nonumber` take precedence over enumerated
+    let enumerated: boolean;
+    if (data.options?.nonumber !== undefined) {
+      enumerated = !data.options.nonumber as boolean;
+    } else {
+      enumerated = (data.options?.enumerated as boolean) ?? true;
+    }
     const proof = {
       type: 'proof',
-      kind: data.name !== 'proof' ? data.name.replace('prf:', '') : undefined,
-      label,
-      identifier,
-      class: data.options?.class as string,
-      enumerated: !nonumber,
+      kind: data.name !== 'proof' ? data.name.replace(/^(prf|proof):/, '') : undefined,
+      enumerated,
       children: children as any[],
     };
+    addCommonDirectiveOptions(data, proof);
     return [proof];
   },
 };

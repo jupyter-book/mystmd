@@ -3,6 +3,9 @@ export {
   admonitionHeadersTransform,
   admonitionBlockquotePlugin,
   admonitionBlockquoteTransform,
+  admonitionQmdTransform,
+  admonitionQmdPlugin,
+  getPossibleAdmonitionHeaderChildren,
 } from './admonitions.js';
 export { captionParagraphPlugin, captionParagraphTransform } from './caption.js';
 export { footnotesPlugin, footnotesTransform } from './footnotes.js';
@@ -33,9 +36,15 @@ export {
   blockMetadataPlugin,
   blockMetadataTransform,
 } from './blocks.js';
-export { codePlugin, codeTransform } from './code.js';
+export {
+  codePlugin,
+  codeTransform,
+  inlineCodeFlattenPlugin,
+  inlineCodeFlattenTransform,
+} from './code.js';
 export { blockquotePlugin, blockquoteTransform } from './blockquote.js';
 export { imageAltTextPlugin, imageAltTextTransform } from './images.js';
+export { buildIndexTransform, indexIdentifierPlugin, indexIdentifierTransform } from './indices.js';
 export {
   liftMystDirectivesAndRolesPlugin,
   liftMystDirectivesAndRolesTransform,
@@ -53,12 +62,15 @@ export { abbreviationPlugin, abbreviationTransform } from './abbreviations.js';
 export { includeDirectivePlugin, includeDirectiveTransform } from './include.js';
 export { containerChildrenPlugin, containerChildrenTransform } from './containers.js';
 export { headingDepthPlugin, headingDepthTransform } from './headings.js';
+export { buildTocTransform } from './toc.js';
 
 // Enumeration
-export type { IReferenceStateResolver, NumberingOptions, ReferenceKind } from './enumerate.js';
+export type { IReferenceStateResolver, ReferenceKind, TargetCounts } from './enumerate.js';
 export {
+  addChildrenFromTargetNode,
   enumerateTargetsTransform,
   enumerateTargetsPlugin,
+  resolveLinksAndCitationsTransform,
   resolveReferencesTransform,
   resolveReferencesPlugin,
   ReferenceState,

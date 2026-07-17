@@ -1,0 +1,7 @@
+version: 1
+project:
+  export:
+    format: typst
+    template: null
+    output: _build/out.typ
+    article: input.md

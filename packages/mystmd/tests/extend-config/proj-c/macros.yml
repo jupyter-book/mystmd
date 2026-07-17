@@ -1,0 +1,6 @@
+version: 1
+project:
+  math:
+    a: defined-in-project-c
+    c: defined-in-project-c
+    d: defined-in-project-c

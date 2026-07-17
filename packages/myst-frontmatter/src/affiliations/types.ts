@@ -1,4 +1,6 @@
-export interface Affiliation {
+import type { SocialLinks } from '../socials/types.js';
+
+export type Affiliation = SocialLinks & {
   id?: string;
   name?: string; // by default required but if only institution is provided, it's ok
   institution?: string;
@@ -13,8 +15,7 @@ export interface Affiliation {
   ringgold?: number;
   ror?: string;
   doi?: string;
-  url?: string;
   email?: string;
   phone?: string;
   fax?: string;
-}
+};
