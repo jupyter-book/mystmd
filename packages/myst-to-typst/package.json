@@ -41,7 +41,7 @@
     "myst-frontmatter": "^1.10.0",
     "myst-spec": "^0.0.5",
     "myst-spec-ext": "^1.10.0",
-    "tex-to-typst": "^0.0.20",
+    "tex-to-typst": "^0.0.21",
     "unified": "^10.1.2",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
