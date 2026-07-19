@@ -3,7 +3,7 @@ import { addCommonDirectiveOptions, commonDirectiveOptions } from './utils.js';
 
 export const abbreviationsDirective: DirectiveSpec = {
   name: 'abbreviations',
-  doc: 'Inserts a list of known abbreviations in the page.',
+  doc: 'Inserts an alphabetized list of known abbreviations, collected the pages and project.',
   arg: {
     type: 'myst',
     doc: 'Heading to be included with the abbreviations list',

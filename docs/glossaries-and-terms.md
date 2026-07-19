@@ -228,3 +228,23 @@ abbreviations:
 
 We use ML to parse HTML.
 ```
+
+### Generate a list of abbreviations
+
+The `{abbreviations}` directive displays a definition list of known abbreviates. The entries are sorted alphabetically by abbreviation key.
+
+In this context `known abbreviations` means that abbreviations are pulled from the projects `yml` and the frontmatter from available pages at build time.
+
+Example snippet:
+
+::::{dropdown} Show abbreviations used in these docs
+:::{abbreviations}
+:::
+::::
+
+:::{note} Order of abbreviations
+Page-level abbreviates to will overwrite project-level abbreviations.
+:::
+
+Entries with `null` values are not included in the generated list.
+

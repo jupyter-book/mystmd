@@ -6,6 +6,9 @@ label: directives_list
 
 To learn more about the syntax and usage of the directives, please refer to the [](#syntax:directives) section of the documentation.
 
+:::{myst:directive} abbreviations
+:::
+
 :::{myst:directive} admonition
 :::
 
