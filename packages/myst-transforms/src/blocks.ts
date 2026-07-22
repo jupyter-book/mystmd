@@ -65,7 +65,7 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
       delete block.data.class;
     }
 
-    // Pull out the stashed nbformat cell id before the empty-data cleanup 
+    // Pull out the stashed nbformat cell id before the empty-data cleanup
     // so it never leaks into the output AST.
     const jupyterCellId =
       typeof block.data?._jupyterCellId === 'string' ? block.data._jupyterCellId : undefined;
