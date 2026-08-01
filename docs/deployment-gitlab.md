@@ -137,7 +137,7 @@ A minimal version is shown below.
 :filename: pixi.toml
 
 [workspace]
-authors = [{name = "Me", email = "me@me.com"}]
+authors = ["Me <me@mygroup.org>"]
 channels = ["conda-forge"]
 name = "jbtest"
 platforms = ["win-64", "linux-64"]
