@@ -28,9 +28,9 @@ export async function createKernelConnection(
   log?: Logger,
 ): Promise<ISessionConnectionWithKernel | undefined> {
   const sessionOpts = {
-    type: 'notebook',
     path: path.relative(basePath, vfile.path),
     name: path.basename(vfile.path),
+    type: 'console',
     kernel: {
       name: kernelspec.name,
     },
