@@ -1,5 +1,11 @@
 # myst-migrate
 
+## 1.11.0
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+
 ## 1.10.1
 
 ## 1.10.0

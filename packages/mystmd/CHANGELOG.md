@@ -1,5 +1,14 @@
 # mystmd
 
+## 1.11.0
+
+### Patch Changes
+
+- 41782d2: `tex-to-typst` bumped to 0.0.21
+- 3252535: Allow `grid` directives to be used in `figure` directives
+- 95aa76d: Update package metadata
+- 659279c: Use NodeJS parallelism parallelism feature
+
 ## 1.10.1
 
 ## 1.10.0

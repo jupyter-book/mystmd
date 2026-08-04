@@ -1,5 +1,17 @@
 # myst-templates
 
+## 1.0.28
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-frontmatter@1.10.1
+  - myst-cli-utils@2.0.15
+
 ## 1.0.27
 
 ### Patch Changes
