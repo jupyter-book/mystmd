@@ -106,7 +106,12 @@ const mystDirective: Handler = (h, node) => {
 };
 
 const block: Handler = (h, node) =>
-  h(node, 'div', { class: 'block', 'data-block': node.meta }, all(h, node));
+  h(
+    node,
+    'div',
+    { id: node.html_id || node.identifier || undefined, class: 'block', 'data-block': node.meta },
+    all(h, node),
+  );
 
 const comment: Handler = (h, node) => u('comment', node.value);
 
