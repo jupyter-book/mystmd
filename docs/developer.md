@@ -23,6 +23,10 @@ However, for a developer it is important to understand that `mystmd` consists of
 1. An engine that converts input documents into an AST (abstract syntax tree).
 2. A renderer, that converts that AST into a given output format.
 
+:::{seealso} Learn more about the AST
+If the AST is unfamiliar, start with the [AST primer](xref:spec/ast-primer) for a short introduction to its structure.
+:::
+
 This model is equally applicable to exporting/converting static documents and rich web applications. Here's a workflow for static documents:
 
 ```{mermaid}
