@@ -2,6 +2,7 @@ import { Cite, plugins } from '@citation-js/core';
 import { doi as doiUtils } from 'doi-utils';
 import { clean as cleanCSL } from '@citation-js/core/lib/plugins/input/csl.js';
 import sanitizeHtml from 'sanitize-html';
+import he from 'he';
 
 import '@citation-js/plugin-bibtex';
 import '@citation-js/plugin-csl';
@@ -267,7 +268,8 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
       if (!c.id) {
         c.id = formatLabel(c);
       }
-      // Trim the titles, DOIs, etc. on load
+      // Trim the titles, DOIs, etc. on load; decode HTML entities from
+      // CrossRef metadata.
       [
         'title',
         'note',
@@ -279,7 +281,7 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
         'DOI',
         'ISSN',
       ].forEach((tag) => {
-        if (c[tag] && typeof c[tag] === 'string') c[tag] = c[tag].trim();
+        if (c[tag] && typeof c[tag] === 'string') c[tag] = he.decode(c[tag].trim());
       });
       // Trim the DOIs and URLs (these are encoded) on load
       if (c.URL) c.URL = c.URL.replace(/^(%20)*/, '').replace(/(%20)*$/, '');
