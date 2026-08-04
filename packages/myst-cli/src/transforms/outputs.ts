@@ -8,12 +8,13 @@ import type { ProjectSettings } from 'myst-frontmatter';
 import { htmlTransform } from 'myst-transforms';
 import stripAnsi from 'strip-ansi';
 import { remove } from 'unist-util-remove';
-import { selectAll } from 'unist-util-select';
+import { select, selectAll } from 'unist-util-select';
 import type { VFile } from 'vfile';
 import type { IOutput, IStream } from '@jupyterlab/nbformat';
 import type { MinifiedContent, MinifiedOutput, MinifiedMimeOutput } from 'nbtx';
 import { ensureString, extFromMimeType, minifyCellOutput, walkOutputs } from 'nbtx';
 import { castSession } from '../session/cache.js';
+import { parseMyst } from '../process/myst.js';
 import type { ISession } from '../session/types.js';
 import { resolveOutputPath } from './images.js';
 
@@ -23,6 +24,43 @@ function getFilename(hash: string, contentType: string) {
 
 function getWriteDestination(hash: string, contentType: string, writeFolder: string) {
   return join(writeFolder, getFilename(hash, contentType));
+}
+
+function markdownOutputToNodes(session: ISession, content: string, file: string): GenericNode[] {
+  const trimmed = content.trim();
+  const displayMath = trimmed.match(/^\$\$\s*([\s\S]*?)\s*\$\$$/);
+  if (displayMath?.[1]) {
+    return [
+      {
+        type: 'raw',
+        tex: `\\begin{equation}\n${displayMath[1].trim()}\n\\end{equation}`,
+      },
+    ];
+  }
+  // Parse general markdown outputs into normal MyST nodes.
+  return parseMyst(session, content, file, { ignoreFrontmatter: true }).children as GenericNode[];
+}
+
+function latexOutputToNodes(content: string): GenericNode[] {
+  const trimmed = content.trim();
+  const displayMath =
+    trimmed.match(/^\$\$\s*([\s\S]*?)\s*\$\$$/) ??
+    trimmed.match(/^\$\s*([\s\S]*?)\s*\$$/);
+  if (displayMath?.[1]) {
+    return [
+      {
+        // Normalize inline/display latex payloads into a TeX equation block.
+        type: 'raw',
+        tex: `\\begin{equation}\n${displayMath[1].replace(/^\\displaystyle\s*/, '').trim()}\n\\end{equation}`,
+      },
+    ];
+  }
+  return [
+    {
+      type: 'raw',
+      tex: trimmed,
+    },
+  ];
 }
 
 /**
@@ -235,14 +273,19 @@ function isPreferredOutputType(newType: string, existingType: string) {
   if (newType.startsWith('image')) return true;
   if (existingType === 'text/html') return false;
   if (newType === 'text/html') return true;
+  // Prefer rich text output over plain text fallback when available.
+  if (existingType === 'text/latex') return false;
+  if (newType === 'text/latex') return true;
+  if (existingType === 'text/markdown') return false;
+  if (newType === 'text/markdown') return true;
   return false;
 }
 
 /**
  * Convert output nodes with minified content to image or code
  *
- * This writes outputs of type image to file, modifies outputs of type
- * text to a code node, and removes other output types.
+ * This writes outputs of type image to file, parses markdown outputs,
+ * modifies plain text outputs to a code node, and removes other output types.
  */
 export function reduceOutputs(
   session: ISession,
@@ -251,9 +294,13 @@ export function reduceOutputs(
   writeFolder: string,
   opts?: { altOutputFolder?: string; vfile?: VFile },
 ) {
-  const outputsNodes = selectAll('outputs', mdast) as GenericNode[];
+  // Traverse by notebook block so output selection stays scoped to each cell.
+  const blocks = selectAll('block', mdast) as GenericNode[];
   const cache = castSession(session);
-  outputsNodes.forEach((outputsNode) => {
+  blocks.forEach((block) => {
+    const outputsNode = select('outputs', block) as GenericNode | null;
+    if (!outputsNode) return;
+
     // Hidden nodes should not show up in simplified outputs for static export
     if (outputsNode.visibility === 'remove' || outputsNode.visibility === 'hide') {
       outputsNode.type = '__delete__';
@@ -289,6 +336,8 @@ export function reduceOutputs(
             } else if (typeof content_type === 'string') {
               if (
                 content_type.startsWith('image/') ||
+                content_type === 'text/latex' ||
+                content_type === 'text/markdown' ||
                 content_type === 'text/plain' ||
                 content_type === 'text/html'
               ) {
@@ -315,6 +364,13 @@ export function reduceOutputs(
             };
             htmlTransform(htmlTree);
             return htmlTree.children;
+          } else if (content_type === 'text/markdown') {
+            const [content] = cache.$outputs[hash];
+            return markdownOutputToNodes(session, content, file);
+          } else if (content_type === 'text/latex') {
+            const [content] = cache.$outputs[hash];
+            // Render latex MIME directly instead of emitting plain-object repr text.
+            return latexOutputToNodes(content);
           } else if (content_type.startsWith('image/')) {
             const path = writeCachedOutputToFile(session, hash, cache.$outputs[hash], writeFolder, {
               ...opts,
@@ -342,6 +398,7 @@ export function reduceOutputs(
         .filter((output): output is Image | GenericNode => !!output);
       outputNode.children = children;
     });
+
     // Lift the `outputs` node
     outputsNode.type = '__lift__';
   });

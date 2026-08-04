@@ -2,14 +2,7 @@ import { NotebookCell, RuleId, fileWarn } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
-import type {
-  IAttachments,
-  ICell,
-  IMimeBundle,
-  INotebookContent,
-  IOutput,
-  MultilineString,
-} from '@jupyterlab/nbformat';
+import type { IAttachments, ICell, IMimeBundle, INotebookContent, IOutput, MultilineString } from '@jupyterlab/nbformat';
 import { CELL_TYPES, ensureString } from 'nbtx';
 import { VFile } from 'vfile';
 import { logMessagesFromVFile } from '../utils/logging.js';
@@ -160,13 +153,6 @@ export async function processNotebookFull(
         return acc.concat(blockParent(cell, [raw]));
       }
       if (cell.cell_type === CELL_TYPES.code) {
-        const code: Code = {
-          type: 'code',
-          lang: language as string | undefined,
-          executable: true,
-          value: ensureString(cell.source),
-        };
-
         const outputs = {
           type: 'outputs',
           id: nanoid(),
@@ -176,7 +162,18 @@ export async function processNotebookFull(
             children: [],
           })),
         };
-        return acc.concat(blockParent(cell, [code, outputs]));
+
+        // Keep executable source and outputs together for deterministic static exports.
+        const children: GenericNode[] = [
+          {
+            type: 'code',
+            lang: language as string | undefined,
+            executable: true,
+            value: ensureString(cell.source),
+          } as Code,
+          outputs,
+        ];
+        return acc.concat(blockParent(cell, children));
       }
       return acc;
     },
