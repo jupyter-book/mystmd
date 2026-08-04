@@ -189,30 +189,39 @@ export async function localToManifestProject(
   };
 }
 
+/**
+ * Knows how to handle a 'file' option that has a 'multiple' flag,
+ * resolving each entry in the list
+ */
 async function resolveTemplateFileOptions(
   session: ISession,
   mystTemplate: MystTemplate,
   options: Record<string, any>,
 ) {
   const resolvedOptions = { ...options };
+  const configPath = selectors.selectCurrentSitePath(session.store.getState());
+  // Resolve a single file option value to an absolute path, copy it into the
+  // public folder, and return its hashed, site-relative URL.
+  const resolveAndCopy = async (value: string) => {
+    const absPath = configPath
+      ? await resolveToAbsolute(session, configPath, value, { allowRemote: true })
+      : value;
+    const fileHash = hashAndCopyStaticFile(session, absPath, session.publicPath(), (m: string) => {
+      addWarningForFile(session, value, m, 'error', {
+        ruleId: RuleId.templateFileCopied,
+      });
+    });
+    return `/${fileHash}`;
+  };
   await Promise.all(
     (mystTemplate.getValidatedTemplateYml().options ?? []).map(async (option) => {
       if (option.type === TemplateOptionType.file && options[option.id]) {
-        const configPath = selectors.selectCurrentSitePath(session.store.getState());
-        const absPath = configPath
-          ? await resolveToAbsolute(session, configPath, options[option.id], { allowRemote: true })
-          : options[option.id];
-        const fileHash = hashAndCopyStaticFile(
-          session,
-          absPath,
-          session.publicPath(),
-          (m: string) => {
-            addWarningForFile(session, options[option.id], m, 'error', {
-              ruleId: RuleId.templateFileCopied,
-            });
-          },
-        );
-        resolvedOptions[option.id] = `/${fileHash}`;
+        const value = options[option.id];
+        // A `multiple` file option validates to a list; resolve each entry.
+        // Non-`multiple` options stay scalar, exactly as before.
+        resolvedOptions[option.id] = Array.isArray(value)
+          ? await Promise.all(value.map(resolveAndCopy))
+          : await resolveAndCopy(value);
       }
     }),
   );
