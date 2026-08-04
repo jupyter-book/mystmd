@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "myst-spec": "^0.0.5",
-    "myst-common": "^1.7.2"
+    "myst-common": "^1.7.2",
+    "myst-directives": "^1.7.3"
   },
   "devDependencies": {
     "myst-parser": "^1.5.9"

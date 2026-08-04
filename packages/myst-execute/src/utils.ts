@@ -1,7 +1,7 @@
-import type { InlineExpression } from 'myst-spec-ext';
+import type { InlineExpression, CodeBlock } from 'myst-spec';
 import type { GenericNode } from 'myst-common';
 import { NotebookCell, NotebookCellTags } from 'myst-common';
-import type { CodeBlock } from './types.js';
+
 /**
  * Return true if the given node is a block over a code node and output node
  *

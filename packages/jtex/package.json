@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.0",
+    "@types/js-yaml": "^4.0.5",
     "@types/nunjucks": "^3.2.2",
     "memfs": "^3.5.3"
   }

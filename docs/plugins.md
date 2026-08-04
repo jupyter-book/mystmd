@@ -27,6 +27,7 @@ roles
 transforms
 : These plugins transform the document source while it is rendered.
 : For example, add metadata or transform a link to a DOI.
+: Transforms can also [aggregate information across multiple pages](#plugins:multi-page), like a site-wide glossary.
 
 :::{warning} Planned - Not Yet Implemented
 :class: dropdown

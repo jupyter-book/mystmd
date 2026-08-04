@@ -1,7 +1,7 @@
 import type { KernelSpec } from 'myst-frontmatter';
 import type { Kernel, KernelMessage, SessionManager } from '@jupyterlab/services';
 import type { IOutput } from '@jupyterlab/nbformat';
-import type { IExpressionResult } from 'myst-common';
+import type { IExpressionResult } from 'myst-spec';
 import type { Logger } from 'myst-cli-utils';
 import type { VFile } from 'vfile';
 import path from 'node:path';
@@ -28,9 +28,9 @@ export async function createKernelConnection(
   log?: Logger,
 ): Promise<ISessionConnectionWithKernel | undefined> {
   const sessionOpts = {
-    type: 'notebook',
     path: path.relative(basePath, vfile.path),
     name: path.basename(vfile.path),
+    type: 'console',
     kernel: {
       name: kernelspec.name,
     },
@@ -76,7 +76,9 @@ function IOPubAsOutput(msg: KernelMessage.IIOPubMessage): IOutput {
  */
 export async function executeCodeCell(kernel: Kernel.IKernelConnection, code: string) {
   const future = kernel.requestExecute({
-    code: code,
+    code,
+    allow_stdin: false,
+    stop_on_error: false,
   });
 
   const outputs: IOutput[] = [];
@@ -131,7 +133,7 @@ export async function executeCodeCell(kernel: Kernel.IKernelConnection, code: st
       }
     }
   };
-  let status: 'abort' | 'error' | 'ok' | undefined;
+  let status: KernelMessage.IExecuteReplyMsg['content']['status'] | undefined;
   future.onReply = (msg: KernelMessage.IExecuteReplyMsg) => {
     status = msg.content.status;
   };
@@ -153,6 +155,8 @@ export async function evaluateInlineExpression(kernel: Kernel.IKernelConnection,
     user_expressions: {
       expr: expr,
     },
+    allow_stdin: false,
+    stop_on_error: false,
   });
   let result: IExpressionResult | undefined;
   future.onReply = (msg: KernelMessage.IExecuteReplyMsg) => {

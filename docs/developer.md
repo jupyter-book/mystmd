@@ -23,6 +23,10 @@ However, for a developer it is important to understand that `mystmd` consists of
 1. An engine that converts input documents into an AST (abstract syntax tree).
 2. A renderer, that converts that AST into a given output format.
 
+:::{seealso} Learn more about the AST
+If the AST is unfamiliar, start with the [AST primer](xref:spec/ast-primer) for a short introduction to its structure.
+:::
+
 This model is equally applicable to exporting/converting static documents and rich web applications. Here's a workflow for static documents:
 
 ```{mermaid}
@@ -315,6 +319,8 @@ The build process uses unix commands that might not work properly on Windows.
 When building on Windows, use either WSL or a unix-like shell (such as Git Bash or MSYS2).
 ```
 
+(local-docs-workflows)=
+
 ### Local docs workflows (preview/build)
 
 To run a MyST server with your local changes and a preview of the documentation, run:
@@ -322,6 +328,10 @@ To run a MyST server with your local changes and a preview of the documentation,
 ```shell
 $ bun run docs
 ```
+
+This builds the `mystmd` packages, and starts a live-reloading preview server.
+
+The `docs/` plugins import several `myst-*` packages as `workspace:*` dependencies, so that they build against the source versions in this repository (not against npm). If you only change the plugins in `docs/*.mjs`, you will need to rebuild the packages and restart the server.
 
 ## Local development: myst-theme
 

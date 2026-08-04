@@ -27,28 +27,33 @@ Alternatively, you can use the [**`github.dev` web-based editor**](https://docs.
 
 ## How to build the MyST guide documentation locally
 
+The documentation in `docs/` uses its own MyST plugins (`docs/*.mjs`) that require an install and build of the packages, so previewing it requires the full local development setup rather than a globally installed `myst`.
+
 To build the MyST guide documentation:
 
-1. Clone this repository:
+1. Clone this repository and build:
 
    ```
    git clone https://github.com/jupyter-book/mystmd
+   cd mystmd
+   bun install
+   bun run build
+   bun run link  # install this version of mystmd globally
    ```
 
-2. [Install MyST Markdown by following these instructions](https://mystmd.org/guide/quickstart)
-3. Navigate to the docs folder:
+2. Navigate to the docs folder:
 
    ```
-   cd docs/
+   cd docs
    ```
 
-4. Start a MyST server to preview the documentation:
+3. Start a MyST server to preview the documentation:
 
    ```
    myst start
    ```
 
-This will build the documentation locally so that you can preview what your changes will look like.
+The `bun run docs` command is a shorthand for steps 2 and 3 (see [the developer guide](#local-docs-workflows)).
 
 ### Build with executable content
 

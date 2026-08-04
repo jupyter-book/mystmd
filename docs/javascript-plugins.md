@@ -5,6 +5,7 @@ description: Plugins implemented in JavaScript are easily used across different 
 
 JavaScript plugins are native MyST plugins, which are loaded as modules into the MyST engine. Transforms defined in these modules have access to helpful AST manipulation routines made available by MyST. Edits to JavaScript plugins have no effect during execution of a MyST build, instead the build must be restarted.
 
+(defining-a-new-directive)=
 ## Defining a new directive
 
 To create a plugin, you will need a single JavaScript file[^esm] that exports one or more of the objects above. For example, a simple directive that pulls a random image from [Unsplash](https://picsum.photos/) can be created with a single file that exports an `picsum` directive.
@@ -84,6 +85,12 @@ I am **special bold text**, whilst I am **normal bold text**
 ```
 
 I am **special bold text**, whilst I am **normal bold text**
+
+(plugins:multi-page)=
+:::{seealso} Aggregate information across multiple pages
+A transform runs on one page at a time, but a plugin can still collect information from every page in a project and render it in one place - for example, for a site-wide glossary or a list of figures.
+See the [multi-page plugin demo](https://github.com/myst-contrib/plugin-multi-page-demo) for a working example and a walk-through of the pattern.
+:::
 
 ## Examples of plugins
 

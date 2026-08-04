@@ -32,18 +32,22 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "@jupyterlab/services": "^7.3.0",
+    "@jupyterlab/services": "^7.6.0",
     "@jupyterlab/nbformat": "^3.5.2",
     "chalk": "^5.2.0",
     "get-port": "^6.1.2",
     "myst-cli-utils": "^2.0.13",
     "myst-common": "^1.10.0",
+    "myst-frontmatter": "^1.10.0",
+    "myst-spec": "^0.0.5",
     "node-fetch": "^3.3.0",
+    "unified": "^10.1.2",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
     "which": "^4.0.0"
   },
   "devDependencies": {
+    "@types/which": "^3.0.4",
     "js-yaml": "^4.1.0"
   }
 }

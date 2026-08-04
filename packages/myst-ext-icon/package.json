@@ -35,6 +35,7 @@
     "myst-common": "^1.7.2"
   },
   "devDependencies": {
-    "myst-parser": "^1.5.7"
+    "myst-parser": "^1.5.7",
+    "unist-util-select": "^4.0.3"
   }
 }

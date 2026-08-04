@@ -214,7 +214,7 @@ pages:
 :filename: pixi.toml
 
 [workspace]
-authors = ["Me <me@me.com>"]
+authors = ["Me <me@mygroup.org>"]
 channels = ["conda-forge"]
 name = "jbtest"
 platforms = ["win-64", "linux-64"]
@@ -238,7 +238,7 @@ jupyter-book = ">=2.1.2,<3"
 
 
 ## External server through GitLab CI/CD
-Another option is to deploy your MyST site to an external server through GitLab CI/CD. A main difference is setting 'variables' (settings $\rightarrow$ CI/CD $\rightarrow$ variables) for connecting to the server. 
+Another option is to deploy your MyST site to an external server through GitLab CI/CD. A main difference is setting 'variables' (settings $\rightarrow$ CI/CD $\rightarrow$ variables) for connecting to the server.
 
 An example `.gitlab-ci.yml` file for this deployment method is shown below.
 
@@ -256,12 +256,12 @@ variables:
   LOCAL_BUILD_DIR: "_build/html"
   HOST: "127.0.0.1"
   BASE_URL: ""
-  
+
 before_script:
   - apt-get update
   - apt-get install -y --no-install-recommends curl rsync openssh-client git procps
 
-  # Node.js 
+  # Node.js
   - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   - apt-get install -y --no-install-recommends nodejs
   - node --version
@@ -271,7 +271,7 @@ before_script:
   - python -m pip install --upgrade pip
   - pip install mystmd
 
-  # Load SSH key 
+  # Load SSH key
   - eval "$(ssh-agent -s)"
   - chmod 400 "$WEBSITE_UPLOAD_KEY"
   - ssh-add "$WEBSITE_UPLOAD_KEY"
@@ -280,8 +280,8 @@ deploy:
   stage: deploy
   script:
     # Build (important: define the project path)
-    - myst build --html 
-   
+    - myst build --html
+
     - rsync -ravz "${LOCAL_BUILD_DIR}/" -e "${SSH_COMMAND} -i ${WEBSITE_UPLOAD_KEY}" "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
 
 ```

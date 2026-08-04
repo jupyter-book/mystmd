@@ -1,12 +1,11 @@
 import { select, selectAll } from 'unist-util-select';
 import type { Kernel } from '@jupyterlab/services';
-import type { Code, InlineExpression, Outputs } from 'myst-spec-ext';
-import type { IOutput } from '@jupyterlab/nbformat';
-import type { GenericParent, GenericNode, IExpressionError } from 'myst-common';
+import type { Code, InlineExpression, Outputs, CodeBlock, IExpressionError } from 'myst-spec';
+import type { GenericParent } from 'myst-common';
 import { NotebookCell, fileError, RuleId } from 'myst-common';
 import type { VFile } from 'vfile';
 import assert from 'node:assert';
-import type { CodeBlock, ExecutionResult, ExecutableNode } from './types.js';
+import type { ExecutionResult, ExecutableNode, DocumentExecutionResult } from './types.js';
 import { executeCodeCell, evaluateInlineExpression } from './kernel.js';
 import {
   isCodeBlock,
@@ -14,6 +13,7 @@ import {
   codeBlockSkipsExecution,
   isInlineExpression,
 } from './utils.js';
+import { isCodeResult, isExpressionResult } from './types.js';
 
 /**
  * For each executable node, perform a kernel execution request and return the results.
@@ -28,7 +28,7 @@ export async function computeExecutableNodes(
   nodes: ExecutableNode[],
   opts: { vfile: VFile },
 ): Promise<{
-  results: ExecutionResult[];
+  results: DocumentExecutionResult['results'];
   errorOccurred: boolean;
 }> {
   let errorOccurred = false;
@@ -40,7 +40,10 @@ export async function computeExecutableNodes(
       const code = select('code', matchedNode) as Code;
       const { status, outputs } = await executeCodeCell(kernel, code.value);
       // Cache result
-      results.push(outputs);
+      results.push({
+        type: 'code',
+        responses: outputs,
+      });
 
       // Check for errors
       const allowErrors = codeBlockRaisesException(matchedNode);
@@ -78,12 +81,18 @@ export async function computeExecutableNodes(
         break;
       }
       // Cache result
-      results.push(result);
+      results.push({
+        type: 'inlineExpression',
+        response: result,
+      });
     } else {
       assert(false);
     }
   }
-  return { results, errorOccurred };
+  return {
+    results,
+    errorOccurred,
+  };
 }
 
 /**
@@ -96,25 +105,29 @@ export async function computeExecutableNodes(
  */
 export function applyComputedOutputsToNodes(
   nodes: ExecutableNode[],
-  computedResult: ExecutionResult[],
+  computedResult: DocumentExecutionResult['results'],
 ) {
   for (const matchedNode of nodes) {
     // Pull out the result for this node
     const thisResult = computedResult.shift();
 
     if (isCodeBlock(matchedNode)) {
-      const rawOutputData = (thisResult as IOutput[]) ?? [];
+      if (thisResult !== undefined && !isCodeResult(thisResult)) {
+        throw new Error('Expected code result for code cell');
+      }
       // Pull out outputs to set data
       const outputs = select('outputs', matchedNode) as Outputs;
       // Ensure that whether this fails or succeeds, we write to `children` (e.g. due to a kernel error)
-      outputs.children = rawOutputData.map((data, index) => {
+      outputs.children = (thisResult?.responses ?? []).map((data, index) => {
         const identifier = outputs.identifier ? `${outputs.identifier}-${index}` : undefined;
         return { type: 'output', children: [], jupyter_data: data as any, identifier };
       });
     } else if (isInlineExpression(matchedNode)) {
-      const rawOutputData = thisResult as Record<string, unknown> | undefined;
+      if (thisResult !== undefined && !isExpressionResult(thisResult)) {
+        throw new Error('Expected expression result for inline expression');
+      }
       // Set data of expression to the result, or empty if we don't have one
-      matchedNode.result = rawOutputData;
+      matchedNode.result = thisResult?.response;
     } else {
       // This should never happen
       throw new Error('Node must be either code block or inline expression.');
