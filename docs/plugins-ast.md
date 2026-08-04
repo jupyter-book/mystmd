@@ -5,6 +5,10 @@ title: Generate MyST AST with Plugins
 A common use case with plugins involves generating {term}`MyST AST` and inserting it into the document.
 This page covers a few ways that you can do so.
 
+:::{tip} New to the MyST AST?
+Start with the [AST primer](xref:spec/ast-primer) for an overview of how MyST documents are structured at a high- and low-level.
+:::
+
 (plugins:ctx)=
 
 ## Parse MyST markdown to AST in a directive or role

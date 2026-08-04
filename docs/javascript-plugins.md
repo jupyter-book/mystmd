@@ -5,6 +5,7 @@ description: Plugins implemented in JavaScript are easily used across different 
 
 JavaScript plugins are native MyST plugins, which are loaded as modules into the MyST engine. Transforms defined in these modules have access to helpful AST manipulation routines made available by MyST. Edits to JavaScript plugins have no effect during execution of a MyST build, instead the build must be restarted.
 
+(defining-a-new-directive)=
 ## Defining a new directive
 
 To create a plugin, you will need a single JavaScript file[^esm] that exports one or more of the objects above. For example, a simple directive that pulls a random image from [Unsplash](https://picsum.photos/) can be created with a single file that exports an `picsum` directive.

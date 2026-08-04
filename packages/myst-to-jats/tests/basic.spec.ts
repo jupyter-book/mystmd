@@ -6,7 +6,6 @@ import { validateProjectFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
 import type { ValidationOptions } from 'simple-validators';
 import path from 'node:path';
-import { validateJatsAgainstDtd } from 'jats-xml';
 import yaml from 'js-yaml';
 import { VFile } from 'vfile';
 import mystToJats, { writeJats } from '../src';

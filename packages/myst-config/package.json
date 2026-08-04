@@ -36,6 +36,8 @@
     "simple-validators": "^1.2.0"
   },
   "devDependencies": {
+    "glob": "^10.3.1",
+    "js-yaml": "^4.1.0",
     "moment": "^2.29.4"
   }
 }
