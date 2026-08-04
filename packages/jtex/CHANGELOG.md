@@ -1,5 +1,18 @@
 # jtex
 
+## 1.0.22
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-frontmatter@1.10.1
+  - myst-cli-utils@2.0.15
+  - myst-templates@1.0.28
+
 ## 1.0.21
 
 ### Patch Changes

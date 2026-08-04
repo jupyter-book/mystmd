@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.15
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+
 ## 2.0.14
 
 ### Patch Changes
