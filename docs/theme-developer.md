@@ -44,6 +44,7 @@ It then produces `_build/site/config.json`, validates it against your `doc`/`opt
 - Reference and search files at `/objects.inv`, `/myst.xref.json`, `/myst.search.json`.
 - Static assets from `/` and a `/socket` websocket for `LOG` and `RELOAD` events.
 Your start script receives `HOST`, `CONTENT_CDN_PORT`, `PORT`, `MODE` (set to `static` for `myst build --html`), and optional `BASE_URL`; any framework or server is fine as long as it reads these and fetches content from the endpoints above.
+- An index of known static files is included in `public.json`, to enable the theme to retrieve _all_ static files without access to the file-system of the content server.
 
 ## Building HTML
 
