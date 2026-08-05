@@ -10,7 +10,7 @@
 
 import fs from 'fs-extra';
 import path from 'node:path';
-import { writeFileToFolder } from 'myst-cli-utils';
+import { writeFileToFolder, createNpmLogger, makeExecutable } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
 import type { ISession } from '../../session/types.js';
 import type { StartOptions } from '../site/start.js';
@@ -70,10 +70,12 @@ export async function currentSiteRoutes(
           };
         }),
         // Download other assets
-        ...['robots.txt', 'myst-theme.css', 'sitemap.xml', 'sitemap_style.xsl'].map((asset) => ({
-          url: `${host}/${asset}`,
-          path: asset,
-        })),
+        ...['robots.txt', 'myst-theme.css', 'sitemap.xml', 'sitemap_style.xsl', 'objects.inv'].map(
+          (asset) => ({
+            url: `${host}/${asset}`,
+            path: asset,
+          }),
+        ),
         {
           url: `${host}/favicon.ico`,
           path: 'favicon.ico',
@@ -177,54 +179,81 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   const appServer = await startServer(session, { ...opts, buildStatic: true, baseurl });
   if (!appServer) return;
   const host = `http://localhost:${appServer.port}`;
-  const routes = await currentSiteRoutes(session, host, baseurl);
 
-  // Fetch all HTML pages and assets by the template
-  await Promise.all(
-    routes.map(async (route) =>
-      limitConnections(async () => {
-        try {
-          const resp = await fetchWithRetry(session, route.url);
-          if (!resp.ok) {
-            session.log.error(`Error fetching ${route.url}`);
-            return;
+  const renderCommand = (template.getValidatedTemplateYml().build as any)?.render;
+  if (renderCommand !== undefined) {
+    // Run pre-rendering
+    await makeExecutable(renderCommand, createNpmLogger(session), {
+      cwd: template.templatePath,
+      env: { ...process.env, BUILD_DIRECTORY: htmlDir, CONTENT_CDN: host },
+    })();
+  } else {
+    const routes = await currentSiteRoutes(session, host, baseurl);
+
+    // Fetch all HTML pages and assets by the template
+    await Promise.all(
+      routes.map(async (route) =>
+        limitConnections(async () => {
+          try {
+            const resp = await fetchWithRetry(session, route.url);
+            if (!resp.ok) {
+              session.log.error(`Error fetching ${route.url}`);
+              return;
+            }
+            if (route.binary && resp.body) {
+              await new Promise<void>((resolve, reject) => {
+                const filename = path.join(htmlDir, route.path);
+                if (!fs.existsSync(filename))
+                  fs.mkdirSync(path.dirname(filename), { recursive: true });
+                const fileWriteStream = fs.createWriteStream(filename);
+                resp.body!.pipe(fileWriteStream);
+                resp.body!.on('error', reject);
+                fileWriteStream.on('error', reject);
+                fileWriteStream.on('finish', resolve);
+              });
+            } else {
+              const content = await resp.text();
+              writeFileToFolder(path.join(htmlDir, route.path), content);
+            }
+          } catch (error) {
+            if (!route.optional) throw error;
+            session.log.warn(
+              `Could not fetch optional asset ${route.url}: ${(error as Error).message}`,
+            );
           }
-          if (route.binary && resp.body) {
-            await new Promise<void>((resolve, reject) => {
-              const filename = path.join(htmlDir, route.path);
-              if (!fs.existsSync(filename))
-                fs.mkdirSync(path.dirname(filename), { recursive: true });
-              const fileWriteStream = fs.createWriteStream(filename);
-              resp.body!.pipe(fileWriteStream);
-              resp.body!.on('error', reject);
-              fileWriteStream.on('error', reject);
-              fileWriteStream.on('finish', resolve);
-            });
-          } else {
-            const content = await resp.text();
-            writeFileToFolder(path.join(htmlDir, route.path), content);
-          }
-        } catch (error) {
-          if (!route.optional) throw error;
-          session.log.warn(
-            `Could not fetch optional asset ${route.url}: ${(error as Error).message}`,
-          );
-        }
-      }),
-    ),
-  );
+        }),
+      ),
+    );
+
+    // Copy all of the static assets
+    fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
+    fs.copySync(
+      path.join(session.sitePath(), 'myst.search.json'),
+      path.join(htmlDir, 'myst.search.json'),
+    );
+
+    // NOTE: HTML static output needs to patch the contents, this is done on the fly by the server
+    const xrefs = JSON.parse(
+      fs.readFileSync(path.join(session.sitePath(), 'myst.xref.json')).toString(),
+    ) as MystXRefs;
+    xrefs.references?.forEach((ref) => {
+      ref.data = ref.data?.replace(/^\/content/, '');
+    });
+    fs.writeFileSync(path.join(htmlDir, 'myst.xref.json'), JSON.stringify(xrefs));
+
+    // Copy the files for the template used.
+    //
+    // This always includes the thebe JS chunks, even when no project enables
+    // `thebe`/`jupyter`. The myst-theme uses thebe-core to render Jupyter cell
+    // outputs, so these chunks are required for outputs to render at all.
+    const templateBuildDir = path.join(template.templatePath, 'public');
+    fs.copySync(templateBuildDir, htmlDir);
+    fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
+
+    // We need to go through and change all links to the right folder
+    rewriteAssetsFolder(htmlDir, baseurl);
+  }
   await appServer.stop();
-
-  // Copy the files for the template used.
-  //
-  // This always includes the thebe JS chunks, even when no project enables
-  // `thebe`/`jupyter`. The myst-theme uses thebe-core to render Jupyter cell
-  // outputs, so these chunks are required for outputs to render at all.
-  const templateBuildDir = path.join(template.templatePath, 'public');
-  fs.copySync(templateBuildDir, htmlDir);
-
-  // Copy all of the static assets
-  fs.copySync(session.publicPath(), path.join(htmlDir, 'build'));
 
   // Copy user static files to html build root
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
@@ -233,27 +262,6 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
     const projectConfig = selectors.selectLocalProjectConfig(session.store.getState(), proj.path);
     copyStaticFiles(session, projectConfig?.static_files ?? [], htmlDir, proj.path);
   }
-  fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
-  fs.copySync(path.join(session.sitePath(), 'public.json'), path.join(htmlDir, 'public.json'));
-  fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
-
-  // NOTE: HTML static output needs to patch the contents, this is done on the fly by the server
-  const xrefs = JSON.parse(
-    fs.readFileSync(path.join(session.sitePath(), 'myst.xref.json')).toString(),
-  ) as MystXRefs;
-  xrefs.references?.forEach((ref) => {
-    ref.data = ref.data?.replace(/^\/content/, '');
-  });
-  fs.writeFileSync(path.join(htmlDir, 'myst.xref.json'), JSON.stringify(xrefs));
-
-  // Copy the search index
-  fs.copySync(
-    path.join(session.sitePath(), 'myst.search.json'),
-    path.join(htmlDir, 'myst.search.json'),
-  );
-
-  // We need to go through and change all links to the right folder
-  rewriteAssetsFolder(htmlDir, baseurl);
 
   // Explicitly close the process as the web server doesn't always stop?
   process.exit(0);
