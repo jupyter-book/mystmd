@@ -39,6 +39,7 @@
     "myst-spec-ext": "^1.10.0",
     "unist-builder": "3.0.0",
     "@jupyterlab/nbformat": "^3.5.2",
-    "@lumino/coreutils": "^2.0.0"
+    "@lumino/coreutils": "^2.0.0",
+    "@types/unist": "^2.0.7"
   }
 }

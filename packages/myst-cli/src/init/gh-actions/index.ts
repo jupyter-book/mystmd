@@ -52,23 +52,23 @@ jobs:
       url: \${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - uses: actions/setup-node@v4
+        uses: actions/configure-pages@v6
+      - uses: actions/setup-node@v7
         with:
-          node-version: 18.x
+          node-version: 24.x
       - name: Install ${readableName()}
         run: npm install -g ${npmPackageName()}
       - name: Build HTML Assets
         run: ${npmBinaryName()} build --html
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: './_build/html'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 `;
 }
 

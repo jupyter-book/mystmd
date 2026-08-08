@@ -83,6 +83,7 @@ export async function startContentServer(session: ISession, opts?: ServerOptions
   app.use('/', express.static(session.publicPath()));
   app.use('/content', express.static(session.contentPath()));
   app.use('/config.json', express.static(join(session.sitePath(), 'config.json')));
+  app.use('/public.json', express.static(join(session.sitePath(), 'public.json')));
   app.use('/objects.inv', express.static(join(session.sitePath(), 'objects.inv')));
   app.use('/myst.xref.json', express.static(join(session.sitePath(), 'myst.xref.json')));
   app.use('/myst.search.json', express.static(join(session.sitePath(), 'myst.search.json')));

@@ -40,6 +40,8 @@
     "myst-toc": "^0.1.4"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "@types/json-schema": "^7.0.15",
     "@types/spdx-correct": "^3.1.0",
     "glob": "^10.3.1",
     "js-yaml": "^4.1.0",

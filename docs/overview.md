@@ -76,6 +76,8 @@ Here's an example of MyST content, and the same content parsed as MyST AST:
 
 The easiest way to understand how {term}`MyST Markdown` gets converted to {term}`MyST AST` is to [explore the MyST Sandbox](https://mystmd.org/sandbox). Click the {kbd}`AST` tab to see the underlying AST structure for anything that you type. The {kbd}`PRE` tab represents the initial parsing phase, and the {kbd}`POST` tab represents the AST after the resolving phase.
 
+If you're building your own renderer or parser, start with the [AST primer](xref:spec/ast-primer). It walks through the node structure, the PRE/POST distinction, and what the spec formalizes vs. what's implementation-specific.
+
 (overview-transformers)=
 
 ## How do MyST Transformers work?

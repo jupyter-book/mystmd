@@ -32,7 +32,8 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.7.2"
+    "myst-common": "^1.7.2",
+    "myst-directives": "^1.7.3"
   },
   "devDependencies": {
     "myst-parser": "^1.7.1"

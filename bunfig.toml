@@ -1,6 +1,8 @@
 [install]
 # Use the new text-based lockfile (Bun 1.2+)
 lockfile = "bun.lock"
+# Use pnpm-style isolated node_modules instead of the hoisted layout
+linker = "isolated"
 
 [test]
 # Enable some Bun test features, in case we decide to use bun test

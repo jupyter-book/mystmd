@@ -228,3 +228,80 @@ site:
 :::{seealso} Referring to parts directly with a URL is coming
 See the [issue tracking this enhancement](https://github.com/jupyter-book/mystmd/issues/2127).
 :::
+
+
+(parts-ast)=
+## How parts appear in the AST
+
+Each way of defining a part lands in a different place in the JSON that `myst build` emits.
+This section describes how these are represented in the AST.
+See [](xref:spec) for more details about the MyST AST.
+
+### Page-level parts in the page AST
+
+There are three ways to mark a region as a named part in a document.
+Each one ends up in a different place in the served JSON, even though they are often treated the same in the rendered output (see [](#ast-parse-helper) for guidance in parsing them).
+We show each method below, and where it lands in the AST:
+
+````{list-table}
+- - Method
+  - Example
+  - Location in AST
+- - **Page frontmatter** (in the `parts:` key)
+  - ```markdown
+    ---
+    parts:
+     acknowledgments: "..."
+     abstract: "My abstract"
+    ---
+    My content...
+    ```
+  - Stored in the page frontmatter key:
+  
+    `frontmatter.parts.<partname>.mdast`.
+- - **Block metadata** (within content of a page)
+  - ```markdown
+    +++ {"part": "abstract"}
+
+    My abstract content.
+
+    +++
+
+    My content
+
+    +++ {"part": "acknowledgements"}
+    Thanks to ...
+    ```
+  - Stored in a `block` node inside `mdast` with `data.part` set.
+
+    `.mdast.children.<block>.data.part = "acknowledgements"`
+- - **Heading auto-match** (heading text equals a known part name)
+  - ```markdown
+    ## Abstract
+
+    My abstract ...
+
+    ## Header one
+
+    A normal (non-part) header
+
+    ## Acknowledgments
+
+    Thanks to ...
+    ```
+  - Remains a regular `heading` + paragraphs sequence.
+    Only becomes a part block when [`extractPart()`](#ast-parse-helper) is called.
+````
+
+### Site-level parts in the project AST
+
+Site-level `parts:` (under `site:` in `myst.yml`) is a different `mystmd`-specific system for content shared across pages (like a project footer or header).
+These are project-level and not part of any page's AST.
+The [theme developer guide](./theme-developer.md) covers the rest of what mystmd serves alongside per-page JSON.
+
+(ast-parse-helper)=
+### Programmatically extract a part from an AST
+
+Instead of manually parsing the page AST for these parts, use the [`extractPart()`](https://github.com/jupyter-book/mystmd/blob/0d626b198093fa740125d02267a111d84547fd36/packages/myst-common/src/extractParts.ts) helper to retrieve a named part regardless of how it was defined.
+
+For example, exporters like [`myst-to-jats`](https://github.com/jupyter-book/mystmd/blob/0d626b198093fa740125d02267a111d84547fd36/packages/myst-to-jats/src/index.ts#L720-L729) call `extractPart()` to pull these regions into their output.
