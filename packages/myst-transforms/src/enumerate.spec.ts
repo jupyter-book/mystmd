@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import {
+  MultiPageReferenceResolver,
   ReferenceState,
   enumerateTargetsTransform,
   formatHeadingEnumerator,
@@ -84,6 +85,24 @@ describe('reference resolution', () => {
       expect(state.getTarget('sample.Match')?.node.identifier).toBe('sample.Match');
       expect(state.getTarget('sample.match')?.node.identifier).toBe('sample.match');
     });
+  });
+
+  test('cross-page: an exact-case target is preferred over an earlier normalized match', () => {
+    // sample.match lives on page one, sample.Match on page two; a reference to
+    // sample.Match must resolve to page two, not page one's normalized fallback.
+    const pageOne = u('root', [
+      u('div', { identifier: 'sample.match', html_id: 'sample.match', children: [] }),
+    ]);
+    const pageTwo = u('root', [
+      u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+    ]);
+    const stateOne = new ReferenceState('page-one.md', { vfile: new VFile() });
+    const stateTwo = new ReferenceState('page-two.md', { vfile: new VFile() });
+    enumerateTargetsTransform(pageOne, { state: stateOne });
+    enumerateTargetsTransform(pageTwo, { state: stateTwo });
+    const resolver = new MultiPageReferenceResolver([stateOne, stateTwo], 'page-one.md');
+    expect(resolver.getTarget('sample.Match')?.node.identifier).toBe('sample.Match');
+    expect(resolver.getTarget('sample.match')?.node.identifier).toBe('sample.match');
   });
 });
 
