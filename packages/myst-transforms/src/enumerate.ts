@@ -316,6 +316,12 @@ export interface IReferenceStateResolver {
   vfile: VFile;
   /**
    * If the page is provided, it will only look at that page.
+   *
+   * Looks up the identifier verbatim first, falling back to the normalized
+   * (lowercased) form. This is case-sensitive matching with a
+   * backward-compatible fallback, not case-insensitive matching: a target
+   * registered with an exact-case identifier (e.g. `sample.Match`) is never
+   * shadowed by a differently-cased sibling (e.g. `sample.match`).
    */
   getTarget: (identifier?: string, page?: string) => Target | undefined;
   getAllTargets: () => Target[];
@@ -480,9 +486,17 @@ export class ReferenceState implements IReferenceStateResolver {
     return [...this.identifiers, ...Object.keys(this.targets)];
   }
 
-  getTarget(identifier?: string): Target | undefined {
+  /** Exact-identifier lookup only - no normalized fallback (see getTarget). */
+  getExactTarget(identifier?: string): Target | undefined {
     if (!identifier) return undefined;
     return this.targets[identifier];
+  }
+
+  /** Find the target for an identifier, matching exact and normalized versions. */
+  getTarget(identifier?: string): Target | undefined {
+    if (!identifier) return undefined;
+    const normalized = normalizeLabel(identifier)?.identifier;
+    return this.getExactTarget(identifier) ?? this.getExactTarget(normalized);
   }
 
   getAllTargets(): Target[] {
@@ -585,6 +599,10 @@ function warnNodeTargetNotFound(node: ResolvableCrossReference, vfile?: VFile) {
   });
 }
 
+/**
+ * Resolve references across a multi-page project. Holds one ReferenceState per page.
+ * To resolve a ref, it finds the page with the target and uses that page's state.
+ */
 export class MultiPageReferenceResolver implements IReferenceStateResolver {
   states: ReferenceState[];
   filePath: string; // Path of the current file we are resolving references against
@@ -596,13 +614,18 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
     this.vfile = vfile;
   }
 
+  /**
+   * Find the page (ReferenceState) that defines the given identifier.
+   */
   resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
     if (!identifier) return undefined;
-    const resolvedState = this.states.find((state) => {
-      if (page && page !== state.filePath) return false;
-      return !!state.getTarget(identifier) || !!state.getFileTarget(identifier);
-    });
-    return resolvedState;
+    // Search only the requested page, or all pages if none was given
+    const pages = page ? this.states.filter((state) => state.filePath === page) : this.states;
+    // First search for an *exact* match. If none is found, try a normalized match search.
+    const exact = pages.find(
+      (state) => !!state.getExactTarget(identifier) || !!state.getFileTarget(identifier),
+    );
+    return exact ?? pages.find((state) => !!state.getTarget(identifier));
   }
 
   getIdentifiers() {
@@ -770,7 +793,7 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
     }
     const identifier = link.url.replace(/^#/, '');
     const reference = normalizeLabel(identifier);
-    const target = opts.state.getTarget(identifier) ?? opts.state.getTarget(reference?.identifier);
+    const target = opts.state.getTarget(identifier);
     const fileTarget = opts.state.getFileTarget(reference?.identifier);
     if (!(target || fileTarget) || !reference) {
       if (!opts.state.vfile || !link.url.startsWith('#')) return;
@@ -803,7 +826,9 @@ export const resolveReferenceLinksTransform = (tree: GenericParent, opts: StateR
     // Change the link into a cross-reference!
     const xref = link as unknown as CrossReference;
     xref.type = 'crossReference';
-    xref.identifier = reference.identifier;
+    // Keep the matched target's own identifier so a case-sensitive target
+    // isn't re-normalized away; fall back to the normalized label for file targets.
+    xref.identifier = target?.node.identifier ?? reference.identifier;
     xref.label = reference.label;
     delete xref.kind; // This will be deprecated, no need to set, and remove if it is there
     delete (xref as any).url;
@@ -817,13 +842,15 @@ export const resolveUnlinkedCitations = (tree: GenericParent, opts: StateResolve
     if (!cite.error) return;
     const reference = normalizeLabel(cite.label);
     if (reference) {
-      const target = opts.state.getTarget(cite.label) ?? opts.state.getTarget(reference.identifier);
+      const target = opts.state.getTarget(cite.label);
       const fileTarget = opts.state.getFileTarget(reference.identifier);
       if (target || fileTarget) {
         // Change the cite into a cross-reference!
         const xref = cite as unknown as CrossReference;
         xref.type = 'crossReference';
-        xref.identifier = reference.identifier;
+        // Keep the matched target's own identifier so a case-sensitive target isn't
+        // re-normalized away; fall back to the normalized label for file targets.
+        xref.identifier = target?.node.identifier ?? reference.identifier;
         xref.label = reference.label;
         delete cite.error;
         if (target) implicitTargetWarning(target, node, opts);
