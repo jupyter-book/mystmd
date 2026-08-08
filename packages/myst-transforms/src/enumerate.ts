@@ -486,13 +486,17 @@ export class ReferenceState implements IReferenceStateResolver {
     return [...this.identifiers, ...Object.keys(this.targets)];
   }
 
+  /** Exact-identifier lookup only - no normalized fallback (see getTarget). */
+  getExactTarget(identifier?: string): Target | undefined {
+    if (!identifier) return undefined;
+    return this.targets[identifier];
+  }
+
+  /** Find the target for an identifier, matching exact and normalized versions. */
   getTarget(identifier?: string): Target | undefined {
     if (!identifier) return undefined;
-    // Case-sensitive match first, then fall back to the normalized form prose
-    // labels are stored under, so an exact-case target (e.g. a plugin-registered
-    // Python API object) is never shadowed by a differently-cased sibling.
     const normalized = normalizeLabel(identifier)?.identifier;
-    return this.targets[identifier] ?? (normalized ? this.targets[normalized] : undefined);
+    return this.getExactTarget(identifier) ?? this.getExactTarget(normalized);
   }
 
   getAllTargets(): Target[] {
@@ -595,6 +599,10 @@ function warnNodeTargetNotFound(node: ResolvableCrossReference, vfile?: VFile) {
   });
 }
 
+/**
+ * Resolve references across a multi-page project. Holds one ReferenceState per page.
+ * To resolve a ref, it finds the page with the target and uses that page's state.
+ */
 export class MultiPageReferenceResolver implements IReferenceStateResolver {
   states: ReferenceState[];
   filePath: string; // Path of the current file we are resolving references against
@@ -606,13 +614,18 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
     this.vfile = vfile;
   }
 
+  /**
+   * Find the page (ReferenceState) that defines the given identifier.
+   */
   resolveStateProvider(identifier?: string, page?: string): ReferenceState | undefined {
     if (!identifier) return undefined;
-    const resolvedState = this.states.find((state) => {
-      if (page && page !== state.filePath) return false;
-      return !!state.getTarget(identifier) || !!state.getFileTarget(identifier);
-    });
-    return resolvedState;
+    // Search only the requested page, or all pages if none was given
+    const pages = page ? this.states.filter((state) => state.filePath === page) : this.states;
+    // First search for an *exact* match. If none is found, try a normalized match search.
+    const exact = pages.find(
+      (state) => !!state.getExactTarget(identifier) || !!state.getFileTarget(identifier),
+    );
+    return exact ?? pages.find((state) => !!state.getTarget(identifier));
   }
 
   getIdentifiers() {
