@@ -79,6 +79,26 @@ describe('yearFromCitation', () => {
   });
 });
 
+describe('HTML entity decoding in CSL fields', () => {
+  it('decodes HTML entities in title and container-title from CrossRef CSL-JSON', () => {
+    const csl = [
+      {
+        id: 'test2024',
+        type: 'article-journal',
+        title: 'Signal &amp; Image Processing &#38; More',
+        'container-title': 'Computers &amp; Geosciences',
+        author: [{ family: 'Smith', given: 'J.' }],
+        issued: { 'date-parts': [[2024]] },
+        DOI: '10.1234/test',
+      },
+    ];
+    const renderers = getCitationRenderers(csl);
+    const cite = renderers['test2024'];
+    expect(cite.cite.title).toEqual('Signal & Image Processing & More');
+    expect(cite.cite['container-title']).toEqual('Computers & Geosciences');
+  });
+});
+
 describe('firstNonDoiUrl', () => {
   it('no url returns undefined', async () => {
     expect(firstNonDoiUrl('my citation', 'abc123')).toEqual(undefined);

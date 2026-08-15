@@ -27,10 +27,15 @@ export async function createKernelConnection(
   vfile: VFile,
   log?: Logger,
 ): Promise<ISessionConnectionWithKernel | undefined> {
+  // Jupyter Server API paths are `/`-delimited, but `path.relative` returns
+  // native separators (backslashes on Windows).
+  // With a windows path, jupyter_server silently fall back to the server root.
+  // Normalize to a forward-slash path so kernels start in same location on all platforms.
+  const sessionPath = path.relative(basePath, vfile.path).split(path.sep).join('/');
   const sessionOpts = {
-    type: 'notebook',
-    path: path.relative(basePath, vfile.path),
+    path: sessionPath,
     name: path.basename(vfile.path),
+    type: 'console',
     kernel: {
       name: kernelspec.name,
     },

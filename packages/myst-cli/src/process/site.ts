@@ -1,5 +1,5 @@
 import yaml from 'js-yaml';
-import { basename, extname, join } from 'node:path';
+import { basename, extname, join, relative } from 'node:path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import { Inventory, Domains } from 'intersphinx';
@@ -49,6 +49,7 @@ import { finalizeMdast, postProcessMdast, transformMdast } from './mdast.js';
 import { toSectionedParts, buildHierarchy, sectionToHeadingLevel } from './search.js';
 import { SPEC_VERSION } from '../spec-version.js';
 import { cpus } from 'node:os';
+import { opendir } from 'node:fs/promises';
 
 const WEB_IMAGE_EXTENSIONS = [
   ImageExtensions.mp4,
@@ -162,6 +163,19 @@ export async function writeMystXRefJson(session: ISession, states: ReferenceStat
   const filename = join(session.sitePath(), 'myst.xref.json');
   session.log.debug(`Writing myst.xref.json file: ${filename}`);
   writeFileToFolder(filename, JSON.stringify(mystXRefs));
+}
+
+export async function writePublicJson(session: ISession) {
+  const paths = [];
+  const publicPath = session.publicPath();
+  const dir = await opendir(publicPath, { recursive: true });
+  for await (const path of dir) {
+    const subPath = relative(publicPath, join(path.parentPath, path.name));
+    paths.push(`/${subPath}`);
+  }
+
+  const filename = join(session.sitePath(), 'public.json');
+  writeFileToFolder(filename, JSON.stringify(paths));
 }
 
 export async function writeMystSearchJson(session: ISession, pages: LocalProjectPage[]) {
@@ -743,6 +757,7 @@ export async function processSite(session: ISession, opts?: ProcessSiteOptions):
     await writeMystXRefJson(session, states);
     // Search does not include parts
     await writeMystSearchJson(session, allPages);
+    await writePublicJson(session);
   }
   return true;
 }
