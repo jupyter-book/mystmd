@@ -19,6 +19,8 @@ export type RendererData = PreRendererData & {
   frontmatter: PageFrontmatter;
   references: References;
   dependencies: Dependency[];
+  /** Depth of the first content heading; defaults to 2, below the page title */
+  firstDepth?: number;
 };
 
 export type SingleCitationRenderer = {
