@@ -31,7 +31,10 @@ import { getFileContent } from '../utils/getFileContent.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
-import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
+import {
+  resolveFrontmatterParts,
+  resolveFrontmatterPartsReferences,
+} from '../../utils/resolveFrontmatterParts.js';
 import type { ExportWithOutput, ExportResults, ExportFnOptions } from '../types.js';
 import { writeBibtexFromCitationRenderers } from '../utils/bibtex.js';
 
@@ -216,7 +219,12 @@ export async function localArticleToTexTemplated(
   const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
-    content,
+    [
+      ...content,
+      ...content.flatMap(({ frontmatter }) =>
+        resolveFrontmatterPartsReferences(session, frontmatter),
+      ),
+    ],
   );
 
   const warningLogFn = (message: string) => {
