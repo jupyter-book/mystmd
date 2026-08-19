@@ -5,6 +5,12 @@ describe('fillNumbering', () => {
   it('empty numberings return empty', async () => {
     expect(fillNumbering({}, {})).toEqual({});
   });
+  it('boolean base is kept', async () => {
+    expect(fillNumbering(true as any, {})).toEqual({ all: { enabled: true } });
+  });
+  it('boolean filler is kept', async () => {
+    expect(fillNumbering({}, true as any)).toEqual({ all: { enabled: true } });
+  });
   it('base numberings return base', async () => {
     expect(
       fillNumbering(
