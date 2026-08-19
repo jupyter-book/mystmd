@@ -48,7 +48,7 @@ The vector $\hat y$ is called the **orthogonal projection** of $y$ onto $S$.
   - `proof:axiom`
   - `proof:conjecture`
 * - `proof:corollary`
-  - `proof:criteria`
+  - `proof:criterion`
   - `proof:definition`
 * - `proof:example`
   - `proof:lemma`
