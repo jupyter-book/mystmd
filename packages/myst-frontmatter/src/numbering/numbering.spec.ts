@@ -11,6 +11,15 @@ describe('fillNumbering', () => {
   it('boolean filler is kept', async () => {
     expect(fillNumbering({}, true as any)).toEqual({ all: { enabled: true } });
   });
+  it('boolean false is kept', async () => {
+    expect(fillNumbering(false as any, {})).toEqual({ all: { enabled: false } });
+  });
+  it('string boolean shorthand is coerced', async () => {
+    // isBoolean accepts 'true'/'false', so the shorthand must be coerced rather
+    // than passed through - the string 'false' is truthy.
+    expect(fillNumbering('false' as any, {})).toEqual({ all: { enabled: false } });
+    expect(fillNumbering('true' as any, {})).toEqual({ all: { enabled: true } });
+  });
   it('base numberings return base', async () => {
     expect(
       fillNumbering(
