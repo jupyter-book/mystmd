@@ -169,6 +169,8 @@ function getBaseUrl(session: ISession): string | undefined {
  */
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
+  // Ask template for command to render itself into HTML
+  const renderCommand = (template.getValidatedTemplateYml().build as any)?.render;
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
   const baseurl = getBaseUrl(session);
   // Note, this process is really only for Remix templates
@@ -176,18 +178,27 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   const htmlDir = path.join(session.buildPath(), 'html');
   fs.rmSync(htmlDir, { recursive: true, force: true });
   fs.mkdirSync(htmlDir, { recursive: true });
-  const appServer = await startServer(session, { ...opts, buildStatic: true, baseurl });
+  const appServer = await startServer(session, {
+    ...opts,
+    buildStatic: true,
+    baseurl,
+    // We do not need a running site if the template knows how to render itself
+    headless: renderCommand !== undefined,
+  });
   if (!appServer) return;
+
   const host = `http://localhost:${appServer.port}`;
 
-  const renderCommand = (template.getValidatedTemplateYml().build as any)?.render;
+  // Use the template to render itself
   if (renderCommand !== undefined) {
     // Run pre-rendering
     await makeExecutable(renderCommand, createNpmLogger(session), {
       cwd: template.templatePath,
       env: { ...process.env, BUILD_DIRECTORY: htmlDir, CONTENT_CDN: host },
     })();
-  } else {
+  }
+  // Fallback on fetch-based rendering (deprecated)
+  else {
     const routes = await currentSiteRoutes(session, host, baseurl);
 
     // Fetch all HTML pages and assets by the template
