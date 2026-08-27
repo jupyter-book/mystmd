@@ -68,7 +68,8 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
     // Minor cleanup
     if (block.data && Object.keys(block.data).length === 0) delete block.data;
 
-    const label = block.data?.label ?? block.data?.id;
+    // Manual label set from cell metadata
+    const label = block.data?.label;
     if (typeof label === 'string') {
       const normalized = normalizeLabel(label);
       if (normalized) {
