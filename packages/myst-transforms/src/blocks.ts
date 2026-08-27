@@ -70,6 +70,7 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
 
     // Manual label set from cell metadata
     const label = block.data?.label;
+
     if (typeof label === 'string') {
       const normalized = normalizeLabel(label);
       if (normalized) {
@@ -80,7 +81,11 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
         delete block.data.label;
       }
     }
-    if (block.identifier) {
+
+    // Did the user set a label? Choose to only propagate IDs if so.
+    const hasExplicitLabel = typeof block.label === 'string';
+
+    if (block.identifier && hasExplicitLabel) {
       const codeNode = select('code', block) as any as Code | null;
       if (codeNode !== null && !codeNode.identifier) {
         codeNode.identifier = `${block.identifier}-code`;
