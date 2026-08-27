@@ -152,10 +152,16 @@ describe('Test blockMetadataTransform', () => {
 describe('Test blockMetadataTransform notebook cell ids', () => {
   test('a code cell gets a stable anchor equal to its nbformat id', async () => {
     const mdast = u('root', [
-      u('block', { kind: 'notebook-code', data: { _jupyterCellId: '9bd1512c-9ca1-4695' } }, [
-        u('code', 'points'),
-        u('outputs', [u('output', 'a'), u('output', 'b')]),
-      ]),
+      u(
+        'block',
+        {
+          kind: 'notebook-code',
+          data: {},
+          identifier: '9bd1512c-9ca1-4695',
+          html_id: '9bd1512c-9ca1-4695',
+        },
+        [u('code', 'points'), u('outputs', [u('output', 'a'), u('output', 'b')])],
+      ),
     ]) as any;
     blockMetadataTransform(mdast, new VFile());
     const block = mdast.children[0];
@@ -175,7 +181,7 @@ describe('Test blockMetadataTransform notebook cell ids', () => {
   test('the anchor is unchanged across two runs of the same source', async () => {
     const build = () => {
       const mdast = u('root', [
-        u('block', { kind: 'notebook-code', data: { _jupyterCellId: 'abc-123' } }, [
+        u('block', { kind: 'notebook-code', data: {}, identifier: 'abc-123', html_id: 'abc-123' }, [
           u('code', 'x = 1'),
         ]),
       ]) as any;
@@ -198,7 +204,12 @@ describe('Test blockMetadataTransform notebook cell ids', () => {
     const mdast = u('root', [
       u(
         'block',
-        { kind: 'notebook-code', data: { label: 'My_Label', _jupyterCellId: 'abc-123' } },
+        {
+          kind: 'notebook-code',
+          data: { label: 'My_Label' },
+          identifier: 'abc-123',
+          html_id: 'abc-123',
+        },
         [u('code', 'x = 1'), u('outputs', [u('output', 'a')])],
       ),
     ]) as any;
