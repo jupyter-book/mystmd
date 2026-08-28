@@ -147,6 +147,24 @@ cases:
     outputs:
       - path: notebook-with-fm/_build/out.tex
         content: outputs/notebook.tex
+  - title: Notebook exports to tex; Markdown in cell output is included in export
+    cwd: notebook-markdown-cell-output
+    command: myst build --tex --ci --execute
+    outputs:
+      - path: notebook-markdown-cell-output/_build/out-markdown.tex
+        content: outputs/notebook-markdown-cell-output.tex
+  - title: Notebook exports to tex; Math in cell output is included in export
+    cwd: notebook-math-cell-output
+    command: myst build --tex --ci --execute
+    outputs:
+      - path: notebook-math-cell-output/_build/out-math.tex
+        content: outputs/notebook-math-cell-output.tex
+  - title: Notebook exports to tex; Latex in cell output is included in export
+    cwd: notebook-latex-cell-output
+    command: myst build --tex --ci --execute
+    outputs:
+      - path: notebook-latex-cell-output/_build/out-latex.tex
+        content: outputs/notebook-latex-cell-output.tex
   - title: Templated tex with glossary
     cwd: glossary
     command: myst build --tex --ci
@@ -581,7 +599,7 @@ cases:
       MYST_TEST_SLEEP_MS: 4000
       MYST_TEST_DELAY_MS: 2000
     # Used to be 15000, increased due to CI slowness
-    # NOTE that the full test suite has a timeout here too: 
+    # NOTE that the full test suite has a timeout here too:
     # mystmd/packages/mystmd/tests/endToEnd.spec.ts
     timeout: 30000
     outputs:
