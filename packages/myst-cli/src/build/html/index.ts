@@ -159,6 +159,16 @@ function getBaseUrl(session: ISession): string | undefined {
   return baseurl;
 }
 
+export function warnIfMissingCanonicalUrl(session: ISession) {
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  if (process.env.SITE_URL || siteConfig?.canonical_url || process.env.READTHEDOCS_CANONICAL_URL) {
+    return;
+  }
+  session.log.warn(
+    'No canonical site URL is configured. Generated sitemap.xml and robots.txt files will contain localhost URLs and are unsuitable for deployment. Set site.canonical_url in myst.yml or the SITE_URL environment variable.',
+  );
+}
+
 /**
  * Build a MyST project as a static HTML deployment
  *
@@ -167,6 +177,7 @@ function getBaseUrl(session: ISession): string | undefined {
  */
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
+  warnIfMissingCanonicalUrl(session);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
   const baseurl = getBaseUrl(session);
   // Note, this process is really only for Remix templates

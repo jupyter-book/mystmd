@@ -20,9 +20,35 @@ import {
 import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
 
 export const SITE_CONFIG_KEYS = {
-  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'template'],
+  optional: [
+    ...SITE_FRONTMATTER_KEYS,
+    'projects',
+    'nav',
+    'actions',
+    'domains',
+    'canonical_url',
+    'template',
+  ],
   alias: FRONTMATTER_ALIASES,
 };
+
+export function validateCanonicalUrl(input: any, opts: ValidationOptions): string | undefined {
+  const value = validateString(input, opts);
+  if (!defined(value)) return undefined;
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return validationError('must be an absolute URL', opts);
+  }
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    return validationError('must use the http or https protocol', opts);
+  }
+  if (url.search || url.hash) {
+    return validationError('must not include a query string or fragment', opts);
+  }
+  return url.href.replace(/\/+$/, '');
+}
 
 function validateUrlOrPath(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
@@ -141,6 +167,12 @@ export function validateSiteConfigKeys(
       },
     );
     if (domains) output.domains = [...new Set(domains)];
+  }
+  if (defined(value.canonical_url)) {
+    output.canonical_url = validateCanonicalUrl(
+      value.canonical_url,
+      incrementOptions('canonical_url', opts),
+    );
   }
   if (defined(value.template)) {
     output.template = validateString(value.template, incrementOptions('template', opts));

@@ -391,6 +391,7 @@ export async function getSiteManifest(
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,
+    ...(siteConfig.canonical_url ? { canonical_url: siteConfig.canonical_url } : {}),
   };
   return manifest;
 }
