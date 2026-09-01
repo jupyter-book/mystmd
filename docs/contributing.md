@@ -18,6 +18,17 @@ It also has a lot of information about how to contribute.
 
 We expect all contributors to this project to [Code of Conduct][coc].
 
+## AI policy
+
+It is important for us that contributions are correct, that the author
+understands their submission, and to prioritize human interactions in
+GitHub communications.  With this in mind, please:
+
+- Carefully review (with your own eyes) and test any LLM-generated code before submitting.
+- Write PR descriptions by hand (fine to use some AI text below yours, if clearly delineated).
+- Respond to questions in person (do not paste LLM feedback).
+- Disclose the tool used. This is not punitive (some team members use LLMs too): it better informs the review process.
+
 ## Where we work
 
 We do most of our work in GitHub repositories in [the `jupyter-book/` GitHub organization](https://github.com/jupyter-book).
