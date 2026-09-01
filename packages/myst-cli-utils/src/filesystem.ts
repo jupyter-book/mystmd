@@ -21,6 +21,18 @@ export function writeFileToFolder(
   fs.writeFileSync(filename, data, opts);
 }
 
+/* Replacement for path.parse that handles multi-extensions, like .tar.gz */
+/* Could make this more complex and filter edge cases like report.2026.final.pdf */
+function parseMultiExt(filepath: string) {
+  const parsed = path.parse(filepath);
+  // Everything from the first dot on is the extension; a leading dot is
+  // part of the name, so `.bashrc` has no extension.
+  const dot = parsed.base.indexOf('.', parsed.base.startsWith('.') ? 1 : 0);
+  const ext = dot === -1 ? '' : parsed.base.slice(dot);
+
+  return { ...parsed, ext, name: parsed.base.slice(0, parsed.base.length - ext.length) };
+}
+
 /**
  * Copy an existing file to writeFolder and name it based on hashed filename
  *
@@ -32,7 +44,7 @@ export function hashAndCopyStaticFile(
   writeFolder: string,
   errorLogFn?: (m: string) => void,
 ) {
-  const { name, ext } = path.parse(file);
+  const { name, ext } = parseMultiExt(file);
   const fd = fs.openSync(file, 'r');
   const { mtime, size } = fs.fstatSync(fd);
   fs.closeSync(fd);
