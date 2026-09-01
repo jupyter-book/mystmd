@@ -23,7 +23,7 @@ export function writeFileToFolder(
 
 /* Replacement for path.parse that handles multi-extensions, like .tar.gz */
 /* Could make this more complex and filter edge cases like report.2026.final.pdf */
-function parseMultiExt(filepath: string) {
+export function parseMultiExt(filepath: string) {
   const parsed = path.parse(filepath);
   // Everything from the first dot on is the extension; a leading dot is
   // part of the name, so `.bashrc` has no extension.
