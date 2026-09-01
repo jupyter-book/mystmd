@@ -29,33 +29,40 @@ function createURL(id: string, cc?: boolean, osi?: boolean): string {
     const kind = match[1].toUpperCase();
     const version = match[2] ?? '4.0';
     const extra = match[3] ?? '';
+    // The public domain tools do not live under /licenses/, so this is the whole
+    // path rather than the part after /licenses.
     let link = '';
     switch (kind) {
       case 'CC-BY':
-        link = `/by/${version}/`;
+        link = `/licenses/by/${version}/`;
         break;
       case 'CC-BY-SA':
-        link = `/by-sa/${version}/`;
+        link = `/licenses/by-sa/${version}/`;
         break;
       case 'CC-BY-NC':
-        link = `/by-nc/${version}/`;
+        link = `/licenses/by-nc/${version}/`;
         break;
       case 'CC-BY-NC-SA':
-        link = `/by-nc-sa/${version}/`;
+        link = `/licenses/by-nc-sa/${version}/`;
         break;
       case 'CC-BY-ND':
-        link = `/by-nd/${version}/`;
+        link = `/licenses/by-nd/${version}/`;
         break;
       case 'CC-BY-NC-ND':
-        link = `/by-nc-nd/${version}/`;
+        // version 1.0 is served under the historical "by-nd-nc" ordering
+        link =
+          version === '1.0' ? `/licenses/by-nd-nc/${version}/` : `/licenses/by-nc-nd/${version}/`;
+        break;
+      case 'CC-SA':
+        link = `/licenses/sa/${version}/`;
         break;
       case 'CC-ZERO':
       case 'CC-0':
       case 'CC0':
-        link = '/zero/1.0/';
+        link = '/publicdomain/zero/1.0/';
         break;
       case 'CC-PDDC':
-        link = '/publicdomain/';
+        link = '/licenses/publicdomain/';
         break;
       case 'CC-PDM':
         link = '/publicdomain/mark/1.0/';
@@ -64,7 +71,7 @@ function createURL(id: string, cc?: boolean, osi?: boolean): string {
         break;
     }
     if (extra) link += `${extra}/`;
-    return `https://creativecommons.org/licenses${link}`;
+    return `https://creativecommons.org${link}`;
   }
   if (osi) {
     return `https://opensource.org/licenses/${id.replace(/(-or-later)|(-only)$/, '')}`;
