@@ -222,6 +222,13 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
   const { site, all, watch, writeDOIBib } = opts;
   const performSiteBuild = all || (files.length === 0 && exportSite(session, opts)) || writeDOIBib;
   const exportOptionsList = await collectAllBuildExportOptions(session, files, opts);
+  const state = session.store.getState();
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
+  const projectConfig = selectors.selectCurrentProjectConfig(state);
+  if (files.length === 0 && !siteConfig && !projectConfig) {
+    session.log.info('No configuration found.');
+    throw new Error(`No configuration found. First run '${binaryName()} init'`);
+  }
   // TODO: generalize and pull this out!
   const buildLog: Record<string, any> = {
     input: {

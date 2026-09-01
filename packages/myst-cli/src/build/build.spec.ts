@@ -122,8 +122,23 @@ describe('build without site configuration', () => {
     async (opt) => {
       const session = new Session();
       await expect(build(session, [], { [opt]: true })).rejects.toThrow(
-        /No site configuration found/,
+        /No configuration found/,
       );
     },
   );
+
+  it.each(['docx', 'pdf', 'tex', 'typst', 'xml', 'md', 'meca', 'cff'] as const)(
+    'build --%s fails when no configuration is found',
+    async (opt) => {
+      const session = new Session();
+      await expect(build(session, [], { [opt]: true })).rejects.toThrow(
+        /No configuration found/,
+      );
+    },
+  );
+
+  it('build with no flags fails when no configuration is found', async () => {
+    const session = new Session();
+    await expect(build(session, [], {})).rejects.toThrow(/No configuration found/);
+  });
 });
