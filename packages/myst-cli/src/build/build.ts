@@ -272,6 +272,9 @@ export async function build(session: ISession, files: string[], opts: BuildOpts)
     if (!siteConfig) {
       session.log.info('🌎 No site configuration found.');
       session.log.debug(`To build a site, first run '${binaryName()} init --site'`);
+      throw new Error(
+        `No site configuration found. To build a site, first run '${binaryName()} init --site'`,
+      );
     } else {
       session.log.info(`🌎 Building ${readableName()} site`);
       if (watch) {

@@ -1,6 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ExportFormats } from 'myst-frontmatter';
-import { exportSite, getAllowedExportFormats, getRequestedExportFormats } from './build';
+import { build, exportSite, getAllowedExportFormats, getRequestedExportFormats } from './build';
 import { Session } from '../session';
 import { config } from '../store/reducers';
 
@@ -96,6 +99,31 @@ describe('exportSite', () => {
       const opts: Record<string, boolean> = {};
       opts[opt] = true;
       expect(exportSite(sessionWithConfig, opts)).toBe(false);
+    },
+  );
+});
+
+describe('build without site configuration', () => {
+  const originalCwd = process.cwd();
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'myst-no-config-'));
+    process.chdir(tmpDir);
+  });
+
+  afterEach(() => {
+    process.chdir(originalCwd);
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it.each(['html', 'site', 'all'] as const)(
+    'build --%s fails when no site configuration is found',
+    async (opt) => {
+      const session = new Session();
+      await expect(build(session, [], { [opt]: true })).rejects.toThrow(
+        /No site configuration found/,
+      );
     },
   );
 });
