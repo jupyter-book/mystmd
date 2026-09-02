@@ -26,7 +26,7 @@ GitHub communications.  With this in mind, please:
 
 - Follow our [contribution workflow](#contributing:workflow) especially if you're using an LLM to generate code.
 - Carefully review (with your own eyes) and test any LLM-generated code before submitting.
-- Write PR descriptions by hand (fine to use some AI text below yours, if clearly delineated).
+- Write PR descriptions by hand (fine to use some AI text below yours, if clearly delineated, or to use an LLM for a grammar check).
 - Respond to questions in person (do not paste LLM feedback).
 - Disclose the tool used. This is not punitive (some team members use LLMs too): it better informs the review process.
 
