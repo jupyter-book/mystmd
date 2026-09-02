@@ -366,7 +366,10 @@ const handlers: Record<string, Handler> = {
     // can contain spaces and are emitted as `#label("...")`. Match that form
     // here so the reference resolves instead of producing invalid Typst.
     const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(id ?? '');
-    const idRef = needsLabel ? `label("${id}")` : `<${id}>`;
+    // Escape backslashes and quotes so an identifier with special characters
+    // cannot break out of the Typst string literal.
+    const labelArg = (id ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const idRef = needsLabel ? `label("${labelArg}")` : `<${id}>`;
     if (node.children && node.children.length > 0) {
       state.write(`#link(${idRef})[`);
       state.renderChildren(node);

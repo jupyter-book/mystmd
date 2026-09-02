@@ -95,3 +95,16 @@ cases:
               value: ' matters.'
     typst: |-
       In a notebook, #link(label("term-Execution order"))[execution order] matters.
+  - title: reference identifier containing a quote is escaped in the Typst label
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              identifier: 'term-say "hi"'
+              children:
+                - type: text
+                  value: greeting
+    typst: |-
+      #link(label("term-say \"hi\""))[greeting]
