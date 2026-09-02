@@ -18,6 +18,20 @@ It also has a lot of information about how to contribute.
 
 We expect all contributors to this project to [Code of Conduct][coc].
 
+## AI policy
+
+It is important for us that contributions are correct, that the author
+understands their submission, and to prioritize human interactions in
+GitHub communications.  With this in mind, please:
+
+- Follow our [contribution workflow](#contributing:workflow) especially if you're using an LLM to generate code.
+- Carefully review (with your own eyes) and test any LLM-generated code before submitting.
+- Write PR descriptions by hand (fine to use some AI text below yours, if clearly delineated, or to use an LLM for a grammar check).
+- Respond to questions in person (do not paste LLM feedback).
+- Disclose the tool used. This is not punitive (some team members use LLMs too): it better informs the review process.
+
+As a rule of thumb: the more effort and thoughtfulness you put into your contribution, the more likely maintainers are to review, discuss, and iterate.
+
 ## Where we work
 
 We do most of our work in GitHub repositories in [the `jupyter-book/` GitHub organization](https://github.com/jupyter-book).
@@ -52,6 +66,7 @@ Below is a list of relevant repositories and a brief description of each.
 > [!NOTE]
 > There are many repositories with similar functionality in the `executablebooks/` organization. Many of these are based around the [Sphinx documentation ecosystem](https://www.sphinx-doc.org). For example, the [MyST-NB repository](https://github.com/executablebooks/myst-nb) is a Sphinx extension for Jupyter notebooks, and the [MyST Parser repository](https://github.com/executablebooks/myst-parser) is a MyST markdown parser for Sphinx.
 
+(contributing:workflow)=
 ## Contribution workflow
 
 Generally speaking, our contribution workflow looks something like this:
