@@ -30,7 +30,7 @@ GitHub communications.  With this in mind, please:
 - Respond to questions in person (do not paste LLM feedback).
 - Disclose the tool used. This is not punitive (some team members use LLMs too): it better informs the review process.
 
-As a rule of thumb: the more effort and thoughtfulness you've put into your contribution, the more likely maintainers will be to review, discuss, and iterate.
+As a rule of thumb: the more effort and thoughtfulness you put into your contribution, the more likely maintainers are to review, discuss, and iterate.
 
 ## Where we work
 
