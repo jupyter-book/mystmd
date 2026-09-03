@@ -78,3 +78,33 @@ cases:
       This is a paragraph. <para>
 
       With a reference #link(<para>)[Paragraph]
+  - title: reference to a target whose identifier contains spaces uses label()
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'In a notebook, '
+            - type: crossReference
+              identifier: term-Execution order
+              children:
+                - type: text
+                  value: execution order
+            - type: text
+              value: ' matters.'
+    typst: |-
+      In a notebook, #link(label("term-Execution order"))[execution order] matters.
+  - title: reference identifier containing a quote is escaped in the Typst label
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              identifier: 'term-say "hi"'
+              children:
+                - type: text
+                  value: greeting
+    typst: |-
+      #link(label("term-say \"hi\""))[greeting]

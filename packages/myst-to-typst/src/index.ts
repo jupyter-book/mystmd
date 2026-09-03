@@ -361,10 +361,21 @@ const handlers: Record<string, Handler> = {
       return;
     }
     const id = node.identifier;
+    // Typst angle-bracket labels and the `@label` shorthand only accept
+    // identifier-safe names, but cross-reference targets (e.g. glossary terms)
+    // can contain spaces and are emitted as `#label("...")`. Match that form
+    // here so the reference resolves instead of producing invalid Typst.
+    const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(id ?? '');
+    // Escape backslashes and quotes so an identifier with special characters
+    // cannot break out of the Typst string literal.
+    const labelArg = (id ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const idRef = needsLabel ? `label("${labelArg}")` : `<${id}>`;
     if (node.children && node.children.length > 0) {
-      state.write(`#link(<${id}>)[`);
+      state.write(`#link(${idRef})[`);
       state.renderChildren(node);
       state.write(']');
+    } else if (needsLabel) {
+      state.write(`#ref(${idRef})`);
     } else {
       // Note that we don't need to protect against the previous character as text
       const next = nextCharacterIsText(parent, node);
