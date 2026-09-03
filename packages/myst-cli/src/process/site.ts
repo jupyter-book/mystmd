@@ -168,6 +168,9 @@ export async function writePublicJson(session: ISession) {
   const publicPath = session.publicPath();
   const dir = await opendir(publicPath, { recursive: true });
   for await (const path of dir) {
+    if (!path.isFile()) {
+      continue;
+    }
     const subPath = relative(publicPath, join(path.parentPath, path.name));
     paths.push(`/${subPath}`);
   }
