@@ -100,8 +100,10 @@ For example:
 
 If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
 `BASE_URL` must be a path such as `/docs`; it is not the site's public origin. To generate
-absolute public URLs in `sitemap.xml` and `robots.txt`, set `site.canonical_url` in `myst.yml` or
-set the deployment-time `SITE_URL` override to a full URL such as `https://mysite.org/docs`.
+absolute public URLs in `sitemap.xml` and `robots.txt`, set `site.url` in `myst.yml` or set the
+deployment-time `SITE_URL` override to a full URL such as `https://mysite.org/docs`. The path in
+that URL automatically becomes the deployment base URL; an explicitly configured `BASE_URL` must
+match it.
 
 In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets.
 

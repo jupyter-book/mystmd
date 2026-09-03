@@ -20,19 +20,11 @@ import {
 import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
 
 export const SITE_CONFIG_KEYS = {
-  optional: [
-    ...SITE_FRONTMATTER_KEYS,
-    'projects',
-    'nav',
-    'actions',
-    'domains',
-    'canonical_url',
-    'template',
-  ],
+  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'url', 'template'],
   alias: FRONTMATTER_ALIASES,
 };
 
-export function validateCanonicalUrl(input: any, opts: ValidationOptions): string | undefined {
+export function validateSiteUrl(input: any, opts: ValidationOptions): string | undefined {
   const value = validateString(input, opts);
   if (!defined(value)) return undefined;
   let url: URL;
@@ -168,11 +160,8 @@ export function validateSiteConfigKeys(
     );
     if (domains) output.domains = [...new Set(domains)];
   }
-  if (defined(value.canonical_url)) {
-    output.canonical_url = validateCanonicalUrl(
-      value.canonical_url,
-      incrementOptions('canonical_url', opts),
-    );
+  if (defined(value.url)) {
+    output.url = validateSiteUrl(value.url, incrementOptions('url', opts));
   }
   if (defined(value.template)) {
     output.template = validateString(value.template, incrementOptions('template', opts));

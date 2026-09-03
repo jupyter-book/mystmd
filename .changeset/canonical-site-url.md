@@ -3,4 +3,4 @@
 "myst-cli": patch
 ---
 
-Allow static sites to configure public canonical URLs for sitemap and robots files.
+Allow static sites to configure public site URLs for sitemap and robots files.

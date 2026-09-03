@@ -32,13 +32,16 @@ For deployable sitemap and robots URLs, configure the absolute public base URL o
 
 ```yaml
 site:
-  canonical_url: https://example.org/docs
+  url: https://example.org/docs
 ```
 
 The URL may include a deployment path, but not a query string or fragment. At deployment time,
-the `SITE_URL` environment variable overrides `site.canonical_url`. Read the Docs builds also use
-`READTHEDOCS_CANONICAL_URL` when neither setting is present. The separate `site.domains` setting
-lists aliases for Curvenote deployments and does not select the canonical URL.
+the `SITE_URL` environment variable overrides `site.url`. Its pathname is also used as the
+deployment base URL, so `https://example.org/docs` configures `/docs` without a separate
+`BASE_URL`. Read the Docs builds also use `READTHEDOCS_CANONICAL_URL` when neither setting is
+present. If an explicit `BASE_URL` disagrees with the path in `site.url`, the build fails. The
+separate `site.domains` setting lists aliases for Curvenote deployments and does not select the
+site URL.
 
 A `robots.txt` file allows you to allow or disallow crawling from search engines, for example from [Googlebot](https://developers.google.com/search/docs/crawling-indexing/robots/intro).
 By default the `robots.txt` is set to `allow` in the site configuration, which creates this file when you visit your URL at [robots.txt](/robots.txt).

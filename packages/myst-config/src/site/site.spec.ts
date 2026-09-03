@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import type { ValidationOptions } from 'simple-validators';
 import {
   validateSiteAction,
-  validateCanonicalUrl,
+  validateSiteUrl,
   validateSiteConfig,
   validateSiteNavItem,
   validateSiteProject,
@@ -117,16 +117,14 @@ describe('validateSiteConfig', () => {
       nav: [{ title: 'cool folder', children: [{ title: 'cool page', url: '/test/cool-page' }] }],
       actions: [{ title: 'Go To Example', url: 'https://example.com', static: false }],
       domains: ['test.curve.space'],
-      canonical_url: 'https://example.org/docs',
+      url: 'https://example.org/docs',
       options: { favicon: 'curvenote.png' },
     };
     expect(validateSiteConfig(siteConfig, opts)).toEqual(siteConfig);
   });
 
-  it('normalizes a canonical URL trailing slash', () => {
-    expect(validateCanonicalUrl('https://example.org/docs/', opts)).toBe(
-      'https://example.org/docs',
-    );
+  it('normalizes a site URL trailing slash', () => {
+    expect(validateSiteUrl('https://example.org/docs/', opts)).toBe('https://example.org/docs');
     expect(opts.messages.errors).toBeUndefined();
   });
 
@@ -136,8 +134,8 @@ describe('validateSiteConfig', () => {
     'ftp://example.org',
     'https://example.org/docs?q=1',
     'https://example.org/docs#section',
-  ])('rejects invalid canonical URL %s', (value) => {
-    expect(validateCanonicalUrl(value, opts)).toBeUndefined();
+  ])('rejects invalid site URL %s', (value) => {
+    expect(validateSiteUrl(value, opts)).toBeUndefined();
     expect(opts.messages.errors).toHaveLength(1);
   });
   it('valid favicon is moved to options', async () => {

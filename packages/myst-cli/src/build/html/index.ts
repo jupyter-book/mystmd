@@ -131,41 +131,72 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
 }
 
 /**
- * Get the baseurl from BASE_URL or common deployment environments
+ * Return the configured public site URL, when one is available.
+ *
+ * @param session session with logging
+ */
+function getSiteUrl(session: ISession): string | undefined {
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  const value = process.env.SITE_URL ?? siteConfig?.url ?? process.env.READTHEDOCS_CANONICAL_URL;
+  if (!value) return undefined;
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error(`SITE_URL or site.url must be an absolute URL: ${value}`);
+  }
+  if (!['http:', 'https:'].includes(url.protocol) || url.search || url.hash) {
+    throw new Error(
+      `SITE_URL or site.url must be an absolute http(s) URL without a query or fragment: ${value}`,
+    );
+  }
+  return url.href.replace(/\/+$/, '');
+}
+
+function normalizeBaseUrl(value?: string): string | undefined {
+  const baseUrl = value?.replace(/\/+$/, '') || undefined;
+  if (!baseUrl) return undefined;
+  if (!baseUrl.startsWith('/') || baseUrl.startsWith('//') || /[?#]/.test(baseUrl)) {
+    throw new Error(`BASE_URL must be a path beginning with "/": ${baseUrl}`);
+  }
+  return baseUrl;
+}
+
+/**
+ * Get the base URL from BASE_URL or the pathname of the public site URL.
  *
  * @param session session with logging
  */
 function getBaseUrl(session: ISession): string | undefined {
-  let baseurl;
-  // BASE_URL always takes precedence. If it's not defined, check common deployment environments.
-  if ((baseurl = process.env.BASE_URL)) {
-    session.log.info('BASE_URL environment overwrite is set');
-  } else if ((baseurl = process.env.READTHEDOCS_CANONICAL_URL)) {
-    // Get only the path part of the RTD url, without trailing `/`
-    baseurl = new URL(baseurl).pathname.replace(/\/$/, '');
-    session.log.info(
-      `Building inside a ReadTheDocs environment for ${process.env.READTHEDOCS_CANONICAL_URL}`,
-    );
+  const siteUrl = getSiteUrl(session);
+  const inferredBaseUrl = siteUrl
+    ? new URL(siteUrl).pathname.replace(/\/+$/, '') || undefined
+    : undefined;
+  const hasBaseUrl = process.env.BASE_URL !== undefined;
+  const baseUrl = normalizeBaseUrl(process.env.BASE_URL);
+  if (hasBaseUrl && inferredBaseUrl !== undefined && baseUrl !== inferredBaseUrl) {
+    throw new Error(`BASE_URL (${baseUrl ?? '/'}) conflicts with the path in ${siteUrl}`);
   }
-  // Check if baseurl was set to any value, otherwise print a hint on how to set it manually.
-  if (baseurl) {
-    session.log.info(`Building the site with a baseurl of "${baseurl}"`);
+  const resolvedBaseUrl = baseUrl ?? inferredBaseUrl;
+  if (resolvedBaseUrl) {
+    session.log.info(`Building the site with a baseurl of "${resolvedBaseUrl}"`);
+  } else if (siteUrl) {
+    session.log.info(`Building the site at "${siteUrl}"`);
   } else {
-    // The user should only use `BASE_URL` to set the value manually.
     session.log.info(
-      'Building the base site.\nTo set a baseurl (e.g. GitHub pages) use "BASE_URL" environment variable.',
+      'Building the base site.\nSet site.url (or SITE_URL) to configure public URLs, or BASE_URL for a path-only deployment prefix.',
     );
   }
-  return baseurl;
+  return resolvedBaseUrl;
 }
 
-export function warnIfMissingCanonicalUrl(session: ISession) {
+export function warnIfMissingSiteUrl(session: ISession) {
   const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  if (process.env.SITE_URL || siteConfig?.canonical_url || process.env.READTHEDOCS_CANONICAL_URL) {
+  if (process.env.SITE_URL || siteConfig?.url || process.env.READTHEDOCS_CANONICAL_URL) {
     return;
   }
   session.log.warn(
-    'No canonical site URL is configured. Generated sitemap.xml and robots.txt files will contain localhost URLs and are unsuitable for deployment. Set site.canonical_url in myst.yml or the SITE_URL environment variable.',
+    'No site URL is configured. Generated sitemap.xml and robots.txt files will contain localhost URLs and are unsuitable for deployment. Set site.url in myst.yml or the SITE_URL environment variable.',
   );
 }
 
@@ -177,7 +208,7 @@ export function warnIfMissingCanonicalUrl(session: ISession) {
  */
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
-  warnIfMissingCanonicalUrl(session);
+  warnIfMissingSiteUrl(session);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
   const baseurl = getBaseUrl(session);
   // Note, this process is really only for Remix templates
