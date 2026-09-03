@@ -1,5 +1,22 @@
 # myst-to-tex
 
+## 1.0.47
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [95aa76d]
+- Updated dependencies [403caed]
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+  - myst-frontmatter@1.10.1
+  - myst-ext-proof@1.0.13
+  - myst-spec-ext@1.10.1
+
 ## 1.0.46
 
 ## 1.0.45

@@ -1,5 +1,12 @@
 # myst-cli-utils
 
+## 2.0.15
+
+### Patch Changes
+
+- 6bc2b49: Handle multi-extensions like .tar.gz when generating hashed filenames
+- 95aa76d: Update package metadata
+
 ## 2.0.14
 
 ### Patch Changes

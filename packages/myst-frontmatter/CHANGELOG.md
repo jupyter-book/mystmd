@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.10.1
+
+### Patch Changes
+
+- aba633a: Relax overaggressive DOI coercion
+- 95aa76d: Update package metadata
+
 ## 1.10.0
 
 ### Minor Changes

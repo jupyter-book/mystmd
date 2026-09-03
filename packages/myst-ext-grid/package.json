@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-grid",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for grid directive",
@@ -32,10 +32,10 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.7.2",
-    "myst-directives": "^1.7.3"
+    "myst-common": "^1.10.1",
+    "myst-directives": "^1.7.4"
   },
   "devDependencies": {
-    "myst-parser": "^1.7.1"
+    "myst-parser": "^1.7.4"
   }
 }

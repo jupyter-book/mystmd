@@ -1,5 +1,21 @@
 # myst-to-typst
 
+## 0.0.39
+
+### Patch Changes
+
+- 41782d2: `tex-to-typst` bumped to 0.0.21
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+  - myst-frontmatter@1.10.1
+  - myst-spec-ext@1.10.1
+
 ## 0.0.38
 
 ### Patch Changes

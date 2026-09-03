@@ -1,5 +1,25 @@
 # myst-to-jats
 
+## 1.0.36
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [0b0ba90]
+- Updated dependencies [aba633a]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [3252535]
+- Updated dependencies [4f12f1b]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+  - myst-transforms@1.3.51
+  - myst-frontmatter@1.10.1
+  - citation-js-utils@1.2.9
+  - myst-spec-ext@1.10.1
+
 ## 1.0.35
 
 ### Patch Changes
