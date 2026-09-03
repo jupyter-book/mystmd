@@ -207,3 +207,83 @@ cases:
       Some text before an observation
 
       \begin{observation}\label{obs-t1}This is it.\end{observation}
+  - title: algorithm after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before an algorithm'
+        - type: proof
+          kind: algorithm
+          label: alg-t1
+          identifier: alg-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'Do this, then that.'
+    latex: |-
+      Some text before an algorithm
+
+      \begin{algorithm}\label{alg-t1}Do this, then that.\end{algorithm}
+  - title: assumption after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before an assumption'
+        - type: proof
+          kind: assumption
+          label: asm-t1
+          identifier: asm-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'Assume this holds.'
+    latex: |-
+      Some text before an assumption
+
+      \begin{assumption}\label{asm-t1}Assume this holds.\end{assumption}
+  - title: criterion after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a criterion'
+        - type: proof
+          kind: criterion
+          label: crit-t1
+          identifier: crit-t1
+          enumerated: true
+          children:
+            - type: text
+              value: 'This is the criterion.'
+    latex: |-
+      Some text before a criterion
+
+      \begin{criterion}\label{crit-t1}This is the criterion.\end{criterion}
+  - title: property after paragraph
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'Some text before a property'
+        - type: proof
+          kind: property
+          label: prop-p1
+          identifier: prop-p1
+          enumerated: true
+          children:
+            - type: text
+              value: 'This property holds.'
+    latex: |-
+      Some text before a property
+
+      \begin{property}\label{prop-p1}This property holds.\end{property}
