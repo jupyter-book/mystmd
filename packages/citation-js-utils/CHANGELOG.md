@@ -1,5 +1,12 @@
 # citation-js-utils
 
+## 1.2.9
+
+### Patch Changes
+
+- 4f12f1b: Decode HTML entities in CrossRef citation data
+- 95aa76d: Update package metadata
+
 ## 1.2.8
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # myst-to-html
 
+## 1.7.4
+
+### Patch Changes
+
+- 7fda16f: Switch to ipynb build cache
+- 0b0ba90: Support cell IDs from Jupyter Notebooks
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+
 ## 1.7.3
 
 ### Patch Changes
