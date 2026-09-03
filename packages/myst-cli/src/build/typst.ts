@@ -32,7 +32,10 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import { getFileContent } from './utils/getFileContent.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { createTempFolder } from '../utils/createTempFolder.js';
-import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
+import {
+  resolveFrontmatterParts,
+  resolveFrontmatterPartsReferences,
+} from '../utils/resolveFrontmatterParts.js';
 import version from '../version.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import type { ExportWithOutput, ExportResults, ExportFnOptions } from './types.js';
@@ -239,7 +242,12 @@ export async function localArticleToTypstTemplated(
   const bibtexWritten = writeBibtexFromCitationRenderers(
     session,
     path.join(path.dirname(output), DEFAULT_BIB_FILENAME),
-    content,
+    [
+      ...content,
+      ...content.flatMap(({ frontmatter }) =>
+        resolveFrontmatterPartsReferences(session, frontmatter),
+      ),
+    ],
   );
 
   const warningLogFn = (message: string) => {
