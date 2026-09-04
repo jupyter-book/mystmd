@@ -28,14 +28,14 @@ The thumbnail, title and description for your document will also show up in site
 
 ## robots.txt
 
-For deployable sitemap and robots URLs, configure the absolute public base URL of your site:
+For a deployable `robots.txt`, configure the absolute public base URL of your site so the `Sitemap:` entry points to the public sitemap:
 
 ```yaml
 site:
   url: https://example.org/docs
 ```
 
-The URL may include a deployment path, but not a query string or fragment. At deployment time, the `SITE_URL` environment variable overrides `site.url`. Its pathname is also used as the deployment base URL, so `https://example.org/docs` configures `/docs` without a separate `BASE_URL`. Read the Docs builds also use `READTHEDOCS_CANONICAL_URL` when neither setting is present. If an explicit `BASE_URL` disagrees with the path in `site.url`, the build fails. The separate `site.domains` setting lists aliases for Curvenote deployments and does not select the site URL.
+The URL may include a deployment path, but not a query string or fragment. At deployment time, the `SITE_URL` environment variable overrides `site.url`. Read the Docs builds also use `READTHEDOCS_CANONICAL_URL` when neither setting is present. The separate `site.domains` setting lists aliases for Curvenote deployments and does not select the site URL.
 
 A `robots.txt` file allows you to allow or disallow crawling from search engines, for example from [Googlebot](https://developers.google.com/search/docs/crawling-indexing/robots/intro).
 By default the `robots.txt` is set to `allow` in the site configuration, which creates this file when you visit your URL at [robots.txt](/robots.txt).
@@ -59,6 +59,15 @@ This will turn the `Allow: /` to `Disallow: /`, which will indicate to search en
 This is a good setting for transient sites or sites that are showing, for example, changes on a pull-request.
 
 ## sitemap.xml
+
+For a deployable `sitemap.xml`, configure the absolute public base URL of your site so page `<loc>` entries and the stylesheet URL point to the public site:
+
+```yaml
+site:
+  url: https://example.org/docs
+```
+
+The URL's pathname automatically becomes the deployment base URL, so `https://example.org/docs` configures `/docs` without a separate `BASE_URL`. If an explicit `BASE_URL` disagrees with the path in `site.url`, the build fails.
 
 The `sitemap.xml` is always created and is accessible through [sitemap.xml](/sitemap.xml), which lists all of the pages in your site, including any nested projects. This XML Sitemap is generated automatically to make your content more visible for search engines.
 
