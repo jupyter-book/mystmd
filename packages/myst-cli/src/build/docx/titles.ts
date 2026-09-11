@@ -29,3 +29,11 @@ export function createReferenceTitle(): Heading {
     children: [{ type: 'text', value: 'References' }],
   };
 }
+
+export function createPartTitle(title: string): Heading {
+  return {
+    type: 'heading',
+    depth: 2,
+    children: [{ type: 'text', value: title }],
+  };
+}
