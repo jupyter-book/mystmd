@@ -1,0 +1,161 @@
+title: Numerical only citation style examples
+options:
+  citestyle: numerical-only
+cases:
+  - title: Narrative citation
+    myst: |-
+      @jon90
+    mdast:
+      type: root
+      children:
+        - type: cite
+          label: jon90
+          kind: narrative
+    latex: |-
+      \cite{jon90}
+
+  - title: Narrative citation in a citeGroup
+    # myst: ??
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: narrative
+          children:
+            - type: cite
+              label: jon90
+              kind: narrative
+    latex: |-
+      \cite{jon90}
+
+  - title: Narrative citation with suffix
+    myst: |-
+      @jon90 [chap. 2]
+    mdast:
+      type: root
+      children:
+        - type: cite
+          label: jon90
+          kind: narrative
+          suffix: chap. 2
+    latex: |-
+      \cite[chap. 2]{jon90}
+
+  - title: Parenthetical citation
+    myst: |-
+      [@jon90]
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: parenthetical
+          children:
+            - type: cite
+              label: jon90
+              kind: parenthetical
+    latex: |-
+      \cite{jon90}
+
+  - title: Parenthetical citation with suffix
+    myst: |-
+      [@jon90, chap. 2]
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: parenthetical
+          children:
+            - type: cite
+              label: jon90
+              kind: parenthetical
+              suffix: chap. 2
+    latex: |-
+      \cite[chap. 2]{jon90}
+
+  - title: Parenthetical citation with prefix
+    myst: |-
+      [see @jon90]
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: parenthetical
+          children:
+            - type: cite
+              label: jon90
+              kind: parenthetical
+              prefix: see
+    latex: |-
+      \cite[see][]{jon90}
+
+  - title: Parenthetical citation with prefix and suffix
+    myst: |-
+      [see @jon90, chap. 2]
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: parenthetical
+          children:
+            - type: cite
+              label: jon90
+              kind: parenthetical
+              prefix: see
+              suffix: chap. 2
+    latex: |-
+      \cite[see][chap. 2]{jon90}
+
+  - title: Multiple narrative citations
+    # myst: ??
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: narrative
+          children:
+            - type: cite
+              label: jon90
+              kind: narrative
+            - type: cite
+              label: jam91
+              kind: narrative
+    latex: |-
+      \cite{jon90, jam91}
+
+  - title: Multiple parenthetical citations
+    myst: |-
+      [@jon90; @jam91]
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: parenthetical
+          children:
+            - type: cite
+              label: jon90
+              kind: parenthetical
+            - type: cite
+              label: jam91
+              kind: parenthetical
+    latex: |-
+      \cite{jon90, jam91}
+
+  - title: Multiple parenthetical citations with prefix and suffix
+    myst: |-
+      [cf. @jon90; @jam91, among others]
+    mdast:
+      type: root
+      children:
+        - type: citeGroup
+          kind: parenthetical
+          children:
+            - type: cite
+              label: jon90
+              kind: parenthetical
+              prefix: cf.
+            - type: cite
+              label: jam91
+              kind: parenthetical
+              suffix: among others
+    latex: |-
+      \cite[cf.][among others]{jon90, jam91}
