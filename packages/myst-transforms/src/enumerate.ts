@@ -530,7 +530,7 @@ export function addChildrenFromTargetNode(
   const kind = kindFromNode(targetNode);
   const noNodeChildren = !node.children?.length;
   if (kind === TargetKind.heading) {
-    const numberHeading = shouldEnumerateNode(targetNode, TargetKind.heading, numbering);
+    const numberHeading = shouldEnumerateNode(targetNode, TargetKind.heading, numbering, offset);
     const template = getReferenceTemplate(
       { node: targetNode, kind },
       numbering,
