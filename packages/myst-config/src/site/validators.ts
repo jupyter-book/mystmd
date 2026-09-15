@@ -18,11 +18,22 @@ import {
   validateSiteFrontmatterKeys,
 } from 'myst-frontmatter';
 import type { SiteAction, SiteConfig, SiteNavItem, SiteProject } from './types.js';
+import { normalizeSiteUrl } from './urls.js';
 
 export const SITE_CONFIG_KEYS = {
-  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'template'],
+  optional: [...SITE_FRONTMATTER_KEYS, 'projects', 'nav', 'actions', 'domains', 'url', 'template'],
   alias: FRONTMATTER_ALIASES,
 };
+
+export function validateSiteUrl(input: any, opts: ValidationOptions): string | undefined {
+  const value = validateString(input, opts);
+  if (!defined(value)) return undefined;
+  try {
+    return normalizeSiteUrl(value);
+  } catch (error) {
+    return validationError((error as Error).message, opts);
+  }
+}
 
 function validateUrlOrPath(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
@@ -141,6 +152,9 @@ export function validateSiteConfigKeys(
       },
     );
     if (domains) output.domains = [...new Set(domains)];
+  }
+  if (defined(value.url)) {
+    output.url = validateSiteUrl(value.url, incrementOptions('url', opts));
   }
   if (defined(value.template)) {
     output.template = validateString(value.template, incrementOptions('template', opts));

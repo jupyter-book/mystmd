@@ -9,6 +9,7 @@
 // The JS and CSS are produced by myst-theme.
 
 import fs from 'fs-extra';
+import { resolveSiteUrls } from 'myst-config';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
@@ -131,32 +132,47 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
 }
 
 /**
- * Get the baseurl from BASE_URL or common deployment environments
+ * Return the configured public site URL, when one is available.
  *
  * @param session session with logging
  */
-function getBaseUrl(session: ISession): string | undefined {
-  let baseurl;
-  // BASE_URL always takes precedence. If it's not defined, check common deployment environments.
-  if ((baseurl = process.env.BASE_URL)) {
-    session.log.info('BASE_URL environment overwrite is set');
-  } else if ((baseurl = process.env.READTHEDOCS_CANONICAL_URL)) {
-    // Get only the path part of the RTD url, without trailing `/`
-    baseurl = new URL(baseurl).pathname.replace(/\/$/, '');
-    session.log.info(
-      `Building inside a ReadTheDocs environment for ${process.env.READTHEDOCS_CANONICAL_URL}`,
-    );
-  }
-  // Check if baseurl was set to any value, otherwise print a hint on how to set it manually.
-  if (baseurl) {
-    session.log.info(`Building the site with a baseurl of "${baseurl}"`);
+export function getSiteUrl(session: ISession): string | undefined {
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  return resolveSiteUrls({ url: siteConfig?.url, env: process.env }).siteUrl;
+}
+
+/**
+ * Get the base URL from BASE_URL or the pathname of the public site URL.
+ *
+ * @param session session with logging
+ */
+export function getBaseUrl(session: ISession): string | undefined {
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  const { siteUrl, baseUrl: resolvedBaseUrl } = resolveSiteUrls({
+    url: siteConfig?.url,
+    env: process.env,
+  });
+  // Report the resolved base URL, or explain how to configure one when neither source is set.
+  if (resolvedBaseUrl) {
+    session.log.info(`Building the site with a baseurl of "${resolvedBaseUrl}"`);
+  } else if (siteUrl) {
+    session.log.info(`Building the site at "${siteUrl}"`);
   } else {
-    // The user should only use `BASE_URL` to set the value manually.
     session.log.info(
-      'Building the base site.\nTo set a baseurl (e.g. GitHub pages) use "BASE_URL" environment variable.',
+      'Building the base site.\nSet site.url (or SITE_URL) to configure public URLs, or BASE_URL for a path-only deployment prefix.',
     );
   }
-  return baseurl;
+  return resolvedBaseUrl;
+}
+
+export function warnIfMissingSiteUrl(session: ISession) {
+  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
+  if (process.env.SITE_URL || siteConfig?.url || process.env.READTHEDOCS_CANONICAL_URL) {
+    return;
+  }
+  session.log.warn(
+    'No site URL is configured. Generated sitemap.xml and robots.txt files will contain localhost URLs and are unsuitable for deployment. Set site.url in myst.yml or the SITE_URL environment variable.',
+  );
 }
 
 /**
@@ -167,6 +183,7 @@ function getBaseUrl(session: ISession): string | undefined {
  */
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
+  warnIfMissingSiteUrl(session);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
   const baseurl = getBaseUrl(session);
   // Note, this process is really only for Remix templates
