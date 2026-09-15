@@ -297,3 +297,9 @@ export function typstLabel(identifier: string) {
   if (isTypstSafeIdentifier(identifier)) return `<${identifier}>`;
   return `label("${typstLabelString(identifier)}")`;
 }
+
+/** Attach a label to the complete element just written, such as `#figure(..)` or `$ x $`. */
+export function typstLabelMarkup(identifier: string) {
+  if (isTypstSafeIdentifier(identifier)) return `<${identifier}>`;
+  return `#label("${typstLabelString(identifier)}")`;
+}
