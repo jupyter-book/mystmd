@@ -15,9 +15,12 @@ import type {
 import {
   getLatexImageWidth,
   hrefToLatexText,
+  isTypstSafeIdentifier,
   nodeOnlyHasTextChildren,
   stringToTypstMath,
   stringToTypstText,
+  typstLabel,
+  typstLabelString,
 } from './utils.js';
 import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
@@ -360,22 +363,14 @@ const handlers: Record<string, Handler> = {
       linkHandler({ ...node, url: url }, state);
       return;
     }
-    const id = node.identifier;
-    // Typst angle-bracket labels and the `@label` shorthand only accept
-    // identifier-safe names, but cross-reference targets (e.g. glossary terms)
-    // can contain spaces and are emitted as `#label("...")`. Match that form
-    // here so the reference resolves instead of producing invalid Typst.
-    const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(id ?? '');
-    // Escape backslashes and quotes so an identifier with special characters
-    // cannot break out of the Typst string literal.
-    const labelArg = (id ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    const idRef = needsLabel ? `label("${labelArg}")` : `<${id}>`;
+    const id = node.identifier ?? '';
     if (node.children && node.children.length > 0) {
-      state.write(`#link(${idRef})[`);
+      state.write(`#link(${typstLabel(id)})[`);
       state.renderChildren(node);
       state.write(']');
-    } else if (needsLabel) {
-      state.write(`#ref(${idRef})`);
+    } else if (!isTypstSafeIdentifier(id)) {
+      // The `@id` shorthand below is only valid for safe identifiers.
+      state.write(`#ref(${typstLabel(id)})`);
     } else {
       // Note that we don't need to protect against the previous character as text
       const next = nextCharacterIsText(parent, node);
@@ -386,9 +381,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 0, { delim: ' ' });
   },
   cite(node, state) {
-    const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(node.label);
-    const label = needsLabel ? `label("${node.label}")` : `<${node.label}>`;
-    state.write(`#cite(${label}`);
+    state.write(`#cite(${typstLabel(node.label)}`);
     if (node.kind === 'narrative') state.write(`, form: "prose"`);
     // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
     if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
@@ -433,7 +426,7 @@ const handlers: Record<string, Handler> = {
   span(node, state) {
     state.renderChildren(node, 0, { trimEnd: false });
     if (node.identifier && !state.data.isInIndex) {
-      state.write(` #label("${node.identifier}")`);
+      state.write(` #label("${typstLabelString(node.identifier)}")`);
     }
   },
   raw(node, state) {

@@ -108,3 +108,16 @@ cases:
                   value: greeting
     typst: |-
       #link(label("term-say \"hi\""))[greeting]
+  - title: target identifier containing a quote is escaped in the Typst label
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              identifier: 'term-say "hi"'
+              children:
+                - type: text
+                  value: greeting
+    typst: |-
+      greeting #label("term-say \"hi\"")
