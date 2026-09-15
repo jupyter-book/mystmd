@@ -15,9 +15,12 @@ import type {
 import {
   getLatexImageWidth,
   hrefToLatexText,
+  isTypstSafeIdentifier,
   nodeOnlyHasTextChildren,
   stringToTypstMath,
   stringToTypstText,
+  typstLabel,
+  typstLabelString,
 } from './utils.js';
 import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
@@ -361,10 +364,20 @@ const handlers: Record<string, Handler> = {
       return;
     }
     const id = node.identifier;
+    if (!id) {
+      fileError(state.file, 'Cross-reference without an identifier', {
+        node,
+        source: 'myst-to-typst',
+      });
+      return;
+    }
     if (node.children && node.children.length > 0) {
-      state.write(`#link(<${id}>)[`);
+      state.write(`#link(${typstLabel(id)})[`);
       state.renderChildren(node);
       state.write(']');
+    } else if (!isTypstSafeIdentifier(id)) {
+      // The `@id` shorthand below is only valid for safe identifiers.
+      state.write(`#ref(${typstLabel(id)})`);
     } else {
       // Note that we don't need to protect against the previous character as text
       const next = nextCharacterIsText(parent, node);
@@ -375,9 +388,7 @@ const handlers: Record<string, Handler> = {
     state.renderChildren(node, 0, { delim: ' ' });
   },
   cite(node, state) {
-    const needsLabel = !/^[a-zA-Z0-9_\-:.]+$/.test(node.label);
-    const label = needsLabel ? `label("${node.label}")` : `<${node.label}>`;
-    state.write(`#cite(${label}`);
+    state.write(`#cite(${typstLabel(node.label)}`);
     if (node.kind === 'narrative') state.write(`, form: "prose"`);
     // node.prefix not supported by typst: see https://github.com/typst/typst/issues/1139
     if (node.suffix) state.write(`, supplement: [${node.suffix}]`);
@@ -422,7 +433,7 @@ const handlers: Record<string, Handler> = {
   span(node, state) {
     state.renderChildren(node, 0, { trimEnd: false });
     if (node.identifier && !state.data.isInIndex) {
-      state.write(` #label("${node.identifier}")`);
+      state.write(` #label("${typstLabelString(node.identifier)}")`);
     }
   },
   raw(node, state) {
