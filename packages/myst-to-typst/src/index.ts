@@ -363,7 +363,14 @@ const handlers: Record<string, Handler> = {
       linkHandler({ ...node, url: url }, state);
       return;
     }
-    const id = node.identifier ?? '';
+    const id = node.identifier;
+    if (!id) {
+      fileError(state.file, 'Cross-reference without an identifier', {
+        node,
+        source: 'myst-to-typst',
+      });
+      return;
+    }
     if (node.children && node.children.length > 0) {
       state.write(`#link(${typstLabel(id)})[`);
       state.renderChildren(node);
