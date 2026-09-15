@@ -1,5 +1,63 @@
 # myst-cli
 
+## 1.11.0
+
+### Minor Changes
+
+- 7fda16f: Switch to ipynb build cache
+
+### Patch Changes
+
+- 0b0ba90: Support cell IDs from Jupyter Notebooks
+- 891bda7: effectively discard files matched by pattern if already mentioned
+- aba633a: Relax overaggressive DOI coercion
+- cf9086e: Add public.json file manifest
+- 4de8d72: Bump version for GitHub actions and node in GH pages publish action
+- 55d3c9a: Only include files in public manifest
+- 95aa76d: Update package metadata
+- bde9e9c: Bump @jupyterlite/services and fix types
+- Updated dependencies [71aec67]
+- Updated dependencies [7fda16f]
+- Updated dependencies [0b0ba90]
+- Updated dependencies [e8045bc]
+- Updated dependencies [aba633a]
+- Updated dependencies [41782d2]
+- Updated dependencies [d41a821]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [3252535]
+- Updated dependencies [6bc2b49]
+- Updated dependencies [4f12f1b]
+- Updated dependencies [95aa76d]
+- Updated dependencies [12f4721]
+- Updated dependencies [bde9e9c]
+- Updated dependencies [403caed]
+  - myst-execute@0.5.0
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+  - myst-transforms@1.3.51
+  - myst-frontmatter@1.10.1
+  - myst-to-typst@0.0.39
+  - myst-cli-utils@2.0.15
+  - citation-js-utils@1.2.9
+  - myst-ext-exercise@1.0.10
+  - myst-ext-button@0.0.2
+  - myst-ext-proof@1.0.13
+  - myst-templates@1.0.28
+  - myst-ext-grid@1.1.1
+  - myst-ext-icon@0.0.3
+  - myst-ext-tabs@1.0.10
+  - myst-migrate@1.11.0
+  - myst-to-docx@1.0.17
+  - myst-to-jats@1.0.36
+  - myst-config@1.10.1
+  - myst-parser@1.7.4
+  - myst-to-tex@1.0.47
+  - tex-to-myst@1.0.47
+  - myst-to-md@1.0.17
+  - jtex@1.0.22
+  - myst-spec-ext@1.10.1
+
 ## 1.10.1
 
 ### Patch Changes
