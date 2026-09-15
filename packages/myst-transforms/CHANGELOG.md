@@ -1,5 +1,25 @@
 # myst-transforms
 
+## 1.3.51
+
+### Patch Changes
+
+- 0b0ba90: Support cell IDs from Jupyter Notebooks
+- aba633a: Relax overaggressive DOI coercion
+- 3252535: Allow `grid` directives to be used in `figure` directives
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [0b0ba90]
+- Updated dependencies [aba633a]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [95aa76d]
+  - myst-to-html@1.7.4
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+  - myst-frontmatter@1.10.1
+  - myst-spec-ext@1.10.1
+
 ## 1.3.50
 
 ### Patch Changes
