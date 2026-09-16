@@ -3,18 +3,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'js-yaml';
 import { unified } from 'unified';
-import type { LatexResult } from '../src';
+import type { LatexResult, Options } from '../src';
 import mystToTex from '../src';
 
 type TestCase = {
   title: string;
   latex: string;
   mdast: Record<string, any>;
+  imports?: string[];
 };
 
 type TestCases = {
   title: string;
   cases: TestCase[];
+  options?: Options;
 };
 
 const excludedYml = ['glossaries.yml'];
@@ -28,13 +30,18 @@ const casesList: TestCases[] = fs
     return yaml.load(content) as TestCases;
   });
 
-casesList.forEach(({ title, cases }) => {
+casesList.forEach(({ title, cases, options }) => {
   describe(title, () => {
-    test.each(cases.map((c): [string, TestCase] => [c.title, c]))('%s', (_, { latex, mdast }) => {
-      const pipe = unified().use(mystToTex);
-      pipe.runSync(mdast as any);
-      const file = pipe.stringify(mdast as any);
-      expect((file.result as LatexResult).value).toEqual(latex);
-    });
+    test.each(cases.map((c): [string, TestCase] => [c.title, c]))(
+      '%s',
+      (_, { latex, mdast, imports }) => {
+        const pipe = unified().use(mystToTex, options);
+        pipe.runSync(mdast as any);
+        const file = pipe.stringify(mdast as any);
+        const result = file.result as LatexResult;
+        expect(result.value).toEqual(latex);
+        if (imports) expect(result.imports).toEqual(imports);
+      },
+    );
   });
 });

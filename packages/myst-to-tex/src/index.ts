@@ -403,29 +403,71 @@ const handlers: Record<string, Handler> = {
     state.write(text.replace(/%s/g, `\\ref{${id}}`));
   },
   citeGroup(node, state) {
-    if (state.options.citestyle === 'numerical-only') {
-      state.write('\\cite{');
-    } else if (state.options.bibliography === 'biblatex') {
-      const command = node.kind === 'narrative' ? 'textcite' : 'parencite';
-      state.write(`\\${command}{`);
-    } else {
-      const tp = node.kind === 'narrative' ? 't' : 'p';
-      state.write(`\\cite${tp}{`);
-    }
     state.renderChildren(node, true, ', ');
-    state.write('}');
   },
   cite(node, state, parent) {
-    if (!state.options.bibliography) {
+    if (!state.options.bibliography || state.options.bibliography === 'natbib') {
       state.usePackages('natbib');
       // Don't include biblatex in the package list
     }
-    if (parent.type === 'citeGroup') {
-      state.write(node.label);
-    } else if (state.options.bibliography === 'biblatex') {
-      state.write(`\\textcite{${node.label}}`);
-    } else {
-      state.write(`\\cite{${node.label}}`);
+
+    const standalone = parent.type !== 'citeGroup';
+    const firstSibling = parent.children?.[0];
+    const lastSibling = parent.children?.[parent.children.length - 1];
+
+    if (standalone || node === firstSibling) {
+      // Write the command if this is a standalone citation or the first
+      // citation of a group
+      if (state.options.citestyle === 'numerical-only') {
+        state.write('\\cite');
+      } else if (state.options.bibliography === 'biblatex') {
+        if (node.kind === 'narrative') {
+          if (node.partial === 'year') {
+            state.write('\\cite*');
+          } else {
+            state.write('\\textcite');
+          }
+        } else {
+          state.write('\\parencite');
+          if (node.partial === 'year') {
+            state.write('*');
+          }
+        }
+      } else {
+        if (node.partial === 'author') {
+          state.write('\\citeauthor');
+        } else if (node.partial === 'year') {
+          if (node.kind === 'parenthetical') {
+            state.write('\\citeyearpar');
+          } else {
+            state.write('\\citeyear');
+          }
+        } else if (node.kind === 'parenthetical') {
+          state.write('\\citep');
+        } else {
+          state.write('\\citet');
+        }
+      }
+
+      if (node.prefix) {
+        state.write(`[${node.prefix}]`);
+        if ((standalone && !node.suffix) || (!standalone && !lastSibling?.suffix)) {
+          state.write('[]');
+        }
+      }
+
+      if (standalone && node.suffix) {
+        state.write(`[${node.suffix}]`);
+      } else if (!standalone && lastSibling.suffix) {
+        state.write(`[${lastSibling.suffix}]`);
+      }
+
+      state.write('{');
+    }
+
+    state.write(node.label);
+    if (standalone || node === lastSibling) {
+      state.write('}');
     }
   },
   embed(node, state) {
