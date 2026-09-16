@@ -581,7 +581,7 @@ cases:
       MYST_TEST_SLEEP_MS: 4000
       MYST_TEST_DELAY_MS: 2000
     # Used to be 15000, increased due to CI slowness
-    # NOTE that the full test suite has a timeout here too: 
+    # NOTE that the full test suite has a timeout here too:
     # mystmd/packages/mystmd/tests/endToEnd.spec.ts
     timeout: 30000
     outputs:
@@ -603,3 +603,9 @@ cases:
         content: extend-part-plugin/outputs/index.json
       - path: extend-part-plugin/_build/site/config.json
         content: extend-part-plugin/outputs/config.json
+  - title: Numbered heading cross references resolve in single article exports
+    cwd: numbered-heading-xref
+    command: myst build --tex
+    outputs:
+      - path: numbered-heading-xref/_build/out.tex
+        content: outputs/numbered-heading-xref.tex
