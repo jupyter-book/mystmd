@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-tabs",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for tab-set and tab-item directive",
@@ -32,11 +32,11 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.7.2",
-    "myst-directives": "^1.7.3"
+    "myst-common": "^1.10.1",
+    "myst-directives": "^1.7.4"
   },
   "devDependencies": {
-    "myst-parser": "^1.5.9",
+    "myst-parser": "^1.7.4",
     "unist-util-select": "^4.0.3"
   }
 }
