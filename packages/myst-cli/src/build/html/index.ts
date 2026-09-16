@@ -187,7 +187,7 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   });
   if (!appServer) return;
 
-  const host = `http://localhost:${appServer.port}`;
+  const host = `http://localhost:${appServer.contentServer.port}`;
 
   // Use the template to render itself
   if (renderCommand !== undefined) {
