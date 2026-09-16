@@ -241,7 +241,10 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
       path.join(htmlDir, 'myst.search.json'),
     );
 
-    // NOTE: HTML static output needs to patch the contents, this is done on the fly by the server
+    // MyST content-server `myst.xref.json` objects contain `/content`/
+    // as a marker for the "root" URL of the deployed site.
+    // Meanwhile, MyST tooling expects links to be relative to the root.
+    // We therefore must strip off `/content/` such that this holds true.
     const xrefs = JSON.parse(
       fs.readFileSync(path.join(session.sitePath(), 'myst.xref.json')).toString(),
     ) as MystXRefs;
