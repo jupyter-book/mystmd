@@ -187,18 +187,18 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   });
   if (!appServer) return;
 
-  const host = `http://localhost:${appServer.contentServer.port}`;
-
   // Use the template to render itself
   if (renderCommand !== undefined) {
     // Run pre-rendering
+    const cdn_url = `http://localhost:${appServer.contentServer.port}`;
     await makeExecutable(renderCommand, createNpmLogger(session), {
       cwd: template.templatePath,
-      env: { ...process.env, BUILD_DIRECTORY: htmlDir, CONTENT_CDN: host },
+      env: { ...process.env, BUILD_DIRECTORY: htmlDir, CONTENT_CDN: cdn_url },
     })();
   }
   // Fallback on fetch-based rendering (deprecated)
   else {
+    const host = `http://localhost:${appServer.port}`;
     const routes = await currentSiteRoutes(session, host, baseurl);
 
     // Fetch all HTML pages and assets by the template
