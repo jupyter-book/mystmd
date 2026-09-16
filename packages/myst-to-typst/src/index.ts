@@ -20,6 +20,7 @@ import {
   stringToTypstMath,
   stringToTypstText,
   typstLabel,
+  typstLabelMarkup,
   typstLabelString,
 } from './utils.js';
 import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
@@ -115,7 +116,7 @@ const handlers: Record<string, Handler> = {
   },
   paragraph(node, state) {
     const { identifier } = node;
-    const after = identifier ? ` <${identifier}>` : undefined;
+    const after = identifier ? ` ${typstLabelMarkup(identifier)}` : undefined;
     state.renderChildren(node, 2, { after });
   },
   heading(node, state) {
@@ -123,7 +124,7 @@ const handlers: Record<string, Handler> = {
     state.write(`${Array(depth).fill('=').join('')} `);
     state.renderChildren(node);
     if (enumerated !== false && identifier && !state.data.headingIdentifiers.includes(identifier)) {
-      state.write(` <${identifier}>`);
+      state.write(` ${typstLabelMarkup(identifier)}`);
       // Duplicate headings cause hard failures in typst
       state.data.headingIdentifiers.push(identifier);
     }

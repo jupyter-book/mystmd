@@ -159,3 +159,41 @@ cases:
         kind: "figure",
         supplement: [Figure],
       ) #label("fig my figure")
+  - title: paragraph target whose label has spaces uses label() on both target and reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: This is a paragraph.
+          label: my target
+          identifier: my target
+        - type: paragraph
+          children:
+            - type: text
+              value: 'With a reference '
+            - type: crossReference
+              children:
+                - type: text
+                  value: Paragraph
+              identifier: my target
+              label: my target
+              kind: paragraph
+    typst: |-
+      This is a paragraph. #label("my target")
+
+      With a reference #link(label("my target"))[Paragraph]
+  - title: heading target whose identifier has spaces uses label()
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          identifier: my heading
+          label: my heading
+          children:
+            - type: text
+              value: My Heading
+    typst: |-
+      = My Heading #label("my heading")
