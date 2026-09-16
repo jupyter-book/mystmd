@@ -191,6 +191,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'ASWF-Digital-Assets-1.1': {
     name: 'ASWF Digital Assets License 1.1',
   },
+  'atc-game': {
+    name: 'atc Game License',
+  },
   Baekmuk: {
     name: 'Baekmuk License',
   },
@@ -244,6 +247,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'Brian-Gladman-3-Clause': {
     name: 'Brian Gladman 3-Clause License',
   },
+  'Brian-Gladman-3-Clause-no-conversion': {
+    name: 'Brian Gladman 3-Clause License (no conversion clause)',
+  },
   'BSD-1-Clause': {
     name: 'BSD 1-Clause License',
     osi: true,
@@ -265,6 +271,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'BSD-2-Clause-pkgconf-disclaimer': {
     name: 'BSD 2-Clause pkgconf disclaimer variant',
+  },
+  'BSD-2-Clause-pos-unchanged': {
+    name: 'BSD 2-Clause - position unchanged variant',
   },
   'BSD-2-Clause-Views': {
     name: 'BSD 2-Clause with views sentence',
@@ -313,6 +322,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
     name: 'BSD 3-Clause Open MPI variant',
     osi: true,
   },
+  'BSD-3-Clause-OpenWebUI': {
+    name: 'BSD 3-Clause - OpenWebUI variant',
+  },
   'BSD-3-Clause-Sun': {
     name: 'BSD 3-Clause Sun Microsystems',
   },
@@ -338,6 +350,10 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'BSD-Advertising-Acknowledgement': {
     name: 'BSD Advertising Acknowledgement License',
   },
+  'BSD-ask-to-endorse': {
+    name: 'BSD - ask to endorse',
+    osi: true,
+  },
   'BSD-Attribution-HPND-disclaimer': {
     name: 'BSD with Attribution and HPND disclaimer',
   },
@@ -350,11 +366,17 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'BSD-Protection': {
     name: 'BSD Protection License',
   },
+  'BSD-Source-alt-GPL': {
+    name: 'BSD Source Code Attribution - GPL alternative',
+  },
   'BSD-Source-beginning-file': {
     name: 'BSD Source Code Attribution - beginning of file variant',
   },
   'BSD-Source-Code': {
     name: 'BSD Source Code Attribution',
+  },
+  'BSD-Source-Code-no-disclaimer': {
+    name: 'BSD Source Code Attribution - no disclaimer',
   },
   'BSD-Systemics': {
     name: 'Systemics BSD variant license',
@@ -369,6 +391,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   Buddy: {
     name: 'Buddy License',
+  },
+  Bugroff: {
+    name: 'Bugroff License',
   },
   'BUSL-1.1': {
     name: 'Business Source License 1.1',
@@ -470,6 +495,10 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'CC-BY-NC-3.0-DE': {
     name: 'Creative Commons Attribution Non Commercial 3.0 Germany',
+    CC: true,
+  },
+  'CC-BY-NC-3.0-IGO': {
+    name: 'Creative Commons Attribution Non Commercial 3.0 IGO',
     CC: true,
   },
   'CC-BY-NC-4.0': {
@@ -633,6 +662,7 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'CDDL-1.1': {
     name: 'Common Development and Distribution License 1.1',
+    osi: true,
   },
   'CDL-1.0': {
     name: 'Common Documentation License 1.0',
@@ -717,6 +747,7 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'CNRI-Python-GPL-Compatible': {
     name: 'CNRI Python Open Source GPL Compatible License Agreement',
+    osi: true,
   },
   'COIL-1.0': {
     name: 'Copyfree Open Innovation License',
@@ -771,6 +802,7 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   curl: {
     name: 'curl License',
+    osi: true,
   },
   'cve-tou': {
     name: 'Common Vulnerability Enumeration ToU License',
@@ -909,6 +941,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'FDK-AAC': {
     name: 'Fraunhofer FDK AAC Codec Library',
+  },
+  'FDK-MPEG-H': {
+    name: 'Fraunhofer FDK MPEG-H Software',
   },
   'Ferguson-Twofish': {
     name: 'Ferguson Twofish License',
@@ -1102,6 +1137,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   'Hippocratic-2.1': {
     name: 'Hippocratic License 2.1',
   },
+  'Hippocratic-3.0-core': {
+    name: 'Hippocratic License 3.0',
+  },
   'HP-1986': {
     name: 'Hewlett-Packard 1986 License',
   },
@@ -1224,6 +1262,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'Info-ZIP': {
     name: 'Info-ZIP License',
+  },
+  Informatica: {
+    name: 'Informatica License',
   },
   'Inner-Net-2.0': {
     name: 'Inner Net License v2.0',
@@ -1583,6 +1624,9 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   Mup: {
     name: 'Mup License',
   },
+  'MVT-1.1': {
+    name: 'MVT License 1.1',
+  },
   'NAIST-2003': {
     name: 'Nara Institute of Science and Technology License (2003)',
   },
@@ -1936,6 +1980,7 @@ const licenses: Record<string, Omit<License, 'id' | 'url'>> = {
   },
   'Python-2.0.1': {
     name: 'Python License 2.0.1',
+    osi: true,
   },
   'python-ldap': {
     name: 'Python ldap License',
