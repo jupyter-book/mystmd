@@ -70,12 +70,10 @@ export async function currentSiteRoutes(
           };
         }),
         // Download other assets
-        ...['robots.txt', 'myst-theme.css', 'sitemap.xml', 'sitemap_style.xsl', 'objects.inv'].map(
-          (asset) => ({
-            url: `${host}/${asset}`,
-            path: asset,
-          }),
-        ),
+        ...['robots.txt', 'myst-theme.css', 'sitemap.xml', 'sitemap_style.xsl'].map((asset) => ({
+          url: `${host}/${asset}`,
+          path: asset,
+        })),
         {
           url: `${host}/favicon.ico`,
           path: 'favicon.ico',
@@ -260,6 +258,8 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
     const templateBuildDir = path.join(template.templatePath, 'public');
     fs.copySync(templateBuildDir, htmlDir);
     fs.copySync(path.join(session.sitePath(), 'config.json'), path.join(htmlDir, 'config.json'));
+    fs.copySync(path.join(session.sitePath(), 'public.json'), path.join(htmlDir, 'public.json'));
+    fs.copySync(path.join(session.sitePath(), 'objects.inv'), path.join(htmlDir, 'objects.inv'));
 
     // We need to go through and change all links to the right folder
     rewriteAssetsFolder(htmlDir, baseurl);
