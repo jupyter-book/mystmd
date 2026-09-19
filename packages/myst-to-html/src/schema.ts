@@ -161,6 +161,25 @@ const summary: Handler = (h, node) => h(node, 'summary');
 const embed: Handler = (h, node) => h(node, 'div');
 const include: Handler = (h, node) => h(node, 'div', { file: node.file });
 const linkBlock: Handler = (h, node) => h(node, 'a');
+/** Extended link processor to deal with expanded properties like 'class' */
+const link: Handler = (h, node) => {
+  // Get the properties including the class.
+  let linkProperties: Record<string, number | undefined> = {
+    href: node.url,
+    title: node.title || undefined,
+    class: node.class || undefined,
+  };
+
+  // Iterate over the list of properites and actively remove those properties that are empty.
+  for (const key in linkProperties) {
+    if (linkProperties[key] === undefined) {
+      delete linkProperties[key];
+    }
+  }
+
+  // Now build the state
+  return h(node, 'a', linkProperties, all(h, node));
+}
 const margin: Handler = (h, node) => h(node, 'aside', { class: 'margin' });
 const mdast: Handler = (h, node) => h(node, 'div', { id: node.id });
 const mermaid: Handler = (h, node) => h(node, 'div', { class: 'margin' });
@@ -202,6 +221,7 @@ export const mystToHast: Plugin<[Options?], string, GenericParent> =
         summary,
         embed,
         include,
+        link,
         linkBlock,
         margin,
         mdast,
