@@ -159,7 +159,7 @@ const linkBlock: Handler = (h, node) => h(node, 'a');
 /** Extended link processor to deal with expanded properties like 'class' */
 const link: Handler = (h, node) => {
   // Get the properties including the class.
-  let linkProperties: Record<string, number | undefined> = {
+  const linkProperties: Record<string, undefined> = {
     href: node.url,
     title: node.title || undefined,
     class: node.class || undefined,
@@ -174,7 +174,7 @@ const link: Handler = (h, node) => {
 
   // Now build the state
   return h(node, 'a', linkProperties, all(h, node));
-}
+};
 const margin: Handler = (h, node) => h(node, 'aside', { class: 'margin' });
 const mdast: Handler = (h, node) => h(node, 'div', { id: node.id });
 const mermaid: Handler = (h, node) => h(node, 'div', { class: 'margin' });
