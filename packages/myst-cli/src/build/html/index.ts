@@ -16,7 +16,7 @@ import type { ISession } from '../../session/types.js';
 import type { StartOptions } from '../site/start.js';
 import { startServer } from '../site/start.js';
 import { getSiteTemplate } from '../site/template.js';
-import { slugToUrl } from 'myst-common';
+import { resolveBaseUrl, slugToUrl } from 'myst-common';
 import pLimit from 'p-limit';
 import { fetchWithRetry } from '../../utils/fetchWithRetry.js';
 import { selectors } from '../../store/index.js';
@@ -133,30 +133,13 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
 /**
  * Return the public site URL from an absolute BASE_URL or Read the Docs.
  */
-function normalizePublicBaseUrl(value: string, source: string): string | undefined {
-  let url: URL;
-  try {
-    url = new URL(value);
-  } catch {
-    return undefined;
-  }
-  if (!['http:', 'https:'].includes(url.protocol) || url.search || url.hash) {
-    throw new Error(
-      `${source} must be an absolute http(s) URL without a query or fragment: ${value}`,
-    );
-  }
-  return url.href.replace(/\/+$/, '');
-}
-
 export function getSiteUrl(): string | undefined {
   if (process.env.BASE_URL) {
-    return normalizePublicBaseUrl(process.env.BASE_URL, 'BASE_URL');
+    return resolveBaseUrl(process.env.BASE_URL).publicUrl;
   }
   if (process.env.READTHEDOCS_CANONICAL_URL) {
-    return normalizePublicBaseUrl(
-      process.env.READTHEDOCS_CANONICAL_URL,
-      'READTHEDOCS_CANONICAL_URL',
-    );
+    return resolveBaseUrl(process.env.READTHEDOCS_CANONICAL_URL, 'READTHEDOCS_CANONICAL_URL')
+      .publicUrl;
   }
   return undefined;
 }
@@ -170,11 +153,12 @@ export function getBaseUrl(session: ISession): string | undefined {
   const siteUrl = getSiteUrl();
   let resolvedBaseUrl: string | undefined;
   if (process.env.BASE_URL) {
-    resolvedBaseUrl = siteUrl
-      ? new URL(siteUrl).pathname.replace(/\/+$/, '') || undefined
-      : process.env.BASE_URL.replace(/\/+$/, '') || undefined;
+    resolvedBaseUrl = resolveBaseUrl(process.env.BASE_URL).pathname;
   } else if (siteUrl) {
-    resolvedBaseUrl = new URL(siteUrl).pathname.replace(/\/+$/, '') || undefined;
+    resolvedBaseUrl = resolveBaseUrl(
+      process.env.READTHEDOCS_CANONICAL_URL,
+      'READTHEDOCS_CANONICAL_URL',
+    ).pathname;
   }
   // Report the resolved base URL, or explain how to configure one when neither source is set.
   if (resolvedBaseUrl) {
