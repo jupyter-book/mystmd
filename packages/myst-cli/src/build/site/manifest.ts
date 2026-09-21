@@ -391,7 +391,6 @@ export async function getSiteManifest(
     nav: nav || [],
     actions: actions || [],
     projects: siteProjects,
-    ...(siteConfig.url ? { url: siteConfig.url } : {}),
   };
   return manifest;
 }

@@ -34,7 +34,6 @@ export type SiteConfig = SiteFrontmatter & {
   nav?: SiteNavItem[];
   actions?: SiteAction[];
   domains?: string[];
-  url?: string;
   template?: string;
 };
 
@@ -91,7 +90,6 @@ export type SiteManifest = Omit<SiteFrontmatter, 'parts'> & {
   nav?: SiteNavItem[];
   actions?: SiteAction[];
   domains?: string[];
-  url?: string;
   favicon?: string;
   template?: string;
   parts?: FrontmatterParts;

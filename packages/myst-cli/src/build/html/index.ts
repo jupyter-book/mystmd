@@ -9,7 +9,6 @@
 // The JS and CSS are produced by myst-theme.
 
 import fs from 'fs-extra';
-import { resolveSiteUrls } from 'myst-config';
 import path from 'node:path';
 import { writeFileToFolder } from 'myst-cli-utils';
 import type { MystXRefs } from 'myst-transforms';
@@ -132,13 +131,34 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
 }
 
 /**
- * Return the configured public site URL, when one is available.
- *
- * @param session session with logging
+ * Return the public site URL from an absolute BASE_URL or Read the Docs.
  */
-export function getSiteUrl(session: ISession): string | undefined {
-  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  return resolveSiteUrls({ url: siteConfig?.url, env: process.env }).siteUrl;
+function normalizePublicBaseUrl(value: string, source: string): string | undefined {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return undefined;
+  }
+  if (!['http:', 'https:'].includes(url.protocol) || url.search || url.hash) {
+    throw new Error(
+      `${source} must be an absolute http(s) URL without a query or fragment: ${value}`,
+    );
+  }
+  return url.href.replace(/\/+$/, '');
+}
+
+export function getSiteUrl(): string | undefined {
+  if (process.env.BASE_URL) {
+    return normalizePublicBaseUrl(process.env.BASE_URL, 'BASE_URL');
+  }
+  if (process.env.READTHEDOCS_CANONICAL_URL) {
+    return normalizePublicBaseUrl(
+      process.env.READTHEDOCS_CANONICAL_URL,
+      'READTHEDOCS_CANONICAL_URL',
+    );
+  }
+  return undefined;
 }
 
 /**
@@ -147,11 +167,15 @@ export function getSiteUrl(session: ISession): string | undefined {
  * @param session session with logging
  */
 export function getBaseUrl(session: ISession): string | undefined {
-  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  const { siteUrl, baseUrl: resolvedBaseUrl } = resolveSiteUrls({
-    url: siteConfig?.url,
-    env: process.env,
-  });
+  const siteUrl = getSiteUrl();
+  let resolvedBaseUrl: string | undefined;
+  if (process.env.BASE_URL) {
+    resolvedBaseUrl = siteUrl
+      ? new URL(siteUrl).pathname.replace(/\/+$/, '') || undefined
+      : process.env.BASE_URL.replace(/\/+$/, '') || undefined;
+  } else if (siteUrl) {
+    resolvedBaseUrl = new URL(siteUrl).pathname.replace(/\/+$/, '') || undefined;
+  }
   // Report the resolved base URL, or explain how to configure one when neither source is set.
   if (resolvedBaseUrl) {
     session.log.info(`Building the site with a baseurl of "${resolvedBaseUrl}"`);
@@ -159,19 +183,18 @@ export function getBaseUrl(session: ISession): string | undefined {
     session.log.info(`Building the site at "${siteUrl}"`);
   } else {
     session.log.info(
-      'Building the base site.\nSet site.url (or SITE_URL) to configure public URLs, or BASE_URL for a path-only deployment prefix.',
+      'Building the base site.\nSet BASE_URL to a path (for example, /docs) or an absolute public URL (for example, https://example.org/docs).',
     );
   }
   return resolvedBaseUrl;
 }
 
-export function warnIfMissingSiteUrl(session: ISession) {
-  const siteConfig = selectors.selectCurrentSiteConfig(session.store.getState());
-  if (process.env.SITE_URL || siteConfig?.url || process.env.READTHEDOCS_CANONICAL_URL) {
+export function warnIfMissingPublicBaseUrl(session: ISession) {
+  if (getSiteUrl()) {
     return;
   }
   session.log.warn(
-    'No site URL is configured. Generated sitemap.xml and robots.txt files will contain localhost URLs and are unsuitable for deployment. Set site.url in myst.yml or the SITE_URL environment variable.',
+    'BASE_URL is not an absolute public URL. Generated sitemap.xml and robots.txt files will contain localhost URLs and are unsuitable for deployment. Set BASE_URL to a URL such as https://example.org/docs.',
   );
 }
 
@@ -183,7 +206,7 @@ export function warnIfMissingSiteUrl(session: ISession) {
  */
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
-  warnIfMissingSiteUrl(session);
+  warnIfMissingPublicBaseUrl(session);
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
   const baseurl = getBaseUrl(session);
   // Note, this process is really only for Remix templates
