@@ -3,15 +3,16 @@ import type { GenericParent } from 'myst-common';
 import { toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { Abbreviation, Text } from 'myst-spec';
+import type { Abbreviations } from 'myst-frontmatter';
 import { u } from 'unist-builder';
 import type { FindAndReplaceSchema, RegExpMatchObject } from 'mdast-util-find-and-replace';
 import { findAndReplace } from 'mdast-util-find-and-replace';
 
 type AbbreviationMap = Record<string, string | null>;
 
-type Options = {
+export type Options = {
   /** An object of abbreviations { "TLA": "Three Letter Acronym" } */
-  abbreviations?: Record<string, string | boolean | null>;
+  abbreviations?: Abbreviations;
   /**
    * Expand the abbreviation the first time it is encountered,
    *

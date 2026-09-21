@@ -99,9 +99,7 @@ describe('abbreviationTransform', () => {
   });
 
   test('does not expand abbreviation instances by default', () => {
-    const mdast = u('root', [
-      u('paragraph', [u('text', 'MyST and MyST')]),
-    ]) as GenericParent;
+    const mdast = u('root', [u('paragraph', [u('text', 'MyST and MyST')])]) as GenericParent;
     abbreviationTransform(mdast, {
       abbreviations: { MyST: 'Markedly Structured Text' },
     });

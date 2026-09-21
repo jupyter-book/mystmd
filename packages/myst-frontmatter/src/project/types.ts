@@ -41,10 +41,9 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   ...SITE_FRONTMATTER_KEYS,
 ];
 
-export type Abbreviations = {
+export type Abbreviations = Record<string, string | boolean | null> & {
   /** Expand the first instance of each abbreviation on the page as `Title (ABBR)` */
   firstTimeLong?: boolean;
-  [abbreviation: string]: string | boolean | null | undefined;
 };
 
 export const PROJECT_FRONTMATTER_KEYS = [
