@@ -12,6 +12,11 @@ function image(placeholder = false) {
   return u('image', { url: 'my-image.png', placeholder });
 }
 
+function outputs() {
+  // Assume that the contents of the output have been rendered!
+  return u('outputs', [u('output', [image()])]);
+}
+
 function anywidget() {
   return u('anywidget', { esm: './widget.mjs', id: 'w1', model: {} });
 }
@@ -54,6 +59,13 @@ describe('Test containerChildrenTransform', () => {
     const file = new VFile();
     containerChildrenTransform(mdast, file);
     expect(mdast).toEqual(rootContainer([anywidget(), caption()]));
+    expect(file.messages.filter((m) => m.fatal)).toHaveLength(0);
+  });
+  test('figure with outputs and caption is unchanged', async () => {
+    const mdast = rootContainer([outputs(), caption()]);
+    const file = new VFile();
+    containerChildrenTransform(mdast, file);
+    expect(mdast).toEqual(rootContainer([outputs(), caption()]));
     expect(file.messages.filter((m) => m.fatal)).toHaveLength(0);
   });
   test('figure with grid and caption is unchanged', async () => {

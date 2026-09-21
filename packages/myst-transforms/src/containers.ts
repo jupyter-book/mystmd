@@ -22,6 +22,7 @@ const SUBFIGURE_TYPES = [
   'iframe',
   'table',
   'code',
+  'outputs',
   'output',
   'card',
   'anywidget',

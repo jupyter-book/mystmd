@@ -1,6 +1,6 @@
 {
   "name": "mystmd",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "description": "Command line tools for MyST Markdown",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -48,9 +48,9 @@
     "commander": "^10.0.1",
     "core-js": "^3.31.1",
     "js-yaml": "^4.1.0",
-    "myst-cli": "^1.10.1",
-    "myst-cli-utils": "^2.0.14",
-    "myst-common": "^1.10.0",
-    "myst-templates": "^1.0.27"
+    "myst-cli": "^1.11.0",
+    "myst-cli-utils": "^2.0.15",
+    "myst-common": "^1.10.1",
+    "myst-templates": "^1.0.28"
   }
 }

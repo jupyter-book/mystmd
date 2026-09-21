@@ -78,3 +78,122 @@ cases:
       This is a paragraph. <para>
 
       With a reference #link(<para>)[Paragraph]
+  - title: reference to a target whose identifier contains spaces uses label()
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: 'In a notebook, '
+            - type: crossReference
+              identifier: term-Execution order
+              children:
+                - type: text
+                  value: execution order
+            - type: text
+              value: ' matters.'
+    typst: |-
+      In a notebook, #link(label("term-Execution order"))[execution order] matters.
+  - title: reference identifier containing a quote is escaped in the Typst label
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: crossReference
+              identifier: 'term-say "hi"'
+              children:
+                - type: text
+                  value: greeting
+    typst: |-
+      #link(label("term-say \"hi\""))[greeting]
+  - title: target identifier containing a quote is escaped in the Typst label
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: span
+              identifier: 'term-say "hi"'
+              children:
+                - type: text
+                  value: greeting
+    typst: |-
+      greeting #label("term-say \"hi\"")
+  - title: equation target with spaces uses label()
+    mdast:
+      type: root
+      children:
+        - type: math
+          enumerated: true
+          label: eq-euler formula
+          identifier: eq-euler formula
+          value: x = 1
+    typst: |-
+      $ x = 1 $ #label("eq-euler formula")
+  - title: figure target with spaces uses label()
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: figure
+          enumerated: true
+          identifier: fig my figure
+          children:
+            - type: image
+              url: a.png
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: A caption
+    typst: |-
+      #show figure: set block(breakable: breakableDefault)
+      #figure(
+        image("a.png", width: 90%),
+        caption: [
+      A caption
+      ],
+        kind: "figure",
+        supplement: [Figure],
+      ) #label("fig my figure")
+  - title: paragraph target whose label has spaces uses label() on both target and reference
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: text
+              value: This is a paragraph.
+          label: my target
+          identifier: my target
+        - type: paragraph
+          children:
+            - type: text
+              value: 'With a reference '
+            - type: crossReference
+              children:
+                - type: text
+                  value: Paragraph
+              identifier: my target
+              label: my target
+              kind: paragraph
+    typst: |-
+      This is a paragraph. #label("my target")
+
+      With a reference #link(label("my target"))[Paragraph]
+  - title: heading target whose identifier has spaces uses label()
+    mdast:
+      type: root
+      children:
+        - type: heading
+          depth: 1
+          identifier: my heading
+          label: my heading
+          children:
+            - type: text
+              value: My Heading
+    typst: |-
+      = My Heading #label("my heading")

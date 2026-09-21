@@ -1,5 +1,14 @@
 # myst-frontmatter
 
+## 1.10.1
+
+### Patch Changes
+
+- aba633a: Relax overaggressive DOI coercion
+- d09d3e5: Point CC0, CC-PDM and CC-SA license URLs at the pages Creative Commons actually serves
+- 68ee310: Update licenses from SPDX
+- 95aa76d: Update package metadata
+
 ## 1.10.0
 
 ### Minor Changes

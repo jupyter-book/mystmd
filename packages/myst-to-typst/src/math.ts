@@ -1,6 +1,7 @@
 import { normalizeLabel } from 'myst-common';
 import { texToTypst } from 'tex-to-typst';
 import type { Handler, ITypstSerializer, MathPlugins } from './types.js';
+import { typstLabelMarkup } from './utils.js';
 
 function addMacrosToState(value: string, state: ITypstSerializer) {
   if (!state.options.math) return;
@@ -80,7 +81,7 @@ const math: Handler = (node, state) => {
     state.write(`#counter(math.equation).update(0)\n\n`);
   }
   // Note: must have spaces $ math $ for the block!
-  state.write(`$ ${value} $${label ? ` <${label}>` : ''}\n\n`);
+  state.write(`$ ${value} $${label ? ` ${typstLabelMarkup(label)}` : ''}\n\n`);
   state.ensureNewLine(true);
 };
 
