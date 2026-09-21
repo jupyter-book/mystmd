@@ -27,9 +27,10 @@ on:
     branches: [${defaultBranch}]
 env:
   # Prefer the full public URL, e.g. \`BASE_URL=https://mydomain.org/myproject\`.
+  # If the site lives at the root of the domain, set \`BASE_URL='https://mydomain.org'\`.
   # MyST derives the deployment path and generates public sitemap and robots URLs.
   # The existing path form \`BASE_URL=/myproject\` remains supported.
-  # If the site lives at the root of the domain, set \`BASE_URL=''\`.
+  # For backward compatibility, \`BASE_URL=''\` remains valid, but does not provide a public sitemap origin.
   ${
     isGithubIO
       ? `BASE_URL: '' # Not required for '${username}.github.io' domain. Other repos will need to set this!`
