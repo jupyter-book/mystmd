@@ -120,7 +120,6 @@ describe('validateSiteConfig', () => {
     };
     expect(validateSiteConfig(siteConfig, opts)).toEqual(siteConfig);
   });
-
   it('valid favicon is moved to options', async () => {
     const siteConfig = {
       projects: [{ path: 'my-proj', slug: 'test' }],
