@@ -1,5 +1,15 @@
 # myst-ext-grid
 
+## 1.1.1
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-directives@1.7.4
+
 ## 1.1.0
 
 ### Minor Changes
