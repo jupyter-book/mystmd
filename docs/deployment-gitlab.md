@@ -119,7 +119,7 @@ build_book:
     - nvm install 24
     # Download imagemagick, which is needed by Jupyter Book 2 to build pdf.
     # - curl https://imagemagick.org/archive/binaries/magick -o "magick"
-    # Set the deployment path. Use the full public URL instead to generate public sitemap and robots URLs.
+    # Prefer the full public URL to generate public sitemap and robots URLs; a deployment path remains supported.
     - export BASE_URL="/my-website"
     # Set the HOST because of https://github.com/jupyter-book/mystmd/issues/2471
     - export HOST="127.0.0.1"  # Needed to avoid binding to ::1.

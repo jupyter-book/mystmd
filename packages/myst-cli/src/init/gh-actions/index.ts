@@ -26,9 +26,9 @@ on:
     # Runs on pushes targeting the default branch
     branches: [${defaultBranch}]
 env:
-  # \`BASE_URL\` may be a deployment path or the full public URL.
-  # E.g., if your site lives at \`https://mydomain.org/myproject\`, set \`BASE_URL=/myproject\`.
-  # Use \`BASE_URL=https://mydomain.org/myproject\` to generate public sitemap and robots URLs.
+  # Prefer the full public URL, e.g. \`BASE_URL=https://mydomain.org/myproject\`.
+  # MyST derives the deployment path and generates public sitemap and robots URLs.
+  # The existing path form \`BASE_URL=/myproject\` remains supported.
   # If the site lives at the root of the domain, set \`BASE_URL=''\`.
   ${
     isGithubIO
