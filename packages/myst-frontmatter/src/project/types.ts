@@ -41,6 +41,12 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   ...SITE_FRONTMATTER_KEYS,
 ];
 
+export type Abbreviations = {
+  /** Expand the first instance of each abbreviation on the page as `Title (ABBR)` */
+  firstTimeLong?: boolean;
+  [abbreviation: string]: string | boolean | null | undefined;
+};
+
 export const PROJECT_FRONTMATTER_KEYS = [
   ...PROJECT_AND_PAGE_FRONTMATTER_KEYS,
   // These keys only exist on the project
@@ -72,8 +78,11 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   numbering?: Numbering;
   /** Math macros to be passed to KaTeX or LaTeX */
   math?: Record<string, MathMacro>;
-  /** Abbreviations used throughout the project */
-  abbreviations?: Record<string, string | null>;
+  /**
+   * Abbreviations used throughout the project.
+   * The reserved key `firstTimeLong` expands the first instance of each abbreviation.
+   */
+  abbreviations?: Abbreviations;
   exports?: Export[];
   downloads?: Download[];
   settings?: ProjectSettings;
