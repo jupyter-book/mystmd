@@ -26,9 +26,10 @@ on:
     # Runs on pushes targeting the default branch
     branches: [${defaultBranch}]
 env:
-  # \`BASE_URL\` determines, relative to the root of the domain, the URL that your site is served from.
+  # \`BASE_URL\` may be a deployment path or the full public URL.
   # E.g., if your site lives at \`https://mydomain.org/myproject\`, set \`BASE_URL=/myproject\`.
-  # If, instead, your site lives at the root of the domain, at \`https://mydomain.org\`, set \`BASE_URL=''\`.
+  # Use \`BASE_URL=https://mydomain.org/myproject\` to generate public sitemap and robots URLs.
+  # If the site lives at the root of the domain, set \`BASE_URL=''\`.
   ${
     isGithubIO
       ? `BASE_URL: '' # Not required for '${username}.github.io' domain. Other repos will need to set this!`

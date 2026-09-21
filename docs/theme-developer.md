@@ -45,7 +45,7 @@ It then produces `_build/site/config.json`, validates it against your `doc`/`opt
 - `/content/{slug}.json` payloads (see [crossReferences.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/transforms/crossReferences.ts)); when the browser requests `/slug`, your theme should fetch `/content/{slug}.json` (and `/content/index.json` for `/`).
 - Reference and search files at `/objects.inv`, `/myst.xref.json`, `/myst.search.json`.
 - Static assets from `/` and a `/socket` websocket for `LOG` and `RELOAD` events.
-Your start script receives `HOST`, `CONTENT_CDN_PORT`, `PORT`, `MODE` (set to `static` for `myst build --html`), and optional `BASE_URL`; any framework or server is fine as long as it reads these and fetches content from the endpoints above.
+Your start script receives `HOST`, `CONTENT_CDN_PORT`, `PORT`, `MODE` (set to `static` for `myst build --html`), and optional `BASE_URL`. `BASE_URL` may be a deployment path such as `/docs` or an absolute public URL such as `https://example.org/docs`; when it is absolute, use its pathname for routing and assets. Any framework or server is fine as long as it reads these and fetches content from the endpoints above.
 - An index of known static files is included in `public.json`, to enable the theme to retrieve _all_ static files without access to the file-system of the content server.
 
 ## Building HTML

@@ -30,7 +30,7 @@ This has activated GitHub Pages to accept new HTML from GitHub actions.
 To trigger the action, push new commits of code to the branch that you've configured with the action above. You should start seeing your website show up at `<githuborg>.github.io/<githubrepo>`.
 
 ## `BASE_URL` Configuration for GitHub Pages
-The MyST CLI needs to know the destination (base URL) of your site during build time. If you setup deployment to GitHub Pages using the `myst init --gh-pages` command, then _this is handled automatically for you_. Otherwise, if you deploy your website from a repository that's not the default GitHub Pages repository (i.e., not called `<username>.github.io`), you likely need to define a `BASE_URL` that includes the repository name.[^except-custom-domains] 
+The MyST CLI needs to know the destination (base URL) of your site during build time. If you setup deployment to GitHub Pages using the `myst init --gh-pages` command, then _this is handled automatically for you_. Otherwise, if you deploy your website from a repository that's not the default GitHub Pages repository (i.e., not called `<username>.github.io`), you likely need to define a path `BASE_URL` that includes the repository name.[^except-custom-domains] You can instead use the full public URL, such as `https://<githuborg>.github.io/<githubrepo>`, to generate public URLs in `sitemap.xml` and `robots.txt`; MyST derives the repository path automatically.
 [^except-custom-domains]: If you're using a custom domain, you may not need to set `BASE_URL` if the site is served from the base domain (e.g.: `mydomain.org`) without a sub-folder (e.g., `mydomain.org/mydocs/`).
 
 ## Example: A Full GitHub Action
@@ -51,8 +51,9 @@ on:
     # Runs on pushes targeting the default branch
     branches: [main]
 env:
-  # `BASE_URL` determines the website is served from, including CSS & JS assets
-  # You may need to change this to `BASE_URL: ''`
+  # `BASE_URL` may be a deployment path or the full public URL.
+  # Use the full URL when sitemap.xml and robots.txt need public URLs.
+  # You may need to change this to `BASE_URL: ''`.
   BASE_URL: /${{ github.event.repository.name }}
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

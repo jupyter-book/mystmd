@@ -20,7 +20,7 @@ afterEach(() => {
 });
 
 describe('deployment URLs', () => {
-  it('keeps path-only BASE_URL behavior', () => {
+  it('supports BASE_URL as a deployment path', () => {
     vi.stubEnv('BASE_URL', '/docs/');
     expect(getSiteUrl()).toBeUndefined();
     expect(getBaseUrl(session())).toBe('/docs');
