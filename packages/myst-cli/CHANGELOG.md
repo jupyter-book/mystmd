@@ -1,5 +1,15 @@
 # myst-cli
 
+## 1.12.0
+
+### Minor Changes
+
+- e64d019: Allow `--execute-parallel` to be set on `myst start`, not just `myst build`
+
+### Patch Changes
+
+- myst-migrate@1.12.0
+
 ## 1.11.0
 
 ### Minor Changes
