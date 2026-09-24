@@ -1,10 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import {
+  MultiPageReferenceResolver,
   ReferenceState,
   enumerateTargetsTransform,
   formatHeadingEnumerator,
   incrementHeadingCounts,
   initializeTargetCounts,
+  resolveReferenceLinksTransform,
 } from './enumerate';
 import { u } from 'unist-builder';
 import { VFile } from 'vfile';
@@ -31,6 +33,76 @@ describe('Heading counts and formatting', () => {
     [[1, 2, 0, null, 0, 0], '1.2'],
   ])('formatHeadingEnumerator(%s)}', (counts, out) => {
     expect(formatHeadingEnumerator(counts)).toEqual(out);
+  });
+});
+
+describe('reference resolution', () => {
+  test('links to case-sensitive targets keep the matched identifier', () => {
+    // Targets with exact-case identifiers (e.g. Python API objects registered
+    // by a plugin): re.Match (class) and re.match (function) are distinct.
+    const tree = u('root', [
+      u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+      u('div', { identifier: 'sample.match', html_id: 'sample.match', children: [] }),
+      u('link', { url: '#sample.Match' }, [u('text', 'class ref')]),
+      u('link', { url: '#sample.match' }, [u('text', 'function ref')]),
+    ]);
+    const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+    enumerateTargetsTransform(tree, { state });
+    resolveReferenceLinksTransform(tree, { state });
+    const [classRef, functionRef] = (tree.children as any[]).filter(
+      (node) => node.type === 'crossReference',
+    );
+    expect(classRef.identifier).toBe('sample.Match');
+    expect(functionRef.identifier).toBe('sample.match');
+  });
+
+  describe('ReferenceState.getTarget', () => {
+    test('matches an exact-case identifier verbatim', () => {
+      const tree = u('root', [
+        u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+      ]);
+      const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+      enumerateTargetsTransform(tree, { state });
+      expect(state.getTarget('sample.Match')?.node.identifier).toBe('sample.Match');
+    });
+
+    test('falls back to the normalized form for prose labels', () => {
+      // Prose labels are stored normalized (lowercased) by normalizeLabel at
+      // creation time, so a differently-cased lookup must still find them.
+      const tree = u('root', [u('heading', { identifier: 'my-section', children: [] })]);
+      const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+      enumerateTargetsTransform(tree, { state });
+      expect(state.getTarget('My-Section')?.node.identifier).toBe('my-section');
+    });
+
+    test('does not let a normalized fallback shadow a case-distinct sibling', () => {
+      const tree = u('root', [
+        u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+        u('div', { identifier: 'sample.match', html_id: 'sample.match', children: [] }),
+      ]);
+      const state = new ReferenceState('my-file.md', { vfile: new VFile() });
+      enumerateTargetsTransform(tree, { state });
+      expect(state.getTarget('sample.Match')?.node.identifier).toBe('sample.Match');
+      expect(state.getTarget('sample.match')?.node.identifier).toBe('sample.match');
+    });
+  });
+
+  test('cross-page: an exact-case target is preferred over an earlier normalized match', () => {
+    // sample.match lives on page one, sample.Match on page two; a reference to
+    // sample.Match must resolve to page two, not page one's normalized fallback.
+    const pageOne = u('root', [
+      u('div', { identifier: 'sample.match', html_id: 'sample.match', children: [] }),
+    ]);
+    const pageTwo = u('root', [
+      u('div', { identifier: 'sample.Match', html_id: 'sample.Match', children: [] }),
+    ]);
+    const stateOne = new ReferenceState('page-one.md', { vfile: new VFile() });
+    const stateTwo = new ReferenceState('page-two.md', { vfile: new VFile() });
+    enumerateTargetsTransform(pageOne, { state: stateOne });
+    enumerateTargetsTransform(pageTwo, { state: stateTwo });
+    const resolver = new MultiPageReferenceResolver([stateOne, stateTwo], 'page-one.md');
+    expect(resolver.getTarget('sample.Match')?.node.identifier).toBe('sample.Match');
+    expect(resolver.getTarget('sample.match')?.node.identifier).toBe('sample.match');
   });
 });
 
