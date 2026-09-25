@@ -2,4 +2,4 @@
 'myst-cli': patch
 ---
 
-Preserve heading levels in frontmatter part files
+Give frontmatter parts the article heading depth in exports
