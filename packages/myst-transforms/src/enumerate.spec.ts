@@ -101,6 +101,22 @@ describe('enumeration', () => {
     expect(state.getTarget('h2')?.node.enumerator).toBe('1.1');
     expect(state.getTarget('h3')?.node.enumerator).toBe('2');
   });
+  test('headers starting at depth one', () => {
+    const tree = u('root', [
+      u('heading', { identifier: 'h1', depth: 1 }),
+      u('heading', { identifier: 'h2', depth: 2 }),
+      u('heading', { identifier: 'h3', depth: 1 }),
+    ]);
+    const state = new ReferenceState('my-file.md', {
+      frontmatter: { numbering: { heading_1: { enabled: true }, heading_2: { enabled: true } } },
+      firstDepth: 1,
+      vfile: new VFile(),
+    });
+    enumerateTargetsTransform(tree, { state });
+    expect(state.getTarget('h1')?.node.enumerator).toBe('1');
+    expect(state.getTarget('h2')?.node.enumerator).toBe('1.1');
+    expect(state.getTarget('h3')?.node.enumerator).toBe('2');
+  });
   test('sub-figures', () => {
     const tree = u('root', [
       u('container', { identifier: 'fig:1', kind: 'figure' }, [
