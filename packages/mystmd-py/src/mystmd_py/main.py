@@ -8,8 +8,8 @@ import textwrap
 
 from .nodeenv import find_any_node, PermissionDeniedError, NodeEnvCreationError
 
-MIN_NODE_VERSION: int = 20
-NODEENV_VERSION: str = "20.0.0"
+MIN_NODE_VERSION: int = 22
+NODEENV_VERSION: str = "24.0.0"
 
 
 def ensure_valid_version(node_path, node_env):
