@@ -1,5 +1,25 @@
 # myst-to-typst
 
+## 0.0.39
+
+### Patch Changes
+
+- 41782d2: `tex-to-typst` bumped to 0.0.21
+- 95aa76d: Update package metadata
+- 4aaa784: Fix Typst export of cross-references whose identifier is not a valid Typst name, such as a multi-word glossary term. A reference to `term-Execution order` now emits `label("term-Execution order")` rather than an invalid angle-bracket label, and quotes and backslashes in an identifier are escaped in both the reference and its target.
+- 4aaa784: Write equation and figure targets with `#label("..")` when their identifier is not a valid Typst name. A multi-word `:label:` option gives an identifier with spaces, which angle brackets cannot hold, so the document did not compile.
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [d09d3e5]
+- Updated dependencies [029025f]
+- Updated dependencies [a540867]
+- Updated dependencies [68ee310]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-spec@0.0.6
+  - myst-frontmatter@1.10.1
+  - myst-spec-ext@1.10.1
+
 ## 0.0.38
 
 ### Patch Changes

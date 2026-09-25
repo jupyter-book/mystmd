@@ -269,3 +269,37 @@ export function getClasses(className?: string): string[] {
       .filter((s) => !!s) ?? [];
   return Array.from(new Set(classes));
 }
+
+/** Names Typst accepts between angle brackets and after `@`. */
+const TYPST_SAFE_IDENTIFIER = /^[a-zA-Z0-9_\-:.]+$/;
+
+export function isTypstSafeIdentifier(identifier: string) {
+  return TYPST_SAFE_IDENTIFIER.test(identifier);
+}
+
+/**
+ * Quote an identifier for use inside a Typst string literal, as in `#label("term-a b")`.
+ *
+ * Backslashes and double quotes are escaped so that an identifier cannot
+ * terminate the literal early.
+ */
+export function typstLabelString(identifier: string) {
+  return identifier.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+/**
+ * Render an identifier as a label operand for `#link`, `#ref` or `#cite`.
+ *
+ * Angle brackets only accept safe identifiers, so anything else, such as a
+ * glossary term containing spaces, uses the `label()` function instead.
+ */
+export function typstLabel(identifier: string) {
+  if (isTypstSafeIdentifier(identifier)) return `<${identifier}>`;
+  return `label("${typstLabelString(identifier)}")`;
+}
+
+/** Attach a label to the complete element just written, such as `#figure(..)` or `$ x $`. */
+export function typstLabelMarkup(identifier: string) {
+  if (isTypstSafeIdentifier(identifier)) return `<${identifier}>`;
+  return `#label("${typstLabelString(identifier)}")`;
+}
