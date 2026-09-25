@@ -1,5 +1,18 @@
 # myst-config
 
+## 1.10.1
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+- Updated dependencies [7fda16f]
+- Updated dependencies [aba633a]
+- Updated dependencies [d09d3e5]
+- Updated dependencies [68ee310]
+- Updated dependencies [95aa76d]
+  - myst-common@1.10.1
+  - myst-frontmatter@1.10.1
+
 ## 1.10.0
 
 ### Minor Changes

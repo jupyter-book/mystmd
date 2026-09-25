@@ -1,5 +1,12 @@
 # markdown-it-myst
 
+## 1.0.18
+
+### Patch Changes
+
+- 95aa76d: Update package metadata
+- 12f4721: Fix dependencies / types
+
 ## 1.0.17
 
 ### Patch Changes

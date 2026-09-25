@@ -43,6 +43,30 @@ describe('licenses are upto date with SPDX', () => {
     );
     expect(licenses).toEqual(onlineLicenses);
   });
+
+  it('creative commons urls match the SPDX seeAlso links', async () => {
+    const data: any = await (await fetch('https://spdx.org/licenses/licenses.json')).json();
+    // SPDX points at the legalcode page, and creativecommons.org serves the
+    // jurisdiction suffix case-insensitively
+    const clean = (url: string) =>
+      url
+        .toLowerCase()
+        .replace(/legalcode.*$/, '')
+        .replace(/\/+$/, '');
+    const mismatched = (data.licenses as any[])
+      .filter((l) => !l.isDeprecatedLicenseId && l.licenseId.startsWith('CC'))
+      .map((l) => {
+        const seeAlso = (l.seeAlso as string[])
+          .filter((url) => url.includes('creativecommons.org'))
+          .map(clean);
+        if (!seeAlso.length) return undefined;
+        const url = validateLicense(l.licenseId, opts)?.url;
+        if (url && seeAlso.includes(clean(url))) return undefined;
+        return `${l.licenseId}: ${url}`;
+      })
+      .filter(Boolean);
+    expect(mismatched).toEqual([]);
+  });
 });
 
 describe('validateLicense', () => {

@@ -156,6 +156,17 @@ myst build --site
 
 which populates the `_build/site` directory with information about your website including the metadata, cross-references, static images, and [MyST AST](https://mystmd.org/spec).
 
+### Serving on a Network Interface
+
+`myst start` only listens on `localhost`, so the site is not reachable from other machines.
+To serve it to your network (for example, from a container or a remote server), set the `HOST` environment variable and pass `--keep-host`:
+
+```shell
+HOST=0.0.0.0 myst start --keep-host
+```
+
+Without `--keep-host`, MyST resets `HOST` to `localhost` and prints a warning.
+
 ### Deploying to a MyST-Aware Server
 
 :::{note}
