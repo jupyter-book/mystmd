@@ -1,6 +1,7 @@
 import { fileError, type GenericNode } from 'myst-common';
 import type { Image, Table, Code, Math } from 'myst-spec';
 import type { Handler, ITypstSerializer } from './types.js';
+import { typstLabel, typstLabelMarkup } from './utils.js';
 
 export enum CaptionKind {
   fig = 'fig',
@@ -131,7 +132,7 @@ export const containerHandler: Handler = (node, state) => {
         state.renderChildren(item);
         state.write('\n, caption: []),'); // TODO: add sub-captions
         if (item.identifier) {
-          state.write(` <${item.identifier}>,`);
+          state.write(` ${typstLabel(item.identifier)},`);
         }
         state.write('\n');
       } else {
@@ -142,7 +143,7 @@ export const containerHandler: Handler = (node, state) => {
     });
     state.write(`columns: ${columns},\n`);
     if (label) {
-      state.write(`label: <${label}>,`);
+      state.write(`label: ${typstLabel(label)},`);
       label = undefined;
     }
   } else if (nonCaptions && nonCaptions.length === 1) {
@@ -169,7 +170,7 @@ export const containerHandler: Handler = (node, state) => {
     state.write(`\n  supplement: [${supplement}],`);
   }
   state.write('\n)');
-  if (label) state.write(` <${label}>`);
+  if (label) state.write(` ${typstLabelMarkup(label)}`);
   state.ensureNewLine(true);
   state.addNewLine();
   state.data.isInFigure = prevState;

@@ -1,4 +1,4 @@
-import { NotebookCell, RuleId, fileWarn } from 'myst-common';
+import { NotebookCell, RuleId, fileWarn, normalizeLabel } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { nanoid } from 'nanoid';
@@ -16,7 +16,7 @@ import { logMessagesFromVFile } from '../utils/logging.js';
 import type { ISession } from '../session/types.js';
 import { BASE64_HEADER_SPLIT } from '../transforms/images.js';
 import { parseMyst } from './myst.js';
-import type { Code, InlineExpression } from 'myst-spec';
+import type { Code, InlineExpression, Block } from 'myst-spec';
 import { findExpression, metadataSection } from '../transforms/inlineExpressions.js';
 import type { IUserExpressionMetadata } from '../transforms/inlineExpressions.js';
 import { frontmatterValidationOpts } from '../frontmatter.js';
@@ -29,9 +29,31 @@ import {
 } from 'myst-frontmatter';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
+type LabeledBlock = Block &
+  Partial<{
+    identifier: string;
+    html_id: string;
+  }>;
+
 function blockParent(cell: ICell, children: GenericNode[]) {
   const kind = cell.cell_type === CELL_TYPES.code ? NotebookCell.code : NotebookCell.content;
-  return { type: 'block', kind, data: JSON.parse(JSON.stringify(cell.metadata)), children };
+  const block: LabeledBlock = {
+    type: 'block',
+    kind,
+    data: JSON.parse(JSON.stringify(cell.metadata)),
+    children: children as any,
+  };
+  const cellId = (cell as { id?: unknown }).id;
+  if (typeof cellId === 'string' && cellId.length > 0) {
+    // Provenance-gated fallback: promote a real .ipynb cell id to a durable
+    // anchor. An author-supplied label always wins (handled above). The
+    // html_id is kept verbatim so a copied deep link equals the nbformat cell
+    // id; the identifier is normalized so `[](#<id>)` resolves like a label.
+    const normalized = normalizeLabel(cellId)!;
+    block.identifier = normalized.identifier;
+    block.html_id = cellId;
+  }
+  return block;
 }
 
 /**
