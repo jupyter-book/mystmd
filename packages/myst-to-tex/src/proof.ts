@@ -107,7 +107,8 @@ export class TexProofSerializer {
       '\\newtheorem{axiom}{Axiom}[section]',
       '\\newtheorem{conjecture}{Conjecture}[section]',
       '\\newtheorem{observation}{Observation}[section]',
-      '\\newtheorem{algorithm}{Algorithm}[section]',
+      // The algorithm and algorithm2e packages already define this environment
+      '\\ifdefined\\algorithm\\else\\newtheorem{algorithm}{Algorithm}[section]\\fi',
       '\\newtheorem{assumption}{Assumption}[section]',
       '\\newtheorem{criterion}{Criterion}[section]',
       '\\newtheorem{property}{Property}[section]',
