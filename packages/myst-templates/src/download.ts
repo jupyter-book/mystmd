@@ -8,6 +8,7 @@ import { copyFileMaintainPath, isDirectory } from 'myst-cli-utils';
 import { TemplateKind } from 'myst-common';
 import { validateUrl } from 'simple-validators';
 import type { TemplateYmlListResponse, TemplateYmlResponse, ISession } from './types.js';
+import { DEFAULT_SITE_TEMPLATE_VERSION } from './defaultTemplates.js';
 
 export const TEMPLATE_YML = 'template.yml';
 
@@ -60,6 +61,51 @@ function defaultUrl(session: ISession, template: string) {
   return `${templatesUrl(session)}/${template}`;
 }
 
+/**
+ * Site/react templates (book-theme, article-theme) are published as GitHub release assets of the
+ * `myst-theme` repo, e.g.
+ *   https://github.com/jupyter-book/myst-theme/releases/download/myst-react@1.3.1/book-theme.zip
+ */
+const SITE_TEMPLATE_DEFAULT_ORG = 'jupyter-book';
+const SITE_TEMPLATE_REPO = 'myst-theme';
+// official releases have this prefix in their name
+const SITE_TEMPLATE_TAG_PREFIX = 'myst-to-react@';
+const DEFAULT_SITE_TEMPLATE = 'book-theme';
+
+// Matches `[org/]name[@version]`
+const SITE_TEMPLATE_REGEX = /^([a-zA-Z0-9_-]+\/)?([a-zA-Z0-9_-]+)(@[a-zA-Z0-9._-]+)?$/;
+
+/**
+ * Resolve a site template field to a versioned GitHub release-asset download URL.
+ *
+ * Accepts either
+ *  - `book-theme`
+ *  - `book-theme@1.3.1`
+ *  - `org/book-theme@release`
+ * When no release is given, use DEFAULT_SITE_TEMPLATE_VERSION
+ *
+ * the cache key (a hash of this URL) changes on CLI upgrade and the template is re-fetched.
+ */
+export function resolveSiteTemplateUrl(template?: string): string {
+  const input = template ?? DEFAULT_SITE_TEMPLATE;
+  // the list of themes returns names like site/myst/book-theme
+  const stripped = input.replace(/^site\/myst\//, '');
+  const match = stripped.match(SITE_TEMPLATE_REGEX);
+  if (!match) {
+    throw new Error(
+      `Unable to resolve site template "${input}"; expected a name like "book-theme", "book-theme@1.3.1", or "org/book-theme@1.3.1"`,
+    );
+  }
+  let org = match[1] ? match[1].slice(0, -1) : SITE_TEMPLATE_DEFAULT_ORG;
+  const name = match[2];
+  let release = match[3] ? match[3].slice(1) : DEFAULT_SITE_TEMPLATE_VERSION;
+  // the official mystmd releases may carry a "myst-react@" prefix
+  if (org === SITE_TEMPLATE_DEFAULT_ORG) {
+    release = `${SITE_TEMPLATE_TAG_PREFIX}${release}`;
+  }
+  return `https://github.com/${org}/${SITE_TEMPLATE_REPO}/releases/download/${release}/${name}.zip`;
+}
+
 function defaultPath(
   template: string,
   hash: boolean,
@@ -107,6 +153,13 @@ export function resolveInputs(
   // Handle case where template is a download URL
   templateUrl = validateUrl(opts.template, { messages: {}, suppressErrors: true, property: '' });
   if (templateUrl) {
+    templatePath = defaultPath(templateUrl, true, opts);
+    return { templatePath, templateUrl };
+  }
+  // Site/react templates resolve to a versioned GitHub release asset (.zip), bypassing the API.
+  // The version lives in the URL, so the hashed cache path is version-specific and self-invalidates.
+  if (opts.kind === TemplateKind.site) {
+    templateUrl = resolveSiteTemplateUrl(opts.template);
     templatePath = defaultPath(templateUrl, true, opts);
     return { templatePath, templateUrl };
   }
