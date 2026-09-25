@@ -16,7 +16,7 @@ import type { ISession } from '../../session/types.js';
 import type { StartOptions } from '../site/start.js';
 import { startServer } from '../site/start.js';
 import { getSiteTemplate } from '../site/template.js';
-import { slugToUrl } from 'myst-common';
+import { resolveBaseUrl, slugToUrl } from 'myst-common';
 import pLimit from 'p-limit';
 import { fetchWithRetry } from '../../utils/fetchWithRetry.js';
 import { selectors } from '../../store/index.js';
@@ -131,32 +131,55 @@ function rewriteAssetsFolder(directory: string, baseurl?: string): void {
 }
 
 /**
- * Get the baseurl from BASE_URL or common deployment environments
+ * Return the public site URL from an absolute BASE_URL or Read the Docs.
+ */
+export function getSiteUrl(): string | undefined {
+  if (process.env.BASE_URL) {
+    return resolveBaseUrl(process.env.BASE_URL).publicUrl;
+  }
+  if (process.env.READTHEDOCS_CANONICAL_URL) {
+    return resolveBaseUrl(process.env.READTHEDOCS_CANONICAL_URL, 'READTHEDOCS_CANONICAL_URL')
+      .publicUrl;
+  }
+  return undefined;
+}
+
+/**
+ * Get the base URL from BASE_URL or the pathname of the public site URL.
  *
  * @param session session with logging
  */
-function getBaseUrl(session: ISession): string | undefined {
-  let baseurl;
-  // BASE_URL always takes precedence. If it's not defined, check common deployment environments.
-  if ((baseurl = process.env.BASE_URL)) {
-    session.log.info('BASE_URL environment overwrite is set');
-  } else if ((baseurl = process.env.READTHEDOCS_CANONICAL_URL)) {
-    // Get only the path part of the RTD url, without trailing `/`
-    baseurl = new URL(baseurl).pathname.replace(/\/$/, '');
-    session.log.info(
-      `Building inside a ReadTheDocs environment for ${process.env.READTHEDOCS_CANONICAL_URL}`,
-    );
+export function getBaseUrl(session: ISession): string | undefined {
+  const siteUrl = getSiteUrl();
+  let resolvedBaseUrl: string | undefined;
+  if (process.env.BASE_URL) {
+    resolvedBaseUrl = resolveBaseUrl(process.env.BASE_URL).pathname;
+  } else if (siteUrl) {
+    resolvedBaseUrl = resolveBaseUrl(
+      process.env.READTHEDOCS_CANONICAL_URL,
+      'READTHEDOCS_CANONICAL_URL',
+    ).pathname;
   }
-  // Check if baseurl was set to any value, otherwise print a hint on how to set it manually.
-  if (baseurl) {
-    session.log.info(`Building the site with a baseurl of "${baseurl}"`);
+  // Report the resolved base URL, or explain how to configure one when neither source is set.
+  if (resolvedBaseUrl) {
+    session.log.info(`Building the site with a baseurl of "${resolvedBaseUrl}"`);
+  } else if (siteUrl) {
+    session.log.info(`Building the site at "${siteUrl}"`);
   } else {
-    // The user should only use `BASE_URL` to set the value manually.
     session.log.info(
-      'Building the base site.\nTo set a baseurl (e.g. GitHub pages) use "BASE_URL" environment variable.',
+      'Building the base site.\nSet BASE_URL to a path (for example, /docs) or an absolute public URL (for example, https://example.org/docs).',
     );
   }
-  return baseurl;
+  return resolvedBaseUrl;
+}
+
+export function warnIfMissingPublicBaseUrl(session: ISession) {
+  if (getSiteUrl()) {
+    return;
+  }
+  session.log.warn(
+    'BASE_URL is not an absolute public URL. Generated sitemap.xml and robots.txt files will contain localhost URLs and are unsuitable for deployment. Set BASE_URL to a URL such as https://example.org/docs.',
+  );
 }
 
 /**
@@ -167,6 +190,7 @@ function getBaseUrl(session: ISession): string | undefined {
  */
 export async function buildHtml(session: ISession, opts: StartOptions) {
   const template = await getSiteTemplate(session, opts);
+  warnIfMissingPublicBaseUrl(session);
   // Ask template for command to render itself into HTML
   const renderCommand = (template.getValidatedTemplateYml().build as any)?.render;
   // The BASE_URL env variable allows for mounting the site in a folder, e.g., github pages
