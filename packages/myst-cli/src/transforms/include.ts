@@ -61,7 +61,7 @@ export const makeFileLoader = (session: ISession, baseFile: string) => (fullFile
  * Handles html and tex files separately; all other files are treated as MyST md.
  */
 export const makeContentParser =
-  (session: ISession, file: string) =>
+  (session: ISession) =>
   async (filename: string, content: string): Promise<LoadFileResult> => {
     if (filename.toLowerCase().endsWith('.html')) {
       const mdast = { type: 'root', children: [{ type: 'html', value: content }] };
@@ -69,12 +69,12 @@ export const makeContentParser =
     }
     const opts = { keepTitleNode: true };
     if (filename.toLowerCase().endsWith('.tex')) {
-      return loadTexFile(session, content, file, opts);
+      return loadTexFile(session, content, filename, opts);
     }
     if (filename.toLowerCase().endsWith('.ipynb')) {
-      return loadNotebookFile(session, content, file, opts);
+      return loadNotebookFile(session, content, filename, opts);
     }
-    return loadMdFile(session, content, file, opts);
+    return loadMdFile(session, content, filename, opts);
   };
 
 export async function includeFilesTransform(
@@ -84,7 +84,7 @@ export async function includeFilesTransform(
   frontmatter: PageFrontmatter,
   vfile: VFile,
 ) {
-  const parseContent = makeContentParser(session, baseFile);
+  const parseContent = makeContentParser(session);
   const loadFile = makeFileLoader(session, baseFile);
   const resolveFile = makeFileResolver(baseFile);
   await includeDirectiveTransform(tree, frontmatter, vfile, {
