@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, ci-*]
     paths:
-        - 'packages/mystmd-py/**'
+      - 'packages/mystmd-py/**'
   pull_request:
     branches: [main]
     paths:
@@ -71,7 +71,7 @@ jobs:
         with:
           name: package
       - name: Run myst and expect failure
-        uses: "docker://python:3.12.7-slim-bookworm"
+        uses: 'docker://python:3.14.7-slim-trixie'
         with:
           entrypoint: /bin/bash
           args: '-c "export MYSTMD_ALLOW_NODEENV=0; pip install mystmd*.whl && ! myst -v"'
@@ -90,7 +90,7 @@ jobs:
         with:
           name: package
       - name: Run myst with nodeenv and expect success
-        uses: "docker://python:3.12.7-slim-bookworm"
+        uses: 'docker://python:3.14.7-slim-trixie'
         with:
           entrypoint: /bin/bash
           args: '-c "export MYSTMD_ALLOW_NODEENV=1; pip install mystmd*.whl && myst -v"'
