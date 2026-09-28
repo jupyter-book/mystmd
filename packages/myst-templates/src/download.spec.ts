@@ -1,8 +1,11 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import memfs from 'memfs';
-import { resolveInputs } from './download';
+import { resolveInputs, resolveSiteTemplateUrl } from './download.js';
+import { DEFAULT_SITE_TEMPLATE_VERSION } from './defaultTemplates.js';
 import { Session } from './session';
 import { TemplateKind } from 'myst-common';
+
+const RELEASES = 'https://github.com/jupyter-book/myst-theme/releases/download';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
@@ -57,5 +60,51 @@ describe('resolveInputs', () => {
   });
   it('invalid template errors', async () => {
     expect(() => resolveInputs(new Session(), { template: 'my/public/journal' })).toThrow();
+  });
+  it('site template resolves to a versioned release zip and hashed path', async () => {
+    const { templateUrl, templatePath } = resolveInputs(new Session(), {
+      kind: TemplateKind.site,
+    });
+    expect(templateUrl).toEqual(
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+    );
+    expect(templatePath).toMatch(/^templates\/site\/[a-f0-9]{64}$/);
+  });
+  it('pinned site template uses the requested version', async () => {
+    expect(
+      resolveInputs(new Session(), { kind: TemplateKind.site, template: 'book-theme@9.9.9' })
+        .templateUrl,
+    ).toEqual(`${RELEASES}/myst-to-react@9.9.9/book-theme.zip`);
+  });
+});
+
+describe('resolveSiteTemplateUrl', () => {
+  it('bare name uses the default org and baked version', () => {
+    expect(resolveSiteTemplateUrl('book-theme')).toEqual(
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+    );
+  });
+  it('undefined falls back to the default book-theme', () => {
+    expect(resolveSiteTemplateUrl()).toEqual(
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+    );
+  });
+  it('name@version pins the version', () => {
+    expect(resolveSiteTemplateUrl('article-theme@1.3.1')).toEqual(
+      `${RELEASES}/myst-to-react@1.3.1/article-theme.zip`,
+    );
+  });
+  it('org/name@version overrides the org', () => {
+    expect(resolveSiteTemplateUrl('myorga/book-theme@release-name')).toEqual(
+      'https://github.com/myorga/myst-theme/releases/download/release-name/book-theme.zip',
+    );
+  });
+  it('legacy site/myst/ namespace maps to the default org', () => {
+    expect(resolveSiteTemplateUrl('site/myst/book-theme')).toEqual(
+      `${RELEASES}/myst-to-react@${DEFAULT_SITE_TEMPLATE_VERSION}/book-theme.zip`,
+    );
+  });
+  it('invalid name throws', () => {
+    expect(() => resolveSiteTemplateUrl('a/b/c/d')).toThrow();
   });
 });
