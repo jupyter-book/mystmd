@@ -181,6 +181,11 @@ export function validateProjectAndPageFrontmatterKeys(
     const abbreviations = Object.fromEntries(
       Object.entries(validateObject(value.abbreviations, abbreviationsOpts) ?? {})
         .map(([k, v]) => {
+          if (k === 'firstTimeLong') {
+            const firstTimeLong = validateBoolean(v, incrementOptions(k, abbreviationsOpts));
+            if (firstTimeLong == null) return null;
+            return [k, firstTimeLong];
+          }
           // A null / false explicitly disables an abbreviation
           if (v === null || v === false) return [k, null];
           // Filter on non-string values
@@ -193,7 +198,7 @@ export function validateProjectAndPageFrontmatterKeys(
           if (!(key && title)) return null;
           return [k, title];
         })
-        .filter((v): v is [string, string | null] => !!v),
+        .filter((entry): entry is [string, string | boolean | null] => !!entry),
     );
     if (abbreviations && Object.keys(abbreviations).length > 0) {
       output.abbreviations = abbreviations;
