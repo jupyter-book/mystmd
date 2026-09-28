@@ -26,7 +26,13 @@ If you do not specify an image the first image in the content of a page will be 
 
 The thumbnail, title and description for your document will also show up in site links in a hover tooltip. For example, here is a link to [](./interactive-notebooks.ipynb).
 
+## Public sitemap and robots URLs
+
+To generate absolute public URLs in `sitemap.xml` and `robots.txt`, set `BASE_URL` to the full public URL, for example `https://mysite.org/docs`. MyST uses its pathname, `/docs`, as the deployment base URL.
+
 ## robots.txt
+
+For a deployable `robots.txt`, configure the [public sitemap and robots URL](#public-sitemap-and-robots-urls) so the `Sitemap:` entry points to the public sitemap.
 
 A `robots.txt` file allows you to allow or disallow crawling from search engines, for example from [Googlebot](https://developers.google.com/search/docs/crawling-indexing/robots/intro).
 By default the `robots.txt` is set to `allow` in the site configuration, which creates this file when you visit your URL at [robots.txt](/robots.txt).
@@ -50,6 +56,8 @@ This will turn the `Allow: /` to `Disallow: /`, which will indicate to search en
 This is a good setting for transient sites or sites that are showing, for example, changes on a pull-request.
 
 ## sitemap.xml
+
+For a deployable `sitemap.xml`, configure the [public sitemap and robots URL](#public-sitemap-and-robots-urls) so page `<loc>` entries and the stylesheet URL point to the public site:
 
 The `sitemap.xml` is always created and is accessible through [sitemap.xml](/sitemap.xml), which lists all of the pages in your site, including any nested projects. This XML Sitemap is generated automatically to make your content more visible for search engines.
 
