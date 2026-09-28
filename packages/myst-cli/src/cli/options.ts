@@ -10,7 +10,7 @@ function parseInt(value: any) {
 }
 
 export function makeCDNOption(description: string) {
-  return new Option('--cdn <string>', description).default('http://localhost:3100');
+  return new Option('--content <string>', description).default('http://localhost:3100');
 }
 
 export function makePdfOption(description: string) {
