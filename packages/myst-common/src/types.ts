@@ -115,7 +115,62 @@ export type RoleSpec = {
 type Select = (selector: string, tree?: GenericParent) => GenericNode | null;
 type SelectAll = (selector: string, tree?: GenericParent) => GenericNode[] | null;
 
-export type PluginUtils = { select: Select; selectAll: SelectAll };
+/**
+ * Page information exposed to plugins via the unstable session API.
+ *
+ * This is the full page frontmatter (title, description, tags, date, authors,
+ * affiliations, contributors, doi, etc.) extended with the page's location
+ * within the site.
+ */
+export type SessionPage = PageFrontmatter & {
+  slug?: string;
+  /** Resolved url for the page within the site, e.g. `/my-page`. */
+  url?: string;
+  /** Full path to the source file on disk. */
+  file?: string;
+  /** Source file name, e.g. `my-page.md`. */
+  filename?: string;
+  /** Table of contents depth/level for the page. */
+  level?: number;
+};
+
+/** Minimal site configuration exposed to plugins via the unstable session API. */
+export type SessionSite = {
+  title?: string;
+  description?: string;
+  options?: Record<string, any>;
+  nav?: any[];
+  actions?: any[];
+  domains?: string[];
+  template?: string;
+};
+
+/** Minimal project information exposed to plugins via the unstable session API. */
+export type SessionProject = {
+  slug?: string;
+  index?: string;
+  title?: string;
+  pages: SessionPage[];
+  /** The current site configuration that this project belongs to. */
+  site?: SessionSite;
+};
+
+export type SessionAPI = {
+  page: {
+    slug?: string;
+    frontmatter: PageFrontmatter;
+  };
+  /**
+   * The current project, including the list of all pages and their tags, as
+   * well as the site configuration nested under `project.site`.
+   *
+   * This is only fully populated for `project` stage transforms; during
+   * `document` stage transforms other pages may not have been processed yet.
+   */
+  project?: SessionProject;
+};
+
+export type PluginUtils = { select: Select; selectAll: SelectAll; unstableSession: SessionAPI };
 export type PluginOptions = Record<string, any>;
 
 export type TransformSpec = {

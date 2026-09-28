@@ -1,0 +1,13 @@
+# See docs at: https://mystmd.org/guide/frontmatter
+version: 1
+project:
+  title: Tagged Pages Plugin Example
+  plugins:
+    - plugin.mjs
+  toc:
+    - file: index.md
+    - file: apples.md
+    - file: oranges.md
+    - file: bananas.md
+site:
+  template: book-theme
