@@ -1,0 +1,49 @@
+title: myst-to-typst quotes
+cases:
+  - title: blockquote followed by heading
+    mdast:
+      type: root
+      children:
+        - type: blockquote
+          children:
+            - type: paragraph
+              children:
+                - type: text
+                  value: Quote text.
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: My Heading
+    typst: |-
+      #quote(block: true)[Quote text.]
+
+      = My Heading
+  - title: quote container with attribution followed by heading
+    mdast:
+      type: root
+      children:
+        - type: container
+          kind: quote
+          children:
+            - type: blockquote
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Quote text.
+            - type: caption
+              children:
+                - type: paragraph
+                  children:
+                    - type: text
+                      value: Attribution
+        - type: heading
+          depth: 1
+          children:
+            - type: text
+              value: My Heading
+    typst: |-
+      #quote(block: true, attribution: [Attribution])[Quote text.]
+
+      = My Heading
