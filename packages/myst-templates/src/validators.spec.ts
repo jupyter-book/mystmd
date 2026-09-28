@@ -129,6 +129,81 @@ describe('validateTemplateOption', () => {
     ).toEqual(undefined);
     expect(opts.messages.errors?.length).toEqual(1);
   });
+  // These `multiple` tests use `type: 'string'` rather than `type: 'file'` even
+  // though the motivating use case (a `style` option) is a list of files: the
+  // `multiple` wrapper is type-agnostic, and `file` validation resolves paths
+  // against the real filesystem (non-existent files get dropped), which would
+  // make these unit tests depend on fixture files. `string` exercises the same
+  // list/coerce logic without touching disk.
+  it('multiple option validates a list of values', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        ['a.css', 'b.css'],
+        { id: '', type: 'string', multiple: true } as any,
+        opts,
+      ),
+    ).toEqual(['a.css', 'b.css']);
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
+  it('multiple string option validates list of strings', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        ['a', 'b'],
+        { id: '', type: 'string', multiple: true } as any,
+        opts,
+      ),
+    ).toEqual(['a', 'b']);
+  });
+  it('multiple option coerces a bare scalar to a single-element list', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        'a.css',
+        { id: '', type: 'string', multiple: true } as any,
+        opts,
+      ),
+    ).toEqual(['a.css']);
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
+  it('multiple number option validates and coerces each item', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        ['1', 2],
+        { id: '', type: 'number', multiple: true } as any,
+        opts,
+      ),
+    ).toEqual([1, 2]);
+  });
+  it('multiple option drops invalid items and errors', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        ['a', false],
+        { id: '', type: 'string', multiple: true } as any,
+        opts,
+      ),
+    ).toEqual(['a']);
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('multiple choice option validates list against choices', async () => {
+    expect(
+      validateTemplateOption(
+        session,
+        ['a', 'c'],
+        { id: '', type: 'choice', choices: ['a', 'b', 'c'], multiple: true } as any,
+        opts,
+      ),
+    ).toEqual(['a', 'c']);
+  });
+  it('multiple option accepts an empty list', async () => {
+    expect(
+      validateTemplateOption(session, [], { id: '', type: 'string', multiple: true } as any, opts),
+    ).toEqual([]);
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
 });
 
 describe('validateTemplateOptions', () => {
@@ -275,6 +350,37 @@ describe('validateTemplateOptions', () => {
       ),
     ).toEqual({ b: 'test' });
     expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('multiple option passes a list through', async () => {
+    expect(
+      validateTemplateOptions(
+        session,
+        { style: ['a.css', 'b.css'] },
+        [{ id: 'style', type: 'string' as any, multiple: true }],
+        opts,
+      ),
+    ).toEqual({ style: ['a.css', 'b.css'] });
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
+  it('multiple option coerces a scalar value to a list', async () => {
+    expect(
+      validateTemplateOptions(
+        session,
+        { style: 'a.css' },
+        [{ id: 'style', type: 'string' as any, multiple: true }],
+        opts,
+      ),
+    ).toEqual({ style: ['a.css'] });
+  });
+  it('multiple option fills a list default', async () => {
+    expect(
+      validateTemplateOptions(
+        session,
+        {},
+        [{ id: 'style', type: 'string' as any, multiple: true, default: ['a.css', 'b.css'] }],
+        opts,
+      ),
+    ).toEqual({ style: ['a.css', 'b.css'] });
   });
 });
 
@@ -625,6 +731,45 @@ describe('validateTemplateOptionDefinition', () => {
       type: 'string',
     });
     expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('multiple flag passes through', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        { id: 'style', type: 'file', multiple: true },
+        opts,
+      ),
+    ).toEqual({ id: 'style', type: 'file', multiple: true });
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
+  it('invalid multiple errors and is dropped', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        { id: 'style', type: 'file', multiple: 'yes' },
+        opts,
+      ),
+    ).toEqual({ id: 'style', type: 'file' });
+    expect(opts.messages.errors?.length).toEqual(1);
+  });
+  it('multiple option validates a list default', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        { id: 'style', type: 'string', multiple: true, default: ['a', 'b'] },
+        opts,
+      ),
+    ).toEqual({ id: 'style', type: 'string', multiple: true, default: ['a', 'b'] });
+    expect(opts.messages.errors?.length ?? 0).toEqual(0);
+  });
+  it('multiple option coerces a scalar default to a list', async () => {
+    expect(
+      validateTemplateOptionDefinition(
+        session,
+        { id: 'style', type: 'string', multiple: true, default: 'a.css' },
+        opts,
+      ),
+    ).toEqual({ id: 'style', type: 'string', multiple: true, default: ['a.css'] });
   });
 });
 describe('crossValidateConditions', () => {
