@@ -603,3 +603,9 @@ cases:
         content: extend-part-plugin/outputs/index.json
       - path: extend-part-plugin/_build/site/config.json
         content: extend-part-plugin/outputs/config.json
+  - title: Part headings match article headings in tex export
+    cwd: part-headings
+    command: myst build --tex --ci
+    outputs:
+      - path: part-headings/_build/out.tex
+        content: outputs/part-headings.tex
