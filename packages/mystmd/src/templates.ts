@@ -17,7 +17,7 @@ import { clirun } from './clirun.js';
 
 function makeStartCLI(program: Command) {
   const command = new Command('start')
-    .description('Start a public site template')
+    .description('Start a site template')
     .argument('<template>', 'The template URL or name')
     .addOption(makeCDNOption('Use specific content server'))
     .addOption(makePortOption())
