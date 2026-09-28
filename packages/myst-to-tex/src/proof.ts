@@ -31,6 +31,14 @@ function kindToEnvironment(kind: ProofKind): string {
       return 'observation';
     case 'corollary':
       return 'corollary';
+    case 'algorithm':
+      return 'algorithm';
+    case 'assumption':
+      return 'assumption';
+    case 'criterion':
+      return 'criterion';
+    case 'property':
+      return 'property';
     default:
       return '';
   }
@@ -99,6 +107,11 @@ export class TexProofSerializer {
       '\\newtheorem{axiom}{Axiom}[section]',
       '\\newtheorem{conjecture}{Conjecture}[section]',
       '\\newtheorem{observation}{Observation}[section]',
+      // The algorithm and algorithm2e packages already define this environment
+      '\\ifdefined\\algorithm\\else\\newtheorem{algorithm}{Algorithm}[section]\\fi',
+      '\\newtheorem{assumption}{Assumption}[section]',
+      '\\newtheorem{criterion}{Criterion}[section]',
+      '\\newtheorem{property}{Property}[section]',
     ];
     const block = writeTexLabelledComment(
       'theorem',
