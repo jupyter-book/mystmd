@@ -118,9 +118,18 @@ can be used to create a two-column grid of images with aligned bottoms and a gap
 ![Banff, Canada](https://github.com/rowanc1/pics/blob/main/banff-wide.png)
 ![Golden Gate Bridge, San Francisco](https://github.com/rowanc1/pics/blob/main/sfo-wide.png)
 
-Some lovely pictures
+Some lovely pictures of two famous places in North America.
 ::::
 
+The above may result in the main figure caption being confined to the first column. Adding the `subfigure-grid` CSS class makes the main caption span the full width of the figure.
+
+```css
+.subfigure-grid > figcaption {
+  grid-column: 1 / -1;
+}
+```
+ 
+ 
 ### Control sub-figure layout with a grid
 
 For responsive layouts, wrap the content in a `{grid}` directive.
@@ -140,6 +149,8 @@ The example below uses one column on narrow screens and two on wide ones (`1 1 2
 
 Pictures of fruit and the ocean.
 ::::
+
+
 
 ## Supported Image Formats
 
