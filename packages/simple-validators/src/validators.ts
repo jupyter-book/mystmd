@@ -414,9 +414,9 @@ export function validateKeys(
     if (!opts.returnInvalidPartial) return undefined;
   }
   // One warning per ignored key, so each can be identified by its dotted path (`key`)
-  const parentPath = [opts.location, opts.property].filter(Boolean).join('.');
   ignored.forEach((k) => {
-    validationWarning(`extra key ignored: ${k}`, opts, `${parentPath}.${k}`);
+    const key = [opts.location, opts.property, k].filter(Boolean).join('.');
+    validationWarning(`extra key ignored: ${k}`, opts, key);
   });
   return value;
 }

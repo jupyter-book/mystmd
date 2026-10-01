@@ -320,6 +320,16 @@ describe('validateKeys', () => {
   it('empty value', () => {
     expect(validateKeys({}, {}, opts)).toEqual({});
   });
+  it('extra key at an unnamed root has no leading separator', () => {
+    const keys: (string | undefined)[] = [];
+    const logOpts: ValidationOptions = {
+      property: '',
+      messages: {},
+      warningLogFn: (_message, key) => keys.push(key),
+    };
+    validateKeys({ a: 1, b: 2 }, { optional: ['a'] }, logOpts);
+    expect(keys).toEqual(['b']);
+  });
   it('required keys', () => {
     expect(validateKeys({ a: 1, b: 2 }, { required: ['a', 'b'] }, opts)).toEqual({ a: 1, b: 2 });
   });
