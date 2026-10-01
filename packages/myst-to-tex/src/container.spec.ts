@@ -15,6 +15,14 @@ describe('determineCaptionKind', () => {
     };
     expect(determineCaptionKind(node)).toEqual(CaptionKind.table);
   });
+  it('container{kind: table}[image] -> table', () => {
+    const node = {
+      type: 'container',
+      kind: 'table',
+      children: [{ type: 'image' }],
+    };
+    expect(determineCaptionKind(node)).toEqual(CaptionKind.table);
+  });
   it('container[embed[block[text]]] -> null', () => {
     const node = {
       type: 'container',
