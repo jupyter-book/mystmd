@@ -114,16 +114,13 @@ const createAcronymDefinitions = (tree: Root): Record<string, [string, string]> 
   );
 
 /**
- * The optional arguments of a citation command: `[suffix]` or `[prefix][suffix]`
+ * The suffix of a citation as the optional argument of the citation command
  */
-function citeAffixes(prefix?: string, suffix?: string): string {
-  if (!prefix && !suffix) return '';
-  const argument = (value?: string) => {
-    const text = stringToLatexText(value ?? '');
-    // A closing bracket would end the optional argument
-    return text.includes(']') ? `[{${text}}]` : `[${text}]`;
-  };
-  return prefix ? `${argument(prefix)}${argument(suffix)}` : argument(suffix);
+function citeSuffix(suffix?: string): string {
+  if (!suffix) return '';
+  const text = stringToLatexText(suffix);
+  // A closing bracket would end the optional argument
+  return text.includes(']') ? `[{${text}}]` : `[${text}]`;
 }
 
 const handlers: Record<string, Handler> = {
@@ -416,19 +413,17 @@ const handlers: Record<string, Handler> = {
     state.write(text.replace(/%s/g, `\\ref{${id}}`));
   },
   citeGroup(node, state) {
-    // A citation command takes one prefix and one suffix for the whole group
+    // A citation command takes one suffix for the whole group
     const cites = node.children?.filter((child: GenericNode) => child.type === 'cite') ?? [];
-    const prefix = cites[0]?.prefix;
-    const suffix = cites[cites.length - 1]?.suffix;
+    const suffix = citeSuffix(cites[cites.length - 1]?.suffix);
     if (state.options.citestyle === 'numerical-only') {
-      // The plain `\cite` command only has a suffix
-      state.write(`\\cite${citeAffixes(undefined, suffix)}{`);
+      state.write(`\\cite${suffix}{`);
     } else if (state.options.bibliography === 'biblatex') {
       const command = node.kind === 'narrative' ? 'textcite' : 'parencite';
-      state.write(`\\${command}${citeAffixes(prefix, suffix)}{`);
+      state.write(`\\${command}${suffix}{`);
     } else {
       const tp = node.kind === 'narrative' ? 't' : 'p';
-      state.write(`\\cite${tp}${citeAffixes(prefix, suffix)}{`);
+      state.write(`\\cite${tp}${suffix}{`);
     }
     state.renderChildren(node, true, ', ');
     state.write('}');
@@ -441,9 +436,9 @@ const handlers: Record<string, Handler> = {
     if (parent.type === 'citeGroup') {
       state.write(node.label);
     } else if (state.options.bibliography === 'biblatex') {
-      state.write(`\\textcite${citeAffixes(node.prefix, node.suffix)}{${node.label}}`);
+      state.write(`\\textcite${citeSuffix(node.suffix)}{${node.label}}`);
     } else {
-      state.write(`\\cite${citeAffixes(node.prefix, node.suffix)}{${node.label}}`);
+      state.write(`\\cite${citeSuffix(node.suffix)}{${node.label}}`);
     }
   },
   embed(node, state) {

@@ -18,7 +18,6 @@ function toTex(options: Options) {
                 type: 'cite',
                 kind: 'parenthetical',
                 label: 'smith2020',
-                prefix: 'see',
                 suffix: 'chap. 2',
               },
             ],
@@ -32,14 +31,14 @@ function toTex(options: Options) {
   return (pipe.stringify(mdast as any).result as LatexResult).value;
 }
 
-describe('myst-to-tex citation affixes', () => {
+describe('myst-to-tex citation suffix', () => {
   test('natbib', () => {
-    expect(toTex({ bibliography: 'natbib' })).toEqual('\\citep[see][chap. 2]{smith2020}');
+    expect(toTex({ bibliography: 'natbib' })).toEqual('\\citep[chap. 2]{smith2020}');
   });
   test('biblatex', () => {
-    expect(toTex({ bibliography: 'biblatex' })).toEqual('\\parencite[see][chap. 2]{smith2020}');
+    expect(toTex({ bibliography: 'biblatex' })).toEqual('\\parencite[chap. 2]{smith2020}');
   });
-  test('numerical-only citations only have a suffix', () => {
+  test('numerical-only', () => {
     expect(toTex({ citestyle: 'numerical-only' })).toEqual('\\cite[chap. 2]{smith2020}');
   });
 });
