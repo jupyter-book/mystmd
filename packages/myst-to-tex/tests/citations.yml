@@ -1,0 +1,109 @@
+title: myst-to-tex citations
+cases:
+  - title: parenthetical citation group
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: smith2020
+                - type: cite
+                  kind: parenthetical
+                  label: jones2021
+    latex: |-
+      \citep{smith2020, jones2021}
+  - title: narrative citation
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: narrative
+              children:
+                - type: cite
+                  kind: narrative
+                  label: smith2020
+    latex: |-
+      \citet{smith2020}
+  - title: citation with suffix
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: smith2020
+                  suffix: Appendix B
+    latex: |-
+      \citep[Appendix B]{smith2020}
+  - title: citation with prefix
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: smith2020
+                  prefix: see
+    latex: |-
+      \citep[see][]{smith2020}
+  - title: citation group with prefix and suffix
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: smith2020
+                  prefix: see
+                - type: cite
+                  kind: parenthetical
+                  label: jones2021
+                  suffix: chap. 2
+    latex: |-
+      \citep[see][chap. 2]{smith2020, jones2021}
+  - title: single citation with suffix
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: cite
+              kind: narrative
+              label: smith2020
+              suffix: p. 5
+    latex: |-
+      \cite[p. 5]{smith2020}
+  - title: citation suffix is escaped
+    mdast:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: citeGroup
+              kind: parenthetical
+              children:
+                - type: cite
+                  kind: parenthetical
+                  label: smith2020
+                  suffix: Tables 1 & 2 [sic]
+    latex: |-
+      \citep[{Tables 1 \& 2 [sic]}]{smith2020}

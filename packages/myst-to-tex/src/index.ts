@@ -113,6 +113,19 @@ const createAcronymDefinitions = (tree: Root): Record<string, [string, string]> 
       .filter((x) => x.length > 0), // remove empty
   );
 
+/**
+ * The optional arguments of a citation command: `[suffix]` or `[prefix][suffix]`
+ */
+function citeAffixes(prefix?: string, suffix?: string): string {
+  if (!prefix && !suffix) return '';
+  const argument = (value?: string) => {
+    const text = stringToLatexText(value ?? '');
+    // A closing bracket would end the optional argument
+    return text.includes(']') ? `[{${text}}]` : `[${text}]`;
+  };
+  return prefix ? `${argument(prefix)}${argument(suffix)}` : argument(suffix);
+}
+
 const handlers: Record<string, Handler> = {
   text(node, state) {
     state.text(node.value);
@@ -403,14 +416,19 @@ const handlers: Record<string, Handler> = {
     state.write(text.replace(/%s/g, `\\ref{${id}}`));
   },
   citeGroup(node, state) {
+    // A citation command takes one prefix and one suffix for the whole group
+    const cites = node.children?.filter((child: GenericNode) => child.type === 'cite') ?? [];
+    const prefix = cites[0]?.prefix;
+    const suffix = cites[cites.length - 1]?.suffix;
     if (state.options.citestyle === 'numerical-only') {
-      state.write('\\cite{');
+      // The plain `\cite` command only has a suffix
+      state.write(`\\cite${citeAffixes(undefined, suffix)}{`);
     } else if (state.options.bibliography === 'biblatex') {
       const command = node.kind === 'narrative' ? 'textcite' : 'parencite';
-      state.write(`\\${command}{`);
+      state.write(`\\${command}${citeAffixes(prefix, suffix)}{`);
     } else {
       const tp = node.kind === 'narrative' ? 't' : 'p';
-      state.write(`\\cite${tp}{`);
+      state.write(`\\cite${tp}${citeAffixes(prefix, suffix)}{`);
     }
     state.renderChildren(node, true, ', ');
     state.write('}');
@@ -423,9 +441,9 @@ const handlers: Record<string, Handler> = {
     if (parent.type === 'citeGroup') {
       state.write(node.label);
     } else if (state.options.bibliography === 'biblatex') {
-      state.write(`\\textcite{${node.label}}`);
+      state.write(`\\textcite${citeAffixes(node.prefix, node.suffix)}{${node.label}}`);
     } else {
-      state.write(`\\cite{${node.label}}`);
+      state.write(`\\cite${citeAffixes(node.prefix, node.suffix)}{${node.label}}`);
     }
   },
   embed(node, state) {
