@@ -11,13 +11,12 @@ import { join } from 'node:path';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
 import type { ProcessSiteOptions } from '../../process/site.js';
-import { processSite } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import version from '../../version.js';
 import { createServerLogger } from './logger.js';
 import { buildSite } from './prepare.js';
 import { installSiteTemplate, getSiteTemplate } from './template.js';
-import { watchContent } from './watch.js';
+import { reprocessSite, watchContent } from './watch.js';
 
 /*
 Find a free port close to the preferred port and bind to it.
@@ -312,19 +311,9 @@ export function startInteractiveShortcuts(
     '  q  quit',
     '',
   ].join('\n');
-  let processing = false;
-  const reprocess = async () => {
-    if (processing) return;
-    processing = true;
-    try {
-      session.log.info('💥 Reprocessing project and rebuilding site');
-      await processSite(session, { ...opts, reloadProject: true });
-      info.contentServer.sendJson({ type: 'RELOAD' });
-    } catch (err) {
-      session.log.error(`Reprocessing failed: ${(err as Error).message}`);
-    } finally {
-      processing = false;
-    }
+  const reprocess = () => {
+    session.log.info('💥 Reprocessing project and rebuilding site');
+    return reprocessSite(session, () => info.contentServer.sendJson({ type: 'RELOAD' }), opts);
   };
   const onData = (data: Buffer) => {
     const key = data.toString();
