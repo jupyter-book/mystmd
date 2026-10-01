@@ -305,8 +305,30 @@ describe('validateObject', () => {
 });
 
 describe('validateKeys', () => {
+  it('extra keys warn once per key with a dotted path key', () => {
+    const logged: { message: string; key?: string }[] = [];
+    const logOpts: ValidationOptions = {
+      property: 'child',
+      location: 'root',
+      messages: {},
+      warningLogFn: (message, key) => logged.push({ message, key }),
+    };
+    validateKeys({ a: 1, b: 2, c: 3 }, { optional: ['a'] }, logOpts);
+    expect(logged.map(({ key }) => key)).toEqual(['root.child.b', 'root.child.c']);
+    expect(logged[0].message).toContain('extra key ignored: b');
+  });
   it('empty value', () => {
     expect(validateKeys({}, {}, opts)).toEqual({});
+  });
+  it('extra key at an unnamed root has no leading separator', () => {
+    const keys: (string | undefined)[] = [];
+    const logOpts: ValidationOptions = {
+      property: '',
+      messages: {},
+      warningLogFn: (_message, key) => keys.push(key),
+    };
+    validateKeys({ a: 1, b: 2 }, { optional: ['a'] }, logOpts);
+    expect(keys).toEqual(['b']);
   });
   it('required keys', () => {
     expect(validateKeys({ a: 1, b: 2 }, { required: ['a', 'b'] }, opts)).toEqual({ a: 1, b: 2 });
