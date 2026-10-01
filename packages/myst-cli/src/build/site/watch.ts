@@ -135,6 +135,60 @@ async function processorFn(
   // await processSite(session, true);
 }
 
+/**
+ * Run a reload while coordinating with other reload triggers through the store's
+ * `reloading` / `reloadRequested` state, so that only one build runs at a time.
+ * If a build is already running, a follow-up full reload is requested instead.
+ */
+async function runCoordinatedReload(
+  session: ISession,
+  first: () => Promise<void>,
+  eventType: string,
+  serverReload: () => void,
+  opts: ProcessSiteOptions,
+) {
+  const { reloading } = selectors.selectReloadingState(session.store.getState());
+  if (reloading) {
+    session.store.dispatch(watch.actions.markReloadRequested(true));
+    return;
+  }
+  session.store.dispatch(watch.actions.markReloading(true));
+  try {
+    await first();
+    while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
+      // If reload(s) were requested during previous build, just reload everything once.
+      session.store.dispatch(watch.actions.markReloadRequested(false));
+      await processorFn(session, null, eventType, null, serverReload, {
+        ...opts,
+        reloadProject: true,
+      });
+    }
+  } catch (error: any) {
+    session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
+    session.log.error(`Error during reload${error.message ? `:\n${error.message}` : ''}`);
+  }
+  session.store.dispatch(watch.actions.markReloading(false));
+}
+
+/**
+ * Trigger a full project reload and site rebuild (e.g. from a keyboard shortcut),
+ * serialized with file-watcher triggered rebuilds.
+ */
+export async function reprocessSite(
+  session: ISession,
+  serverReload: () => void,
+  opts: ProcessSiteOptions,
+) {
+  await runCoordinatedReload(
+    session,
+    () =>
+      processorFn(session, null, 'manual', null, serverReload, { ...opts, reloadProject: true }),
+    'manual',
+    serverReload,
+    opts,
+  );
+}
+
 function watchProcessor(
   session: ISession,
   siteProject: { slug: string; path: string } | null,
@@ -146,29 +200,15 @@ function watchProcessor(
       session.log.debug(`Ignoring build trigger for ${file} with eventType of "${eventType}"`);
       return;
     }
-    const { reloading } = selectors.selectReloadingState(session.store.getState());
-    if (reloading) {
-      session.store.dispatch(watch.actions.markReloadRequested(true));
-      return;
-    }
-    session.store.dispatch(watch.actions.markReloading(true));
     if (siteProject?.path) file = resolve(siteProject.path, file);
     session.log.debug(`File modified: "${file}" (${eventType})`);
-    try {
-      await processorFn(session, file, eventType, siteProject, serverReload, opts);
-      while (selectors.selectReloadingState(session.store.getState()).reloadRequested) {
-        // If reload(s) were requested during previous build, just reload everything once.
-        session.store.dispatch(watch.actions.markReloadRequested(false));
-        await processorFn(session, null, eventType, null, serverReload, {
-          ...opts,
-          reloadProject: true,
-        });
-      }
-    } catch (error: any) {
-      session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
-      session.log.error(`Error during reload${error.message ? `:\n${error.message}` : ''}`);
-    }
-    session.store.dispatch(watch.actions.markReloading(false));
+    await runCoordinatedReload(
+      session,
+      () => processorFn(session, file, eventType, siteProject, serverReload, opts),
+      eventType,
+      serverReload,
+      opts,
+    );
   };
 }
 
