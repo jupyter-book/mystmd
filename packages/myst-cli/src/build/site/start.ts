@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
 import type { ProcessSiteOptions } from '../../process/site.js';
+import { processSite } from '../../process/site.js';
 import type { ISession } from '../../session/types.js';
 import version from '../../version.js';
 import { createServerLogger } from './logger.js';
@@ -62,6 +63,8 @@ export type StartOptions = ProcessSiteOptions &
     template?: string;
     baseurl?: string;
     keepHost?: boolean;
+    /** Set to false to disable interactive keyboard shortcuts (default: enabled on a TTY) */
+    shortcuts?: boolean;
   };
 
 /**
@@ -224,6 +227,25 @@ export async function startServer(
   session: ISession,
   opts: StartOptions,
 ): Promise<ServerInfo | undefined> {
+  const info = await startServerInner(session, opts);
+  if (!info || opts.shortcuts === false) return info;
+  const host = warnOnHostEnvironmentVariable(session, opts);
+  const stopShortcuts = startInteractiveShortcuts(session, info, host, opts);
+  if (!stopShortcuts) return info;
+  const stop = info.stop;
+  return {
+    ...info,
+    stop: async () => {
+      stopShortcuts();
+      await stop();
+    },
+  };
+}
+
+async function startServerInner(
+  session: ISession,
+  opts: StartOptions,
+): Promise<ServerInfo | undefined> {
   // Ensure we are on the latest version of the configs
   await session.reload();
   const host = warnOnHostEnvironmentVariable(session, opts);
@@ -258,4 +280,76 @@ export async function startServer(
     const second = await getPort({ port: portNumbers(3000, 3100) });
     return await tryStartAppServer(mystTemplate, session, host, contentServer, opts, second);
   }
+}
+
+/**
+ * Listen for single keypresses on the terminal while the server runs.
+ *
+ * Only active when stdin is a TTY. Returns a function that restores the terminal,
+ * or undefined if shortcuts were not enabled.
+ */
+export function startInteractiveShortcuts(
+  session: ISession,
+  info: ServerInfo,
+  host: string,
+  opts: ProcessSiteOptions = {},
+  input: NodeJS.ReadStream = process.stdin,
+): (() => void) | undefined {
+  if (!input.isTTY || !input.setRawMode) return undefined;
+  const urls = () => {
+    const lines: string[] = [];
+    if (info.port != null) lines.push(`site:    http://${host}:${info.port}`);
+    lines.push(`content: http://${host}:${info.contentServer.port}`);
+    return lines.map((l) => `\t${chalk.green(l)}`).join('\n');
+  };
+  const help = [
+    '',
+    'Shortcuts:',
+    '  u  show server URL(s)',
+    '  r  Reprocess the project and reload browsers',
+    '  l  reLoad connected browsers (no rebuild)',
+    '  h  show this Help',
+    '  q  quit',
+    '',
+  ].join('\n');
+  let processing = false;
+  const reprocess = async () => {
+    if (processing) return;
+    processing = true;
+    try {
+      session.log.info('💥 Reprocessing project and rebuilding site');
+      await processSite(session, { ...opts, reloadProject: true });
+      info.contentServer.sendJson({ type: 'RELOAD' });
+    } catch (err) {
+      session.log.error(`Reprocessing failed: ${(err as Error).message}`);
+    } finally {
+      processing = false;
+    }
+  };
+  const onData = (data: Buffer) => {
+    const key = data.toString();
+    if (key === '\u0003' || key === 'q') {
+      stop();
+      process.kill(process.pid, 'SIGINT');
+    } else if (key === 'u') {
+      session.log.info(`\n${urls()}\n`);
+    } else if (key === 'l') {
+      info.contentServer.sendJson({ type: 'RELOAD' });
+      session.log.info('🔄 Reload sent');
+    } else if (key === 'r') {
+      reprocess();
+    } else if (key === 'h' || key === '?') {
+      session.log.info(help);
+    }
+  };
+  const stop = () => {
+    input.off('data', onData);
+    input.setRawMode(false);
+    input.pause();
+  };
+  input.setRawMode(true);
+  input.resume();
+  input.on('data', onData);
+  session.log.info(chalk.dim('press h to show shortcuts'));
+  return stop;
 }
