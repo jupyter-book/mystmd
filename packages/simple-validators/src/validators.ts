@@ -36,7 +36,7 @@ export function validationError(message: string, opts: ValidationOptions) {
   return undefined;
 }
 
-export function validationWarning(message: string, opts: ValidationOptions) {
+export function validationWarning(message: string, opts: ValidationOptions, key?: string) {
   if (opts.suppressWarnings) return undefined;
   const { messages } = opts;
   if (!messages.warnings) messages.warnings = [];
@@ -45,7 +45,7 @@ export function validationWarning(message: string, opts: ValidationOptions) {
     property: opts.property,
     message: fullMessage,
   });
-  if (opts.warningLogFn) opts.warningLogFn(fullMessage);
+  if (opts.warningLogFn) opts.warningLogFn(fullMessage, key);
   return undefined;
 }
 
@@ -413,12 +413,11 @@ export function validateKeys(
     );
     if (!opts.returnInvalidPartial) return undefined;
   }
-  if (ignored.length) {
-    validationWarning(
-      `extra key${ignored.length > 1 ? 's' : ''} ignored: ${ignored.join(', ')}`,
-      opts,
-    );
-  }
+  // One warning per ignored key, so each can be identified by its dotted path (`key`)
+  const parentPath = [opts.location, opts.property].filter(Boolean).join('.');
+  ignored.forEach((k) => {
+    validationWarning(`extra key ignored: ${k}`, opts, `${parentPath}.${k}`);
+  });
   return value;
 }
 

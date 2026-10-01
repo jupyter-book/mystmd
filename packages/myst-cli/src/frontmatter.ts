@@ -21,15 +21,20 @@ export function frontmatterValidationOpts(
   vfile: VFile,
   opts?: { property?: string; ruleId?: RuleId },
 ): ValidationOptions {
+  const property = opts?.property ?? 'frontmatter';
   return {
-    property: opts?.property ?? 'frontmatter',
+    property,
     file: vfile.path,
     messages: {},
     errorLogFn: (message: string) => {
       fileError(vfile, message, { ruleId: opts?.ruleId ?? RuleId.validPageFrontmatter });
     },
-    warningLogFn: (message: string) => {
-      fileWarn(vfile, message, { ruleId: opts?.ruleId ?? RuleId.validPageFrontmatter });
+    warningLogFn: (message: string, fullKey?: string) => {
+      // The key is a dotted path from the root property, e.g. `jupytext.encoding`
+      const key = fullKey?.startsWith(`${property}.`)
+        ? fullKey.slice(property.length + 1)
+        : fullKey;
+      fileWarn(vfile, message, { ruleId: opts?.ruleId ?? RuleId.validPageFrontmatter, key });
     },
   };
 }
