@@ -41,7 +41,8 @@ export function validateErrorRule(input: any, opts: ValidationOptions): ErrorRul
     return validateList(
       value[field],
       { ...incrementOptions(field, opts), coerce: true },
-      (item, ind) => validateString(item, incrementOptions(`${field}.${ind}`, opts)),
+      (item, ind) =>
+        validateString(item, { ...incrementOptions(`${field}.${ind}`, opts), minLength: 1 }),
     );
   };
   const keyList = unpack('keys');

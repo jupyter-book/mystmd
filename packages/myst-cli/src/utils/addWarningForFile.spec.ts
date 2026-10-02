@@ -193,6 +193,11 @@ describe('findErrorRule', () => {
   it('a rule with a path never matches a message without a file', () => {
     expect(findErrorRule([rule({ path: '**' })], 'link-resolves', 'k', null)).toBeUndefined();
   });
+  it('empty key/path patterns do not turn a rule into an unrestricted match', () => {
+    expect(findErrorRule([rule({ path: '' })], 'link-resolves', null, null)).toBeUndefined();
+    expect(findErrorRule([rule({ path: '' })], 'link-resolves', null, 'a.md')).toBeUndefined();
+    expect(findErrorRule([rule({ key: '' })], 'link-resolves', 'https://a.org')).toBeUndefined();
+  });
   it('requires both key and path to match', () => {
     const rules = [rule({ key: 'https://a.org/**', path: 'notes/**' })];
     expect(findErrorRule(rules, 'link-resolves', 'https://a.org/x', 'notes/a.md')).toBeDefined();
