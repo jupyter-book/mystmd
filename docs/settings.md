@@ -150,9 +150,31 @@ The full list of errors and warnings used across MyST with their defaults shown.
 
 :::
 
+### Restrict rules to certain files with `paths`
+
+A rule can also be limited to the files where the issue is reported, using `paths` (glob patterns, matched against the file path relative to the directory where you run `myst`, with `/` separators). Matching is case-sensitive. When a rule has both `keys` and `paths`, both must match. The first matching rule wins, so put more specific rules first.
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  error_rules:
+    # Ignore broken links in the meeting notes
+    - rule: link-resolves
+      paths:
+        - 'meeting-notes/**/*'
+      severity: ignore
+    # Downgrade the remaining ones for these URLs to warnings
+    - rule: link-resolves
+      keys:
+        - 'https://github.com/**'
+      severity: warn
+```
+
+Some messages are not tied to a source page (for example a config file or an image being converted); for these, the path is that of the file the message is about. Messages without any file never match a rule that has `paths`. Run myst with `--debug` to see the file path attached to each message.
+
 ### Pattern Matching in Keys
 
-Keys support glob patterns, allowing you to match multiple URLs or paths with a single pattern. Patterns use the same glob syntax as many modern build tools:
+Keys support glob patterns, allowing you to match multiple URLs or paths with a single pattern. Patterns use the same glob syntax as many modern build tools. Matching is case-sensitive, for both `keys` and `paths`, and:
 
 - `*` matches any characters except `/` (e.g., `https://example.com/*` matches `https://example.com/page` but not `https://example.com/path/to/page`)
 - `**` matches any characters including `/` (e.g., `https://example.org/**` matches all URLs under `example.org`)
