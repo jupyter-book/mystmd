@@ -32,6 +32,38 @@ cases:
         - id: a-rule
           severity: ignore
           key: two
+  - title: error rules with paths
+    raw:
+      error_rules:
+        - rule: link-resolves
+          paths: 'meeting-notes/**/*'
+        - rule: link-resolves
+          severity: warn
+          keys:
+            - one
+            - two
+          path: [a.md, 'b/**']
+    normalized:
+      error_rules:
+        - id: link-resolves
+          severity: ignore
+          path: 'meeting-notes/**/*'
+        - id: link-resolves
+          severity: warn
+          key: one
+          path: a.md
+        - id: link-resolves
+          severity: warn
+          key: one
+          path: 'b/**'
+        - id: link-resolves
+          severity: warn
+          key: two
+          path: a.md
+        - id: link-resolves
+          severity: warn
+          key: two
+          path: 'b/**'
   - title: error rules with glob patterns
     raw:
       error_rules:
