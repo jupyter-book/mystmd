@@ -64,6 +64,16 @@ cases:
           severity: warn
           key: two
           path: 'b/**'
+  - title: error rules - empty keys and paths are rejected
+    raw:
+      error_rules:
+        - rule: link-resolves
+          keys: ['']
+        - rule: link-resolves
+          paths: ['']
+    normalized:
+      error_rules: []
+    errors: 2
   - title: error rules with glob patterns
     raw:
       error_rules:
