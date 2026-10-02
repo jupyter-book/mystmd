@@ -66,8 +66,9 @@ export function findErrorRule(
 ): ErrorRule | undefined {
   return rules?.find((rule) => {
     if (rule.id !== ruleId) return false;
-    if (rule.key && !keyMatchesPattern(key, rule.key)) return false;
-    if (rule.path && !keyMatchesPattern(normalizeFilePath(file), rule.path)) return false;
+    if (rule.key !== undefined && !keyMatchesPattern(key, rule.key)) return false;
+    if (rule.path !== undefined && !keyMatchesPattern(normalizeFilePath(file), rule.path))
+      return false;
     return true;
   });
 }
