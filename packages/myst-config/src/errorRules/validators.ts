@@ -11,10 +11,11 @@ import type { ErrorRule } from './types.js';
 
 const ERROR_RULE_KEY_OBJECT = {
   required: ['id'],
-  optional: ['severity', 'keys'],
+  optional: ['severity', 'keys', 'paths'],
   alias: {
     rule: 'id',
     key: 'keys',
+    path: 'paths',
   },
 };
 
@@ -33,18 +34,26 @@ export function validateErrorRule(input: any, opts: ValidationOptions): ErrorRul
   }) as ErrorRule['severity'];
   if (!id || !severity) return undefined;
   const output: ErrorRule = { id, severity };
-  if (!defined(value.keys)) return [output];
-  // We now have either a list of keys or a single key
-  // validate and unpack to a separate error rule
-  const keyList = validateList(
-    value.keys,
-    { ...incrementOptions('keys', opts), coerce: true },
-    (key, ind) => {
-      return validateString(key, incrementOptions(`keys.${ind}`, opts));
-    },
+  // We may have a list of keys/paths or a single key/path
+  // validate and unpack to a separate error rule for each combination
+  const unpack = (field: 'keys' | 'paths') => {
+    if (!defined(value[field])) return [undefined];
+    return validateList(
+      value[field],
+      { ...incrementOptions(field, opts), coerce: true },
+      (item, ind) => validateString(item, incrementOptions(`${field}.${ind}`, opts)),
+    );
+  };
+  const keyList = unpack('keys');
+  const pathList = unpack('paths');
+  if (!keyList || !pathList) return undefined;
+  return keyList.flatMap((key) =>
+    pathList.map((path) => ({
+      ...output,
+      ...(key !== undefined ? { key } : {}),
+      ...(path !== undefined ? { path } : {}),
+    })),
   );
-  if (!keyList) return undefined;
-  return keyList.map((key) => ({ ...output, key }));
 }
 
 export function validateErrorRuleList(
