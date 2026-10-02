@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { join } from 'node:path';
 import picomatch from 'picomatch';
+import type { ProjectConfig } from 'myst-config';
+import { findErrorRule, normalizeFilePath } from './addWarningForFile.js';
 
 /**
  * Test the pattern matching logic used in error rules.
@@ -163,5 +166,60 @@ describe('keyMatchesPattern', () => {
       // Even with invalid patterns, should not throw
       expect(() => keyMatchesPattern('https://example.com', '[')).not.toThrow();
     });
+  });
+});
+
+type ErrorRule = NonNullable<ProjectConfig['error_rules']>[number];
+
+describe('findErrorRule', () => {
+  const rule = (r: Partial<ErrorRule>): ErrorRule => ({
+    id: 'link-resolves',
+    severity: 'ignore',
+    ...r,
+  });
+
+  it('matches by id only', () => {
+    expect(findErrorRule([rule({})], 'link-resolves')?.severity).toBe('ignore');
+    expect(findErrorRule([rule({})], 'other')).toBeUndefined();
+  });
+  it('matches by path glob, relative to the current directory', () => {
+    const rules = [rule({ path: 'meeting-notes/**/*' })];
+    expect(findErrorRule(rules, 'link-resolves', null, 'meeting-notes/a/b.md')).toBeDefined();
+    expect(findErrorRule(rules, 'link-resolves', null, 'other/b.md')).toBeUndefined();
+    expect(
+      findErrorRule(rules, 'link-resolves', null, join(process.cwd(), 'meeting-notes/b.md')),
+    ).toBeDefined();
+  });
+  it('a rule with a path never matches a message without a file', () => {
+    expect(findErrorRule([rule({ path: '**' })], 'link-resolves', 'k', null)).toBeUndefined();
+  });
+  it('requires both key and path to match', () => {
+    const rules = [rule({ key: 'https://a.org/**', path: 'notes/**' })];
+    expect(findErrorRule(rules, 'link-resolves', 'https://a.org/x', 'notes/a.md')).toBeDefined();
+    expect(findErrorRule(rules, 'link-resolves', 'https://b.org/x', 'notes/a.md')).toBeUndefined();
+    expect(findErrorRule(rules, 'link-resolves', 'https://a.org/x', 'docs/a.md')).toBeUndefined();
+  });
+  it('first matching rule wins', () => {
+    const rules = [
+      rule({ path: 'notes/**', severity: 'ignore' }),
+      rule({ key: 'https://github.com/**', severity: 'warn' }),
+      rule({ severity: 'error' }),
+    ];
+    expect(
+      findErrorRule(rules, 'link-resolves', 'https://github.com/x', 'notes/a.md')?.severity,
+    ).toBe('ignore');
+    expect(findErrorRule(rules, 'link-resolves', 'https://github.com/x', 'a.md')?.severity).toBe(
+      'warn',
+    );
+    expect(findErrorRule(rules, 'link-resolves', 'https://x.org', 'a.md')?.severity).toBe('error');
+  });
+});
+
+describe('normalizeFilePath', () => {
+  it('returns a posix path relative to cwd and leaves URLs alone', () => {
+    expect(normalizeFilePath('a/b.md')).toBe('a/b.md');
+    expect(normalizeFilePath(join(process.cwd(), 'a', 'b.md'))).toBe('a/b.md');
+    expect(normalizeFilePath('https://example.org/x.png')).toBe('https://example.org/x.png');
+    expect(normalizeFilePath(null)).toBeUndefined();
   });
 });
