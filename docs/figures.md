@@ -225,6 +225,12 @@ The image transforms and optimizations requires you to have the following packag
 - [inkscape](https://inkscape.org/) for conversion between some vector formats
 - [webp](https://developers.google.com/speed/webp) for image optimizations
 
+There are known issues if these packages are installed globally. A solution is to use a package manager like pixi, with the minimal dependencies:
+```bash
+[dependencies]
+mystmd = ">=1.10.1,<2"
+imagemagick = ">=7.1.2_31,<8"
+```
 :::
 
 (figures:multiple-images)=
