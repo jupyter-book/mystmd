@@ -7,6 +7,7 @@ import { makeExecutable, killProcessTree } from 'myst-cli-utils';
 import type child_process from 'child_process';
 import { nanoid } from 'nanoid';
 import type { Server } from 'node:http';
+import os from 'node:os';
 import { join } from 'node:path';
 import type WebSocket from 'ws';
 import { WebSocketServer } from 'ws';
@@ -231,14 +232,21 @@ export async function startServer(
   const host = warnOnHostEnvironmentVariable(session, opts);
   const stopShortcuts = startInteractiveShortcuts(session, info, host, opts);
   if (!stopShortcuts) return info;
-  const stop = info.stop;
-  return {
-    ...info,
-    stop: async () => {
-      stopShortcuts();
-      await stop();
-    },
+  const stopServer = info.stop;
+  const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGHUP'];
+  const stop = async () => {
+    for (const signal of signals) process.off(signal, onSignal);
+    stopShortcuts();
+    await stopServer();
   };
+  // In raw mode, Ctrl-C is no longer delivered as a signal to the process group, so the
+  // app server (npm start -> node server.js) would be orphaned and keep holding its port.
+  // Always tear the process tree down before exiting.
+  const onSignal = (signal: NodeJS.Signals) => {
+    stop().finally(() => process.exit(128 + (os.constants.signals[signal] ?? 2)));
+  };
+  for (const signal of signals) process.on(signal, onSignal);
+  return { ...info, stop };
 }
 
 async function startServerInner(
