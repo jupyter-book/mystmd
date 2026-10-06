@@ -37,16 +37,16 @@
   },
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "mdast-util-gfm-footnote": "^1.0.2",
-    "mdast-util-gfm-table": "^1.0.7",
-    "mdast-util-to-markdown": "^1.5.0",
+    "mdast-util-gfm-footnote": "^2.1.0",
+    "mdast-util-gfm-table": "^2.0.0",
+    "mdast-util-to-markdown": "^2.2.0",
     "myst-common": "^1.10.2",
     "myst-frontmatter": "^1.10.2",
     "myst-spec": "^0.0.6",
-    "unified": "^10.1.2",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7",
-    "vfile-reporter": "^7.0.4"
+    "unified": "^11.0.5",
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3",
+    "vfile-reporter": "^8.1.1"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5"

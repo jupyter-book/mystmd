@@ -89,7 +89,7 @@ export const containerHandler: Handler = (node, state) => {
     state.renderChildren(node);
     return;
   }
-  const table = select('table', node) as Table | null;
+  const table = select('table', node) as Table | undefined;
   const containsTable = !!table;
   let tableInfo: ReturnType<typeof getColumnWidths> | undefined;
   if (table && node.multipage) {

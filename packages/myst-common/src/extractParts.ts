@@ -1,8 +1,7 @@
 import type { Block } from 'myst-spec-ext';
 import type { FrontmatterParts, GenericNode, GenericParent } from './types.js';
-import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import { copyNode, createId, toText } from './utils.js';
+import { copyNode, createId, forcedRemove, toText } from './utils.js';
 import { FRONTMATTER_ALIASES } from 'myst-frontmatter';
 
 function coercePart(part?: string | string[]): string[] {
@@ -33,7 +32,7 @@ function coercePart(part?: string | string[]): string[] {
 export function selectBlockParts(tree: GenericParent, part?: string | string[]): Block[] {
   const parts = coercePart(part);
   if (parts.length === 0) return [];
-  const blockParts = selectAll('block', tree).filter((block) => {
+  const blockParts = (selectAll('block', tree) as Block[]).filter((block) => {
     const blockTags: string[] = (
       block.data?.tags && Array.isArray(block.data.tags) ? block.data.tags : []
     ).map((tag) => tag?.toLowerCase());
@@ -42,7 +41,7 @@ export function selectBlockParts(tree: GenericParent, part?: string | string[]):
       .map((p) => blockPart === p || blockTags.includes(p))
       .reduce((a, b) => a || b, false);
   });
-  return blockParts as Block[];
+  return blockParts;
 }
 
 /**
@@ -82,14 +81,6 @@ function createPartBlock(
     block.data.part = part;
   }
   return block;
-}
-
-function forcedRemove(tree: GenericParent, test: string) {
-  let success = remove(tree, test);
-  if (!success) {
-    success = remove(tree, { cascade: false }, test);
-  }
-  return success;
 }
 
 /**

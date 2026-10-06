@@ -23,13 +23,13 @@
     "build": "npm-run-all -l clean -p build:esm"
   },
   "dependencies": {
-    "unist-util-select": "^4.0.3",
-    "unist-util-visit": "^4.1.2",
-    "vfile": "^5.0.0",
-    "vfile-message": "^3.0.0"
+    "unist-util-select": "^5.1.0",
+    "unist-util-visit": "^5.1.0",
+    "vfile": "^6.0.3",
+    "vfile-message": "^4.0.3"
   },
   "devDependencies": {
     "@jupyterlab/nbformat": "^3.5.2",
-    "@types/mdast": "^3.0.12"
+    "@types/mdast": "^4.0.4"
   }
 }
