@@ -152,14 +152,15 @@ You do not set `BASE_URL`.
 You can serve the same `_build/html` folder from `mysite.org/`, `mysite.org/docs/` or `mysite.org/v1.2/`.
 
 This option applies only to static HTML builds (`myst build --html`).
-If you set `relative_urls`, MyST ignores `BASE_URL`.
+If you set `relative_urls`, links do not use `BASE_URL`.
 Only themes that support the option use it; see the options of your theme in [](#site-options).
 
 The limitations of relative URLs are:
 
-- **Trailing slashes**: Relative URLs resolve from the folder of the page.
-  Thus, each page must load from a URL that ends with `/` (for example, `mysite.org/docs/intro/`) or with `index.html`.
-  Most static hosts redirect `/intro` to `/intro/`.
+- **Trailing slashes**: Relative URLs resolve from the folder in the browser address.
+  The address of each page must therefore end with `/` (for example, `mysite.org/docs/intro/`) or with `/index.html`.
+  If a host serves the page at `mysite.org/docs/intro`, the relative links on that page point one folder too high.
+  Most static hosts redirect `/docs/intro` to `/docs/intro/`.
   If your host does not, the page redirects with JavaScript.
   Without JavaScript, the links on that page are incorrect.
 - **Sitemaps**: The sitemap protocol requires absolute URLs.
