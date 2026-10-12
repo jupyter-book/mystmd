@@ -44,14 +44,13 @@ type ErrorRule = NonNullable<ProjectConfig['error_rules']>[number];
 
 /**
  * Normalize a file location for matching against error rule `paths`:
- * relative to `base` (default: the current directory), with forward slashes. URLs are left as-is.
+ * relative to `base` (default: the current directory), with forward slashes.
  */
 export function normalizeFilePath(
   file: string | null | undefined,
   base = process.cwd(),
 ): string | undefined {
   if (!file) return undefined;
-  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(file)) return file;
   return relative(base, resolve(file)).split(sep).join('/');
 }
 
