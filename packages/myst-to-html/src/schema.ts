@@ -98,7 +98,9 @@ const mystDirective: Handler = (h, node) => {
       h(node, 'pre', [h(node, 'code', { class: 'options' }, [u('text', optionsString)])]),
     );
   }
-  directiveBody.push(h(node, 'pre', [h(node, 'code', [u('text', node.value)])]));
+  if (node.value) {
+    directiveBody.push(h(node, 'pre', [h(node, 'code', [u('text', node.value)])]));
+  }
   return h(node, 'div', { class: 'directive unhandled' }, [
     h(node, 'p', {}, directiveHeader),
     ...directiveBody,
