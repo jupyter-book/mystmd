@@ -59,7 +59,7 @@ cases:
     html: |-
       <p>Here's a simple footnote,<sup><a href="#m-fn-1" id="m-fnref-1" data-footnote-ref aria-describedby="footnote-label">1</a></sup> and here's a longer one.<sup><a href="#m-fn-bignote" id="m-fnref-bignote" data-footnote-ref aria-describedby="footnote-label">2</a></sup></p>
       <section data-footnotes class="footnotes">
-        <h2 id="footnote-label" class="sr-only">Footnotes</h2>
+        <h2 class="sr-only" id="footnote-label">Footnotes</h2>
         <ol>
           <li id="m-fn-1">
             <p>This is the first footnote. <a href="#m-fnref-1" data-footnote-backref class="data-footnote-backref" aria-label="Back to content">↩</a></p>
