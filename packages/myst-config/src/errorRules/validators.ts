@@ -36,17 +36,16 @@ export function validateErrorRule(input: any, opts: ValidationOptions): ErrorRul
   const output: ErrorRule = { id, severity };
   // We may have a list of keys/paths or a single key/path
   // validate and unpack to a separate error rule for each combination
-  const unpack = (field: 'keys' | 'paths') => {
-    if (!defined(value[field])) return [undefined];
-    return validateList(
-      value[field],
-      { ...incrementOptions(field, opts), coerce: true },
-      (item, ind) =>
-        validateString(item, { ...incrementOptions(`${field}.${ind}`, opts), minLength: 1 }),
-    );
-  };
-  const keyList = unpack('keys');
-  const pathList = unpack('paths');
+  const keyList = defined(value.keys)
+    ? validateList(value.keys, { ...incrementOptions('keys', opts), coerce: true }, (key, ind) =>
+        validateString(key, { ...incrementOptions(`keys.${ind}`, opts), minLength: 1 }),
+      )
+    : [undefined];
+  const pathList = defined(value.paths)
+    ? validateList(value.paths, { ...incrementOptions('paths', opts), coerce: true }, (path, ind) =>
+        validateString(path, { ...incrementOptions(`paths.${ind}`, opts), minLength: 1 }),
+      )
+    : [undefined];
   if (!keyList || !pathList) return undefined;
   return keyList.flatMap((key) =>
     pathList.map((path) => ({
