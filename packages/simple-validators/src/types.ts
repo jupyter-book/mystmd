@@ -11,7 +11,8 @@ export type ValidationOptions = {
   suppressWarnings?: boolean;
   suppressErrors?: boolean;
   // Optional logging functions called on validationWarning/Error
-  warningLogFn?: (message: string) => void;
+  // The optional key identifies the specific instance of a warning (a dotted path from the root)
+  warningLogFn?: (message: string, key?: string) => void;
   errorLogFn?: (message: string) => void;
   // escapeFn is only used in string validation
   escapeFn?: (s: string) => string;

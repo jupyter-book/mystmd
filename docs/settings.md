@@ -150,6 +150,29 @@ The full list of errors and warnings used across MyST with their defaults shown.
 
 :::
 
+### Keys for directive options and frontmatter
+
+Two common sources of noisy warnings also provide keys, so you can ignore specific instances without silencing the whole rule. This is handy for notebooks round-tripped through Jupyter, which carry extra metadata that MyST does not use.
+
+- `directive-options-correct` uses `<directive>.<option>` as the key, e.g. `code-cell.cell_style` for `unexpected option "cell_style" provided (in code-cell)`.
+- `valid-page-frontmatter` uses the dot-separated path of an ignored (unknown) frontmatter key, e.g. `jupytext.encoding` or `language_info`.
+
+```{code-block} yaml
+:filename: myst.yml
+project:
+  error_rules:
+    - rule: directive-options-correct
+      keys:
+        - 'code-cell.cell_style'
+        - 'code-cell.jupyter'
+    - rule: valid-page-frontmatter
+      keys:
+        - 'jupytext.*'
+        - 'language_info'
+```
+
+Use a glob such as `code-cell.*` to ignore every unexpected option of one directive. Run myst with `--debug` to see the exact rule and key for any message.
+
 ### Pattern Matching in Keys
 
 Keys support glob patterns, allowing you to match multiple URLs or paths with a single pattern. Patterns use the same glob syntax as many modern build tools:

@@ -343,7 +343,7 @@ cases:
             literal: Research Group
             given: Research
             family: Group
-    warnings: 2
+    warnings: 4
   - title: author with totally unknown fields fails and does not suggest collab:true
     raw:
       authors:
@@ -358,7 +358,7 @@ cases:
             literal: Research Group
             given: Research
             family: Group
-    warnings: 1
+    warnings: 2
   - title: reviewer/editor/contributor as collaboration pass
     raw:
       reviewers:
