@@ -1,6 +1,6 @@
 ---
 title: Create a Typst Template
-description: jtex templates have a template.yml, template.typ, and any other images, class or definition files required for the template to render.
+description: Typst templates have a template.yml, template.typ, and any other images, class or definition files required for the template to render.
 thumbnail: ./thumbnails/create-a-typst-template.png
 ---
 
