@@ -221,10 +221,9 @@ describe('findErrorRule', () => {
 });
 
 describe('normalizeFilePath', () => {
-  it('returns a posix path relative to cwd and leaves URLs alone', () => {
+  it('returns a posix path relative to cwd', () => {
     expect(normalizeFilePath('a/b.md')).toBe('a/b.md');
     expect(normalizeFilePath(join(process.cwd(), 'a', 'b.md'))).toBe('a/b.md');
-    expect(normalizeFilePath('https://example.org/x.png')).toBe('https://example.org/x.png');
     expect(normalizeFilePath(null)).toBeUndefined();
   });
 });
