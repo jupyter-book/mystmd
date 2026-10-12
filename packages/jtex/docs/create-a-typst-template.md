@@ -5,7 +5,7 @@ thumbnail: ./thumbnails/create-a-typst-template.png
 ---
 
 A `jtex` template contains everything necessary to create a $\LaTeX$ document, including a `template.yml`, the main `template.typ`, and any associated files such as classes (`*.cls`), definitions (`*.def`), or images (`*.png`).
-These $\LaTeX$ templates are data-driven, in that they record all of the options in a `template.yml` which you create as you are working through moving your $\LaTeX$ document to a `jtex` template.
+These Typst templates are data-driven, in that they record all of the options in a `template.yml` which you create as you are working through moving your Typst document to a `jtex` template.
 
 ````{note} See the video tutorial 📺
 :class: dropdown
@@ -285,7 +285,7 @@ keywords:
 ---
 ```
 
-Ensure that the exports list has a `format: tex` in it. To also have your `parts` defined, use blocks with JSON metadata:
+Ensure that the exports list has a `format: typst` in it. To also have your `parts` defined, use blocks with JSON metadata:
 
 ```markdown
 +++ {"part": "abstract"}
@@ -305,7 +305,7 @@ You can now render your document with:
 myst build my-document.md --tex
 ```
 
-By default these are put in a `_build` folder. If you want to control that, use the `output:` field in the appropriate export. If you have $\LaTeX$ installed, you can also try changing the format to `pdf` or `pdf+tex` to keep the source files. See [](/guide/creating-pdf-documents) for more information on using MyST templates for $\LaTeX$.
+By default these are put in a `_build` folder. If you want to control that, use the `output:` field in the appropriate export. If you have Typst installed, you can also try changing the format to `pdf` or `pdf+typst` to keep the source files. See [](/guide/creating-pdf-documents) for more information on using MyST templates for Typst.
 
 Check that you are happy with the output tex files, and that all of the files are listed and copied over properly. If you build a PDF, save a thumbnail of one of the pages as `thumbnail.png`.
 
