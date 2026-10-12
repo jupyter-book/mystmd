@@ -1,6 +1,6 @@
 ---
 title: Create a LaTeX Template
-description: jtex templates have a template.yml, template.tex, and any other images, class or definition files required for the template to render.
+description: LaTeX templates have a template.yml, template.tex, and any other images, class or definition files required for the template to render.
 thumbnail: ./thumbnails/create-a-latex-template.png
 ---
 
