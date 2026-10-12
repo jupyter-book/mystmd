@@ -64,7 +64,7 @@ function defaultUrl(session: ISession, template: string) {
 /**
  * Site/react templates (book-theme, article-theme) are published as GitHub release assets of the
  * `myst-theme` repo, e.g.
- *   https://github.com/jupyter-book/myst-theme/releases/download/myst-react@1.3.1/book-theme.zip
+ *   https://github.com/jupyter-book/myst-theme/releases/download/myst-to-react@1.3.1/book-theme.zip
  */
 const SITE_TEMPLATE_DEFAULT_ORG = 'jupyter-book';
 const SITE_TEMPLATE_REPO = 'myst-theme';
