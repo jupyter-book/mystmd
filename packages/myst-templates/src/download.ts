@@ -72,8 +72,11 @@ const SITE_TEMPLATE_REPO = 'myst-theme';
 const SITE_TEMPLATE_TAG_PREFIX = 'myst-to-react@';
 const DEFAULT_SITE_TEMPLATE = 'book-theme';
 
-// Matches `[org/]name[@version]`
-const SITE_TEMPLATE_REGEX = /^([a-zA-Z0-9_-]+\/)?([a-zA-Z0-9_-]+)(@[a-zA-Z0-9._-]+)?$/;
+const RELEASE = '(?:@([a-zA-Z0-9._-]+))?';
+// Matches `name[@release]`, from the default org
+const SITE_TEMPLATE_REGEX = new RegExp(`^([a-zA-Z0-9_-]+)${RELEASE}$`);
+// Matches `gh:org/name[@release]`, the explicit form for any GitHub org
+const SITE_TEMPLATE_GH_REGEX = new RegExp(`^gh:([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)${RELEASE}$`);
 
 /**
  * Resolve a site template field to a versioned GitHub release-asset download URL.
@@ -81,7 +84,8 @@ const SITE_TEMPLATE_REGEX = /^([a-zA-Z0-9_-]+\/)?([a-zA-Z0-9_-]+)(@[a-zA-Z0-9._-
  * Accepts either
  *  - `book-theme`
  *  - `book-theme@1.3.1`
- *  - `org/book-theme@release`
+ *  - `gh:org/book-theme@release`
+ * The `gh:` prefix is required to select a GitHub org other than the default one.
  * When no release is given, use DEFAULT_SITE_TEMPLATE_VERSION
  *
  * the cache key (a hash of this URL) changes on CLI upgrade and the template is re-fetched.
@@ -90,16 +94,22 @@ export function resolveSiteTemplateUrl(template?: string): string {
   const input = template ?? DEFAULT_SITE_TEMPLATE;
   // the list of themes returns names like site/myst/book-theme
   const stripped = input.replace(/^site\/myst\//, '');
-  const match = stripped.match(SITE_TEMPLATE_REGEX);
-  if (!match) {
+  let org = SITE_TEMPLATE_DEFAULT_ORG;
+  let name: string;
+  let release: string | undefined;
+  const gh = stripped.match(SITE_TEMPLATE_GH_REGEX);
+  const plain = stripped.match(SITE_TEMPLATE_REGEX);
+  if (gh) {
+    [, org, name, release] = gh;
+  } else if (plain) {
+    [, name, release] = plain;
+  } else {
     throw new Error(
-      `Unable to resolve site template "${input}"; expected a name like "book-theme", "book-theme@1.3.1", or "org/book-theme@1.3.1"`,
+      `Unable to resolve site template "${input}"; expected a name like "book-theme", "book-theme@1.3.1", or "gh:org/book-theme@1.3.1"`,
     );
   }
-  let org = match[1] ? match[1].slice(0, -1) : SITE_TEMPLATE_DEFAULT_ORG;
-  const name = match[2];
-  let release = match[3] ? match[3].slice(1) : DEFAULT_SITE_TEMPLATE_VERSION;
-  // the official mystmd releases may carry a "myst-react@" prefix
+  release ??= DEFAULT_SITE_TEMPLATE_VERSION;
+  // the official mystmd releases carry a "myst-to-react@" prefix
   if (org === SITE_TEMPLATE_DEFAULT_ORG) {
     release = `${SITE_TEMPLATE_TAG_PREFIX}${release}`;
   }

@@ -94,10 +94,16 @@ describe('resolveSiteTemplateUrl', () => {
       `${RELEASES}/myst-to-react@1.3.1/article-theme.zip`,
     );
   });
-  it('org/name@version overrides the org', () => {
-    expect(resolveSiteTemplateUrl('myorga/book-theme@release-name')).toEqual(
+  it('gh:org/name@release overrides the org', () => {
+    expect(resolveSiteTemplateUrl('gh:myorga/book-theme@release-name')).toEqual(
       'https://github.com/myorga/myst-theme/releases/download/release-name/book-theme.zip',
     );
+  });
+  it('org without gh: prefix throws', () => {
+    expect(() => resolveSiteTemplateUrl('myorga/book-theme@release-name')).toThrow();
+  });
+  it('gh: without org throws', () => {
+    expect(() => resolveSiteTemplateUrl('gh:book-theme@1.3.1')).toThrow();
   });
   it('legacy site/myst/ namespace maps to the default org', () => {
     expect(resolveSiteTemplateUrl('site/myst/book-theme')).toEqual(
