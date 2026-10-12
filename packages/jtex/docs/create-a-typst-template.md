@@ -176,6 +176,8 @@ ultimately this means wrapping your `parts` in conditional statements, such as `
 The authors and affiliations are usually the hardest part to template as many journals do these differently.
 If you are looking for inspiration, take a look at some of the existing templates in the [myst-templates](https://github.com/myst-templates) organization on GitHub.
 
+Also, check out the [`pubmatter`](https://typst.app/universe/package/pubmatter/) package authored by the Continuous Foundation to standardise frontmatter handling.
+
 For example, to create the following author/affiliations list:
 
 ```latex
