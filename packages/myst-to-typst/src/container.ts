@@ -101,7 +101,7 @@ export const containerHandler: Handler = (node, state) => {
       state.write(')[');
     }
     state.renderChildren(nonCaptions);
-    state.write(']');
+    state.write(']\n\n');
     state.data.isInBlockquote = prevIsInBlockquote;
     return;
   }
