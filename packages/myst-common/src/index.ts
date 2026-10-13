@@ -17,6 +17,7 @@ export {
   slugToUrl,
 } from './utils.js';
 export { plural } from './plural.js';
+export { resolveBaseUrl } from './baseurl.js';
 export { selectBlockParts, extractPart } from './extractParts.js';
 export { parseIndexLine, splitEntryValue, createIndexEntries } from './indices.js';
 export { RuleId, RULE_ID_DESCRIPTIONS } from './ruleids.js';
@@ -32,6 +33,7 @@ export {
 } from './types.js';
 
 export type { IndexTypeLists } from './indices.js';
+export type { ResolvedBaseUrl } from './baseurl.js';
 export type { MessageInfo } from './utils.js';
 export type {
   GenericNode,
