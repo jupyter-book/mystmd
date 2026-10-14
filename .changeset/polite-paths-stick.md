@@ -1,7 +1,6 @@
 ---
 'myst-to-typst-extension': patch
 'myst-to-typst': patch
-'myst-common': patch
 'myst-cli': patch
 ---
 
