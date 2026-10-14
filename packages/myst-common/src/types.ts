@@ -174,3 +174,8 @@ export enum AdmonitionKind {
 export type FrontmatterPart = { mdast: GenericParent; frontmatter?: PageFrontmatter };
 
 export type FrontmatterParts = Record<string, FrontmatterPart>;
+
+export type IApp = {
+  // Name of app, e.g. mystmd
+  name: string;
+};

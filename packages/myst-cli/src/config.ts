@@ -426,6 +426,8 @@ async function resolveProjectConfigPaths(
       }),
     );
     await session.loadPlugins(resolvedFields.plugins);
+  } else {
+    await session.loadPlugins([]);
   }
   return { ...projectConfig, ...resolvedFields };
 }

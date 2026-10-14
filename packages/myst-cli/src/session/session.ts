@@ -3,7 +3,7 @@ import type { Store } from 'redux';
 import { createStore } from 'redux';
 import type { Logger } from 'myst-cli-utils';
 import { chalkLogger, LogLevel } from 'myst-cli-utils';
-import type { RuleId, ValidatedMystPlugin } from 'myst-common';
+import type { RuleId, ValidatedMystPlugin, IApp } from 'myst-common';
 import latestVersion from 'latest-version';
 import boxen from 'boxen';
 import chalk from 'chalk';
@@ -31,6 +31,8 @@ import { launchJupyterServer } from 'myst-execute';
 import type { RequestInfo, RequestInit } from 'node-fetch';
 import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 import type { PluginInfo } from 'myst-config';
+
+import { PluginRegistry, type Token } from '@lumino/coreutils';
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -83,7 +85,9 @@ export function logUpdateAvailable({
   );
 }
 
-export class Session implements ISession {
+export class Session implements ISession, IApp {
+  name = 'mystmd';
+
   API_URL: string;
   configFiles: string[];
   store: Store<RootState>;
@@ -98,6 +102,16 @@ export class Session implements ISession {
 
   get log(): Logger {
     return this.$logger;
+  }
+
+  private readonly $registry: PluginRegistry<IApp>;
+
+  get registry(): PluginRegistry<IApp> {
+    return this.$registry;
+  }
+
+  getService<T>(token: Token<T>): Promise<T> {
+    return this.$registry.resolveRequiredService(token);
   }
 
   constructor(
@@ -127,6 +141,9 @@ export class Session implements ISession {
         this._latestVersion = latest;
       })
       .catch(() => null);
+    // Define dependency injection registry
+    this.$registry = new PluginRegistry();
+    this.$registry.application = this;
   }
 
   showUpgradeNotice() {
@@ -176,8 +193,18 @@ export class Session implements ISession {
 
   plugins: ValidatedMystPlugin | undefined;
 
+  async loadExternalExtensions() {
+    // Now, finally, wire-up the dependencies and trigger their `activate` method
+    await this.$registry.activatePlugins('startUp');
+  }
+
   async loadPlugins(plugins: PluginInfo[]) {
+    // Load external dependency injection extensions
+    await this.loadExternalExtensions();
+
+    // Activate regular-old plugins
     this.plugins = await loadPlugins(this, plugins);
+
     return this.plugins;
   }
 
