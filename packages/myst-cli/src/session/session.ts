@@ -171,6 +171,8 @@ export class Session implements ISession, IApp {
     if (selectors.selectCurrentSitePath(this.store.getState())) {
       await reloadAllConfigsForCurrentSite(this);
     }
+    // Load dependency-injection plugins
+    await this.loadExternalExtensions();
     return this;
   }
 
@@ -199,9 +201,6 @@ export class Session implements ISession, IApp {
   }
 
   async loadPlugins(plugins: PluginInfo[]) {
-    // Load external dependency injection extensions
-    await this.loadExternalExtensions();
-
     // Activate regular-old plugins
     this.plugins = await loadPlugins(this, plugins);
 
