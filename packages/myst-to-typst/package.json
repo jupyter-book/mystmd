@@ -45,8 +45,7 @@
     "unified": "^10.1.2",
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7",
-    "vfile-reporter": "^7.0.4",
-    "@lumino/coreutils": "^2.2.3"
+    "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
