@@ -105,6 +105,7 @@ export class Session implements ISession, IApp {
   }
 
   private readonly $registry: PluginRegistry<IApp>;
+  private $registryActivated = false;
 
   get registry(): PluginRegistry<IApp> {
     return this.$registry;
@@ -196,8 +197,13 @@ export class Session implements ISession, IApp {
   plugins: ValidatedMystPlugin | undefined;
 
   async loadExternalExtensions() {
+    if (this.$registryActivated) {
+      return;
+    }
+
     // Now, finally, wire-up the dependencies and trigger their `activate` method
     await this.$registry.activatePlugins('startUp');
+    this.$registryActivated = true;
   }
 
   async loadPlugins(plugins: PluginInfo[]) {
