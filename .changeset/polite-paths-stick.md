@@ -1,6 +1,6 @@
 ---
 'myst-to-typst-extension': patch
-'myst-to-typst': patch
+'myst-to-typst': minor
 'myst-cli': patch
 ---
 
