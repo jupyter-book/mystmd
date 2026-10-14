@@ -30,6 +30,7 @@ import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
 import { proofHandlers } from './proofs.js';
 
 export type { TypstResult } from './types.js';
+export { IMystToTypst } from './token.js';
 
 const admonition = `#let admonition(body, heading: none, color: blue) = {
   let stroke = (left: 2pt + color.darken(20%))

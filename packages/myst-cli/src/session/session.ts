@@ -34,6 +34,10 @@ import type { PluginInfo } from 'myst-config';
 
 import { PluginRegistry, type Token } from '@lumino/coreutils';
 import { createInstance, type ModuleFederation } from '@module-federation/enhanced/runtime';
+////////////////////// Exposed Lumino Plugins ////
+import { IMystToTypst } from 'myst-to-typst';
+import mystToTypstExtension from 'myst-to-typst-extension';
+//////////////////////////////////////////////////
 
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
@@ -160,6 +164,14 @@ export class Session implements ISession, IApp {
       // object when they import the IMystToTypst token
       // This can mostly be automated to pull from package.json
       shared: {
+        'myst-to-typst': {
+          version: '0.0.39',
+          get: () => import('myst-to-typst').then((m) => () => m),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.0.39',
+          },
+        },
       },
     });
     // Define dependency injection registry
@@ -215,6 +227,10 @@ export class Session implements ISession, IApp {
   plugins: ValidatedMystPlugin | undefined;
 
   async loadExternalExtensions() {
+    // First, load *default* provider of myst-to-typst
+    this.$registry.registerPlugin(mystToTypstExtension);
+    console.log('Registered', mystToTypstExtension);
+
     // Load plugins via MF
     // FIXME: set up web-server or otherwise support file URLs
     // FIXME: for now, rely on passing in URLs to external static server
