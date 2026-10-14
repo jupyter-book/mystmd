@@ -1,5 +1,5 @@
 import { Token } from '@lumino/coreutils';
-import type plugin from './index.js';
+import type { plugin } from './plugin.js';
 
 export type IMystToTypst = typeof plugin;
 
