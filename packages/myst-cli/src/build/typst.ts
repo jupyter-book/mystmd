@@ -105,9 +105,10 @@ export async function extractTypstPart(
     part.children[0].children[0].type === 'list'
   ) {
     const items = selectAll('listItem', part) as GenericParent[];
-    return await Promise.all(
-      items.map((item: GenericParent) =>
-        mdastToTypst(
+    const results = [];
+    for (const item of items) {
+      results.push(
+        await mdastToTypst(
           session,
           { type: 'root', children: item.children },
           references,
@@ -115,12 +116,13 @@ export async function extractTypstPart(
           templateYml,
           false,
         ),
-      ),
-    );
+      );
+    }
   }
-  return await Promise.all(
-    part.children.map((block) =>
-      mdastToTypst(
+  const results = [];
+  for (const block of part.children) {
+    results.push(
+      await mdastToTypst(
         session,
         { type: 'root', children: [block] },
         references,
@@ -128,8 +130,9 @@ export async function extractTypstPart(
         templateYml,
         false,
       ),
-    ),
-  );
+    );
+  }
+  return results;
 }
 
 async function titleToTypstHeading(session: ISession, title: string, depth = 1) {
@@ -179,7 +182,7 @@ export async function localArticleToTypstRaw(
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
         simplifyFigures: true,
       });
-      return mdastToTypst(session, mdast, references, frontmatter, null, false);
+      return await mdastToTypst(session, mdast, references, frontmatter, null, false);
     }),
   );
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
@@ -190,29 +193,27 @@ export async function localArticleToTypstRaw(
     let includeContent = '';
     let fileInd = 0;
     let addPageBreak = false;
-    await Promise.all(
-      articles.map(async (article) => {
-        if (addPageBreak) includeContent += '#pagebreak()\n\n';
-        addPageBreak = false;
-        if (article.file) {
-          const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
-          const includeFile = path.format({ dir, ext, base });
-          let part = '';
-          const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
-          if (title && !content_includes_title) {
-            const heading = await titleToTypstHeading(session, title, article.level);
-            part = `${heading}\n\n`;
-          }
-          writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
-          includeContent += `#include "${base}"\n\n`;
-          fileInd++;
-          addPageBreak = true;
-        } else if (article.title) {
-          const heading = await titleToTypstHeading(session, article.title, article.level);
-          includeContent += `${heading}\n\n`;
+    for (const article of articles) {
+      if (addPageBreak) includeContent += '#pagebreak()\n\n';
+      addPageBreak = false;
+      if (article.file) {
+        const base = `${name}-${content[fileInd]?.slug ?? fileInd}${ext}`;
+        const includeFile = path.format({ dir, ext, base });
+        let part = '';
+        const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
+        if (title && !content_includes_title) {
+          const heading = await titleToTypstHeading(session, title, article.level);
+          part = `${heading}\n\n`;
         }
-      }),
-    );
+        writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
+        includeContent += `#include "${base}"\n\n`;
+        fileInd++;
+        addPageBreak = true;
+      } else if (article.title) {
+        const heading = await titleToTypstHeading(session, article.title, article.level);
+        includeContent += `${heading}\n\n`;
+      }
+    }
     writeFileToFolder(output, includeContent);
   }
   await runTypstExecutable(session, output);
@@ -279,28 +280,26 @@ export async function localArticleToTypstTemplated(
   const projectFrontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
   if (file === selectors.selectCurrentProjectFile(state)) {
     // If export is defined at the project level, prioritize project parts over page parts
-    await Promise.all(
-      partDefinitions.map(async (def) => {
-        const part = await extractTypstPart(
-          session,
-          { type: 'root', children: [] },
-          {},
-          def,
-          projectFrontmatter,
-          templateYml,
-        );
-        if (Array.isArray(part)) {
-          // This is the case if def.as_list is true
-          part.forEach((item) => {
-            collected = mergeTypstTemplateImports(collected, item);
-          });
-          parts[def.id] = part.map(({ value }) => value);
-        } else if (part != null) {
-          collected = mergeTypstTemplateImports(collected, part);
-          parts[def.id] = part?.value ?? '';
-        }
-      }),
-    );
+    for (const def of partDefinitions) {
+      const part = await extractTypstPart(
+        session,
+        { type: 'root', children: [] },
+        {},
+        def,
+        projectFrontmatter,
+        templateYml,
+      );
+      if (Array.isArray(part)) {
+        // This is the case if def.as_list is true
+        part.forEach((item) => {
+          collected = mergeTypstTemplateImports(collected, item);
+        });
+        parts[def.id] = part.map(({ value }) => value);
+      } else if (part != null) {
+        collected = mergeTypstTemplateImports(collected, part);
+        parts[def.id] = part?.value ?? '';
+      }
+    }
   }
   const hasGlossaries = false;
   const results = await Promise.all(
@@ -312,36 +311,34 @@ export async function localArticleToTypstTemplated(
         simplifyFigures: true,
       });
 
-      await Promise.all(
-        partDefinitions.map(async (def) => {
-          const part = await extractTypstPart(
+      for (const def of partDefinitions) {
+        const part = await extractTypstPart(
+          session,
+          mdast,
+          references,
+          def,
+          frontmatter,
+          templateYml,
+        );
+        if (part && parts[def.id]) {
+          addWarningForFile(
             session,
-            mdast,
-            references,
-            def,
-            frontmatter,
-            templateYml,
+            file,
+            `multiple values for part '${def.id}' found; ignoring value from ${fileArticles[ind].file}`,
+            'error',
+            { ruleId: RuleId.texRenders },
           );
-          if (part && parts[def.id]) {
-            addWarningForFile(
-              session,
-              file,
-              `multiple values for part '${def.id}' found; ignoring value from ${fileArticles[ind].file}`,
-              'error',
-              { ruleId: RuleId.texRenders },
-            );
-          } else if (Array.isArray(part)) {
-            // This is the case if def.as_list is true
-            part.forEach((item) => {
-              collected = mergeTypstTemplateImports(collected, item);
-            });
-            parts[def.id] = part.map(({ value }) => value);
-          } else if (part != null) {
-            collected = mergeTypstTemplateImports(collected, part);
-            parts[def.id] = part?.value ?? '';
-          }
-        }),
-      );
+        } else if (Array.isArray(part)) {
+          // This is the case if def.as_list is true
+          part.forEach((item) => {
+            collected = mergeTypstTemplateImports(collected, item);
+          });
+          parts[def.id] = part.map(({ value }) => value);
+        } else if (part != null) {
+          collected = mergeTypstTemplateImports(collected, part);
+          parts[def.id] = part?.value ?? '';
+        }
+      }
       const result = await mdastToTypst(session, mdast, references, frontmatter, templateYml, true);
       collected = mergeTypstTemplateImports(collected, result);
       return result;
@@ -360,7 +357,7 @@ export async function localArticleToTypstTemplated(
     typstContent = '';
     let fileInd = 0;
     let addPageBreak = false;
-    articles.forEach((article) => {
+    for (const article of articles) {
       if (addPageBreak) typstContent += '#pagebreak()\n\n';
       addPageBreak = false;
       if (article.file) {
@@ -370,7 +367,8 @@ export async function localArticleToTypstTemplated(
         let part = '';
         const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
         if (title && !content_includes_title) {
-          part = `${titleToTypstHeading(session, title, article.level)}\n\n`;
+          const heading = await titleToTypstHeading(session, title, article.level);
+          part = `${heading}\n\n`;
         }
         writeFileToFolder(
           includeFile,
@@ -380,9 +378,10 @@ export async function localArticleToTypstTemplated(
         fileInd++;
         addPageBreak = true;
       } else if (article.title) {
-        typstContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
+        const heading = await titleToTypstHeading(session, article.title, article.level);
+        typstContent += `${heading}\n\n`;
       }
-    });
+    }
   }
   const vfile = new VFile();
   vfile.path = file;
