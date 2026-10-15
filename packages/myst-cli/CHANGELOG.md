@@ -1,5 +1,50 @@
 # myst-cli
 
+## 1.12.0
+
+### Minor Changes
+
+- 966078f: support for 'multiple' site options, meaning scalar or array
+- e64d019: Allow `--execute-parallel` to be set on `myst start`, not just `myst build`
+
+### Patch Changes
+
+- d258a30: Add `key`s to "unexpected directive option" and "extra frontmatter key" warnings so they can be ignored selectively with `error_rules` (e.g. `code-cell.cell_style`, `jupytext.*`). Extra frontmatter keys now warn once per key.
+- 3b00993: Support more video formats
+- Updated dependencies [d258a30]
+- Updated dependencies [59fb1f4]
+- Updated dependencies [966078f]
+- Updated dependencies [5c0347d]
+- Updated dependencies [47e2707]
+- Updated dependencies [c4b47b6]
+  - myst-parser@1.7.5
+  - simple-validators@1.2.1
+  - myst-frontmatter@1.10.2
+  - myst-transforms@1.3.52
+  - myst-templates@1.1.0
+  - citation-js-utils@1.2.10
+  - myst-ext-exercise@1.0.11
+  - myst-ext-reactive@1.0.10
+  - myst-ext-button@0.0.3
+  - myst-cli-utils@2.0.16
+  - myst-ext-proof@1.0.14
+  - myst-ext-card@1.0.10
+  - myst-ext-grid@1.1.2
+  - myst-ext-icon@0.0.4
+  - myst-ext-tabs@1.0.11
+  - myst-to-typst@0.0.40
+  - myst-migrate@1.12.0
+  - myst-to-docx@1.0.18
+  - myst-to-jats@1.0.37
+  - myst-common@1.10.2
+  - myst-config@1.10.2
+  - myst-to-tex@1.0.48
+  - myst-to-md@1.0.18
+  - myst-toc@0.1.5
+  - jtex@1.0.23
+  - myst-spec-ext@1.10.2
+  - tex-to-myst@1.0.48
+
 ## 1.11.0
 
 ### Minor Changes

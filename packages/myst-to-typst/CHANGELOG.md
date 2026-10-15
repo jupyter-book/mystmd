@@ -1,5 +1,17 @@
 # myst-to-typst
 
+## 0.0.40
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 47e2707: End block quotes and epigraphs with a blank line, so that a heading after a quote renders as a heading.
+- Updated dependencies [d258a30]
+- Updated dependencies [5c0347d]
+  - myst-frontmatter@1.10.2
+  - myst-common@1.10.2
+  - myst-spec-ext@1.10.2
+
 ## 0.0.39
 
 ### Patch Changes
