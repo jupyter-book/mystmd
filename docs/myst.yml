@@ -134,6 +134,8 @@ project:
           children:
             - file: plugins-ast.md
             - file: plugins-dry.md
+        - title: Plugins Reference
+          file: plugins-reference.md
     - title: Reference
       children:
         - file: install-node.md
@@ -158,6 +160,7 @@ project:
         - file: contribute-docs.md
         - file: contribute-build-locally.md
         - file: contribute-add-feature.md
+        - file: developer-api.md
     - file: cite.md
 
 extends:
