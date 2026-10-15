@@ -1,5 +1,19 @@
 # jtex
 
+## 1.0.23
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- Updated dependencies [d258a30]
+- Updated dependencies [966078f]
+- Updated dependencies [5c0347d]
+  - simple-validators@1.2.1
+  - myst-frontmatter@1.10.2
+  - myst-templates@1.1.0
+  - myst-cli-utils@2.0.16
+  - myst-common@1.10.2
+
 ## 1.0.22
 
 ### Patch Changes

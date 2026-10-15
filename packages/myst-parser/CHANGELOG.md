@@ -1,5 +1,18 @@
 # myst-parser
 
+## 1.7.5
+
+### Patch Changes
+
+- d258a30: Add `key`s to "unexpected directive option" and "extra frontmatter key" warnings so they can be ignored selectively with `error_rules` (e.g. `code-cell.cell_style`, `jupytext.*`). Extra frontmatter keys now warn once per key.
+- 5c0347d: Use vitest for the test runner
+- c4b47b6: Fix test case patching
+- Updated dependencies [5c0347d]
+  - markdown-it-myst@1.0.19
+  - myst-directives@1.7.5
+  - myst-common@1.10.2
+  - myst-roles@1.7.5
+
 ## 1.7.4
 
 ### Patch Changes
