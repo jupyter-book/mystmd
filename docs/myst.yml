@@ -134,6 +134,8 @@ project:
           children:
             - file: plugins-ast.md
             - file: plugins-dry.md
+        - title: Plugins Reference
+          file: plugins-reference.md
     - title: Reference
       children:
         - file: install-node.md

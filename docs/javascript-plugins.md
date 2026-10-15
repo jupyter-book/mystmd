@@ -48,7 +48,7 @@ You can now use the directive, for example:
 
 If you change the source code you will have to stop and re-start the server to see the results.
 
-The types are defined in `myst-common` ([npm](https://www.npmjs.com/package/myst-common), [github](https://github.com/jupyter-book/mystmd/tree/main/packages/myst-common)) with the [`DirectiveSpec`](https://github.com/jupyter-book/mystmd/blob/9965925030c3fab6f34c20d11eeee7ffdafa73df/packages/myst-common/src/types.ts#L68-L77) and [`RoleSpec`](https://github.com/jupyter-book/mystmd/blob/9965925030c3fab6f34c20d11eeee7ffdafa73df/packages/myst-common/src/types.ts#L79-L85) being the main types to implement.
+Every field a directive or role can define is listed in [](./plugins-reference.md).
 
 ## Implementing a custom transform
 
@@ -69,6 +69,7 @@ project:
 ```
 
 then start or build your document using `myst start` or `myst build`, and you will see that the plugin is loaded.
+The `stage` field and the arguments a transform receives are described in [](#plugins:transform-spec).
 
 ```text
 myst start
