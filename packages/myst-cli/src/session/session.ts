@@ -39,10 +39,7 @@ import handler from 'serve-handler';
 import http from 'node:http';
 import getPort from 'get-port';
 
-type Remote = ModuleFederation['options']['remotes'][number];
-
 ////////////////////// Exposed Lumino Plugins ////
-import { IMystToTypst } from 'myst-to-typst';
 import mystToTypstExtension from 'myst-to-typst-extension';
 //////////////////////////////////////////////////
 
@@ -241,10 +238,11 @@ export class Session implements ISession, IApp {
     if (remotesPath === undefined) {
       return [];
     }
+    const normalisedRemotesPath = remotesPath.replace(/\/$/, '');
 
     let dir;
     try {
-      dir = await fs.opendir(remotesPath);
+      dir = await fs.opendir(normalisedRemotesPath);
     } catch (err) {
       console.error(err);
       return [];
@@ -257,14 +255,14 @@ export class Session implements ISession, IApp {
       const server = http.createServer((request, response) => {
         // You pass two more arguments for config and middleware
         // More details here: https://github.com/vercel/serve-handler#options
-        return handler(request, response, { public: remotesPath });
+        return handler(request, response, { public: normalisedRemotesPath });
       });
 
       server.listen(port, host, async () => {
         // Find all remoteEntry modules under the modules path
         const remotes = [];
         for await (const dirent of dir) {
-          const remotePath = path.join(remotesPath, dirent.name, 'remoteEntry.js');
+          const remotePath = path.join(normalisedRemotesPath, dirent.name, 'remoteEntry.js');
           try {
             await fs.access(remotePath);
           } catch (err) {
