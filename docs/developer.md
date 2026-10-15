@@ -59,6 +59,7 @@ flowchart TB
 Walking through this last example, we see that invoking `myst start --headless` converts a set of input files into an AST, and serves the resulting AST via a content server.
 The **theme server** is a React app that knows how to style data, which it pulls in from the content server.
 The user interacts with the React app, which may trigger new fetches from the content server.
+For what happens inside the engine at each stage of the build, see [](#api:pipeline).
 
 ## Project-specific concepts
 
