@@ -165,7 +165,16 @@ export class Session implements ISession, IApp {
       // We need to provide myst-to-typst so that extensions can get the same
       // object when they import the IMystToTypst token
       // This can mostly be automated to pull from package.json
-      shared: {},
+      shared: {
+        'myst-to-typst': {
+          version: '0.0.39',
+          get: () => import('myst-to-typst').then((m) => () => m),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.0.39',
+          },
+        },
+      },
     });
     // Define dependency injection registry
     this.$registry = new PluginRegistry();
