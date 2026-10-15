@@ -1,4 +1,5 @@
 import path from 'node:path';
+import fs from 'node:fs/promises';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
 import type { Logger } from 'myst-cli-utils';
@@ -34,6 +35,11 @@ import type { PluginInfo } from 'myst-config';
 
 import { PluginRegistry, type Token } from '@lumino/coreutils';
 import { createInstance, type ModuleFederation } from '@module-federation/enhanced/runtime';
+import handler from 'serve-handler';
+import http from 'node:http';
+import getPort from 'get-port';
+
+type Remote = ModuleFederation['options']['remotes'][number];
 
 ////////////////////// Exposed Lumino Plugins ////
 import { IMystToTypst } from 'myst-to-typst';
@@ -231,26 +237,58 @@ export class Session implements ISession, IApp {
   plugins: ValidatedMystPlugin | undefined;
 
   async loadFederatedRemotes() {
-    // Load plugins via MF
-    // FIXME: set up web-server or otherwise support file URLs
-    // FIXME: for now, rely on passing in URLs to external static server
-    const rawRemotes = (process.env.MYSTMD_REMOTES ?? '').split(',').filter(Boolean);
-    const remotes = [];
-    for (const remoteURL of rawRemotes) {
-      const [_, name, entry] = remoteURL.match(/^(\S+)\s*@\s*(\S+)$/) ?? [];
-      if (name === undefined) {
-        continue;
-      }
-      remotes.push({ name, entry });
+    const remotesPath = process.env.MYSTMD_EXTENSIONS_PATH;
+    if (remotesPath === undefined) {
+      return [];
     }
-    console.log('Registering remotes', remotes);
-    // Register remotes with MF global instance
-    this.$federation.registerRemotes(remotes);
 
-    // load the remotes (i.e. import the JS modules)!
-    return await Promise.all(
-      remotes.map((remote) => this.$federation.loadRemote(remote.name).then((r: any) => r.default)),
-    );
+    let dir;
+    try {
+      dir = await fs.opendir(remotesPath);
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+
+    const port = await getPort();
+    const host = 'localhost';
+
+    return await new Promise<Array<any>>((resolve) => {
+      const server = http.createServer((request, response) => {
+        // You pass two more arguments for config and middleware
+        // More details here: https://github.com/vercel/serve-handler#options
+        return handler(request, response, { public: remotesPath });
+      });
+
+      server.listen(port, host, async () => {
+        // Find all remoteEntry modules under the modules path
+        const remotes = [];
+        for await (const dirent of dir) {
+          const remotePath = path.join(remotesPath, dirent.name, 'remoteEntry.js');
+          try {
+            await fs.access(remotePath);
+          } catch (err) {
+            continue;
+          }
+          remotes.push({
+            name: dirent.name,
+            entry: `http://${host}:${port}/${dirent.name}/remoteEntry.js`,
+          });
+        }
+
+        // Register remotes with MF global instance
+        console.log('Registering remotes', remotes);
+        this.$federation.registerRemotes(remotes);
+
+        // load the remotes (i.e. import the JS modules)!
+        const modules = await Promise.all(
+          remotes.map((remote) =>
+            this.$federation.loadRemote(remote.name).then((r: any) => r.default),
+          ),
+        );
+        resolve(modules);
+      });
+    });
   }
   async loadExternalExtensions() {
     if (this.$registryActivated) {
