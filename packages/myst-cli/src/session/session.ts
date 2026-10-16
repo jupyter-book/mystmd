@@ -34,6 +34,11 @@ import type { PluginInfo } from 'myst-config';
 
 import { PluginRegistry, type Token } from '@lumino/coreutils';
 
+////////////////////// Exposed Lumino Plugins ////
+import { IMystToTypst } from 'myst-to-typst';
+import mystToTypstExtension from 'myst-to-typst-extension';
+//////////////////////////////////////////////////
+
 // fetch polyfill for node<18
 if (!globalThis.fetch) {
   globalThis.fetch = nodeFetch as any;
@@ -200,6 +205,9 @@ export class Session implements ISession, IApp {
     if (this.$registryActivated) {
       return;
     }
+    // First, load *default* provider of myst-to-typst
+    this.$registry.registerPlugin(mystToTypstExtension);
+    console.log('Registered', mystToTypstExtension);
 
     // Now, finally, wire-up the dependencies and trigger their `activate` method
     await this.$registry.activatePlugins('startUp');

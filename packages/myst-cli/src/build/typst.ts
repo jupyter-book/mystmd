@@ -15,8 +15,7 @@ import {
 } from 'myst-frontmatter';
 import type { TemplatePartDefinition, TemplateYml } from 'myst-templates';
 import MystTemplate from 'myst-templates';
-import mystToTypst from 'myst-to-typst';
-import type { TypstResult } from 'myst-to-typst';
+import { type TypstResult, IMystToTypst } from 'myst-to-typst';
 import { filterKeys } from 'simple-validators';
 import { unified } from 'unified';
 import { selectAll } from 'unist-util-select';
@@ -61,7 +60,7 @@ export async function runTypstExecutable(session: ISession, typstFile: string) {
   await makeExecutable(`typst compile "${typstFile}"`, session.log)();
 }
 
-export function mdastToTypst(
+export async function mdastToTypst(
   session: ISession,
   mdast: GenericParent,
   references: References,
@@ -69,7 +68,8 @@ export function mdastToTypst(
   templateYml: TemplateYml | null,
   printGlossaries: boolean,
 ) {
-  const pipe = unified().use(mystToTypst, {
+  const mystToTypstImpl = await session.getService(IMystToTypst);
+  const pipe = unified().use(mystToTypstImpl, {
     math: frontmatter?.math,
     // citestyle: templateYml?.style?.citation,
     // bibliography: templateYml?.style?.bibliography,
@@ -83,21 +83,21 @@ export function mdastToTypst(
   return typ.result as TypstResult;
 }
 
-export function extractTypstPart(
+export async function extractTypstPart(
   session: ISession,
   mdast: GenericParent,
   references: References,
   partDefinition: TemplatePartDefinition,
   frontmatter: PageFrontmatter,
   templateYml: TemplateYml,
-): TypstResult | TypstResult[] | undefined {
+): Promise<TypstResult | TypstResult[] | undefined> {
   const part = extractPart(mdast, partDefinition.id, {
     frontmatterParts: resolveFrontmatterParts(session, frontmatter),
   });
   if (!part) return undefined;
   if (!partDefinition.as_list) {
     // Do not build glossaries when extracting parts: references cannot be mapped to definitions
-    return mdastToTypst(session, part, references, frontmatter, templateYml, false);
+    return await mdastToTypst(session, part, references, frontmatter, templateYml, false);
   }
   if (
     part.children.length === 1 &&
@@ -105,30 +105,37 @@ export function extractTypstPart(
     part.children[0].children[0].type === 'list'
   ) {
     const items = selectAll('listItem', part) as GenericParent[];
-    return items.map((item: GenericParent) => {
-      return mdastToTypst(
+    const results = [];
+    for (const item of items) {
+      results.push(
+        await mdastToTypst(
+          session,
+          { type: 'root', children: item.children },
+          references,
+          frontmatter,
+          templateYml,
+          false,
+        ),
+      );
+    }
+  }
+  const results = [];
+  for (const block of part.children) {
+    results.push(
+      await mdastToTypst(
         session,
-        { type: 'root', children: item.children },
+        { type: 'root', children: [block] },
         references,
         frontmatter,
         templateYml,
         false,
-      );
-    });
-  }
-  return part.children.map((block) => {
-    return mdastToTypst(
-      session,
-      { type: 'root', children: [block] },
-      references,
-      frontmatter,
-      templateYml,
-      false,
+      ),
     );
-  });
+  }
+  return results;
 }
 
-function titleToTypstHeading(session: ISession, title: string, depth = 1) {
+async function titleToTypstHeading(session: ISession, title: string, depth = 1) {
   const headingMdast = {
     type: 'root',
     children: [
@@ -139,7 +146,7 @@ function titleToTypstHeading(session: ISession, title: string, depth = 1) {
       },
     ],
   };
-  const content = mdastToTypst(session, headingMdast, {}, {}, null, false);
+  const content = await mdastToTypst(session, headingMdast, {}, {}, null, false);
   return content.value;
 }
 
@@ -175,7 +182,7 @@ export async function localArticleToTypstRaw(
         imageExtensions: TYPST_IMAGE_EXTENSIONS,
         simplifyFigures: true,
       });
-      return mdastToTypst(session, mdast, references, frontmatter, null, false);
+      return await mdastToTypst(session, mdast, references, frontmatter, null, false);
     }),
   );
   session.log.info(toc(`📑 Exported typst in %s, copying to ${output}`));
@@ -186,7 +193,7 @@ export async function localArticleToTypstRaw(
     let includeContent = '';
     let fileInd = 0;
     let addPageBreak = false;
-    articles.forEach((article) => {
+    for (const article of articles) {
       if (addPageBreak) includeContent += '#pagebreak()\n\n';
       addPageBreak = false;
       if (article.file) {
@@ -195,16 +202,18 @@ export async function localArticleToTypstRaw(
         let part = '';
         const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
         if (title && !content_includes_title) {
-          part = `${titleToTypstHeading(session, title, article.level)}\n\n`;
+          const heading = await titleToTypstHeading(session, title, article.level);
+          part = `${heading}\n\n`;
         }
         writeFileToFolder(includeFile, `${part}${results[fileInd].value}`);
         includeContent += `#include "${base}"\n\n`;
         fileInd++;
         addPageBreak = true;
       } else if (article.title) {
-        includeContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
+        const heading = await titleToTypstHeading(session, article.title, article.level);
+        includeContent += `${heading}\n\n`;
       }
-    });
+    }
     writeFileToFolder(output, includeContent);
   }
   await runTypstExecutable(session, output);
@@ -271,8 +280,8 @@ export async function localArticleToTypstTemplated(
   const projectFrontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
   if (file === selectors.selectCurrentProjectFile(state)) {
     // If export is defined at the project level, prioritize project parts over page parts
-    partDefinitions.forEach((def) => {
-      const part = extractTypstPart(
+    for (const def of partDefinitions) {
+      const part = await extractTypstPart(
         session,
         { type: 'root', children: [] },
         {},
@@ -290,7 +299,7 @@ export async function localArticleToTypstTemplated(
         collected = mergeTypstTemplateImports(collected, part);
         parts[def.id] = part?.value ?? '';
       }
-    });
+    }
   }
   const hasGlossaries = false;
   const results = await Promise.all(
@@ -302,8 +311,15 @@ export async function localArticleToTypstTemplated(
         simplifyFigures: true,
       });
 
-      partDefinitions.forEach((def) => {
-        const part = extractTypstPart(session, mdast, references, def, frontmatter, templateYml);
+      for (const def of partDefinitions) {
+        const part = await extractTypstPart(
+          session,
+          mdast,
+          references,
+          def,
+          frontmatter,
+          templateYml,
+        );
         if (part && parts[def.id]) {
           addWarningForFile(
             session,
@@ -322,8 +338,8 @@ export async function localArticleToTypstTemplated(
           collected = mergeTypstTemplateImports(collected, part);
           parts[def.id] = part?.value ?? '';
         }
-      });
-      const result = mdastToTypst(session, mdast, references, frontmatter, templateYml, true);
+      }
+      const result = await mdastToTypst(session, mdast, references, frontmatter, templateYml, true);
       collected = mergeTypstTemplateImports(collected, result);
       return result;
     }),
@@ -341,7 +357,7 @@ export async function localArticleToTypstTemplated(
     typstContent = '';
     let fileInd = 0;
     let addPageBreak = false;
-    articles.forEach((article) => {
+    for (const article of articles) {
       if (addPageBreak) typstContent += '#pagebreak()\n\n';
       addPageBreak = false;
       if (article.file) {
@@ -351,7 +367,8 @@ export async function localArticleToTypstTemplated(
         let part = '';
         const { title, content_includes_title } = content[fileInd]?.frontmatter ?? {};
         if (title && !content_includes_title) {
-          part = `${titleToTypstHeading(session, title, article.level)}\n\n`;
+          const heading = await titleToTypstHeading(session, title, article.level);
+          part = `${heading}\n\n`;
         }
         writeFileToFolder(
           includeFile,
@@ -361,9 +378,10 @@ export async function localArticleToTypstTemplated(
         fileInd++;
         addPageBreak = true;
       } else if (article.title) {
-        typstContent += `${titleToTypstHeading(session, article.title, article.level)}\n\n`;
+        const heading = await titleToTypstHeading(session, article.title, article.level);
+        typstContent += `${heading}\n\n`;
       }
-    });
+    }
   }
   const vfile = new VFile();
   vfile.path = file;
