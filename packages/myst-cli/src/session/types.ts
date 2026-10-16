@@ -12,6 +12,7 @@ import type { SessionManager } from '@jupyterlab/services';
 import type MystTemplate from 'myst-templates';
 import type { PluginInfo } from 'myst-config';
 import type { Semaphore } from 'async-mutex';
+import type { Token } from '@lumino/coreutils';
 
 export type ISession = {
   API_URL: string;
@@ -34,6 +35,7 @@ export type ISession = {
   jupyterSessionManager(): Promise<SessionManager | undefined>;
   dispose(): void;
   fetch(url: URL | RequestInfo, init?: RequestInit): Promise<Response>;
+  getService<T>(token: Token<T>): Promise<T>;
 };
 
 export type ISessionWithCache = ISession & {
