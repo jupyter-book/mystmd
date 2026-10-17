@@ -43,6 +43,10 @@ export type LocalProject = {
   /** The slug that the index get's renamed to for the JSON */
   index: string;
   implicitIndex?: boolean;
+  /** `hidden` flag from the TOC entry of the index page */
+  indexHidden?: boolean;
+  /** `searchable` flag from the TOC entry of the index page */
+  indexSearchable?: boolean;
   bibliography: string[];
   pages: (LocalProjectPage | LocalProjectFolder | ExternalURL)[];
 };

@@ -285,7 +285,16 @@ export function projectFromTOC(
 
   const pages: (LocalProjectFolder | LocalProjectPage)[] = [];
   pagesFromEntries(session, path, entries, pages, level, pageSlugs, opts);
-  return { path: path || '.', file: indexFile, index: slug, pages };
+  const { hidden, searchable } = root as FileEntry;
+  return {
+    path: path || '.',
+    file: indexFile,
+    index: slug,
+    // only set when present in the TOC, so the project shape is otherwise unchanged
+    ...(hidden !== undefined && { indexHidden: hidden }),
+    ...(searchable !== undefined && { indexSearchable: searchable }),
+    pages,
+  };
 }
 
 function pagesFromSphinxChapters(
