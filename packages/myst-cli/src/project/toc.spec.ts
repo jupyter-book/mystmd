@@ -1,10 +1,11 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest';
+import { resolve } from 'node:path';
 import memfs from 'memfs';
 import { Session } from '../session';
 import { projectFromPath } from './fromPath';
-import { pagesFromSphinxTOC, projectFromSphinxTOC } from './fromTOC';
+import { pagesFromSphinxTOC, projectFromSphinxTOC, projectFromTOC } from './fromTOC';
 import { tocFromProject } from './toTOC';
-import { findProjectsOnPath } from './load';
+import { filterPages, findProjectsOnPath } from './load';
 
 vi.mock('fs', () => ({ ['default']: memfs.fs }));
 
@@ -1101,5 +1102,33 @@ chapters:
         { slug: 'section.z', file: 'section/z.md', level: 2, implicit: true },
       ],
     });
+  });
+});
+
+describe('index page hidden/searchable flags from TOC', () => {
+  it('are propagated from the first TOC entry to the index page', () => {
+    memfs.vol.fromJSON({ 'index.md': '', 'a.md': '', 'b.md': '' });
+    const project = projectFromTOC(session, '.', [
+      { file: 'index.md', searchable: false },
+      { file: 'a.md', hidden: true },
+      { file: 'b.md' },
+    ]);
+    const [index, a, b] = filterPages({ ...project, bibliography: [] });
+    expect(index).toEqual({
+      file: resolve('index.md'),
+      slug: 'index',
+      level: 1,
+      searchable: false,
+    });
+    expect(a).toMatchObject({ file: resolve('a.md'), hidden: true });
+    expect(b.hidden).toBeUndefined();
+    expect(b.searchable).toBeUndefined();
+  });
+  it('are absent when not set in the TOC', () => {
+    memfs.vol.fromJSON({ 'index.md': '' });
+    const project = projectFromTOC(session, '.', [{ file: 'index.md' }]);
+    expect(filterPages({ ...project, bibliography: [] })).toEqual([
+      { file: resolve('index.md'), slug: 'index', level: 1 },
+    ]);
   });
 });
