@@ -27,6 +27,8 @@ const TWITTER_URL_REGEX = /^https:\/\/(?:twitter\.com|x\.com)\/@?([a-zA-Z0-9_]{4
 // Match a basic identifier (letters, numbers, underscores, full-stops)
 const GITHUB_USERNAME_REGEX = /^@?([a-zA-Z0-9_.-]+)$/;
 const GITHUB_ORG_URL_REGEX = /^https:\/\/github\.com\/orgs\/[a-zA-Z0-9_.-]+$/;
+// Match GitHub Enterprise URLs with custom domains
+const GITHUB_ENTERPRISE_URL_REGEX = /^https:\/\/gh\.[^./]+\.com\/([a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+)\/?$/;
 // Match a basic identifier (letters, numbers, underscores, between 4 and 15 characters)
 const TELEGRAM_REGEX = /^@?([a-zA-Z0-9_]{5,})$/;
 const TELEGRAM_URL_REGEX = /^https:\/\/(?:t\.me|telegram\.me)\/?([a-zA-Z0-9_]{5,})$/;
@@ -155,23 +157,30 @@ export function validateYouTube(input: any, opts: ValidationOptions) {
 }
 
 /**
- * Validate value is valid GitHub URL,
+ * Validate value is valid GitHub URL, including GitHub Enterprise domains
  */
 export function validateGitHub(input: any, opts: ValidationOptions) {
   const value = validateString(input, opts);
   if (value === undefined) return undefined;
 
   let match: ReturnType<typeof value.match>;
-  // URL
-  if ((match = value.match(GITHUB_USERNAME_REGEX))) {
-    return match[1];
-  } else if ((match = value.match(GITHUB_USERNAME_REPO_REGEX))) {
+  
+  // Check for full URLs first (both github.com and GitHub Enterprise)
+  if ((match = value.match(GITHUB_ENTERPRISE_URL_REGEX))) {
+    // For GitHub Enterprise URLs, return the full URL
     return match[0];
   } else if ((match = value.match(GITHUB_ORG_URL_REGEX))) {
+    // Standard GitHub.com org URL
     return match[0];
+  } else if ((match = value.match(GITHUB_USERNAME_REPO_REGEX))) {
+    // org/repo format (without domain)
+    return match[0];
+  } else if ((match = value.match(GITHUB_USERNAME_REGEX))) {
+    // username only
+    return match[1];
   } else {
     return validationError(
-      `GitHub social identity must be a valid username, org/repo, or org URL: ${value}`,
+      `GitHub social identity must be a valid username, org/repo, GitHub URL, or GitHub Enterprise URL: ${value}`,
       opts,
     );
   }
