@@ -132,6 +132,8 @@ describe.each([
   test.each([
     // for now we have only this one exposed
     ['hidden', true, true],
+    ['searchable', true, true],
+    ['searchable', false, true],
     // the other ones are expected to be pruned at validation time
     ['numbering', '1.2.3', false],
     ['id', 'foo', false],
