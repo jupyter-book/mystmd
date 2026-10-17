@@ -236,7 +236,7 @@ version: 1
 project:
   toc:
     # in the toc and searchable
-    - file: plain-page.md 
+    - file: plain-page.md
     # not in the toc and not searchable
     - file: hidden-page.md
       hidden: true
@@ -245,8 +245,8 @@ project:
       hidden: true
       searchable: true
 site:
-  # this is the defaut, you can set it to true 
-  # if that's the defaut you want
+  # this is the default, you can set it to true
+  # if that's the default you want
   hidden_files_searchable: false
 ```
 
