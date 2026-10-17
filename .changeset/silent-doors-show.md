@@ -3,6 +3,4 @@
 'myst-toc': minor
 ---
 
-new `searchable` field on TOC file entries
-new `hidden_files_searchable` option on the `site:` config
-as a result hidden inputs are no longer searchable by default
+Add a `searchable` field on TOC file entries to control inclusion in the search index, and a `hidden_files_searchable` option under `site:`. Hidden pages are no longer searchable by default.
