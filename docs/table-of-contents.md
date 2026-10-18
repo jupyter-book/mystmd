@@ -218,17 +218,11 @@ In particular: hidden pages do not impact numbering; also they can be referred t
 ### Making pages searchable in the Table of Contents
 
 By default:
+
 - **non-hidden** pages are **searchable** (their content is indexed and can be found via the search bar)
 - **hidden** pages are **not searchable**
 
-There are two levels of settings that let you better control this default behavior:
-- any input in the `toc` section can have a `searchable: true/false` attribute,
-  which will override the default behavior for that specific page or pattern;
-- when a `searchable` attribute is not present, the default behavior is to:
-  - treat a non-hidden page as searchable
-  - and for hidden pages, the value of the global `hidden_files_searchable` - in
-    the project's `site` settings - will determine whether they are searchable
-    or not, default is `false`
+Any file entry in the `toc` section can have a `searchable: true/false` attribute, which overrides this default for that specific page.
 
 ```{code} yaml
 :filename: myst.yml
@@ -236,6 +230,7 @@ version: 1
 project:
   toc:
     # in the toc and searchable
+    - file: index.md
     - file: plain-page.md
     # not in the toc and not searchable
     - file: hidden-page.md
@@ -244,10 +239,13 @@ project:
     - file: hidden-but-searchable.md
       hidden: true
       searchable: true
-site:
-  # this is the default, you can set it to true
-  # if that's the default you want
-  hidden_files_searchable: false
+    # in the toc but not searchable
+    - file: not-searchable.md
+      searchable: false
+```
+
+```{note}
+The first entry of the `toc`, which is the project's index page, is always searchable: the `searchable` attribute does not apply to it.
 ```
 
 ## In-page table of contents
