@@ -172,13 +172,7 @@ export async function findProjectsOnPath(session: ISession, path: string) {
 
 export function filterPages(project: LocalProject) {
   const pages: LocalProjectPage[] = [
-    {
-      file: project.file,
-      slug: project.index,
-      level: 1,
-      ...(project.indexHidden !== undefined && { hidden: project.indexHidden }),
-      ...(project.indexSearchable !== undefined && { searchable: project.indexSearchable }),
-    },
+    { file: project.file, slug: project.index, level: 1 },
     ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),
   ];
   return pages;
