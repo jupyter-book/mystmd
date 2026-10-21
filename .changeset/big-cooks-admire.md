@@ -1,5 +1,5 @@
 ---
-"myst-transforms": patch
+"myst-cli": patch
 "myst-common": patch
 ---
 
