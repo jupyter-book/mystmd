@@ -1,5 +1,14 @@
 # myst-ext-tabs
 
+## 1.0.11
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- Updated dependencies [5c0347d]
+  - myst-directives@1.7.5
+  - myst-common@1.10.2
+
 ## 1.0.10
 
 ### Patch Changes

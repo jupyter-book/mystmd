@@ -1,5 +1,14 @@
 # myst-ext-button
 
+## 0.0.3
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- Updated dependencies [5c0347d]
+  - myst-common@1.10.2
+  - myst-spec-ext@1.10.2
+
 ## 0.0.2
 
 ### Patch Changes

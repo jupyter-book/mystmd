@@ -1,5 +1,18 @@
 # jats-to-myst
 
+## 1.0.37
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- Updated dependencies [d258a30]
+- Updated dependencies [59fb1f4]
+- Updated dependencies [5c0347d]
+  - myst-frontmatter@1.10.2
+  - myst-transforms@1.3.52
+  - myst-common@1.10.2
+  - myst-spec-ext@1.10.2
+
 ## 1.0.36
 
 ### Patch Changes
