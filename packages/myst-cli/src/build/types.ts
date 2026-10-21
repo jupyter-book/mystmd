@@ -1,15 +1,25 @@
 import type { File } from 'docx';
+import type { GenericParent } from 'myst-common';
 import type { Export, ExportArticle, ExportFormats } from 'myst-frontmatter';
-import type { RendererDoc } from 'myst-templates';
+import type { RendererDoc, TemplatePartDefinition } from 'myst-templates';
 import type { LinkTransformer } from 'myst-transforms';
 import type { VFile } from 'vfile';
 import type { ISession } from '../session/types.js';
 import type { RendererData } from '../transforms/types.js';
 import type { TransformFn } from '../process/mdast.js';
 
+export type DocxPart = {
+  definition: TemplatePartDefinition;
+  mdast: GenericParent | GenericParent[];
+};
+
+export type DocxRendererData = RendererData & {
+  parts: Record<string, DocxPart>;
+};
+
 export type RendererFn = (
   session: ISession,
-  data: RendererData,
+  data: DocxRendererData,
   doc: RendererDoc,
   opts: Record<string, any>,
   staticPath: string,
