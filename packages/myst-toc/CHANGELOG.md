@@ -1,5 +1,13 @@
 # myst-toc
 
+## 0.1.5
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- Updated dependencies [d258a30]
+  - simple-validators@1.2.1
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # myst-ext-grid
 
+## 1.1.2
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- Updated dependencies [5c0347d]
+  - myst-directives@1.7.5
+  - myst-common@1.10.2
+
 ## 1.1.1
 
 ### Patch Changes

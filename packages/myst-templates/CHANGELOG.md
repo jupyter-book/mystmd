@@ -1,5 +1,21 @@
 # myst-templates
 
+## 1.1.0
+
+### Minor Changes
+
+- 966078f: support for 'multiple' site options, meaning scalar or array
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- Updated dependencies [d258a30]
+- Updated dependencies [5c0347d]
+  - simple-validators@1.2.1
+  - myst-frontmatter@1.10.2
+  - myst-cli-utils@2.0.16
+  - myst-common@1.10.2
+
 ## 1.0.28
 
 ### Patch Changes
