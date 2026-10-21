@@ -1,10 +1,12 @@
+import { dirname, relative, resolve, sep } from 'node:path';
 import chalk from 'chalk';
 import picomatch from 'picomatch';
+import type { ProjectConfig } from 'myst-config';
 import type { VFileMessage } from 'vfile-message';
 import type { ISession } from '../session/types.js';
 import { warnings } from '../store/reducers.js';
 import type { WarningKind } from '../store/types.js';
-import { selectCurrentProjectConfig } from '../store/selectors.js';
+import { selectCurrentProjectConfig, selectCurrentProjectFile } from '../store/selectors.js';
 
 /**
  * Check if a key matches a pattern. Patterns can be:
@@ -29,13 +31,49 @@ function keyMatchesPattern(key: string | null | undefined, pattern: string): boo
 
   try {
     // Use picomatch for glob pattern matching
-    // Options: nocase for case-insensitive matching (useful for URLs)
+    // Matching is case-sensitive (nocase: false); dot: true lets `*` match dotfiles/dot-folders
     const isMatch = picomatch(pattern, { nocase: false, dot: true });
     return isMatch(key);
   } catch (error) {
     // If pattern is invalid, fall back to exact match
     return false;
   }
+}
+
+type ErrorRule = NonNullable<ProjectConfig['error_rules']>[number];
+
+/**
+ * Normalize a file location for matching against error rule `paths`:
+ * relative to `base` (default: the current directory), with forward slashes.
+ */
+export function normalizeFilePath(
+  file: string | null | undefined,
+  base = process.cwd(),
+): string | undefined {
+  if (!file) return undefined;
+  return relative(base, resolve(file)).split(sep).join('/');
+}
+
+/**
+ * Find the first error rule that applies to a message.
+ *
+ * A rule applies if its id matches and, when the rule has a `key` and/or `path`,
+ * those match the message's key and file path (both must match if both are given).
+ */
+export function findErrorRule(
+  rules: ErrorRule[] | undefined,
+  ruleId: string,
+  key?: string | null,
+  file?: string | null,
+  base?: string,
+): ErrorRule | undefined {
+  return rules?.find((rule) => {
+    if (rule.id !== ruleId) return false;
+    if (rule.key !== undefined && !keyMatchesPattern(key, rule.key)) return false;
+    if (rule.path !== undefined && !keyMatchesPattern(normalizeFilePath(file, base), rule.path))
+      return false;
+    return true;
+  });
 }
 
 export function addWarningForFile(
@@ -62,14 +100,12 @@ export function addWarningForFile(
   const url = opts?.url ? chalk.reset.dim(`\n   See also: ${opts.url}\n`) : '';
   const prefix = file ? `${file}${line}${column} ` : '';
   const formatted = `${message}${note}${url}`;
+  // Rule `paths` are relative to the project config file
+  const configFile = selectCurrentProjectFile(session.store.getState());
+  const base = configFile ? dirname(configFile) : undefined;
   if (opts?.ruleId) {
     const config = selectCurrentProjectConfig(session.store.getState());
-    const handler = config?.error_rules?.find((rule) => {
-      if (rule.key) {
-        return rule.id === opts.ruleId && keyMatchesPattern(opts.key, rule.key);
-      }
-      return rule.id === opts.ruleId;
-    });
+    const handler = findErrorRule(config?.error_rules, opts.ruleId, opts.key, file, base);
     if (handler) {
       if (handler.severity === 'ignore') {
         session.log.debug(`${prefix}${formatted}`);
@@ -94,8 +130,11 @@ export function addWarningForFile(
       break;
   }
   if (opts?.ruleId) {
+    const keyHint = opts.key ? ` with key: "${opts.key}"` : '';
+    const filePath = normalizeFilePath(file, base);
+    const pathHint = filePath ? ` (optionally restricted to path: "${filePath}")` : '';
     session.log.debug(
-      `To suppress this message, add rule: "${opts.ruleId}"${opts.key ? ` with key: "${opts.key}"` : ''} to "error_rules" in your project config`,
+      `To suppress this message, add rule: "${opts.ruleId}"${keyHint}${pathHint} to "error_rules" in your project config`,
     );
   }
   if (file) {
