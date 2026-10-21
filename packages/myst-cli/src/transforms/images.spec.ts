@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getConversionFns, transformImageNoAltText} from './images';
+import { getConversionFns, transformImageNoAltText } from './images';
 import { Session } from '../session';
 
 describe('getConversionFns', () => {
