@@ -24,8 +24,9 @@ export type LocalProjectPage = {
   title?: string;
   /** Flag to mark if the page is implied from a TOC pattern or folder structure */
   implicit?: boolean;
+  /** Hide the page from the TOC. Hidden pages are also left out of search unless `searchable` is true. */
   hidden?: boolean;
-  /** Explicit per-page override for whether the page is included in the search index */
+  /** Include or exclude the page from search. Defaults to only excluding hidden pages. */
   searchable?: boolean;
 };
 

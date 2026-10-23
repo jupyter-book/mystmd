@@ -130,11 +130,11 @@ describe.each([
   ['pattern', 'main*.md'],
 ])('Single %s entry', (entryName, entryValue) => {
   test.each([
-    // for now we have only this one exposed
+    // supported keys are kept
     ['hidden', true, true],
     ['searchable', true, true],
     ['searchable', false, true],
-    // the other ones are expected to be pruned at validation time
+    // unsupported keys are dropped with a warning
     ['numbering', '1.2.3', false],
     ['id', 'foo', false],
     ['class', 'bar', false],

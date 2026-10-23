@@ -3,4 +3,4 @@
 'myst-toc': minor
 ---
 
-Add a `searchable` field on TOC file entries to control inclusion in the search index. Hidden pages are no longer searchable by default, unless marked `searchable: true`.
+Add a `searchable` option to `file` and `pattern` TOC entries. Hidden pages are now left out of search unless they set `searchable: true`.

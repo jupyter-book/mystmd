@@ -199,7 +199,7 @@ These will not change the title in the page itself, or in the document AST, they
 
 ### Hiding pages from the Table of Contents
 
-In some cases, you may want some pages in your project to be built, but not included in the Table of Contents. You can do this by adding a `hidden: true` attribute to the corresponding `file` or `pattern` entry in your `toc` section:
+To build a page but leave it out of the Table of Contents, add `hidden: true` to its `file` or `pattern` entry in `toc`:
 
 ```{code} yaml
 :filename: myst.yml
@@ -211,42 +211,32 @@ project:
       hidden: true
 ```
 
-In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
+Hidden pages don't affect numbering, though other pages can still link to them.
+Hidden pages are also left out of search by default, see [](#searchable-in-toc).
 
 (searchable-in-toc)=
 
-### Making pages searchable in the Table of Contents
+### Excluding pages from search
 
-By default:
-
-- **non-hidden** pages are **searchable** (their content is indexed and can be found via the search bar)
-- **hidden** pages are **not searchable**
-
-Any file entry in the `toc` section can have a `searchable: true/false` attribute, which overrides this default for that specific page.
+By default, all pages are searchable except [hidden pages](#hidden-in-toc).
+To override the default, add `searchable: true` or `searchable: false` to a `file` or `pattern` entry:
 
 ```{code} yaml
 :filename: myst.yml
 version: 1
 project:
   toc:
-    # in the toc and searchable
     - file: index.md
-    - file: plain-page.md
-    # not in the toc and not searchable
-    - file: hidden-page.md
-      hidden: true
-    # not in the toc but searchable
+    # Hidden from the TOC, but still searchable
     - file: hidden-but-searchable.md
       hidden: true
       searchable: true
-    # in the toc but not searchable
+    # In the TOC, but not searchable
     - file: not-searchable.md
       searchable: false
 ```
 
-```{note}
-The first entry of the `toc`, which is the project's index page, is always searchable: the `searchable` attribute does not apply to it.
-```
+The index page (the first `toc` entry) is always searchable (even with `searchable: false`).
 
 ## In-page table of contents
 
