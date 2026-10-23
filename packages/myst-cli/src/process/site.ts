@@ -183,9 +183,8 @@ export async function writePublicJson(session: ISession) {
 
 export async function writeMystSearchJson(session: ISession, pages: LocalProjectPage[]) {
   const records = [...pages]
-    // Hidden pages are not searchable, unless explicitly marked `searchable: true`
+    // Use `searchable` if set, otherwise leave out hidden pages
     .filter((page) => page.searchable ?? !page.hidden)
-
     // Ensure deterministic ordering
     .sort((left, right) => {
       if (left.file < right.file) {

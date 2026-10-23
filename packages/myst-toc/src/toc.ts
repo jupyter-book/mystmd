@@ -24,7 +24,7 @@ import {
 } from 'simple-validators';
 
 const COMMON_ENTRY_KEYS = ['title', 'hidden', 'searchable'];
-// const COMMON_ENTRY_KEYS = ['title', 'hidden', 'numbering', 'id', 'class'];
+// Not yet supported: 'numbering', 'id', 'class'
 
 function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): CommonEntry {
   const output: CommonEntry = {};
