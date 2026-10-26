@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ["20", "22", "24"]
+        node: ['22', '24', '26']
     name: Testing with bun and node ${{ matrix.node }}
     steps:
       - name: Checkout Repo
@@ -58,7 +58,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.x"
+          python-version: '3.x'
       - name: Install myst
         uses: ./.github/actions/install
       - name: Install docs dependencies

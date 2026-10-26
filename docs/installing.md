@@ -44,10 +44,10 @@ MyST needs `node` (<https://nodejs.org>) in order to run correctly. If `node` is
 ```shell
 $ myst -v
 Node.js (node) is required to run MyST, but could not be found.
-Install Node.js in '/root/.local/share/myst/20.0.0'? (y/N): y
-Attempting to install Node.js in /root/.local/share/myst/20.0.0 ...
-Successfully installed Node.js 20.0.0
-v1.3.4
+Install Node.js in '/root/.local/share/myst/XX.YY.Z'? (y/N): y
+Attempting to install Node.js in /root/.local/share/myst/XX.YY.Z ...
+Successfully installed Node.js XX.YY.Z
+...
 ```
 
 :::{note} Installing Node.js Manually
@@ -59,7 +59,7 @@ The `mystmd` package on PyPI ships with the ability to install `node` (<https://
 ::::
 ::::{tab-item} NPM
 
-Ensure your `node` (<https://nodejs.org>) is up to date (>v20), see [Installing NodeJS](./install-node.md).
+Ensure your `node` (<https://nodejs.org>) is up to date, see [Installing NodeJS](./install-node.md).
 
 🛠 Then install `mystmd` using npm, yarn or pnpm:
 

@@ -1,5 +1,14 @@
 # myst-common
 
+## 1.10.2
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [d258a30]
+  - myst-frontmatter@1.10.2
+
 ## 1.10.1
 
 ### Patch Changes

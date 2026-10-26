@@ -15,11 +15,11 @@ const session = new Session();
 describe('site section generation', () => {
   it('empty', async () => {
     memfs.vol.fromJSON({});
-    expect((async () => projectFromPath(session, '.'))()).rejects.toThrow();
+    await expect((async () => projectFromPath(session, '.'))()).rejects.toThrow();
   });
   it('invalid index', async () => {
     memfs.vol.fromJSON({ 'readme.md': '' });
-    expect((async () => projectFromPath(session, '.', 'index.md'))()).rejects.toThrow();
+    await expect((async () => projectFromPath(session, '.', 'index.md'))()).rejects.toThrow();
   });
   it('readme.md only', async () => {
     memfs.vol.fromJSON({ 'readme.md': '' });

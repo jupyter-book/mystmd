@@ -92,6 +92,7 @@ export function parseOptions(
     fileWarn(vfile, `unexpected option "${optionNode.name}" provided (in ${name})`, {
       node: optionNode,
       ruleId: RuleId.directiveOptionsCorrect,
+      key: `${name}.${optionNode.name}`,
     });
   });
   return { valid: validationError, options: Object.keys(options).length ? options : undefined };

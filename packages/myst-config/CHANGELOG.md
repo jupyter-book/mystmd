@@ -1,5 +1,18 @@
 # myst-config
 
+## 1.10.2
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [d258a30]
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - simple-validators@1.2.1
+  - myst-frontmatter@1.10.2
+  - myst-common@1.10.2
+
 ## 1.10.1
 
 ### Patch Changes

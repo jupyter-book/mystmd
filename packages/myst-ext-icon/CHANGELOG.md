@@ -1,5 +1,15 @@
 # myst-ext-icon
 
+## 0.0.4
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - myst-common@1.10.2
+
 ## 0.0.3
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # myst-migrate
 
+## 1.12.0
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+
 ## 1.11.0
 
 ### Patch Changes

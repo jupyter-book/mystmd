@@ -11,16 +11,14 @@ There are a number of ways to install `node` and you can choose one that is suit
 
 :::{important} Node Versions
 
-MyST currently supports `node` v20+. Note that odd-numbered releases of `node` are not long-lived and you should prefer even-numbered releases when installing (see [Node release schedule](https://nodejs.org/en/about/previous-releases)).
+MyST currently supports `node` v22+. Note that odd-numbered releases of `node` are not long-lived and you should prefer even-numbered releases when installing (see [Node release schedule](https://nodejs.org/en/about/previous-releases)).
 :::
 
 Following any of the install methods below, verify your installation and ensure that `node` and `npm` are available on your system _PATH_ by opening a new terminal window or command line prompt and typing:
 
 ```shell
 % node -v
-v20.19.5
-% npm -v
-10.8.2
+vX.Y.Z
 ```
 
 ## Manual Installation (all platforms)
@@ -38,11 +36,9 @@ Download the installer package, and follow instructions to execute the installer
 🛠️ The following command can be used to lock down the version you are installing, adjust as necessary for the even-numbered version you are targeting:
 
 ```shell
-(my-conda-env)% conda install -c conda-forge 'nodejs>=20,<21'
+(my-conda-env)% conda install -c conda-forge 'nodejs=24.*'
 (my-conda-env)% node -v
-v20.11.1
-(my-conda-env)% npm -v
-10.2.4
+v24.YY.Z
 ```
 
 💡 Alternatively, you can create a new `conda` environment directly as a `node` environment:
@@ -76,18 +72,16 @@ v20.11.1
 
 ```shell
 % nodeenv --list
-% ... 20.11.1 ...
+% ... XX.YY.Z ...
 ```
 
 🛠️ Create a new environment based on a specific `node` version, and activate it:
 
 ```shell
-% nodeenv -n 20.11.1 node_env
+% nodeenv -n XX.YY.Z node_env
 % . node_env/bin/activate
 (node_env) % node -v
-v20.11.1
-(node_env) % npm -v
-10.2.4
+vXX.YY.Z
 ```
 
 Read more about `nodeenv` in [their docs](https://ekalinin.github.io/nodeenv/).
@@ -101,9 +95,9 @@ Read more about `nodeenv` in [their docs](https://ekalinin.github.io/nodeenv/).
 🛠️ Install `nvm` using the install script ([docs](https://github.com/nvm-sh/nvm#installing-and-updating)):
 
 ```shell
-% curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+% curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.8/install.sh | bash
 % nvm -v
-0.39.5
+0.40.8
 ```
 
 💡 Note: on MacOS you can also install `nvm` via `brew`
@@ -111,10 +105,10 @@ Read more about `nodeenv` in [their docs](https://ekalinin.github.io/nodeenv/).
 🛠️ Next, install an initial (default) version of `node`\:
 
 ```shell
-% nvm install 20
-Downloading and installing node v20.11.1...
+% nvm install 24
+Downloading and installing node v24.YY.Z...
 ...
-Now using node v20.11.1 (npm v10.2.4)
+Now using node v24.YY.Z (npm vXX.YY.Z
 %
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-proof",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for proofs",
@@ -23,8 +23,8 @@
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "bun test",
-    "test:watch": "bun test --watch",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -33,10 +33,10 @@
   },
   "dependencies": {
     "myst-spec": "^0.0.6",
-    "myst-common": "^1.10.1",
-    "myst-directives": "^1.7.4"
+    "myst-common": "^1.10.2",
+    "myst-directives": "^1.7.5"
   },
   "devDependencies": {
-    "myst-parser": "^1.7.4"
+    "myst-parser": "^1.7.5"
   }
 }
