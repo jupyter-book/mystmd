@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.12.0
+
+### Patch Changes
+
+- 5d08362: Do not run npm link
+
 ## 1.11.0
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # citation-js-utils
 
+## 1.2.10
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+
 ## 1.2.9
 
 ### Patch Changes
