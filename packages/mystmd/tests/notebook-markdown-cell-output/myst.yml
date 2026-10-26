@@ -1,0 +1,12 @@
+version: 1
+project:
+  id: notebook-markdown-cell-output
+  export:
+    format: tex
+    template: ../templates/tex
+    output: _build/out-markdown.tex
+    article: input-markdown.ipynb
+    # Define the article's required export frontmatter here:
+    title: "Cell output with Markdown"
+    authors:
+      - name: "Author Name"
