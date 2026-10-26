@@ -259,6 +259,7 @@ An embedded video with a caption!
 :::
 
 If you have [ffmpeg](https://www.ffmpeg.org/) installed, you may also include `.mov` and `.avi` video files, and MyST will convert them to `.mp4` and include them.
+Remote `.mov` files aren't supported, so use `.mp4`, `.webm`, or `.avi` for remote videos.
 Videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
 
 ### Use an image in place of a video for static exports

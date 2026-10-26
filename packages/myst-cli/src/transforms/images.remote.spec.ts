@@ -40,11 +40,14 @@ describe('saveImageInStaticFolder with remote URLs', () => {
     });
   });
 
-  it('keeps the remote URL when the content is not an image or video', async () => {
+  it.each([
+    ['text/html', 'html'],
+    ['video/quicktime', 'qt'],
+  ])('keeps the remote URL when the content is %s', async (contentType, ext) => {
     // Like the real fetchRemoteAsset, write the response to disk before returning
     vi.mocked(fetchRemoteAsset).mockImplementation(async (_s, _u, folder, stem) => {
-      fs.writeFileSync(path.join(folder, `${stem}.html`), '<html></html>');
-      return { name: `${stem}.html`, contentType: 'text/html' };
+      fs.writeFileSync(path.join(folder, `${stem}.${ext}`), 'data');
+      return { name: `${stem}.${ext}`, contentType };
     });
     const result = await saveImageInStaticFolder(
       session,
