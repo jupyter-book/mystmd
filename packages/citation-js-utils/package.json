@@ -12,8 +12,8 @@
     "clean": "rimraf dist",
     "lint": "eslint -c .eslintrc.cjs src/**/*.ts",
     "lint:format": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "test": "bun run test",
-    "test:watch": "bun run test --watch",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
