@@ -1,49 +1,49 @@
 cases:
   - title: Forced JATS export writes to _build directory
     cwd: basic-md-and-config
-    command: myst build --jats --force index.md
+    args: build --jats --force index.md
     outputs:
       - path: basic-md-and-config/_build/exports/index.xml
         content: outputs/basic-md-and-config.xml
   - title: Export with no config works
     cwd: no-config
-    command: myst build --jats index.md -o _build/index.xml
+    args: build --jats index.md -o _build/index.xml
     outputs:
       - path: no-config/_build/index.xml
         content: outputs/basic-md-and-config.xml
   - title: Basic tex build
     cwd: basic-tex
-    command: myst build --tex
+    args: build --tex
     outputs:
       - path: basic-tex/_build/out.tex
         content: outputs/basic-tex.tex
   - title: Basic tex math build
     cwd: basic-tex-math
-    command: myst build --tex
+    args: build --tex
     outputs:
       - path: basic-tex-math/_build/out.tex
         content: outputs/basic-tex-math.tex
   - title: Basic typst build
     cwd: basic-typst
-    command: myst build --typst
+    args: build --typst
     outputs:
       - path: basic-typst/_build/out.typ
         content: outputs/basic-typst.typ
   - title: Templated tex build
     cwd: templated-tex
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: templated-tex/_build/out.tex
         content: outputs/templated-tex.tex
   - title: Export frontmatter overrides project frontmatter
     cwd: export-fm-override
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: export-fm-override/_build/out.tex
         content: outputs/templated-tex.tex
   - title: Multi-page tex export with legacy toc
     cwd: multi-page-legacy-toc-tex
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: multi-page-legacy-toc-tex/_build/out.tex
         content: outputs/multi-page-tex.tex
@@ -55,7 +55,7 @@ cases:
         content: outputs/multi-page-tex-three-chapters.tex
   - title: Multi-page tex export with toc
     cwd: multi-page-toc-tex
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: multi-page-toc-tex/_build/out-chapters.tex
         content: outputs/multi-page-tex-chapters.tex
@@ -81,7 +81,7 @@ cases:
         content: outputs/multi-page-tex-single.tex
   - title: Multi-page tex export with parts
     cwd: multi-page-tex-parts
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: multi-page-tex-parts/_build/out-with-part.tex
         content: multi-page-tex-parts/outputs/out-with-part.tex
@@ -89,7 +89,7 @@ cases:
         content: multi-page-tex-parts/outputs/out-without-part.tex
   - title: Multi-page tex export with explicit articles
     cwd: multi-page-articles-tex
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: multi-page-articles-tex/_build/out-chapters.tex
         content: outputs/multi-page-tex-chapters.tex
@@ -121,7 +121,7 @@ cases:
         content: outputs/multi-page-tex-three-sections.tex
   - title: Multi-page tex export frontmatter overrides
     cwd: multi-page-override-tex
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: multi-page-override-tex/_build/out.tex
         content: outputs/multi-page-tex.tex
@@ -133,7 +133,7 @@ cases:
         content: outputs/multi-page-tex-three-chapters.tex
   - title: Nested toc file is respected
     cwd: nested-toc-file
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: nested-toc-file/_build/out.tex
         content: nested-toc-file/.outputs/out.tex
@@ -143,37 +143,37 @@ cases:
         content: nested-toc-file/.outputs/out-five.tex
   - title: Notebook exports to tex; frontmatter from first cell only
     cwd: notebook-with-fm
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: notebook-with-fm/_build/out.tex
         content: outputs/notebook.tex
   - title: Templated tex with glossary
     cwd: glossary
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: glossary/_build/out.tex
         content: outputs/glossary.tex
   - title: Templated tex with acronym
     cwd: acronym
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: acronym/_build/out.tex
         content: outputs/acronym.tex
   - title: Recursive includes resolve
     cwd: include-recursive
-    command: myst build --typst
+    args: build --typst
     outputs:
       - path: include-recursive/_build/out.typ
         content: outputs/include-recursive.typ
   - title: Circular includes resolve with errors
     cwd: include-circular
-    command: myst build --typst
+    args: build --typst
     outputs:
       - path: include-circular/_build/out.typ
         content: outputs/include-circular.typ
   - title: Strange DOIs resolve as expected
     cwd: dois
-    command: myst build --tex --ci
+    args: build --tex --ci
     outputs:
       - path: dois/_build/out.tex
         content: dois/outputs/dois.tex
@@ -181,16 +181,16 @@ cases:
         content: dois/outputs/dois.bib
   - title: Strict build does not check external links
     cwd: strict-no-check-links
-    command: myst build --site --strict
+    args: build --site --strict
     outputs: []
   - title: Check-links with strict fails on broken links
     cwd: strict-no-check-links
-    command: myst build --site --check-links --strict
+    args: build --site --check-links --strict
     expectFailure: true
     outputs: []
   - title: Basic site build
     cwd: basic-site
-    command: myst build
+    args: build
     outputs:
       - path: basic-site/_build/site/content/index.json
         # Keys and file hashes are removed from this output file
@@ -201,7 +201,7 @@ cases:
         content: outputs/basic-site-myst.xref.json
   - title: Alternate config file
     cwd: alternate-config
-    command: myst --config foo.yml build
+    args: --config foo.yml build
     outputs:
       - path: alternate-config/_build/site/content/index.json
         # Keys and file hashes are removed from this output file
@@ -212,14 +212,14 @@ cases:
         content: outputs/basic-site-myst.xref.json
   - title: Basic plugin build
     cwd: basic-plugin
-    command: myst build
+    args: build
     outputs:
       - path: basic-plugin/_build/site/content/index.json
         # Keys and file hashes are removed from this output file
         content: outputs/basic-plugin-content.json
   - title: XRef site build
     cwd: site-xrefs
-    command: myst build
+    args: build
     outputs:
       - path: site-xrefs/_build/site/content/index.json
         content: outputs/site-xrefs-index.json
@@ -231,19 +231,19 @@ cases:
         content: outputs/site-xrefs-myst.xref.json
   - title: Search site build
     cwd: site-search
-    command: myst build
+    args: build
     outputs:
       - path: site-search/_build/site/myst.search.json
         content: outputs/site-search-myst.search.json
   - title: Notebook embed site build
     cwd: notebook-fig-embed
-    command: myst build
+    args: build
     outputs:
       - path: notebook-fig-embed/_build/site/content/index.json
         content: notebook-fig-embed/outputs/index.json
   - title: Extend config test
     cwd: extend-config/proj-a
-    command: myst build
+    args: build
     outputs:
       - path: extend-config/proj-a/_build/site/content/index.json
         content: outputs/extend-config-index.json
@@ -251,7 +251,7 @@ cases:
         content: outputs/extend-config-config.json
   - title: Math macros
     cwd: math-macros
-    command: myst build --all --ci
+    args: build --all --ci
     outputs:
       - path: math-macros/_build/exports/index.typ
         content: math-macros/outputs/index.typ
@@ -265,19 +265,19 @@ cases:
         content: math-macros/outputs/config.json
   - title: Write DOI .bib file
     cwd: write-doi-bib
-    command: myst build --doi-bib
+    args: build --doi-bib
     outputs:
       - path: write-doi-bib/myst.doi.bib
         content: write-doi-bib/outputs/myst.doi.bib
   - title: Bibtex file is written correctly on tex export
     cwd: tex-with-bib
-    command: myst build --tex
+    args: build --tex
     outputs:
       - path: tex-with-bib/_build/main.bib
         content: tex-with-bib/outputs/main.bib
   - title: Index entries write to site and tex
     cwd: indices
-    command: myst build --all --ci
+    args: build --all --ci
     outputs:
       - path: indices/_build/exports/myst_tex/index.tex
         content: indices/outputs/index.tex
@@ -299,13 +299,13 @@ cases:
         content: indices/outputs/recipes.json
   - title: Citation cff file builds
     cwd: citation-cff
-    command: myst build --cff myst.yml
+    args: build --cff myst.yml
     outputs:
       - path: citation-cff/CITATION.cff
         content: citation-cff/outputs/CITATION.cff
   - title: Raw directives and roles
     cwd: raw
-    command: myst build --all
+    args: build --all
     outputs:
       - path: raw/_build/out.tex
         content: raw/outputs/out.tex
@@ -315,7 +315,7 @@ cases:
         content: raw/outputs/index.json
   - title: URL folder structure
     cwd: url-folders
-    command: myst build
+    args: build
     outputs:
       - path: url-folders/_build/site/config.json
         content: url-folders/outputs/config.json
@@ -327,7 +327,7 @@ cases:
         content: url-folders/outputs/readme.json
   - title: Multi page project with no numbering specified
     cwd: multi-page-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-typ-site/_build/site/config.json
         content: multi-page-typ-site/outputs/config.json
@@ -353,7 +353,7 @@ cases:
         content: multi-page-typ-site/outputs/out-d.typ
   - title: Multi page project with default heading numbering
     cwd: multi-page-headings-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-headings-typ-site/_build/site/config.json
         content: multi-page-headings-typ-site/outputs/config.json
@@ -379,7 +379,7 @@ cases:
         content: multi-page-headings-typ-site/outputs/out-d.typ
   - title: Single page project with no numbering specified
     cwd: single-page-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: single-page-typ-site/_build/site/config.json
         content: single-page-typ-site/outputs/config.json
@@ -389,7 +389,7 @@ cases:
         content: single-page-typ-site/outputs/out.typ
   - title: Single page project with default heading numbering
     cwd: single-page-headings-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: single-page-headings-typ-site/_build/site/config.json
         content: single-page-headings-typ-site/outputs/config.json
@@ -399,7 +399,7 @@ cases:
         content: single-page-headings-typ-site/outputs/out.typ
   - title: Multi page project with default title numbering
     cwd: multi-page-titles-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-titles-typ-site/_build/site/config.json
         content: multi-page-titles-typ-site/outputs/config.json
@@ -425,7 +425,7 @@ cases:
         content: multi-page-titles-typ-site/outputs/out-d.typ
   - title: Multi page project with default title and heading numbering
     cwd: multi-page-titles-and-headings-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-titles-and-headings-typ-site/_build/site/config.json
         content: multi-page-titles-and-headings-typ-site/outputs/config.json
@@ -451,7 +451,7 @@ cases:
         content: multi-page-titles-and-headings-typ-site/outputs/out-d.typ
   - title: Multi page project with offset 0 title and heading numbering
     cwd: multi-page-titles-offset-0-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-titles-offset-0-typ-site/_build/site/config.json
         content: multi-page-titles-offset-0-typ-site/outputs/config.json
@@ -477,7 +477,7 @@ cases:
         content: multi-page-titles-offset-0-typ-site/outputs/out-d.typ
   - title: Multi page project with continuous figure numbering
     cwd: multi-page-figures-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-figures-typ-site/_build/site/config.json
         content: multi-page-figures-typ-site/outputs/config.json
@@ -503,7 +503,7 @@ cases:
         content: multi-page-figures-typ-site/outputs/out-d.typ
   - title: Single page project with default title and heading numbering
     cwd: single-page-titles-typ-site
-    command: myst build --all
+    args: build --all
     outputs:
       - path: single-page-titles-typ-site/_build/site/config.json
         content: single-page-titles-typ-site/outputs/config.json
@@ -513,7 +513,7 @@ cases:
         content: single-page-titles-typ-site/outputs/out.typ
   - title: Multi page project with h2 level as only folder in the toc
     cwd: multi-page-with-pageless-folder
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-with-pageless-folder/_build/site/config.json
         content: multi-page-with-pageless-folder/outputs/config.json
@@ -531,7 +531,7 @@ cases:
         content: multi-page-with-pageless-folder/outputs/out-c.typ
   - title: Multi page project with h2 level as only folder in the toc and h2/h3 disabled
     cwd: multi-page-with-pageless-folder-and-headings-off
-    command: myst build --all
+    args: build --all
     outputs:
       - path: multi-page-with-pageless-folder-and-headings-off/_build/site/config.json
         content: multi-page-with-pageless-folder-and-headings-off/outputs/config.json
@@ -549,7 +549,7 @@ cases:
         content: multi-page-with-pageless-folder-and-headings-off/outputs/out-c.typ
   - title: Site with non-index root file build
     cwd: site-index
-    command: myst build
+    args: build
     outputs:
       - path: site-index/_build/site/content/index.json
         content: outputs/site-index-content.json
@@ -557,26 +557,26 @@ cases:
         content: outputs/site-index-content-1.json
   - title: Static files - project-level file and folder copied to site build
     cwd: static-files
-    command: myst build --site
+    args: build --site
     outputs:
       - path: static-files/_build/site/public/project-asset.txt
       - path: static-files/_build/site/public/assets/nested.txt
   - title: Static files - project-level file and folder copied to html build
     cwd: static-files-html
-    command: myst build --html
+    args: build --html
     outputs:
       - path: static-files-html/_build/html/project-asset.txt
       - path: static-files-html/_build/html/assets/nested.txt
   - title: Hidden pages exist in html build
     cwd: hidden-pages
-    command: myst build --html
+    args: build --html
     outputs:
       - path: hidden-pages/_build/html/index.html
       - path: hidden-pages/_build/html/hidden/index.html
       - path: hidden-pages/_build/html/not-hidden/index.html
   - title: Serial execution
     cwd: serial-execution
-    command: myst build --site --execute --execute-parallel 1
+    args: build --site --execute --execute-parallel 1
     env:
       MYST_TEST_SLEEP_MS: 4000
       MYST_TEST_DELAY_MS: 2000
@@ -589,7 +589,7 @@ cases:
       - path: serial-execution/stop-second
   - title: Concurrent execution
     cwd: concurrent-execution
-    command: myst build --site --execute --execute-parallel 2
+    args: build --site --execute --execute-parallel 2
     # Used to be 5000, increased due to CI slowness
     timeout: 15000
     outputs:
@@ -597,7 +597,7 @@ cases:
       - path: concurrent-execution/output-second.txt
   - title: Plugins load before parts in extend yml files
     cwd: extend-part-plugin
-    command: myst build
+    args: build
     outputs:
       - path: extend-part-plugin/_build/site/content/index.json
         content: extend-part-plugin/outputs/index.json
