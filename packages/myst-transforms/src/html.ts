@@ -257,46 +257,62 @@ const HTML_EMPTY_ELEMENTS = [
   'wbr',
 ];
 
+function updateHtmlOpenNodesChildren(child: GenericNode, htmlOpenNodes: GenericParent[]) {
+  if (htmlOpenNodes.length) {
+    // If we are between an opening and closing node, add this to the html content to be processed
+    htmlOpenNodes[htmlOpenNodes.length - 1].children.push(child);
+  }
+}
+
+function reconstructHtmlNodes(child: GenericNode, htmlOpenNodes: GenericParent[]) {
+  const value = child.value?.trim();
+  const selfClosing =
+    (value?.startsWith('<') && value?.endsWith('/>')) ||
+    value?.match(new RegExp(`<(${HTML_EMPTY_ELEMENTS.join('|')})([^>]*)?/?>`));
+
+  if (selfClosing) {
+    updateHtmlOpenNodesChildren(child, htmlOpenNodes);
+  } else if (value?.startsWith('</')) {
+    // In this case, child is a standalone closing html node
+    const htmlOpenNode = htmlOpenNodes.pop();
+    if (!htmlOpenNode) return;
+
+    finalizeNode(htmlOpenNode, child);
+    updateHtmlOpenNodesChildren(htmlOpenNode, htmlOpenNodes);
+  } else if (!value?.endsWith('/>') && !value?.endsWith('-->')) {
+    // In this case, child is a standalone opening html node
+    child.children = [];
+    htmlOpenNodes.push(child as GenericParent);
+  }
+}
+
+function reconstructNonHtmlNodes(child: GenericNode, htmlOpenNodes: GenericParent[]) {
+  if (child.children) {
+    // Recursively process children
+    reconstructHtml(child as GenericParent);
+  }
+  // Conditionally process child's closing node
+  updateHtmlOpenNodesChildren(child, htmlOpenNodes);
+}
+
 function reconstructHtml(tree: GenericParent) {
   const htmlOpenNodes: GenericParent[] = [];
+
   tree.children.forEach((child: GenericNode) => {
     if (child.type === 'html') {
-      const value = child.value?.trim();
-      const selfClosing =
-        (value?.startsWith('<') && value?.endsWith('/>')) ||
-        value?.match(new RegExp(`<(${HTML_EMPTY_ELEMENTS.join('|')})([^>]*)?/?>`));
-      if (selfClosing) {
-        if (htmlOpenNodes.length) {
-          htmlOpenNodes[htmlOpenNodes.length - 1].children.push(child);
-        }
-      } else if (value?.startsWith('</')) {
-        // In this case, child is a standalone closing html node
-        const htmlOpenNode = htmlOpenNodes.pop();
-        if (!htmlOpenNode) return;
-        finalizeNode(htmlOpenNode, child);
-        if (htmlOpenNodes.length) {
-          htmlOpenNodes[htmlOpenNodes.length - 1].children.push(htmlOpenNode);
-        }
-      } else if (!value?.endsWith('/>') && !value?.endsWith('-->')) {
-        // In this case, child is a standalone opening html node
-        child.children = [];
-        htmlOpenNodes.push(child as GenericParent);
-      }
+      /** html node types */
+      reconstructHtmlNodes(child, htmlOpenNodes);
     } else {
-      if (child.children) {
-        // Recursively process children
-        reconstructHtml(child as GenericParent);
-      }
-      if (htmlOpenNodes.length) {
-        // If we are between an opening and closing node, add this to the html content to be processed
-        htmlOpenNodes[htmlOpenNodes.length - 1].children.push(child);
-      }
+      /** all other node types */
+      reconstructNonHtmlNodes(child, htmlOpenNodes);
     }
   });
+
   // At this point, any htmlOpenNodes are errors; just clean them up.
   htmlOpenNodes.forEach((node: GenericNode) => {
     delete node.children;
   });
+
   // Finalize children by combining consecutive html nodes
   const combined: GenericNode[] = [];
   tree.children.forEach((child) => {
@@ -306,6 +322,7 @@ function reconstructHtml(tree: GenericParent) {
       combined.push(child);
     }
   });
+
   tree.children = combined;
 }
 
