@@ -232,25 +232,34 @@ In all cases, if an appropriate format is not available the image will be conver
 
 ## Videos
 
-To embed a video you can either use a video platforms embed script or directly embed an `mp4` video file. For example:
+You can embed a video file (e.g., `.mp4`), or use a [video platform's embed URL](#video:embed:platforms) with the {myst:directive}`iframe` directive.
+Embedding a video file copies it to your static files and embeds a video in your HTML output.
 
-```markdown
+```{code} markdown
+:caption: Embed a video with Markdown image syntax
+![](./videos/links.mp4)
+```
+
+```{code} markdown
+:caption: Embed a video with the figure directive
 :::{figure} ./videos/links.mp4
 An embedded video with a caption!
 :::
 ```
-or
-```markdown
-![](./videos/links.mp4)
-```
 
-will copy the video to your static files and embed a video in your HTML output.
+```{code} markdown
+:caption: Embed a remote video, which MyST downloads into your static files
+:::{figure} https://example.com/video.mp4
+A remote video with a caption!
+:::
+```
 
 :::{figure} ./videos/links.mp4
 An embedded video with a caption!
 :::
 
 If you have [ffmpeg](https://www.ffmpeg.org/) installed, you may also include `.mov` and `.avi` video files, and MyST will convert them to `.mp4` and include them.
+Remote `.mov` files aren't supported, so use `.mp4`, `.webm`, or `.avi` for remote videos.
 Videos can also be used in the [image](#image-directive) or even in simple [Markdown image](#md:image).
 
 ### Use an image in place of a video for static exports
@@ -272,7 +281,14 @@ Then you could link them both with:
 
 When you build an HTML output, the video will be used, and when you build a PDF output, the image will be used.
 
-## YouTube Videos
+(video:embed:platforms)=
+## Embedding from video platforms
+
+Many video platforms can provide you an "embed link" that will more natively insert their video into your page.
+Below are some platform-specific examples, but you can try any platform's embed URL with `iframe` and it may work!
+
+(video:embed:youtube)=
+### YouTube Videos
 
 If your video is on a platform like YouTube or Vimeo, you can use the {myst:directive}`iframe` directive that takes the URL of the video.
 
