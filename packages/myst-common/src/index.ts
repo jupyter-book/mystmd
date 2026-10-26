@@ -34,6 +34,7 @@ export {
 export type { IndexTypeLists } from './indices.js';
 export type { MessageInfo } from './utils.js';
 export type {
+  IApp,
   GenericNode,
   GenericParent,
   Citations,
