@@ -603,3 +603,9 @@ cases:
         content: extend-part-plugin/outputs/index.json
       - path: extend-part-plugin/_build/site/config.json
         content: extend-part-plugin/outputs/config.json
+  - title: Numbered heading cross references resolve in single article exports
+    cwd: numbered-heading-xref
+    command: myst build --tex
+    outputs:
+      - path: numbered-heading-xref/_build/out.tex
+        content: outputs/numbered-heading-xref.tex
