@@ -603,3 +603,9 @@ cases:
         content: extend-part-plugin/outputs/index.json
       - path: extend-part-plugin/_build/site/config.json
         content: extend-part-plugin/outputs/config.json
+  - title: Citations in frontmatter parts reach the exported bibliography
+    cwd: part-citations
+    command: myst build --tex --ci
+    outputs:
+      - path: part-citations/_build/main.bib
+        content: outputs/part-citations.bib
