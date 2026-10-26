@@ -29,8 +29,8 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "test": "bun run test",
-    "test:watch": "bun run test --watch",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
     "lint:format": "prettier --check src/*.ts src/**/*.ts",
     "build:bundle:browser": "esbuild bundle/myst.ts --bundle --outfile=dist/myst.min.js --platform=browser --minify",
