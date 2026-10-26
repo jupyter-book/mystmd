@@ -20,9 +20,6 @@
     },
     "dev": {
       "cache": false
-    },
-    "link": {
-      "cache": false
     }
   }
 }
