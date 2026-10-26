@@ -75,6 +75,8 @@ export async function downloadAndSaveImage(
     const { name, contentType } = await fetchRemoteAsset(session, url, fileFolder, stem);
     // Videos are valid targets for figures and images, just like local video files
     if (!contentType.startsWith('image/') && !contentType.startsWith('video/')) {
+      // Remove the download so the next build doesn't treat it as a cached image
+      fs.rmSync(path.join(fileFolder, name), { force: true });
       throw new Error(`${url} content-type "${contentType}" is not an image or video`);
     }
     return name;
