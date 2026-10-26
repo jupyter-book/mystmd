@@ -453,7 +453,7 @@
         "markdown-it-deflist": "^2.1.0",
         "markdown-it-dollarmath": "^0.5.0",
         "markdown-it-footnote": "^4.0.0",
-        "markdown-it-front-matter": "^0.2.3",
+        "markdown-it-front-matter": "^0.2.4",
         "markdown-it-myst": "1.0.19",
         "markdown-it-task-lists": "^2.1.1",
         "myst-common": "^1.10.2",
@@ -1968,7 +1968,7 @@
 
     "markdown-it-footnote": ["markdown-it-footnote@4.0.0", "", {}, "sha512-WYJ7urf+khJYl3DqofQpYfEYkZKbmXmwxQV8c8mO/hGIhgZ1wOe7R4HLFNwqx7TjILbnC98fuyeSsin19JdFcQ=="],
 
-    "markdown-it-front-matter": ["markdown-it-front-matter@0.2.3", "", {}, "sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA=="],
+    "markdown-it-front-matter": ["markdown-it-front-matter@0.2.4", "", {}, "sha512-25GUs0yjS2hLl8zAemVndeEzThB1p42yxuDEKbd4JlL3jiz+jsm6e56Ya8B0VREOkNxLYB4TTwaoPJ3ElMmW+w=="],
 
     "markdown-it-myst": ["markdown-it-myst@workspace:packages/markdown-it-myst"],
 
