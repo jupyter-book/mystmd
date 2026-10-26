@@ -11,7 +11,7 @@
     "docs": "npm-run-all -l build --parallel dev docs:run",
     "docs:run": "cd docs && bun ../packages/mystmd/dist/myst.cjs start",
     "clean": "turbo run clean --parallel && find . -name '.turbo' -type d -prune -exec rimraf '{}' +",
-    "link": "turbo run link",
+    "link": "npm link -w packages/mystmd",
     "lint": "turbo run lint",
     "lint:format": "turbo run lint:format",
     "lint:circular": "madge -c packages/*/src/*",
