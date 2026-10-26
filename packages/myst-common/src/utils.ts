@@ -7,7 +7,8 @@ import type { RuleId } from './ruleids.js';
 import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
 
 export type MessageInfo = {
-  node?: Node | Position;
+  /** Only the node's position is used, so any mdast, unist or MyST node is accepted */
+  node?: { type: string; position?: Position } | Position;
   note?: string;
   source?: string;
   url?: string;
@@ -26,16 +27,31 @@ function addMessageInfo(message: VFileMessage & { key?: string }, info?: Message
   return message;
 }
 
+function createMessage(
+  file: VFile,
+  method: 'message' | 'info',
+  message: string | Error,
+  opts?: MessageInfo,
+): VFileMessage {
+  // VFile has separate overloads for nodes and positions, and for `string` and `Error`,
+  // so narrow both unions before calling it
+  const node = opts?.node;
+  const place = node && 'type' in node ? node.position : node;
+  return typeof message === 'string'
+    ? file[method](message, place, opts?.source)
+    : file[method](message, place, opts?.source);
+}
+
 export function fileError(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
-  return addMessageInfo(file.message(message, opts?.node, opts?.source), { ...opts, fatal: true });
+  return addMessageInfo(createMessage(file, 'message', message, opts), { ...opts, fatal: true });
 }
 
 export function fileWarn(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
-  return addMessageInfo(file.message(message, opts?.node, opts?.source), opts);
+  return addMessageInfo(createMessage(file, 'message', message, opts), opts);
 }
 
 export function fileInfo(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
-  return addMessageInfo(file.info(message, opts?.node, opts?.source), opts);
+  return addMessageInfo(createMessage(file, 'info', message, opts), opts);
 }
 
 const az = 'abcdefghijklmnopqrstuvwxyz';
@@ -152,6 +168,35 @@ export function liftChildren(tree: GenericParent | GenericNode, removeType: stri
   tree.children = tree.children.map((child) => getNodeOrLiftedChildren(child, removeType)).flat();
 }
 
+/**
+ * Remove all nodes of type `removeType`, along with any parents they leave empty
+ *
+ * If that would remove all content from `tree`, only the `removeType` nodes are removed
+ * and their emptied parents are kept. This matches unist-util-remove@3, which returned
+ * `null` instead of cascading up to the root.
+ */
+export function forcedRemove(tree: GenericParent, removeType: string) {
+  // Parents left empty by the removal, and the parents that still hold them
+  const emptied = new Set<GenericNode>();
+  const holdingEmptied: GenericNode[] = [];
+  // Removes `removeType` children in a single pass, returning whether `node` has content left
+  function prune(node: GenericNode): boolean {
+    if (!node.children?.length) return true;
+    node.children = node.children.filter((child) => child.type !== removeType);
+    const kept = node.children.map(prune);
+    if (!kept.includes(true)) {
+      emptied.add(node);
+      return false;
+    }
+    if (kept.includes(false)) holdingEmptied.push(node);
+    return true;
+  }
+  if (!prune(tree)) return;
+  holdingEmptied.forEach((node) => {
+    node.children = node.children?.filter((child) => !emptied.has(child));
+  });
+}
+
 export function setTextAsChild(node: Partial<Parent>, text: string) {
   node.children = [{ type: 'text', value: text } as Node];
 }
@@ -163,7 +208,7 @@ export function setTextAsChild(node: Partial<Parent>, text: string) {
  * @returns A string. An empty string is returned in case no
  * textual representation could be extracted.
  */
-export function toText(content?: Node[] | Node | null): string {
+export function toText(content?: { type: string }[] | { type: string } | null): string {
   if (!content) return '';
   if (!Array.isArray(content)) return toText([content]);
   return (content as PhrasingContent[])

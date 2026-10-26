@@ -37,6 +37,6 @@
   },
   "devDependencies": {
     "myst-parser": "^1.7.5",
-    "vfile": "^5.3.7"
+    "vfile": "^6.0.3"
   }
 }

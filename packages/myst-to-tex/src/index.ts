@@ -598,7 +598,8 @@ class TexSerializer implements ITexSerializer {
 }
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
-  this.Compiler = (node, file) => {
+  this.compiler = (tree, file) => {
+    const node = tree as Root;
     transformLegends(node);
 
     const state = new TexSerializer(file, node, opts ?? { handlers });
@@ -618,11 +619,6 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     };
     file.result = result;
     return file;
-  };
-
-  return (node: Root) => {
-    // Preprocess
-    return node;
   };
 };
 

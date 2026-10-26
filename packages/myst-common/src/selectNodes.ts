@@ -91,8 +91,10 @@ export function selectMdastNodes(
   maxNodes?: number,
 ): { htmlId?: string; nodes: GenericNode[] } {
   if (maxNodes === 0) return { nodes: [] };
+  // Quote the value: unist-util-select@5 rejects unquoted values that are not CSS identifiers
+  const value = `"${identifier.replace(/["\\]/g, '\\$&')}"`;
   // Select the first identifier that is not a crossReference or citation
-  const node = selectAll(`[identifier=${identifier}],[key=${identifier}]`, mdast).find((n) =>
+  const node = selectAll(`[identifier=${value}],[key=${value}]`, mdast).find((n) =>
     isTargetIdentifierNode(n),
   ) as GenericNode | undefined;
   if (!node) return { nodes: [] };

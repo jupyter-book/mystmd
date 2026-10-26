@@ -604,8 +604,8 @@ class TypstSerializer implements ITypstSerializer {
 }
 
 const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
-  this.Compiler = (node, file) => {
-    const state = new TypstSerializer(file, node, opts ?? { handlers });
+  this.compiler = (node, file) => {
+    const state = new TypstSerializer(file, node as Root, opts ?? { handlers });
     const tex = (file.result as string).trim();
     const result: TypstResult = {
       macros: [...state.data.macros],
@@ -614,11 +614,6 @@ const plugin: Plugin<[Options?], Root, VFile> = function (opts) {
     };
     file.result = result;
     return file;
-  };
-
-  return (node: Root) => {
-    // Preprocess
-    return node;
   };
 };
 

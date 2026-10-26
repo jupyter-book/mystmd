@@ -1,10 +1,5 @@
 import type { Plugin } from 'unified';
-import { unified } from 'unified';
-import type { Options } from 'rehype-parse';
-import rehypeParse from 'rehype-parse';
-import rehypeRemark from 'rehype-remark';
-import type { H, Handle } from 'hast-util-to-mdast';
-import { all } from 'hast-util-to-mdast';
+import type { State as HastState } from 'hast-util-to-mdast';
 import { visit } from 'unist-util-visit';
 import { select, selectAll } from 'unist-util-select';
 import { findAfter } from 'unist-util-find-after';
@@ -13,6 +8,10 @@ import { liftChildren, normalizeLabel, AdmonitionKind, admonitionKindToTitle } f
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { EnumeratorOptions, State } from './state.js';
 import { enumerateTargets, resolveReferences } from './state.js';
+import type { HtmlToMdastOptions } from './htmlToMdast.js';
+import { createMdastNode, htmlToMdast } from './htmlToMdast.js';
+
+export type { HtmlToMdastOptions };
 
 export type Admonition = GenericNode<{
   kind?: AdmonitionKind;
@@ -24,11 +23,6 @@ export type TransformOptions = {
   addContainerCaptionNumbers?: boolean;
 } & EnumeratorOptions;
 
-export type HtmlToMdastOptions = {
-  htmlHandlers?: { [x: string]: Handle };
-  keepBreaks?: boolean;
-};
-
 const defaultOptions: Record<keyof TransformOptions, boolean> = {
   addAdmonitionHeaders: true,
   addContainerCaptionNumbers: true,
@@ -39,17 +33,15 @@ const defaultOptions: Record<keyof TransformOptions, boolean> = {
 
 const defaultHtmlToMdastOptions: Record<keyof HtmlToMdastOptions, any> = {
   keepBreaks: true,
+  document: true,
   htmlHandlers: {
-    table(h: H, node: any) {
-      return h(node, 'table', all(h, node));
+    table(state: HastState, node: any) {
+      return createMdastNode(state, node, 'table', {}, state.all(node));
     },
-    th(h: H, node: any) {
-      const result = h(node, 'tableCell', all(h, node));
-      (result as GenericNode).header = true;
+    th(state: HastState, node: any) {
+      const result = createMdastNode(state, node, 'tableCell', {}, state.all(node));
+      result.header = true;
       return result;
-    },
-    _brKeep(h: H, node: any) {
-      return h(node, '_break');
     },
   },
 };
@@ -127,32 +119,18 @@ export function convertHtmlToMdast(tree: GenericParent, opts?: HtmlToMdastOption
   const otherOptions = { ...defaultHtmlToMdastOptions, ...opts };
   const htmlNodes = selectAll('html', tree);
   htmlNodes.forEach((node: GenericNode) => {
-    const hast = unified()
-      .use(rehypeParse, { fragment: true } as Options)
-      .parse(node.value);
-    // hast-util-to-mdast removes breaks if they are the first/last children
-    // and nests standalone breaks in paragraphs.
-    // However, since HTML nodes may just be fragments in the middle of markdown text,
-    // there is an option to `keepBreaks` which will simply convert `<br />`
-    // tags to `break` nodes, without the special hast-util-to-mdast behavior.
-    if (otherOptions.keepBreaks) {
-      selectAll('[tagName=br]', hast).forEach((n: GenericNode) => {
-        n.tagName = '_brKeep';
-      });
-    }
-    const mdast = unified().use(rehypeRemark, { handlers }).runSync(hast);
     node.type = 'htmlParsed';
-    node.children = mdast.children as GenericNode[];
-    visit(node, (n: GenericNode) => delete n.position);
+    node.children = htmlToMdast(node.value ?? '', {
+      htmlHandlers: handlers,
+      keepBreaks: otherOptions.keepBreaks,
+      document: otherOptions.document,
+    });
   });
   liftChildren(tree, 'htmlParsed');
-  selectAll('_break', tree).forEach((n: GenericNode) => {
-    n.type = 'break';
-  });
   return tree;
 }
 
-export const transform: Plugin<[State, TransformOptions?], string, GenericParent> =
+export const transform: Plugin<[State, TransformOptions?], GenericParent> =
   (state, o) => (tree: GenericParent) => {
     const opts = {
       ...defaultOptions,

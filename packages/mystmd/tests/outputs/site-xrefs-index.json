@@ -247,10 +247,7 @@
                   "start": { "line": 15, "column": 1 },
                   "end": { "line": 15, "column": 1 }
                 },
-                "children": [
-                  { "type": "text", "value": "Figure " },
-                  { "type": "text", "value": "1" }
-                ],
+                "children": [{ "type": "text", "value": "Figure 1" }],
                 "identifier": "my-fig",
                 "label": "my-fig",
                 "kind": "figure",
