@@ -61,8 +61,8 @@ const JupyterBookConfig = z.object({
       baseurl: z.string().nullish(),
       comments: z
         .object({
-          hypothesis: z.union([z.boolean(), z.record(z.any())]).nullish(),
-          utterances: z.union([z.boolean(), z.record(z.any())]).nullish(),
+          hypothesis: z.union([z.boolean(), z.record(z.string(), z.any())]).nullish(),
+          utterances: z.union([z.boolean(), z.record(z.string(), z.any())]).nullish(),
         })
         .nullish(),
       announcement: z.string().nullish(),
@@ -99,9 +99,9 @@ const JupyterBookConfig = z.object({
   sphinx: z
     .object({
       extra_extensions: z.union([z.null(), z.array(z.string())]).nullish(),
-      local_extensions: z.union([z.null(), z.record(z.any())]).nullish(),
+      local_extensions: z.union([z.null(), z.record(z.string(), z.any())]).nullish(),
       recursive_update: z.boolean().nullish(),
-      config: z.union([z.null(), z.record(z.any())]).nullish(),
+      config: z.union([z.null(), z.record(z.string(), z.any())]).nullish(),
     })
     .nullish(),
 });
@@ -116,7 +116,7 @@ export type JupyterBookConfig = z.infer<typeof JupyterBookConfig>;
 export function validateJupyterBookConfig(config: unknown): JupyterBookConfig {
   const result = JupyterBookConfig.safeParse(config);
   if (!result.success) {
-    const errors = result.error.errors.map(
+    const errors = result.error.issues.map(
       (issue) => `${issue.path.join('.')}: ${issue.message} (${issue.code})`,
     );
     throw new Error(`Error(s) in parsing Jupyter Book configuration:\n${errors}`);
