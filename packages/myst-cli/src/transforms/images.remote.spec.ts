@@ -41,7 +41,11 @@ describe('saveImageInStaticFolder with remote URLs', () => {
   });
 
   it('keeps the remote URL when the content is not an image or video', async () => {
-    vi.mocked(fetchRemoteAsset).mockResolvedValue({ name: 'abc.html', contentType: 'text/html' });
+    // Like the real fetchRemoteAsset, write the response to disk before returning
+    vi.mocked(fetchRemoteAsset).mockImplementation(async (_s, _u, folder, stem) => {
+      fs.writeFileSync(path.join(folder, `${stem}.html`), '<html></html>');
+      return { name: `${stem}.html`, contentType: 'text/html' };
+    });
     const result = await saveImageInStaticFolder(
       session,
       'https://example.com/page',
@@ -49,6 +53,8 @@ describe('saveImageInStaticFolder with remote URLs', () => {
       writeFolder,
     );
     expect(result).toBeNull();
+    // Nothing is left behind for the next build to pick up as a cached image
+    expect(fs.readdirSync(writeFolder)).toEqual([]);
   });
 
   it('keeps the remote URL when the download fails', async () => {
