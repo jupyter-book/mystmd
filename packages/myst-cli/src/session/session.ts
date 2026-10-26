@@ -1,4 +1,5 @@
 import path from 'node:path';
+import fs from 'node:fs/promises';
 import type { Store } from 'redux';
 import { createStore } from 'redux';
 import type { Logger } from 'myst-cli-utils';
@@ -33,9 +34,12 @@ import { default as nodeFetch, Headers, Request, Response } from 'node-fetch';
 import type { PluginInfo } from 'myst-config';
 
 import { PluginRegistry, type Token } from '@lumino/coreutils';
+import { createInstance, type ModuleFederation } from '@module-federation/enhanced/runtime';
+import handler from 'serve-handler';
+import http from 'node:http';
+import getPort from 'get-port';
 
 ////////////////////// Exposed Lumino Plugins ////
-import { IMystToTypst } from 'myst-to-typst';
 import mystToTypstExtension from 'myst-to-typst-extension';
 //////////////////////////////////////////////////
 
@@ -109,6 +113,12 @@ export class Session implements ISession, IApp {
     return this.$logger;
   }
 
+  private readonly $federation: ModuleFederation;
+
+  get federation(): ModuleFederation {
+    return this.$federation;
+  }
+
   private readonly $registry: PluginRegistry<IApp>;
   private $registryActivated = false;
 
@@ -147,6 +157,28 @@ export class Session implements ISession, IApp {
         this._latestVersion = latest;
       })
       .catch(() => null);
+
+    // Define Module Federation instance.
+    // Mentally replace "Module Federation instance" with "dynamic code loader" for simple understanding.
+    // This adds the ability to load complex modules from outside pre-compiled mystmd binary
+    this.$federation = createInstance({
+      name: 'myst-cli',
+      remotes: [],
+      // Define the shared libraries that *we* provide to other modules
+      // We need to provide myst-to-typst so that extensions can get the same
+      // object when they import the IMystToTypst token
+      // This can mostly be automated to pull from package.json
+      shared: {
+        'myst-to-typst': {
+          version: '0.0.39',
+          get: () => import('myst-to-typst').then((m) => () => m),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.0.39',
+          },
+        },
+      },
+    });
     // Define dependency injection registry
     this.$registry = new PluginRegistry();
     this.$registry.application = this;
@@ -201,6 +233,61 @@ export class Session implements ISession, IApp {
 
   plugins: ValidatedMystPlugin | undefined;
 
+  async loadFederatedRemotes() {
+    const remotesPath = process.env.MYSTMD_EXTENSIONS_PATH;
+    if (remotesPath === undefined) {
+      return [];
+    }
+    const normalisedRemotesPath = remotesPath.replace(/\/$/, '');
+
+    let dir;
+    try {
+      dir = await fs.opendir(normalisedRemotesPath);
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+
+    const port = await getPort();
+    const host = 'localhost';
+
+    return await new Promise<Array<any>>((resolve) => {
+      const server = http.createServer((request, response) => {
+        // You pass two more arguments for config and middleware
+        // More details here: https://github.com/vercel/serve-handler#options
+        return handler(request, response, { public: normalisedRemotesPath });
+      });
+
+      server.listen(port, host, async () => {
+        // Find all remoteEntry modules under the modules path
+        const remotes = [];
+        for await (const dirent of dir) {
+          const remotePath = path.join(normalisedRemotesPath, dirent.name, 'remoteEntry.js');
+          try {
+            await fs.access(remotePath);
+          } catch (err) {
+            continue;
+          }
+          remotes.push({
+            name: dirent.name,
+            entry: `http://${host}:${port}/${dirent.name}/remoteEntry.js`,
+          });
+        }
+
+        // Register remotes with MF global instance
+        console.log('Registering remotes', remotes);
+        this.$federation.registerRemotes(remotes);
+
+        // load the remotes (i.e. import the JS modules)!
+        const modules = await Promise.all(
+          remotes.map((remote) =>
+            this.$federation.loadRemote(remote.name).then((r: any) => r.default),
+          ),
+        );
+        resolve(modules);
+      });
+    });
+  }
   async loadExternalExtensions() {
     if (this.$registryActivated) {
       return;
@@ -209,6 +296,13 @@ export class Session implements ISession, IApp {
     this.$registry.registerPlugin(mystToTypstExtension);
     console.log('Registered', mystToTypstExtension);
 
+    const loadedRemotes = await this.loadFederatedRemotes();
+
+    // Register the loaded Lumino "Plugin" objects with the DI registry
+    for (const remote of loadedRemotes) {
+      this.$registry.registerPlugin(remote);
+      console.log('Registered', remote);
+    }
     // Now, finally, wire-up the dependencies and trigger their `activate` method
     await this.$registry.activatePlugins('startUp');
     this.$registryActivated = true;
