@@ -284,10 +284,10 @@ When you build an HTML output, the video will be used, and when you build a PDF 
 ## Embedding from video platforms
 
 Many video platforms can provide you an "embed link" that will more natively insert their video into your page.
-Below are some platform-specific examples, but you can try any platform's embed code with `iframe` and it may work!
+Below are some platform-specific examples, but you can try any platform's embed URL with `iframe` and it may work!
 
 (video:embed:youtube)=
-## YouTube Videos
+### YouTube Videos
 
 If your video is on a platform like YouTube or Vimeo, you can use the {myst:directive}`iframe` directive that takes the URL of the video.
 
