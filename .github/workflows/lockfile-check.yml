@@ -1,0 +1,84 @@
+name: Lockfile check
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lockfile-check:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Check bun.lock for unexpected changes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // List files changed in PR
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+
+            const names = files.map(f => f.filename);
+            const lockChanged = names.includes('bun.lock');
+            const pkgChanged = names.some(f => f.endsWith('package.json'));
+
+            // Did we comment on a previous commit?
+            const MARKER = '<!-- lockfile-check-ci -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const prev = comments.find(c => c.body.includes(MARKER));
+
+            if (lockChanged && !pkgChanged) {
+              // Case A: only bun.lock changed. Might be intentional dependency bump.
+              // Case B: bun.lock and source files (but no package.json) changed. Likely an accidental commit.
+              const lockOnly = names.length === 1;
+
+              const body = lockOnly
+                ? [
+                    MARKER,
+                    '⚠ **Lockfile-only change**: `bun.lock` was modified without any `package.json` changes.',
+                    '',
+                    'If this PR is to update dependencies, that's OK. Please verify.',
+                  ].join('\n')
+                : [
+                    MARKER,
+                    '⚠ **Unexpected lockfile change**: `bun.lock` was modified but no `package.json` changed.',
+                    '',
+                    '`bun.lock` should only be modified when:',
+                    '1. A dependency is added or removed, or',
+                    '2. The PR is a dedicated dependency update.',
+                    '',
+                    'The lockfile change may have been committed by accident — please check before merging.',
+                  ].join('\n');
+
+              if (prev) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: prev.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } else if (prev) {
+              // Warning no longer applicable — clean it up.
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: prev.id,
+              });
+            }
