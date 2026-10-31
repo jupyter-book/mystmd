@@ -75,6 +75,9 @@ export async function resolvePageDownloads(
   if (!projectPath) {
     projectPath = selectors.selectCurrentProjectPath(state);
   }
+  const pageFrontmatter = await getRawFrontmatterFromFile(session, file, projectPath);
+  // Collecting exports reads every page in the project, so skip it unless it is needed
+  if (!pageFrontmatter?.downloads) return undefined;
   const project = projectPath
     ? selectors.selectLocalProject(session.store.getState(), projectPath)
     : undefined;
@@ -86,9 +89,8 @@ export async function resolvePageDownloads(
   allExports.forEach((exp) => {
     if (exp.id) expLookup[exp.id] = exp;
   });
-  const pageFrontmatter = await getRawFrontmatterFromFile(session, file, projectPath);
-  const resolvedDownloads = pageFrontmatter?.downloads
-    ?.map((download): SiteAction | undefined => {
+  const resolvedDownloads = pageFrontmatter.downloads
+    .map((download): SiteAction | undefined => {
       if (download.id && !expLookup[download.id]) {
         addWarningForFile(
           session,
