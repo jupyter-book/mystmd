@@ -94,6 +94,8 @@ describe('parseRoleHeader', () => {
     ['Unknown token', 'myRole #bad.', 'Unknown token "#bad."'],
     ['Unknown token', 'myRole .class.no.space', 'Classes must be separated by spaces'],
   ])('throws error: %s', (_, header, expectedMessage) => {
-    expect(() => inlineOptionsToTokens(header, 0, null as any)).toThrow(expectedMessage);
+    expect(() => inlineOptionsToTokens(header, 0, null as any, 'run_directives')).toThrow(
+      expectedMessage,
+    );
   });
 });
