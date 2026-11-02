@@ -245,4 +245,22 @@ describe('parses directives', () => {
       'text',
     ]);
   });
+  it('inline directive options get typography and linkify like option lines', () => {
+    const mdit = MarkdownIt({ typographer: true, linkify: true }).use(plugin);
+    const childrenOf = (src: string) => {
+      const tokens = mdit.parse(src, {});
+      const option = tokens.find(
+        (t, i) => t.type === 'inline' && tokens[i - 1]?.type === 'myst_option_open',
+      );
+      return option?.children?.map((c) => [c.type, c.content]);
+    };
+    const line = childrenOf('```{ab}\n:a: "hi" -- https://example.com\n```');
+    expect(line).toEqual([
+      ['text', '“hi” – '],
+      ['link_open', ''],
+      ['text', 'https://example.com'],
+      ['link_close', ''],
+    ]);
+    expect(childrenOf('```{ab a="\\"hi\\" -- https://example.com"}\n```')).toEqual(line);
+  });
 });
