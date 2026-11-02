@@ -73,6 +73,8 @@ export function inlineOptionsToTokens(
   header: string,
   lineNumber: number,
   state: StateCore,
+  /** The core rule the nested parse runs up to: `run_directives` for directives, `run_roles` for roles */
+  pluginRuleName = 'run_roles',
 ): { name?: string; tokens: Token[]; options: [string, string][] } {
   // Tokenize
   const tokens = tokenizeInlineAttributes(header);
@@ -126,7 +128,7 @@ export function inlineOptionsToTokens(
       opt.value,
       lineNumber,
       state,
-      'run_roles',
+      pluginRuleName,
       true,
     );
     if (optTokens.length) {
