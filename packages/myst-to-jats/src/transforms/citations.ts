@@ -4,7 +4,7 @@ import { selectAll } from 'unist-util-select';
 import type { GenericNode, GenericParent } from 'myst-common';
 
 /**
- * Add parentheses and separator text to citeGroup nodes as children
+ * Add <sup> tag and separator text to citeGroup with nodes as children
  *
  * This allows us to simply render children and get all the correct formatting.
  */
@@ -21,17 +21,13 @@ export function citeGroupTransform(mdast: GenericParent) {
     node.children.forEach((child) => {
       child.kind = kind;
     });
-    const newChildren: GenericNode[] = [];
-    if (kind === 'parenthetical') {
-      newChildren.push({
-        type: 'text',
-        value: '(',
-      });
-    }
-    newChildren.push(node.children[0]);
+    const wrapper: GenericNode = { type: 'superscript', children: [] };
+    wrapper.children = [];
+
+    wrapper.children.push(node.children[0]);
     const sep = kind === 'parenthetical' ? ';' : ',';
     node.children.slice(1).forEach((child) => {
-      newChildren.push(
+      wrapper.children!.push(
         {
           type: 'text',
           value: `${sep} `,
@@ -39,13 +35,7 @@ export function citeGroupTransform(mdast: GenericParent) {
         child,
       );
     });
-    if (kind === 'parenthetical') {
-      newChildren.push({
-        type: 'text',
-        value: ')',
-      });
-    }
-    node.children = newChildren as any[];
+    node.children = kind == 'parenthetical' ? ([wrapper] as any[]) : wrapper.children;
   });
 }
 
