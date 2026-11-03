@@ -139,11 +139,7 @@
                         "identifier": "fig-c",
                         "html_id": "fig-c",
                         "enumerator": "1",
-                        "children": [
-                          { "type": "text", "value": "Figure ", "key": "fU20JO0Esw" },
-                          { "type": "text", "value": "1", "key": "n0jxE3z3WD" },
-                          { "type": "text", "value": ":", "key": "mjI7MqGuk3" }
-                        ],
+                        "children": [{ "type": "text", "value": "Figure 1:", "key": "fU20JO0Esw" }],
                         "template": "Figure %s:",
                         "key": "SE7YMvoWp2"
                       },

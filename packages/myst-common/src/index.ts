@@ -9,6 +9,7 @@ export {
   createHtmlId,
   transferTargetAttrs,
   liftChildren,
+  forcedRemove,
   setTextAsChild,
   copyNode,
   mergeTextNodes,

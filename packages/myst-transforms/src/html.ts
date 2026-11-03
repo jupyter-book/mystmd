@@ -1,19 +1,13 @@
-import { unified } from 'unified';
 import type { Plugin } from 'unified';
 import { liftChildren, normalizeLabel } from 'myst-common';
 import type { GenericNode, GenericParent } from 'myst-common';
 import type { Parent, TableCell } from 'myst-spec';
-import { mystToHtml } from 'myst-to-html';
-import type { Element } from 'rehype-format';
+import { createMdastNode as create, htmlToMdast, mystToHtml } from 'myst-to-html';
+import type { Element } from 'hast';
 import { fromHtml } from 'hast-util-from-html';
-import { all } from 'hast-util-to-mdast';
-import type { H, Handle } from 'hast-util-to-mdast';
+import type { Handle, State } from 'hast-util-to-mdast';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
-import { visit } from 'unist-util-visit';
-import type { Options } from 'rehype-parse';
-import rehypeParse from 'rehype-parse';
-import rehypeRemark from 'rehype-remark';
 
 export type HtmlTransformOptions = {
   keepBreaks?: boolean;
@@ -64,11 +58,11 @@ function addClassAndIdentifier(
 const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
   keepBreaks: true,
   htmlHandlers: {
-    table(h: H, node: any) {
+    table(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
-      return h(node, 'table', attrs, all(h, node));
+      return create(state, node, 'table', attrs, state.all(node));
     },
-    th(h: H, node: any) {
+    th(state: State, node: any) {
       const attrs = addClassAndIdentifier(node, { header: true });
       const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
       const colSpan = Number.parseInt(node.properties.colSpan, 10);
@@ -76,13 +70,13 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       if (align && align !== 'left') attrs.align = align;
       if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
       if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
-      return h(node, 'tableCell', attrs, all(h, node));
+      return create(state, node, 'tableCell', attrs, state.all(node));
     },
-    tr(h: H, node: any) {
+    tr(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
-      return h(node, 'tableRow', attrs, all(h, node));
+      return create(state, node, 'tableRow', attrs, state.all(node));
     },
-    td(h: H, node: any) {
+    td(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
       const rowSpan = Number.parseInt(node.properties.rowSpan, 10);
       const colSpan = Number.parseInt(node.properties.colSpan, 10);
@@ -90,84 +84,81 @@ const defaultHtmlToMdastOptions: Record<keyof HtmlTransformOptions, any> = {
       if (align && align !== 'left') attrs.align = align;
       if (Number.isInteger(rowSpan) && rowSpan > 1) attrs.rowspan = rowSpan;
       if (Number.isInteger(colSpan) && colSpan > 1) attrs.colspan = colSpan;
-      return h(node, 'tableCell', attrs, all(h, node));
+      return create(state, node, 'tableCell', attrs, state.all(node));
     },
-    _brKeep(h: H, node: any) {
-      return h(node, '_break');
-    },
-    span(h: H, node: any) {
+    span(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
-      return h(node, 'span', attrs, all(h, node));
+      return create(state, node, 'span', attrs, state.all(node));
     },
-    div(h: H, node: any) {
+    div(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
-      return h(node, 'div', attrs, all(h, node));
+      return create(state, node, 'div', attrs, state.all(node));
     },
-    a(h: H, node: any) {
+    a(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
       attrs.url = String(node.properties.href || '');
       if (node.properties.title) attrs.title = node.properties.title;
-      return h(node, 'link', attrs, all(h, node));
+      return create(state, node, 'link', attrs, state.all(node));
     },
-    img(h: H, node: any) {
+    img(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
       attrs.url = String(node.properties.src || '');
       if (node.properties.title) attrs.title = node.properties.title;
       if (node.properties.alt) attrs.alt = node.properties.alt;
       if (node.properties.width) attrs.width = node.properties.width;
       if (node.properties.height) attrs.height = node.properties.height;
-      return h(node, 'image', attrs);
+      return create(state, node, 'image', attrs);
     },
-    video(h: H, node: any) {
+    video(state: State, node: any) {
       // Currently this creates an image node, we should change this to video in the future
       const attrs = addClassAndIdentifier(node);
       attrs.url = String(node.properties.src || '');
       if (node.properties.title) attrs.title = node.properties.title;
       if (node.properties.alt) attrs.alt = node.properties.alt;
-      return h(node, 'image', attrs);
+      return create(state, node, 'image', attrs);
     },
-    iframe(h: H, node: any) {
+    iframe(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
       attrs.src = String(node.properties.src || '');
       attrs.width = '100%';
       if (node.properties.title) attrs.title = node.properties.title;
-      return h(node, 'iframe', attrs);
+      return create(state, node, 'iframe', attrs);
     },
-    figure(h: H, node: any) {
+    figure(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
-      return h(node, 'container', attrs, all(h, node));
+      return create(state, node, 'container', attrs, state.all(node));
     },
-    figcaption(h: H, node: any) {
-      return h(node, 'caption', all(h, node));
+    figcaption(state: State, node: any) {
+      return create(state, node, 'caption', {}, state.all(node));
     },
-    comment(h: H, node: any) {
+    comment(state: State, node: any) {
       // Prevents HTML comments from showing up as text in web
-      return h(node, 'comment', node.value);
+      return create(state, node, 'comment', {}, node.value);
     },
-    sup(h: H, node: any) {
-      return h(node, 'superscript', all(h, node));
+    sup(state: State, node: any) {
+      return create(state, node, 'superscript', {}, state.all(node));
     },
-    sub(h: H, node: any) {
-      return h(node, 'subscript', all(h, node));
+    sub(state: State, node: any) {
+      return create(state, node, 'subscript', {}, state.all(node));
     },
-    kbd(h: H, node: any) {
-      return h(node, 'keyboard', all(h, node));
+    kbd(state: State, node: any) {
+      return create(state, node, 'keyboard', {}, state.all(node));
     },
-    cite(h: H, node: any) {
+    cite(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
-      return attrs.label ? h(node, 'cite', attrs, all(h, node)) : all(h, node);
+      return attrs.label ? create(state, node, 'cite', attrs, state.all(node)) : state.all(node);
     },
-    details(h: H, node: any) {
+    details(state: State, node: any) {
       const attrs = addClassAndIdentifier(node);
-      return h(node, 'details', attrs, all(h, node));
+      return create(state, node, 'details', attrs, state.all(node));
     },
-    summary(h: H, node: any) {
-      return h(node, 'summary', all(h, node));
+    summary(state: State, node: any) {
+      return create(state, node, 'summary', {}, state.all(node));
     },
-    u(h: H, node: any) {
+    u(state: State, node: any) {
       // The default is emphasis
       const attrs = addClassAndIdentifier(node);
-      return h(node, 'underline', attrs, all(h, node));
+      return create(state, node, 'underline', attrs, state.all(node));
     },
   },
 };
@@ -177,23 +168,12 @@ export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) 
   const otherOptions = { ...defaultHtmlToMdastOptions, ...opts };
   const htmlNodes = selectAll('html', tree) as Parent[];
   htmlNodes.forEach((node) => {
-    const hast = unified()
-      .use(rehypeParse, { fragment: true } as Options)
-      .parse((node as any).value);
-    // hast-util-to-mdast removes breaks if they are the first/last children
-    // and nests standalone breaks in paragraphs.
-    // However, since HTML nodes may just be fragments in the middle of markdown text,
-    // there is an option to `keepBreaks` which will simply convert `<br />`
-    // tags to `break` nodes, without the special hast-util-to-mdast behavior.
-    if (otherOptions.keepBreaks) {
-      selectAll('[tagName=br]', hast).forEach((n: any) => {
-        n.tagName = '_brKeep';
-      });
-    }
-    const mdast = unified().use(rehypeRemark, { handlers, document: false }).runSync(hast);
     node.type = 'htmlParsed';
-    node.children = mdast.children as Parent[];
-    visit(node, (n: any) => delete n.position);
+    node.children = htmlToMdast((node as any).value, {
+      htmlHandlers: handlers,
+      keepBreaks: otherOptions.keepBreaks,
+      document: false,
+    }) as Parent['children'];
   });
   selectAll('paragraph > htmlParsed', tree).forEach((parsed) => {
     const node = parsed as GenericParent;
@@ -202,9 +182,6 @@ export function htmlTransform(tree: GenericParent, opts?: HtmlTransformOptions) 
     }
   });
   liftChildren(tree, 'htmlParsed');
-  selectAll('_break', tree).forEach((node: any) => {
-    node.type = 'break';
-  });
   return tree;
 }
 

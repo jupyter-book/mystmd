@@ -77,8 +77,7 @@ export function mdastToTypst(
     // references,
     // ...frontmatter.settings?.myst_to_tex,
   });
-  const result = pipe.runSync(mdast as any);
-  const typ = pipe.stringify(result);
+  const typ = pipe.stringify(mdast as any);
   logMessagesFromVFile(session, typ);
   return typ.result as TypstResult;
 }

@@ -1088,13 +1088,8 @@ const plugin: Plugin<
   Root,
   VFile
 > = function (kind, frontmatter, citations, slug, opts) {
-  this.Compiler = (node, file) => {
+  this.compiler = (node, file) => {
     return writeJats(file, { mdast: node as any, kind, frontmatter, citations, slug }, opts);
-  };
-
-  return (node: Root) => {
-    // Preprocess
-    return node;
   };
 };
 

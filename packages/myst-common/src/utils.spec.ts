@@ -1,6 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
-import { liftChildren, mergeTextNodes, normalizeLabel, toText, slugToUrl } from './utils';
+import {
+  forcedRemove,
+  liftChildren,
+  mergeTextNodes,
+  normalizeLabel,
+  toText,
+  slugToUrl,
+} from './utils';
 
 describe('Test text utils', () => {
   test('toText', () => {
@@ -64,6 +71,35 @@ describe('Test liftChildren', () => {
     const after = u('root', [u('block', [u('paragraph', [u('text', 'value')])])]);
     liftChildren(before, 'text');
     expect(before).toEqual(after);
+  });
+});
+
+describe('Test forcedRemove', () => {
+  test('parents left empty are removed', () => {
+    const tree = u('root', [
+      u('block', [u('__delete__', { value: '' })]),
+      u('block', [u('text', { value: 'keep' })]),
+    ]);
+    forcedRemove(tree as any, '__delete__');
+    expect(tree).toEqual(u('root', [u('block', [u('text', { value: 'keep' })])]));
+  });
+  test('emptied parents are kept if nothing else remains', () => {
+    const tree = u('root', [u('block', [u('__delete__', { value: '' })])]);
+    forcedRemove(tree as any, '__delete__');
+    expect(tree).toEqual(u('root', [u('block', [])]));
+  });
+  test('emptied parents cascade up to the first parent with content', () => {
+    const tree = u('root', [
+      u('section', [u('block', [u('__delete__', { value: '' })]), u('__delete__', { value: '' })]),
+      u('paragraph', [u('text', { value: 'keep' })]),
+    ]);
+    forcedRemove(tree as any, '__delete__');
+    expect(tree).toEqual(u('root', [u('paragraph', [u('text', { value: 'keep' })])]));
+  });
+  test('parents that were already empty are kept', () => {
+    const tree = u('root', [u('block', []), u('block', [u('__delete__', { value: '' })])]);
+    forcedRemove(tree as any, '__delete__');
+    expect(tree).toEqual(u('root', [u('block', [])]));
   });
 });
 

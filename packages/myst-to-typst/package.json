@@ -42,13 +42,13 @@
     "myst-spec": "^0.0.6",
     "myst-spec-ext": "^1.10.2",
     "tex-to-typst": "^0.0.21",
-    "unified": "^10.1.2",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7",
-    "vfile-reporter": "^7.0.4"
+    "unified": "^11.0.5",
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3",
+    "vfile-reporter": "^8.1.1"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
-    "unist-builder": "^3.0.0"
+    "unist-builder": "^4.0.0"
   }
 }

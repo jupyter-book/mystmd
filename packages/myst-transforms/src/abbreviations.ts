@@ -4,7 +4,7 @@ import { toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import type { Abbreviation, Text } from 'myst-spec';
 import { u } from 'unist-builder';
-import type { FindAndReplaceSchema, RegExpMatchObject } from 'mdast-util-find-and-replace';
+import type { FindAndReplaceList, RegExpMatchObject } from 'mdast-util-find-and-replace';
 import { findAndReplace } from 'mdast-util-find-and-replace';
 
 type Options = {
@@ -23,24 +23,22 @@ const doNotModifyParents = new Set(['link', 'crossReference', 'cite', 'code', 'a
 
 function replaceText(mdast: GenericParent, opts: Options) {
   if (!opts?.abbreviations || Object.keys(opts.abbreviations).length === 0) return;
-  const replacements: FindAndReplaceSchema = Object.fromEntries(
-    Object.entries(opts.abbreviations)
-      .filter(([abbr]) => abbr.length > 1) // We can't match on single characters!
-      .sort((a, b) => b[0].length - a[0].length || a[0].localeCompare(b[0])) // Sort by length (longest-first) then locale-ordering
-      .map(([abbr, title]) => [
-        abbr,
-        (value: any, { stack }: RegExpMatchObject) => {
-          if (!title) {
-            // Change the type of this match to a transient node to guard from further replacements
-            return u('__skippedAbbreviation__', value);
-          }
-          if (stack.slice(-1)[0].type !== 'text') return false;
-          const parent = stack.find((p) => doNotModifyParents.has(p.type));
-          if (parent) return false;
-          return u('abbreviation', { title }, [u('text', value)]);
-        },
-      ]),
-  );
+  const replacements: FindAndReplaceList = Object.entries(opts.abbreviations)
+    .filter(([abbr]) => abbr.length > 1) // We can't match on single characters!
+    .sort((a, b) => b[0].length - a[0].length || a[0].localeCompare(b[0])) // Sort by length (longest-first) then locale-ordering
+    .map(([abbr, title]) => [
+      abbr,
+      (value: any, { stack }: RegExpMatchObject) => {
+        if (!title) {
+          // Change the type of this match to a transient node to guard from further replacements
+          return u('__skippedAbbreviation__', value);
+        }
+        if (stack.slice(-1)[0].type !== 'text') return false;
+        const parent = stack.find((p) => doNotModifyParents.has(p.type));
+        if (parent) return false;
+        return u('abbreviation', { title }, [u('text', value)]);
+      },
+    ]);
   findAndReplace(mdast as any, replacements);
   // Restore the original `text` type of the transient replacements performed above
   selectAll('__skippedAbbreviation__', mdast).forEach((n) => {

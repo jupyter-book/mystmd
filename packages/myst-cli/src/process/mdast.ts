@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, PluginUtils, References } from 'myst-common';
+import type { GenericNode, GenericParent, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -91,16 +91,10 @@ import {
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
-const pluginUtils: PluginUtils = { select, selectAll };
-
-const htmlHandlers = {
-  comment(h: any, node: any) {
-    // Prevents HTML comments from showing up as text in web
-    // TODO: Remove once this is landed in myst-parser
-    const result = h(node, 'comment');
-    (result as any).value = node.value;
-    return result;
-  },
+const pluginUtils: PluginUtils = {
+  // unist-util-select@5 returns `undefined` when nothing matches; plugins expect `null`
+  select: (selector, tree) => (select(selector, tree) as GenericNode | undefined) ?? null,
+  selectAll,
 };
 
 export type TransformFn = (
@@ -212,7 +206,7 @@ export async function transformMdast(
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
+    .use(htmlPlugin) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
       firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),

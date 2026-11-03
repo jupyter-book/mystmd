@@ -1,9 +1,8 @@
 import yaml from 'js-yaml';
-import { remove } from 'unist-util-remove';
 import { select } from 'unist-util-select';
 import type { Block, Code, Heading } from 'myst-spec';
 import type { GenericParent } from 'myst-common';
-import { RuleId, fileError, toText, fileWarn, normalizeLabel } from 'myst-common';
+import { RuleId, fileError, forcedRemove, toText, fileWarn, normalizeLabel } from 'myst-common';
 import { fillProjectFrontmatter } from 'myst-frontmatter';
 import type { VFile } from 'vfile';
 import { mystTargetsTransform } from './targets.js';
@@ -114,10 +113,6 @@ export function getFrontmatter(
     }
   }
   // Handles deleting the block if it is the only element in the block
-  const possibleNull = remove(tree, '__delete__');
-  if (possibleNull === null) {
-    // null is returned if tree itself didn’t pass the test or is cascaded away
-    remove(tree, { cascade: false }, '__delete__');
-  }
+  forcedRemove(tree, '__delete__');
   return { tree, frontmatter, identifiers };
 }

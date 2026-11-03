@@ -36,6 +36,6 @@
     "myst-spec-ext": "^1.10.2"
   },
   "devDependencies": {
-    "vfile": "^5.3.7"
+    "vfile": "^6.0.3"
   }
 }

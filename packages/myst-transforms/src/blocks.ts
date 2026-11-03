@@ -86,12 +86,12 @@ export function blockMetadataTransform(mdast: GenericParent, file: VFile) {
     const hasExplicitLabel = typeof block.label === 'string';
 
     if (block.identifier && hasExplicitLabel) {
-      const codeNode = select('code', block) as any as Code | null;
-      if (codeNode !== null && !codeNode.identifier) {
+      const codeNode = select('code', block) as any as Code | undefined;
+      if (codeNode && !codeNode.identifier) {
         codeNode.identifier = `${block.identifier}-code`;
       }
-      const outputsNode = select('outputs', block) as GenericNode | null;
-      if (outputsNode !== null && !outputsNode.identifier) {
+      const outputsNode = select('outputs', block) as GenericNode | undefined;
+      if (outputsNode && !outputsNode.identifier) {
         // Label outputs node
         outputsNode.identifier = `${block.identifier}-outputs`;
         // Enumerate outputs

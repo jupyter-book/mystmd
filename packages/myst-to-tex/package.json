@@ -42,15 +42,15 @@
     "myst-spec": "^0.0.6",
     "myst-spec-ext": "^1.10.2",
     "myst-ext-proof": "^1.0.14",
-    "unified": "^10.1.2",
-    "unist-util-remove": "^3.1.0",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7",
-    "vfile-reporter": "^7.0.4"
+    "unified": "^11.0.5",
+    "unist-util-remove": "^4.0.0",
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3",
+    "vfile-reporter": "^8.1.1"
   },
   "devDependencies": {
     "js-yaml": "^4.1.0",
     "myst-parser": "^1.7.5",
-    "unist-builder": "^3.0.0"
+    "unist-builder": "^4.0.0"
   }
 }

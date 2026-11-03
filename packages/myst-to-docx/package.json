@@ -40,11 +40,11 @@
     "myst-frontmatter": "^1.10.2",
     "myst-spec": "^0.0.6",
     "myst-spec-ext": "^1.10.2",
-    "unified": "^10.1.2",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7"
+    "unified": "^11.0.5",
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3"
   },
   "devDependencies": {
-    "unist-builder": "^3.0.0"
+    "unist-builder": "^4.0.0"
   }
 }

@@ -40,8 +40,8 @@
     "myst-spec-ext": "^1.10.2",
     "json5": "^1.0.2",
     "nanoid": "^5.1.6",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7"
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",

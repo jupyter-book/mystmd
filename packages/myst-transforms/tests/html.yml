@@ -130,6 +130,58 @@ cases:
     after:
       type: root
       children: []
+  - title: breaks at the edges of inline html are dropped
+    opts:
+      keepBreaks: false
+    before:
+      type: root
+      children:
+        - type: html
+          value: <br /><span>a</span><br />
+    after:
+      type: root
+      children:
+        - type: span
+          children:
+            - type: text
+              value: a
+  - title: breaks next to block html leave no empty paragraphs
+    opts:
+      keepBreaks: false
+    before:
+      type: root
+      children:
+        - type: html
+          value: <br /><div>a</div><br /><br /><div>b</div><br />
+    after:
+      type: root
+      children:
+        - type: div
+          children:
+            - type: text
+              value: a
+        - type: div
+          children:
+            - type: text
+              value: b
+  - title: breaks next to block html are kept with keepBreaks
+    before:
+      type: root
+      children:
+        - type: html
+          value: <div>a</div><br /><div>b</div>
+    after:
+      type: root
+      children:
+        - type: div
+          children:
+            - type: text
+              value: a
+        - type: break
+        - type: div
+          children:
+            - type: text
+              value: b
 
   - title: inline elements
     before:
