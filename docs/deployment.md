@@ -98,32 +98,32 @@ For example:
 - `mysite.org/`: **Does not** require a `BASE_URL` to be set, because the root site is where your MyST site lives.
 - `mysite.org/docs/`: **Does** require a `BASE_URL` to be set, because your MyST HTML files will be in `docs/`, not the root.
 
-If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
+If MyST detects an environment variable called `BASE_URL` it will prepend its deployment path to all links. Prefer setting it to the full public URL, for example `https://mysite.org/docs`: this also makes static `sitemap.xml` and `robots.txt` files use the public origin. MyST derives the deployment path, `/docs`, from that URL. The existing path-only form, such as `/docs`, remains supported when you only need a subfolder prefix.
 
-In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets.
+In the following examples we define `BASE_URL` and then build the MyST HTML assets. Use the full public URL when it is known; the path-only examples remain valid for existing deployments.
 
 ::::{tab-set}
 :::{tab-item} Bash
 ```bash
-export BASE_URL="/repository_name"
+export BASE_URL="https://mysite.org/repository_name"
 myst build --html
 ```
 :::
 :::{tab-item} Powershell
 ```powershell
-$env:BASE_URL = "/folder1/folder2" 
+$env:BASE_URL = "https://mysite.org/folder1/folder2"
 myst build --html
 ```
 :::
 :::{tab-item} Fish
 ```fish
-set -x BASE_URL "/folder1/folder2"
+set -x BASE_URL "https://mysite.org/folder1/folder2"
 myst build --html
 ```
 :::
 :::{tab-item} CMD
 ```cmd
-set BASE_URL=/folder1/folder2
+set BASE_URL=https://mysite.org/folder1/folder2
 myst build --html
 ```
 :::
