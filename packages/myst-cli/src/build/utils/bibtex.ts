@@ -4,6 +4,7 @@ import { castSession } from '../../session/cache.js';
 import type { ISession } from '../../session/types.js';
 import { addWarningForFile } from '../../utils/addWarningForFile.js';
 import type { References } from 'myst-common';
+import type { PageFrontmatter } from 'myst-frontmatter';
 
 /**
  * Write new bibtex file from citation renderer data and reference order
@@ -13,15 +14,21 @@ import type { References } from 'myst-common';
 export function writeBibtexFromCitationRenderers(
   session: ISession,
   output: string,
-  content: { references: References }[],
+  content: { references: References; frontmatter?: PageFrontmatter }[],
 ) {
-  const order = content
+  const cache = castSession(session);
+  // Frontmatter parts are rendered into the export, so their citations belong in its bibliography
+  const partReferences = content.flatMap(({ frontmatter }) =>
+    Object.values(frontmatter?.parts ?? {})
+      .filter((files) => files.length === 1)
+      .map((files) => ({ references: cache.$getMdast(files[0])?.post?.references })),
+  );
+  const order = [...content, ...partReferences]
     .map(({ references }) => {
-      return references.cite?.order ?? [];
+      return references?.cite?.order ?? [];
     })
     .flat();
   if (!order.length) return false;
-  const cache = castSession(session);
   const citationLookup: Record<string, string> = {};
   Object.values(cache.$citationRenderers).forEach((renderers) => {
     Object.entries(renderers).forEach(([key, renderer]) => {
