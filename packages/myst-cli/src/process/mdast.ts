@@ -1,6 +1,12 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, PluginUtils, References } from 'myst-common';
+import type {
+  GenericParent,
+  References,
+  SessionPage,
+  SessionProject,
+  SessionSite,
+} from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -91,8 +97,6 @@ import {
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
-const pluginUtils: PluginUtils = { select, selectAll };
-
 const htmlHandlers = {
   comment(h: any, node: any) {
     // Prevents HTML comments from showing up as text in web
@@ -107,6 +111,76 @@ export type TransformFn = (
   session: ISession,
   opts: Parameters<typeof transformMdast>[1],
 ) => Promise<void>;
+
+/**
+ * Build the project/site information exposed to plugins via the unstable session API.
+ *
+ * This gathers the list of all pages in the project (with their tags, slugs, and
+ * resolved urls) along with the current site configuration so that plugins, e.g. a
+ * directive that lists pages with a given tag, can operate on project-wide data.
+ *
+ * Page tags and urls are populated during `transformMdast`; for `project` stage
+ * transforms (running in `postProcessMdast`) all pages have been processed so this
+ * data is complete.
+ */
+function getSessionProject(session: ISession, projectPath?: string): SessionProject | undefined {
+  const state = session.store.getState();
+  const cache = castSession(session);
+  const siteConfig = selectors.selectCurrentSiteConfig(state);
+  const resolvedProjectPath = projectPath ?? selectors.selectCurrentProjectPath(state);
+  if (!resolvedProjectPath) return undefined;
+  const proj = selectors.selectLocalProject(state, resolvedProjectPath);
+  if (!proj) return undefined;
+  const projectSlug = siteConfig?.projects?.find((p) => p.path === resolvedProjectPath)?.slug;
+  const pages: SessionProject['pages'] = [];
+  // The full processed page frontmatter is available once a page has been through
+  // `transformMdast` (i.e. complete for `project` stage transforms). `selectFileInfo`
+  // is used as a fallback for the basics (e.g. during `document` stage transforms).
+  const pageFromFile = (file: string, slug?: string, level?: number): SessionPage => {
+    const fileInfo = selectors.selectFileInfo(state, file);
+    const frontmatter = cache.$getMdast(file)?.post?.frontmatter ?? {};
+    return {
+      title: fileInfo.title ?? undefined,
+      short_title: fileInfo.short_title ?? undefined,
+      description: fileInfo.description ?? undefined,
+      tags: fileInfo.tags ?? undefined,
+      date: fileInfo.date ?? undefined,
+      ...frontmatter,
+      slug,
+      url: fileInfo.url ?? undefined,
+      file,
+      filename: path.basename(file),
+      level,
+    };
+  };
+  // The project index page is tracked separately from the rest of the pages
+  pages.push(pageFromFile(proj.file, proj.index, 1));
+  proj.pages.forEach((tocEntry) => {
+    if ('file' in tocEntry) {
+      pages.push(pageFromFile(tocEntry.file, tocEntry.slug, tocEntry.level));
+    } else if ('url' in tocEntry) {
+      pages.push({ title: tocEntry.title, url: tocEntry.url, level: tocEntry.level });
+    }
+  });
+  const site: SessionSite | undefined = siteConfig
+    ? {
+        title: siteConfig.title,
+        description: siteConfig.description,
+        options: siteConfig.options,
+        nav: siteConfig.nav,
+        actions: siteConfig.actions,
+        domains: siteConfig.domains,
+        template: siteConfig.template,
+      }
+    : undefined;
+  return {
+    slug: projectSlug,
+    index: proj.index,
+    title: manifestTitleFromProject(session, resolvedProjectPath),
+    pages,
+    site,
+  };
+}
 
 export async function transformMdast(
   session: ISession,
@@ -220,9 +294,17 @@ export async function transformMdast(
     .use(inlineMathSimplificationPlugin, { replaceSymbol: false })
     .use(mathPlugin, { macros: frontmatter.math });
   // Load custom transform plugins
+  const documentSessionProject = getSessionProject(session, projectPath);
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'document') return;
-    pipe.use(t.plugin, undefined, pluginUtils);
+    pipe.use(t.plugin, undefined, {
+      select,
+      selectAll,
+      unstableSession: {
+        page: { slug: pageSlug, frontmatter },
+        project: documentSessionProject,
+      },
+    });
   });
 
   pipe
@@ -376,9 +458,17 @@ export async function postProcessMdast(
   await transformMystXRefs(session, vfile, mdast, frontmatter);
   await embedTransform(session, mdast, file, dependencies, state);
   const pipe = unified();
+  const projectSessionProject = getSessionProject(session, projectPath);
   session.plugins?.transforms.forEach((t) => {
     if (t.stage !== 'project') return;
-    pipe.use(t.plugin, undefined, pluginUtils);
+    pipe.use(t.plugin, undefined, {
+      select,
+      selectAll,
+      unstableSession: {
+        page: { slug: mdastPost.slug, frontmatter },
+        project: projectSessionProject,
+      },
+    });
   });
   await pipe.run(mdast, vfile);
 
