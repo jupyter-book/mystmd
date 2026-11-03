@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import MarkdownIt from 'markdown-it';
-import { rolePlugin, directivePlugin } from '../src';
+import { rolePlugin, directivePlugin, colonFencePlugin } from '../src';
 
 const plugin = (md: MarkdownIt) => {
   md.use(rolePlugin).use(directivePlugin);
@@ -210,5 +210,32 @@ describe('parses directives', () => {
     expect(tokens[6].info).toEqual('class');
     expect(tokens[6].meta.value).toEqual('b');
     expect(tokens[6].content).toEqual('b');
+  });
+  it('inline directive options can contain roles', () => {
+    const mdit = MarkdownIt().use(colonFencePlugin).use(plugin);
+    const tokens = mdit.parse(':::{ab a="x {u}`y`"} arg\n:::', {});
+    expect(tokens[0].type).toEqual('parsed_directive_open');
+    expect(tokens[0].info).toEqual('ab');
+    expect(tokens[0].meta.arg).toEqual('arg');
+    expect(tokens[0].meta.options).toEqual({ a: 'x {u}`y`' });
+    const option = tokens.find(
+      (t, i) => t.type === 'inline' && tokens[i - 1]?.type === 'myst_option_open',
+    );
+    const role = option?.children?.find((c) => c.type === 'parsed_role_open');
+    expect(role?.info).toEqual('u');
+  });
+  it('a quoted "}" does not close the directive braces', () => {
+    const mdit = MarkdownIt().use(colonFencePlugin).use(plugin);
+    const tokens = mdit.parse(':::{ab a="}"} arg\n:::', {});
+    expect(tokens[0].type).toEqual('parsed_directive_open');
+    expect(tokens[0].meta.options).toEqual({ a: '}' });
+    expect(tokens[0].meta.arg).toEqual('arg');
+  });
+  it('many quoted options and no closing "}" is not a directive', () => {
+    // An overlapping regex takes exponential time here
+    const mdit = MarkdownIt().use(colonFencePlugin).use(plugin);
+    const attrs = Array.from({ length: 30 }, (_, i) => `a${i}="x"`).join(' ');
+    const tokens = mdit.parse(`:::{ab ${attrs}\n:::`, {});
+    expect(tokens[0].type).toEqual('fence');
   });
 });
