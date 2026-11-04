@@ -1,4 +1,5 @@
 import type { DirectiveSpec, DirectiveData, GenericNode } from 'myst-common';
+import { addCommonDirectiveOptions, commonDirectiveOptions } from 'myst-directives';
 
 const HEADER_REGEX = /((?<before>[\s\S]*?)\s+){0,1}\^\^\^(\s+(?<after>[\s\S]*)){0,1}/;
 
@@ -10,6 +11,7 @@ export const cardDirective: DirectiveSpec = {
     doc: 'The title of the card, usually shown as bolded text at the top of the card.',
   },
   options: {
+    ...commonDirectiveOptions('card'),
     url: {
       type: String,
       alias: ['link'],
@@ -92,13 +94,13 @@ export const cardDirective: DirectiveSpec = {
         children: footerChildren,
       });
     }
-    return [
-      {
-        type: 'card',
-        url: url as string | undefined,
-        children,
-      },
-    ];
+    const card = {
+      type: 'card',
+      url: url as string | undefined,
+      children,
+    };
+    addCommonDirectiveOptions(data, card);
+    return [card];
   },
 };
 
