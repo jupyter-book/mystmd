@@ -362,7 +362,8 @@ export function selectPageReferenceStates(
   let previousCounts: TargetCounts | undefined;
   const pageReferenceStates: ReferenceState[] = pages
     .map(({ file, hidden }: { file: string; hidden?: boolean }) => {
-      const { frontmatter, identifiers, mdast, kind } = cache.$getMdast(file)?.post ?? {};
+      const { frontmatter, identifiers, mdast, kind, firstDepth } =
+        cache.$getMdast(file)?.post ?? {};
       const vfile = new VFile();
       vfile.path = file;
 
@@ -375,6 +376,7 @@ export function selectPageReferenceStates(
         previousCounts,
         vfile,
         hidden,
+        firstDepth,
       });
       if (frontmatter && !frontmatter.enumerator) {
         frontmatter.enumerator = state.enumerator;
