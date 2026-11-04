@@ -1,4 +1,3 @@
-export * from './logger.js';
 export * from './manifest.js';
 export * from './prepare.js';
 export * from './start.js';
