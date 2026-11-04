@@ -4,7 +4,7 @@ import { cardDirective, splitParagraphNode } from '../src';
 
 describe('card directive', () => {
   it('card directive parses', async () => {
-    const content = '```{card} Card Title\nHeader\n^^^\n\nCard content\n+++\nFooter\n```';
+    const content = '```{card .foo} Card Title\nHeader\n^^^\n\nCard content\n+++\nFooter\n```';
     const expected = {
       type: 'root',
       children: [
@@ -12,6 +12,9 @@ describe('card directive', () => {
           type: 'mystDirective',
           name: 'card',
           args: 'Card Title',
+          options: {
+            class: 'foo',
+          },
           value: 'Header\n^^^\n\nCard content\n+++\nFooter',
           position: {
             start: {
@@ -26,6 +29,7 @@ describe('card directive', () => {
           children: [
             {
               type: 'card',
+              class: 'foo',
               children: [
                 {
                   type: 'header',
