@@ -1,6 +1,6 @@
 {
   "name": "myst-frontmatter",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "sideEffects": false,
   "license": "MIT",
   "description": "Frontmatter types and validation for the mystmd ecosystem",
@@ -37,7 +37,7 @@
     "orcid": "^1.0.0",
     "simple-validators": "^1.2.1",
     "spdx-correct": "^3.2.0",
-    "myst-toc": "^0.1.5"
+    "myst-toc": "^0.2.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.5",
