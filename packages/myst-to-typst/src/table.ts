@@ -24,25 +24,24 @@ function countHeaderRows(table: GenericNode) {
 export const tableHandler: Handler = (node, state) => {
   const prevState = state.data.isInTable;
   state.data.isInTable = true;
-  const command = state.data.isInFigure ? 'tablex' : '#tablex';
+
+  const command = state.data.isInFigure ? 'table' : '#table';
   const columns = countColumns(node);
+
   if (!columns) {
     fileError(state.file, 'Unable to count table columns', {
       node,
       source: 'myst-to-typst',
     });
+    state.data.isInTable = prevState;
     return;
   }
-  state.useMacro('#import "@preview/tablex:0.0.9": tablex, cellx, hlinex, vlinex');
-  // These two separate style hooks are somewhat redundant, but they allow defining
-  // article-wide styles and single-table styles separately
-  state.useMacro('#let tableStyle = (:)');
-  state.useMacro('#let columnStyle = (:)');
-  state.write(
-    `${command}(columns: ${columns}, header-rows: ${countHeaderRows(node)}, repeat-header: true, ..tableStyle, ..columnStyle,\n`,
-  );
+
+  state.write(`${command}(columns: ${columns},\n`);
+
   state.renderChildren(node, 1);
   state.write(')\n');
+
   state.data.isInTable = prevState;
 };
 
