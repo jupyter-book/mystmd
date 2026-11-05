@@ -47,6 +47,13 @@ export function validateGithubUrl(value: any, opts: ValidationOptions) {
       github = `https://github.com/${repo}`;
     }
   }
+  
+  // For GitHub Enterprise URLs (gh.something.com), just validate as a URL without domain restriction
+  if (typeof github === 'string' && github.startsWith('https://gh.') && github.includes('.com/')) {
+    return validateUrl(github, incrementOptions('github', opts));
+  }
+  
+  // For standard GitHub URLs, keep the existing validation
   return validateUrl(github, {
     ...incrementOptions('github', opts),
     includes: 'github',
