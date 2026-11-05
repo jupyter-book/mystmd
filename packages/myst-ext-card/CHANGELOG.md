@@ -1,5 +1,12 @@
 # myst-ext-card
 
+## 1.0.11
+
+### Patch Changes
+
+- 3cc7340: Fix `class` support in card
+  - myst-common@1.10.3
+
 ## 1.0.10
 
 ### Patch Changes
