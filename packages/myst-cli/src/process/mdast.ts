@@ -335,7 +335,8 @@ export async function postProcessMdast(
   const projectPath = selectors.selectCurrentProjectPath(storeState);
   const siteConfig = selectors.selectCurrentSiteConfig(storeState);
   const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
-  if (site) {
+  // Building the project pages is expensive, so only do it if this page has a toc
+  if (site && select('toc', mdast)) {
     buildTocTransform(
       mdast,
       vfile,
