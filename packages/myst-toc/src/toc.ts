@@ -23,7 +23,7 @@ import {
   validateChoice,
 } from 'simple-validators';
 
-const COMMON_ENTRY_KEYS = ['title', 'hidden', 'searchable'];
+const COMMON_ENTRY_KEYS = ['title', 'hidden', 'searchable', 'open'];
 // Not yet supported: 'numbering', 'id', 'class'
 
 function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions): CommonEntry {
@@ -38,6 +38,10 @@ function validateCommonEntry(entry: Record<string, any>, opts: ValidationOptions
 
   if (defined(entry.searchable)) {
     output.searchable = validateBoolean(entry.searchable, incrementOptions('searchable', opts));
+  }
+
+  if (defined(entry.open)) {
+    output.open = validateBoolean(entry.open, incrementOptions('open', opts));
   }
 
   // if (defined(entry.numbering)) {
