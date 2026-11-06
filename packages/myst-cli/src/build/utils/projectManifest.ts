@@ -29,7 +29,7 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
         const bannerOptimized = fileInfo.bannerOptimized ?? '';
         const date = fileInfo.date ?? '';
         const tags = fileInfo.tags ?? [];
-        const { slug, level, file } = tocEntry;
+        const { slug, level, file, open } = tocEntry;
         const { frontmatter } = cache.$getMdast(file)?.post ?? {};
         const projectPage: ManifestProject['pages'][0] = {
           slug,
@@ -44,16 +44,18 @@ export async function manifestPagesFromProject(session: ISession, projectPath: s
           tags,
           level,
           enumerator: frontmatter?.enumerator,
+          open,
         };
         return projectPage;
       }
       if ('url' in tocEntry) {
-        const { title, url, open_in_same_tab, level } = tocEntry;
+        const { title, url, open_in_same_tab, level, open } = tocEntry;
         const externalURL: ManifestProject['pages'][0] = {
           title,
           url,
           open_in_same_tab,
           level,
+          open,
         };
         return externalURL;
       }

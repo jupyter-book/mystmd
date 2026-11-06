@@ -134,6 +134,7 @@ describe.each([
     ['hidden', true, true],
     ['searchable', true, true],
     ['searchable', false, true],
+    ['open', true, true],
     // unsupported keys are dropped with a warning
     ['numbering', '1.2.3', false],
     ['id', 'foo', false],

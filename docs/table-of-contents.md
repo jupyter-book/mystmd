@@ -238,6 +238,30 @@ project:
 
 The index page (the first `toc` entry) is always searchable (even with `searchable: false`).
 
+(open-in-toc)=
+
+### Expanding sections by default
+
+The navigation expands the section that contains the current page.
+To also expand other sections on page load, add `open: true` to an entry with `children`:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    - file: index.md
+    - title: Week 1
+      children:
+        - file: week1/lecture.md
+    - title: Week 2
+      open: true
+      children:
+        - file: week2/lecture.md
+```
+
+The reader can still collapse an open section.
+
 ## In-page table of contents
 
 The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page. This can be done at the `project`, `page`, or `section`, level.
