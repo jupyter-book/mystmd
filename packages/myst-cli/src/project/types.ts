@@ -16,6 +16,8 @@ export type LocalProjectFolder = {
   level: PageLevels;
   /** Expand the folder's children in the navigation on page load */
   open?: boolean;
+  /** Identifier for links to the folder in the navigation */
+  id?: string;
 };
 
 export type LocalProjectPage = {

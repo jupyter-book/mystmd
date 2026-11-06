@@ -181,7 +181,7 @@ export function validateParentEntry(entry: any, opts: ValidationOptions): Parent
     entry,
     {
       required: ['title', 'children'],
-      optional: [...COMMON_ENTRY_KEYS],
+      optional: [...COMMON_ENTRY_KEYS, 'id'],
     },
     opts,
   );
@@ -205,12 +205,14 @@ export function validateParentEntry(entry: any, opts: ValidationOptions): Parent
   }
 
   const commonEntry = validateCommonEntry(intermediate, opts);
+  const output: ParentEntry = { children, title, ...commonEntry };
 
-  return {
-    children,
-    title,
-    ...commonEntry,
-  };
+  if (defined(intermediate.id)) {
+    const id = validateString(intermediate.id, incrementOptions('id', opts));
+    if (id) output.id = id;
+  }
+
+  return output;
 }
 
 export function validateEntry(entry: any, opts: ValidationOptions): Entry | undefined {

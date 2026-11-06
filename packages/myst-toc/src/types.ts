@@ -19,6 +19,8 @@ export type CommonEntry = {
 export type ParentEntry = {
   children: Entry[];
   title: string;
+  /** Identifier for links to the entry in the navigation */
+  id?: string;
 } & CommonEntry;
 
 /**

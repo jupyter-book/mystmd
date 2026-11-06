@@ -198,7 +198,8 @@ function pagesFromEntries(
     } else {
       // Parent Entry - may be a "part" with level -1
       entryLevel = level < -1 ? -1 : level;
-      pages.push({ level: entryLevel, title: entry.title, open: entry.open });
+      const { title, open, id } = entry as ParentEntry;
+      pages.push({ level: entryLevel, title, open, id });
     }
 
     // Do we have any children?
