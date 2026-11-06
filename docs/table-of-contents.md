@@ -260,7 +260,7 @@ project:
         - file: week2/lecture.md
 ```
 
-The reader can still collapse an open section.
+The reader can still collapse an open section, except in static site renders.
 
 ## In-page table of contents
 
