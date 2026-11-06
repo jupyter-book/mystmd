@@ -69,9 +69,7 @@ cases:
             - type: text
               value: 'which is set in '
             - type: inlineCode
-              children:
-                - type: text
-                  value: spie.cls
+              value: spie.cls
             - type: text
               value: '.'
   - title: textrm --> text
