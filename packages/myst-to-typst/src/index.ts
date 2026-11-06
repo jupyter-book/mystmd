@@ -80,6 +80,14 @@ const tabItem = `
 
 const INDENT = '  ';
 
+const TYPST_NUMBERED_KINDS = new Set(['figure', 'table', 'equation', 'code']);
+
+function isAutoNumberedReference(node: CrossReference): boolean {
+  const { kind, enumerator } = node as any;
+  if (!TYPST_NUMBERED_KINDS.has(kind) || enumerator == null) return false;
+  return toText(node as any).includes(String(enumerator));
+}
+
 const linkHandler = (node: any, state: ITypstSerializer) => {
   const href = node.url;
   state.write('#link("');
@@ -372,14 +380,17 @@ const handlers: Record<string, Handler> = {
       });
       return;
     }
-    if (node.children && node.children.length > 0) {
+     if (isAutoNumberedReference(node)) {
+      // Let typst resolve supplement + number so it stays in sync with the document
+      state.write(`#ref(${typstLabel(id)})`);
+    } else if (node.children && node.children.length > 0) {
       state.write(`#link(${typstLabel(id)})[`);
       state.renderChildren(node);
       state.write(']');
     } else if (!isTypstSafeIdentifier(id)) {
       // The `@id` shorthand below is only valid for safe identifiers.
       state.write(`#ref(${typstLabel(id)})`);
-    } else {
+    }  else {
       // Note that we don't need to protect against the previous character as text
       const next = nextCharacterIsText(parent, node);
       state.write(next ? `#[@${id}]` : `@${id}`);
