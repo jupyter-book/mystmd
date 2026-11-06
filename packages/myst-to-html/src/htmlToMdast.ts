@@ -27,11 +27,11 @@ export function createMdastNode(
   node: any,
   type: string,
   attrs: Record<string, any> = {},
-  children?: MdastNodes[] | string,
+  childrenOrValue?: MdastNodes[] | string,
 ): GenericNode {
   const result: GenericNode = { type, ...attrs };
-  if (typeof children === 'string') result.value = children;
-  else if (children) result.children = children as GenericNode[];
+  if (typeof childrenOrValue === 'string') result.value = childrenOrValue;
+  else if (childrenOrValue) result.children = childrenOrValue as GenericNode[];
   state.patch(node, result as any);
   return result;
 }
