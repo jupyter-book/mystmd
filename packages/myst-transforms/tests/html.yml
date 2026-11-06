@@ -145,6 +145,40 @@ cases:
           children:
             - type: text
               value: a
+  - title: breaks at the edges of nested inline html are dropped
+    opts:
+      keepBreaks: false
+    before:
+      type: root
+      children:
+        - type: html
+          value: <em><br />a<br /></em><strong><br /></strong>
+    after:
+      type: root
+      children:
+        - type: emphasis
+          children:
+            - type: text
+              value: a
+        - type: strong
+          children: []
+  - title: breaks at the edges of nested inline html are kept with keepBreaks
+    before:
+      type: root
+      children:
+        - type: html
+          value: <em><br />a<br /></em>
+    after:
+      type: root
+      children:
+        - type: paragraph
+          children:
+            - type: emphasis
+              children:
+                - type: break
+                - type: text
+                  value: a
+                - type: break
   - title: breaks next to block html leave no empty paragraphs
     opts:
       keepBreaks: false

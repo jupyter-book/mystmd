@@ -7,7 +7,7 @@ import type { Nodes as MdastNodes } from 'mdast';
 import { remove } from 'unist-util-remove';
 import { selectAll } from 'unist-util-select';
 import { visit } from 'unist-util-visit';
-import type { GenericNode } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 
 export type HtmlToMdastOptions = {
   htmlHandlers?: { [x: string]: Handle };
@@ -40,25 +40,42 @@ function brKeep(state: State, node: any) {
   return createMdastNode(state, node, '_break');
 }
 
+/** Drop `break` nodes at the start and end of `nodes` */
+function dropSurroundingBreaks(nodes: GenericNode[]): GenericNode[] {
+  let start = 0;
+  let end = nodes.length;
+  while (start < end && nodes[start].type === 'break') start++;
+  while (end > start && nodes[end - 1].type === 'break') end--;
+  return nodes.slice(start, end);
+}
+
 /**
- * Bring hast-util-to-mdast@10 output in line with what earlier versions produced
+ * Bring hast-util-to-mdast@10 output closer to what earlier versions produced
  *
- * - Runs of phrasing content that hold only breaks are wrapped in paragraphs, and
- *   then emptied when the surrounding breaks are dropped; earlier versions omitted them.
- * - Breaks at the start or end of the fragment are kept; earlier versions dropped them.
+ * hast-util-to-mdast@8 dropped breaks at the start and end of the children of *every*
+ * parent; version 10 only does so in paragraphs, including the ones it creates to wrap
+ * runs of phrasing content. So:
+ *
+ * - Breaks at the start and end of the children of any node are dropped, as before.
+ * - Empty paragraphs are removed; version 10 leaves them where a run of phrasing
+ *   content held only breaks.
+ *
+ * This only affects `break` nodes, so breaks kept with `keepBreaks` (still `_break`
+ * at this point) are left alone. One difference remains: breaks between block elements,
+ * such as `<div>a</div><br /><div>b</div>`, used to be kept in a paragraph of their own,
+ * and are now dropped.
  */
 function normalizeBreaks(children: GenericNode[]): GenericNode[] {
-  const root = { type: 'root', children };
+  const root: GenericParent = { type: 'root', children };
   remove(
     root,
     { cascade: false },
     (n: GenericNode) => n.type === 'paragraph' && !n.children?.length,
   );
-  let start = 0;
-  let end = root.children.length;
-  while (start < end && root.children[start].type === 'break') start++;
-  while (end > start && root.children[end - 1].type === 'break') end--;
-  return root.children.slice(start, end);
+  visit(root, (n: GenericNode) => {
+    if (n.children) n.children = dropSurroundingBreaks(n.children);
+  });
+  return root.children;
 }
 
 /**
