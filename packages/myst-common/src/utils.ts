@@ -1,6 +1,6 @@
 import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
-import type { Position } from 'unist';
+import type { Node as UnistNode, Position } from 'unist';
 import { customAlphabet } from 'nanoid';
 import type { Node, Parent, PhrasingContent } from 'myst-spec';
 import type { RuleId } from './ruleids.js';
@@ -208,7 +208,7 @@ export function setTextAsChild(node: Partial<Parent>, text: string) {
  * @returns A string. An empty string is returned in case no
  * textual representation could be extracted.
  */
-export function toText(content?: { type: string }[] | { type: string } | null): string {
+export function toText(content?: UnistNode[] | UnistNode | null): string {
   if (!content) return '';
   if (!Array.isArray(content)) return toText([content]);
   return (content as PhrasingContent[])
