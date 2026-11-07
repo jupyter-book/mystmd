@@ -61,6 +61,7 @@ For DOIs with multiple slashes in the identifier you also have to use the full h
 ### Numbered Citations
 
 The default citations are narrative, for numbered citations, these can be set in the `site.options.numbered_references` in your `myst.yml` (See [](#site-options)).
+For numbered citations in all exports, use a numeric [citation style](#citation-styles), for example `ieee`.
 
 ```{code} yaml
 :filename: myst.yml
@@ -96,6 +97,117 @@ bibliography:
 ```
 
 The remote BibTeX can be helpful for working with reference managers that support remote links to your references.
+
+(citation-styles)=
+
+## Citation Styles
+
+MyST uses the [Citation Style Language](https://citationstyles.org) (CSL) to format citations and the bibliography.
+The default style is APA.
+To use a different style, set `citation_style` in the project or page frontmatter:
+
+```{code} yaml
+:filename: myst.yml
+project:
+  bibliography:
+    - references.bib
+  citation_style: ieee
+```
+
+The value of `citation_style` can be:
+
+- `apa`, `vancouver`, or `harvard1`. These styles are included in MyST.
+- The name of a style in the [CSL style repository](https://github.com/citation-style-language/styles), for example `ieee`, `chicago-author-date`, or `nature`. MyST downloads the style and keeps it in the `_build` cache.
+- A path to a local `.csl` file, for example `styles/my-journal.csl`. In `myst.yml`, the path is relative to `myst.yml`. In page frontmatter, the path is relative to the page.
+- A URL of a `.csl` file.
+
+You can find styles with the [Zotero style repository](https://www.zotero.org/styles).
+If a style is a _dependent_ style (a journal that uses the format of a different style), MyST loads its parent style.
+If MyST cannot load the style, it shows a warning and uses APA.
+
+### Bibliography Files and CSL Styles
+
+A CSL style specifies the format.
+A bibliography file specifies the data.
+You can use a BibTeX file with any CSL style.
+MyST converts each BibTeX entry to CSL data, and the style formats that data.
+
+The conversion from BibTeX to CSL has some limits:
+
+- Braces that protect capitalization, for example `{NumPy}`, are kept. Styles that change titles to title case or sentence case do not change protected text.
+- Some LaTeX commands in fields, for example accents or math, can show incorrectly.
+- Some BibTeX fields have no CSL equivalent, for example `howpublished` and `crossref`. Each style shows these fields differently, or does not show them.
+
+### How MyST Formats Citations
+
+MyST formats all citations on a page together, in the order that they occur:
+
+- Numeric styles, for example `ieee`, give each reference a number in the order of its first citation. The numbers start at 1 on each page.
+- Author-date styles, for example `apa`, add a letter to the year when one author has more than one work in the same year, for example `2019a` and `2019b`.
+- The style sorts the bibliography. Author-date styles usually sort by author. Numeric styles usually sort by number.
+- The style sorts the citations in a group, for example `[@smith2019; @jones2020]`.
+- A narrative citation, for example `@smith2019`, shows the authors and the citation, for example "Smith (2019)" or "Smith [1]".
+- Each citation in a group is a separate link. Thus, MyST does not combine citations into ranges, for example, `[1]–[3]`, or combine works by the same author, for example "Smith 2019a, 2019b".
+- Styles for footnote citations (CSL "note" styles) show the citation in the text, not in a footnote.
+
+The `site.options.numbered_references` option of the book theme shows the reference number in place of the citation text.
+With a numeric citation style, you do not need this option.
+
+### Citation Styles in Exports
+
+Each export uses one of two modes for citations:
+
+`rendered`
+: MyST formats the citations and the bibliography with the CSL style.
+  The export contains the formatted text.
+
+`native`
+: MyST writes a bibliography file and citation commands.
+  The typesetting tool formats the citations with the style of the template.
+
+```{list-table} Citation modes of exports
+:header-rows: 1
+* - Export
+  - Mode
+  - Style of the citations
+* - Website
+  - `rendered`
+  - `citation_style`
+* - Word (`.docx`)
+  - `rendered`
+  - `citation_style`
+* - JATS
+  - `rendered`
+  - `citation_style`
+* - $\LaTeX$ and PDF
+  - `native`
+  - The template. MyST writes `main.bib` and `\cite` commands. The template sets the style with natbib (`\bibliographystyle`) or biblatex (`style=`).
+* - Typst and PDF
+  - `native`
+  - The template. MyST writes `main.bib` and `#cite` commands.
+```
+
+Use `native` mode to submit a document to a journal.
+Journals usually supply a template with their BibTeX or biblatex style, and some journals require the `.bib` or `.bbl` file.
+In `native` mode, `citation_style` has no effect on the export.
+
+:::{note} Planned: `rendered` mode for $\LaTeX$ and Typst
+A `citations` export option will select the mode for $\LaTeX$ and Typst exports:
+
+```{code} yaml
+:filename: myst.yml
+project:
+  citation_style: ieee
+  exports:
+    - format: pdf
+      template: lapreprint
+      citations: rendered
+```
+
+In `rendered` mode, MyST writes the formatted citations and a `thebibliography` environment, so the PDF and the website show the same citations.
+The template must not load natbib or biblatex in `rendered` mode.
+In `native` mode, Typst can also use `citation_style`, because Typst reads CSL styles.
+:::
 
 ## Markdown Citations
 

@@ -55,6 +55,7 @@
         "@citation-js/core": "^0.7.18",
         "@citation-js/plugin-bibtex": "^0.7.18",
         "@citation-js/plugin-csl": "^0.7.18",
+        "citeproc": "^2.4.6",
         "doi-utils": "^2.0.5",
         "he": "^1.2.0",
         "sanitize-html": "^2.7.0",

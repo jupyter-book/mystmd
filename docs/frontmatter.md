@@ -73,6 +73,9 @@ project:
 * - `bibliography`
   - a list of strings specifying file paths to bibliography files (see [](./citations.md))
   - project
+* - `citation_style`
+  - a CSL style name, a path to a `.csl` file, or a URL (see [](#citation-styles))
+  - page can override project
 * - `date`
   - a valid date formatted string
   - page can override project
