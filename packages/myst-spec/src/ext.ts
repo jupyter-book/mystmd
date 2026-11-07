@@ -169,6 +169,12 @@ export type CiteGroup = {
   type: 'citeGroup';
   kind: CiteKind;
   children: Cite[];
+  /** Text before the first cite, from the citation style */
+  open?: string;
+  /** Text after the last cite, from the citation style */
+  close?: string;
+  /** Text between cites, from the citation style */
+  delimiter?: string;
 };
 
 export type SiUnit = {

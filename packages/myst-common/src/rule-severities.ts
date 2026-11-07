@@ -105,7 +105,7 @@ export const RULE_DEFAULT_SEVERITY: Record<RuleId, 'error' | 'warn'> = {
   // Citation rules
   [RuleId.citationIsUnique]: 'warn', // addWarningForFile in packages/myst-cli/src/process/citations.ts
   [RuleId.bibFileExists]: 'error', // Uses both error (5×) and warn (1×); addWarningForFile in packages/myst-cli/src/project/load.ts, p...
-  [RuleId.citationRenders]: 'error', // addWarningForFile in packages/myst-cli/src/transforms/citations.ts
+  [RuleId.citationRenders]: 'error', // Uses both error (1×) and warn (1×); addWarningForFile in packages/myst-cli/src/process/citations....
   // Code rules
   [RuleId.codeMetadataLifted]: 'warn', // fileWarn in packages/myst-cli/src/transforms/code.ts
   [RuleId.codeMetatagsValid]: 'error', // Uses both error (1×) and warn (2×); fileError, fileWarn in packages/myst-cli/src/transforms/code.ts
