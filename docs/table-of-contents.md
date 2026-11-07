@@ -238,6 +238,54 @@ project:
 
 The index page (the first `toc` entry) is always searchable (even with `searchable: false`).
 
+(open-in-toc)=
+
+### Expanding sections by default
+
+The navigation expands the section that contains the current page.
+To also expand other sections on page load, add `open: true` to an entry with `children`:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    - file: index.md
+    - title: Week 1
+      children:
+        - file: week1/lecture.md
+    - title: Week 2
+      open: true
+      children:
+        - file: week2/lecture.md
+```
+
+The reader can still collapse an open section.
+
+(id-in-toc)=
+
+### Linking to a section without a page
+
+A `title` entry with `children` has no page of its own.
+The navigation still gives it a URL: the page that contains it, with a `toc` query parameter.
+For example, `/lectures?toc=week-2` opens the `lectures` page and expands `Week 2` in the navigation.
+To get the URL, copy the link of the entry in the navigation.
+
+By default, the theme makes the identifier from the title.
+To keep the URL when the title changes, add an `id`:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    - file: index.md
+    - title: Week 2
+      id: week-2
+      children:
+        - file: week2/lecture.md
+```
+
 ## In-page table of contents
 
 The {myst:directive}`toc` directive displays a list of titles and links for all headers that follow on the page. This can be done at the `project`, `page`, or `section`, level.

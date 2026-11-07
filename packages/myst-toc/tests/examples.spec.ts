@@ -122,6 +122,14 @@ test('invalid toc entry', () => {
   expect(opts.messages.warnings).toBeUndefined();
 });
 
+test('Single parent entry with id', () => {
+  const input = [{ title: 'Week 2', id: 'week-2', children: [{ file: 'foo.md' }] }];
+  const toc = validateTOC(input, opts);
+  expect(opts.messages.errors?.length).toBeFalsy();
+  expect(opts.messages.warnings).toBeUndefined();
+  expect(toc).toStrictEqual(input);
+});
+
 // optional properties
 
 describe.each([
@@ -134,6 +142,7 @@ describe.each([
     ['hidden', true, true],
     ['searchable', true, true],
     ['searchable', false, true],
+    ['open', true, true],
     // unsupported keys are dropped with a warning
     ['numbering', '1.2.3', false],
     ['id', 'foo', false],
