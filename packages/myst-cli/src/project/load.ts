@@ -37,8 +37,7 @@ export async function loadProjectFromDisk(
 ): Promise<LocalProject> {
   path = path || resolve('.');
   if (!opts?.reloadProject) {
-    // Return the stored project as is, like a fresh load below does, instead of a deep copy
-    const cachedProject = session.store.getState().local.projects[resolve(path)];
+    const cachedProject = selectors.selectLocalProjectFrozen(session.store.getState(), path);
     if (cachedProject) return cachedProject;
   }
   await loadConfig(session, path, opts);

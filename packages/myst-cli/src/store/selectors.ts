@@ -13,6 +13,11 @@ export function selectLocalProject(state: RootState, path: string): LocalProject
   return mutableCopy(state.local.projects[resolve(path)]);
 }
 
+/** Return the stored project without a copy; the store freezes it, so do not modify it */
+export function selectLocalProjectFrozen(state: RootState, path: string): LocalProject | undefined {
+  return state.local.projects[resolve(path)];
+}
+
 export function selectAffiliation(state: RootState, id: string): string | undefined {
   return state.local.affiliations[id];
 }
