@@ -38,7 +38,7 @@ export async function loadProjectFromDisk(
 ): Promise<Frozen<LocalProject>> {
   path = path || resolve('.');
   if (!opts?.reloadProject) {
-    const cachedProject = selectors.selectLocalProjectFrozen(session.store.getState(), path);
+    const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
     if (cachedProject) return cachedProject;
   }
   await loadConfig(session, path, opts);

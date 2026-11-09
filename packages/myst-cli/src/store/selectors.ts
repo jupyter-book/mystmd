@@ -11,11 +11,6 @@ export function selectLocalProject(
   return state.local.projects[resolve(path)];
 }
 
-/** Return the project state, immutable by default; see `selectLocalProject` for a mutable copy */
-export function selectLocalProjectFrozen(state: RootState, path: string): LocalProject | undefined {
-  return state.local.projects[resolve(path)];
-}
-
 export function selectAffiliation(state: RootState, id: string): string | undefined {
   return state.local.affiliations[id];
 }
@@ -49,18 +44,6 @@ export function selectLocalProjectConfig(
   path: string,
 ): Frozen<ProjectConfig> | undefined {
   return state.local.config.projects[resolve(path)];
-}
-
-/** Return a mutable copy of the project config without the toc, which grows with the project */
-export function selectLocalProjectFrontmatter(
-  state: RootState,
-  path: string,
-): ProjectConfig | undefined {
-  const config = state.local.config.projects[resolve(path)];
-  if (!config) return undefined;
-  const frontmatter = { ...config } as ProjectConfig;
-  delete frontmatter.toc;
-  return structuredClone(frontmatter);
 }
 
 export function selectCurrentProjectConfig(state: RootState): Frozen<ProjectConfig> | undefined {

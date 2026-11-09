@@ -15,6 +15,7 @@ export * from './resolveFrontmatterParts.js';
 export * from './shouldIgnoreFile.js';
 export * from './toc.js';
 export * from './uniqueArray.js';
+export * from './mutableCopy.js';
 export * from './github.js';
 export * from './whiteLabelling.js';
 export * from './fetchWithRetry.js';
