@@ -108,6 +108,15 @@ export type TransformFn = (
   opts: Parameters<typeof transformMdast>[1],
 ) => Promise<void>;
 
+/** Set the title numbering offset if it is not set. */
+export function setTitleOffset(frontmatter: PageFrontmatter, offset: number) {
+  if (frontmatter.numbering?.title?.offset != null) return;
+  frontmatter.numbering = {
+    ...frontmatter.numbering,
+    title: { ...frontmatter.numbering?.title, offset },
+  };
+}
+
 export async function transformMdast(
   session: ISession,
   opts: {
@@ -172,11 +181,7 @@ export async function transformMdast(
     },
     projectPath,
   );
-  if (offset) {
-    if (!frontmatter.numbering) frontmatter.numbering = {};
-    if (!frontmatter.numbering.title) frontmatter.numbering.title = {};
-    if (frontmatter.numbering.title.offset == null) frontmatter.numbering.title.offset = offset;
-  }
+  if (offset) setTitleOffset(frontmatter, offset);
   await addEditUrl(session, frontmatter, file);
   const references: References = {
     cite: { order: [], data: {} },
