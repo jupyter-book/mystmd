@@ -3,7 +3,7 @@ import path from 'node:path';
 import { SPEC_VERSION } from '../../spec-version.js';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
+import type { SiteAction, SiteExport, SiteManifest, SiteNavItem } from 'myst-config';
 import type { Download } from 'myst-frontmatter';
 import {
   EXT_TO_FORMAT,
@@ -107,13 +107,11 @@ export async function resolvePageDownloads(
       // Validation will catch this earlier
       if (!idOrUrl) return undefined;
       const exp = expLookup[idOrUrl];
-      if (exp) {
-        download.format = exp.format;
-        download.url = exp.output;
-        download.static = true;
-      }
-      if (!download.url) return undefined;
-      return resolveSiteAction(session, download as SiteAction, file, 'downloads');
+      const action = exp
+        ? { ...download, format: exp.format, url: exp.output, static: true }
+        : download;
+      if (!action.url) return undefined;
+      return resolveSiteAction(session, action as SiteAction, file, 'downloads');
     })
     .filter((download): download is SiteAction => !!download);
   return resolvedDownloads;
@@ -399,7 +397,7 @@ export async function getSiteManifest(
     myst: version,
     ...validatedFrontmatter,
     parts,
-    nav: nav || [],
+    nav: nav ? (structuredClone(nav) as SiteNavItem[]) : [],
     actions: actions || [],
     projects: siteProjects,
   };

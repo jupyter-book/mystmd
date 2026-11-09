@@ -17,6 +17,7 @@ import { projectFromTOC, projectFromSphinxTOC } from '../../project/fromTOC.js';
 
 import { loadProjectFromDisk } from '../../project/load.js';
 import type { LocalProject, PageLevels } from '../../project/types.js';
+import type { Frozen } from '../../store/types.js';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import type {
@@ -35,12 +36,12 @@ type ResolvedArticles = Pick<Export, 'articles' | 'sub_articles'>;
 
 export function resolveArticlesFromProject(
   exp: ExportWithFormat,
-  proj: Omit<LocalProject, 'bibliography'>,
+  proj: Frozen<Omit<LocalProject, 'bibliography'>>,
   vfile: VFile,
 ): ResolvedArticles {
   const { file, pages } = proj;
   const fileAsPage = { file, level: 1 };
-  const articles = pages?.length ? pages : [fileAsPage];
+  const articles = pages?.length ? [...pages] : [fileAsPage];
   if (MULTI_ARTICLE_EXPORT_FORMATS.includes(exp.format)) {
     return { articles };
   }
@@ -68,7 +69,7 @@ export function resolveArticlesFromProject(
 function resolveArticlesFromTOC(
   session: ISession,
   exp: ExportWithFormat,
-  toc: TOC,
+  toc: Readonly<TOC>,
   projectPath: string,
   vfile: VFile,
 ): ResolvedArticles {

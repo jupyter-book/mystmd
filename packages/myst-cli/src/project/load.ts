@@ -6,6 +6,7 @@ import { RuleId } from 'myst-common';
 import { loadConfig } from '../config.js';
 import { combineProjectCitationRenderers } from '../process/citations.js';
 import { loadFile } from '../process/file.js';
+import type { Frozen } from '../store/types.js';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
@@ -34,7 +35,7 @@ export async function loadProjectFromDisk(
   session: ISession,
   path?: string,
   opts?: { index?: string; writeTOC?: boolean; warnOnNoConfig?: boolean; reloadProject?: boolean },
-): Promise<LocalProject> {
+): Promise<Frozen<LocalProject>> {
   path = path || resolve('.');
   if (!opts?.reloadProject) {
     const cachedProject = selectors.selectLocalProjectFrozen(session.store.getState(), path);
@@ -170,7 +171,7 @@ export async function findProjectsOnPath(session: ISession, path: string) {
   return projectPaths;
 }
 
-export function filterPages(project: LocalProject) {
+export function filterPages(project: Frozen<LocalProject>) {
   const pages: LocalProjectPage[] = [
     { file: project.file, slug: project.index, level: 1 },
     ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),

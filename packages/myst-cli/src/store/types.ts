@@ -24,3 +24,10 @@ export type ValidatedRawConfig = {
   project?: Record<string, any>;
   extend?: string[];
 };
+
+/** Deep read-only view of store state; the store freezes all state at runtime */
+export type Frozen<T> = T extends (...args: any[]) => any
+  ? T
+  : T extends object
+    ? { readonly [K in keyof T]: Frozen<T[K]> }
+    : T;

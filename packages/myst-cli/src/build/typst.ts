@@ -268,7 +268,8 @@ export async function localArticleToTypstTemplated(
     commands: {},
   };
   const state = session.store.getState();
-  const projectFrontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
+  const projectFrontmatter =
+    selectors.selectLocalProjectFrontmatter(state, projectPath ?? '.') ?? {};
   if (file === selectors.selectCurrentProjectFile(state)) {
     // If export is defined at the project level, prioritize project parts over page parts
     partDefinitions.forEach((def) => {

@@ -45,7 +45,7 @@ export async function runCffExport(
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
     });
-    frontmatter = selectors.selectLocalProjectConfig(state, projectPath);
+    frontmatter = selectors.selectLocalProjectFrontmatter(state, projectPath);
     const { abstract: frontmatterAbstract } = resolveFrontmatterParts(session, frontmatter) ?? {};
     if (frontmatterAbstract) {
       abstract = toText(frontmatterAbstract.mdast);
