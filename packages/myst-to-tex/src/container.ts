@@ -38,6 +38,8 @@ function switchKind(node: Image | Table | Code | Math) {
 }
 
 export function determineCaptionKind(node: GenericNode): CaptionKind | null {
+  // A container that is declared as a table stays one, e.g. a table given as an image
+  if (node.type === 'container' && node.kind === 'table') return CaptionKind.table;
   let kind = switchKind(node as any);
   node.children?.forEach((n) => {
     const nKind = determineCaptionKind(n);
