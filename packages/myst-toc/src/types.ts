@@ -6,6 +6,8 @@ export type CommonEntry = {
   title?: string;
   hidden?: boolean;
   searchable?: boolean;
+  /** Expand the entry's children in the navigation on page load */
+  open?: boolean;
   // numbering?: string;
   // id?: string;
   // class?: string;
