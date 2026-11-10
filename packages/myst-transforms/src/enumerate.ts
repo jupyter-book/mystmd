@@ -626,7 +626,7 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
       (state) => !!state.getExactTarget(identifier) || !!state.getFileTarget(identifier),
     );
     if (exact) return exact;
-    // Normalize once here, not once per page
+    // No exact match on any page; try the normalized identifier, which is the same for all pages
     const normalized = normalizeLabel(identifier)?.identifier;
     return pages.find((state) => !!state.getExactTarget(normalized));
   }
