@@ -247,6 +247,7 @@
         "myst-spec": "^0.0.6",
         "nanoid": "^5.1.6",
         "unified": "^11.0.5",
+        "unist-util-remove": "^4.0.0",
         "unist-util-select": "^5.1.0",
         "unist-util-visit": "^5.1.0",
         "vfile": "^6.0.3",

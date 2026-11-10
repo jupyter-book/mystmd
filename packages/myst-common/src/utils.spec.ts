@@ -101,6 +101,19 @@ describe('Test forcedRemove', () => {
     forcedRemove(tree as any, '__delete__');
     expect(tree).toEqual(u('root', [u('block', [])]));
   });
+  test('nested nodes of the removed type are removed', () => {
+    const tree = u('root', [
+      u('__delete__', [u('block', [u('__delete__', [])])]),
+      u('block', [u('block', [u('__delete__', [])]), u('text', { value: 'keep' })]),
+    ]);
+    forcedRemove(tree as any, '__delete__');
+    expect(tree).toEqual(u('root', [u('block', [u('text', { value: 'keep' })])]));
+  });
+  test('nested nodes of the removed type are removed if nothing else remains', () => {
+    const tree = u('root', [u('block', [u('block', [u('__delete__', [])])])]);
+    forcedRemove(tree as any, '__delete__');
+    expect(tree).toEqual(u('root', [u('block', [u('block', [])])]));
+  });
 });
 
 describe('Test normalize labels', () => {

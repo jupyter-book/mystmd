@@ -2,6 +2,7 @@ import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
 import type { Node as UnistNode, Position } from 'unist';
 import { customAlphabet } from 'nanoid';
+import { remove } from 'unist-util-remove';
 import type { Node, Parent, PhrasingContent } from 'myst-spec';
 import type { RuleId } from './ruleids.js';
 import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
@@ -176,25 +177,10 @@ export function liftChildren(tree: GenericParent | GenericNode, removeType: stri
  * `null` instead of cascading up to the root.
  */
 export function forcedRemove(tree: GenericParent, removeType: string) {
-  // Parents left empty by the removal, and the parents that still hold them
-  const emptied = new Set<GenericNode>();
-  const holdingEmptied: GenericNode[] = [];
-  // Removes `removeType` children in a single pass, returning whether `node` has content left
-  function prune(node: GenericNode): boolean {
-    if (!node.children?.length) return true;
-    node.children = node.children.filter((child) => child.type !== removeType);
-    const kept = node.children.map(prune);
-    if (!kept.includes(true)) {
-      emptied.add(node);
-      return false;
-    }
-    if (kept.includes(false)) holdingEmptied.push(node);
-    return true;
-  }
-  if (!prune(tree)) return;
-  holdingEmptied.forEach((node) => {
-    node.children = node.children?.filter((child) => !emptied.has(child));
-  });
+  // Whether `node` survives a cascading removal; parents that start with no children are kept
+  const hasContent = (node: GenericNode): boolean =>
+    node.type !== removeType && (!node.children?.length || node.children.some(hasContent));
+  remove(tree, { cascade: tree.children.some(hasContent) }, removeType);
 }
 
 export function setTextAsChild(node: Partial<Parent>, text: string) {
