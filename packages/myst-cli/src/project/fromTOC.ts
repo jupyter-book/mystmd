@@ -193,11 +193,13 @@ function pagesFromEntries(
         title: entry.title || entry.url,
         level: entryLevel,
         open_in_same_tab: entry.open_in_same_tab,
+        open: entry.open,
       });
     } else {
       // Parent Entry - may be a "part" with level -1
       entryLevel = level < -1 ? -1 : level;
-      pages.push({ level: entryLevel, title: entry.title });
+      const { title, open, id } = entry as ParentEntry;
+      pages.push({ level: entryLevel, title, open, id });
     }
 
     // Do we have any children?

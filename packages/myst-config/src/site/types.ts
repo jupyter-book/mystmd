@@ -59,6 +59,10 @@ type ManifestProjectItem = {
   // For external URLs
   url?: string;
   open_in_same_tab?: boolean;
+  /** Expand the entry's children in the navigation on page load */
+  open?: boolean;
+  /** Identifier for links to a title-only entry in the navigation */
+  id?: string;
 };
 
 type ManifestProject = {

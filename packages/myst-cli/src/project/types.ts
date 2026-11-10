@@ -14,6 +14,10 @@ export type PageLevels = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type LocalProjectFolder = {
   title: string;
   level: PageLevels;
+  /** Expand the folder's children in the navigation on page load */
+  open?: boolean;
+  /** Identifier for links to the folder in the navigation */
+  id?: string;
 };
 
 export type LocalProjectPage = {
@@ -28,6 +32,8 @@ export type LocalProjectPage = {
   hidden?: boolean;
   /** Include or exclude the page from search. Defaults to only excluding hidden pages. */
   searchable?: boolean;
+  /** Expand the page's children in the navigation on page load */
+  open?: boolean;
 };
 
 export type ExternalURL = {
@@ -35,6 +41,8 @@ export type ExternalURL = {
   title: string;
   level: PageLevels;
   open_in_same_tab?: boolean;
+  /** Expand the URL's children in the navigation on page load */
+  open?: boolean;
 };
 
 export type LocalProject = {
