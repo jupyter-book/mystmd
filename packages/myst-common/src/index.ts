@@ -5,6 +5,7 @@ export {
   fileWarn,
   fileInfo,
   createId,
+  normalizeIdentifier,
   normalizeLabel,
   createHtmlId,
   transferTargetAttrs,

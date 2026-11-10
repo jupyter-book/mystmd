@@ -1,6 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { u } from 'unist-builder';
-import { liftChildren, mergeTextNodes, normalizeLabel, toText, slugToUrl } from './utils';
+import {
+  liftChildren,
+  mergeTextNodes,
+  normalizeIdentifier,
+  normalizeLabel,
+  toText,
+  slugToUrl,
+} from './utils';
 
 describe('Test text utils', () => {
   test('toText', () => {
@@ -79,6 +86,7 @@ describe('Test normalize labels', () => {
     expect(result?.label).toBe(label);
     expect(result?.identifier).toBe(identifier);
     expect(result?.html_id).toBe(html_id);
+    expect(normalizeIdentifier(label)).toBe(identifier);
   });
 });
 
