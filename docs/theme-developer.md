@@ -19,7 +19,7 @@ The MyST engine runs the content pipeline, while the theme is a web server that 
 Specifically:
 
 - When you run `myst start`, the engine builds `_build/site` (content JSON, config, assets), serves it on `CONTENT_CDN_PORT`, and launches your theme with the template’s `build.start` command.
-- A theme should read `_build/site/config.json` first, fetch page JSON from `/content/{slug}.json`, and serve the app on `PORT` (Remix/Vite/Next-style).
+- A theme should read `_build/site/config.json` first, fetch page JSON from `/content/{slug}.json`, and serve the app on `PORT` (Remix/Vite/NextJS-style).
 
 Each page JSON contains an `mdast` field holding the resolved AST that the theme then renders - see the [AST primer](xref:spec/ast-primer) for its structure.
 
@@ -45,12 +45,12 @@ It then produces `_build/site/config.json`, validates it against your `doc`/`opt
 - `/content/{slug}.json` payloads (see [crossReferences.ts](https://github.com/jupyter-book/mystmd/blob/main/packages/myst-cli/src/transforms/crossReferences.ts)); when the browser requests `/slug`, your theme should fetch `/content/{slug}.json` (and `/content/index.json` for `/`).
 - Reference and search files at `/objects.inv`, `/myst.xref.json`, `/myst.search.json`.
 - Static assets from `/` and a `/socket` websocket for `LOG` and `RELOAD` events.
-Your start script receives `HOST`, `CONTENT_CDN_PORT`, `PORT`, `MODE` (set to `static` for `myst build --html`), and optional `BASE_URL`; any framework or server is fine as long as it reads these and fetches content from the endpoints above.
+- Your start script receives `HOST`, `CONTENT_CDN_PORT`, `PORT`, and optional `BASE_URL`; any framework or server is fine as long as it reads these and fetches content from the endpoints above.
 - An index of known static files is included in `public.json`, to enable the theme to retrieve _all_ static files without access to the file-system of the content server.
 
 ## Building HTML
 
-When you run `myst build --html`, the CLI starts your theme with `MODE=static`. If your theme supports static exports, it should write HTML build artifacts that the CLI can collect and bundle into `_build/html`. Only one theme can create HTML output at a time; this may change.
+When you run `myst build --html`, the CLI sets up `CONTENT_CDN` and `BUILD_DIRECTORY` env-vars that specify the resolved CDN URL and build target, before invoking a special `render` script in the site theme. If your theme supports static exports, it should write HTML build artifacts that the CLI can collect and bundle into `_build/html`. Only one theme can create HTML output at a time; this may change.
 
 ## Register your theme
 
