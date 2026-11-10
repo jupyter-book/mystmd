@@ -17,7 +17,7 @@ import { projectFromTOC, projectFromSphinxTOC } from '../../project/fromTOC.js';
 
 import { loadProjectFromDisk } from '../../project/load.js';
 import type { LocalProject, PageLevels } from '../../project/types.js';
-import type { Frozen } from '../../store/types.js';
+import type { Immutable } from 'immer';
 import type { ISession } from '../../session/types.js';
 import { selectors } from '../../store/index.js';
 import type {
@@ -36,7 +36,7 @@ type ResolvedArticles = Pick<Export, 'articles' | 'sub_articles'>;
 
 export function resolveArticlesFromProject(
   exp: ExportWithFormat,
-  proj: Frozen<Omit<LocalProject, 'bibliography'>>,
+  proj: Immutable<Omit<LocalProject, 'bibliography'>>,
   vfile: VFile,
 ): ResolvedArticles {
   const { file, pages } = proj;

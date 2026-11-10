@@ -2,12 +2,13 @@ import { resolve } from 'node:path';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
 import type { LocalProject, LocalProjectPage } from '../project/types.js';
 import type { RootState } from './reducers.js';
-import type { BuildWarning, ExternalLinkResult, Frozen, ValidatedRawConfig } from './types.js';
+import type { Immutable } from 'immer';
+import type { BuildWarning, ExternalLinkResult, ValidatedRawConfig } from './types.js';
 
 export function selectLocalProject(
   state: RootState,
   path: string,
-): Frozen<LocalProject> | undefined {
+): Immutable<LocalProject> | undefined {
   return state.local.projects[resolve(path)];
 }
 
@@ -18,11 +19,11 @@ export function selectAffiliation(state: RootState, id: string): string | undefi
 export function selectLocalSiteConfig(
   state: RootState,
   path: string,
-): Frozen<SiteConfig> | undefined {
+): Immutable<SiteConfig> | undefined {
   return state.local.config.sites[resolve(path)];
 }
 
-export function selectCurrentSiteConfig(state: RootState): Frozen<SiteConfig> | undefined {
+export function selectCurrentSiteConfig(state: RootState): Immutable<SiteConfig> | undefined {
   if (!state.local.config.currentSitePath) return undefined;
   const config = state.local.config.sites[resolve(state.local.config.currentSitePath)];
   const path = selectCurrentProjectPath(state);
@@ -42,11 +43,11 @@ export function selectCurrentSiteFile(state: RootState): string | undefined {
 export function selectLocalProjectConfig(
   state: RootState,
   path: string,
-): Frozen<ProjectConfig> | undefined {
+): Immutable<ProjectConfig> | undefined {
   return state.local.config.projects[resolve(path)];
 }
 
-export function selectCurrentProjectConfig(state: RootState): Frozen<ProjectConfig> | undefined {
+export function selectCurrentProjectConfig(state: RootState): Immutable<ProjectConfig> | undefined {
   if (!state.local.config.currentProjectPath) return undefined;
   return state.local.config.projects[resolve(state.local.config.currentProjectPath)];
 }
@@ -83,7 +84,7 @@ export function selectLocalConfigFile(state: RootState, path: string): string | 
 export function selectLocalRawConfig(
   state: RootState,
   path: string,
-): Frozen<{ raw: Record<string, any>; validated: ValidatedRawConfig }> | undefined {
+): Immutable<{ raw: Record<string, any>; validated: ValidatedRawConfig }> | undefined {
   return state.local.config.rawConfigs[resolve(path)];
 }
 
@@ -165,14 +166,14 @@ export function selectPageSlug(
 export function selectLinkStatus(
   state: RootState,
   url: string,
-): Frozen<ExternalLinkResult> | undefined {
+): Immutable<ExternalLinkResult> | undefined {
   return state.local.links[url];
 }
 
 export function selectFileWarnings(
   state: RootState,
   file: string,
-): Frozen<BuildWarning[]> | undefined {
+): Immutable<BuildWarning[]> | undefined {
   return state.local.warnings[file];
 }
 

@@ -3,14 +3,15 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
 import { combineReducers } from 'redux';
-import type { BuildWarning, ExternalLinkResult, Frozen, ValidatedRawConfig } from './types.js';
+import type { Immutable } from 'immer';
+import type { BuildWarning, ExternalLinkResult, ValidatedRawConfig } from './types.js';
 import type { LocalProject } from '../project/types.js';
 
 export const projects = createSlice({
   name: 'projects',
   initialState: {} as Record<string, LocalProject>,
   reducers: {
-    receive(state, action: PayloadAction<Frozen<LocalProject>>) {
+    receive(state, action: PayloadAction<Immutable<LocalProject>>) {
       // The store freezes all state, so a frozen payload is safe to store
       state[resolve(action.payload.path)] = action.payload as LocalProject;
     },
