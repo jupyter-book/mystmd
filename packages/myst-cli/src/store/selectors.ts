@@ -2,19 +2,13 @@ import { resolve } from 'node:path';
 import type { ProjectConfig, SiteConfig } from 'myst-config';
 import type { LocalProject, LocalProjectPage } from '../project/types.js';
 import type { RootState } from './reducers.js';
+import type { Immutable } from 'immer';
 import type { BuildWarning, ExternalLinkResult, ValidatedRawConfig } from './types.js';
 
-function mutableCopy(obj?: Record<string, any>) {
-  if (!obj) return;
-  return JSON.parse(JSON.stringify(obj));
-}
-
-export function selectLocalProject(state: RootState, path: string): LocalProject | undefined {
-  return mutableCopy(state.local.projects[resolve(path)]);
-}
-
-/** Return the project state, immutable by default; see `selectLocalProject` for a mutable copy */
-export function selectLocalProjectFrozen(state: RootState, path: string): LocalProject | undefined {
+export function selectLocalProject(
+  state: RootState,
+  path: string,
+): Immutable<LocalProject> | undefined {
   return state.local.projects[resolve(path)];
 }
 
@@ -22,11 +16,14 @@ export function selectAffiliation(state: RootState, id: string): string | undefi
   return state.local.affiliations[id];
 }
 
-export function selectLocalSiteConfig(state: RootState, path: string): SiteConfig | undefined {
-  return mutableCopy(state.local.config.sites[resolve(path)]);
+export function selectLocalSiteConfig(
+  state: RootState,
+  path: string,
+): Immutable<SiteConfig> | undefined {
+  return state.local.config.sites[resolve(path)];
 }
 
-export function selectCurrentSiteConfig(state: RootState): SiteConfig | undefined {
+export function selectCurrentSiteConfig(state: RootState): Immutable<SiteConfig> | undefined {
   if (!state.local.config.currentSitePath) return undefined;
   const config = state.local.config.sites[resolve(state.local.config.currentSitePath)];
   const path = selectCurrentProjectPath(state);
@@ -46,13 +43,13 @@ export function selectCurrentSiteFile(state: RootState): string | undefined {
 export function selectLocalProjectConfig(
   state: RootState,
   path: string,
-): ProjectConfig | undefined {
-  return mutableCopy(state.local.config.projects[resolve(path)]);
+): Immutable<ProjectConfig> | undefined {
+  return state.local.config.projects[resolve(path)];
 }
 
-export function selectCurrentProjectConfig(state: RootState): ProjectConfig | undefined {
+export function selectCurrentProjectConfig(state: RootState): Immutable<ProjectConfig> | undefined {
   if (!state.local.config.currentProjectPath) return undefined;
-  return mutableCopy(state.local.config.projects[resolve(state.local.config.currentProjectPath)]);
+  return state.local.config.projects[resolve(state.local.config.currentProjectPath)];
 }
 
 export function selectProjectParts(state: RootState, path: string): string[] {
@@ -87,8 +84,8 @@ export function selectLocalConfigFile(state: RootState, path: string): string | 
 export function selectLocalRawConfig(
   state: RootState,
   path: string,
-): { raw: Record<string, any>; validated: ValidatedRawConfig } | undefined {
-  return mutableCopy(state.local.config.rawConfigs[resolve(path)]);
+): Immutable<{ raw: Record<string, any>; validated: ValidatedRawConfig }> | undefined {
+  return state.local.config.rawConfigs[resolve(path)];
 }
 
 export function selectConfigExtensions(state: RootState): string[] {
@@ -166,12 +163,18 @@ export function selectPageSlug(
   return found?.slug;
 }
 
-export function selectLinkStatus(state: RootState, url: string): ExternalLinkResult | undefined {
-  return mutableCopy(state.local.links[url]);
+export function selectLinkStatus(
+  state: RootState,
+  url: string,
+): Immutable<ExternalLinkResult> | undefined {
+  return state.local.links[url];
 }
 
-export function selectFileWarnings(state: RootState, file: string): BuildWarning[] | undefined {
-  return mutableCopy(state.local.warnings[file]);
+export function selectFileWarnings(
+  state: RootState,
+  file: string,
+): Immutable<BuildWarning[]> | undefined {
+  return state.local.warnings[file];
 }
 
 export function selectFileWarningsByRule(

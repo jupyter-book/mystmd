@@ -15,6 +15,7 @@ import type { ExportWithOutput, ExportFnOptions } from './types.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import { getFileContent } from './utils/getFileContent.js';
 import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
+import { mutableCopy } from '../utils/mutableCopy.js';
 
 function exportOptionsToCFF(exportOptions: ExportWithOutput): CFF {
   // Handle overlap of key "format" between CFF and export
@@ -45,7 +46,8 @@ export async function runCffExport(
       imageExtensions: KNOWN_IMAGE_EXTENSIONS,
       extraLinkTransformers,
     });
-    frontmatter = selectors.selectLocalProjectConfig(state, projectPath);
+    const projectConfig = selectors.selectLocalProjectConfig(state, projectPath);
+    frontmatter = projectConfig ? mutableCopy(projectConfig, ['toc']) : undefined;
     const { abstract: frontmatterAbstract } = resolveFrontmatterParts(session, frontmatter) ?? {};
     if (frontmatterAbstract) {
       abstract = toText(frontmatterAbstract.mdast);

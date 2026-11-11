@@ -6,6 +6,7 @@ import { RuleId } from 'myst-common';
 import { loadConfig } from '../config.js';
 import { combineProjectCitationRenderers } from '../process/citations.js';
 import { loadFile } from '../process/file.js';
+import type { Immutable } from 'immer';
 import type { ISession } from '../session/types.js';
 import { selectors } from '../store/index.js';
 import { projects } from '../store/reducers.js';
@@ -34,10 +35,10 @@ export async function loadProjectFromDisk(
   session: ISession,
   path?: string,
   opts?: { index?: string; writeTOC?: boolean; warnOnNoConfig?: boolean; reloadProject?: boolean },
-): Promise<LocalProject> {
+): Promise<Immutable<LocalProject>> {
   path = path || resolve('.');
   if (!opts?.reloadProject) {
-    const cachedProject = selectors.selectLocalProjectFrozen(session.store.getState(), path);
+    const cachedProject = selectors.selectLocalProject(session.store.getState(), path);
     if (cachedProject) return cachedProject;
   }
   await loadConfig(session, path, opts);
@@ -170,7 +171,7 @@ export async function findProjectsOnPath(session: ISession, path: string) {
   return projectPaths;
 }
 
-export function filterPages(project: LocalProject) {
+export function filterPages(project: Immutable<LocalProject>) {
   const pages: LocalProjectPage[] = [
     { file: project.file, slug: project.index, level: 1 },
     ...project.pages.filter((page): page is LocalProjectPage => 'file' in page),

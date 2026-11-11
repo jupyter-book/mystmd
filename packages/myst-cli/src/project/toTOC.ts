@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 
+import type { Immutable } from 'immer';
 import type { PageLevels, LocalProject, LocalProjectFolder, LocalProjectPage } from './types.js';
 import { findYAMLSection, yamlLineIndent } from './utils.js';
 import type { Entry } from 'myst-toc';
@@ -12,7 +13,10 @@ function getRelativeDocumentLink(file: string, path: string) {
   return relativePath.replace(/\\/g, '/');
 }
 
-function tocFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: string): any {
+function tocFromPages(
+  pages: Immutable<(LocalProjectFolder | LocalProjectPage)[]>,
+  path: string,
+): any {
   const levels = pages.map((page) => page.level);
   const currentLevel = Math.min(...levels) as PageLevels;
   const currentLevelIndices = levels.reduce((inds: number[], val: PageLevels, i: number) => {
@@ -51,7 +55,7 @@ function tocFromPages(pages: (LocalProjectFolder | LocalProjectPage)[], path: st
 }
 
 export function tocFromProject(
-  project: Pick<LocalProject, 'file' | 'pages'>,
+  project: Immutable<Pick<LocalProject, 'file' | 'pages'>>,
   dir: string = '.',
 ): any {
   return [
@@ -63,7 +67,7 @@ export function tocFromProject(
 const DEFAULT_INDENT = 2;
 
 export async function writeTOCToConfigFile(
-  project: Omit<LocalProject, 'bibliography'>,
+  project: Immutable<Omit<LocalProject, 'bibliography'>>,
   srcPath: string,
   dstPath: string,
 ) {
