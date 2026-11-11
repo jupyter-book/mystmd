@@ -28,7 +28,7 @@ import { getRawFrontmatterFromFile } from '../../process/file.js';
 import type { ManifestProject } from '../utils/projectManifest.js';
 import {
   indexFrontmatterFromProject,
-  manifestPagesFromProject,
+  manifestPagesFromProjectWithHidden,
   manifestTitleFromProject,
 } from '../utils/projectManifest.js';
 
@@ -139,7 +139,7 @@ export async function localToManifestProject(
   // Update all of the page title to the frontmatter title
   const { index } = proj;
   const projectFileInfo = selectors.selectFileInfo(state, proj.file);
-  const pages = await manifestPagesFromProject(session, projectPath);
+  const { pages, hiddenPages } = await manifestPagesFromProjectWithHidden(session, projectPath);
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   const projConfigFile = selectors.selectLocalConfigFile(state, projectPath);
   const exports = projConfigFile ? await resolvePageExports(session, projConfigFile) : [];
@@ -186,6 +186,7 @@ export async function localToManifestProject(
     index,
     enumerator: frontmatter?.enumerator,
     pages,
+    hiddenPages,
   };
 }
 
