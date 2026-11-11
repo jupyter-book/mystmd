@@ -67,7 +67,7 @@ type ManifestProject = {
   enumerator?: string;
   title: string;
   pages: ManifestProjectItem[];
-  hiddenPages?: ManifestProjectItem[];
+  hiddenPages?: (ManifestProjectItem & { pageIndex: number })[];
   thumbnail?: string | null;
   thumbnailOptimized?: string;
   banner?: string | null;

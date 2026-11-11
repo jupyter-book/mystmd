@@ -48,7 +48,7 @@ export async function manifestPagesFromProjectWithHidden(session: ISession, proj
         enumerator: frontmatter?.enumerator,
       };
       if (tocEntry.hidden) {
-        hiddenPages.push(projectPage);
+        hiddenPages.push({ ...projectPage, pageIndex: pages.length });
       } else {
         pages.push(projectPage);
       }
