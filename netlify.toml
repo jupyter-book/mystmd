@@ -1,5 +1,5 @@
 [build]
-  environment = { BUN_VERSION = "latest" }
+  environment = { BUN_VERSION = "latest", NODE_VERSION = "22" }
   command = """
   pip install -r docs/requirements.txt;
   bun install;

@@ -22,7 +22,7 @@ type VersionResults = Parameters<Parameters<typeof check>[1]>[1];
 
 export async function getNodeVersion(session: ISession): Promise<VersionResults | null> {
   const result = new Promise<VersionResults | null>((resolve) => {
-    check({ node: '>= 18.0.0', npm: '>=8.6.0' }, (error, results) => {
+    check({ node: '>= 22.0.0', npm: '>=10.0.0' }, (error, results) => {
       if (error) {
         session.log.error(error);
         resolve(null);

@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/jtex",
   "engines": {
-    "node": ">=20",
+    "node": ">=22",
     "npm": ">=10"
   },
   "dependencies": {
