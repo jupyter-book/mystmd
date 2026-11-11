@@ -38,7 +38,7 @@
     "build": "npm-run-all -l clean copy:version -p build:esm"
   },
   "engines": {
-    "node": ">=20",
+    "node": ">=22",
     "npm": ">=10"
   },
   "dependencies": {
