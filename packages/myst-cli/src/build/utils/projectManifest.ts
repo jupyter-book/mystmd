@@ -5,14 +5,15 @@ import { selectors } from '../../store/index.js';
 import { fileTitle } from '../../utils/fileInfo.js';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
-export type ManifestProject = Required<SiteManifest>['projects'][0];
+export type ManifestProject = Required<SiteManifest>['projects'][number];
+type ManifestProjectItem = ManifestProject['pages'][number];
+type HiddenManifestProjectItem = NonNullable<ManifestProject['hiddenPages']>[number];
 
-type ManifestProjectItem = ManifestProject['pages'][0];
 export async function manifestPagesFromProjectWithHidden(session: ISession, projectPath: string) {
   const state = session.store.getState();
   const proj = selectors.selectLocalProject(state, projectPath);
   const pages: ManifestProjectItem[] = [];
-  const hiddenPages: ManifestProjectItem[] = [];
+  const hiddenPages: HiddenManifestProjectItem[] = [];
   if (!proj) return { pages, hiddenPages };
   const cache = castSession(session);
 
