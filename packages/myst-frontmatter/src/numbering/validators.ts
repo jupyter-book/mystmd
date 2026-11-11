@@ -248,7 +248,18 @@ export function validateNumbering(input: any, opts: ValidationOptions): Numberin
   return output;
 }
 
+/**
+ * Numbering may still be the boolean shorthand, for example when filling raw page
+ * frontmatter before validation. Spreading a boolean silently discards it.
+ */
+function normalizeNumberingShorthand(value?: Numbering) {
+  if (!isBoolean(value)) return value;
+  return { all: { enabled: `${value}`.toLowerCase() === 'true' } } as Numbering;
+}
+
 export function fillNumbering(base?: Numbering, filler?: Numbering) {
+  base = normalizeNumberingShorthand(base);
+  filler = normalizeNumberingShorthand(filler);
   const output: Numbering = { ...filler, ...base };
   Object.entries(filler ?? {})
     .filter(([key]) => !NUMBERING_OPTIONS.includes(key))
