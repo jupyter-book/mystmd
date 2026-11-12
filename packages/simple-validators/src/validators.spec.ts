@@ -19,9 +19,9 @@ import {
 } from './validators';
 
 export enum ExampleEnum {
-  'initializing' = 'initializing',
-  'completed' = 'completed',
-  'failed' = 'failed',
+  initializing = 'initializing',
+  completed = 'completed',
+  failed = 'failed',
 }
 
 let opts: ValidationOptions;

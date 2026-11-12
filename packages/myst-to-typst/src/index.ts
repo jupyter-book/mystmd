@@ -587,7 +587,7 @@ class TypstSerializer implements ITypstSerializer {
     });
     if (trimEnd) this.trimEnd();
     if (after) this.write(after);
-    for (let i = trailingNewLines; i--; ) this.addNewLine();
+    for (let i = trailingNewLines; i--;) this.addNewLine();
   }
 
   renderEnvironment(node: any, env: string) {
