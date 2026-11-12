@@ -567,13 +567,13 @@ cases:
     outputs:
       - path: static-files-html/_build/html/project-asset.txt
       - path: static-files-html/_build/html/assets/nested.txt
-#   - title: Hidden pages exist in html build
-#     cwd: hidden-pages
-#     args: build --html
-#     outputs:
-#       - path: hidden-pages/_build/html/index.html
-#       - path: hidden-pages/_build/html/hidden/index.html
-#       - path: hidden-pages/_build/html/not-hidden/index.html
+  - title: Hidden pages exist in html build
+    cwd: hidden-pages
+    args: build --html
+    outputs:
+      - path: hidden-pages/_build/html/index.html
+      - path: hidden-pages/_build/html/hidden/index.html
+      - path: hidden-pages/_build/html/not-hidden/index.html
   - title: Serial execution
     cwd: serial-execution
     args: build --site --execute --execute-parallel 1
