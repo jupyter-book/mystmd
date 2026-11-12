@@ -17,7 +17,7 @@ cases:
         - type: paragraph
           children:
             - type: cite
-              label: https://doi.org/10.1038/s41586-022-04892-x               
+              label: https://doi.org/10.1038/s41586-022-04892-x
     typst: |-
       #cite(label("https://doi.org/10.1038/s41586-022-04892-x"))
   - title: cite multiple

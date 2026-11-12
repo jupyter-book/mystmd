@@ -395,7 +395,8 @@ export async function localArticleToTypstTemplated(
   return { tempFolders: [], hasGlossaries };
 }
 
-export async function runTypstExport( // DBG: Must return an info on whether glossaries are present
+export async function runTypstExport(
+  // DBG: Must return an info on whether glossaries are present
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,
