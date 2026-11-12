@@ -1,5 +1,12 @@
 # myst-frontmatter
 
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies [8055648]
+  - myst-toc@0.2.0
+
 ## 1.10.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.13.0
+
+### Patch Changes
+
+- c63e74a: Update packaging metadata
+
 ## 1.12.0
 
 ### Patch Changes

@@ -1,5 +1,35 @@
 # myst-cli
 
+## 1.13.0
+
+### Minor Changes
+
+- 097a21e: Add new hiddenPages temporary manifest field
+- 8055648: Add a `searchable` option to `file` and `pattern` TOC entries. Hidden pages are now left out of search unless they set `searchable: true`.
+
+### Patch Changes
+
+- c63e74a: Update packaging metadata
+- b131bc1: Return frozen store state from selectors instead of deep copies, and type it as read-only.
+- 5d87e8b: Only collect project exports when resolving a page's `downloads` if the page has `downloads`, avoiding quadratic memory use on large sites.
+- ee65152: Only build the project page manifest for the `toc` transform on pages that contain a `toc`, avoiding quadratic memory use on large sites.
+- ee65152: Return the cached project from `loadProjectFromDisk` without deep copying it, avoiding quadratic memory use on large sites.
+- Updated dependencies [c63e74a]
+- Updated dependencies [097a21e]
+- Updated dependencies [3cc7340]
+- Updated dependencies [50e8220]
+- Updated dependencies [8055648]
+  - citation-js-utils@1.2.11
+  - jtex@1.0.24
+  - myst-config@1.11.0
+  - myst-ext-card@1.0.11
+  - myst-common@1.11.0
+  - myst-transforms@1.3.53
+  - myst-toc@0.2.0
+  - myst-frontmatter@1.11.0
+  - myst-spec-ext@1.11.0
+  - myst-migrate@1.13.0
+
 ## 1.12.0
 
 ### Minor Changes
