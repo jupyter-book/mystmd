@@ -61,7 +61,7 @@ export function normalizeFilePath(
  * those match the message's key and file path (both must match if both are given).
  */
 export function findErrorRule(
-  rules: ErrorRule[] | undefined,
+  rules: readonly ErrorRule[] | undefined,
   ruleId: string,
   key?: string | null,
   file?: string | null,
