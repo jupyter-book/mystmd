@@ -31,7 +31,7 @@
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "dev": "tsc -w -p .",
     "lint": "npm run copy:version; eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.cjs",
-    "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
+    
     "test": "npm run copy:version; vitest run",
     "test:watch": "npm run copy:version; vitest watch",
     "build:esm": "tsc",

@@ -14,7 +14,7 @@
     "clean": "turbo run clean --parallel && find . -name '.turbo' -type d -prune -exec rimraf '{}' +",
     "link": "npm link -w packages/mystmd",
     "lint": "turbo run lint",
-    "lint:format": "turbo run lint:format",
+    "lint:format": "oxfmt --check \"**/*.{ts,tsx,md}\"",
     "lint:circular": "madge -c packages/*/src/*",
     "test": "turbo run test",
     "format": "oxfmt \"**/*.{ts,tsx,md}\"",

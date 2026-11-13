@@ -22,7 +22,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.cjs",
-    "lint:format": "oxfmt --check \"src/**/*.ts\"",
+    
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
