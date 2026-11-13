@@ -78,6 +78,7 @@ function runRoles(state: StateCore): boolean {
               child.info,
               map?.[0] ?? 0,
               state,
+              'run_roles',
             );
             if (!name) {
               throw new Error('A role name is required, for example, "{sub}`2`"');
