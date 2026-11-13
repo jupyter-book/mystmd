@@ -37,4 +37,4 @@
 "tex-to-myst": patch
 ---
 
-Update eslint metadata
+Update eslint package metadata
