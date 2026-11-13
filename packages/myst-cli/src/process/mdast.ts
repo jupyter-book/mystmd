@@ -71,7 +71,7 @@ import {
 } from '../transforms/index.js';
 import type { ImageExtensions } from '../utils/resolveExtension.js';
 import { logMessagesFromVFile } from '../utils/logging.js';
-import { combineCitationRenderers } from './citations.js';
+import { combineCitationRenderers, loadCitationStyle } from './citations.js';
 import { bibFilesInDir, selectFile } from './file.js';
 import { parseMyst } from './myst.js';
 import {
@@ -262,7 +262,9 @@ export async function transformMdast(
   transformRenderInlineExpressions(mdast, vfile);
   await transformOutputsToCache(session, mdast, kind, { minifyMaxCharacters });
   transformFilterOutputStreams(mdast, vfile, frontmatter.settings);
-  transformCitations(session, file, mdast, fileCitationRenderer, references);
+  transformCitations(session, file, mdast, fileCitationRenderer, references, {
+    style: await loadCitationStyle(session, file, frontmatter.citation_style),
+  });
   await unified()
     .use(codePlugin, { lang: frontmatter?.kernelspec?.language })
     .use(footnotesPlugin) // Needs to happen near the end

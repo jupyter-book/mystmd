@@ -560,7 +560,13 @@ const handlers: Handlers = {
     state.renderInline(node, 'xref', attrs);
   },
   citeGroup(node, state) {
-    state.renderChildren(node);
+    const { open, close, delimiter } = node;
+    if (open) state.text(open);
+    node.children.forEach((child, index) => {
+      if (index > 0 && delimiter) state.text(delimiter);
+      state.renderChildren([child]);
+    });
+    if (close) state.text(close);
   },
   cite(node, state) {
     const { label } = node as Cite;
