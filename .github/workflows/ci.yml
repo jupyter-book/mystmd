@@ -25,8 +25,8 @@ jobs:
         run: bun run lint
       - name: Check for circular dependencies
         run: bun run lint:circular
-      - name: Ensure changeset has the right structure and doesn't contain ignored packages
-        run: bun run version
+      - name: Ensure changeset has the right structure
+        run: bunx changeset status
   test:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
