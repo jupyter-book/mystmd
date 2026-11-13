@@ -85,6 +85,15 @@ dollarmath
 
     When disabled, dollar signs (`$`) will be treated as regular text characters and not parsed as math delimiters. This can be useful if you have frequent uses of dollar signs, such as currency, in your content that are not meant to be math.
 
+(setting:parser:strikethrough)=
+strikethrough
+: Enable or disable strikethrough parsing with tildes (e.g., `~~text~~` syntax).
+
+    - `false` (default): Treat tildes as regular text characters
+    - `true`: Parse text between double tildes as strikethrough
+
+    This can be useful for content that is also viewed in tools that support the syntax, such as Jupyter notebooks.
+
 (setting:infer_dois_from_urls)=
 infer_dois_from_urls
 : Infer DOIs from non-doi.org link URLs (for example, publisher article pages, biorxiv, or zenodo).

@@ -45,3 +45,30 @@ cases:
           dollarmath: invalid
     errors: 1
     normalized: {}
+  - title: strikethrough true
+    raw:
+      settings:
+        parser:
+          strikethrough: true
+    errors: 0
+    normalized:
+      settings:
+        parser:
+          strikethrough: true
+  - title: strikethrough false
+    raw:
+      settings:
+        parser:
+          strikethrough: false
+    errors: 0
+    normalized:
+      settings:
+        parser:
+          strikethrough: false
+  - title: strikethrough invalid boolean
+    raw:
+      settings:
+        parser:
+          strikethrough: invalid
+    errors: 1
+    normalized: {}

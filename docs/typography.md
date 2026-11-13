@@ -29,6 +29,7 @@ Standard inline formatting including bold, italic, code, as well as escaped symb
 
 strikethrough
 : Use the `del` or `strike` role, for example, `` {del}`text` `` yields {del}`text`
+: To use `~~text~~` instead, enable the [`strikethrough` parser setting](#setting:parser:strikethrough).
 
 underline
 : Use the `u` or `underline` role, for example, `` {u}`text` `` yields {u}`text`
