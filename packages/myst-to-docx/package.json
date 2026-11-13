@@ -26,8 +26,7 @@
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst",
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/*.ts\" -c eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -44,7 +43,7 @@
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "unist-builder": "^3.0.0"
   }
 }

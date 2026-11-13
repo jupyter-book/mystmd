@@ -21,8 +21,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -33,5 +32,8 @@
   },
   "dependencies": {
     "simple-validators": "^1.2.1"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*"
   }
 }

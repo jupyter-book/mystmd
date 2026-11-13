@@ -15,8 +15,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -28,7 +27,7 @@
     "vfile": "^5.0.0",
     "vfile-message": "^3.0.0"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "@jupyterlab/nbformat": "^3.5.2",
     "@types/mdast": "^3.0.12"
   }

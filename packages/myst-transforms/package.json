@@ -17,8 +17,7 @@
     "clean": "rimraf dist",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -49,7 +48,7 @@
     "vfile": "^5.0.0",
     "vfile-message": "^3.1.2"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "@types/js-yaml": "^4.0.5",
     "@types/katex": "^0.14.0",
     "@types/mdast": "^3.0.12"

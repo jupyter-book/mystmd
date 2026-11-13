@@ -60,7 +60,11 @@ export function hashAndCopyStaticFile(
       session.log.debug(`File successfully copied: ${file}`);
     } catch {
       const message = `Error copying file to ${writeFolder}`;
-      errorLogFn ? errorLogFn(message) : session.log.error(message);
+      if (errorLogFn) {
+        errorLogFn(message);
+      } else {
+        session.log.error(message);
+      }
       return undefined;
     }
   }
@@ -82,7 +86,11 @@ export function copyFileMaintainPath(
   // File must be inside "from" folder
   if (!path.resolve(file).startsWith(path.resolve(from))) {
     const message = `Cannot include files outside of 'from' directory: ${file}\n\n`;
-    errorLogFn ? errorLogFn(message) : session.log.error(message);
+    if (errorLogFn) {
+      errorLogFn(message);
+    } else {
+      session.log.error(message);
+    }
     return undefined;
   }
   const destination = path.resolve(to, path.relative(from, file));
@@ -94,7 +102,11 @@ export function copyFileMaintainPath(
     return destination;
   } catch {
     const message = `Error copying file to: ${to}`;
-    errorLogFn ? errorLogFn(message) : session.log.error(message);
+    if (errorLogFn) {
+      errorLogFn(message);
+    } else {
+      session.log.error(message);
+    }
     return undefined;
   }
 }
@@ -113,7 +125,11 @@ export function copyFileToFolder(
   const destination = path.join(to, path.basename(file));
   if (fs.existsSync(destination)) {
     const message = `File already exists with name: ${path.basename(file)}`;
-    errorLogFn ? errorLogFn(message) : session.log.error(message);
+    if (errorLogFn) {
+      errorLogFn(message);
+    } else {
+      session.log.error(message);
+    }
   }
   const destinationFolder = path.dirname(destination);
   try {
@@ -123,7 +139,11 @@ export function copyFileToFolder(
     return destination;
   } catch {
     const message = `Error copying file to: ${to}`;
-    errorLogFn ? errorLogFn(message) : session.log.error(message);
+    if (errorLogFn) {
+      errorLogFn(message);
+    } else {
+      session.log.error(message);
+    }
     return undefined;
   }
 }

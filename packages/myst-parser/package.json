@@ -31,8 +31,7 @@
     "clean": "rimraf dist",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "build:bundle:browser": "esbuild bundle/myst.ts --bundle --outfile=dist/myst.min.js --platform=browser --minify",
     "build:esm": "tsc --project ./src/tsconfig.json",
     "build": "npm-run-all -l clean -p build:esm build:bundle:browser"
@@ -62,7 +61,7 @@
     "unist-util-visit": "^4.1.0",
     "vfile": "^5.3.7"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "@sinonjs/fake-timers": "^9.1.0",
     "@types/hast": "^2.3.4",
     "@types/he": "^1.1.2",

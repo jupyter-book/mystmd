@@ -26,8 +26,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
-    
+    "lint": "eslint \"src/**/*.ts\" -c eslint.config.mjs --max-warnings 1",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -58,7 +57,7 @@
     "unist-util-select": "^4.0.3",
     "unist-util-visit": "^4.1.0"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "@types/hast": "^2.3.4",
     "@types/mdast": "^3.0.12",
     "hastscript": "^7.0.0",

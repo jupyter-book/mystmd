@@ -24,8 +24,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
-    
+    "lint": "eslint \"src/**/*.ts\" -c eslint.config.mjs --max-warnings 1",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -50,7 +49,7 @@
     "vfile": "^5.0.0",
     "vfile-reporter": "^7.0.4"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "myst-to-tex": "^1.0.48"
   }
 }

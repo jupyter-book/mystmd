@@ -24,8 +24,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -55,7 +54,7 @@
     "vfile-reporter": "^7.0.4",
     "xml-js": "^1.6.11"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "@types/js-yaml": "^4.0.5",
     "@types/katex": "^0.14.0",
     "@types/mdast": "^3.0.10",

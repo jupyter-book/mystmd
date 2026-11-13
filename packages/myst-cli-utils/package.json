@@ -21,8 +21,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -37,7 +36,7 @@
     "pretty-hrtime": "^1.0.3",
     "tree-kill": "^1.2.2"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "@types/pretty-hrtime": "^1.0.1",
     "node-fetch": "^3.3.0"
   }

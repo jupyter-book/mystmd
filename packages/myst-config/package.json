@@ -20,8 +20,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -35,7 +34,7 @@
     "myst-frontmatter": "^1.11.0",
     "simple-validators": "^1.2.1"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "glob": "^10.3.1",
     "js-yaml": "^4.1.0",
     "moment": "^2.29.4"

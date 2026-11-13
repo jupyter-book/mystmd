@@ -15,8 +15,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "generate:rule-severities": "node scripts/generate-rule-severities.mjs",
@@ -35,7 +34,7 @@
     "vfile": "^5.0.0",
     "vfile-message": "^3.0.0"
   },
-  "devDependencies": {
+  "devDependencies": {"@repo/eslint-config": "workspace:*",
     "myst-spec-ext": "^1.11.0",
     "unist-builder": "3.0.0",
     "@jupyterlab/nbformat": "^3.5.2",
