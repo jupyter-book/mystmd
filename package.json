@@ -24,7 +24,7 @@
     "install-pre-commit": "husky"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.1",
+    "@changesets/cli": "^3.0.3",
     "@types/node": "^24.6.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
