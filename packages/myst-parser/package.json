@@ -61,7 +61,9 @@
     "unist-util-visit": "^4.1.0",
     "vfile": "^5.3.7"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@sinonjs/fake-timers": "^9.1.0",
     "@types/hast": "^2.3.4",
     "@types/he": "^1.1.2",

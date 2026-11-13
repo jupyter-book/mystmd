@@ -45,7 +45,9 @@
     "vfile": "^5.3.7",
     "which": "^4.0.0"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/which": "^3.0.4",
     "js-yaml": "^4.1.0"
   }

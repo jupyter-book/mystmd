@@ -116,7 +116,9 @@
     "xml-js": "^1.6.11",
     "zod": "^4.6.6"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@jupyterlab/nbformat": "3.5.2",
     "@types/adm-zip": "^0.5.0",
     "@types/cors": "^2.8.13",

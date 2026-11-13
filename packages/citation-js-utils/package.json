@@ -41,7 +41,9 @@
     "doi-utils": "^2.0.5",
     "sanitize-html": "^2.7.0"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/he": "^1.2.0",
     "@types/sanitize-html": "^2.6.2"
   }

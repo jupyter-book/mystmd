@@ -57,7 +57,9 @@
     "unist-util-select": "^4.0.3",
     "unist-util-visit": "^4.1.0"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/hast": "^2.3.4",
     "@types/mdast": "^3.0.12",
     "hastscript": "^7.0.0",

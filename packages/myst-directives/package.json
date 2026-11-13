@@ -42,7 +42,9 @@
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/js-yaml": "^4.0.5",
     "@types/json5": "^0.0.29"
   }

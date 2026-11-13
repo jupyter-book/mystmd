@@ -29,7 +29,9 @@
   "bugs": {
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "moment": "^2.29.4"
   }
 }

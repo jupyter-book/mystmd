@@ -43,7 +43,9 @@
     "unist-util-select": "^4.0.3",
     "vfile": "^5.3.7"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "unist-builder": "^3.0.0"
   }
 }

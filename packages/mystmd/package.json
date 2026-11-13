@@ -38,7 +38,9 @@
     "build:cli": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --target=node22",
     "build": "npm-run-all -l clean copy:version -p build:cli"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/js-yaml": "^4.0.5",
     "async-mutex": "^0.5.0",
     "chalk": "^5.2.0",

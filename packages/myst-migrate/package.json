@@ -27,7 +27,9 @@
     "vfile": "^5.0.0",
     "vfile-message": "^3.0.0"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@jupyterlab/nbformat": "^3.5.2",
     "@types/mdast": "^3.0.12"
   }

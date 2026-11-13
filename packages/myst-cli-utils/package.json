@@ -36,7 +36,9 @@
     "pretty-hrtime": "^1.0.3",
     "tree-kill": "^1.2.2"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/pretty-hrtime": "^1.0.1",
     "node-fetch": "^3.3.0"
   }

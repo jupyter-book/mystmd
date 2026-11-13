@@ -34,6 +34,7 @@
     "simple-validators": "^1.2.1"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*"
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0"
   }
 }

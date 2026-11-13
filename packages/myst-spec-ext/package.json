@@ -34,6 +34,7 @@
     "myst-spec": "^0.0.6"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*"
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0"
   }
 }

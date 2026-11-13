@@ -49,7 +49,9 @@
     "vfile": "^5.0.0",
     "vfile-reporter": "^7.0.4"
   },
-  "devDependencies": {"@repo/eslint-config": "workspace:*",
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "myst-to-tex": "^1.0.48"
   }
 }
