@@ -6,4 +6,3 @@ project:
     - file: first.md
 site:
   template: ../templates/site/myst/book-theme
-
