@@ -1,5 +1,13 @@
 # myst-ext-icon
 
+## 0.0.5
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-common@1.11.1
+
 ## 0.0.4
 
 ### Patch Changes

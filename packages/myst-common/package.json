@@ -1,7 +1,7 @@
 {
   "name": "myst-common",
   "sideEffects": false,
-  "version": "1.11.0",
+  "version": "1.11.1",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "mdast": "^3.0.0",
-    "myst-frontmatter": "^1.11.0",
-    "myst-spec": "^0.0.6",
+    "myst-frontmatter": "^1.11.1",
+    "myst-spec": "^0.0.7",
     "nanoid": "^5.1.6",
     "unified": "^10.1.2",
     "unist-util-remove": "^3.1.0",
@@ -37,7 +37,7 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "eslint": "^10.14.0",
-    "myst-spec-ext": "^1.11.0",
+    "myst-spec-ext": "^1.11.1",
     "unist-builder": "3.0.0",
     "@jupyterlab/nbformat": "^3.5.2",
     "@lumino/coreutils": "^2.0.0",

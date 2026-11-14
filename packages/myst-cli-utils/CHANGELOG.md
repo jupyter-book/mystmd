@@ -1,5 +1,11 @@
 # myst-cli-utils
 
+## 2.0.17
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+
 ## 2.0.16
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # myst-migrate
 
+## 1.13.1
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+
 ## 1.13.0
 
 ## 1.12.0
