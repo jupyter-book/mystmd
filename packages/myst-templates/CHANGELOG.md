@@ -1,5 +1,16 @@
 # myst-templates
 
+## 1.1.1
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-cli-utils@2.0.17
+  - myst-common@1.11.1
+  - myst-frontmatter@1.11.1
+  - simple-validators@1.2.2
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,5 +1,17 @@
 # myst-to-tex
 
+## 1.0.49
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-common@1.11.1
+  - myst-ext-proof@1.0.15
+  - myst-frontmatter@1.11.1
+  - myst-spec@0.0.7
+  - myst-spec-ext@1.11.1
+
 ## 1.0.48
 
 ### Patch Changes

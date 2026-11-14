@@ -1,6 +1,6 @@
 {
   "name": "myst-parser",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "description": "Markdown parser for MyST markdown in JavaScript",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-parser",
@@ -48,12 +48,12 @@
     "markdown-it-dollarmath": "^0.5.0",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-front-matter": "^0.2.3",
-    "markdown-it-myst": "1.0.19",
+    "markdown-it-myst": "1.0.20",
     "markdown-it-task-lists": "^2.1.1",
-    "myst-common": "^1.10.2",
-    "myst-directives": "^1.7.5",
-    "myst-roles": "^1.7.5",
-    "myst-spec": "^0.0.6",
+    "myst-common": "^1.11.1",
+    "myst-directives": "^1.7.6",
+    "myst-roles": "^1.7.6",
+    "myst-spec": "^0.0.7",
     "unified": "^10.1.1",
     "unist-builder": "^3.0.0",
     "unist-util-remove": "^3.1.0",
@@ -70,9 +70,9 @@
     "@types/js-yaml": "^4.0.5",
     "@types/mdast": "^3.0.10",
     "js-yaml": "^4.1.0",
-    "myst-spec-ext": "^1.10.2",
-    "myst-to-html": "^1.7.5",
-    "myst-transforms": "^1.3.52",
+    "myst-spec-ext": "^1.11.1",
+    "myst-to-html": "^1.7.6",
+    "myst-transforms": "^1.3.54",
     "rehype-stringify": "^9.0.3"
   }
 }

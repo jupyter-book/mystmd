@@ -1,5 +1,13 @@
 # myst-ext-reactive
 
+## 1.0.11
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-common@1.11.1
+
 ## 1.0.10
 
 ### Patch Changes

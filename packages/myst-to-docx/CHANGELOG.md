@@ -1,5 +1,16 @@
 # myst-to-docx
 
+## 1.0.19
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-common@1.11.1
+  - myst-frontmatter@1.11.1
+  - myst-spec@0.0.7
+  - myst-spec-ext@1.11.1
+
 ## 1.0.18
 
 ### Patch Changes

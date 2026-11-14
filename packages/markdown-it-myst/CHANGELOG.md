@@ -1,5 +1,11 @@
 # markdown-it-myst
 
+## 1.0.20
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+
 ## 1.0.19
 
 ### Patch Changes

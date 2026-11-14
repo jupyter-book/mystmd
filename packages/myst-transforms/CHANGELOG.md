@@ -1,5 +1,17 @@
 # myst-transforms
 
+## 1.3.54
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-common@1.11.1
+  - myst-frontmatter@1.11.1
+  - myst-spec@0.0.7
+  - myst-spec-ext@1.11.1
+  - myst-to-html@1.7.6
+
 ## 1.3.53
 
 ### Patch Changes

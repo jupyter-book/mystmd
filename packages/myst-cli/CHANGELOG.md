@@ -1,5 +1,41 @@
 # myst-cli
 
+## 1.13.1
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - citation-js-utils@1.2.12
+  - jtex@1.0.25
+  - myst-cli-utils@2.0.17
+  - myst-common@1.11.1
+  - myst-config@1.11.1
+  - myst-execute@0.5.1
+  - myst-ext-button@0.0.4
+  - myst-ext-card@1.0.12
+  - myst-ext-exercise@1.0.12
+  - myst-ext-grid@1.1.3
+  - myst-ext-icon@0.0.5
+  - myst-ext-proof@1.0.15
+  - myst-ext-reactive@1.0.11
+  - myst-ext-tabs@1.0.12
+  - myst-frontmatter@1.11.1
+  - myst-migrate@1.13.1
+  - myst-parser@1.7.6
+  - myst-spec@0.0.7
+  - myst-spec-ext@1.11.1
+  - myst-templates@1.1.1
+  - myst-to-docx@1.0.19
+  - myst-to-jats@1.0.38
+  - myst-to-md@1.0.19
+  - myst-to-tex@1.0.49
+  - myst-to-typst@0.0.41
+  - myst-toc@0.2.1
+  - myst-transforms@1.3.54
+  - simple-validators@1.2.2
+  - tex-to-myst@1.0.49
+
 ## 1.13.0
 
 ### Minor Changes

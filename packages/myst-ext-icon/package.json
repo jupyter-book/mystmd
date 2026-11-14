@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-icon",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for icon roles",
@@ -31,12 +31,12 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.10.2"
+    "myst-common": "^1.11.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "eslint": "^10.14.0",
-    "myst-parser": "^1.7.5",
+    "myst-parser": "^1.7.6",
     "unist-util-select": "^4.0.3"
   }
 }
