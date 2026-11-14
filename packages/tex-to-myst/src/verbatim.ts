@@ -3,6 +3,7 @@ import type { Handler } from './types.js';
 import type { VFile } from 'vfile';
 import type { GenericNode } from 'myst-common';
 import { fileWarn, normalizeLabel } from 'myst-common';
+import { texToText } from './utils.js';
 import type { Code } from 'myst-spec-ext';
 
 type ListingsProps = {
@@ -63,6 +64,15 @@ function parseFirstLine(vfile: VFile, node: GenericNode) {
 }
 
 export const VERBATIM_HANDLERS: Record<string, Handler> = {
+  env_lstlisting(node, state) {
+    // unified-latex 1.8 represents lstlisting as an environment with raw string children.
+    // Reuse the verbatim handler so language, caption and label keep the same behavior.
+    const value = Array.isArray(node.content)
+      ? node.content.map((part: GenericNode) => typeof part.content === 'string' ? part.content : '').join('')
+      : node.content ?? '';
+    const options = node.args?.[0]?.openMark === '[' ? `[${texToText(node.args[0])}]\n` : '';
+    VERBATIM_HANDLERS.verbatim({ ...node, content: options + value.replace(/^\r?\n/, '') }, state);
+  },
   verbatim(node, state) {
     if (node.env === 'comment') {
       state.pushNode(u('comment', { value: node?.content.trim() ?? '' }));
