@@ -183,6 +183,8 @@ export async function transformMdast(
   );
   if (offset) setTitleOffset(frontmatter, offset);
   await addEditUrl(session, frontmatter, file);
+  // Depth of the first content heading; single-article exports start at depth 1
+  const firstDepth = Math.max(1, (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1));
   const references: References = {
     cite: { order: [], data: {} },
   };
@@ -220,7 +222,7 @@ export async function transformMdast(
     .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
-      firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
+      firstDepth,
     })
     .use(inlineMathSimplificationPlugin, { replaceSymbol: false })
     .use(mathPlugin, { macros: frontmatter.math });
@@ -296,6 +298,7 @@ export async function transformMdast(
     references,
     identifiers,
     widgets,
+    firstDepth,
   } as any;
   const cachedMdast = cache.$getMdast(file);
   if (cachedMdast) cachedMdast.post = data;
