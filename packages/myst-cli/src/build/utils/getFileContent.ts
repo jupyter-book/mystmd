@@ -59,11 +59,17 @@ export async function getFileContent(
   const projectParts = selectors.selectProjectParts(session.store.getState(), projectPath);
   // Keep 'files' indices consistent in 'allFiles' as index is used for other fields.
   const allFiles = [...files, ...projectFiles, ...projectParts];
+  // Parts are placed at the top level of the export, so they take the shallowest article depth
+  const depths = [titleDepths ?? []].flat().filter((depth) => depth != null);
+  const partDepth = depths.length ? Math.min(...depths) : undefined;
 
   await Promise.all(
     allFiles.map(async (file, ind) => {
       const pageSlug = pages.find((page) => page.file === file)?.slug;
-      const titleDepth = typeof titleDepths === 'number' ? titleDepths : titleDepths?.[ind];
+      const titleDepth =
+        typeof titleDepths === 'number'
+          ? titleDepths
+          : (titleDepths?.[ind] ?? (projectParts.includes(file) ? partDepth : undefined));
       await transformMdast(session, {
         file,
         imageExtensions,
