@@ -211,4 +211,56 @@ describe('parses directives', () => {
     expect(tokens[6].meta.value).toEqual('b');
     expect(tokens[6].content).toEqual('b');
   });
+  it('directive options are parsed once', () => {
+    const mdit = MarkdownIt().use(plugin);
+    const tokens = mdit.parse('```{ab}\n:a: [A](a.md) **b**\n```', {});
+    const option = tokens.find(
+      (t, i) => t.type === 'inline' && tokens[i - 1]?.type === 'myst_option_open',
+    );
+    expect(option?.children?.map((c) => c.type)).toEqual([
+      'link_open',
+      'text',
+      'link_close',
+      'text',
+      'strong_open',
+      'text',
+      'strong_close',
+      'text',
+    ]);
+  });
+  it('inline directive options are parsed once', () => {
+    const mdit = MarkdownIt().use(plugin);
+    const tokens = mdit.parse('```{ab a="[A](a.md) **b**"}\n```', {});
+    const option = tokens.find(
+      (t, i) => t.type === 'inline' && tokens[i - 1]?.type === 'myst_option_open',
+    );
+    expect(option?.children?.map((c) => c.type)).toEqual([
+      'link_open',
+      'text',
+      'link_close',
+      'text',
+      'strong_open',
+      'text',
+      'strong_close',
+      'text',
+    ]);
+  });
+  it('inline directive options get typography and linkify like option lines', () => {
+    const mdit = MarkdownIt({ typographer: true, linkify: true }).use(plugin);
+    const childrenOf = (src: string) => {
+      const tokens = mdit.parse(src, {});
+      const option = tokens.find(
+        (t, i) => t.type === 'inline' && tokens[i - 1]?.type === 'myst_option_open',
+      );
+      return option?.children?.map((c) => [c.type, c.content]);
+    };
+    const line = childrenOf('```{ab}\n:a: "hi" -- https://example.com\n```');
+    expect(line).toEqual([
+      ['text', '“hi” – '],
+      ['link_open', ''],
+      ['text', 'https://example.com'],
+      ['link_close', ''],
+    ]);
+    expect(childrenOf('```{ab a="\\"hi\\" -- https://example.com"}\n```')).toEqual(line);
+  });
 });
