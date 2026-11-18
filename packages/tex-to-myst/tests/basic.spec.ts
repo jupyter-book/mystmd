@@ -22,6 +22,18 @@ describe('tex-to-myst', () => {
       ]),
     );
   });
+  it('emits a value-based inline code node for texttt', () => {
+    const tex = new TexParser('\\texttt{a\\_b}', new VFile());
+    expect(stripPositions(tex.ast)).toEqual(
+      u('root', [u('paragraph', [u('inlineCode', 'a_b')])]),
+    );
+  });
+  it('preserves listings from the unified-latex environment representation', () => {
+    const file = new VFile();
+    const tex = new TexParser('\\begin{lstlisting}[language=python]\nprint(1)\n\\end{lstlisting}', file);
+    expect(stripPositions(tex.ast)).toEqual(u('root', [u('code', { lang: 'python', value: 'print(1)' })]));
+    expect(file.messages).toHaveLength(0);
+  });
   it('Basic citations parsing', () => {
     const text = '\\cite{something}';
     const file = new VFile();

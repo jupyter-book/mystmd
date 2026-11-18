@@ -14,7 +14,7 @@ import { REF_HANDLERS } from './refs.js';
 import { MATH_HANDLERS } from './math.js';
 import { parseLatex } from './tex.js';
 import type { Handler, ITexParser, Options, StateData } from './types.js';
-import { phrasingTypes, replaceTextValue, UNHANDLED_ERROR_TEXT } from './utils.js';
+import { phrasingTypes, replaceTextValue, texToText, UNHANDLED_ERROR_TEXT } from './utils.js';
 import { SECTION_HANDLERS } from './sections.js';
 import { COLOR_HANDLERS } from './colors.js';
 import { FRONTMATTER_HANDLERS } from './frontmatter.js';
@@ -283,6 +283,11 @@ export class TexParser implements ITexParser {
   closeNode(type?: string) {
     if (type && this.top().type !== type) return this.top();
     const node = this.stack.pop();
+    // inlineCode is a literal in the MyST AST, including when opened by ttfamily.
+    if (node?.type === 'inlineCode' && node.children) {
+      node.value = texToText(node.children);
+      delete node.children;
+    }
     this.pushNode(node);
     return node as GenericNode;
   }
