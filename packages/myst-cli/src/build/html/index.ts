@@ -179,6 +179,7 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
   const appServer = await startServer(session, {
     ...opts,
     buildStatic: true,
+    shortcuts: false,
     baseurl,
     // We do not need a running site if the template knows how to render itself
     headless: renderCommand !== undefined,
