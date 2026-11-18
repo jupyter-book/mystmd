@@ -25,7 +25,7 @@ import {
 } from './utils.js';
 import MATH_HANDLERS, { resolveRecursiveCommands } from './math.js';
 import { select, selectAll } from 'unist-util-select';
-import type { Admonition, Code, CrossReference, FootnoteDefinition, TabItem } from 'myst-spec-ext';
+import type { Admonition, Aside, Code, CrossReference, FootnoteDefinition, TabItem } from 'myst-spec-ext';
 import { tableCellHandler, tableHandler, tableRowHandler } from './table.js';
 import { proofHandlers } from './proofs.js';
 
@@ -61,6 +61,23 @@ const admonitionMacros = {
   warning:
     '#let warningBlock(body, heading: [Warning]) = admonition(body, heading: heading, color: yellow)',
 };
+
+const asideMacro = `
+#import "@preview/marge:0.1.0": sidenote
+
+#let asideBlock(body, heading: none) = sidenote(
+  numbering: none, padding: 4pt,
+  box(width: 100%, inset: (x: 3pt, y: 5pt), fill: luma(248), stroke: (left: 1.5pt + luma(160)),)[
+    #set text(size: 0.8em)
+    #set par(justify: false)
+    #if heading != none {
+      text(weight: "bold", heading)
+      parbreak()
+    }
+    #body
+  ],
+)
+`;
 
 const tabSet = `
 #let tabSet(body) = {
@@ -318,6 +335,20 @@ const handlers: Record<string, Handler> = {
     state.write('[\n');
     state.renderChildren(node);
     state.write('\n]\n\n');
+  },
+  aside(node: Aside, state) {
+    state.useMacro(asideMacro);
+    state.ensureNewLine();
+    const title = select('admonitionTitle', node);
+    state.write('#asideBlock');
+    if (title) {
+      state.write('(heading: [');
+      state.renderChildren(title);
+      state.write('])');
+    }
+    state.write('[\n');
+    state.renderChildren(node);
+    state.write('\n]\n');
   },
   admonitionTitle() {
     return;
