@@ -7,6 +7,7 @@ export type MystToTexSettings = {
 
 export type ParserSettings = {
   dollarmath?: boolean;
+  strikethrough?: boolean;
 };
 
 export type ProjectSettings = {
