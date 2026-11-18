@@ -99,6 +99,7 @@ For example:
 - `mysite.org/docs/`: **Does** require a `BASE_URL` to be set, because your MyST HTML files will be in `docs/`, not the root.
 
 If MyST detects an environment variable called `BASE_URL` it will prepend it to all links.
+To build a site that works at any base URL, use [relative URLs](#deploy:relative-urls) instead.
 
 In the following examples we first define a `BASE_URL` parameter and then build the MyST HTML assets.
 
@@ -133,6 +134,44 @@ myst build --html
 You can set environment variables in many CI/CD services like GitHub Actions and Netlify.
 This can be a useful way to ensure the `BASE_URL` is set before your site is deployed.
 :::
+
+(deploy:relative-urls)=
+### Relative URLs
+
+Set `site.options.relative_urls` to build a static site that works at any base URL:
+
+```{code-block} yaml
+:filename: myst.yml
+site:
+  options:
+    relative_urls: true
+```
+
+The links, images, scripts and stylesheets of each page then use paths relative to that page, for example `../../_public/image.png`.
+You do not set `BASE_URL`.
+You can serve the same `_build/html` folder from `mysite.org/`, `mysite.org/docs/` or `mysite.org/v1.2/`.
+
+This option applies only to static HTML builds (`myst build --html`).
+If you set `relative_urls`, links do not use `BASE_URL`.
+Only themes that support the option use it; see the options of your theme in [](#site-options).
+
+The limitations of relative URLs are:
+
+- **Trailing slashes**: Relative URLs resolve from the folder in the browser address.
+  The address of each page must therefore end with `/` (for example, `mysite.org/docs/intro/`) or with `/index.html`.
+  If a host serves the page at `mysite.org/docs/intro`, the relative links on that page point one folder too high.
+  Most static hosts redirect `/docs/intro` to `/docs/intro/`.
+  If your host does not, the page redirects with JavaScript.
+  Without JavaScript, the links on that page are incorrect.
+- **Sitemaps**: The sitemap protocol requires absolute URLs.
+  `relative_urls` does not change `sitemap.xml` or `robots.txt`.
+- **Social previews**: Metadata such as `og:image` contains relative URLs.
+  Many social platforms require absolute URLs, and do not show these images.
+- **Local files**: You cannot browse the site from local files (`file://`).
+  Browsers block the scripts of the site, and links go to folders, not to `index.html` files.
+  Use a local web server, for example `python -m http.server`.
+- **Hover previews on other sites**: Other MyST sites can show content from your site in hover previews.
+  A site with an older theme does not show the images of your site in these previews.
 
 ### Services for Static Web Hosting
 
