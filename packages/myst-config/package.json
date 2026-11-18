@@ -1,6 +1,6 @@
 {
   "name": "myst-config",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "license": "MIT",
   "description": "Project and site config types and validation for the mystmd ecosystem",
   "author": "Franklin Koch <franklin@curvenote.com>",
@@ -30,9 +30,9 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.11.0",
-    "myst-frontmatter": "^1.11.0",
-    "simple-validators": "^1.2.1"
+    "myst-common": "^1.11.1",
+    "myst-frontmatter": "^1.11.1",
+    "simple-validators": "^1.2.2"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

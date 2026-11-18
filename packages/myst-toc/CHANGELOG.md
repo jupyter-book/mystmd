@@ -1,5 +1,13 @@
 # myst-toc
 
+## 0.2.1
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - simple-validators@1.2.2
+
 ## 0.2.0
 
 ### Minor Changes
