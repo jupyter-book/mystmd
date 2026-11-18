@@ -1,5 +1,18 @@
 # myst-to-jats
 
+## 1.0.38
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - citation-js-utils@1.2.12
+  - myst-common@1.11.1
+  - myst-frontmatter@1.11.1
+  - myst-spec@0.0.7
+  - myst-spec-ext@1.11.1
+  - myst-transforms@1.3.54
+
 ## 1.0.37
 
 ### Patch Changes

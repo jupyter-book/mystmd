@@ -1,5 +1,17 @@
 # myst-parser
 
+## 1.7.6
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - markdown-it-myst@1.0.20
+  - myst-common@1.11.1
+  - myst-directives@1.7.6
+  - myst-roles@1.7.6
+  - myst-spec@0.0.7
+
 ## 1.7.5
 
 ### Patch Changes

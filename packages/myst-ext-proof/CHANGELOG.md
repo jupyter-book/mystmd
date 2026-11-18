@@ -1,5 +1,15 @@
 # myst-ext-proof
 
+## 1.0.15
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-common@1.11.1
+  - myst-directives@1.7.6
+  - myst-spec@0.0.7
+
 ## 1.0.14
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # myst-execute
 
+## 0.5.1
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-cli-utils@2.0.17
+  - myst-common@1.11.1
+  - myst-frontmatter@1.11.1
+  - myst-spec@0.0.7
+
 ## 0.5.0
 
 ### Minor Changes

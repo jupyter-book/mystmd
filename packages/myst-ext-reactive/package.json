@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-reactive",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for reactive variables",
@@ -31,11 +31,11 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.10.2"
+    "myst-common": "^1.11.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "eslint": "^10.14.0",
-    "myst-parser": "^1.7.5"
+    "myst-parser": "^1.7.6"
   }
 }

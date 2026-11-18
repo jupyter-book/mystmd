@@ -1,5 +1,11 @@
 # simple-validators
 
+## 1.2.2
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+
 ## 1.2.1
 
 ### Patch Changes

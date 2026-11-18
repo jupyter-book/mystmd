@@ -1,6 +1,6 @@
 {
   "name": "myst-spec-ext",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "description": "Extensions for myst-spec that are used in mystmd",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-spec-ext",
@@ -31,7 +31,7 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-spec": "^0.0.6"
+    "myst-spec": "^0.0.7"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
