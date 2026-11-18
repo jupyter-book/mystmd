@@ -73,8 +73,12 @@ export async function downloadAndSaveImage(
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${stem}`);
   try {
     const { name, contentType } = await fetchRemoteAsset(session, url, fileFolder, stem);
-    if (!contentType.startsWith('image/')) {
-      throw new Error(`${url} content-type "${contentType}" is not an image`);
+    // Only accept videos in formats we already handle for local files
+    const isVideo = KNOWN_VIDEO_EXTENSIONS.includes(path.extname(name));
+    if (!contentType.startsWith('image/') && !isVideo) {
+      // Remove the download so the next build doesn't treat it as a cached image
+      fs.rmSync(path.join(fileFolder, name), { force: true });
+      throw new Error(`${url} content-type "${contentType}" is not an image or supported video`);
     }
     return name;
   } catch (error) {
@@ -115,6 +119,8 @@ export async function saveImageInStaticFolder(
   if (isUrl(urlSource)) {
     // If not oxa, download the URL directly and save it to a file with a hashed name
     file = await downloadAndSaveImage(session, urlSource, computeHash(urlSource), writeFolder);
+    // Keep the remote URL if the download failed, rather than pointing at "undefined"
+    if (!file) return null;
   } else if (fs.existsSync(imageLocalFile)) {
     // Non-oxa, non-url local image paths relative to the config.section.path
     if (path.resolve(path.dirname(imageLocalFile)) === path.resolve(writeFolder)) {
