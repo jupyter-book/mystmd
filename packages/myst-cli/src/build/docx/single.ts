@@ -5,35 +5,105 @@ import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import {
   FRONTMATTER_ALIASES,
+  PAGE_KNOWN_PARTS,
   PAGE_FRONTMATTER_KEYS,
   PROJECT_FRONTMATTER_KEYS,
   validateProjectFrontmatter,
 } from 'myst-frontmatter';
-import type { RendererDoc } from 'myst-templates';
+import type { RendererDoc, TemplatePartDefinition } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import { htmlTransform } from 'myst-transforms';
-import { fileError, fileWarn, RuleId, TemplateKind, toText } from 'myst-common';
+import type { GenericParent } from 'myst-common';
+import { extractPart, fileError, fileWarn, RuleId, TemplateKind, toText } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
 import { frontmatterValidationOpts } from '../../frontmatter.js';
 import { finalizeMdast } from '../../process/mdast.js';
 import type { ISession } from '../../session/types.js';
-import type { RendererData } from '../../transforms/types.js';
 import { createTempFolder } from '../../utils/createTempFolder.js';
 import { logMessagesFromVFile } from '../../utils/logging.js';
 import { ImageExtensions } from '../../utils/resolveExtension.js';
-import type { ExportFnOptions, ExportResults, ExportWithOutput } from '../types.js';
+import { resolveFrontmatterParts } from '../../utils/resolveFrontmatterParts.js';
+import type {
+  DocxPart,
+  DocxRendererData,
+  ExportFnOptions,
+  ExportResults,
+  ExportWithOutput,
+} from '../types.js';
 import { cleanOutput } from '../utils/cleanOutput.js';
 import { getFileContent } from '../utils/getFileContent.js';
 import { createFooter } from './footers.js';
-import { createArticleTitle, createReferenceTitle } from './titles.js';
+import { createArticleTitle, createPartTitle, createReferenceTitle } from './titles.js';
 
 const DOCX_IMAGE_EXTENSIONS = [ImageExtensions.png, ImageExtensions.jpg, ImageExtensions.jpeg];
+const BACKMATTER_PARTS = new Set(['data_availability', 'acknowledgments']);
+const PART_TITLES: Record<string, string> = {
+  abstract: 'Abstract',
+  summary: 'Summary',
+  keypoints: 'Key Points',
+  dedication: 'Dedication',
+  epigraph: 'Epigraph',
+  data_availability: 'Data Availability',
+  acknowledgments: 'Acknowledgments',
+};
 
-function defaultWordRenderer(
+function splitPart(mdast: GenericParent, asList?: boolean): GenericParent | GenericParent[] {
+  if (!asList) return mdast;
+  if (
+    mdast.children.length === 1 &&
+    mdast.children[0]?.children?.length === 1 &&
+    mdast.children[0].children[0].type === 'list'
+  ) {
+    return selectAll('listItem', mdast).map((item) => ({
+      type: 'root',
+      children: (item as GenericParent).children,
+    })) as GenericParent[];
+  }
+  return mdast.children.map((child) => ({ type: 'root', children: [child] }));
+}
+
+export function extractDocxParts(
   session: ISession,
-  data: RendererData,
+  mdast: GenericParent,
+  frontmatter: DocxRendererData['frontmatter'],
+  templateDefinitions: TemplatePartDefinition[],
+) {
+  const definitions: TemplatePartDefinition[] = [
+    ...templateDefinitions,
+    ...PAGE_KNOWN_PARTS.filter((id) => !templateDefinitions.some((def) => def.id === id)).map(
+      (id) => ({ id, title: PART_TITLES[id] }),
+    ),
+  ];
+  return definitions.reduce<Record<string, DocxPart>>((parts, definition) => {
+    const part = extractPart(mdast, definition.id, {
+      frontmatterParts: resolveFrontmatterParts(session, frontmatter),
+    });
+    if (part) parts[definition.id] = { definition, mdast: splitPart(part, definition.as_list) };
+    return parts;
+  }, {});
+}
+
+function renderParts(
+  serializer: DocxSerializer,
+  parts: Record<string, DocxPart>,
+  backmatter: boolean,
+) {
+  Object.values(parts)
+    .filter(({ definition }) => BACKMATTER_PARTS.has(definition.id) === backmatter)
+    .forEach(({ definition, mdast }) => {
+      const title = definition.title ?? PART_TITLES[definition.id];
+      if (title) serializer.render(createPartTitle(title));
+      (Array.isArray(mdast) ? mdast : [mdast]).forEach((part) => {
+        serializer.renderChildren(part);
+      });
+    });
+}
+
+export function defaultWordRenderer(
+  session: ISession,
+  data: DocxRendererData,
   doc: RendererDoc,
   opts: Record<string, any>,
   staticPath: string,
@@ -56,7 +126,9 @@ function defaultWordRenderer(
   frontmatterNodes.forEach((node) => {
     serializer.render(node);
   });
+  renderParts(serializer, data.parts, false);
   serializer.renderChildren(mdast);
+  renderParts(serializer, data.parts, true);
 
   // Take each reference
   const referenceNodes = Object.values(references.cite?.data ?? {})
@@ -138,19 +210,30 @@ export async function runWordExport(
   );
   logMessagesFromVFile(session, vfile);
   data.frontmatter = { ...data.frontmatter, ...exportFrontmatter };
-  const { options, doc } = mystTemplate.prepare({
-    frontmatter: data.frontmatter,
-    parts: {},
-    options: { ...data.frontmatter.options, ...exportOptions },
-    sourceFile: file,
-  });
-  const renderer = exportOptions.renderer ?? defaultWordRenderer;
   await finalizeMdast(session, data.mdast, data.frontmatter, article.file, {
     imageWriteFolder,
     imageExtensions: DOCX_IMAGE_EXTENSIONS,
     simplifyFigures: true,
   });
-  const docx = renderer(session, data, doc, options, mystTemplate.templatePath, vfile);
+  const templateYml = mystTemplate.getValidatedTemplateYml();
+  const parts = extractDocxParts(session, data.mdast, data.frontmatter, templateYml?.parts ?? []);
+  const templateParts = Object.fromEntries(
+    (templateYml?.parts ?? [])
+      .filter(({ id }) => parts[id])
+      .map(({ id }) => {
+        const mdast = parts[id].mdast;
+        return [id, Array.isArray(mdast) ? mdast.map((part) => toText(part)) : toText(mdast)];
+      }),
+  );
+  const { options, doc } = mystTemplate.prepare({
+    frontmatter: data.frontmatter,
+    parts: templateParts,
+    options: { ...data.frontmatter.options, ...exportOptions },
+    sourceFile: file,
+  });
+  const renderer = exportOptions.renderer ?? defaultWordRenderer;
+  const rendererData: DocxRendererData = { ...data, parts };
+  const docx = renderer(session, rendererData, doc, options, mystTemplate.templatePath, vfile);
   logMessagesFromVFile(session, vfile);
   await writeDocx(docx, (buffer) => writeFileToFolder(output, buffer));
   session.log.info(toc(`📄 Exported DOCX in %s, copying to ${output}`));
