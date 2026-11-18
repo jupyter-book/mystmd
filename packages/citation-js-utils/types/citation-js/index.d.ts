@@ -60,7 +60,19 @@ declare module '@citation-js/core' {
           useIdAsLabel?: boolean;
           checkLabel?: boolean;
         };
+        templates: {
+          has(name: string): boolean;
+          get(name: string): string;
+          add(name: string, xml: string): void;
+        };
       };
     };
   };
+}
+declare module '@citation-js/plugin-csl/lib/locales.js' {
+  export const locales: { get(lang: string): string | undefined };
+}
+declare module 'citeproc' {
+  const CSL: { Engine: any };
+  export default CSL;
 }

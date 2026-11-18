@@ -151,6 +151,12 @@ export function validateProjectAndPageFrontmatterKeys(
       },
     );
   }
+  if (defined(value.citation_style)) {
+    output.citation_style = validateString(
+      value.citation_style,
+      incrementOptions('citation_style', opts),
+    );
+  }
   if (defined(value.volume)) {
     output.volume = validatePublicationMeta(value.volume, incrementOptions('volume', opts));
   }
