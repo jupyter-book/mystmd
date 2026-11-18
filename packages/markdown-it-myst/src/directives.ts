@@ -27,7 +27,12 @@ function computeBlockTightness(
 function replaceFences(state: StateCore): boolean {
   for (const token of state.tokens) {
     if (token.type === 'fence' || token.type === 'colon_fence') {
-      const match = token.info.match(/^\s*\{\s*([^}]+)\s*\}\s*(.*)$/);
+      // Matches `{name .class key="value"} arg`, capturing the name and inline
+      // options inside the braces, and the argument after them. Double-quoted
+      // values may contain `}` and escaped quotes.
+      const match = token.info.match(
+        /^\s*\{\s*((?:"(?:\\.|[^\\"])*"|"(?!(?:\\.|[^\\"])*")|[^}"])+?)\s*\}\s*(.*)$/,
+      );
       if (match) {
         token.type = 'directive';
         token.info = match[1].trim();
