@@ -48,6 +48,7 @@ import {
   liftCodeMetadataToBlock,
   transformCitations,
   transformImageFormats,
+  transformImageNoAltText,
   transformLinkedDOIs,
   transformLinkedRORs,
   transformOutputsToCache,
@@ -269,6 +270,7 @@ export async function transformMdast(
     .run(mdast, vfile);
   transformImagesToEmbed(mdast);
   transformImagesWithoutExt(session, mdast, file, { imageExtensions });
+  transformImageNoAltText(session, mdast, file);
   const isJupytext = frontmatter.kernelspec || frontmatter.jupytext;
   if (isJupytext) transformLiftCodeBlocksInJupytext(mdast);
   const sha256 = selectors.selectFileInfo(store.getState(), file).sha256 as string;
