@@ -68,6 +68,8 @@ export const RULE_DEFAULT_SEVERITY: Record<RuleId, 'error' | 'warn'> = {
   [RuleId.imageFormatConverts]: 'error', // Uses both error (7×) and warn (1×); addWarningForFile in packages/myst-cli/src/transforms/images....
   [RuleId.imageCopied]: 'error', // addWarningForFile in packages/myst-cli/src/transforms/anywidgets.ts, packages/myst-cli/src/transf...
   [RuleId.imageFormatOptimizes]: 'warn', // addWarningForFile in packages/myst-cli/src/utils/imagemagick.ts
+  [RuleId.imageHasAltText]: 'warn', // addWarningForFile in packages/myst-cli/src/transforms/images.ts
+  [RuleId.imageAltTextGenerated]: 'warn', // addWarningForFile in packages/myst-cli/src/transforms/images.ts
   // Math rules
   [RuleId.mathLabelLifted]: 'warn', // fileWarn in packages/myst-transforms/src/math.ts
   [RuleId.mathEquationEnvRemoved]: 'warn', // fileWarn in packages/myst-transforms/src/math.ts
