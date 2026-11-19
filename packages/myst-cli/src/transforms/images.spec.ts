@@ -58,7 +58,7 @@ describe('Test transformImageNoAltText', () => {
         kind: 'warn',
         url: node.url,
         ruleId: RuleId.imageHasAltText,
-      }
+      },
     ]);
   });
   test('image with alt text does not generate a warning', () => {
@@ -164,7 +164,7 @@ describe('Test transformImageNoAltText', () => {
         kind: 'warn',
         url: node.url,
         ruleId: RuleId.imageAltTextGenerated,
-      }
+      },
     ]);
   });
   test('image inside output does not generate warning', () => {
