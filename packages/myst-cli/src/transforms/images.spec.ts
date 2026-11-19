@@ -24,9 +24,10 @@ describe('getConversionFns', () => {
 });
 
 describe('Test transformImageNoAltText', () => {
-  const session = new Session();
 
   test('image without alt text generates warning', () => {
+    const session = new Session();
+    const file = new String('my-file');
     const mdast = {
       type: 'root',
       children: [
@@ -37,8 +38,7 @@ describe('Test transformImageNoAltText', () => {
         },
       ],
     };
-    let node = mdast.children[0];
-    const file = new String('my-file');
+    // AST is not modified
     transformImageNoAltText(session, mdast, file);
     expect(mdast).toEqual({
       type: 'root',
@@ -51,8 +51,7 @@ describe('Test transformImageNoAltText', () => {
       ],
     });
     // A warning was created
-    // expect(file.messages.length).toBe(1);
-    // expect(file.messages[0].message.includes('missing alt text')).toBe(true);
+    let node = mdast.children[0];
     expect(session.getAllWarnings(RuleId.imageHasAltText)).toEqual([
       {
         file: 'my-file',
