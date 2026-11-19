@@ -24,7 +24,6 @@ describe('getConversionFns', () => {
 });
 
 describe('Test transformImageNoAltText', () => {
-
   test('image without alt text generates warning', () => {
     const session = new Session();
     const file = new String('my-file');
@@ -62,34 +61,34 @@ describe('Test transformImageNoAltText', () => {
       }
     ]);
   });
-  // test('image without alt text does not generate a warning', () => {
-  //   const mdast = {
-  //     type: 'root',
-  //     children: [
-  //       {
-  //         type: 'image',
-  //         url: 'https://images.com/cats',
-  //         alt: 'I have alt text',
-  //         align: 'center',
-  //       },
-  //     ],
-  //   };
-  //   const file = new String();
-  //   transformImageNoAltText(session, mdast, file);
-  //   expect(mdast).toEqual({
-  //     type: 'root',
-  //     children: [
-  //       {
-  //         type: 'image',
-  //         url: 'https://images.com/cats',
-  //         alt: 'I have alt text',
-  //         align: 'center',
-  //       },
-  //     ],
-  //   });
-  //   // A warning was created
-  //   expect(file.messages.length).toBe(0);
-  // });
+  test('image with alt text does not generate a warning', () => {
+    const session = new Session();
+    const file = new String('my-file');
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'image',
+          url: 'https://images.com/cats',
+          alt: 'I have alt text',
+          align: 'center',
+        },
+      ],
+    };
+    transformImageNoAltText(session, mdast, file);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'image',
+          url: 'https://images.com/cats',
+          alt: 'I have alt text',
+          align: 'center',
+        },
+      ],
+    });
+    expect(session.getAllWarnings(RuleId.imageHasAltText)).toEqual([]);
+  });
   // test('image inside captioned figure warns about generated alt text', () => {
   //   const mdast = {
   //     type: 'container',
