@@ -52,23 +52,36 @@ export function createId() {
 }
 
 /**
- * https://github.com/syntax-tree/mdast#association
- * @param label A label field can be present.
- *        label is a string value: it works just like title on a link or a
- *        lang on code: character escapes and character references are parsed.
- * @returns { identifier, label, html_id }
+ * Normalize a label to an identifier for matching references to targets.
+ *
+ * Collapses whitespace to single spaces, removes quote characters, trims, and lowercases.
+ * Returns `undefined` if `label` is empty or undefined.
  */
-export function normalizeLabel(
-  label: string | undefined,
-): { identifier: string; label: string; html_id: string } | undefined {
+export function normalizeIdentifier(label: string | undefined): string | undefined {
   if (!label) return undefined;
-  const identifier = label
+  return label
     .replace(/[\t\n\r ]+/g, ' ')
     .replace(/['‘’"“”]+/g, '') // These can make matching difficult, especially in glossaries and terms
     .trim()
     .toLowerCase();
+}
+
+/**
+ * Normalize a label to the association fields of an mdast node.
+ *
+ * See https://github.com/syntax-tree/mdast#association.
+ *
+ * @param label The label as written in the source.
+ * @returns `label` unchanged, `identifier` from `normalizeIdentifier`, and `html_id` from
+ *   `createHtmlId`; or `undefined` if `label` is empty or undefined.
+ */
+export function normalizeLabel(
+  label: string | undefined,
+): { identifier: string; label: string; html_id: string } | undefined {
+  const identifier = normalizeIdentifier(label);
+  if (identifier === undefined) return undefined;
   const html_id = createHtmlId(identifier) as string;
-  return { identifier, label: label, html_id };
+  return { identifier, label: label as string, html_id };
 }
 
 export function createHtmlId(identifier?: string): string | undefined {

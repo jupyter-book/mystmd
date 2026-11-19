@@ -7,6 +7,7 @@
     "base.json"
   ],
   "devDependencies": {
-    "eslint": "^8.21.0"
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0"
   }
 }

@@ -18,7 +18,7 @@
         with pkgs; {
           devShells.default = mkShell {
             buildInputs = [
-              pkgs.nodejs_22
+              pkgs.nodejs_26
               pkgs.bun
               (pkgs.python3.withPackages (ps:
                 with ps; [

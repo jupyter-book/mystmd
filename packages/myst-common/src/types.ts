@@ -31,17 +31,17 @@ export enum NotebookCell {
 }
 
 export enum NotebookCellTags {
-  'removeStderr' = 'remove-stderr',
-  'removeStdout' = 'remove-stdout',
-  'hideCell' = 'hide-cell',
-  'hideInput' = 'hide-input',
-  'hideOutput' = 'hide-output',
-  'removeCell' = 'remove-cell',
-  'removeInput' = 'remove-input',
-  'removeOutput' = 'remove-output',
-  'scrollOutput' = 'scroll-output',
-  'skipExecution' = 'skip-execution',
-  'raisesException' = 'raises-exception',
+  removeStderr = 'remove-stderr',
+  removeStdout = 'remove-stdout',
+  hideCell = 'hide-cell',
+  hideInput = 'hide-input',
+  hideOutput = 'hide-output',
+  removeCell = 'remove-cell',
+  removeInput = 'remove-input',
+  removeOutput = 'remove-output',
+  scrollOutput = 'scroll-output',
+  skipExecution = 'skip-execution',
+  raisesException = 'raises-exception',
 }
 
 export type References = {

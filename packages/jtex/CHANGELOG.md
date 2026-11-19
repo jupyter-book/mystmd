@@ -1,5 +1,31 @@
 # jtex
 
+## 1.0.24
+
+### Patch Changes
+
+- c63e74a: Update packaging metadata
+- Updated dependencies [50e8220]
+  - myst-common@1.11.0
+  - myst-frontmatter@1.11.0
+
+## 1.0.23
+
+### Patch Changes
+
+- 5d08362: Do not run npm link
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [d258a30]
+- Updated dependencies [966078f]
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - simple-validators@1.2.1
+  - myst-frontmatter@1.10.2
+  - myst-templates@1.1.0
+  - myst-cli-utils@2.0.16
+  - myst-common@1.10.2
+
 ## 1.0.22
 
 ### Patch Changes

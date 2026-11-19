@@ -1,6 +1,6 @@
 {
   "name": "myst-templates",
-  "version": "1.0.28",
+  "version": "1.1.0",
   "description": "API types and scripts for downloading MyST Templates",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-templates",
@@ -26,10 +26,9 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "prettier --check src/*.ts src/**/*.ts",
-    "test": "bun run test",
-    "test:watch": "bun run test --watch",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -42,14 +41,16 @@
     "commander": "^10.0.1",
     "glob": "^10.3.1",
     "js-yaml": "^4.1.0",
-    "myst-cli-utils": "^2.0.15",
-    "myst-common": "^1.10.1",
-    "myst-frontmatter": "^1.10.1",
+    "myst-cli-utils": "^2.0.16",
+    "myst-common": "^1.10.2",
+    "myst-frontmatter": "^1.10.2",
     "node-fetch": "^3.3.1",
     "pretty-hrtime": "^1.0.3",
-    "simple-validators": "^1.2.0"
+    "simple-validators": "^1.2.1"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/adm-zip": "^0.5.0",
     "@types/js-yaml": "^4.0.5",
     "@types/nunjucks": "^3.2.2",

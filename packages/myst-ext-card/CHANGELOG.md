@@ -1,5 +1,23 @@
 # myst-ext-card
 
+## 1.0.11
+
+### Patch Changes
+
+- 3cc7340: Fix `class` support in card
+- Updated dependencies [50e8220]
+  - myst-common@1.11.0
+
+## 1.0.10
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - myst-common@1.10.2
+
 ## 1.0.9
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # myst-toc
 
+## 0.2.0
+
+### Minor Changes
+
+- 8055648: Add a `searchable` option to `file` and `pattern` TOC entries. Hidden pages are now left out of search unless they set `searchable: true`.
+
+## 0.1.5
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [d258a30]
+  - simple-validators@1.2.1
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # myst-transforms
 
+## 1.3.53
+
+### Patch Changes
+
+- 50e8220: Normalize a reference identifier once per lookup, not once per page.
+  Add `normalizeIdentifier`, which returns only the identifier part of `normalizeLabel`.
+- Updated dependencies [50e8220]
+  - myst-common@1.11.0
+  - myst-frontmatter@1.11.0
+  - myst-spec-ext@1.11.0
+
+## 1.3.52
+
+### Patch Changes
+
+- 59fb1f4: Preserve the matched target's identifier when resolving reference links and unlinked citations. `getTarget` already tries the verbatim identifier before the normalized (lowercased) form, but the resulting cross-reference was always given the normalized identifier, so links to case-sensitive targets (e.g. Python API objects like `sample.Match` vs `sample.match` registered by plugins) silently resolved to the wrong target.
+- Updated dependencies [d258a30]
+- Updated dependencies [28809c7]
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - myst-frontmatter@1.10.2
+  - myst-to-html@1.7.5
+  - myst-common@1.10.2
+  - myst-spec-ext@1.10.2
+
 ## 1.3.51
 
 ### Patch Changes

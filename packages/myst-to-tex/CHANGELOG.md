@@ -1,5 +1,19 @@
 # myst-to-tex
 
+## 1.0.48
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [d258a30]
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - myst-frontmatter@1.10.2
+  - myst-ext-proof@1.0.14
+  - myst-common@1.10.2
+  - myst-spec-ext@1.10.2
+
 ## 1.0.47
 
 ### Patch Changes

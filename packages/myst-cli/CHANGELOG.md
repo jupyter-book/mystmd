@@ -1,5 +1,83 @@
 # myst-cli
 
+## 1.13.0
+
+### Minor Changes
+
+- 097a21e: Add new hiddenPages temporary manifest field
+- 8055648: Add a `searchable` option to `file` and `pattern` TOC entries. Hidden pages are now left out of search unless they set `searchable: true`.
+
+### Patch Changes
+
+- c63e74a: Update packaging metadata
+- b131bc1: Return frozen store state from selectors instead of deep copies, and type it as read-only.
+- 5d87e8b: Only collect project exports when resolving a page's `downloads` if the page has `downloads`, avoiding quadratic memory use on large sites.
+- ee65152: Only build the project page manifest for the `toc` transform on pages that contain a `toc`, avoiding quadratic memory use on large sites.
+- ee65152: Return the cached project from `loadProjectFromDisk` without deep copying it, avoiding quadratic memory use on large sites.
+- Updated dependencies [c63e74a]
+- Updated dependencies [097a21e]
+- Updated dependencies [3cc7340]
+- Updated dependencies [50e8220]
+- Updated dependencies [8055648]
+  - citation-js-utils@1.2.11
+  - jtex@1.0.24
+  - myst-config@1.11.0
+  - myst-ext-card@1.0.11
+  - myst-common@1.11.0
+  - myst-transforms@1.3.53
+  - myst-toc@0.2.0
+  - myst-frontmatter@1.11.0
+  - myst-spec-ext@1.11.0
+  - myst-migrate@1.13.0
+
+## 1.12.0
+
+### Minor Changes
+
+- 966078f: support for 'multiple' site options, meaning scalar or array
+- e64d019: Allow `--execute-parallel` to be set on `myst start`, not just `myst build`
+
+### Patch Changes
+
+- d258a30: Add `key`s to "unexpected directive option" and "extra frontmatter key" warnings so they can be ignored selectively with `error_rules` (e.g. `code-cell.cell_style`, `jupytext.*`). Extra frontmatter keys now warn once per key.
+- 3b00993: Support more video formats
+- ab65f05: Update dependencies
+- Updated dependencies [d258a30]
+- Updated dependencies [59fb1f4]
+- Updated dependencies [5d08362]
+- Updated dependencies [966078f]
+- Updated dependencies [5c0347d]
+- Updated dependencies [47e2707]
+- Updated dependencies [c4b47b6]
+- Updated dependencies [138805c]
+  - myst-parser@1.7.5
+  - simple-validators@1.2.1
+  - myst-frontmatter@1.10.2
+  - myst-transforms@1.3.52
+  - jtex@1.0.23
+  - myst-templates@1.1.0
+  - citation-js-utils@1.2.10
+  - myst-ext-exercise@1.0.11
+  - myst-ext-reactive@1.0.10
+  - myst-ext-button@0.0.3
+  - myst-cli-utils@2.0.16
+  - myst-ext-proof@1.0.14
+  - myst-ext-card@1.0.10
+  - myst-ext-grid@1.1.2
+  - myst-ext-icon@0.0.4
+  - myst-ext-tabs@1.0.11
+  - myst-to-typst@0.0.40
+  - myst-migrate@1.12.0
+  - myst-to-docx@1.0.18
+  - myst-to-jats@1.0.37
+  - myst-common@1.10.2
+  - myst-config@1.10.2
+  - myst-to-tex@1.0.48
+  - myst-to-md@1.0.18
+  - myst-toc@0.1.5
+  - myst-spec-ext@1.10.2
+  - tex-to-myst@1.0.48
+
 ## 1.11.0
 
 ### Minor Changes

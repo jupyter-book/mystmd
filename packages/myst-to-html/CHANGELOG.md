@@ -1,5 +1,16 @@
 # myst-to-html
 
+## 1.7.5
+
+### Patch Changes
+
+- 28809c7: Write unhandled directives that have no body. An unknown directive with no body has no `value`, and HTML output failed with a `TypeError`.
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - myst-common@1.10.2
+
 ## 1.7.4
 
 ### Patch Changes

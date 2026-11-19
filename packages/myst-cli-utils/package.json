@@ -1,6 +1,6 @@
 {
   "name": "myst-cli-utils",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "sideEffects": false,
   "license": "MIT",
   "description": "Utils for logging, error messages and session management",
@@ -21,10 +21,9 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "bun run test",
-    "test:watch": "bun run test --watch",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -38,6 +37,8 @@
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/pretty-hrtime": "^1.0.1",
     "node-fetch": "^3.3.0"
   }

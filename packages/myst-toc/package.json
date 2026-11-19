@@ -1,6 +1,6 @@
 {
   "name": "myst-toc",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST Table of Contents types and validation",
@@ -21,10 +21,9 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "bun run test",
-    "test:watch": "bun run test --watch",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build": "npm-run-all -s -l clean build:esm"
   },
@@ -32,6 +31,10 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "simple-validators": "^1.0.6"
+    "simple-validators": "^1.2.1"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-icon",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for icon roles",
@@ -21,10 +21,9 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
-    "test": "bun run test",
-    "test:watch": "bun run test --watch",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -32,10 +31,12 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.10.1"
+    "myst-common": "^1.10.2"
   },
   "devDependencies": {
-    "myst-parser": "^1.7.4",
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
+    "myst-parser": "^1.7.5",
     "unist-util-select": "^4.0.3"
   }
 }

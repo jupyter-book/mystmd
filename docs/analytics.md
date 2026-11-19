@@ -31,18 +31,18 @@ See [Google Analytics docs](https://developers.google.com/analytics/devguides/co
 
 ## Plausible
 
-Use the `site.options.analytics_plausible` configuration, with the contents being the **domain** you are tracking.
+Use `site.options.analytics_plausible`, set to the script URL from your site's installation snippet in Plausible (Settings > General > Tracking):
 
 ```yaml
 version: 1
 site:
   options:
-    analytics_plausible: mystmd.org # Domain(s) to track
+    analytics_plausible: https://plausible.io/js/pa-XXXXX.js
 ```
 
 ![](#page-site-options-note)
 
-See [Plausible docs](https://plausible.io/docs/plausible-script) for more information on how to find the domain. Note, you only copy in the contents of: `data-domain="COPY_THIS"`, which can be a comma-separated list for multiple domains.
+See [Plausible docs](https://plausible.io/docs/plausible-script) for more information.
 
 ## Testing your integration
 

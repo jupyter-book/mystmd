@@ -326,7 +326,6 @@ const handlers: Record<string, Handler> = {
   tableRow: tableRowHandler,
   tableCell: tableCellHandler,
   image(node, state) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = node;
     const src = nodeSrc;
     const width = getLatexImageWidth(nodeWidth);
@@ -340,7 +339,6 @@ const handlers: Record<string, Handler> = {
   iframe(node, state) {
     const image = node.children?.[0];
     if (!image || image.placeholder !== true) return;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { width: nodeWidth, url: nodeSrc, align } = image;
     const src = nodeSrc;
     const width = getLatexImageWidth(nodeWidth);
@@ -587,7 +585,7 @@ class TypstSerializer implements ITypstSerializer {
     });
     if (trimEnd) this.trimEnd();
     if (after) this.write(after);
-    for (let i = trailingNewLines; i--; ) this.addNewLine();
+    for (let i = 0; i < trailingNewLines; i++) this.addNewLine();
   }
 
   renderEnvironment(node: any, env: string) {

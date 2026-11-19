@@ -1,5 +1,11 @@
 # simple-validators
 
+## 1.2.1
+
+### Patch Changes
+
+- d258a30: Add `key`s to "unexpected directive option" and "extra frontmatter key" warnings so they can be ignored selectively with `error_rules` (e.g. `code-cell.cell_style`, `jupytext.*`). Extra frontmatter keys now warn once per key.
+
 ## 1.2.0
 
 ### Minor Changes

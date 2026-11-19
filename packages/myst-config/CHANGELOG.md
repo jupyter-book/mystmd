@@ -1,5 +1,30 @@
 # myst-config
 
+## 1.11.0
+
+### Minor Changes
+
+- 097a21e: Add new hiddenPages temporary manifest field
+
+### Patch Changes
+
+- Updated dependencies [50e8220]
+  - myst-common@1.11.0
+  - myst-frontmatter@1.11.0
+
+## 1.10.2
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+- Updated dependencies [d258a30]
+- Updated dependencies [5c0347d]
+- Updated dependencies [138805c]
+  - simple-validators@1.2.1
+  - myst-frontmatter@1.10.2
+  - myst-common@1.10.2
+
 ## 1.10.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "tex-to-myst",
-  "version": "1.0.47",
+  "version": "1.0.48",
   "description": "Read LaTeX and convert to MyST AST",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/tex-to-myst",
@@ -25,8 +25,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -37,10 +36,10 @@
   },
   "dependencies": {
     "@unified-latex/unified-latex": "^1.2.2",
-    "myst-common": "^1.10.1",
-    "myst-frontmatter": "^1.10.1",
+    "myst-common": "^1.10.2",
+    "myst-frontmatter": "^1.10.2",
     "myst-spec": "^0.0.6",
-    "myst-spec-ext": "^1.10.1",
+    "myst-spec-ext": "^1.10.2",
     "unist-builder": "^3.0.0",
     "unist-util-remove": "^3.1.0",
     "unist-util-select": "^4.0.3",
@@ -48,6 +47,8 @@
     "vfile-reporter": "^7.0.4"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "js-yaml": "^4.1.0"
   }
 }

@@ -40,5 +40,5 @@ runs:
       run: |
         bun install
         bun run build
-        bun run link
+        npm link -w packages/mystmd
       shell: bash

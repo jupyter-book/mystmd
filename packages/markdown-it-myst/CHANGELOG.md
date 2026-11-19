@@ -1,5 +1,12 @@
 # markdown-it-myst
 
+## 1.0.19
+
+### Patch Changes
+
+- 5c0347d: Use vitest for the test runner
+- 138805c: Fix test invocation
+
 ## 1.0.18
 
 ### Patch Changes
