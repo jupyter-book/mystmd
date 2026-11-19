@@ -76,6 +76,7 @@ describe('Test transformImageNoAltText', () => {
       ],
     };
     transformImageNoAltText(session, mdast, file);
+    // AST is not modified
     expect(mdast).toEqual({
       type: 'root',
       children: [
@@ -87,6 +88,7 @@ describe('Test transformImageNoAltText', () => {
         },
       ],
     });
+    // No warning created
     expect(session.getAllWarnings(RuleId.imageHasAltText)).toEqual([]);
   });
   test('image inside captioned figure warns about generated alt text', () => {
@@ -122,6 +124,7 @@ describe('Test transformImageNoAltText', () => {
       enumerator: '1',
     };
     transformImageNoAltText(session, mdast, file);
+    // AST is not modified
     expect(mdast).toEqual({
       type: 'container',
       kind: 'figure',
@@ -164,40 +167,41 @@ describe('Test transformImageNoAltText', () => {
       }
     ]);
   });
-  // test('image inside output does not generate warning', () => {
-  //   const mdast = {
-  //     type: 'root',
-  //     children: [
-  //       {
-  //         type: 'output',
-  //         children: [
-  //           {
-  //             type: 'image',
-  //             url: 'https://images.com/cats',
-  //             align: 'center',
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   };
-  //   const file = new String();
-  //   transformImageNoAltText(session, mdast, file);
-  //   expect(mdast).toEqual({
-  //     type: 'root',
-  //     children: [
-  //       {
-  //         type: 'output',
-  //         children: [
-  //           {
-  //             type: 'image',
-  //             url: 'https://images.com/cats',
-  //             align: 'center',
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   });
-  //   // A warning was created
-  //   expect(file.messages.length).toBe(0);
-  // });
+  test('image inside output does not generate warning', () => {
+    const session = new Session();
+    const file = new String('my-file');
+    const mdast = {
+      type: 'root',
+      children: [
+        {
+          type: 'output',
+          children: [
+            {
+              type: 'image',
+              url: 'https://images.com/cats',
+              align: 'center',
+            },
+          ],
+        },
+      ],
+    };
+    transformImageNoAltText(session, mdast, file);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'output',
+          children: [
+            {
+              type: 'image',
+              url: 'https://images.com/cats',
+              align: 'center',
+            },
+          ],
+        },
+      ],
+    });
+    // No warning created
+    expect(session.getAllWarnings(RuleId.imageHasAltText)).toEqual([]);
+  });
 });
