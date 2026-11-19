@@ -354,6 +354,11 @@ If there are duplicates, these will be enumerated with a trailing number (e.g. `
 By default, MyST will _remove folder information_ when creating URLs.
 To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), see [](#site-url-folders).
 
+### Redirect URLs if you move or rename files
+
+If you rename or move a file, its URL will change too.
+To redirect the old URL to the new one, see [](#site-redirects).
+
 (implicit-toc)=
 
 ## Implicit Table of Contents from filenames
