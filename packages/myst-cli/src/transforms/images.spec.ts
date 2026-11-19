@@ -56,7 +56,6 @@ describe('Test transformImageNoAltText', () => {
         file: 'my-file',
         message: `missing alt text for ${node.url}`,
         kind: 'warn',
-        url: node.url,
         ruleId: RuleId.imageHasAltText,
       },
     ]);
@@ -162,7 +161,6 @@ describe('Test transformImageNoAltText', () => {
         message: `alt text for ${node.url} was auto-generated`,
         note: 'You can remove this warning by writing your own alt text',
         kind: 'warn',
-        url: node.url,
         ruleId: RuleId.imageAltTextGenerated,
       },
     ]);
