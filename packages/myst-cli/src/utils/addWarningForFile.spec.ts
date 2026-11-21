@@ -182,13 +182,19 @@ describe('findErrorRule', () => {
     expect(findErrorRule([rule({})], 'link-resolves')?.severity).toBe('ignore');
     expect(findErrorRule([rule({})], 'other')).toBeUndefined();
   });
-  it('matches by path glob, relative to the current directory', () => {
+  it('matches by path glob, relative to the config folder', () => {
     const rules = [rule({ path: 'meeting-notes/**/*' })];
     expect(findErrorRule(rules, 'link-resolves', null, 'meeting-notes/a/b.md')).toBeDefined();
     expect(findErrorRule(rules, 'link-resolves', null, 'other/b.md')).toBeUndefined();
     expect(
       findErrorRule(rules, 'link-resolves', null, join(process.cwd(), 'meeting-notes/b.md')),
     ).toBeDefined();
+    expect(
+      findErrorRule(rules, 'link-resolves', null, '/proj/meeting-notes/b.md', '/proj'),
+    ).toBeDefined();
+    expect(
+      findErrorRule(rules, 'link-resolves', null, '/proj/other/b.md', '/proj'),
+    ).toBeUndefined();
   });
   it('a rule with a path never matches a message without a file', () => {
     expect(findErrorRule([rule({ path: '**' })], 'link-resolves', 'k', null)).toBeUndefined();
@@ -221,9 +227,10 @@ describe('findErrorRule', () => {
 });
 
 describe('normalizeFilePath', () => {
-  it('returns a posix path relative to cwd', () => {
+  it('returns a posix path relative to the base folder, or cwd', () => {
     expect(normalizeFilePath('a/b.md')).toBe('a/b.md');
     expect(normalizeFilePath(join(process.cwd(), 'a', 'b.md'))).toBe('a/b.md');
+    expect(normalizeFilePath('/proj/a/b.md', '/proj')).toBe('a/b.md');
     expect(normalizeFilePath(null)).toBeUndefined();
   });
 });

@@ -31,7 +31,7 @@ function keyMatchesPattern(key: string | null | undefined, pattern: string): boo
 
   try {
     // Use picomatch for glob pattern matching
-    // Matching is case-sensitive (nocase: false); dot: true lets `*` match dotfiles/dot-folders
+    // Case-sensitive. `dot: true` lets `*` match dotfiles and dot-folders.
     const isMatch = picomatch(pattern, { nocase: false, dot: true });
     return isMatch(key);
   } catch (error) {

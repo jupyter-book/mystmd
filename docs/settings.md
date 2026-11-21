@@ -161,7 +161,7 @@ Use a glob such as `code-cell.*` to ignore every unexpected option of one direct
 
 ### Restrict rules to certain files with `paths`
 
-A rule can also be limited to the files where the issue is reported, using `paths` (glob patterns, matched against the file path relative to the directory where you run `myst`, with `/` separators). Matching is case-sensitive. When a rule has both `keys` and `paths`, both must match. The first matching rule wins, so put more specific rules first.
+A rule can also be limited to the files where the issue is reported, using `paths`. Each entry is a glob pattern that MyST matches against the file path relative to the folder that contains `myst.yml`, with `/` separators. When a rule has both `keys` and `paths`, both must match. The first matching rule wins, so put more specific rules first.
 
 ```{code-block} yaml
 :filename: myst.yml
@@ -191,7 +191,7 @@ project:
         - 'language_info'
 ```
 
-Some messages are not tied to a source page (for example a config file or an image being converted); for these, the path is that of the file the message is about. Messages without any file never match a rule that has `paths`. Run myst with `--debug` to see the file path attached to each message.
+Some messages are about a file that is not a source page, such as a config file or an image being converted. These messages use the path of that file. Messages without any file never match a rule that has `paths`. Run myst with `--debug` to see the file path attached to each message.
 
 ### Pattern Matching in Keys
 
