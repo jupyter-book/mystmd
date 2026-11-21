@@ -52,6 +52,6 @@ describe('Button component', () => {
         children: [{ type: 'text', value: 'Click<' }],
       },
     ]);
-    expect(file.messages.length > 0);
+    expect(file.messages.length).toBeGreaterThan(0);
   });
 });
