@@ -50,7 +50,7 @@ function runDirectives(state: StateCore): boolean {
           name = 'div',
           tokens: inlineOptTokens,
           options: inlineOptions,
-        } = inlineOptionsToTokens(info, map?.[0] ?? 0, state);
+        } = inlineOptionsToTokens(info, map?.[0] ?? 0, state, 'run_directives');
         const content = parseDirectiveContent(
           token.content.trim() ? token.content.split(/\r?\n/) : [],
           name,
