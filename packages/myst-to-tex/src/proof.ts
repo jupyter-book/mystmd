@@ -65,9 +65,9 @@ export const proofHandler: Handler = (node, state) => {
     state.write((t as Text).value);
     state.write(']');
   }
-  if (newNode.identifier && newNode.identifier.length > 0) {
+  if (newNode.label && newNode.label.length > 0) {
     state.write('\\label{');
-    state.write(newNode.identifier);
+    state.write(newNode.label);
     state.write('}');
   }
   state.renderChildren(newNode, true);
