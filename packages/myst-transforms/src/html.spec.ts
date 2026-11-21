@@ -32,6 +32,36 @@ describe('Test reconstructHtmlTransform', () => {
       children: [{ type: 'html', value: '<button></button>' }],
     });
   });
+  test.only('div containing link', async () => {
+    const mdast = {
+      type: 'root',
+      children: [
+        { type: 'html', value: '<div>' },
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'link',
+              url: 'https://example.com',
+              class: 'button',
+              children: [{ type: 'text', value: 'my button' }],
+            },
+          ],
+        },
+        { type: 'html', value: '</div>' },
+      ],
+    };
+    reconstructHtmlTransform(mdast);
+    expect(mdast).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'html',
+          value: '<div><p><a href="https://example.com" class="button">my button</a></p></div>',
+        },
+      ]
+    });
+  });
   test('nodes between html open/close become html', async () => {
     const mdast = {
       type: 'root',
