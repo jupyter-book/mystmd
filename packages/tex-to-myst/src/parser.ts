@@ -283,7 +283,7 @@ export class TexParser implements ITexParser {
   closeNode(type?: string) {
     if (type && this.top().type !== type) return this.top();
     const node = this.stack.pop();
-    // inlineCode is a literal in the MyST AST, including when opened by ttfamily.
+    // MyST inlineCode wants its text in `value`, but the parser puts it in `children`, so we move it up here.
     if (node?.type === 'inlineCode' && node.children) {
       node.value = texToText(node.children);
       delete node.children;

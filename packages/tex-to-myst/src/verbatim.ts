@@ -64,16 +64,20 @@ function parseFirstLine(vfile: VFile, node: GenericNode) {
 }
 
 export const VERBATIM_HANDLERS: Record<string, Handler> = {
-  env_lstlisting(node, state) {
-    // unified-latex 1.8 represents lstlisting as an environment with raw string children.
-    // Reuse the verbatim handler so language, caption and label keep the same behavior.
+  env_lstlisting(node, state, parent) {
+    // unified-latex 1.8+ changed behavior to split lstlisting into args and content.
+    // So in this case, we rejoin them into the "[options]\ncode" string that `verbatim` parses.
     const value = Array.isArray(node.content)
       ? node.content
           .map((part: GenericNode) => (typeof part.content === 'string' ? part.content : ''))
           .join('')
       : (node.content ?? '');
     const options = node.args?.[0]?.openMark === '[' ? `[${texToText(node.args[0])}]\n` : '';
-    VERBATIM_HANDLERS.verbatim({ ...node, content: options + value.replace(/^\r?\n/, '') }, state);
+    VERBATIM_HANDLERS.verbatim(
+      { ...node, content: options + value.replace(/^\r?\n/, '') },
+      state,
+      parent,
+    );
   },
   verbatim(node, state) {
     if (node.env === 'comment') {
