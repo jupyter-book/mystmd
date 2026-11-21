@@ -232,7 +232,7 @@ In all cases, if an appropriate format is not available the image will be conver
 
 ## Videos
 
-You can embed a video file (e.g., `.mp4`), or use a [video platform's embed URL](#video:embed:platforms) with the {myst:directive}`iframe` directive.
+You can embed a video file (like an `.mp4`) or use a [video platform's embed URL](#video:embed:platforms) with the {myst:directive}`iframe` directive.
 Embedding a video file copies it to your static files and embeds a video in your HTML output.
 
 ```{code} markdown
@@ -285,7 +285,7 @@ When you build an HTML output, the video will be used, and when you build a PDF 
 ## Embedding from video platforms
 
 Many video platforms can provide you an "embed link" that will more natively insert their video into your page.
-Below are some platform-specific examples, but you can try any platform's embed URL with `iframe` and it may work!
+Below is an example for YouTube, but you can try any platform's embed URL with `iframe` and it may work!
 
 (video:embed:youtube)=
 ### YouTube Videos
