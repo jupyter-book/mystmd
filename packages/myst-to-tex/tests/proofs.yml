@@ -207,3 +207,41 @@ cases:
       Some text before an observation
 
       \begin{observation}\label{obs-t1}This is it.\end{observation}
+  - title: theorem with a plain title
+    mdast:
+      type: root
+      children:
+        - type: proof
+          kind: theorem
+          label: theo-t2
+          identifier: theo-t2
+          enumerated: true
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: 'Orthogonal Projection'
+            - type: text
+              value: 'Given this, then that.'
+    latex: |-
+      \begin{theorem}[Orthogonal Projection]\label{theo-t2}Given this, then that.\end{theorem}
+  - title: axiom with math in the title
+    mdast:
+      type: root
+      children:
+        - type: proof
+          kind: axiom
+          label: ax-t1
+          identifier: ax-t1
+          enumerated: true
+          children:
+            - type: admonitionTitle
+              children:
+                - type: text
+                  value: 'Completeness of '
+                - type: inlineMath
+                  value: '\mathbb{R}'
+            - type: text
+              value: 'Every Cauchy sequence converges.'
+    latex: |-
+      \begin{axiom}[Completeness of $\mathbb{R}$]\label{ax-t1}Every Cauchy sequence converges.\end{axiom}
