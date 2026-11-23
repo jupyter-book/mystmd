@@ -64,7 +64,7 @@ function dropSurroundingBreaks(nodes: GenericNode[]): GenericNode[] {
  * at this point) are left alone. One difference remains: breaks between block elements,
  * such as `<div>a</div><br /><div>b</div>`, used to be kept in a paragraph of their own,
  * and are now dropped.
- * 
+ *
  * TODO: Remove this function in future, and fall back to upstream behaviour, as a breaking change.
  */
 function normalizeBreaks(children: GenericNode[]): GenericNode[] {
