@@ -1,8 +1,9 @@
 import yaml from 'js-yaml';
+import { fromHtml } from 'hast-util-from-html';
 import { remove } from 'unist-util-remove';
 import { select } from 'unist-util-select';
 import type { Block, Code, Heading } from 'myst-spec';
-import type { GenericParent } from 'myst-common';
+import type { GenericNode, GenericParent } from 'myst-common';
 import { RuleId, fileError, toText, fileWarn, normalizeLabel } from 'myst-common';
 import { fillProjectFrontmatter } from 'myst-frontmatter';
 import type { VFile } from 'vfile';
@@ -31,6 +32,21 @@ type Options = {
   keepTitleNode?: boolean;
 };
 
+/** Whether a raw HTML value holds only HTML comments, so it shows nothing on the page */
+function isOnlyHtmlComments(value: string): boolean {
+  if (!value.trimStart().startsWith('<!--')) return false;
+  return fromHtml(value, { fragment: true }).children.every(
+    (child) =>
+      child.type === 'comment' || (child.type === 'text' && /^[ \t\n\f\r]*$/.test(child.value)),
+  );
+}
+
+function isComment(node?: GenericNode): boolean {
+  return (
+    node?.type === 'comment' || (node?.type === 'html' && isOnlyHtmlComments(node.value ?? ''))
+  );
+}
+
 export function getFrontmatter(
   file: VFile,
   tree: GenericParent,
@@ -45,10 +61,10 @@ export function getFrontmatter(
   const firstNode = firstParent.children?.[0] as Code;
   const nextNonCommentNode = firstParent.children
     ?.slice(1)
-    ?.find((child) => child.type !== 'comment');
+    ?.find((child) => !isComment(child as GenericNode));
   let secondNode: Heading | undefined;
   if (nextNonCommentNode?.type === 'block') {
-    secondNode = nextNonCommentNode?.children?.find((child) => child.type !== 'comment') as
+    secondNode = nextNonCommentNode?.children?.find((child) => !isComment(child as GenericNode)) as
       | Heading
       | undefined;
   } else {
@@ -96,7 +112,7 @@ export function getFrontmatter(
     frontmatter.title = title;
     frontmatter.content_includes_title = true;
   }
-  const firstIsComment = (firstNode as any)?.type === 'comment';
+  const firstIsComment = isComment(firstNode as GenericNode | undefined);
   const nextNode = firstIsYaml || firstIsComment ? secondNode : (firstNode as unknown as Heading);
   const nextNodeIsH1 = nextNode?.type === 'heading' && nextNode.depth === 1;
   // Explicitly handle the case of an H1 directly after the frontmatter

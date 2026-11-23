@@ -629,6 +629,88 @@ describe('getFrontmatter', () => {
     expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
     expect(file.messages.length).toBe(0);
   });
+  it('title removed if only an html comment is before it', () => {
+    const heading = {
+      type: 'heading',
+      depth: 1,
+      children: [{ type: 'text', value: 'Heading Title' }],
+    };
+    const yaml = { type: 'code', lang: 'yaml', value: 'a: b' };
+    const html = { type: 'html', value: '<!-- a note\nover two lines -->' };
+    const html2 = { type: 'html', value: '<!-- another -->' };
+    const text = { type: 'text', value: 'hello' };
+    const file = new VFile();
+    const { tree, frontmatter } = getFrontmatter(
+      file,
+      copy({ type: 'root', children: [yaml, html, html2, heading, text] }),
+      {},
+    );
+    expect(tree).toEqual({ type: 'root', children: [html, html2, text] });
+    expect(frontmatter).toEqual({ a: 'b', title: 'Heading Title', content_includes_title: false });
+  });
+  it.each(['<!-->', '<!--->', '<!-- one --> <!-- two -->'])(
+    'title removed if html before it is only the comment %j',
+    (value) => {
+      const heading = {
+        type: 'heading',
+        depth: 1,
+        children: [{ type: 'text', value: 'Heading Title' }],
+      };
+      const yaml = { type: 'code', lang: 'yaml', value: 'a: b' };
+      const html = { type: 'html', value };
+      const { tree, frontmatter } = getFrontmatter(
+        new VFile(),
+        copy({ type: 'root', children: [yaml, html, heading] }),
+        {},
+      );
+      expect(tree).toEqual({ type: 'root', children: [html] });
+      expect(frontmatter).toEqual({
+        a: 'b',
+        title: 'Heading Title',
+        content_includes_title: false,
+      });
+    },
+  );
+  it('title removed if an html comment is first, with no yaml', () => {
+    const heading = {
+      type: 'heading',
+      depth: 1,
+      children: [{ type: 'text', value: 'Heading Title' }],
+    };
+    const html = { type: 'html', value: '<!-- a note -->' };
+    const { tree, frontmatter } = getFrontmatter(
+      new VFile(),
+      copy({ type: 'root', children: [html, { type: 'block', children: [heading] }] }),
+      {},
+    );
+    expect(tree).toEqual({ type: 'root', children: [html] });
+    expect(frontmatter).toEqual({ title: 'Heading Title', content_includes_title: false });
+  });
+  it.each([
+    '<div>Shown</div>',
+    '<!-- a note --> shown',
+    '<!--> <b>shown</b> <!-- a note -->',
+    '<!-- a note --!><b>shown</b><!-- another -->',
+    '<!-- a note -->&nbsp;',
+    '<?php echo "Shown" ?>',
+    '<![CDATA[Shown]]>',
+    '',
+  ])('title not removed if html before it is %j', (value) => {
+    const heading = {
+      type: 'heading',
+      depth: 1,
+      children: [{ type: 'text', value: 'Heading Title' }],
+    };
+    const yaml = { type: 'code', lang: 'yaml', value: 'a: b' };
+    const html = { type: 'html', value };
+    const { tree, frontmatter } = getFrontmatter(
+      new VFile(),
+      copy({ type: 'root', children: [yaml, html, heading] }),
+      {},
+    );
+    expect(tree).toEqual({ type: 'root', children: [html, heading] });
+    expect(frontmatter).toEqual({ a: 'b', title: 'Heading Title', content_includes_title: true });
+  });
   it('title extracted from first h1 heading node, removed if only yaml and comments before', () => {
     const input = {
       type: 'root',
