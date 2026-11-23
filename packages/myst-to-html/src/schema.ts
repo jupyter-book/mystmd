@@ -10,7 +10,7 @@ import type { GenericParent } from 'myst-common';
  * Create a hast element for an mdast node, copying its position and applying
  * any `data.hName`, `data.hProperties` and `data.hChildren` overrides.
  *
- * This mirrors the `element(state, node, tagName, props, children)` helper that
+ * This implements a narrowed form of the `h(node, tagName, props, children)` callable form of `state` that `mdast-util-to-hast` removed in 13.0.0
  * mdast-util-to-hast provided before v13.
  */
 function element(
@@ -185,6 +185,7 @@ const code: Handler = (state, node) => {
   const className = classNames({ ['language-' + node.lang]: node.lang }, node.class);
   props.className = className ? className.split(' ') : undefined;
   const codeHast = element(state, node, 'code', props, [u('text', value)]);
+  // Do not copy all node data, only position
   const result: Element = { type: 'element', tagName: 'pre', properties: {}, children: [codeHast] };
   state.patch(node, result);
   return result;

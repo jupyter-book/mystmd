@@ -8,7 +8,9 @@ import type { RuleId } from './ruleids.js';
 import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
 
 export type MessageInfo = {
-  /** Only the node's position is used, so any mdast, unist or MyST node is accepted */
+  /** Only the node's position is used, so any mdast, unist or MyST node is accepted 
+  * TODO: tighten this up in future to use the unist Node type
+  */
   node?: { type: string; position?: Position } | Position;
   note?: string;
   source?: string;

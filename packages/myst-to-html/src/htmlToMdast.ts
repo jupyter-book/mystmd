@@ -19,8 +19,8 @@ export type HtmlToMdastOptions = {
 /**
  * Create an mdast node for a hast node, copying its position.
  *
- * This mirrors the `h(node, type, props, children)` helper that
- * hast-util-to-mdast provided before v10.
+ * This vendors a narrower version of the `h(node, type, props, children)` helper that
+ * hast-util-to-mdast provided before v9.
  */
 export function createMdastNode(
   state: State,
@@ -64,6 +64,8 @@ function dropSurroundingBreaks(nodes: GenericNode[]): GenericNode[] {
  * at this point) are left alone. One difference remains: breaks between block elements,
  * such as `<div>a</div><br /><div>b</div>`, used to be kept in a paragraph of their own,
  * and are now dropped.
+ * 
+ * TODO: Remove this function in future, and fall back to upstream behaviour, as a breaking change.
  */
 function normalizeBreaks(children: GenericNode[]): GenericNode[] {
   const root: GenericParent = { type: 'root', children };
