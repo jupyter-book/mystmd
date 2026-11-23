@@ -37,6 +37,6 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "eslint": "^10.14.0",
-    "vfile": "^5.3.7"
+    "vfile": "^6.0.3"
   }
 }

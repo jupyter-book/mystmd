@@ -452,8 +452,9 @@ export class JatsParser implements IJatsParser {
   }
 }
 
-export const jatsToMystPlugin: Plugin<[Jats, Options?], Root, Root> = function (jats, opts) {
-  this.Compiler = (node: GenericParent, file: VFile) => {
+export const jatsToMystPlugin: Plugin<[Jats, Options?], Root, VFile> = function (jats, opts) {
+  this.compiler = (root, file) => {
+    const node = root as GenericParent;
     const tree = jats.abstract
       ? {
           type: 'root',
@@ -519,10 +520,6 @@ export const jatsToMystPlugin: Plugin<[Jats, Options?], Root, Root> = function (
     };
     file.result = result;
     return file;
-  };
-
-  return (node: Root) => {
-    return node;
   };
 };
 

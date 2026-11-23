@@ -118,6 +118,25 @@ getting-started/
 If both `getting-started.md` and `getting-started/index.md` exist, the sibling file takes the slug `getting-started` first, and the folder's index file gets a deduplicated slug like `getting-started-1`.
 :::
 
+(site-redirects)=
+### Redirect old URLs
+
+When you rename or move a page, its URL changes.
+To keep old links working in the `book-theme`, list redirects under `site.options.redirects` in the form `/old-url -> /new-url`:
+
+```{code-block} yaml
+:filename: myst.yml
+site:
+  template: book-theme
+  options:
+    redirects:
+      - /old-page -> /new-page
+      - /guide/setup -> /guide/install
+```
+
+Both paths must start with `/` and are relative to your site's root (don't include `BASE_URL`).
+In static HTML builds, MyST will write a small page at the old URL that sends readers to the new one.
+
 (site-options-page)=
 
 ### Page Options

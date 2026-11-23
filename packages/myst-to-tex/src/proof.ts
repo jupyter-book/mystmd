@@ -49,7 +49,7 @@ export const proofHandler: Handler = (node, state) => {
     return;
   }
 
-  const title = select('admonitionTitle', node) as GenericNode | null;
+  const title = select('admonitionTitle', node) as GenericNode | undefined;
   addIndexEntries(node, state);
   state.write('\\begin{');
   state.write(env);
@@ -60,13 +60,13 @@ export const proofHandler: Handler = (node, state) => {
     state.write(']');
     title.type = '__delete__';
   }
-  const newNode = remove(node, '__delete__') as GenericNode;
-  if (newNode.identifier && newNode.identifier.length > 0) {
+  remove(node, '__delete__');
+  if (node.identifier && node.identifier.length > 0) {
     state.write('\\label{');
-    state.write(newNode.identifier);
+    state.write(node.identifier);
     state.write('}');
   }
-  state.renderChildren(newNode, true);
+  state.renderChildren(node, true);
   state.write('\\end{');
   state.write(env);
   state.write('}');

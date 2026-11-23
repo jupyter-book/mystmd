@@ -1,8 +1,8 @@
-import type { GenericParent } from 'myst-common';
+import type { Root } from 'hast';
 import rehypeFormat from 'rehype-format';
 import type { Plugin } from 'unified';
 
-export const formatHtml: Plugin<[boolean?], string, GenericParent> = function formatHtml(opt) {
+export const formatHtml: Plugin<[boolean?], Root> = function formatHtml(opt) {
   if (!opt) return () => undefined;
   return rehypeFormat(typeof opt === 'boolean' ? {} : opt);
 };
