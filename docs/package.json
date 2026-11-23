@@ -15,7 +15,7 @@
     "myst-parser": "workspace:*",
     "myst-roles": "workspace:*",
     "tex-to-myst": "workspace:*",
-    "unist-builder": "^3.0.0",
-    "unist-util-select": "^4.0.3"
+    "unist-builder": "^4.0.0",
+    "unist-util-select": "^5.1.0"
   }
 }

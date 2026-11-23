@@ -32,6 +32,8 @@ export function writeMd(file: VFile, node: Root, frontmatter?: PageFrontmatter) 
   const options: Options = {
     fences: true,
     rule: '-',
+    // mdast-util-to-markdown@2 changed the default to 'one'; keep the previous output
+    listItemIndent: 'tab',
     handlers: {
       ...handlers,
       ...unsupported,
@@ -46,13 +48,8 @@ export function writeMd(file: VFile, node: Root, frontmatter?: PageFrontmatter) 
 }
 
 const plugin: Plugin<[PageFrontmatter?], Root, VFile> = function (frontmatter?) {
-  this.Compiler = (node, file) => {
-    return writeMd(file, node, frontmatter);
-  };
-
-  return (node: Root) => {
-    // Preprocess
-    return node;
+  this.compiler = (node, file) => {
+    return writeMd(file, node as Root, frontmatter);
   };
 };
 
