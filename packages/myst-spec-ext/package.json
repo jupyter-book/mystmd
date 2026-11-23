@@ -1,6 +1,6 @@
 {
   "name": "myst-spec-ext",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "description": "Extensions for myst-spec that are used in mystmd",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-spec-ext",
@@ -23,8 +23,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs --max-warnings 1",
-    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "lint": "eslint \"src/**/*.ts\" -c eslint.config.mjs --max-warnings 1",
     "build:esm": "tsc",
     "build": "npm-run-all -l clean -p build:esm"
   },
@@ -33,5 +32,9 @@
   },
   "dependencies": {
     "myst-spec": "^0.0.6"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0"
   }
 }

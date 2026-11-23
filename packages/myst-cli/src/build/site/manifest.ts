@@ -3,7 +3,7 @@ import path from 'node:path';
 import { SPEC_VERSION } from '../../spec-version.js';
 import { hashAndCopyStaticFile } from 'myst-cli-utils';
 import { RuleId, TemplateOptionType } from 'myst-common';
-import type { SiteAction, SiteExport, SiteManifest } from 'myst-config';
+import type { SiteAction, SiteExport, SiteManifest, SiteNavItem } from 'myst-config';
 import type { Download } from 'myst-frontmatter';
 import {
   EXT_TO_FORMAT,
@@ -28,7 +28,7 @@ import { getRawFrontmatterFromFile } from '../../process/file.js';
 import type { ManifestProject } from '../utils/projectManifest.js';
 import {
   indexFrontmatterFromProject,
-  manifestPagesFromProject,
+  manifestPagesFromProjectWithHidden,
   manifestTitleFromProject,
 } from '../utils/projectManifest.js';
 
@@ -75,6 +75,9 @@ export async function resolvePageDownloads(
   if (!projectPath) {
     projectPath = selectors.selectCurrentProjectPath(state);
   }
+  const pageFrontmatter = await getRawFrontmatterFromFile(session, file, projectPath);
+  // Collecting exports reads every page in the project, so skip it unless it is needed
+  if (!pageFrontmatter?.downloads) return undefined;
   const project = projectPath
     ? selectors.selectLocalProject(session.store.getState(), projectPath)
     : undefined;
@@ -86,9 +89,8 @@ export async function resolvePageDownloads(
   allExports.forEach((exp) => {
     if (exp.id) expLookup[exp.id] = exp;
   });
-  const pageFrontmatter = await getRawFrontmatterFromFile(session, file, projectPath);
-  const resolvedDownloads = pageFrontmatter?.downloads
-    ?.map((download): SiteAction | undefined => {
+  const resolvedDownloads = pageFrontmatter.downloads
+    .map((download): SiteAction | undefined => {
       if (download.id && !expLookup[download.id]) {
         addWarningForFile(
           session,
@@ -105,13 +107,11 @@ export async function resolvePageDownloads(
       // Validation will catch this earlier
       if (!idOrUrl) return undefined;
       const exp = expLookup[idOrUrl];
-      if (exp) {
-        download.format = exp.format;
-        download.url = exp.output;
-        download.static = true;
-      }
-      if (!download.url) return undefined;
-      return resolveSiteAction(session, download as SiteAction, file, 'downloads');
+      const action = exp
+        ? { ...download, format: exp.format, url: exp.output, static: true }
+        : download;
+      if (!action.url) return undefined;
+      return resolveSiteAction(session, action as SiteAction, file, 'downloads');
     })
     .filter((download): download is SiteAction => !!download);
   return resolvedDownloads;
@@ -139,7 +139,7 @@ export async function localToManifestProject(
   // Update all of the page title to the frontmatter title
   const { index } = proj;
   const projectFileInfo = selectors.selectFileInfo(state, proj.file);
-  const pages = await manifestPagesFromProject(session, projectPath);
+  const { pages, hiddenPages } = await manifestPagesFromProjectWithHidden(session, projectPath);
   const projFrontmatter = projConfig ? filterKeys(projConfig, PROJECT_FRONTMATTER_KEYS) : {};
   const projConfigFile = selectors.selectLocalConfigFile(state, projectPath);
   const exports = projConfigFile ? await resolvePageExports(session, projConfigFile) : [];
@@ -186,6 +186,7 @@ export async function localToManifestProject(
     index,
     enumerator: frontmatter?.enumerator,
     pages,
+    hiddenPages,
   };
 }
 
@@ -397,7 +398,7 @@ export async function getSiteManifest(
     myst: version,
     ...validatedFrontmatter,
     parts,
-    nav: nav || [],
+    nav: nav ? (structuredClone(nav) as SiteNavItem[]) : [],
     actions: actions || [],
     projects: siteProjects,
   };

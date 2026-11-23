@@ -1,6 +1,6 @@
 {
   "name": "jtex",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Tool for rendering LaTeX documents from jinja-style templates",
   "type": "module",
   "exports": "./dist/index.js",
@@ -13,8 +13,7 @@
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "clean": "rimraf dist _build",
     "dev": "esbuild src/cli/index.ts --bundle --outfile=dist/jtex.cjs --platform=node --watch",
-    "lint": "npm run copy:version && eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npm run copy:version && prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "lint": "npm run copy:version && eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -38,7 +37,7 @@
   },
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/jtex",
   "engines": {
-    "node": ">=20",
+    "node": ">=22",
     "npm": ">=10"
   },
   "dependencies": {
@@ -47,15 +46,17 @@
     "commander": "^10.0.1",
     "js-yaml": "^4.1.0",
     "myst-cli-utils": "^2.0.16",
-    "myst-frontmatter": "^1.10.2",
+    "myst-frontmatter": "^1.11.0",
     "myst-templates": "^1.1.0",
-    "myst-common": "^1.10.2",
+    "myst-common": "^1.11.0",
     "node-fetch": "^3.3.1",
     "nunjucks": "^3.2.4",
     "pretty-hrtime": "^1.0.3",
     "simple-validators": "^1.2.1"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/adm-zip": "^0.5.0",
     "@types/js-yaml": "^4.0.5",
     "@types/nunjucks": "^3.2.2",

@@ -1,5 +1,14 @@
 # jtex
 
+## 1.0.24
+
+### Patch Changes
+
+- c63e74a: Update packaging metadata
+- Updated dependencies [50e8220]
+  - myst-common@1.11.0
+  - myst-frontmatter@1.11.0
+
 ## 1.0.23
 
 ### Patch Changes

@@ -199,7 +199,7 @@ These will not change the title in the page itself, or in the document AST, they
 
 ### Hiding pages from the Table of Contents
 
-In some cases, you may want some pages in your project to be built, but not included in the Table of Contents. You can do this by adding a `hidden: true` attribute to the corresponding `file` or `pattern` entry in your `toc` section:
+To build a page but leave it out of the Table of Contents, add `hidden: true` to its `file` or `pattern` entry in `toc`:
 
 ```{code} yaml
 :filename: myst.yml
@@ -211,7 +211,32 @@ project:
       hidden: true
 ```
 
-In particular: hidden pages do not impact numbering; also they can be referred to by other pages in the project.
+Hidden pages don't affect numbering, though other pages can still link to them.
+Hidden pages are also left out of search by default, see [](#searchable-in-toc).
+
+(searchable-in-toc)=
+
+### Excluding pages from search
+
+By default, all pages are searchable except [hidden pages](#hidden-in-toc).
+To override the default, add `searchable: true` or `searchable: false` to a `file` or `pattern` entry:
+
+```{code} yaml
+:filename: myst.yml
+version: 1
+project:
+  toc:
+    - file: index.md
+    # Hidden from the TOC, but still searchable
+    - file: hidden-but-searchable.md
+      hidden: true
+      searchable: true
+    # In the TOC, but not searchable
+    - file: not-searchable.md
+      searchable: false
+```
+
+The index page (the first `toc` entry) is always searchable (even with `searchable: false`).
 
 ## In-page table of contents
 
@@ -328,6 +353,11 @@ If there are duplicates, these will be enumerated with a trailing number (e.g. `
 
 By default, MyST will _remove folder information_ when creating URLs.
 To make your URL match your folder structure (so that `myfolder/myfile.md` becomes `myfolder/myfile/`), see [](#site-url-folders).
+
+### Redirect URLs if you move or rename files
+
+If you rename or move a file, its URL will change too.
+To redirect the old URL to the new one, see [](#site-redirects).
 
 (implicit-toc)=
 

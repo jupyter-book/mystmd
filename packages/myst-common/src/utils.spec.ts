@@ -4,6 +4,7 @@ import {
   forcedRemove,
   liftChildren,
   mergeTextNodes,
+  normalizeIdentifier,
   normalizeLabel,
   toText,
   slugToUrl,
@@ -128,6 +129,7 @@ describe('Test normalize labels', () => {
     expect(result?.label).toBe(label);
     expect(result?.identifier).toBe(identifier);
     expect(result?.html_id).toBe(html_id);
+    expect(normalizeIdentifier(label)).toBe(identifier);
   });
 });
 

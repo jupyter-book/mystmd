@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-card",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for card directive",
@@ -21,8 +21,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -32,9 +31,12 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.10.2"
+    "myst-common": "^1.11.0",
+    "myst-directives": "^1.7.5"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "myst-parser": "^1.7.5"
   }
 }

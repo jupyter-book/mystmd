@@ -1,5 +1,13 @@
 # myst-common
 
+## 1.11.0
+
+### Patch Changes
+
+- 50e8220: Normalize a reference identifier once per lookup, not once per page.
+  Add `normalizeIdentifier`, which returns only the identifier part of `normalizeLabel`.
+  - myst-frontmatter@1.11.0
+
 ## 1.10.2
 
 ### Patch Changes

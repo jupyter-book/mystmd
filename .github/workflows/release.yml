@@ -34,13 +34,13 @@ jobs:
         run: bun run test
       - name: Version bump and create pull request OR publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          version: bun run version
-          publish: bun run publish:ci
-          commit: 🚀 Release
-          title: 🚀 Release
-          createGithubReleases: false
+          version-script: bun run version
+          publish-script: bun run publish:ci
+          commit-message: 🚀 Release
+          title-title: 🚀 Release
+          create-github-releases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Python package

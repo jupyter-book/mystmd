@@ -55,6 +55,12 @@ async function writeBase64(
   return file;
 }
 
+/**
+ * Download a remote image or video into `fileFolder` as `<stem>.<ext>` and return the file name.
+ *
+ * If `fileFolder` already has a file named `<stem>` with any extension, this returns it without fetching.
+ * Returns `undefined` and logs an error if the download fails or isn't an image or supported video.
+ */
 export async function downloadAndSaveImage(
   session: ISession,
   url: string,
@@ -73,8 +79,13 @@ export async function downloadAndSaveImage(
   session.log.debug(`Fetching image: ${url}...\n  -> saving to: ${stem}`);
   try {
     const { name, contentType } = await fetchRemoteAsset(session, url, fileFolder, stem);
-    if (!contentType.startsWith('image/')) {
-      throw new Error(`${url} content-type "${contentType}" is not an image`);
+    // Only accept videos in formats we already handle for local files.
+    // Remote .mov fails here because mime-types saves video/quicktime as .qt
+    const isVideo = KNOWN_VIDEO_EXTENSIONS.includes(path.extname(name));
+    if (!contentType.startsWith('image/') && !isVideo) {
+      // Remove the download so the next build doesn't treat it as a cached image
+      fs.rmSync(path.join(fileFolder, name), { force: true });
+      throw new Error(`${url} content-type "${contentType}" is not an image or supported video`);
     }
     return name;
   } catch (error) {
@@ -102,6 +113,12 @@ export function resolveOutputPath(file: string, writeFolder: string, altOutputFo
   return path.join(altOutputFolder, file);
 }
 
+/**
+ * Save an image or video into `writeFolder` and return its new URL.
+ *
+ * `urlSource` can be a remote URL, a local path relative to `sourceFile`, or base64 data.
+ * Returns `null` and logs an error if the file can't be saved, so callers keep the original URL.
+ */
 export async function saveImageInStaticFolder(
   session: ISession,
   urlSource: string,
@@ -115,6 +132,8 @@ export async function saveImageInStaticFolder(
   if (isUrl(urlSource)) {
     // If not oxa, download the URL directly and save it to a file with a hashed name
     file = await downloadAndSaveImage(session, urlSource, computeHash(urlSource), writeFolder);
+    // Keep the remote URL if the download failed, rather than pointing at "undefined"
+    if (!file) return null;
   } else if (fs.existsSync(imageLocalFile)) {
     // Non-oxa, non-url local image paths relative to the config.section.path
     if (path.resolve(path.dirname(imageLocalFile)) === path.resolve(writeFolder)) {

@@ -1,7 +1,7 @@
 {
   "name": "myst-migrate",
   "sideEffects": false,
-  "version": "1.12.0",
+  "version": "1.13.0",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,8 +15,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -29,6 +28,8 @@
     "vfile-message": "^4.0.3"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@jupyterlab/nbformat": "^3.5.2",
     "@types/mdast": "^4.0.4"
   }

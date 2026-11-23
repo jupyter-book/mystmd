@@ -56,14 +56,14 @@ function cleanRef(citation: string) {
 }
 
 export enum CitationJSStyles {
-  'apa' = 'citation-apa',
-  'vancouver' = 'citation-vancouver',
-  'harvard' = 'citation-harvard1',
+  apa = 'citation-apa',
+  vancouver = 'citation-vancouver',
+  harvard = 'citation-harvard1',
 }
 
 export enum InlineCite {
-  'p' = 'p',
-  't' = 't',
+  p = 'p',
+  t = 't',
 }
 
 export function yearFromCitation(data: CSL) {

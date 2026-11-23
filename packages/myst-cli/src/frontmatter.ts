@@ -14,6 +14,7 @@ import { VFile } from 'vfile';
 import type { ISession } from './session/types.js';
 import { selectors, watch } from './store/index.js';
 import { logMessagesFromVFile } from './utils/logging.js';
+import { mutableCopy } from './utils/mutableCopy.js';
 import { castSession } from './session/cache.js';
 import type { FileOptions } from 'myst-templates';
 
@@ -81,7 +82,9 @@ export function processPageFrontmatter(
   const cache = castSession(session);
   const state = session.store.getState();
   const siteFrontmatter = selectors.selectCurrentSiteConfig(state) ?? {};
-  const projectFrontmatter = path ? (selectors.selectLocalProjectConfig(state, path) ?? {}) : {};
+  const projectConfig = path ? selectors.selectLocalProjectConfig(state, path) : undefined;
+  // Omit the toc: it grows with the project and is not page frontmatter
+  const projectFrontmatter = projectConfig ? mutableCopy(projectConfig, ['toc']) : {};
 
   const frontmatter = fillPageFrontmatter(pageFrontmatter, projectFrontmatter, validationOpts);
   const siteTemplate = cache.$siteTemplate;

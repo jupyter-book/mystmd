@@ -1,6 +1,6 @@
 {
   "name": "myst-frontmatter",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "Frontmatter types and validation for the mystmd ecosystem",
@@ -21,8 +21,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -37,9 +36,11 @@
     "orcid": "^1.0.0",
     "simple-validators": "^1.2.1",
     "spdx-correct": "^3.2.0",
-    "myst-toc": "^0.1.5"
+    "myst-toc": "^0.2.0"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/js-yaml": "^4.0.5",
     "@types/json-schema": "^7.0.15",
     "@types/spdx-correct": "^3.1.0",

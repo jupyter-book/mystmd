@@ -4,7 +4,7 @@ import type { ISession } from '../session/types.js';
 
 export function copyStaticFiles(
   session: ISession,
-  staticFiles: string[],
+  staticFiles: readonly string[],
   destDir: string,
   projectPath: string,
 ) {

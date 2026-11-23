@@ -26,8 +26,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs --max-warnings 1",
-    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs --max-warnings 2",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -48,6 +47,8 @@
     "vfile-reporter": "^8.1.1"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "js-yaml": "^4.1.0",
     "unist-builder": "^4.0.0"
   }

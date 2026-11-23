@@ -13,7 +13,7 @@ cases:
                   value: Some text content
     typst: |-
       Some text content #label("span-id")
-  
+
   - title: span without identifier renders normally
     mdast:
       type: root
@@ -26,7 +26,7 @@ cases:
                   value: Plain span text
     typst: |-
       Plain span text
-  
+
   - title: span with identifier in index directive does not render label (this is the case for show-index directive)
     mdast:
       type: root
@@ -42,7 +42,7 @@ cases:
                   value: Index entry
     typst: |-
       Index entry
-    
+
   - title: span with identifier in heading renders both inline label and heading reference
     mdast:
       type: root
@@ -62,7 +62,7 @@ cases:
               value: ' text after'
     typst: |-
       == Text before span content #label("span-label") text after <heading-ref>
-  
+
   - title: multiple spans with identifiers
     mdast:
       type: root
@@ -85,7 +85,7 @@ cases:
                   value: labeled span
     typst: |-
       First labeled span #label("span-one") and second labeled span #label("span-two")
-  
+
   - title: span with identifier containing emphasis
     mdast:
       type: root

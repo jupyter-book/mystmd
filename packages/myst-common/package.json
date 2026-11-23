@@ -1,7 +1,7 @@
 {
   "name": "myst-common",
   "sideEffects": false,
-  "version": "1.10.2",
+  "version": "1.11.0",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,8 +15,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "prettier --check \"src/**/*.{ts,tsx,md}\"",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "generate:rule-severities": "node scripts/generate-rule-severities.mjs",
@@ -24,7 +23,7 @@
     "build": "npm-run-all -l clean generate:rule-severities -p build:esm"
   },
   "dependencies": {
-    "myst-frontmatter": "^1.10.2",
+    "myst-frontmatter": "^1.11.0",
     "myst-spec": "^0.0.6",
     "nanoid": "^5.1.6",
     "unified": "^11.0.5",
@@ -35,7 +34,9 @@
     "vfile-message": "^4.0.3"
   },
   "devDependencies": {
-    "myst-spec-ext": "^1.10.2",
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
+    "myst-spec-ext": "^1.11.0",
     "unist-builder": "^4.0.0",
     "@jupyterlab/nbformat": "^3.5.2",
     "@lumino/coreutils": "^2.0.0",

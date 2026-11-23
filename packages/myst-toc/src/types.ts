@@ -5,6 +5,7 @@
 export type CommonEntry = {
   title?: string;
   hidden?: boolean;
+  searchable?: boolean;
   // numbering?: string;
   // id?: string;
   // class?: string;
