@@ -174,9 +174,10 @@ class MystTemplate {
     return validatedDoc;
   }
 
-  async ensureTemplateExistsOnPath(force?: boolean) {
+  async ensureTemplateExistsOnPath(force?: boolean): Promise<boolean> {
     if (!force && fs.existsSync(join(this.templatePath, TEMPLATE_YML))) {
       this.session.log.debug(`Template found: ${this.templatePath}`);
+      return true;
     } else if (!this.templateUrl) {
       throw new Error(
         `No template on path and no download URL to fetch from: ${this.templatePath}`,
@@ -187,6 +188,7 @@ class MystTemplate {
           templatePath: this.templatePath,
           templateUrl: this.templateUrl,
         });
+        return false;
       } catch (error) {
         this.session.log.debug(`\n\n${(error as Error)?.stack}\n\n`);
         throw new Error(
