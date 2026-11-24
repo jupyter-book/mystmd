@@ -1,5 +1,11 @@
 # mystmd
 
+## 1.14.0
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+
 ## 1.13.0
 
 ### Patch Changes
