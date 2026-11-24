@@ -1,5 +1,5 @@
 import { fileError, writeTexLabelledComment, RuleId } from 'myst-common';
-import type { Text } from 'myst-spec';
+import type { GenericNode } from 'myst-common';
 import type { ProofContainer, ProofKind } from 'myst-ext-proof';
 import { select } from 'unist-util-select';
 import { remove } from 'unist-util-remove';
@@ -49,21 +49,18 @@ export const proofHandler: Handler = (node, state) => {
     return;
   }
 
-  const t = select('admonitionTitle > text', node);
-  if (t) {
-    // Do not render the title twice
-    t.type = '__delete__';
-  }
-  remove(node, '__delete__');
+  const title = select('admonitionTitle', node) as GenericNode | undefined;
   addIndexEntries(node, state);
   state.write('\\begin{');
   state.write(env);
   state.write('}');
-  if (t) {
+  if (title) {
     state.write('[');
-    state.write((t as Text).value);
+    state.renderChildren(title, true);
     state.write(']');
+    title.type = '__delete__';
   }
+  remove(node, '__delete__');
   if (node.identifier && node.identifier.length > 0) {
     state.write('\\label{');
     state.write(node.identifier);
