@@ -78,8 +78,7 @@ export function mdastToTypst(
     // references,
     // ...frontmatter.settings?.myst_to_tex,
   });
-  const result = pipe.runSync(mdast as any);
-  const typ = pipe.stringify(result);
+  const typ = pipe.stringify(mdast as any);
   logMessagesFromVFile(session, typ);
   return typ.result as TypstResult;
 }
@@ -395,7 +394,8 @@ export async function localArticleToTypstTemplated(
   return { tempFolders: [], hasGlossaries };
 }
 
-export async function runTypstExport( // DBG: Must return an info on whether glossaries are present
+export async function runTypstExport(
+  // DBG: Must return an info on whether glossaries are present
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,

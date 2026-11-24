@@ -150,11 +150,7 @@
                         "identifier": "my-fig",
                         "html_id": "my-fig",
                         "enumerator": "1",
-                        "children": [
-                          { "type": "text", "value": "Figure " },
-                          { "type": "text", "value": "1" },
-                          { "type": "text", "value": ":" }
-                        ],
+                        "children": [{ "type": "text", "value": "Figure 1:" }],
                         "template": "Figure %s:"
                       },
                       {

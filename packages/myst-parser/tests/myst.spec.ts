@@ -201,7 +201,12 @@ describe('Testing mdast --> html conversions', () => {
             allowDangerousHtml: true,
           },
         });
-        expect(normalize(newHTML)).toEqual(normalize(html));
+        // mdast-util-to-hast@13 writes the backref attribute (equivalently) with an empty value
+        const i = html.replace(
+          /data-footnote-backref class="data-footnote-backref" aria-label="Back to content"/g,
+          'data-footnote-backref="" aria-label="Back to content" class="data-footnote-backref"',
+        );
+        expect(normalize(newHTML)).toEqual(normalize(i));
       }
     }
   });

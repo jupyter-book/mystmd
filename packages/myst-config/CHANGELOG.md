@@ -1,5 +1,16 @@
 # myst-config
 
+## 1.12.0
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+- Updated dependencies [fe3a7d4]
+  - myst-common@1.12.0
+  - myst-frontmatter@1.12.0
+  - simple-validators@1.2.2
+
 ## 1.11.0
 
 ### Minor Changes

@@ -1,5 +1,29 @@
 # myst-to-tex
 
+## 1.1.0
+
+### Minor Changes
+
+- fe3a7d4: Upgrade to `unified@11`, `vfile@6`, `@types/mdast@4`, `@types/unist@3` and the current majors of the unist, mdast and hast utilities.
+  
+  Changes visible to users and plugin authors:
+  
+  - Cross-reference and caption text filled from templates is now a single text node in the site JSON (e.g. `"Figure 1:"` instead of `"Figure "`, `"1"` and `":"`). Rendered output is unchanged.
+  - TypeScript plugins and libraries now see the `unified@11` and `@types/unist@3` types. `utils.select` in the plugin API still returns `null` when nothing matches, but plugins calling `unist-util-select` directly now get `undefined`.
+  - `TransformSpec.plugin` is typed as a `GenericParent` transformer, which may be async. `MessageInfo.node` and `toText` accept any node, and `forcedRemove` is now exported from `myst-common`.
+  - `myst-to-html` exports `htmlToMdast` and `createMdastNode`, the HTML to mdast conversion shared with `myst-transforms`.
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+- Updated dependencies [fe3a7d4]
+  - myst-common@1.12.0
+  - myst-ext-proof@1.0.15
+  - myst-frontmatter@1.12.0
+  - myst-spec@0.0.7
+  - myst-spec-ext@1.12.0
+
 ## 1.0.48
 
 ### Patch Changes

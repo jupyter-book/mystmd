@@ -1,5 +1,15 @@
 # myst-ext-grid
 
+## 1.1.3
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+- Updated dependencies [fe3a7d4]
+  - myst-common@1.12.0
+  - myst-directives@1.8.0
+
 ## 1.1.2
 
 ### Patch Changes

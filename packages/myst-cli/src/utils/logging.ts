@@ -1,19 +1,30 @@
 import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
+import type { Point, Position } from 'unist';
 import type { ISession } from '../session/types.js';
 import type { WarningKind } from '../store/types.js';
 import { addWarningForFile } from './addWarningForFile.js';
 import { writeFileToFolder } from 'myst-cli-utils';
 import { join } from 'node:path';
 
+export function messageKind(message: VFileMessage): WarningKind {
+  // vfile@6 leaves `fatal` undefined for info messages (it was null before)
+  if (message.fatal == null) return 'info';
+  return message.fatal === false ? 'warn' : 'error';
+}
+
+export function messagePosition(message: VFileMessage): Position | undefined {
+  const place: Point | Position | undefined = message.place;
+  if (!place) return undefined;
+  return 'start' in place ? place : { start: place, end: place };
+}
+
 export function logMessagesFromVFile(session: ISession, file?: VFile): void {
   if (!file) return;
   const messages = file.messages as (VFileMessage & { key?: string })[];
   messages.forEach((message) => {
-    const kind: WarningKind =
-      message.fatal === null ? 'info' : message.fatal === false ? 'warn' : 'error';
-    addWarningForFile(session, file.path, message.message, kind, {
-      position: message.position,
+    addWarningForFile(session, file.path, message.message, messageKind(message), {
+      position: messagePosition(message),
       note: message.note,
       url: message.url,
       ruleId: message.ruleId,

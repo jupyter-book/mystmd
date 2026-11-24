@@ -1,6 +1,6 @@
 {
   "name": "mystmd",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Command line tools for MyST Markdown",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -31,8 +31,7 @@
     "clean": "rimraf dist",
     "copy:version": "echo \"const version = '\"$npm_package_version\"';\nexport default version;\" > src/version.ts",
     "dev": "esbuild src/index.ts --bundle --outfile=dist/myst.cjs --platform=node --external:fsevents --watch",
-    "lint": "npm run copy:version; eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npm run copy:version; prettier --check \"src/**/*.ts\"",
+    "lint": "npm run copy:version; eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "typecheck": "tsc --noEmit",
     "test": "npm run copy:version && vitest run && bun run typecheck",
     "test:watch": "npm run copy:version; vitest watch",
@@ -40,15 +39,17 @@
     "build": "npm-run-all -l clean copy:version -p build:cli"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/js-yaml": "^4.0.5",
     "async-mutex": "^0.5.0",
     "chalk": "^5.2.0",
     "commander": "^10.0.1",
     "core-js": "^3.31.1",
     "js-yaml": "^4.1.0",
-    "myst-cli": "^1.13.0",
-    "myst-cli-utils": "^2.0.16",
-    "myst-common": "^1.11.0",
-    "myst-templates": "^1.1.0"
+    "myst-cli": "^1.14.0",
+    "myst-cli-utils": "^2.0.17",
+    "myst-common": "^1.12.0",
+    "myst-templates": "^1.1.1"
   }
 }

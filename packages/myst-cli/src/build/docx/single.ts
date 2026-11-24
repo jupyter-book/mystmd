@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { Content } from 'mdast';
+import type { FootnoteDefinition } from 'myst-spec';
 import { createDocFromState, DocxSerializer, writeDocx } from 'myst-to-docx';
 import { tic, writeFileToFolder } from 'myst-cli-utils';
 import {
@@ -40,7 +40,7 @@ function defaultWordRenderer(
   vfile: VFile,
 ) {
   const { mdast, frontmatter, references } = data;
-  const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors) as Content[];
+  const frontmatterNodes = createArticleTitle(frontmatter.title, frontmatter.authors);
   const serializer = new DocxSerializer(
     vfile,
     {
@@ -84,7 +84,7 @@ function defaultWordRenderer(
     serializer.renderChildren(referencesRoot);
     serializer.closeBlock();
   }
-  selectAll('footnoteDefinition', mdast).forEach((footnote) => {
+  (selectAll('footnoteDefinition', mdast) as FootnoteDefinition[]).forEach((footnote) => {
     serializer.render(footnote);
   });
   const logo = path.join(staticPath, 'logo.png');

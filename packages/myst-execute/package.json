@@ -1,6 +1,6 @@
 {
   "name": "myst-execute",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "Execute MyST content with Jupyter",
@@ -21,8 +21,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -36,17 +35,19 @@
     "@jupyterlab/nbformat": "^3.5.2",
     "chalk": "^5.2.0",
     "get-port": "^6.1.2",
-    "myst-cli-utils": "^2.0.15",
-    "myst-common": "^1.10.1",
-    "myst-frontmatter": "^1.10.1",
-    "myst-spec": "^0.0.6",
+    "myst-cli-utils": "^2.0.17",
+    "myst-common": "^1.12.0",
+    "myst-frontmatter": "^1.12.0",
+    "myst-spec": "^0.0.7",
     "node-fetch": "^3.3.0",
-    "unified": "^10.1.2",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7",
+    "unified": "^11.0.5",
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3",
     "which": "^4.0.0"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "@types/which": "^3.0.4",
     "js-yaml": "^4.1.0"
   }
