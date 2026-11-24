@@ -50,7 +50,10 @@ export async function currentSiteRoutes(
         (page): page is LocalProjectPage => !!(page as any).slug,
       );
       return [
-        { url: `${host}${projSlug}${siteIndex}`, path: path.join(proj.slug ?? '', 'index.html') },
+        {
+          url: `${host}${projSlug}${siteIndex}`,
+          path: path.join(proj.slug ?? '', 'index.html'),
+        },
         ...pages.map((page) => {
           const pageSlug = slugToUrl(page.slug);
           return {
@@ -191,7 +194,12 @@ export async function buildHtml(session: ISession, opts: StartOptions) {
     const cdn_url = `http://localhost:${appServer.contentServer.port}`;
     await makeExecutable(renderCommand, createNpmLogger(session), {
       cwd: template.templatePath,
-      env: { ...process.env, BUILD_DIRECTORY: htmlDir, CONTENT_CDN: cdn_url },
+      env: {
+        ...process.env,
+        BASE_URL: baseurl,
+        BUILD_DIRECTORY: htmlDir,
+        CONTENT_CDN: cdn_url,
+      },
     })();
   }
   // Fallback on fetch-based rendering (deprecated)
