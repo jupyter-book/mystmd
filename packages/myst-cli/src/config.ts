@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
 import yaml from 'js-yaml';
-import { writeFileToFolder } from 'myst-cli-utils';
+import { isUrl, writeFileToFolder } from 'myst-cli-utils';
 import { fileError, fileWarn, RuleId } from 'myst-common';
 import type { Config, ProjectConfig, SiteConfig, SiteProject } from 'myst-config';
 import { validateProjectConfig, validateSiteConfig } from 'myst-config';
@@ -408,6 +408,9 @@ async function resolveProjectConfigPaths(
         return resolved;
       }),
     );
+  }
+  if (projectConfig.citation_style?.endsWith('.csl') && !isUrl(projectConfig.citation_style)) {
+    resolvedFields.citation_style = await resolutionFn(session, path, projectConfig.citation_style);
   }
   if (projectConfig.index) {
     resolvedFields.index = await resolutionFn(session, path, projectConfig.index);

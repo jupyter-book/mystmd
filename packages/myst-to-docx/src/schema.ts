@@ -500,17 +500,19 @@ const cite: Handler<{ type: 'cite' } & Parent> = (state, node) => {
   state.renderChildren(node);
 };
 
-const citeGroup: Handler<{ type: 'citeGroup'; kind: CiteKind } & Parent> = (state, node) => {
-  if (node.kind === 'narrative') {
-    state.renderChildren(node);
-  } else {
-    state.text('(');
-    node.children.forEach((child, ind) => {
-      state.render(child);
-      if (ind < node.children.length - 1) state.text('; ');
-    });
-    state.text(')');
-  }
+const citeGroup: Handler<
+  { type: 'citeGroup'; kind: CiteKind; open?: string; close?: string; delimiter?: string } & Parent
+> = (state, node) => {
+  const narrative = node.kind === 'narrative';
+  const open = node.open ?? (narrative ? '' : '(');
+  const close = node.close ?? (narrative ? '' : ')');
+  const delimiter = node.delimiter ?? (narrative ? ', ' : '; ');
+  if (open) state.text(open);
+  node.children.forEach((child, ind) => {
+    state.render(child);
+    if (ind < node.children.length - 1) state.text(delimiter);
+  });
+  if (close) state.text(close);
 };
 
 const embed: Handler<{ type: 'embed' } & Parent> = (state, node) => {

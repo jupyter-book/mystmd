@@ -12,7 +12,7 @@ import {
 import type { RendererDoc } from 'myst-templates';
 import MystTemplate from 'myst-templates';
 import { htmlTransform } from 'myst-transforms';
-import { fileError, fileWarn, RuleId, TemplateKind, toText } from 'myst-common';
+import { fileError, fileWarn, liftChildren, RuleId, TemplateKind } from 'myst-common';
 import { selectAll } from 'unist-util-select';
 import { filterKeys } from 'simple-validators';
 import { VFile } from 'vfile';
@@ -58,21 +58,21 @@ function defaultWordRenderer(
   });
   serializer.renderChildren(mdast);
 
-  // Take each reference
-  const referenceNodes = Object.values(references.cite?.data ?? {})
+  // References are in the order of the citation style
+  const { order = [], data: citations = {} } = references.cite ?? {};
+  const referenceNodes = order
     // Parse the HTML into mdast
-    .map(({ html }) => htmlTransform({ type: 'root', children: [{ type: 'html', value: html }] }))
-    // Replace "root of phrasing" with "paragraph of phrasing"
-    .map((root) => ({ type: 'paragraph', children: root.children }))
-    // Parse out the string representation (to drop formatting)
-    .map((node) => ({
-      repr: toText(node),
-      node,
-    }))
-    // Sort the string representation
-    .sort((a, b) => a.repr.localeCompare(b.repr))
-    // Drop the string representation
-    .map(({ node }) => node);
+    .map((label) =>
+      htmlTransform({
+        type: 'root',
+        children: [{ type: 'html', value: citations[label].html as string }],
+      }),
+    )
+    // Replace "root of phrasing" with "paragraph of phrasing"; docx has no span
+    .map((root) => {
+      liftChildren(root, 'span');
+      return { type: 'paragraph', children: root.children };
+    });
 
   if (referenceNodes.length > 0) {
     serializer.render(createReferenceTitle());

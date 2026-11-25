@@ -43,6 +43,7 @@ export const USE_PROJECT_FALLBACK = [
   'first_page',
   'last_page',
   'numbering',
+  'citation_style',
   'keywords',
   'funding',
   'copyright',

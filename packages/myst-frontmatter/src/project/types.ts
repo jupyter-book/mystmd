@@ -29,6 +29,7 @@ export const PROJECT_AND_PAGE_FRONTMATTER_KEYS = [
   'oxa',
   'numbering',
   'bibliography',
+  'citation_style',
   'math',
   'abbreviations',
   'exports',
@@ -64,6 +65,8 @@ export type ProjectAndPageFrontmatter = SiteFrontmatter & {
   subject?: string;
   /** Links to bib files for citations */
   bibliography?: string[];
+  /** CSL style name, local `.csl` file, or URL */
+  citation_style?: string;
   volume?: PublicationMeta;
   issue?: PublicationMeta;
   first_page?: string | number;

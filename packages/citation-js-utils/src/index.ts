@@ -161,6 +161,28 @@ function replaceUrlsWithAnchorElement(str?: string, doi?: string) {
   return newStr;
 }
 
+/**
+ * Convert a citeproc bibliography entry to sanitized HTML with linked URLs and DOIs
+ *
+ * Numeric styles put the label in a `csl-left-margin` element; it becomes a span.
+ */
+export function cleanBibliographyHtml(html: string, doi?: string) {
+  const clean = sanitizeHtml(html, {
+    allowedTags: ['b', 'a', 'u', 'i', 'sup', 'sub', 'span'],
+    allowedAttributes: { span: ['class'] },
+    allowedClasses: { span: ['csl-left-margin', 'csl-right-inline', 'csl-indent'] },
+    transformTags: { div: 'span' },
+  })
+    .replace(/<span>([\s\S]*)<\/span>/, '$1')
+    .replace(
+      /<\/span>\s*<span class="csl-right-inline">/,
+      '</span> <span class="csl-right-inline">',
+    )
+    .replace(/&amp;/g, '&')
+    .trim();
+  return replaceUrlsWithAnchorElement(clean, doi);
+}
+
 export function firstNonDoiUrl(str?: string, doi?: string) {
   if (!str) return;
   const matches = [...str.matchAll(URL_REGEX)];
@@ -335,3 +357,4 @@ export function getCitationRenderers(data: CSL[]): CitationRenderer {
     }),
   );
 }
+export * from './csl.js';
