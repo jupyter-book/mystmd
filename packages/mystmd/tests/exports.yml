@@ -603,3 +603,8 @@ cases:
         content: extend-part-plugin/outputs/index.json
       - path: extend-part-plugin/_build/site/config.json
         content: extend-part-plugin/outputs/config.json
+  - title: HTML build without site configuration fails
+    cwd: no-config
+    args: build --html
+    expectFailure: true
+    outputs: []
