@@ -1,6 +1,6 @@
 {
   "name": "myst-to-docx",
-  "version": "1.0.18",
+  "version": "1.1.0",
   "description": "Export from a MyST Markdown document to Microsoft Word (*.docx)",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "license": "MIT",
@@ -26,8 +26,7 @@
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst",
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.cjs",
-    "lint:format": "prettier --check \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" -c eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -36,15 +35,17 @@
   "dependencies": {
     "buffer-image-size": "^0.6.4",
     "docx": "^7.3.0",
-    "myst-common": "^1.10.2",
-    "myst-frontmatter": "^1.10.2",
-    "myst-spec": "^0.0.6",
-    "myst-spec-ext": "^1.10.2",
-    "unified": "^10.1.2",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7"
+    "myst-common": "^1.12.0",
+    "myst-frontmatter": "^1.12.0",
+    "myst-spec": "^0.0.7",
+    "myst-spec-ext": "^1.12.0",
+    "unified": "^11.0.5",
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3"
   },
   "devDependencies": {
-    "unist-builder": "^3.0.0"
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
+    "unist-builder": "^4.0.0"
   }
 }

@@ -3,6 +3,13 @@ import type { Directive, Node, Role } from 'myst-spec';
 import type { VFile } from 'vfile';
 import type { PageFrontmatter } from 'myst-frontmatter';
 
+declare module 'unified' {
+  interface CompileResultMap {
+    // MyST exporters return the VFile from their compilers, with output on `file.result`
+    VFile: VFile;
+  }
+}
+
 export type GenericNode<T extends Record<string, any> = Record<string, any>> = {
   type: string;
   kind?: string;
@@ -31,17 +38,17 @@ export enum NotebookCell {
 }
 
 export enum NotebookCellTags {
-  'removeStderr' = 'remove-stderr',
-  'removeStdout' = 'remove-stdout',
-  'hideCell' = 'hide-cell',
-  'hideInput' = 'hide-input',
-  'hideOutput' = 'hide-output',
-  'removeCell' = 'remove-cell',
-  'removeInput' = 'remove-input',
-  'removeOutput' = 'remove-output',
-  'scrollOutput' = 'scroll-output',
-  'skipExecution' = 'skip-execution',
-  'raisesException' = 'raises-exception',
+  removeStderr = 'remove-stderr',
+  removeStdout = 'remove-stdout',
+  hideCell = 'hide-cell',
+  hideInput = 'hide-input',
+  hideOutput = 'hide-output',
+  removeCell = 'remove-cell',
+  removeInput = 'remove-input',
+  removeOutput = 'remove-output',
+  scrollOutput = 'scroll-output',
+  skipExecution = 'skip-execution',
+  raisesException = 'raises-exception',
 }
 
 export type References = {
@@ -123,11 +130,8 @@ export type TransformSpec = {
   doc?: string;
   stage: 'document' | 'project';
   // context?: 'tex' | 'docx' | 'jats' | 'typst' | 'site';
-  plugin: Plugin<
-    [PluginOptions | undefined, PluginUtils],
-    GenericParent,
-    GenericParent | Promise<GenericParent>
-  >;
+  // Transformers may be async; unified 11 accepts a promise of the tree
+  plugin: Plugin<[PluginOptions | undefined, PluginUtils], GenericParent>;
 };
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "myst-ext-button",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "sideEffects": false,
   "license": "MIT",
   "description": "MyST extension for button role",
@@ -21,8 +21,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "npx prettier --check \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -32,11 +31,13 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.10.2",
-    "myst-spec-ext": "^1.10.2"
+    "myst-common": "^1.12.0",
+    "myst-spec-ext": "^1.12.0"
   },
   "devDependencies": {
-    "myst-parser": "^1.7.5",
-    "vfile": "^5.3.7"
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
+    "myst-parser": "^1.8.0",
+    "vfile": "^6.0.3"
   }
 }

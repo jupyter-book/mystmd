@@ -58,9 +58,7 @@ cases:
         - type: paragraph
           children:
             - type: inlineCode
-              children:
-                - type: text
-                  value: code
+              value: code
   - title: ttfamily
     tex: which is set in {\ttfamily spie.cls}.
     tree:
@@ -71,9 +69,7 @@ cases:
             - type: text
               value: 'which is set in '
             - type: inlineCode
-              children:
-                - type: text
-                  value: spie.cls
+              value: spie.cls
             - type: text
               value: '.'
   - title: textrm --> text

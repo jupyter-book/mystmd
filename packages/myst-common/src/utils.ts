@@ -1,13 +1,17 @@
 import type { VFile } from 'vfile';
 import type { VFileMessage } from 'vfile-message';
-import type { Position } from 'unist';
+import type { Node as UnistNode, Position } from 'unist';
 import { customAlphabet } from 'nanoid';
+import { remove } from 'unist-util-remove';
 import type { Node, Parent, PhrasingContent } from 'myst-spec';
 import type { RuleId } from './ruleids.js';
 import type { AdmonitionKind, GenericNode, GenericParent } from './types.js';
 
 export type MessageInfo = {
-  node?: Node | Position;
+  /** Only the node's position is used, so any mdast, unist or MyST node is accepted
+   * TODO: tighten this up in future to use the unist Node type
+   */
+  node?: { type: string; position?: Position } | Position;
   note?: string;
   source?: string;
   url?: string;
@@ -26,16 +30,31 @@ function addMessageInfo(message: VFileMessage & { key?: string }, info?: Message
   return message;
 }
 
+function createMessage(
+  file: VFile,
+  method: 'message' | 'info',
+  message: string | Error,
+  opts?: MessageInfo,
+): VFileMessage {
+  // VFile has separate overloads for nodes and positions, and for `string` and `Error`,
+  // so narrow both unions before calling it
+  const node = opts?.node;
+  const place = node && 'type' in node ? node.position : node;
+  return typeof message === 'string'
+    ? file[method](message, place, opts?.source)
+    : file[method](message, place, opts?.source);
+}
+
 export function fileError(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
-  return addMessageInfo(file.message(message, opts?.node, opts?.source), { ...opts, fatal: true });
+  return addMessageInfo(createMessage(file, 'message', message, opts), { ...opts, fatal: true });
 }
 
 export function fileWarn(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
-  return addMessageInfo(file.message(message, opts?.node, opts?.source), opts);
+  return addMessageInfo(createMessage(file, 'message', message, opts), opts);
 }
 
 export function fileInfo(file: VFile, message: string | Error, opts?: MessageInfo): VFileMessage {
-  return addMessageInfo(file.info(message, opts?.node, opts?.source), opts);
+  return addMessageInfo(createMessage(file, 'info', message, opts), opts);
 }
 
 const az = 'abcdefghijklmnopqrstuvwxyz';
@@ -52,23 +71,36 @@ export function createId() {
 }
 
 /**
- * https://github.com/syntax-tree/mdast#association
- * @param label A label field can be present.
- *        label is a string value: it works just like title on a link or a
- *        lang on code: character escapes and character references are parsed.
- * @returns { identifier, label, html_id }
+ * Normalize a label to an identifier for matching references to targets.
+ *
+ * Collapses whitespace to single spaces, removes quote characters, trims, and lowercases.
+ * Returns `undefined` if `label` is empty or undefined.
  */
-export function normalizeLabel(
-  label: string | undefined,
-): { identifier: string; label: string; html_id: string } | undefined {
+export function normalizeIdentifier(label: string | undefined): string | undefined {
   if (!label) return undefined;
-  const identifier = label
+  return label
     .replace(/[\t\n\r ]+/g, ' ')
     .replace(/['‘’"“”]+/g, '') // These can make matching difficult, especially in glossaries and terms
     .trim()
     .toLowerCase();
+}
+
+/**
+ * Normalize a label to the association fields of an mdast node.
+ *
+ * See https://github.com/syntax-tree/mdast#association.
+ *
+ * @param label The label as written in the source.
+ * @returns `label` unchanged, `identifier` from `normalizeIdentifier`, and `html_id` from
+ *   `createHtmlId`; or `undefined` if `label` is empty or undefined.
+ */
+export function normalizeLabel(
+  label: string | undefined,
+): { identifier: string; label: string; html_id: string } | undefined {
+  const identifier = normalizeIdentifier(label);
+  if (identifier === undefined) return undefined;
   const html_id = createHtmlId(identifier) as string;
-  return { identifier, label: label, html_id };
+  return { identifier, label: label as string, html_id };
 }
 
 export function createHtmlId(identifier?: string): string | undefined {
@@ -152,6 +184,20 @@ export function liftChildren(tree: GenericParent | GenericNode, removeType: stri
   tree.children = tree.children.map((child) => getNodeOrLiftedChildren(child, removeType)).flat();
 }
 
+/**
+ * Remove all nodes of type `removeType`, along with any parents they leave empty
+ *
+ * If that would remove all content from `tree`, only the `removeType` nodes are removed
+ * and their emptied parents are kept. This matches unist-util-remove@3, which returned
+ * `null` instead of cascading up to the root.
+ */
+export function forcedRemove(tree: GenericParent, removeType: string) {
+  // Whether `node` survives a cascading removal; parents that start with no children are kept
+  const hasContent = (node: GenericNode): boolean =>
+    node.type !== removeType && (!node.children?.length || node.children.some(hasContent));
+  remove(tree, { cascade: tree.children.some(hasContent) }, removeType);
+}
+
 export function setTextAsChild(node: Partial<Parent>, text: string) {
   node.children = [{ type: 'text', value: text } as Node];
 }
@@ -163,7 +209,7 @@ export function setTextAsChild(node: Partial<Parent>, text: string) {
  * @returns A string. An empty string is returned in case no
  * textual representation could be extracted.
  */
-export function toText(content?: Node[] | Node | null): string {
+export function toText(content?: UnistNode[] | UnistNode | null): string {
   if (!content) return '';
   if (!Array.isArray(content)) return toText([content]);
   return (content as PhrasingContent[])

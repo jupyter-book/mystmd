@@ -128,11 +128,7 @@
                         "identifier": "fig-c",
                         "html_id": "fig-c",
                         "enumerator": "3",
-                        "children": [
-                          { "type": "text", "value": "Figure ", "key": "FLpN44FGqc" },
-                          { "type": "text", "value": "3", "key": "DzLQlfjfce" },
-                          { "type": "text", "value": ":", "key": "aZlZY9dLd0" }
-                        ],
+                        "children": [{ "type": "text", "value": "Figure 3:", "key": "FLpN44FGqc" }],
                         "template": "Figure %s:",
                         "key": "MAa3YHeJff"
                       },

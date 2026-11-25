@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { tic } from 'myst-cli-utils';
-import type { GenericParent, PluginUtils, References } from 'myst-common';
+import type { GenericNode, GenericParent, PluginUtils, References } from 'myst-common';
 import { fileError, fileWarn, RuleId, slugToUrl } from 'myst-common';
 import type { PageFrontmatter } from 'myst-frontmatter';
 import { SourceFileKind } from 'myst-spec-ext';
@@ -91,22 +91,25 @@ import {
 
 const LINKS_SELECTOR = 'link,card,linkBlock';
 
-const pluginUtils: PluginUtils = { select, selectAll };
-
-const htmlHandlers = {
-  comment(h: any, node: any) {
-    // Prevents HTML comments from showing up as text in web
-    // TODO: Remove once this is landed in myst-parser
-    const result = h(node, 'comment');
-    (result as any).value = node.value;
-    return result;
-  },
+const pluginUtils: PluginUtils = {
+  // unist-util-select@5 returns `undefined` when nothing matches; plugins expect `null`
+  select: (selector, tree) => (select(selector, tree) as GenericNode | undefined) ?? null,
+  selectAll,
 };
 
 export type TransformFn = (
   session: ISession,
   opts: Parameters<typeof transformMdast>[1],
 ) => Promise<void>;
+
+/** Set the title numbering offset if it is not set. */
+export function setTitleOffset(frontmatter: PageFrontmatter, offset: number) {
+  if (frontmatter.numbering?.title?.offset != null) return;
+  frontmatter.numbering = {
+    ...frontmatter.numbering,
+    title: { ...frontmatter.numbering?.title, offset },
+  };
+}
 
 export async function transformMdast(
   session: ISession,
@@ -172,11 +175,7 @@ export async function transformMdast(
     },
     projectPath,
   );
-  if (offset) {
-    if (!frontmatter.numbering) frontmatter.numbering = {};
-    if (!frontmatter.numbering.title) frontmatter.numbering.title = {};
-    if (frontmatter.numbering.title.offset == null) frontmatter.numbering.title.offset = offset;
-  }
+  if (offset) setTitleOffset(frontmatter, offset);
   await addEditUrl(session, frontmatter, file);
   const references: References = {
     cite: { order: [], data: {} },
@@ -212,7 +211,7 @@ export async function transformMdast(
 
   const pipe = unified()
     .use(reconstructHtmlPlugin) // We need to group and link the HTML first
-    .use(htmlPlugin, { htmlHandlers }) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
+    .use(htmlPlugin) // Some of the HTML plugins need to operate on the transformed html, e.g. figure caption transforms
     .use(basicTransformationsPlugin, {
       parser: (content: string) => parseMyst(session, content, file),
       firstDepth: (titleDepth ?? 1) + (frontmatter.content_includes_title ? 0 : 1),
@@ -335,7 +334,8 @@ export async function postProcessMdast(
   const projectPath = selectors.selectCurrentProjectPath(storeState);
   const siteConfig = selectors.selectCurrentSiteConfig(storeState);
   const projectSlug = siteConfig?.projects?.find((proj) => proj.path === projectPath)?.slug;
-  if (site) {
+  // Building the project pages is expensive, so only do it if this page has a toc
+  if (site && select('toc', mdast)) {
     buildTocTransform(
       mdast,
       vfile,

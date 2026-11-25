@@ -1,6 +1,6 @@
 {
   "name": "myst-to-tex",
-  "version": "1.0.48",
+  "version": "1.1.0",
   "description": "Export from MyST mdast to latex",
   "author": "Rowan Cockett <rowan@curvenote.com>",
   "homepage": "https://github.com/jupyter-book/mystmd/tree/main/packages/myst-to-tex",
@@ -26,8 +26,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./.eslintrc.cjs",
-    "lint:format": "prettier --check src/*.ts src/**/*.ts",
+    "lint": "eslint \"src/**/!(*.spec).ts\" -c ./eslint.config.mjs",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "build:esm": "tsc",
@@ -37,20 +36,22 @@
     "url": "https://github.com/jupyter-book/mystmd/issues"
   },
   "dependencies": {
-    "myst-common": "^1.10.2",
-    "myst-frontmatter": "^1.10.2",
-    "myst-spec": "^0.0.6",
-    "myst-spec-ext": "^1.10.2",
-    "myst-ext-proof": "^1.0.14",
-    "unified": "^10.1.2",
-    "unist-util-remove": "^3.1.0",
-    "unist-util-select": "^4.0.3",
-    "vfile": "^5.3.7",
-    "vfile-reporter": "^7.0.4"
+    "myst-common": "^1.12.0",
+    "myst-frontmatter": "^1.12.0",
+    "myst-spec": "^0.0.7",
+    "myst-spec-ext": "^1.12.0",
+    "myst-ext-proof": "^1.0.15",
+    "unified": "^11.0.5",
+    "unist-util-remove": "^4.0.0",
+    "unist-util-select": "^5.1.0",
+    "vfile": "^6.0.3",
+    "vfile-reporter": "^8.1.1"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^10.14.0",
     "js-yaml": "^4.1.0",
-    "myst-parser": "^1.7.5",
-    "unist-builder": "^3.0.0"
+    "myst-parser": "^1.8.0",
+    "unist-builder": "^4.0.0"
   }
 }

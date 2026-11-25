@@ -10,6 +10,7 @@ import type { GenericNode, GenericParent } from 'myst-common';
 import {
   createHtmlId,
   fileWarn,
+  normalizeIdentifier,
   normalizeLabel,
   setTextAsChild,
   copyNode,
@@ -165,24 +166,36 @@ function fillReferenceEnumerators(
     number: false,
     name: false,
   };
-  findAndReplace(node as any, {
-    '%s': () => {
-      used.s = true;
-      return num;
-    },
-    '{subEnumerator}': () => {
-      used.number = true;
-      return target?.enumerator ?? UNKNOWN_REFERENCE_ENUMERATOR;
-    },
-    '{number}': () => {
-      used.number = true;
-      return num;
-    },
-    '{name}': () => {
-      used.name = true;
-      return title || node.label || node.identifier;
-    },
-  });
+  findAndReplace(node as any, [
+    [
+      '%s',
+      () => {
+        used.s = true;
+        return num;
+      },
+    ],
+    [
+      '{subEnumerator}',
+      () => {
+        used.number = true;
+        return target?.enumerator ?? UNKNOWN_REFERENCE_ENUMERATOR;
+      },
+    ],
+    [
+      '{number}',
+      () => {
+        used.number = true;
+        return num;
+      },
+    ],
+    [
+      '{name}',
+      () => {
+        used.name = true;
+        return title || node.label || node.identifier;
+      },
+    ],
+  ]);
   if (num === UNKNOWN_REFERENCE_ENUMERATOR && (used.number || used.s) && file) {
     const numberType =
       used.number && used.s ? '"{number}" and "%s"' : `${used.number ? '"number"' : '"%s"'}`;
@@ -495,7 +508,7 @@ export class ReferenceState implements IReferenceStateResolver {
   /** Find the target for an identifier, matching exact and normalized versions. */
   getTarget(identifier?: string): Target | undefined {
     if (!identifier) return undefined;
-    const normalized = normalizeLabel(identifier)?.identifier;
+    const normalized = normalizeIdentifier(identifier);
     return this.getExactTarget(identifier) ?? this.getExactTarget(normalized);
   }
 
@@ -625,7 +638,10 @@ export class MultiPageReferenceResolver implements IReferenceStateResolver {
     const exact = pages.find(
       (state) => !!state.getExactTarget(identifier) || !!state.getFileTarget(identifier),
     );
-    return exact ?? pages.find((state) => !!state.getTarget(identifier));
+    if (exact) return exact;
+    // No exact match on any page; try the normalized identifier, which is the same for all pages
+    const normalized = normalizeIdentifier(identifier);
+    return pages.find((state) => !!state.getExactTarget(normalized));
   }
 
   getIdentifiers() {

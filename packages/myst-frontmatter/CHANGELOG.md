@@ -1,5 +1,21 @@
 # myst-frontmatter
 
+## 1.12.0
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - myst-toc@0.2.1
+  - simple-validators@1.2.2
+
+## 1.11.0
+
+### Patch Changes
+
+- Updated dependencies [8055648]
+  - myst-toc@0.2.0
+
 ## 1.10.2
 
 ### Patch Changes

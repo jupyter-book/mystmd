@@ -33,6 +33,7 @@ import { getFileContent } from './utils/getFileContent.js';
 import { addWarningForFile } from '../utils/addWarningForFile.js';
 import { createTempFolder } from '../utils/createTempFolder.js';
 import { resolveFrontmatterParts } from '../utils/resolveFrontmatterParts.js';
+import { mutableCopy } from '../utils/mutableCopy.js';
 import version from '../version.js';
 import { cleanOutput } from './utils/cleanOutput.js';
 import type { ExportWithOutput, ExportResults, ExportFnOptions } from './types.js';
@@ -77,8 +78,7 @@ export function mdastToTypst(
     // references,
     // ...frontmatter.settings?.myst_to_tex,
   });
-  const result = pipe.runSync(mdast as any);
-  const typ = pipe.stringify(result);
+  const typ = pipe.stringify(mdast as any);
   logMessagesFromVFile(session, typ);
   return typ.result as TypstResult;
 }
@@ -268,7 +268,8 @@ export async function localArticleToTypstTemplated(
     commands: {},
   };
   const state = session.store.getState();
-  const projectFrontmatter = selectors.selectLocalProjectConfig(state, projectPath ?? '.') ?? {};
+  const projectConfig = selectors.selectLocalProjectConfig(state, projectPath ?? '.');
+  const projectFrontmatter = projectConfig ? mutableCopy(projectConfig, ['toc']) : {};
   if (file === selectors.selectCurrentProjectFile(state)) {
     // If export is defined at the project level, prioritize project parts over page parts
     partDefinitions.forEach((def) => {
@@ -393,7 +394,8 @@ export async function localArticleToTypstTemplated(
   return { tempFolders: [], hasGlossaries };
 }
 
-export async function runTypstExport( // DBG: Must return an info on whether glossaries are present
+export async function runTypstExport(
+  // DBG: Must return an info on whether glossaries are present
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,

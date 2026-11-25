@@ -1,5 +1,88 @@
 # myst-cli
 
+## 1.14.0
+
+### Minor Changes
+
+- fe3a7d4: Upgrade to `unified@11`, `vfile@6`, `@types/mdast@4`, `@types/unist@3` and the current majors of the unist, mdast and hast utilities.
+  
+  Changes visible to users and plugin authors:
+  
+  - Cross-reference and caption text filled from templates is now a single text node in the site JSON (e.g. `"Figure 1:"` instead of `"Figure "`, `"1"` and `":"`). Rendered output is unchanged.
+  - TypeScript plugins and libraries now see the `unified@11` and `@types/unist@3` types. `utils.select` in the plugin API still returns `null` when nothing matches, but plugins calling `unist-util-select` directly now get `undefined`.
+  - `TransformSpec.plugin` is typed as a `GenericParent` transformer, which may be async. `MessageInfo.node` and `toText` accept any node, and `forcedRemove` is now exported from `myst-common`.
+  - `myst-to-html` exports `htmlToMdast` and `createMdastNode`, the HTML to mdast conversion shared with `myst-transforms`.
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- e6da429: Download remote videos in figures and images.
+  When a remote image or video can't be downloaded, keep its original URL instead of writing `/undefined`.
+- 1c2c5a1: Set BASE_URL for the HTML renderer
+- Updated dependencies [fe3a7d4]
+- Updated dependencies [6767381]
+- Updated dependencies [5a2b22e]
+- Updated dependencies [fe3a7d4]
+  - myst-parser@1.8.0
+  - tex-to-myst@1.1.0
+  - citation-js-utils@1.2.12
+  - jtex@1.0.25
+  - myst-cli-utils@2.0.17
+  - myst-common@1.12.0
+  - myst-config@1.12.0
+  - myst-execute@0.6.0
+  - myst-ext-button@0.1.0
+  - myst-ext-card@1.0.12
+  - myst-ext-exercise@1.1.0
+  - myst-ext-grid@1.1.3
+  - myst-ext-icon@0.1.0
+  - myst-ext-proof@1.0.15
+  - myst-ext-reactive@1.0.11
+  - myst-ext-tabs@1.1.0
+  - myst-frontmatter@1.12.0
+  - myst-migrate@1.14.0
+  - myst-spec@0.0.7
+  - myst-spec-ext@1.12.0
+  - myst-templates@1.1.1
+  - myst-to-docx@1.1.0
+  - myst-to-jats@1.1.0
+  - myst-to-md@1.1.0
+  - myst-to-tex@1.1.0
+  - myst-to-typst@0.1.0
+  - myst-toc@0.2.1
+  - myst-transforms@1.4.0
+  - simple-validators@1.2.2
+
+## 1.13.0
+
+### Minor Changes
+
+- 097a21e: Add new hiddenPages temporary manifest field
+- 8055648: Add a `searchable` option to `file` and `pattern` TOC entries. Hidden pages are now left out of search unless they set `searchable: true`.
+
+### Patch Changes
+
+- c63e74a: Update packaging metadata
+- b131bc1: Return frozen store state from selectors instead of deep copies, and type it as read-only.
+- 5d87e8b: Only collect project exports when resolving a page's `downloads` if the page has `downloads`, avoiding quadratic memory use on large sites.
+- ee65152: Only build the project page manifest for the `toc` transform on pages that contain a `toc`, avoiding quadratic memory use on large sites.
+- ee65152: Return the cached project from `loadProjectFromDisk` without deep copying it, avoiding quadratic memory use on large sites.
+- Updated dependencies [c63e74a]
+- Updated dependencies [097a21e]
+- Updated dependencies [3cc7340]
+- Updated dependencies [50e8220]
+- Updated dependencies [8055648]
+  - citation-js-utils@1.2.11
+  - jtex@1.0.24
+  - myst-config@1.11.0
+  - myst-ext-card@1.0.11
+  - myst-common@1.11.0
+  - myst-transforms@1.3.53
+  - myst-toc@0.2.0
+  - myst-frontmatter@1.11.0
+  - myst-spec-ext@1.11.0
+  - myst-migrate@1.13.0
+
 ## 1.12.0
 
 ### Minor Changes

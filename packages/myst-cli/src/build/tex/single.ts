@@ -59,8 +59,7 @@ export function mdastToTex(
     references,
     ...frontmatter.settings?.myst_to_tex,
   });
-  const result = pipe.runSync(mdast as any);
-  const tex = pipe.stringify(result);
+  const tex = pipe.stringify(mdast as any);
   logMessagesFromVFile(session, tex);
   return tex.result as LatexResult;
 }
@@ -343,7 +342,8 @@ export async function localArticleToTexTemplated(
   return { tempFolders: [], hasGlossaries };
 }
 
-export async function runTexExport( // DBG: Must return an info on whether glossaries are present
+export async function runTexExport(
+  // DBG: Must return an info on whether glossaries are present
   session: ISession,
   file: string,
   exportOptions: ExportWithOutput,

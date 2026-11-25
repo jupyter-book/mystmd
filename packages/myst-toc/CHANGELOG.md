@@ -1,5 +1,19 @@
 # myst-toc
 
+## 0.2.1
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+- Updated dependencies [5a2b22e]
+  - simple-validators@1.2.2
+
+## 0.2.0
+
+### Minor Changes
+
+- 8055648: Add a `searchable` option to `file` and `pattern` TOC entries. Hidden pages are now left out of search unless they set `searchable: true`.
+
 ## 0.1.5
 
 ### Patch Changes
