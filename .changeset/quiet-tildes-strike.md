@@ -3,4 +3,4 @@
 'myst-cli': minor
 ---
 
-Add a `strikethrough` parser setting to enable `~~text~~` strikethrough syntax. It is off by default.
+Add a `project.settings.parser.strikethrough` setting that parses `~~text~~` as strikethrough. It is off by default.
