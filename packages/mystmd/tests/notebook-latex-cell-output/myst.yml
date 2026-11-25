@@ -1,0 +1,12 @@
+version: 1
+project:
+  id: notebook-latex-cell-output
+  export:
+    format: tex
+    template: ../templates/tex
+    output: _build/out-latex.tex
+    article: input-latex.ipynb
+    # Define the article's required export frontmatter here:
+    title: "Cell output with Latex"
+    authors:
+      - name: "Author Name"
