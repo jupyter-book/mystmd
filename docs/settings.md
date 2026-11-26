@@ -63,13 +63,17 @@ output_matplotlib_strings
 ## Markdown Parsing Settings
 
 Adding an object of `parser` to the settings will allow you to control various parser behaviors.
+For example:
 
 ```{code-block} yaml
 :filename: myst.yml
 project:
   settings:
     parser:
+      # Turn off dollar math syntax
       dollarmath: false
+      # Turn on strikethrough syntax
+      strikethrough: true
 ```
 
 :::{warning}
@@ -84,6 +88,15 @@ dollarmath
     - `false`: Disable inline dollar math parsing
 
     When disabled, dollar signs (`$`) will be treated as regular text characters and not parsed as math delimiters. This can be useful if you have frequent uses of dollar signs, such as currency, in your content that are not meant to be math.
+
+(setting:parser:strikethrough)=
+strikethrough
+: Enable or disable strikethrough parsing with double tildes (e.g., `~~text~~`).
+
+    - `false` (default): Treat tildes as regular text characters
+    - `true`: Parse text between double tildes as strikethrough
+
+    This can be useful for content that people also open in Jupyter or Colab, which show `~~text~~` as strikethrough.
 
 (setting:infer_dois_from_urls)=
 infer_dois_from_urls

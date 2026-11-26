@@ -45,6 +45,7 @@ export function getMystParserOptions(session: ISession, opts?: Options): Partial
     extensions: {
       frontmatter: !opts?.ignoreFrontmatter,
       math: mathExtension,
+      strikethrough: parserOptions?.strikethrough ?? false,
     },
     roles: [buttonRole, ...(session.plugins?.roles ?? [])],
   };
