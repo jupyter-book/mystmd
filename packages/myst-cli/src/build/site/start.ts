@@ -198,7 +198,9 @@ async function tryStartAppServer(
           CONTENT_CDN_PORT: String(contentServer.port),
           PORT: String(port),
           MODE: opts.buildStatic ? 'static' : 'app',
-          BASE_URL: opts.baseurl || undefined,
+          // Preserve the recommended absolute BASE_URL for the theme to generate public URLs;
+          // opts.baseurl is the derived path used for routing and asset rewriting.
+          BASE_URL: process.env.BASE_URL || opts.baseurl || undefined,
         },
         getProcess(proc) {
           appServer.process = proc;
