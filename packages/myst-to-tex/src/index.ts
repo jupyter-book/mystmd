@@ -285,6 +285,9 @@ const handlers: Record<string, Handler> = {
   emphasis(node, state) {
     state.renderInlineEnvironment(node, 'textit');
   },
+  smallcaps(node, state) {
+    state.renderInlineEnvironment(node, 'textsc');
+  },
   underline(node, state) {
     state.renderInlineEnvironment(node, 'uline');
   },
