@@ -1,5 +1,13 @@
 # tex-to-myst
 
+## 1.1.1
+
+### Patch Changes
+
+- myst-common@1.13.0
+  - myst-frontmatter@1.13.0
+  - myst-spec-ext@1.13.0
+
 ## 1.1.0
 
 ### Minor Changes

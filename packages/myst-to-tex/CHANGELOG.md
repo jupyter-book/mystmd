@@ -1,5 +1,14 @@
 # myst-to-tex
 
+## 1.1.1
+
+### Patch Changes
+
+- 53b8387: Add support for small caps ({sc} role) in tex output
+- myst-common@1.13.0
+  - myst-frontmatter@1.13.0
+  - myst-spec-ext@1.13.0
+
 ## 1.1.0
 
 ### Minor Changes

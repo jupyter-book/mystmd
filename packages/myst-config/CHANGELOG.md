@@ -1,5 +1,16 @@
 # myst-config
 
+## 1.13.0
+
+### Minor Changes
+
+- 30f0ea3: Add `paths` to `error_rules` to restrict a rule to files that match glob patterns. A rule can combine `paths` with `keys`. The `--debug` suppression hint now shows the file path.
+
+### Patch Changes
+
+- myst-common@1.13.0
+  - myst-frontmatter@1.13.0
+
 ## 1.12.0
 
 ### Patch Changes
