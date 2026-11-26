@@ -1,5 +1,11 @@
 # myst-spec
 
+## 0.0.7
+
+### Patch Changes
+
+- 5a2b22e: Update eslint package metadata
+
 ## 0.0.6
 
 ### Patch Changes

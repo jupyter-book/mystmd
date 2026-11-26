@@ -39,7 +39,7 @@ jobs:
           version-script: bun run version
           publish-script: bun run publish:ci
           commit-message: 🚀 Release
-          title-title: 🚀 Release
+          pr-title: 🚀 Release
           create-github-releases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
