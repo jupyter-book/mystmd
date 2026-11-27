@@ -270,7 +270,7 @@ project:
     lite: true
 ```
 
-This will load the server using the default environment described in the [JupyterLite docs](https://jupyterlite.readthedocs.io/en/latest/). For more configuration options with JupyterLite, see [](#jupyterlite).
+This will load the server using the default environment described in the [JupyterLite docs](https://jupyterlite.readthedocs.io/en/latest/). For more configuration options with JupyterLite, see the [JupyterLite configuration documentation](https://jupyterlite.readthedocs.io/en/latest/howto/configure/).
 
 ```{important} TODO
 Add the specific list options for custom wheel paths, etc.
