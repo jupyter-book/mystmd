@@ -23,11 +23,13 @@ function executeSyncParser(
   data: Record<string, unknown>,
   path: string,
   kind: string,
+  vfilePath?: string,
 ): GenericNode[] {
   const { stdout, status, stderr } = spawnSync(path, [`--${kind}`, name], {
     input: JSON.stringify(data),
     encoding: 'utf-8',
     stdio: ['pipe', 'pipe', 'pipe'],
+    env: vfilePath ? { ...process.env, MYST_VFILE_PATH: vfilePath } : process.env,
   });
   if (status) {
     throw new Error(
@@ -47,8 +49,11 @@ async function executeAsyncParser(
   data: Record<string, unknown>,
   path: string,
   kind: string,
+  vfilePath?: string,
 ) {
-  const proc = spawn(path, [`--${kind}`, name]);
+  const proc = spawn(path, [`--${kind}`, name], {
+    env: vfilePath ? { ...process.env, MYST_VFILE_PATH: vfilePath } : process.env,
+  });
 
   // Pass in the data
   proc.stdin.write(JSON.stringify(data));
@@ -94,8 +99,8 @@ function wrapDirective(
 ): DirectiveSpec {
   return {
     ...directive,
-    run: (data) => {
-      return executeSyncParser(session, directive.name, data, path, 'directive');
+    run: (data, vfile) => {
+      return executeSyncParser(session, directive.name, data, path, 'directive', vfile?.path);
     },
   };
 }
@@ -103,8 +108,8 @@ function wrapDirective(
 function wrapRole(session: ISession, role: RoleJSONSpec, path: string): RoleSpec {
   return {
     ...role,
-    run: (data) => {
-      return executeSyncParser(session, role.name, data, path, 'role');
+    run: (data, vfile) => {
+      return executeSyncParser(session, role.name, data, path, 'role', vfile?.path);
     },
   };
 }
@@ -117,9 +122,16 @@ function wrapTransform(
   return {
     ...transform,
     plugin: () => {
-      return async (node) => {
+      return async (node, vfile?: { path?: string }) => {
         // Modify the tree in-place
-        const result = await executeAsyncParser(session, transform.name, node, path, 'transform');
+        const result = await executeAsyncParser(
+          session,
+          transform.name,
+          node,
+          path,
+          'transform',
+          vfile?.path,
+        );
         Object.assign(node, result);
       };
     },
